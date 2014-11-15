@@ -80,6 +80,7 @@
             // renderControl
             // 
             this.renderControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.renderControl.Game = null;
             this.renderControl.Location = new System.Drawing.Point(0, 24);
             this.renderControl.Name = "renderControl";
             this.renderControl.Size = new System.Drawing.Size(878, 465);
@@ -94,6 +95,7 @@
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
             this.DoubleBuffered = true;
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
             this.Text = "OctoAwesome";
