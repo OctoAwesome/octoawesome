@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Input.cs" />
     <Compile Include="Model\Game.cs" />
     <Compile Include="MainForm.cs">
