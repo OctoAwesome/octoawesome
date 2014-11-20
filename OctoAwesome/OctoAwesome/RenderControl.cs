@@ -12,21 +12,24 @@ using OctoAwesome.Model;
 
 namespace OctoAwesome
 {
-    public partial class RenderControl : UserControl
+    internal partial class RenderControl : UserControl
     {
         private int SPRITE_WIDTH = 57;
         private int SPRITE_HEIGHT = 57;
 
         private Stopwatch watch = new Stopwatch();
 
-        internal Game Game { get; set; }
+        private readonly Game game;
+        private readonly Image grass;
+        private readonly Image sprite;
 
-        private Image grass;
-        private Image sprite;
-
-        public RenderControl()
+        public RenderControl(Game game)
         {
             InitializeComponent();
+
+            this.game = game;
+
+            game.Camera.SetRenderSize(new Vector2(ClientSize.Width, ClientSize.Height));
 
             grass = Image.FromFile("Assets/grass.png");
             sprite = Image.FromFile("Assets/sprite.png");
@@ -36,26 +39,37 @@ namespace OctoAwesome
 
         protected override void OnResize(EventArgs e)
         {
-            if (Game != null)
+            if (game != null)
             {
-                Game.PlaygroundSize = new Point(ClientSize.Width, ClientSize.Height);
+                game.Camera.SetRenderSize(new Vector2(ClientSize.Width, ClientSize.Height));
             }
             base.OnResize(e);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.Clear(Color.CornflowerBlue);
+            e.Graphics.Clear(Color.Brown);
 
-            for (int x = 0; x < ClientRectangle.Width; x += grass.Width)
+            int cellX1 = Math.Max(0, (int)(game.Camera.ViewPort.X / 100));
+            int cellY1 = Math.Max(0, (int)(game.Camera.ViewPort.Y / 100));
+
+            int cellCountX = (ClientSize.Width / grass.Width) + 2;
+            int cellCountY = (ClientSize.Height / grass.Height) + 2;
+
+            int cellX2 = Math.Min(cellX1 + cellCountX, (int)(game.PlaygroundSize.X / grass.Width));
+            int cellY2 = Math.Min(cellY1 + cellCountY, (int)(game.PlaygroundSize.Y / grass.Height));
+
+            for (int x = cellX1; x < cellX2; x++)
             {
-                for (int y = 0; y < ClientRectangle.Height; y += grass.Height)
+                for (int y = cellY1; y < cellY2; y++)
                 {
-                    e.Graphics.DrawImage(grass, new Point(x, y));
+                    e.Graphics.DrawImage(grass, new Point(
+                        (int)(x * grass.Width - game.Camera.ViewPort.X),
+                        (int)(y * grass.Height - game.Camera.ViewPort.Y)));
                 }
             }
 
-            if (Game == null)
+            if (game == null)
                 return;
 
             using (Brush brush = new SolidBrush(Color.White))
@@ -63,7 +77,7 @@ namespace OctoAwesome
                 int frame = (int)((watch.ElapsedMilliseconds / 250) % 4);
 
                 int offsetx = 0;
-                if (Game.Player.State == PlayerState.Walk)
+                if (game.Player.State == PlayerState.Walk)
                 {
                     switch (frame)
                     {
@@ -79,7 +93,7 @@ namespace OctoAwesome
                 }
 
                 // Umrechung in Grad
-                float direction = (Game.Player.Angle * 360f) / (float)(2 * Math.PI);
+                float direction = (game.Player.Angle * 360f) / (float)(2 * Math.PI);
 
                 // In positiven Bereich
                 direction += 180;
@@ -98,8 +112,12 @@ namespace OctoAwesome
                     case 4: offsety = 1 * SPRITE_HEIGHT; break;
                 }
 
+                Point spriteCenter = new Point(27, 48);
+
                 e.Graphics.DrawImage(sprite,
-                    new RectangleF(Game.Player.Position.X, Game.Player.Position.Y, SPRITE_WIDTH, SPRITE_HEIGHT), 
+                    new RectangleF(
+                        game.Player.Position.X - game.Camera.ViewPort.X - spriteCenter.X,
+                        game.Player.Position.Y - game.Camera.ViewPort.Y - spriteCenter.Y, SPRITE_WIDTH, SPRITE_HEIGHT), 
                     new RectangleF(offsetx, offsety, SPRITE_WIDTH, SPRITE_HEIGHT), 
                     GraphicsUnit.Pixel);
 

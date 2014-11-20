@@ -11,39 +11,49 @@ namespace OctoAwesome.Model
     internal sealed class Game
     {
         private Input input;
+        
+        public Camera Camera { get; private set; }
 
-        public PointF PlaygroundSize { get; set; }
+        public PointF PlaygroundSize { get; private set; }
 
         public Player Player { get; private set; }
+
+
+
+        
 
         public Game(Input input)
         {
             Player = new Player(input);
+            Camera = new Camera(this, input);
+            PlaygroundSize = new PointF(2000, 2000);
         }
 
         public void Update(TimeSpan frameTime)
         {
             Player.Update(frameTime);
 
-            if (Player.Position.X < 0)
+            if (Player.Position.X - Player.Radius < 0)
             {
-                Player.Position = new Vector2(0, Player.Position.Y);
+                Player.Position = new Vector2(Player.Radius, Player.Position.Y);
             }
 
-            if ((Player.Position.X + 100) > PlaygroundSize.X)
+            if (Player.Position.X + Player.Radius > PlaygroundSize.X)
             {
-                Player.Position = new Vector2(PlaygroundSize.X - 100, Player.Position.Y);
+                Player.Position = new Vector2(PlaygroundSize.X - Player.Radius, Player.Position.Y);
             }
 
-            if (Player.Position.Y < 0)
+            if (Player.Position.Y - Player.Radius < 0)
             {
-                Player.Position = new Vector2(Player.Position.X, 0);
+                Player.Position = new Vector2(Player.Position.X, Player.Radius);
             }
 
-            if ((Player.Position.Y + 100) > PlaygroundSize.Y)
+            if (Player.Position.Y + Player.Radius > PlaygroundSize.Y)
             {
-                Player.Position = new Vector2(Player.Position.X, PlaygroundSize.Y - 100);
+                Player.Position = new Vector2(Player.Position.X, PlaygroundSize.Y - Player.Radius);
             }
+
+            Camera.Update(frameTime);
         }
     }
 }
