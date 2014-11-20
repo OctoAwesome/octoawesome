@@ -48,7 +48,7 @@ namespace OctoAwesome
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.Clear(Color.Brown);
+            e.Graphics.Clear(Color.FromArgb(63, 25, 0));
 
             int cellX1 = Math.Max(0, (int)(game.Camera.ViewPort.X / 100));
             int cellY1 = Math.Max(0, (int)(game.Camera.ViewPort.Y / 100));

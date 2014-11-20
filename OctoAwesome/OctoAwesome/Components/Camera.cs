@@ -14,7 +14,7 @@ namespace OctoAwesome.Components
         private Input input;
         private Vector2 renderSize;
 
-        public readonly float MAXSPEED = 100f;
+        public readonly float MAXSPEED = 1000f;
 
         public Camera(Game game, Input input)
         {
@@ -30,25 +30,44 @@ namespace OctoAwesome.Components
 
         public void Update(TimeSpan frameTime)
         {
-            Vector2 velocity = new Vector2(
-                (input.CamLeft ? -1f : 0f) + (input.CamRight ? 1f : 0f),
-                (input.CamUp ? -1f : 0f) + (input.CamDown ? 1f : 0f));
+            //Vector2 velocity = new Vector2(
+            //    (input.CamLeft ? -1f : 0f) + (input.CamRight ? 1f : 0f),
+            //    (input.CamUp ? -1f : 0f) + (input.CamDown ? 1f : 0f));
 
-            velocity = velocity.Normalized();
+            //velocity = velocity.Normalized();
 
-            Center += (velocity * MAXSPEED * (float)frameTime.TotalSeconds);
+            //Center += (velocity * MAXSPEED * (float)frameTime.TotalSeconds);
 
-            if (Center.X < 0)
-                Center = new Vector2(0, Center.Y);
+            float posX = game.Player.Position.X - ViewPort.Left;
+            float posY = game.Player.Position.Y - ViewPort.Top;
 
-            if (Center.Y < 0)
-                Center = new Vector2(Center.X, 0);
+            float frameX = ViewPort.Width / 4;
+            float frameY = ViewPort.Height / 4;
 
-            if (Center.X > game.PlaygroundSize.X)
-                Center = new Vector2(game.PlaygroundSize.X, Center.Y);
+            if (posX < frameX)
+                Center = new Vector2(Center.X - (frameX - posX), Center.Y);
 
-            if (Center.Y > game.PlaygroundSize.Y)
-                Center = new Vector2(Center.X, game.PlaygroundSize.Y);
+            if (posX > ViewPort.Width - frameX)
+                Center = new Vector2(Center.X + (posX - (ViewPort.Width - frameX)), Center.Y);
+
+            if (posY < frameY)
+                Center = new Vector2(Center.X, Center.Y - (frameY - posY));
+
+            if (posY > ViewPort.Height - frameY)
+                Center = new Vector2(Center.X, Center.Y + (posY - (ViewPort.Height - frameY)));
+
+
+            if (Center.X < (ViewPort.Width / 2) - 100)
+                Center = new Vector2((ViewPort.Width / 2) - 100, Center.Y);
+
+            if (Center.Y < (ViewPort.Height / 2) - 100)
+                Center = new Vector2(Center.X, (ViewPort.Height / 2) - 100);
+
+            if (Center.X > game.PlaygroundSize.X - (ViewPort.Width / 2) + 100)
+                Center = new Vector2(game.PlaygroundSize.X - (ViewPort.Width / 2) + 100, Center.Y);
+
+            if (Center.Y > game.PlaygroundSize.Y - (ViewPort.Height / 2) + 100)
+                Center = new Vector2(Center.X, game.PlaygroundSize.Y - (ViewPort.Height / 2) + 100);
 
             RecalcViewPort();
         }
