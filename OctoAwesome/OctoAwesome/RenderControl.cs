@@ -63,7 +63,7 @@ namespace OctoAwesome
             {
                 for (int y = cellY1; y < cellY2; y++)
                 {
-                    switch (game.Map.Cells[x,y])
+                    switch (game.Map.GetCell(x,y))
                     {
                         case CellType.Gras:
                             e.Graphics.DrawImage(grass, new Point(
@@ -74,6 +74,16 @@ namespace OctoAwesome
                             using (SolidBrush sandBrush = new SolidBrush(Color.SandyBrown))
                             {
                                 e.Graphics.FillRectangle(sandBrush, new Rectangle(
+                                    (int)(x * grass.Width - game.Camera.ViewPort.X),
+                                    (int)(y * grass.Height - game.Camera.ViewPort.Y),
+                                    Map.CELLSIZE,
+                                    Map.CELLSIZE));
+                            }
+                            break;
+                        case CellType.Water:
+                            using (SolidBrush waterBrush = new SolidBrush(Color.Blue))
+                            {
+                                e.Graphics.FillRectangle(waterBrush, new Rectangle(
                                     (int)(x * grass.Width - game.Camera.ViewPort.X),
                                     (int)(y * grass.Height - game.Camera.ViewPort.Y),
                                     Map.CELLSIZE,
