@@ -16,6 +16,8 @@ namespace OctoAwesome.Components
 
         public readonly float MAXSPEED = 1000f;
 
+        // public readonly float SCALE = 10f;
+
         public Camera(Game game, Input input)
         {
             this.game = game;
