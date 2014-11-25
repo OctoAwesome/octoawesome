@@ -17,6 +17,8 @@ namespace OctoAwesome
             Y = y;
         }
 
+        public static Vector2 NaN { get { return new Vector2(float.NaN, float.NaN); } }
+
         public float LengthSquare()
         {
             return (X * X) + (Y * Y);
@@ -37,10 +39,11 @@ namespace OctoAwesome
             float length = Length();
             if (length == 0)
             {
-                return new Vector2(0, 0);
+                return Vector2.NaN;
             }
             else
             {
+                //Vector2 squareThis = new Vector2(this.X * this.X, this.Y * this.Y);
                 return (this / length);
             }
         }

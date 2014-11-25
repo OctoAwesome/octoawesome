@@ -11,22 +11,28 @@ namespace OctoAwesome.Model
     internal sealed class Game
     {
         private Input input;
-        
+
         public Camera Camera { get; private set; }
 
-        public PointF PlaygroundSize { get; private set; }
+        public Vector2 PlaygroundSize
+        {
+            get
+            {
+                return new Vector2(
+                    Map.Cells.GetLength(0) * Map.CELLSIZE,
+                    Map.Cells.GetLength(1) * Map.CELLSIZE);
+            }
+        }
+
+        public Map Map { get; private set; }
 
         public Player Player { get; private set; }
 
-
-
-        
-
         public Game(Input input)
         {
-            Player = new Player(input);
+            Map = new Map();
+            Player = new Player(input, Map);
             Camera = new Camera(this, input);
-            PlaygroundSize = new PointF(2000, 2000);
         }
 
         public void Update(TimeSpan frameTime)
