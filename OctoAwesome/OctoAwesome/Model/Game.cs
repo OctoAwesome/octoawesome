@@ -30,7 +30,7 @@ namespace OctoAwesome.Model
 
         public Game(Input input)
         {
-            Map = new Map();
+            Map = new Map(20, 20);
             Player = new Player(input, Map);
             Camera = new Camera(this, input);
         }
