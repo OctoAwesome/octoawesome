@@ -43,7 +43,7 @@ namespace OctoAwesome.Model
             // Ermittlung der Oberflächenbeschaffenheit
             int cellX = (int)(Position.X / Map.CELLSIZE);
             int cellY = (int)(Position.Y / Map.CELLSIZE);
-            CellType cellType = map.Cells[cellX, cellY];
+            CellType cellType = map.GetCell(cellX, cellY);
 
             // Modifikation der Geschwindigkeit
             switch (cellType)

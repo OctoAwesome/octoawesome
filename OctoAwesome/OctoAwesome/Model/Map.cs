@@ -13,27 +13,53 @@ namespace OctoAwesome.Model
     {
         public const int CELLSIZE = 100;
 
-        public CellType[,] Cells { get; private set; }
+        public int Columns { get; set; }
 
-        public Map(int width, int height)
+        public int Rows { get; set; }
+
+        public CellType[] Cells { get; set; }
+
+        public Map()
         {
-            Cells = new CellType[width, height];
+        }
+
+        public CellType GetCell(int x, int y)
+        {
+            return Cells[(y * Columns) + x];
+        }
+
+        public void SetCell(int x, int y, CellType cellType)
+        {
+            Cells[(y * Columns) + x] = cellType;
+        }
+
+        #region Generators
+
+        public static Map Generate(int width, int height, CellType defaultType)
+        {
+            if (width < 1 || width > 200)
+                throw new ArgumentException("width");
+
+            if (height < 1 || height > 200)
+                throw new ArgumentException("height");
+
+            Map map = new Map();
+            map.Columns = width;
+            map.Rows = height;
+            map.Cells = new CellType[width * height];
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    //if (x > 5 && x < 15 || y > 5 && y < 15)
-                    //{
-                    //    Cells[x, y] = CellType.Sand;
-                    //}
-                    //else
-                    //{
-                        Cells[x, y] = CellType.Gras;
-                    //}
+                    map.SetCell(x, y, defaultType);
                 }
             }
+
+            return map;
         }
+
+        #endregion
 
         #region Loader
 
