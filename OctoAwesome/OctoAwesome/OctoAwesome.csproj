@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Input.cs" />
+    <Compile Include="Model\CellTypeDefintion.cs" />
     <Compile Include="Model\Game.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
