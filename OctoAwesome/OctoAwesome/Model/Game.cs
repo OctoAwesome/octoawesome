@@ -31,7 +31,7 @@ namespace OctoAwesome.Model
         public Game(Input input)
         {
             // Map = Map.Generate(20, 20, CellType.Gras);
-            Map = Map.Load(@"C:\Users\Tom\Desktop\test.map");
+            Map = Map.Load(@"Assets/test.map");
             Player = new Player(input, Map);
             Camera = new Camera(this, input);
 
