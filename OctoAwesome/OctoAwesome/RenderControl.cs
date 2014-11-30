@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using OctoAwesome.Model;
 using OctoAwesome.Components;
+using OctoAwesome.Rendering;
 
 namespace OctoAwesome
 {
@@ -22,21 +23,10 @@ namespace OctoAwesome
 
         private readonly Game game;
         private readonly Image grass;
-        private readonly Image sand_center;
-        private readonly Image sand_left;
-        private readonly Image sand_right;
-        private readonly Image sand_upper;
-        private readonly Image sand_lower;
-        private readonly Image sand_upperLeft_concave;
-        private readonly Image sand_upperRight_concave;
-        private readonly Image sand_lowerLeft_concave;
-        private readonly Image sand_lowerRight_concave;
-        private readonly Image sand_upperLeft_convex;
-        private readonly Image sand_upperRight_convex;
-        private readonly Image sand_lowerLeft_convex;
-        private readonly Image sand_lowerRight_convex;
-        private readonly Image water;
         private readonly Image sprite;
+
+        private readonly CellTypeRenderer sandRenderer;
+        private readonly CellTypeRenderer waterRenderer;
 
         public RenderControl(Game game)
         {
@@ -47,20 +37,10 @@ namespace OctoAwesome
             game.Camera.SetRenderSize(new Vector2(ClientSize.Width, ClientSize.Height));
 
             grass = Image.FromFile("Assets/grass_center.png");
-            sand_center = Image.FromFile("Assets/sand_center.png");
-            sand_left = Image.FromFile("Assets/sand_left.png");
-            sand_right = Image.FromFile("Assets/sand_right.png");
-            sand_upper = Image.FromFile("Assets/sand_upper.png");
-            sand_lower = Image.FromFile("Assets/sand_lower.png");
-            sand_upperLeft_concave = Image.FromFile("Assets/sand_upperLeft_concave.png");
-            sand_upperRight_concave = Image.FromFile("Assets/sand_upperRight_concave.png");
-            sand_lowerLeft_concave = Image.FromFile("Assets/sand_lowerLeft_concave.png");
-            sand_lowerRight_concave = Image.FromFile("Assets/sand_lowerRight_concave.png");
-            sand_upperLeft_convex = Image.FromFile("Assets/sand_upperLeft_convex.png");
-            sand_upperRight_convex = Image.FromFile("Assets/sand_upperRight_convex.png");
-            sand_lowerLeft_convex = Image.FromFile("Assets/sand_lowerLeft_convex.png");
-            sand_lowerRight_convex = Image.FromFile("Assets/sand_lowerRight_convex.png");
-            water = Image.FromFile("Assets/water_center.png");
+
+            sandRenderer = new CellTypeRenderer("sand");
+            waterRenderer = new CellTypeRenderer("water");
+
             sprite = Image.FromFile("Assets/sprite.png");
 
             watch.Start();
@@ -105,14 +85,10 @@ namespace OctoAwesome
                                 (int)game.Camera.SCALE));
                             break;
                         case CellType.Sand:
-                            DrawSand(e.Graphics, x, y);
+                            sandRenderer.Draw(e.Graphics, game, x, y);
                             break;
                         case CellType.Water:
-                            e.Graphics.DrawImage(water, new Rectangle(
-                                (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
-                                (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
-                                (int)game.Camera.SCALE,
-                                (int)game.Camera.SCALE));
+                            waterRenderer.Draw(e.Graphics, game, x, y);
                             break;
                     }
                 }
@@ -167,51 +143,6 @@ namespace OctoAwesome
 
             // e.Graphics.FillEllipse(brush, new Rectangle(Game.Position.X, Game.Position.Y, 100, 100));
         }
-
-        private void DrawSand(Graphics g, int x, int y)
-        {
-            g.DrawImage(sand_center, new Rectangle(
-                (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
-                (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
-                (int)game.Camera.SCALE,
-                (int)game.Camera.SCALE));
-
-            if (x > 0)
-            {
-                if (game.Map.GetCell(x - 1, y) != CellType.Sand)
-                {
-                    g.DrawImage(sand_left, new Rectangle(
-                        (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
-                        (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
-                        (int)game.Camera.SCALE,
-                        (int)game.Camera.SCALE));
-                }
-            }
-
-            if (y > 0)
-            {
-                if (game.Map.GetCell(x, y-1) != CellType.Sand)
-                {
-                    g.DrawImage(sand_upper, new Rectangle(
-                        (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
-                        (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
-                        (int)game.Camera.SCALE,
-                        (int)game.Camera.SCALE));
-                }
-            }
-
-            if  (x > 0 && y > 0)
-            {
-                if (game.Map.GetCell(x - 1, y) != CellType.Sand &&
-                    game.Map.GetCell(x, y - 1) != CellType.Sand)
-                {
-                    g.DrawImage(sand_upperLeft_convex, new Rectangle(
-                        (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
-                        (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
-                        (int)game.Camera.SCALE,
-                        (int)game.Camera.SCALE));
-                }
-            }
-        }
+      
     }
 }
