@@ -66,5 +66,10 @@ namespace OctoAwesome
         {
             return new Vector2(v1.X / scale, v1.Y / scale);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}/{1}", X.ToString("0.000"), Y.ToString("0.000"));
+        }
     }
 }
