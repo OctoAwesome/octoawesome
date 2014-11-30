@@ -18,9 +18,7 @@ namespace OctoAwesome.Model
         {
             get
             {
-                return new Vector2(
-                    Map.Columns * Map.CELLSIZE,
-                    Map.Rows * Map.CELLSIZE);
+                return new Vector2(Map.Columns, Map.Rows);
             }
         }
 
