@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using OctoAwesome.Model;
+using OctoAwesome.Components;
 
 namespace OctoAwesome
 {
@@ -21,6 +22,8 @@ namespace OctoAwesome
 
         private readonly Game game;
         private readonly Image grass;
+        private readonly Image sand;
+        private readonly Image water;
         private readonly Image sprite;
 
         public RenderControl(Game game)
@@ -31,7 +34,9 @@ namespace OctoAwesome
 
             game.Camera.SetRenderSize(new Vector2(ClientSize.Width, ClientSize.Height));
 
-            grass = Image.FromFile("Assets/grass.png");
+            grass = Image.FromFile("Assets/grass_center.png");
+            sand = Image.FromFile("Assets/sand_center.png");
+            water = Image.FromFile("Assets/water_center.png");
             sprite = Image.FromFile("Assets/sprite.png");
 
             watch.Start();
@@ -50,106 +55,97 @@ namespace OctoAwesome
         {
             e.Graphics.Clear(Color.FromArgb(63, 25, 0));
 
-            int cellX1 = Math.Max(0, (int)(game.Camera.ViewPort.X / Map.CELLSIZE));
-            int cellY1 = Math.Max(0, (int)(game.Camera.ViewPort.Y / Map.CELLSIZE));
+            if (game == null)
+                return;
 
-            int cellCountX = (ClientSize.Width / grass.Width) + 2;
-            int cellCountY = (ClientSize.Height / grass.Height) + 2;
+            int cellX1 = Math.Max(0, (int)(game.Camera.ViewPort.X / game.Camera.SCALE));
+            int cellY1 = Math.Max(0, (int)(game.Camera.ViewPort.Y / game.Camera.SCALE));
 
-            int cellX2 = Math.Min(cellX1 + cellCountX, (int)(game.PlaygroundSize.X / grass.Width));
-            int cellY2 = Math.Min(cellY1 + cellCountY, (int)(game.PlaygroundSize.Y / grass.Height));
+            int cellCountX = (int)(ClientSize.Width / game.Camera.SCALE) + 2;
+            int cellCountY = (int)(ClientSize.Height / game.Camera.SCALE) + 2;
+
+            int cellX2 = Math.Min(cellX1 + cellCountX, (int)(game.PlaygroundSize.X));
+            int cellY2 = Math.Min(cellY1 + cellCountY, (int)(game.PlaygroundSize.Y));
 
             for (int x = cellX1; x < cellX2; x++)
             {
                 for (int y = cellY1; y < cellY2; y++)
                 {
-                    switch (game.Map.GetCell(x,y))
+                    switch (game.Map.GetCell(x, y))
                     {
                         case CellType.Gras:
-                            e.Graphics.DrawImage(grass, new Point(
-                                (int)(x * grass.Width - game.Camera.ViewPort.X),
-                                (int)(y * grass.Height - game.Camera.ViewPort.Y)));
+                            e.Graphics.DrawImage(grass, new Rectangle(
+                                (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
+                                (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
+                                (int)game.Camera.SCALE,
+                                (int)game.Camera.SCALE));
                             break;
                         case CellType.Sand:
-                            using (SolidBrush sandBrush = new SolidBrush(Color.SandyBrown))
-                            {
-                                e.Graphics.FillRectangle(sandBrush, new Rectangle(
-                                    (int)(x * grass.Width - game.Camera.ViewPort.X),
-                                    (int)(y * grass.Height - game.Camera.ViewPort.Y),
-                                    Map.CELLSIZE,
-                                    Map.CELLSIZE));
-                            }
+                            e.Graphics.DrawImage(sand, new Rectangle(
+                                (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
+                                (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
+                                (int)game.Camera.SCALE,
+                                (int)game.Camera.SCALE));
                             break;
                         case CellType.Water:
-                            using (SolidBrush waterBrush = new SolidBrush(Color.Blue))
-                            {
-                                e.Graphics.FillRectangle(waterBrush, new Rectangle(
-                                    (int)(x * grass.Width - game.Camera.ViewPort.X),
-                                    (int)(y * grass.Height - game.Camera.ViewPort.Y),
-                                    Map.CELLSIZE,
-                                    Map.CELLSIZE));
-                            }
+                            e.Graphics.DrawImage(water, new Rectangle(
+                                (int)(x * game.Camera.SCALE - game.Camera.ViewPort.X),
+                                (int)(y * game.Camera.SCALE - game.Camera.ViewPort.Y),
+                                (int)game.Camera.SCALE,
+                                (int)game.Camera.SCALE));
                             break;
                     }
-
-                    
                 }
             }
 
-            if (game == null)
-                return;
+            int frame = (int)((watch.ElapsedMilliseconds / 250) % 4);
 
-            using (Brush brush = new SolidBrush(Color.White))
+            int offsetx = 0;
+            if (game.Player.State == PlayerState.Walk)
             {
-                int frame = (int)((watch.ElapsedMilliseconds / 250) % 4);
-
-                int offsetx = 0;
-                if (game.Player.State == PlayerState.Walk)
+                switch (frame)
                 {
-                    switch (frame)
-                    {
-                        case 0: offsetx = 0; break;
-                        case 1: offsetx = SPRITE_WIDTH; break;
-                        case 2: offsetx = 2 * SPRITE_WIDTH; break;
-                        case 3: offsetx = SPRITE_WIDTH; break;
-                    }
+                    case 0: offsetx = 0; break;
+                    case 1: offsetx = SPRITE_WIDTH; break;
+                    case 2: offsetx = 2 * SPRITE_WIDTH; break;
+                    case 3: offsetx = SPRITE_WIDTH; break;
                 }
-                else
-                {
-                    offsetx = SPRITE_WIDTH;
-                }
-
-                // Umrechung in Grad
-                float direction = (game.Player.Angle * 360f) / (float)(2 * Math.PI);
-
-                // In positiven Bereich
-                direction += 180;
-
-                // Offset
-                direction += 45;
-
-                int sector = (int)(direction / 90);
-
-                int offsety = 0;
-                switch (sector)
-                {
-                    case 1: offsety = 3 * SPRITE_HEIGHT; break;
-                    case 2: offsety = 2 * SPRITE_HEIGHT; break;
-                    case 3: offsety = 0 * SPRITE_HEIGHT; break;
-                    case 4: offsety = 1 * SPRITE_HEIGHT; break;
-                }
-
-                Point spriteCenter = new Point(27, 48);
-
-                e.Graphics.DrawImage(sprite,
-                    new RectangleF(
-                        game.Player.Position.X - game.Camera.ViewPort.X - spriteCenter.X,
-                        game.Player.Position.Y - game.Camera.ViewPort.Y - spriteCenter.Y, SPRITE_WIDTH, SPRITE_HEIGHT), 
-                    new RectangleF(offsetx, offsety, SPRITE_WIDTH, SPRITE_HEIGHT), 
-                    GraphicsUnit.Pixel);
-
-                // e.Graphics.FillEllipse(brush, new Rectangle(Game.Position.X, Game.Position.Y, 100, 100));
             }
+            else
+            {
+                offsetx = SPRITE_WIDTH;
+            }
+
+            // Umrechung in Grad
+            float direction = (game.Player.Angle * 360f) / (float)(2 * Math.PI);
+
+            // In positiven Bereich
+            direction += 180;
+
+            // Offset
+            direction += 45;
+
+            int sector = (int)(direction / 90);
+
+            int offsety = 0;
+            switch (sector)
+            {
+                case 1: offsety = 3 * SPRITE_HEIGHT; break;
+                case 2: offsety = 2 * SPRITE_HEIGHT; break;
+                case 3: offsety = 0 * SPRITE_HEIGHT; break;
+                case 4: offsety = 1 * SPRITE_HEIGHT; break;
+            }
+
+            Point spriteCenter = new Point(27, 48);
+
+            e.Graphics.DrawImage(sprite,
+                new RectangleF(
+                    (game.Player.Position.X * game.Camera.SCALE) - game.Camera.ViewPort.X - spriteCenter.X,
+                    (game.Player.Position.Y * game.Camera.SCALE) - game.Camera.ViewPort.Y - spriteCenter.Y, SPRITE_WIDTH, SPRITE_HEIGHT),
+                new RectangleF(offsetx, offsety, SPRITE_WIDTH, SPRITE_HEIGHT),
+                GraphicsUnit.Pixel);
+
+            // e.Graphics.FillEllipse(brush, new Rectangle(Game.Position.X, Game.Position.Y, 100, 100));
         }
     }
 }

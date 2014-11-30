@@ -11,8 +11,6 @@ namespace OctoAwesome.Model
     [Serializable]
     public sealed class Map
     {
-        public const int CELLSIZE = 100;
-
         public int Columns { get; set; }
 
         public int Rows { get; set; }
