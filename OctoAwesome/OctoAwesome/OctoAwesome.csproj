@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Input.cs" />
+    <Compile Include="Model\BoxItem.cs" />
     <Compile Include="Model\CellCache.cs" />
     <Compile Include="Model\CellTypeDefintion.cs" />
     <Compile Include="Model\Game.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\IHaveInventory.cs" />
+    <Compile Include="Model\InventoryItem.cs" />
     <Compile Include="Model\Item.cs" />
     <Compile Include="Model\TreeItem.cs" />
     <Compile Include="Model\Map.cs" />
@@ -107,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\grass_center.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\box.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\sand_left.png">

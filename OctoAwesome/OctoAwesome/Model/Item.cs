@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 
 namespace OctoAwesome.Model
 {
+    [XmlInclude(typeof(BoxItem))]
     [XmlInclude(typeof(TreeItem))]
     public abstract class Item
     {
