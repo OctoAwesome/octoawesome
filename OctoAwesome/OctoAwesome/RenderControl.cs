@@ -96,64 +96,67 @@ namespace OctoAwesome
                 }
             }
 
-            foreach (var treeItem in game.Map.TreeItems.OrderBy(t => t.Position.Y))
+            foreach (var item in game.Map.Items.OrderBy(t => t.Position.Y))
             {
-                e.Graphics.DrawImage(tree, new Rectangle(
-                                (int)(treeItem.Position.X * game.Camera.SCALE - game.Camera.ViewPort.X) - 30,
-                                (int)(treeItem.Position.X * game.Camera.SCALE - game.Camera.ViewPort.Y) - 118,
-                                (int)game.Camera.SCALE,
-                                (int)game.Camera.SCALE * 2));
-            }
-
-            int frame = (int)((watch.ElapsedMilliseconds / 250) % 4);
-
-            int offsetx = 0;
-            if (game.Player.State == PlayerState.Walk)
-            {
-                switch (frame)
+                if (item is TreeItem)
                 {
-                    case 0: offsetx = 0; break;
-                    case 1: offsetx = SPRITE_WIDTH; break;
-                    case 2: offsetx = 2 * SPRITE_WIDTH; break;
-                    case 3: offsetx = SPRITE_WIDTH; break;
+                    e.Graphics.DrawImage(tree, new Rectangle(
+                                    (int)(item.Position.X * game.Camera.SCALE - game.Camera.ViewPort.X) - 30,
+                                    (int)(item.Position.Y * game.Camera.SCALE - game.Camera.ViewPort.Y) - 118,
+                                    (int)game.Camera.SCALE,
+                                    (int)game.Camera.SCALE * 2));
+                }
+
+                if (item is Player)
+                {
+                    int frame = (int)((watch.ElapsedMilliseconds / 250) % 4);
+
+                    int offsetx = 0;
+                    if (game.Player.State == PlayerState.Walk)
+                    {
+                        switch (frame)
+                        {
+                            case 0: offsetx = 0; break;
+                            case 1: offsetx = SPRITE_WIDTH; break;
+                            case 2: offsetx = 2 * SPRITE_WIDTH; break;
+                            case 3: offsetx = SPRITE_WIDTH; break;
+                        }
+                    }
+                    else
+                    {
+                        offsetx = SPRITE_WIDTH;
+                    }
+
+                    // Umrechung in Grad
+                    float direction = (game.Player.Angle * 360f) / (float)(2 * Math.PI);
+
+                    // In positiven Bereich
+                    direction += 180;
+
+                    // Offset
+                    direction += 45;
+
+                    int sector = (int)(direction / 90);
+
+                    int offsety = 0;
+                    switch (sector)
+                    {
+                        case 1: offsety = 3 * SPRITE_HEIGHT; break;
+                        case 2: offsety = 2 * SPRITE_HEIGHT; break;
+                        case 3: offsety = 0 * SPRITE_HEIGHT; break;
+                        case 4: offsety = 1 * SPRITE_HEIGHT; break;
+                    }
+
+                    Point spriteCenter = new Point(27, 48);
+
+                    e.Graphics.DrawImage(sprite,
+                        new RectangleF(
+                            (game.Player.Position.X * game.Camera.SCALE) - game.Camera.ViewPort.X - spriteCenter.X,
+                            (game.Player.Position.Y * game.Camera.SCALE) - game.Camera.ViewPort.Y - spriteCenter.Y, SPRITE_WIDTH, SPRITE_HEIGHT),
+                        new RectangleF(offsetx, offsety, SPRITE_WIDTH, SPRITE_HEIGHT),
+                        GraphicsUnit.Pixel);
                 }
             }
-            else
-            {
-                offsetx = SPRITE_WIDTH;
-            }
-
-            // Umrechung in Grad
-            float direction = (game.Player.Angle * 360f) / (float)(2 * Math.PI);
-
-            // In positiven Bereich
-            direction += 180;
-
-            // Offset
-            direction += 45;
-
-            int sector = (int)(direction / 90);
-
-            int offsety = 0;
-            switch (sector)
-            {
-                case 1: offsety = 3 * SPRITE_HEIGHT; break;
-                case 2: offsety = 2 * SPRITE_HEIGHT; break;
-                case 3: offsety = 0 * SPRITE_HEIGHT; break;
-                case 4: offsety = 1 * SPRITE_HEIGHT; break;
-            }
-
-            Point spriteCenter = new Point(27, 48);
-
-            e.Graphics.DrawImage(sprite,
-                new RectangleF(
-                    (game.Player.Position.X * game.Camera.SCALE) - game.Camera.ViewPort.X - spriteCenter.X,
-                    (game.Player.Position.Y * game.Camera.SCALE) - game.Camera.ViewPort.Y - spriteCenter.Y, SPRITE_WIDTH, SPRITE_HEIGHT),
-                new RectangleF(offsetx, offsety, SPRITE_WIDTH, SPRITE_HEIGHT),
-                GraphicsUnit.Pixel);
-
-            // e.Graphics.FillEllipse(brush, new Rectangle(Game.Position.X, Game.Position.Y, 100, 100));
-        }
-      
+        }      
     }
 }

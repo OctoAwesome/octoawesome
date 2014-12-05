@@ -33,6 +33,7 @@ namespace OctoAwesome.Model
             // Map = Map.Generate(20, 20, CellType.Gras);
             Map = Map.Load(@"Assets/test.map");
             Player = new Player(input, Map);
+            Map.Items.Add(Player);
             Camera = new Camera(this, input);
 
             cellTypes = new Dictionary<CellType, CellTypeDefintion>();

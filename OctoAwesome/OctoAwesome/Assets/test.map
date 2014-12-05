@@ -1604,4 +1604,138 @@
     <CellType>Gras</CellType>
     <CellType>Gras</CellType>
   </Cells>
+  <Items>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>7.5</X>
+        <Y>6.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>5.5</X>
+        <Y>10.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>4.5</X>
+        <Y>16.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>11.5</X>
+        <Y>14.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>17.5</X>
+        <Y>10.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>23.5</X>
+        <Y>4.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>30.5</X>
+        <Y>2.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>34.5</X>
+        <Y>10.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>36.5</X>
+        <Y>18.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>29.5</X>
+        <Y>22.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>26.5</X>
+        <Y>17.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>4.5</X>
+        <Y>5.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>8.5</X>
+        <Y>10.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>8.5</X>
+        <Y>13.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>8.5</X>
+        <Y>16.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>13.5</X>
+        <Y>18.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>15.5</X>
+        <Y>13.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>13.5</X>
+        <Y>8.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>13.5</X>
+        <Y>5.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>17.5</X>
+        <Y>2.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>24.5</X>
+        <Y>2.5</Y>
+      </Position>
+    </Item>
+    <Item xsi:type="TreeItem">
+      <Position>
+        <X>9.5</X>
+        <Y>2.5</Y>
+      </Position>
+    </Item>
+  </Items>
 </Map>
