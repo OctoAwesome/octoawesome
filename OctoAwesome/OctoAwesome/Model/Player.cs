@@ -14,7 +14,7 @@ namespace OctoAwesome.Model
 
         private Map map;
 
-        public readonly float MAXSPEED = 5f;
+        public readonly float MAXSPEED = 2f;
 
         public Vector2 Position { get; set; }
 
