@@ -83,6 +83,13 @@ namespace OctoAwesome.Model
         }
 
         #endregion
+
+        #region Cache
+
+        [XmlIgnore]
+        internal CellCache[,] CellCache { get; set; }
+
+        #endregion
     }
 
     public enum CellType
