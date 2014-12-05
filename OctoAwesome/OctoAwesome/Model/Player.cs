@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Model
 {
-    internal sealed class Player : Item
+    internal sealed class Player : Item, IHaveInventory
     {
         private Input input;
 
@@ -24,6 +24,10 @@ namespace OctoAwesome.Model
 
         public PlayerState State { get; private set; }
 
+        public IHaveInventory InteractionPartner { get; set; }
+
+        public List<InventoryItem> InventoryItems { get; private set; }
+
         public Player(Input input, Map map)
         {
             this.input = input;
@@ -31,13 +35,14 @@ namespace OctoAwesome.Model
             Position = new Vector2(0, 0);
             Velocity = new Vector2(0, 0);
             Radius = 0.1f;
+            InventoryItems = new List<InventoryItem>();
         }
 
         public void Update(TimeSpan frameTime)
         {
             // Bewegungsrichtung laut Input
             Velocity = new Vector2(
-                (input.Left ? -1f : 0f) + (input.Right ? 1f : 0f), 
+                (input.Left ? -1f : 0f) + (input.Right ? 1f : 0f),
                 (input.Up ? -1f : 0f) + (input.Down ? 1f : 0f));
 
             // Bewegungsberechnung
@@ -50,6 +55,40 @@ namespace OctoAwesome.Model
             else
             {
                 State = PlayerState.Idle;
+            }
+
+            // Interaktion überprüfen
+            if (input.Interact && InteractionPartner == null)
+            {
+                int cellX = (int)Position.X;
+                int cellY = (int)Position.Y;
+
+                // Umrechung in Grad
+                float direction = (Angle * 360f) / (float)(2 * Math.PI);
+                direction += 180;
+                direction += 45;
+                int sector = (int)(direction / 90);
+
+                switch (sector)
+                {
+                    case 1: // oben
+                        cellY -= 1;
+                        break;
+                    case 2: // rechts
+                        cellX += 1;
+                        break;
+                    case 3: // unten
+                        cellY += 1;
+                        break;
+                    case 4: // links
+                        cellX -= 1;
+                        break;
+                }
+
+                InteractionPartner = map.Items.
+                    Where(i => (int)i.Position.X == cellX && (int)i.Position.Y == cellY).
+                    OfType<IHaveInventory>().
+                    FirstOrDefault();
             }
         }
     }

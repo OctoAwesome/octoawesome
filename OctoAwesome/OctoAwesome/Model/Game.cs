@@ -10,8 +10,6 @@ namespace OctoAwesome.Model
 {
     internal sealed class Game
     {
-        private Input input;
-
         private Dictionary<CellType, CellTypeDefintion> cellTypes;
 
         public Camera Camera { get; private set; }
@@ -30,7 +28,6 @@ namespace OctoAwesome.Model
 
         public Game(Input input)
         {
-            // Map = Map.Generate(20, 20, CellType.Gras);
             Map = Map.Load(@"Assets/test.map");
             Player = new Player(input, Map);
             Camera = new Camera(this, input);

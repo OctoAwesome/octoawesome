@@ -17,6 +17,8 @@ namespace OctoAwesome.Components
 
         public bool Down { get; private set; }
 
+        public bool Interact { get; private set; }
+
         public Input()
         {
         }
@@ -37,6 +39,9 @@ namespace OctoAwesome.Components
                 case Keys.Down:
                     Down = true;
                     break;
+                case Keys.Space:
+                    Interact = true;
+                    break;
             }
         }
 
@@ -55,6 +60,9 @@ namespace OctoAwesome.Components
                     break;
                 case Keys.Down:
                     Down = false;
+                    break;
+                case Keys.Space:
+                    Interact = false;
                     break;
             }
 
