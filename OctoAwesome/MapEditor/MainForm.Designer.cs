@@ -35,17 +35,20 @@
             this.newMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.smallMapMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mediumMapMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.closeMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.timer = new System.Windows.Forms.Timer(this.components);
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.cellPositionLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.grasButton = new System.Windows.Forms.ToolStripButton();
             this.sandButton = new System.Windows.Forms.ToolStripButton();
             this.waterButton = new System.Windows.Forms.ToolStripButton();
-            this.loadMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.treeButton = new System.Windows.Forms.ToolStripButton();
+            this.deleteButton = new System.Windows.Forms.ToolStripButton();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.cellPositionLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.renderControl = new MapEditor.RenderControl();
@@ -81,7 +84,7 @@
             this.smallMapMenu,
             this.mediumMapMenu});
             this.newMenu.Name = "newMenu";
-            this.newMenu.Size = new System.Drawing.Size(152, 22);
+            this.newMenu.Size = new System.Drawing.Size(109, 22);
             this.newMenu.Text = "New";
             // 
             // smallMapMenu
@@ -98,15 +101,30 @@
             this.mediumMapMenu.Text = "40 x 40";
             this.mediumMapMenu.Click += new System.EventHandler(this.mediumMapMenu_Click);
             // 
+            // loadMenu
+            // 
+            this.loadMenu.Name = "loadMenu";
+            this.loadMenu.Size = new System.Drawing.Size(109, 22);
+            this.loadMenu.Text = "Load...";
+            this.loadMenu.Click += new System.EventHandler(this.loadMenu_Click);
+            // 
+            // saveMenu
+            // 
+            this.saveMenu.Enabled = false;
+            this.saveMenu.Name = "saveMenu";
+            this.saveMenu.Size = new System.Drawing.Size(109, 22);
+            this.saveMenu.Text = "Save...";
+            this.saveMenu.Click += new System.EventHandler(this.saveMenu_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(106, 6);
             // 
             // closeMenu
             // 
             this.closeMenu.Name = "closeMenu";
-            this.closeMenu.Size = new System.Drawing.Size(152, 22);
+            this.closeMenu.Size = new System.Drawing.Size(109, 22);
             this.closeMenu.Text = "Close";
             // 
             // toolStrip
@@ -114,33 +132,15 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.grasButton,
             this.sandButton,
-            this.waterButton});
+            this.waterButton,
+            this.toolStripSeparator1,
+            this.treeButton,
+            this.deleteButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(849, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip1";
-            // 
-            // timer
-            // 
-            this.timer.Interval = 40;
-            this.timer.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cellPositionLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 423);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(849, 22);
-            this.statusStrip1.TabIndex = 3;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // cellPositionLabel
-            // 
-            this.cellPositionLabel.Name = "cellPositionLabel";
-            this.cellPositionLabel.Size = new System.Drawing.Size(33, 17);
-            this.cellPositionLabel.Text = "[cell]";
             // 
             // grasButton
             // 
@@ -174,20 +174,51 @@
             this.waterButton.Text = "Water";
             this.waterButton.Click += new System.EventHandler(this.waterButton_Click);
             // 
-            // loadMenu
+            // toolStripSeparator1
             // 
-            this.loadMenu.Name = "loadMenu";
-            this.loadMenu.Size = new System.Drawing.Size(152, 22);
-            this.loadMenu.Text = "Load...";
-            this.loadMenu.Click += new System.EventHandler(this.loadMenu_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // saveMenu
+            // treeButton
             // 
-            this.saveMenu.Enabled = false;
-            this.saveMenu.Name = "saveMenu";
-            this.saveMenu.Size = new System.Drawing.Size(152, 22);
-            this.saveMenu.Text = "Save...";
-            this.saveMenu.Click += new System.EventHandler(this.saveMenu_Click);
+            this.treeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.treeButton.Image = ((System.Drawing.Image)(resources.GetObject("treeButton.Image")));
+            this.treeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.treeButton.Name = "treeButton";
+            this.treeButton.Size = new System.Drawing.Size(34, 22);
+            this.treeButton.Text = "Tree";
+            this.treeButton.Click += new System.EventHandler(this.treeButton_Click);
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.deleteButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteButton.Image")));
+            this.deleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(44, 22);
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            // 
+            // timer
+            // 
+            this.timer.Interval = 40;
+            this.timer.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cellPositionLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 423);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(849, 22);
+            this.statusStrip1.TabIndex = 3;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // cellPositionLabel
+            // 
+            this.cellPositionLabel.Name = "cellPositionLabel";
+            this.cellPositionLabel.Size = new System.Drawing.Size(33, 17);
+            this.cellPositionLabel.Text = "[cell]";
             // 
             // openFileDialog
             // 
@@ -258,6 +289,9 @@
         private System.Windows.Forms.ToolStripMenuItem saveMenu;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton treeButton;
+        private System.Windows.Forms.ToolStripButton deleteButton;
     }
 }
 
