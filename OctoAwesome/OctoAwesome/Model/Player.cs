@@ -36,6 +36,7 @@ namespace OctoAwesome.Model
             Velocity = new Vector2(0, 0);
             Radius = 0.1f;
             InventoryItems = new List<InventoryItem>();
+            InventoryItems.Add(new InventoryItem() { Name = "Apfel" });
         }
 
         public void Update(TimeSpan frameTime)
