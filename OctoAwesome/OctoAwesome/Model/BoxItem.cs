@@ -13,6 +13,8 @@ namespace OctoAwesome.Model
         public BoxItem()
         {
             InventoryItems = new List<InventoryItem>();
+
+            InventoryItems.Add(new InventoryItem() { Name = "Diamant" });
         }
     }
 }
