@@ -17,7 +17,7 @@ namespace OctoAwesome.Components
 
         public bool Down { get; private set; }
 
-        public bool Interact { get; private set; }
+        public bool Interact { get; set; }
 
         public Input()
         {

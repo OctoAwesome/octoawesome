@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Model
 {
-    interface IHaveInventory
+    public interface IHaveInventory
     {
         List<InventoryItem> InventoryItems { get; }
     }
