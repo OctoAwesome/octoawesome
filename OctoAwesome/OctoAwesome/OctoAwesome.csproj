@@ -51,6 +51,12 @@
   <ItemGroup>
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Input.cs" />
+    <Compile Include="InventoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InventoryForm.Designer.cs">
+      <DependentUpon>InventoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\BoxItem.cs" />
     <Compile Include="Model\CellCache.cs" />
     <Compile Include="Model\CellTypeDefintion.cs" />
@@ -77,6 +83,9 @@
     </Compile>
     <Compile Include="Rendering\CellTypeRenderer.cs" />
     <Compile Include="Vector2.cs" />
+    <EmbeddedResource Include="InventoryForm.resx">
+      <DependentUpon>InventoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -19,10 +19,12 @@ namespace OctoAwesome
         private Game game;
         private Stopwatch watch = new Stopwatch();
         private RenderControl renderControl;
+        private InventoryForm inventory;
 
         public MainForm()
         {
             InitializeComponent();
+            inventory = new InventoryForm();
 
             game = new Game(input);
 
@@ -47,8 +49,18 @@ namespace OctoAwesome
 
             if (game.Player.InteractionPartner != null)
             {
-                MessageBox.Show("Hurra");
-                game.Player.InteractionPartner = null;
+                if (!inventory.Visible) 
+                {
+                    inventory.Show();
+                    inventory.Init(game.Player, game.Player.InteractionPartner);
+                }
+            }
+            else
+            {
+                if (inventory.Visible)
+                {
+                    inventory.Hide();
+                }
             }
         }
 
