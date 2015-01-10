@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Model
 {
-    internal class CellCache
+    public class CellCache
     {
         public CellType CellType { get; set; }
 

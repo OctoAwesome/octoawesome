@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Model
 {
-    internal sealed class Game
+    public sealed class World
     {
         private Dictionary<CellType, CellTypeDefintion> cellTypes;
 
@@ -25,7 +25,7 @@ namespace OctoAwesome.Model
 
         public Player Player { get; private set; }
 
-        public Game(InputComponent input)
+        public World(IInputSet input)
         {
             Map = Map.Load(@"Assets/test.map");
             Player = new Player(input, Map);

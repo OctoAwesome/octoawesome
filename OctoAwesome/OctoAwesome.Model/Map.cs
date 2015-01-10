@@ -89,7 +89,7 @@ namespace OctoAwesome.Model
         #region Cache
 
         [XmlIgnore]
-        internal CellCache[,] CellCache { get; set; }
+        public CellCache[,] CellCache { get; set; }
 
         #endregion
     }
