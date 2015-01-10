@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OctoAwesome.Components
 {
-    public class Input2 : GameComponent
+    internal sealed class InputComponent : GameComponent
     {
         public bool Left { get; private set; }
 
@@ -19,7 +19,7 @@ namespace OctoAwesome.Components
 
         public bool Interact { get; set; }
 
-        public Input2(Game game) : base(game)
+        public InputComponent(Game game) : base(game)
         {
         }
 

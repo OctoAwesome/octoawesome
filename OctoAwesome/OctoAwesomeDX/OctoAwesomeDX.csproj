@@ -42,8 +42,10 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Components\Camera.cs" />
-    <Compile Include="Components\Input2.cs" />
+    <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\InputComponent.cs" />
+    <Compile Include="Components\RenderComponent.cs" />
+    <Compile Include="Components\WorldComponent.cs" />
     <Compile Include="Model\BoxItem.cs" />
     <Compile Include="Model\CellCache.cs" />
     <Compile Include="Model\CellTypeDefintion.cs" />
