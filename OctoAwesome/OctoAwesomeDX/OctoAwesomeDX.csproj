@@ -43,19 +43,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\GamePadInput.cs" />
     <Compile Include="Components\InputComponent.cs" />
+    <Compile Include="Components\KeyboardInput.cs" />
     <Compile Include="Components\RenderComponent.cs" />
     <Compile Include="Components\WorldComponent.cs" />
-    <Compile Include="Model\BoxItem.cs" />
-    <Compile Include="Model\CellCache.cs" />
-    <Compile Include="Model\CellTypeDefintion.cs" />
-    <Compile Include="Model\Game.cs" />
-    <Compile Include="Model\IHaveInventory.cs" />
-    <Compile Include="Model\InventoryItem.cs" />
-    <Compile Include="Model\Item.cs" />
-    <Compile Include="Model\Map.cs" />
-    <Compile Include="Model\Player.cs" />
-    <Compile Include="Model\TreeItem.cs" />
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,6 +160,12 @@
     <None Include="Assets\test.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Model\OctoAwesome.Model.csproj">
+      <Project>{4b4ee9ae-5492-425b-bd42-813caa6587e8}</Project>
+      <Name>OctoAwesome.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
