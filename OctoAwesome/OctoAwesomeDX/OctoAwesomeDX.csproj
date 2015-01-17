@@ -46,6 +46,7 @@
     <Compile Include="Components\GamePadInput.cs" />
     <Compile Include="Components\InputComponent.cs" />
     <Compile Include="Components\KeyboardInput.cs" />
+    <Compile Include="Components\Render3DComponent.cs" />
     <Compile Include="Components\RenderComponent.cs" />
     <Compile Include="Components\WorldComponent.cs" />
     <Compile Include="OctoGame.cs" />

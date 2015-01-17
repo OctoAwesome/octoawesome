@@ -19,6 +19,7 @@ namespace OctoAwesomeDX
         CameraComponent camera;
         InputComponent input;
         RenderComponent render;
+        Render3DComponent render3d;
         WorldComponent world;
 
         public OctoGame()
@@ -39,9 +40,13 @@ namespace OctoAwesomeDX
             camera.UpdateOrder = 3;
             Components.Add(camera);
 
-            render = new RenderComponent(this, world, camera);
-            render.DrawOrder = 1;
-            Components.Add(render);
+            //render = new RenderComponent(this, world, camera);
+            //render.DrawOrder = 1;
+            //Components.Add(render);
+
+            render3d = new Render3DComponent(this);
+            render3d.DrawOrder = 1;
+            Components.Add(render3d);
         }
     }
 }
