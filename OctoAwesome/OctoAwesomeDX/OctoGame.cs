@@ -48,7 +48,7 @@ namespace OctoAwesomeDX
             //render.DrawOrder = 1;
             //Components.Add(render);
 
-            render3d = new Render3DComponent(this);
+            render3d = new Render3DComponent(this, world);
             render3d.DrawOrder = 1;
             Components.Add(render3d);
         }
