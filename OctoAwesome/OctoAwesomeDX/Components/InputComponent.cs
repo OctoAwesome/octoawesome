@@ -27,7 +27,7 @@ namespace OctoAwesome.Components
             : base(game)
         {
             gamepad = new GamePadInput();
-            keyboard = new KeyboardInput()
+            keyboard = new KeyboardInput();
         }
 
         public override void Update(GameTime gameTime)
@@ -43,11 +43,11 @@ namespace OctoAwesome.Components
             Up = gamepad.Up;
 
             keyboard.Update();
-            nextInteract |= gamepad.Interact;
-            Left |= gamepad.Left;
-            Right |= gamepad.Right;
-            Down |= gamepad.Down;
-            Up |= gamepad.Up;
+            nextInteract |= keyboard.Interact;
+            Left |= keyboard.Left;
+            Right |= keyboard.Right;
+            Down |= keyboard.Down;
+            Up |= keyboard.Up;
 
             if (nextInteract && !lastInteract)
                 Interact = true;
