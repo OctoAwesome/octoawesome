@@ -27,6 +27,10 @@ namespace OctoAwesomeDX
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            this.Window.Title = "OctoAwesome";
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            this.IsMouseVisible = true;            
 
             input = new InputComponent(this);
             input.UpdateOrder = 1;
