@@ -10,19 +10,22 @@ namespace OctoAwesome.Components
     internal sealed class Render3DComponent : DrawableGameComponent
     {
         private WorldComponent world;
+        private Camera3DComponent camera;
 
         private BasicEffect effect;
         private Texture2D grass;
+        private Texture2D sand;
 
         private VertexBuffer vb;
         private IndexBuffer ib;
         private int vertexCount;
         private int indexCount;
 
-        public Render3DComponent(Game game, WorldComponent world)
+        public Render3DComponent(Game game, WorldComponent world, Camera3DComponent camera)
             : base(game)
         {
             this.world = world;
+            this.camera = camera;
         }
 
         protected override void LoadContent()
@@ -63,13 +66,12 @@ namespace OctoAwesome.Components
             ib.SetData<short>(index);
 
             grass = Game.Content.Load<Texture2D>("Textures/grass_center");
+            sand = Game.Content.Load<Texture2D>("Textures/sand_center");
 
             effect = new BasicEffect(GraphicsDevice);
             effect.World = Matrix.Identity;
-            effect.View = Matrix.CreateLookAt(new Vector3(0, 20, 0), Vector3.Zero, Vector3.Forward);
-            effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1f, 10000f);
+            effect.Projection = camera.Projection;
             effect.TextureEnabled = true;
-            effect.Texture = grass;
 
             // effect.EnableDefaultLighting();
             //effect.LightingEnabled = true;
@@ -92,18 +94,43 @@ namespace OctoAwesome.Components
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            GraphicsDevice.RasterizerState.CullMode = CullMode.None;
+            // GraphicsDevice.RasterizerState.CullMode = CullMode.None;
             // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
 
             effect.World = Matrix.Identity;
+            effect.View = camera.View;
             GraphicsDevice.SetVertexBuffer(vb);
             GraphicsDevice.Indices = ib;
 
-            foreach (var pass in effect.CurrentTechnique.Passes)
+            int width = world.World.Map.CellCache.GetLength(0);
+            int height = world.World.Map.CellCache.GetLength(1);
+            for (int z = 0; z < height; z++)
             {
-                pass.Apply();
-                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);
+                for (int x = 0; x < width; x++)
+                {
+                    OctoAwesome.Model.CellCache cell = world.World.Map.CellCache[x, z];
+
+                    switch (cell.CellType)
+                    {
+                        case Model.CellType.Gras:
+                            effect.Texture = grass;
+                            break;
+                        case Model.CellType.Sand:
+                            effect.Texture = sand;
+                            break;
+                    }
+
+                    int indexOffset = ((z * width) + x) * 6;
+
+                    foreach (var pass in effect.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+                        GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, indexOffset, 2);
+                    }
+                }
             }
+
+            
         }
     }
 }
