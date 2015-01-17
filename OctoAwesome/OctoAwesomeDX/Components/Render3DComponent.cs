@@ -31,14 +31,28 @@ namespace OctoAwesome.Components
             effect.World = Matrix.Identity;
             effect.View = Matrix.CreateLookAt(new Vector3(0, 0, 20), Vector3.Zero, Vector3.Up);
             effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1f, 10000f);
-            // effect.VertexColorEnabled = true;
+            effect.VertexColorEnabled = true;
 
             base.LoadContent();
+        }
+
+        float rotY = 0f;
+
+        public override void Update(GameTime gameTime)
+        {
+            rotY += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            GraphicsDevice.RasterizerState.CullMode = CullMode.None;
+            // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
+
+            effect.World = Matrix.CreateRotationY(rotY);
 
             foreach (var pass in effect.CurrentTechnique.Passes)
             {
