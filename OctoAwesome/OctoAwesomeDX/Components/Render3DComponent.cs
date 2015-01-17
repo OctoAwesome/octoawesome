@@ -15,6 +15,7 @@ namespace OctoAwesome.Components
         private BasicEffect effect;
         private Texture2D grass;
         private Texture2D sand;
+        private Texture2D tree;
 
         private VertexBuffer vb;
         private IndexBuffer ib;
@@ -67,6 +68,7 @@ namespace OctoAwesome.Components
 
             grass = Game.Content.Load<Texture2D>("Textures/grass_center");
             sand = Game.Content.Load<Texture2D>("Textures/sand_center");
+            tree = Game.Content.Load<Texture2D>("Textures/tree");
 
             effect = new BasicEffect(GraphicsDevice);
             effect.World = Matrix.Identity;
@@ -93,6 +95,8 @@ namespace OctoAwesome.Components
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
             // GraphicsDevice.RasterizerState.CullMode = CullMode.None;
             // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
@@ -130,7 +134,100 @@ namespace OctoAwesome.Components
                 }
             }
 
-            
+            VertexPositionNormalTexture[] localVertices = new VertexPositionNormalTexture[] 
+            {
+                new VertexPositionNormalTexture(new Vector3(-0.5f, 1, 0), Vector3.Backward, new Vector2(0, 0)),
+                new VertexPositionNormalTexture(new Vector3(0.5f, 1, 0), Vector3.Backward, new Vector2(1, 0)),
+                new VertexPositionNormalTexture(new Vector3(0.5f, 0, 0), Vector3.Backward, new Vector2(1, 1)),
+                new VertexPositionNormalTexture(new Vector3(-0.5f, 1, 0), Vector3.Backward, new Vector2(0, 0)),
+                new VertexPositionNormalTexture(new Vector3(0.5f, 0, 0), Vector3.Backward, new Vector2(1, 1)),
+                new VertexPositionNormalTexture(new Vector3(-0.5f, 0, 0), Vector3.Backward, new Vector2(0, 1)),
+            };
+
+            foreach (var item in world.World.Map.Items.OrderBy(t => t.Position.Y))
+            {
+                if (item is OctoAwesome.Model.TreeItem)
+                {
+                    effect.Texture = tree;
+
+                    localVertices[0].Position = new Vector3(-0.5f, 2, 0);
+                    localVertices[1].Position = new Vector3(0.5f, 2, 0);
+                    localVertices[3].Position = new Vector3(-0.5f, 2, 0);
+
+                    effect.World = Matrix.CreateTranslation(item.Position.X + 0.5f, 0, item.Position.Y + 0.5f);
+
+                    foreach (var pass in effect.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+                        GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, localVertices, 0, 2);
+                    }
+
+                    //spriteBatch.Draw(tree, new Rectangle(
+                    //                (int)(item.Position.X * camera.SCALE - camera.ViewPort.X) - 30,
+                    //                (int)(item.Position.Y * camera.SCALE - camera.ViewPort.Y) - 118,
+                    //                (int)camera.SCALE,
+                    //                (int)camera.SCALE * 2), Color.White);
+                }
+
+                if (item is OctoAwesome.Model.BoxItem)
+                {
+                    //spriteBatch.Draw(box, new Rectangle(
+                    //                (int)(item.Position.X * camera.SCALE - camera.ViewPort.X) - 32,
+                    //                (int)(item.Position.Y * camera.SCALE - camera.ViewPort.Y) - 35,
+                    //                (int)camera.SCALE,
+                    //                (int)camera.SCALE), Color.White);
+                }
+
+                if (item is OctoAwesome.Model.Player)
+                {
+                    //int frame = (int)((gameTime.TotalGameTime.TotalMilliseconds / 250) % 4);
+
+                    //int offsetx = 0;
+                    //if (world.World.Player.State == OctoAwesome.Model.PlayerState.Walk)
+                    //{
+                    //    switch (frame)
+                    //    {
+                    //        case 0: offsetx = 0; break;
+                    //        case 1: offsetx = SPRITE_WIDTH; break;
+                    //        case 2: offsetx = 2 * SPRITE_WIDTH; break;
+                    //        case 3: offsetx = SPRITE_WIDTH; break;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    offsetx = SPRITE_WIDTH;
+                    //}
+
+                    //// Umrechung in Grad
+                    //float direction = (world.World.Player.Angle * 360f) / (float)(2 * Math.PI);
+
+                    //// In positiven Bereich
+                    //direction += 180;
+
+                    //// Offset
+                    //direction += 45;
+
+                    //int sector = (int)(direction / 90);
+
+                    //int offsety = 0;
+                    //switch (sector)
+                    //{
+                    //    case 1: offsety = 3 * SPRITE_HEIGHT; break;
+                    //    case 2: offsety = 2 * SPRITE_HEIGHT; break;
+                    //    case 3: offsety = 0 * SPRITE_HEIGHT; break;
+                    //    case 4: offsety = 1 * SPRITE_HEIGHT; break;
+                    //}
+
+                    //Point spriteCenter = new Point(27, 48);
+
+                    //spriteBatch.Draw(sprite,
+                    //    new Rectangle(
+                    //        ((int)(world.World.Player.Position.X * camera.SCALE) - camera.ViewPort.X - spriteCenter.X),
+                    //        ((int)(world.World.Player.Position.Y * camera.SCALE) - camera.ViewPort.Y - spriteCenter.Y), SPRITE_WIDTH, SPRITE_HEIGHT),
+                    //    new Rectangle(offsetx, offsety, SPRITE_WIDTH, SPRITE_HEIGHT),
+                    //    Color.White);
+                }
+            }
         }
     }
 }

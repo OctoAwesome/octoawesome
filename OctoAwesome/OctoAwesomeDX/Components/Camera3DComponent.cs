@@ -28,9 +28,9 @@ namespace OctoAwesome.Components
         public override void Update(GameTime gameTime)
         {
             View = Matrix.CreateLookAt(
-                new Vector3(world.World.Player.Position.X, 10, world.World.Player.Position.Y), 
+                new Vector3(world.World.Player.Position.X, 10, world.World.Player.Position.Y + 35), 
                 new Vector3(world.World.Player.Position.X, 0, world.World.Player.Position.Y), 
-                Vector3.Forward);
+                Vector3.Up);
         }
 
         public Matrix View { get; private set; }
