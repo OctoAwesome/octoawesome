@@ -48,9 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blocks\GrassBlock.cs" />
+    <Compile Include="Blocks\SandBlock.cs" />
     <Compile Include="BoxItem.cs" />
     <Compile Include="CellCache.cs" />
     <Compile Include="CellTypeDefintion.cs" />
+    <Compile Include="Chunk.cs" />
+    <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="World.cs" />
     <Compile Include="IHaveInventory.cs" />
     <Compile Include="IInputSet.cs" />
