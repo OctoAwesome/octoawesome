@@ -23,11 +23,14 @@ namespace OctoAwesome.Model
 
         public Map Map { get; private set; }
 
+        public Chunk Chunk { get; private set; }
+
         public Player Player { get; private set; }
 
         public World(IInputSet input)
         {
             Map = Map.Load(@"Assets/test.map");
+            Chunk = new Model.Chunk();
             Player = new Player(input, Map);
 
             cellTypes = new Dictionary<CellType, CellTypeDefintion>();
