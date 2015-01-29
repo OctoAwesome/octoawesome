@@ -15,6 +15,15 @@ namespace OctoAwesome.Components
 
         bool Down { get; }
 
+        bool HeadLeft { get; }
+
+        bool HeadRight { get; }
+
+        bool HeadUp { get; }
+
+        bool HeadDown { get; }
+
+
         bool Interact { get; }
     }
 }

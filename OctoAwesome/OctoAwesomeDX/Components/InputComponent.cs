@@ -21,6 +21,14 @@ namespace OctoAwesome.Components
 
         public bool Down { get; private set; }
 
+        public bool HeadLeft { get; private set; }
+
+        public bool HeadRight { get; private set; }
+
+        public bool HeadUp { get; private set; }
+
+        public bool HeadDown { get; private set; }
+
         public bool Interact { get; private set; }
 
         public InputComponent(Game game)
@@ -41,6 +49,11 @@ namespace OctoAwesome.Components
             Right = gamepad.Right;
             Down = gamepad.Down;
             Up = gamepad.Up;
+            HeadLeft = gamepad.HeadLeft;
+            HeadRight = gamepad.HeadRight;
+            HeadDown = gamepad.HeadDown;
+            HeadUp = gamepad.HeadUp;
+
 
             keyboard.Update();
             nextInteract |= keyboard.Interact;
@@ -48,6 +61,10 @@ namespace OctoAwesome.Components
             Right |= keyboard.Right;
             Down |= keyboard.Down;
             Up |= keyboard.Up;
+            HeadLeft |= keyboard.HeadLeft;
+            HeadRight |= keyboard.HeadRight;
+            HeadDown |= keyboard.HeadDown;
+            HeadUp |= keyboard.HeadUp;
 
             if (nextInteract && !lastInteract)
                 Interact = true;

@@ -25,7 +25,12 @@ namespace OctoAwesome.Model
                     for (int x = 0; x < CHUNKSIZE_X; x++)
                     {
                         if (y < 50)
-                            Blocks[x, y, z] = new GrassBlock();
+                        {
+                            if (x % 2 == 0 || y % 2 == 0)
+                                Blocks[x, y, z] = new GrassBlock();
+                            else
+                                Blocks[x, y, z] = new SandBlock();
+                        }
                     }
                 }
             }
