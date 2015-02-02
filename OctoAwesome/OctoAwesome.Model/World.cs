@@ -30,10 +30,10 @@ namespace OctoAwesome.Model
             int cellY = (int)Player.Position.Y;
 
             // Modifikation der Geschwindigkeit
-            Vector2 velocity = Player.Velocity;
+            Vector3 velocity = Player.Velocity;
             // velocity *= cell.VelocityFactor;
 
-            Vector2 newPosition = Player.Position + (velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
+            Vector3 newPosition = Player.Position + (velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
 
             // Block nach links (Kartenrand + nicht begehbare Zellen)
             if (velocity.X < 0)
@@ -44,12 +44,12 @@ namespace OctoAwesome.Model
 
                 if (posLeft < 0)
                 {
-                    newPosition = new Vector2(cellX + Player.Radius, newPosition.Y);
+                    newPosition = new Vector3(cellX + Player.Radius, 0, newPosition.Y);
                 }
 
                 if (cellX < 0)
                 {
-                    newPosition = new Vector2((cellX + 1) + Player.Radius, newPosition.Y);
+                    newPosition = new Vector3((cellX + 1) + Player.Radius, 0, newPosition.Y);
                 }
             }
 
@@ -62,12 +62,12 @@ namespace OctoAwesome.Model
 
                 if (posTop < 0)
                 {
-                    newPosition = new Vector2(newPosition.X, cellY + Player.Radius);
+                    newPosition = new Vector3(newPosition.X,0, cellY + Player.Radius);
                 }
 
                 if (cellY < 0)
                 {
-                    newPosition = new Vector2(newPosition.X, cellY + 1 + Player.Radius);
+                    newPosition = new Vector3(newPosition.X,0, cellY + 1 + Player.Radius);
                 }
             }
 
@@ -79,7 +79,7 @@ namespace OctoAwesome.Model
 
                 if (cellX >= Chunk.CHUNKSIZE_X)
                 {
-                    newPosition = new Vector2(cellX - Player.Radius, newPosition.Y);
+                    newPosition = new Vector3(cellX - Player.Radius,0, newPosition.Y);
                 }
             }
 
@@ -91,7 +91,7 @@ namespace OctoAwesome.Model
 
                 if (cellY >= Chunk.CHUNKSIZE_Y)
                 {
-                    newPosition = new Vector2(newPosition.X, cellY - Player.Radius);
+                    newPosition = new Vector3(newPosition.X,0, cellY - Player.Radius);
                 }
             }
 
