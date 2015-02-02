@@ -51,9 +51,6 @@
   <ItemGroup>
     <Compile Include="Blocks\GrassBlock.cs" />
     <Compile Include="Blocks\SandBlock.cs" />
-    <Compile Include="BoxItem.cs" />
-    <Compile Include="CellCache.cs" />
-    <Compile Include="CellTypeDefintion.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -66,10 +63,8 @@
     <Compile Include="IInputSet.cs" />
     <Compile Include="InventoryItem.cs" />
     <Compile Include="Item.cs" />
-    <Compile Include="Map.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TreeItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
