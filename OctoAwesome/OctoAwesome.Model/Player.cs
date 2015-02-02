@@ -19,6 +19,8 @@ namespace OctoAwesome.Model
 
         public float Angle { get; private set; }
 
+        public bool OnGround { get; set; }
+
         public float Tilt { get; private set; }
 
         public PlayerState State { get; private set; }
@@ -30,10 +32,11 @@ namespace OctoAwesome.Model
         public Player(IInputSet input)
         {
             this.input = input;
-            Position = new Vector3(0, 0, 0);
+            Position = new Vector3(0, 50, 0);
             Velocity = new Vector3(0, 0, 0);
             Radius = 0.1f;
             Angle = 0f;
+            Mass = 100;
             InventoryItems = new List<InventoryItem>();
             InventoryItems.Add(new InventoryItem() { Name = "Apfel" });
         }
@@ -44,27 +47,34 @@ namespace OctoAwesome.Model
 
             float lookX = (float)Math.Cos(Angle);
             float lookY = (float)Math.Sin(Angle);
-
-            Velocity = new Vector3(lookX, 0, lookY) * input.MoveY;
-
+            // Velocity = new Vector3(lookX, 0, lookY) * input.MoveY;
             float stafeX = (float)Math.Cos(Angle + MathHelper.PiOver2);
             float stafeY = (float)Math.Sin(Angle + MathHelper.PiOver2);
+            // Velocity += new Vector3(stafeX, 0, stafeY) * input.MoveX;
 
-            Velocity += new Vector3(stafeX, 0, stafeY) * input.MoveX;
+            Vector3 force = new Vector3();
+            force += new Vector3(lookX, 0, lookY) * input.MoveY;
+            force += new Vector3(stafeX, 0, stafeY) * input.MoveX;
+            force -= Velocity * 0.7f;
+            force += new Vector3(0, -10, 0);
 
             Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * input.HeadY;
             Tilt = Math.Min(MathHelper.PiOver4, Math.Max(-MathHelper.PiOver4, Tilt));
 
+            Vector3 acceleration = force / Mass;
+
+            Velocity += acceleration * (float)frameTime.ElapsedGameTime.TotalSeconds;
+
             // Bewegungsberechnung
-            if (Velocity.Length() > 0f)
-            {
-                Velocity *= MAXSPEED;
-                State = PlayerState.Walk;
-            }
-            else
-            {
-                State = PlayerState.Idle;
-            }
+            //if (Velocity.Length() > 0f)
+            //{
+            //    Velocity *= MAXSPEED;
+            //    State = PlayerState.Walk;
+            //}
+            //else
+            //{
+            //    State = PlayerState.Idle;
+            //}
 
             int cellX = (int)Position.X;
             int cellY = (int)Position.Y;
