@@ -27,7 +27,7 @@ namespace OctoAwesome.Model
 
             // Ermittlung der Oberflächenbeschaffenheit
             int cellX = (int)Player.Position.X;
-            int cellY = (int)Player.Position.Y;
+            int cellZ = (int)Player.Position.Z;
 
             // Modifikation der Geschwindigkeit
             Vector3 velocity = Player.Velocity;
@@ -40,34 +40,34 @@ namespace OctoAwesome.Model
             {
                 float posLeft = newPosition.X - Player.Radius;
                 cellX = (int)posLeft;
-                cellY = (int)Player.Position.Y;
+                cellZ = (int)Player.Position.Z;
 
                 if (posLeft < 0)
                 {
-                    newPosition = new Vector3(cellX + Player.Radius, 0, newPosition.Y);
+                    newPosition = new Vector3(cellX + Player.Radius, newPosition.Y, newPosition.Z);
                 }
 
                 if (cellX < 0)
                 {
-                    newPosition = new Vector3((cellX + 1) + Player.Radius, 0, newPosition.Y);
+                    newPosition = new Vector3((cellX + 1) + Player.Radius, newPosition.Y, newPosition.Z);
                 }
             }
 
             // Block nach oben (Kartenrand + nicht begehbare Zellen)
-            if (velocity.Y < 0)
+            if (velocity.Z < 0)
             {
-                float posTop = newPosition.Y - Player.Radius;
+                float posTop = newPosition.Z - Player.Radius;
                 cellX = (int)Player.Position.X;
-                cellY = (int)posTop;
+                cellZ = (int)posTop;
 
                 if (posTop < 0)
                 {
-                    newPosition = new Vector3(newPosition.X,0, cellY + Player.Radius);
+                    newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ + Player.Radius);
                 }
 
-                if (cellY < 0)
+                if (cellZ < 0)
                 {
-                    newPosition = new Vector3(newPosition.X,0, cellY + 1 + Player.Radius);
+                    newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ + 1 + Player.Radius);
                 }
             }
 
@@ -75,23 +75,37 @@ namespace OctoAwesome.Model
             {
                 float posRight = newPosition.X + Player.Radius;
                 cellX = (int)posRight;
-                cellY = (int)Player.Position.Y;
+                cellZ = (int)Player.Position.Z;
 
                 if (cellX >= Chunk.CHUNKSIZE_X)
                 {
-                    newPosition = new Vector3(cellX - Player.Radius,0, newPosition.Y);
+                    newPosition = new Vector3(cellX - Player.Radius, newPosition.Y, newPosition.Z);
                 }
             }
 
-            if (velocity.Y > 0)
+            if (velocity.Z > 0)
             {
-                float posBottom = newPosition.Y + Player.Radius;
+                float posBottom = newPosition.Z + Player.Radius;
                 cellX = (int)Player.Position.X;
-                cellY = (int)posBottom;
+                cellZ = (int)posBottom;
 
-                if (cellY >= Chunk.CHUNKSIZE_Y)
+                if (cellZ >= Chunk.CHUNKSIZE_Z)
                 {
-                    newPosition = new Vector3(newPosition.X,0, cellY - Player.Radius);
+                    newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ - Player.Radius);
+                }
+            }
+
+            Player.OnGround = false;
+            if (velocity.Y < 0)
+            {
+                if (newPosition.Y < 50)
+                {
+                    newPosition.Y = 50;
+                    Player.OnGround = true;
+                }
+                else
+                {
+                    
                 }
             }
 
