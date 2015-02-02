@@ -12,7 +12,9 @@ namespace OctoAwesome.Components
         public float MoveY { get; private set; }
         public float HeadX { get; private set; }
         public float HeadY { get; private set; }
-        public bool Interact { get; private set; }
+        public bool InteractTrigger { get; private set; }
+        public bool JumpTrigger { get; private set; }
+
 
         public void Update()
         {
@@ -22,7 +24,8 @@ namespace OctoAwesome.Components
             MoveY = 0f;
             HeadX = 0f;
             HeadY = 0f;
-            Interact = keyboardState.IsKeyDown(Keys.Space);
+            InteractTrigger = keyboardState.IsKeyDown(Keys.E);
+            JumpTrigger = keyboardState.IsKeyDown(Keys.Space);
             MoveX -= (keyboardState.IsKeyDown(Keys.A) ? 1 : 0);
             MoveX += (keyboardState.IsKeyDown(Keys.D) ? 1 : 0);
             MoveY -= (keyboardState.IsKeyDown(Keys.S) ? 1 : 0);

@@ -29,8 +29,8 @@ namespace OctoAwesome.Components
             CameraPosition = new Vector3(world.World.Player.Position.X, 51, world.World.Player.Position.Y);
             CameraUpVector = Vector3.Up;
 
-            float height = (float)Math.Sin(world.World.Player.Jaw);
-            float distance = (float)Math.Cos(world.World.Player.Jaw);
+            float height = (float)Math.Sin(world.World.Player.Tilt);
+            float distance = (float)Math.Cos(world.World.Player.Tilt);
 
             float lookX = (float)Math.Cos(world.World.Player.Angle) * distance;
             float lookY = (float)Math.Sin(world.World.Player.Angle) * distance;
