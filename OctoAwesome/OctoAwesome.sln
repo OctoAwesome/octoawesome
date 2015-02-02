@@ -3,32 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapEditor", "MapEditor\MapEditor.csproj", "{0B2CC010-A2A4-4A10-955F-37127E184C4E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesomeDX", "OctoAwesomeDX\OctoAwesomeDX.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Model", "OctoAwesome.Model\OctoAwesome.Model.csproj", "{4B4EE9AE-5492-425B-BD42-813CAA6587E8}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs02
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = OctoAwesome\\OctoAwesome.csproj
-		SccProjectName1 = OctoAwesome
-		SccLocalPath1 = OctoAwesome
-		SccProjectUniqueName2 = MapEditor\\MapEditor.csproj
-		SccProjectName2 = MapEditor
-		SccLocalPath2 = MapEditor
-		SccProjectUniqueName3 = OctoAwesomeDX\\OctoAwesomeDX.csproj
-		SccProjectName3 = OctoAwesomeDX
-		SccLocalPath3 = OctoAwesomeDX
-		SccProjectUniqueName4 = OctoAwesome.Model\\OctoAwesome.Model.csproj
-		SccProjectName4 = OctoAwesome.Model
-		SccLocalPath4 = OctoAwesome.Model
+		SccProjectUniqueName1 = OctoAwesomeDX\\OctoAwesomeDX.csproj
+		SccProjectName1 = OctoAwesomeDX
+		SccLocalPath1 = OctoAwesomeDX
+		SccProjectUniqueName2 = OctoAwesome.Model\\OctoAwesome.Model.csproj
+		SccProjectName2 = OctoAwesome.Model
+		SccLocalPath2 = OctoAwesome.Model
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,26 +29,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7009C3AC-6CDB-4A02-8D6D-FB4B22DA8DD6}.Release|x86.ActiveCfg = Release|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0B2CC010-A2A4-4A10-955F-37127E184C4E}.Release|x86.ActiveCfg = Release|Any CPU
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Debug|Mixed Platforms.Build.0 = Debug|x86
