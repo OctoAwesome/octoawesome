@@ -7,22 +7,13 @@ namespace OctoAwesome.Components
 {
     public interface IInputSet
     {
-        bool Left { get; }
+        float MoveX { get; }
 
-        bool Right { get; }
+        float MoveY { get; }
 
-        bool Up { get; }
+        float HeadX { get; }
 
-        bool Down { get; }
-
-        bool HeadLeft { get; }
-
-        bool HeadRight { get; }
-
-        bool HeadUp { get; }
-
-        bool HeadDown { get; }
-
+        float HeadY { get; }
 
         bool Interact { get; }
     }

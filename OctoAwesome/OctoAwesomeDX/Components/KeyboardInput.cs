@@ -8,37 +8,29 @@ namespace OctoAwesome.Components
 {
     internal sealed class KeyboardInput : IInputSet
     {
-        public bool Left { get; private set; }
-
-        public bool Right { get; private set; }
-
-        public bool Up { get; private set; }
-
-        public bool Down { get; private set; }
-
-        public bool HeadLeft { get; private set; }
-
-        public bool HeadRight { get; private set; }
-
-        public bool HeadUp { get; private set; }
-
-        public bool HeadDown { get; private set; }
-
+        public float MoveX { get; private set; }
+        public float MoveY { get; private set; }
+        public float HeadX { get; private set; }
+        public float HeadY { get; private set; }
         public bool Interact { get; private set; }
 
         public void Update()
         {
             KeyboardState keyboardState = Keyboard.GetState();
 
+            MoveX = 0f;
+            MoveY = 0f;
+            HeadX = 0f;
+            HeadY = 0f;
             Interact = keyboardState.IsKeyDown(Keys.Space);
-            Left = keyboardState.IsKeyDown(Keys.A);
-            Right = keyboardState.IsKeyDown(Keys.D);
-            Up = keyboardState.IsKeyDown(Keys.W);
-            Down = keyboardState.IsKeyDown(Keys.S);
-            HeadLeft = keyboardState.IsKeyDown(Keys.Left);
-            HeadRight = keyboardState.IsKeyDown(Keys.Right);
-            HeadUp = keyboardState.IsKeyDown(Keys.Up);
-            HeadDown = keyboardState.IsKeyDown(Keys.Down);
+            MoveX -= (keyboardState.IsKeyDown(Keys.A) ? 1 : 0);
+            MoveX += (keyboardState.IsKeyDown(Keys.D) ? 1 : 0);
+            MoveY -= (keyboardState.IsKeyDown(Keys.S) ? 1 : 0);
+            MoveY += (keyboardState.IsKeyDown(Keys.W) ? 1 : 0);
+            HeadX -= (keyboardState.IsKeyDown(Keys.Left) ? 1 : 0);
+            HeadX += (keyboardState.IsKeyDown(Keys.Right) ? 1 : 0);
+            HeadY -= (keyboardState.IsKeyDown(Keys.Up) ? 1 : 0);
+            HeadY += (keyboardState.IsKeyDown(Keys.Down) ? 1 : 0);
         }
     }
 }
