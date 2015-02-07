@@ -30,10 +30,11 @@ namespace OctoAwesome.Model
             int cellZ = (int)Player.Position.Z;
 
             // Modifikation der Geschwindigkeit
-            Vector3 velocity = Player.Velocity;
+            Player.Velocity += Player.Mass * new Vector3(0, -5f, 0) * (float)frameTime.ElapsedGameTime.TotalSeconds;
+
             // velocity *= cell.VelocityFactor;
 
-            Vector3 newPosition = Player.Position + (velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
+            Vector3 newPosition = Player.Position + (Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
 
             // Block nach links (Kartenrand + nicht begehbare Zellen)
             //if (velocity.X < 0)
@@ -96,11 +97,12 @@ namespace OctoAwesome.Model
             //}
 
             Player.OnGround = false;
-            if (velocity.Y < 0)
+            if (Player.Velocity.Y < 0)
             {
                 if (newPosition.Y < 50)
                 {
                     newPosition.Y = 50;
+                    Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
                     Player.OnGround = true;
                 }
                 else
