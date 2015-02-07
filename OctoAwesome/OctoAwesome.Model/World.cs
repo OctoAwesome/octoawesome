@@ -36,64 +36,64 @@ namespace OctoAwesome.Model
             Vector3 newPosition = Player.Position + (velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
 
             // Block nach links (Kartenrand + nicht begehbare Zellen)
-            if (velocity.X < 0)
-            {
-                float posLeft = newPosition.X - Player.Radius;
-                cellX = (int)posLeft;
-                cellZ = (int)Player.Position.Z;
+            //if (velocity.X < 0)
+            //{
+            //    float posLeft = newPosition.X - Player.Radius;
+            //    cellX = (int)posLeft;
+            //    cellZ = (int)Player.Position.Z;
 
-                if (posLeft < 0)
-                {
-                    newPosition = new Vector3(cellX + Player.Radius, newPosition.Y, newPosition.Z);
-                }
+            //    if (posLeft < 0)
+            //    {
+            //        newPosition = new Vector3(cellX + Player.Radius, newPosition.Y, newPosition.Z);
+            //    }
 
-                if (cellX < 0)
-                {
-                    newPosition = new Vector3((cellX + 1) + Player.Radius, newPosition.Y, newPosition.Z);
-                }
-            }
+            //    if (cellX < 0)
+            //    {
+            //        newPosition = new Vector3((cellX + 1) + Player.Radius, newPosition.Y, newPosition.Z);
+            //    }
+            //}
 
-            // Block nach oben (Kartenrand + nicht begehbare Zellen)
-            if (velocity.Z < 0)
-            {
-                float posTop = newPosition.Z - Player.Radius;
-                cellX = (int)Player.Position.X;
-                cellZ = (int)posTop;
+            //// Block nach oben (Kartenrand + nicht begehbare Zellen)
+            //if (velocity.Z < 0)
+            //{
+            //    float posTop = newPosition.Z - Player.Radius;
+            //    cellX = (int)Player.Position.X;
+            //    cellZ = (int)posTop;
 
-                if (posTop < 0)
-                {
-                    newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ + Player.Radius);
-                }
+            //    if (posTop < 0)
+            //    {
+            //        newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ + Player.Radius);
+            //    }
 
-                if (cellZ < 0)
-                {
-                    newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ + 1 + Player.Radius);
-                }
-            }
+            //    if (cellZ < 0)
+            //    {
+            //        newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ + 1 + Player.Radius);
+            //    }
+            //}
 
-            if (velocity.X > 0)
-            {
-                float posRight = newPosition.X + Player.Radius;
-                cellX = (int)posRight;
-                cellZ = (int)Player.Position.Z;
+            //if (velocity.X > 0)
+            //{
+            //    float posRight = newPosition.X + Player.Radius;
+            //    cellX = (int)posRight;
+            //    cellZ = (int)Player.Position.Z;
 
-                if (cellX >= Chunk.CHUNKSIZE_X)
-                {
-                    newPosition = new Vector3(cellX - Player.Radius, newPosition.Y, newPosition.Z);
-                }
-            }
+            //    if (cellX >= Chunk.CHUNKSIZE_X)
+            //    {
+            //        newPosition = new Vector3(cellX - Player.Radius, newPosition.Y, newPosition.Z);
+            //    }
+            //}
 
-            if (velocity.Z > 0)
-            {
-                float posBottom = newPosition.Z + Player.Radius;
-                cellX = (int)Player.Position.X;
-                cellZ = (int)posBottom;
+            //if (velocity.Z > 0)
+            //{
+            //    float posBottom = newPosition.Z + Player.Radius;
+            //    cellX = (int)Player.Position.X;
+            //    cellZ = (int)posBottom;
 
-                if (cellZ >= Chunk.CHUNKSIZE_Z)
-                {
-                    newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ - Player.Radius);
-                }
-            }
+            //    if (cellZ >= Chunk.CHUNKSIZE_Z)
+            //    {
+            //        newPosition = new Vector3(newPosition.X, newPosition.Y, cellZ - Player.Radius);
+            //    }
+            //}
 
             Player.OnGround = false;
             if (velocity.Y < 0)
