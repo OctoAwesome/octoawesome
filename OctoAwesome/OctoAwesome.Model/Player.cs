@@ -44,6 +44,7 @@ namespace OctoAwesome.Model
         public void Update(GameTime frameTime)
         {
             float Power = 50f;
+            float JumpPower = 150000f;
 
             // Input verarbeiten
             Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * input.HeadX;
@@ -58,9 +59,11 @@ namespace OctoAwesome.Model
             float stafeY = (float)Math.Sin(Angle + MathHelper.PiOver2);
             VelocityDirection += new Vector3(stafeX, 0, stafeY) * input.MoveX;
 
-            float Friction = 10;
+            Vector3 Friction = new Vector3(1, 0, 1) * 10f;
 
             Vector3 powerdirection = Power * VelocityDirection;
+            if (input.JumpTrigger)
+                powerdirection += new Vector3(0, JumpPower, 0);
 
             Vector3 VelocityChange = 2.0f / Mass * (powerdirection - Friction * Velocity);
 
