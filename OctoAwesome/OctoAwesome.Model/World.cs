@@ -39,10 +39,11 @@ namespace OctoAwesome.Model
             Vector3 newPosition = Player.Position + (Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
 
             BoundingBox playerBox = new BoundingBox(
-                new Vector3(Player.Position.X - Player.Radius, Player.Position.Y + 4f, Player.Position.Z - Player.Radius),
-                new Vector3(Player.Position.X + Player.Radius, Player.Position.Y, Player.Position.Z + Player.Radius));
+                new Vector3(newPosition.X - Player.Radius, newPosition.Y, newPosition.Z - Player.Radius),
+                new Vector3(newPosition.X + Player.Radius, newPosition.Y + 4f, newPosition.Z + Player.Radius));
 
             int range = 1;
+            Player.OnGround = false;
             for (int z = cellZ - range; z < cellZ + range; z++)
             {
                 for (int y = cellY - range; y < cellY + range; y++)
@@ -62,9 +63,21 @@ namespace OctoAwesome.Model
 
                         foreach (var box in boxes)
                         {
-                            if (playerBox.Intersects(box))
+                            BoundingBox boxx = new BoundingBox(
+                                box.Min + new Vector3(x, y, z),
+                                box.Max + new Vector3(x, y, z));
+                            if (playerBox.Intersects(boxx))
                             {
+                                newPosition.Y = boxx.Max.Y;
+                                Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
+                                Player.OnGround = true;
+                                playerBox = new BoundingBox(
+                                    new Vector3(newPosition.X - Player.Radius, newPosition.Y, newPosition.Z - Player.Radius),
+                                    new Vector3(newPosition.X + Player.Radius, newPosition.Y + 4f, newPosition.Z + Player.Radius));
                             }
+                            ////((this.y + this.height) < (box.y)) ||(this.y > (box.y + box.height)) ||
+                            //if (playerBox.Min.X < box.Min.X && playerBox.Max.X > box.Min.X ||
+                            //    playerBox.Min.X < box.Max.X && playerBox.Max.X > box.Min.X
                         }
                     }
                 }
@@ -130,16 +143,14 @@ namespace OctoAwesome.Model
             //    }
             //}
 
-            Player.OnGround = false;
-            if (Player.Velocity.Y < 0)
-            {
-                if (newPosition.Y < 50)
-                {
-                    newPosition.Y = 50;
-                    Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
-                    Player.OnGround = true;
-                }
-            }
+
+            //if (Player.Velocity.Y < 0)
+            //{
+            //    if (newPosition.Y < 50)
+            //    {
+
+            //    }
+            //}
 
             Player.Position = newPosition;
         }
