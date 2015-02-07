@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using OctoAwesome.Components;
+using OctoAwesome.Model.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,6 +28,7 @@ namespace OctoAwesome.Model
 
             // Ermittlung der Oberflächenbeschaffenheit
             int cellX = (int)Player.Position.X;
+            int cellY = (int)Player.Position.Y;
             int cellZ = (int)Player.Position.Z;
 
             // Modifikation der Geschwindigkeit
@@ -35,6 +37,38 @@ namespace OctoAwesome.Model
             // velocity *= cell.VelocityFactor;
 
             Vector3 newPosition = Player.Position + (Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds);
+
+            BoundingBox playerBox = new BoundingBox(
+                new Vector3(Player.Position.X - Player.Radius, Player.Position.Y + 4f, Player.Position.Z - Player.Radius),
+                new Vector3(Player.Position.X + Player.Radius, Player.Position.Y, Player.Position.Z + Player.Radius));
+
+            int range = 1;
+            for (int z = cellZ - range; z < cellZ + range; z++)
+            {
+                for (int y = cellY - range; y < cellY + range; y++)
+                {
+                    for (int x = cellX - range; x < cellX + range; x++)
+                    {
+                        if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+                            y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+                            z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                            continue;
+
+                        IBlock block = Chunk.Blocks[x, y, z];
+                        if (block == null)
+                            continue;
+
+                        BoundingBox[] boxes = block.GetCollisionBoxes();
+
+                        foreach (var box in boxes)
+                        {
+                            if (playerBox.Intersects(box))
+                            {
+                            }
+                        }
+                    }
+                }
+            }
 
             // Block nach links (Kartenrand + nicht begehbare Zellen)
             //if (velocity.X < 0)
