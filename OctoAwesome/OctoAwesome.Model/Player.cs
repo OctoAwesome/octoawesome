@@ -34,7 +34,7 @@ namespace OctoAwesome.Model
             this.input = input;
             Position = new Vector3(50, 70, 50);
             Velocity = new Vector3(0, 0, 0);
-            Radius = 0.1f;
+            Radius = 0.75f;
             Angle = 0f;
             Mass = 100;
             InventoryItems = new List<InventoryItem>();
