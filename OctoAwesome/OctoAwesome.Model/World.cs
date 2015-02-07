@@ -105,10 +105,6 @@ namespace OctoAwesome.Model
                     Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
                     Player.OnGround = true;
                 }
-                else
-                {
-                    
-                }
             }
 
             Player.Position = newPosition;

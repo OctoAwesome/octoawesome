@@ -20,11 +20,17 @@ namespace OctoAwesome.Model
 
             for (int z = 0; z < CHUNKSIZE_Z; z++)
             {
+                float heightZ = (float)Math.Sin((float)(z * Math.PI) / 25f);
                 for (int y = 0; y < CHUNKSIZE_Y; y++)
                 {
                     for (int x = 0; x < CHUNKSIZE_X; x++)
                     {
-                        if (y < 50)
+                        float heightX = (float)Math.Sin((float)(x * Math.PI) / 25f);
+
+                        float height = (heightX + heightZ) * 5;
+
+
+                        if (y < (int)(50 + height))
                         {
                             if (x % 2 == 0 || y % 2 == 0)
                                 Blocks[x, y, z] = new GrassBlock();
