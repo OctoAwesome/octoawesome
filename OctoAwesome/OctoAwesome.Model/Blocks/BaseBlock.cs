@@ -10,7 +10,7 @@ namespace OctoAwesome.Model.Blocks
     {
         public virtual BoundingBox[] GetCollisionBoxes()
         {
-            return new[] { new BoundingBox(new Vector3(), new Vector3(1, 1, 1)) };
+            return new[] { new BoundingBox(new Vector3(0, 1, 0), new Vector3(1, 0, 1)) };
         }
     }
 }
