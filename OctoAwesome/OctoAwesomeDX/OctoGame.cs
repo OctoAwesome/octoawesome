@@ -30,7 +30,7 @@ namespace OctoAwesomeDX
             this.Window.Title = "OctoAwesome";
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            this.IsMouseVisible = true;
+            this.IsMouseVisible = false;
 
             this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 

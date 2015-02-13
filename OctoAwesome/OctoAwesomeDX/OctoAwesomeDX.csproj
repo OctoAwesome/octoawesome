@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Textures\pix.png" />
     <Content Include="octoawesome.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -75,9 +76,7 @@
       <Name>OctoAwesome.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Textures\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Content\Hud.spritefont" />
   </ItemGroup>
