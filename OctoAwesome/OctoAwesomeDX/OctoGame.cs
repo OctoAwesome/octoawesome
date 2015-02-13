@@ -20,6 +20,7 @@ namespace OctoAwesomeDX
         InputComponent input;
         Render3DComponent render3d;
         WorldComponent world;
+        HudComponent hud;
 
         public OctoGame()
             : base()
@@ -52,6 +53,10 @@ namespace OctoAwesomeDX
             render3d = new Render3DComponent(this, world, egoCamera);
             render3d.DrawOrder = 1;
             Components.Add(render3d);
+
+            hud = new HudComponent(this, world);
+            hud.DrawOrder = 2;
+            Components.Add(hud);
         }
     }
 }
