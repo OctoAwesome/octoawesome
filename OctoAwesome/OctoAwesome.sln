@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesomeDX", "OctoAwesom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Model", "OctoAwesome.Model\OctoAwesome.Model.csproj", "{4B4EE9AE-5492-425B-BD42-813CAA6587E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Noises", "Noise\Noises.csproj", "{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs02
 		SccLocalPath0 = .
@@ -19,6 +21,9 @@ Global
 		SccProjectUniqueName2 = OctoAwesome.Model\\OctoAwesome.Model.csproj
 		SccProjectName2 = OctoAwesome.Model
 		SccLocalPath2 = OctoAwesome.Model
+		SccProjectUniqueName3 = Noise\\Noises.csproj
+		SccProjectName3 = Noise
+		SccLocalPath3 = Noise
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +54,16 @@ Global
 		{4B4EE9AE-5492-425B-BD42-813CAA6587E8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4B4EE9AE-5492-425B-BD42-813CAA6587E8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4B4EE9AE-5492-425B-BD42-813CAA6587E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ED603CB7-688E-4AAF-96E3-9A8A966CFF6B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
