@@ -211,6 +211,7 @@ namespace OctoAwesome.Components
             GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue);
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             // GraphicsDevice.RasterizerState.CullMode = CullMode.None;
             // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
