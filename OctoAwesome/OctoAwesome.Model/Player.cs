@@ -49,7 +49,7 @@ namespace OctoAwesome.Model
             // Input verarbeiten
             Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * input.HeadX;
             Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * input.HeadY;
-            Tilt = Math.Min(MathHelper.PiOver4, Math.Max(-MathHelper.PiOver4, Tilt));
+            Tilt = Math.Min(1.5f, Math.Max(-1.5f, Tilt));
 
             float lookX = (float)Math.Cos(Angle);
             float lookY = (float)Math.Sin(Angle);

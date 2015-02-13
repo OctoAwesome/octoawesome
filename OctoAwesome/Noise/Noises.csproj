@@ -34,9 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OctoAwesome.Model">
-      <HintPath>..\..\..\Octoawesome\OctoAwesome\OctoAwesome.Model\bin\Debug\OctoAwesome.Model.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +47,15 @@
     <Compile Include="INoise.cs" />
     <Compile Include="PerlinNoiseGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Model\OctoAwesome.Model.csproj">
+      <Project>{4b4ee9ae-5492-425b-bd42-813caa6587e8}</Project>
+      <Name>OctoAwesome.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

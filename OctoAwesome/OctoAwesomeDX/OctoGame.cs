@@ -29,7 +29,9 @@ namespace OctoAwesomeDX
             this.Window.Title = "OctoAwesome";
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            this.IsMouseVisible = true;            
+            this.IsMouseVisible = true;
+
+            this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             input = new InputComponent(this);
             input.UpdateOrder = 1;
