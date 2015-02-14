@@ -27,7 +27,6 @@ namespace OctoAwesome.Components
         private int vertexCount;
         private int indexCount;
 
-        private Vector3? selectedBox = null;
         private VertexPositionColor[] selectionLines;
         private short[] selectionIndeces;
 
@@ -229,7 +228,51 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            selectedBox = new Vector3(40, 40, 40);
+            int cellX = (int)world.World.Player.Position.X;
+            int cellY = (int)world.World.Player.Position.Y;
+            int cellZ = (int)world.World.Player.Position.Z;
+
+            int range = 8;
+            Vector3? selected = null;
+            float? bestDistance = null;
+            for (int z = cellZ - range; z < cellZ + range; z++)
+            {
+                for (int y = cellY - range; y < cellY + range; y++)
+                {
+                    for (int x = cellX - range; x < cellX + range; x++)
+                    {
+                        if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+                            y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+                            z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                            continue;
+
+                        IBlock block = world.World.Chunk.Blocks[x, y, z];
+                        if (block == null)
+                            continue;
+
+                        BoundingBox[] boxes = block.GetCollisionBoxes();
+
+                        foreach (var box in boxes)
+                        {
+                            BoundingBox transformedBox = new BoundingBox(
+                                box.Min + new Vector3(x, y, z), 
+                                box.Max + new Vector3(x, y, z));
+
+                            float? distance = camera.PickRay.Intersects(transformedBox);
+                            if (distance.HasValue)
+                            {
+                                if (!bestDistance.HasValue || bestDistance.Value > distance)
+                                {
+                                    bestDistance = distance.Value;
+                                    selected = new Vector3(x, y, z);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            world.SelectedBox = selected;
             base.Update(gameTime);
         }
 
@@ -255,9 +298,9 @@ namespace OctoAwesome.Components
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);
             }
 
-            if (selectedBox.HasValue)
+            if (world.SelectedBox.HasValue)
             {
-                selectionEffect.World = Matrix.CreateTranslation(selectedBox.Value);
+                selectionEffect.World = Matrix.CreateTranslation(world.SelectedBox.Value);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)

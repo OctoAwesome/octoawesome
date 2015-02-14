@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Textures\pix.png" />
+    <Content Include="Copyright.txt" />
     <Content Include="octoawesome.ico" />
   </ItemGroup>
   <ItemGroup>

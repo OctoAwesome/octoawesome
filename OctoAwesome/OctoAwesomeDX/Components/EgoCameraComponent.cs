@@ -44,6 +44,15 @@ namespace OctoAwesome.Components
                 CameraPosition,
                 new Vector3(world.World.Player.Position.X + lookX, world.World.Player.Position.Y + 4f + height, world.World.Player.Position.Z + lookY),
                 CameraUpVector);
+
+            float centerX = GraphicsDevice.Viewport.Width / 2;
+            float centerY = GraphicsDevice.Viewport.Height / 2;
+
+            Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
+            Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View, Matrix.Identity);
+            Vector3 direction = farPoint - nearPoint;
+            direction.Normalize();
+            PickRay = new Ray(nearPoint, direction);
         }
 
         public Vector3 CameraPosition { get; private set; }
@@ -53,5 +62,7 @@ namespace OctoAwesome.Components
         public Matrix View { get; private set; }
 
         public Matrix Projection { get; private set; }
+
+        public Ray PickRay { get; set; }
     }
 }
