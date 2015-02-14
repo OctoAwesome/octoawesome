@@ -18,6 +18,7 @@ namespace OctoAwesome.Components
         private EgoCameraComponent camera;
 
         private BasicEffect effect;
+        private BasicEffect selectionEffect;
 
         private Texture2D blockTextures;
 
@@ -25,6 +26,10 @@ namespace OctoAwesome.Components
         private IndexBuffer ib;
         private int vertexCount;
         private int indexCount;
+
+        private Vector3? selectedBox = null;
+        private VertexPositionColor[] selectionLines;
+        private short[] selectionIndeces;
 
         public Render3DComponent(Game game, WorldComponent world, EgoCameraComponent camera)
             : base(game)
@@ -197,12 +202,34 @@ namespace OctoAwesome.Components
             //effect.DirectionalLight0.Direction = new Vector3(-3, -3, -5);
             //effect.DirectionalLight0.DiffuseColor = Color.Red.ToVector3();
 
+            selectionLines = new[] 
+            {
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+            };
+
+            selectionIndeces = new short[] 
+            { 
+                0, 1, 0, 2, 1, 3, 2, 3,
+                4, 5, 4, 6, 5, 7, 6, 7,
+                0, 4, 1, 5, 2, 6, 3, 7
+            };
+
+            selectionEffect = new BasicEffect(GraphicsDevice);
+            selectionEffect.VertexColorEnabled = true;
 
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
+            selectedBox = new Vector3(40, 40, 40);
             base.Update(gameTime);
         }
 
@@ -226,6 +253,18 @@ namespace OctoAwesome.Components
             {
                 pass.Apply();
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);
+            }
+
+            if (selectedBox.HasValue)
+            {
+                selectionEffect.World = Matrix.CreateTranslation(selectedBox.Value);
+                selectionEffect.View = camera.View;
+                selectionEffect.Projection = camera.Projection;
+                foreach (var pass in selectionEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.LineList, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                }
             }
         }
     }
