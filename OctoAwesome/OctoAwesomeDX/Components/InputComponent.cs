@@ -59,7 +59,7 @@ namespace OctoAwesome.Components
             HeadY += keyboard.HeadY;
 
             // Mouse
-            mouse.Update();
+            // mouse.Update();
             nextInteract |= mouse.InteractTrigger;
             nextJump |= mouse.JumpTrigger;
 
