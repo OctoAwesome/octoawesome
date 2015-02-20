@@ -38,7 +38,7 @@ namespace Noises
         public int Sizefactor { get; set; }
 
 
-        public PerlinNoiseGenerator(int seed, float smoothfactor = 0, float persistance = 0.5f, int octaves = 5, int sizefactor = 75)
+        public PerlinNoiseGenerator(int seed, float smoothfactor = 0, float persistance = 0.25f, int octaves = 3, int sizefactor = 20)
         {
             this.Seed = seed;
             this.Smoothfactor = smoothfactor;
