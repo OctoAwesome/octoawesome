@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Noises;
 
 namespace OctoAwesome.Model
 {
@@ -39,13 +40,14 @@ namespace OctoAwesome.Model
             new Vector3(-1, 0, 0),new Vector3(1, 0, 0),new Vector3(0, 0, -1),new Vector3(0, 0, 1),
         };
 
-        public Chunk Chunk { get; private set; }
+        public ChunkManager ChunkM { get; private set; }
 
         public Player Player { get; private set; }
 
         public World(IInputSet input)
         {
-            Chunk = new Model.Chunk();
+            
+            ChunkM = new ChunkManager(new PerlinNoiseGenerator(100));
             Player = new Player(input);
         }
 
@@ -77,12 +79,20 @@ namespace OctoAwesome.Model
                 int y = (int)(collisionBox.Y + Player.Position.Y + move.Y);
                 int z = (int)(collisionBox.Z + Player.Position.Z + move.Z);
 
-                if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                    y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                    z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                    continue;
+                int chunkX = (int)((Player.Position.X) / Chunk.CHUNKSIZE_X);
+                int chunkZ = (int)((Player.Position.Z) / Chunk.CHUNKSIZE_Z);
 
-                IBlock block = Chunk.Blocks[x, y, z];
+                Chunk chunk = ChunkM.GetChunk(x, 0, z);
+
+
+
+                //if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+                //    y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+                //    z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                //    continue;
+
+                IBlock block = ChunkM.GetBlock(x, y, z);
+
                 if (block == null)
                     continue;
 
