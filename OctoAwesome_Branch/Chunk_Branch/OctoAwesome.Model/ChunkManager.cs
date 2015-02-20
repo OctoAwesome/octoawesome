@@ -19,9 +19,9 @@ namespace OctoAwesome.Model
 
             Chunks = new List<Chunk>();
 
-            for (int x = -5; x < 5; x++)
+            for (int x = -2; x < 2; x++)
             {
-                for (int z = -5; z < 5; z++)
+                for (int z = -2; z < 2; z++)
                 {
                     Chunks.Add(new Chunk(x, 0, z) { Blocks = CreateChunk(x, 0, z) });
                 }
@@ -38,18 +38,19 @@ namespace OctoAwesome.Model
 
             for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
             {
-                float min_noise = (float)Math.Cos((((double)y * Math.PI) / 50d) + Math.PI);
-               // min_noise = 0f;
+                double min_noise = Math.Cos(((y / 50f) * Math.PI) + Math.PI);
 
                 for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                 {
                     for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
                     {
-                    
-                             if ((noise[x, y, z]) > min_noise)
-                            blocks[x, y, z] = new GrassBlock();
-                        //else if ((noise[x, y, z] / 2) < 0.2f)
-                        //    blocks[x, y, z] = new GrassBlock();
+
+                        if (y < 2)
+                        {
+                            blocks[x, y, z] = new SandBlock();
+                            continue;
+                        }
+                        if ((noise[x, y, z]) > 0) blocks[x, y, z] = new GrassBlock();
                     }
                 }
             }
