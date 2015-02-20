@@ -43,7 +43,7 @@ namespace OctoAwesome.Model
 
         public void Update(GameTime frameTime)
         {
-            float Power = 50f;
+            float Power = 500f;
             float JumpPower = 150000f;
 
             // Input verarbeiten

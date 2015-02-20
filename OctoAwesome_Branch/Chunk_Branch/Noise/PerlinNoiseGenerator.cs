@@ -12,19 +12,19 @@ namespace Noises
 
         public int Seed { get; private set;}
 
-        public float[] GetNoise(int x, int width)
+        public float[] GetNoise(int chunk_x, int width)
         {
-            return PerlinNoise(x, width);
+            return PerlinNoise(chunk_x * width, width);
         }
 
-        public float[,] GetNoise2(int x, int y, int width, int heigth)
+        public float[,] GetNoise2(int chunk_x, int chunk_y, int width, int heigth)
         {
-            return PerlinNoise2(x, y, width, heigth);
+            return PerlinNoise2(chunk_x * width, chunk_y * heigth, width, heigth);
         }
 
-        public float[, ,] GetNoise3(int x, int y, int z, int width, int heigth, int depth)
+        public float[, ,] GetNoise3(int chunk_x, int chunk_y, int chunk_z, int width, int heigth, int depth)
         {
-            return PerlinNoise3(x, y, z, width, heigth, depth);
+            return PerlinNoise3(chunk_x * width, chunk_y * heigth, chunk_z * depth, width, heigth, depth);
         }
 
         #endregion
@@ -38,7 +38,7 @@ namespace Noises
         public int Sizefactor { get; set; }
 
 
-        public PerlinNoiseGenerator(int seed, float smoothfactor = 0, float persistance = 0.5f, int octaves = 5, int sizefactor = 10)
+        public PerlinNoiseGenerator(int seed, float smoothfactor = 0, float persistance = 0.5f, int octaves = 5, int sizefactor = 75)
         {
             this.Seed = seed;
             this.Smoothfactor = smoothfactor;
@@ -123,113 +123,6 @@ namespace Noises
 
         #endregion
 
-        #region SmoothedNoise
-
-        public float SmoothedNoise(int x)
-        {
-            if (Smoothfactor == 0) return Noise(x);
-
-            return Noise(x) * ((Noise(x + 1) - Noise(x - 1)) / Smoothfactor);
-        }
-
-        public float SmoothedNoise2(int x, int y)
-        {
-
-            if (Smoothfactor == 0) return Noise2(x,y);
-
-            float sides = (Noise2(x + 1, y) + Noise2(x - 1, y) + Noise2(x, y + 1) + Noise2(x, y - 1)) / (4 * Smoothfactor);
-            float corners = (Noise2(x + 1, y + 1) + Noise2(x - 1, y - 1) + Noise2(x - 1, y + 1) + Noise2(x + 1, y - 1)) / (4 * (float)Math.Sqrt(2) * Smoothfactor);
-            float center = Noise2(x, y) / (2 * Smoothfactor);
-
-            return center + sides + corners;
-
-        }
-
-        public float SmoothedNoise3(int x, int y, int z)
-        {
-
-            if (Smoothfactor == 0) return Noise3(x, y,z);
-
-            float directSides = (Noise3(x + 1, y, z) + Noise3(x - 1, y, z) + Noise3(x, y + 1, z) + Noise3(x, y - 1, z) + Noise3(x, y, z - 1) + Noise3(x, y, z + 1)) / (6 * Smoothfactor);
-            
-            float indirectSides = (Noise3(x + 1, y + 1, z) + Noise3(x - 1, y - 1, z) + Noise3(x - 1, y + 1, z) + Noise3(x + 1, y - 1, z) +
-                                   Noise3(x + 1, y, z - 1) + Noise3(x - 1, y, z - 1) + Noise3(x, y + 1, z - 1) + Noise3(x, y - 1, z - 1) +
-                                   Noise3(x + 1, y, z + 1) + Noise3(x - 1, y, z + 1) + Noise3(x, y + 1, z + 1) + Noise3(x, y - 1, z + 1)) /
-                                   (12 * (float)Math.Sqrt(2) * Smoothfactor);
-
-            float corners = (Noise3(x + 1, y + 1, z - 1) + Noise3(x - 1, y - 1, z - 1) + Noise3(x - 1, y + 1, z - 1) + Noise3(x + 1, y - 1, z - 1) +
-                             Noise3(x + 1, y + 1, z + 1) + Noise3(x - 1, y - 1, z + 1) + Noise3(x - 1, y + 1, z + 1) + Noise3(x + 1, y - 1, z + 1)) / 
-                             (8 * (float)Math.Sqrt(3) * Smoothfactor);
-
-
-            float center = Noise3(x, y, z) / (3 * Smoothfactor);
-
-            return center + directSides + indirectSides + corners;
-
-        }
-
-        #endregion
-
-        #region InterpolatedSNoise
-
-        private float InterpolatedSNoise(float x)
-        {
-
-            int integer_X = (int)x;
-            float fractional_X = x - integer_X;
-
-            float v1 = SmoothedNoise(integer_X);
-            float v2 = SmoothedNoise(integer_X + 1);
-
-
-            return LinearInterpolation(v1,v2,fractional_X);
-        }
-
-        private float InterpolatedSNoise2(float x, float y)
-        {
-
-            int integer_X = (int)x;
-            float fractional_X = x - integer_X;
-
-            int integer_Y = (int)y;
-            float fractional_Y = y - integer_Y;
-
-            float v1 = SmoothedNoise2(integer_X, integer_Y);
-            float v2 = SmoothedNoise2(integer_X + 1, integer_Y);
-            float v3 = SmoothedNoise2(integer_X, integer_Y + 1);
-            float v4 = SmoothedNoise2(integer_X + 1, integer_Y + 1);
-
-
-            return LinearInterpolation2(v1, v2, v3, v4, fractional_X, fractional_Y);
-        }
-
-        private float InterpolatedSNoise3(float x, float y, float z)
-        {
-
-            int integer_X = (int)x;
-            float fractional_X = x - integer_X;
-
-            int integer_Y = (int)y;
-            float fractional_Y = y - integer_Y;
-
-            int integer_Z = (int)z;
-            float fractional_Z = z - integer_Z;
-
-            float v1 = SmoothedNoise3(integer_X, integer_Y, integer_Z);
-            float v2 = SmoothedNoise3(integer_X + 1, integer_Y, integer_Z);
-            float v3 = SmoothedNoise3(integer_X, integer_Y + 1, integer_Z);
-            float v4 = SmoothedNoise3(integer_X + 1, integer_Y + 1, integer_Z);
-
-            float v5 = SmoothedNoise3(integer_X, integer_Y, integer_Z + 1);
-            float v6 = SmoothedNoise3(integer_X + 1, integer_Y, integer_Z + 1);
-            float v7 = SmoothedNoise3(integer_X, integer_Y + 1, integer_Z + 1);
-            float v8 = SmoothedNoise3(integer_X + 1, integer_Y + 1, integer_Z + 1);
-
-            return LinearInterpolation3(v1, v2, v3, v4, v5, v6, v7, v8, fractional_X, fractional_Y, fractional_Z);
-        }
-
-        #endregion
-
         #region InterpolatedNoise
 
         private float InterpolatedNoise(float x)
@@ -290,12 +183,126 @@ namespace Noises
 
         #endregion
 
+        #region SmoothedNoise
+
+        public float SmoothedNoise(int x)
+        {
+            if (Smoothfactor == 0) return Noise(x);
+
+            return Noise(x) * ((Noise(x + 1) - Noise(x - 1)) / Smoothfactor);
+        }
+
+        public float SmoothedNoise2(int x, int y)
+        {
+
+            if (Smoothfactor == 0) return Noise2(x,y);
+
+            float sides = (Noise2(x + 1, y) + Noise2(x - 1, y) + Noise2(x, y + 1) + Noise2(x, y - 1)) / (4 * Smoothfactor);
+            float corners = (Noise2(x + 1, y + 1) + Noise2(x - 1, y - 1) + Noise2(x - 1, y + 1) + Noise2(x + 1, y - 1)) / (4 * (float)Math.Sqrt(2) * Smoothfactor);
+            float center = Noise2(x, y) / (2 * Smoothfactor);
+
+            return center + sides + corners;
+
+        }
+
+        public float SmoothedNoise3(int x, int y, int z)
+        {
+
+            if (Smoothfactor == 0) return Noise3(x, y,z);
+
+            float directSides = (Noise3(x + 1, y, z) + Noise3(x - 1, y, z) + Noise3(x, y + 1, z) + Noise3(x, y - 1, z) + Noise3(x, y, z - 1) + Noise3(x, y, z + 1)) / (6 * Smoothfactor);
+            
+            float indirectSides = (Noise3(x + 1, y + 1, z) + Noise3(x - 1, y - 1, z) + Noise3(x - 1, y + 1, z) + Noise3(x + 1, y - 1, z) +
+                                   Noise3(x + 1, y, z - 1) + Noise3(x - 1, y, z - 1) + Noise3(x, y + 1, z - 1) + Noise3(x, y - 1, z - 1) +
+                                   Noise3(x + 1, y, z + 1) + Noise3(x - 1, y, z + 1) + Noise3(x, y + 1, z + 1) + Noise3(x, y - 1, z + 1)) /
+                                   (12 * (float)Math.Sqrt(2) * Smoothfactor);
+
+            float corners = (Noise3(x + 1, y + 1, z - 1) + Noise3(x - 1, y - 1, z - 1) + Noise3(x - 1, y + 1, z - 1) + Noise3(x + 1, y - 1, z - 1) +
+                             Noise3(x + 1, y + 1, z + 1) + Noise3(x - 1, y - 1, z + 1) + Noise3(x - 1, y + 1, z + 1) + Noise3(x + 1, y - 1, z + 1)) / 
+                             (8 * (float)Math.Sqrt(3) * Smoothfactor);
+
+
+            float center = Noise3(x, y, z) / (3 * Smoothfactor);
+
+            return center + directSides + indirectSides + corners;
+
+        }
+
+        #endregion
+
+        #region InterpolatedSNoise
+
+        private float InterpolatedSNoise(float x)
+        {
+
+            int integer_X = (int)x;
+            if (x < 0) integer_X--;
+            float fractional_X = x - integer_X;
+
+            float v1 = SmoothedNoise(integer_X);
+            float v2 = SmoothedNoise(integer_X + 1);
+
+
+            return LinearInterpolation(v1,v2,fractional_X);
+        }
+
+        private float InterpolatedSNoise2(float x, float y)
+        {
+
+            int integer_X = (int)x;
+            if (x < 0) integer_X--;
+            float fractional_X = x - integer_X;
+
+           
+            int integer_Y = (int)y;
+            if (y < 0) integer_Y--;
+            float fractional_Y = y - integer_Y;
+
+            float v1 = SmoothedNoise2(integer_X, integer_Y);
+            float v2 = SmoothedNoise2(integer_X + 1, integer_Y);
+            float v3 = SmoothedNoise2(integer_X, integer_Y + 1);
+            float v4 = SmoothedNoise2(integer_X + 1, integer_Y + 1);
+
+
+            return LinearInterpolation2(v1, v2, v3, v4, fractional_X, fractional_Y);
+        }
+
+        private float InterpolatedSNoise3(float x, float y, float z)
+        {
+
+            int integer_X = (int)x;
+            if (x < 0) integer_X--;
+            float fractional_X = x - integer_X;
+
+            int integer_Y = (int)y;
+            if (y < 0) integer_Y--;
+            float fractional_Y = y - integer_Y;
+
+            int integer_Z = (int)z;
+            if (z < 0) integer_Z--;
+            float fractional_Z = z - integer_Z;
+
+            float v1 = SmoothedNoise3(integer_X, integer_Y, integer_Z);
+            float v2 = SmoothedNoise3(integer_X + 1, integer_Y, integer_Z);
+            float v3 = SmoothedNoise3(integer_X, integer_Y + 1, integer_Z);
+            float v4 = SmoothedNoise3(integer_X + 1, integer_Y + 1, integer_Z);
+
+            float v5 = SmoothedNoise3(integer_X, integer_Y, integer_Z + 1);
+            float v6 = SmoothedNoise3(integer_X + 1, integer_Y, integer_Z + 1);
+            float v7 = SmoothedNoise3(integer_X, integer_Y + 1, integer_Z + 1);
+            float v8 = SmoothedNoise3(integer_X + 1, integer_Y + 1, integer_Z + 1);
+
+            return LinearInterpolation3(v1, v2, v3, v4, v5, v6, v7, v8, fractional_X, fractional_Y, fractional_Z);
+        }
+
+        #endregion
+
         #region PerlinAlgorithm
 
         public float[] PerlinNoise(int startX, int width)
         {
 
-            float[,] noiseLayers = new float[Octaves, width];
+            float[, ] noiseLayers = new float[Octaves, width];
 
             if (Sizefactor < 1) Sizefactor = 1;
 
@@ -303,26 +310,22 @@ namespace Noises
             for (int i = 0; i < Octaves; i++)
             {
 
-                int frequency = (int)Math.Pow(2, i);
-                float amplitude = (float)Math.Pow(Persistance, Octaves - i);
+                float frequency = (float)Math.Pow(2, i);
+                float amplitude = (float)Math.Pow(Persistance, i);
 
                 for (int x = 0; x < width; x++)
                 {
-                   
-                        noiseLayers[i, x] = InterpolatedSNoise((((float)x) / frequency / Sizefactor) + startX) * amplitude;
-
+                    noiseLayers[i, x] = InterpolatedSNoise(((float)(x + startX) / Sizefactor) * frequency) * amplitude;
                 }
             }
 
             float[] finishLayer = new float[width];
 
             for (int x = 0; x < width; x++)
-            { 
+            {
                 for (int i = 0; i < Octaves; i++)
                 {
-
-               finishLayer[x] += noiseLayers[i, x];
-
+                    finishLayer[x] += noiseLayers[i, x];
                 }
             }
 
@@ -332,7 +335,7 @@ namespace Noises
         public float[,] PerlinNoise2(int startX, int startY, int width, int heigth)
         {
 
-            float[,,] noiseLayers = new float[Octaves, width, heigth];
+            float[, ,] noiseLayers = new float[Octaves, width, heigth];
 
             if (Sizefactor < 1) Sizefactor = 1;
 
@@ -340,21 +343,19 @@ namespace Noises
             for (int i = 0; i < Octaves; i++)
             {
 
-                int frequency = (int)Math.Pow(2, i);
-                float amplitude = (float)Math.Pow(Persistance, Octaves - i);
+                float frequency = (float)Math.Pow(2, i);
+                float amplitude = (float)Math.Pow(Persistance, i);
 
                 for (int x = 0; x < width; x++)
                 {
                     for (int y = 0; y < heigth; y++)
-                    {
-
-                        noiseLayers[i, x, y] = InterpolatedSNoise2((((float)x) / frequency / Sizefactor) + startX, (((float)y) / frequency / Sizefactor) + startY) * amplitude;
-
+                    {                     
+                            noiseLayers[i, x, y] = InterpolatedSNoise2(((float)(x + startX) / Sizefactor) * frequency, ((float)(y + startY) / Sizefactor) * frequency) * amplitude;
                     }
                 }
             }
 
-            float[,] finishLayer = new float[width, heigth];
+            float[, ] finishLayer = new float[width, heigth];
 
             for (int x = 0; x < width; x++)
             {
@@ -362,10 +363,7 @@ namespace Noises
                 {
                     for (int i = 0; i < Octaves; i++)
                     {
-
-
                         finishLayer[x, y] += noiseLayers[i, x, y];
-
                     }
                 }
             }
@@ -378,14 +376,14 @@ namespace Noises
 
             float[,,,] noiseLayers = new float[Octaves, width, heigth, depth];
 
-            if (Sizefactor < 1)Sizefactor = 1;
+            if (Sizefactor < 1) Sizefactor = 1;
 
 
             for (int i = 0; i < Octaves; i++)
             {
 
-                int frequency = (int)Math.Pow(2, i);
-                float amplitude = (float)Math.Pow(Persistance, Octaves - i);
+                float frequency = (float)Math.Pow(2, i);
+                float amplitude = (float)Math.Pow(Persistance, i);
 
                 for (int x = 0; x < width; x++)
                 {
@@ -393,9 +391,7 @@ namespace Noises
                     {
                         for (int z = 0; z < depth; z++)
                         {
-
-                            noiseLayers[i, x, y, z] = InterpolatedSNoise3((((float)x) / frequency / Sizefactor) + startX, (((float)y) / frequency / Sizefactor) + startY, (((float)z) / frequency / Sizefactor) + startZ) * amplitude;
-
+                            noiseLayers[i, x, y, z] = InterpolatedSNoise3(((float)(x + startX) / Sizefactor) * frequency, ((float)(y + startY) / Sizefactor) * frequency, ((float)(z + startZ) / Sizefactor) * frequency) * amplitude;
                         }
                     }
                 }
@@ -410,10 +406,8 @@ namespace Noises
                     for (int z = 0; z < depth; z++)
                     {
                         for (int i = 0; i < Octaves; i++)
-                        {
-                        
+                        {                     
                             finishLayer[x, y, z] += noiseLayers[i, x, y, z];
-
                         }
                     }
                 }
@@ -421,6 +415,22 @@ namespace Noises
 
             return finishLayer;
         }
+
+        public float PerlinNoise3Web(float x, float y, float z) 
+        {
+        
+            float total = 0;
+
+            for (int i = 0; i < Octaves; i++)
+            {
+                float frequency = (float)Math.Pow(2, i);
+                float amplitude = (float)Math.Pow(Persistance, i);
+
+                total += InterpolatedSNoise3(x * frequency, y * frequency, z * frequency) * amplitude;
+            }
+            return total;
+        }
+
 
         //public float[,,] PerlinNoiseTest2(float persistance, int octaves, int sizefactor, int width, int heigth)
         //{

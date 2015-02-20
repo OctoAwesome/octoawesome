@@ -59,126 +59,128 @@ namespace OctoAwesome.Components
             List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
             List<int> index = new List<int>();
 
-            for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
+            foreach (Chunk chunk in world.World.ChunkM.Chunks)
             {
-                for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
+                for (int z = chunk.Chunk_Z * Chunk.CHUNKSIZE_X; z < Chunk.CHUNKSIZE_Z + (chunk.Chunk_Z * Chunk.CHUNKSIZE_Z); z++)
                 {
-                    for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
+                    for (int y = chunk.Chunk_Y * Chunk.CHUNKSIZE_Y; y < Chunk.CHUNKSIZE_Y + (chunk.Chunk_Y * Chunk.CHUNKSIZE_Y); y++)
                     {
-                        if (world.World.Chunk.Blocks[x, y, z] == null)
-                            continue;
+                        for (int x = chunk.Chunk_X * Chunk.CHUNKSIZE_X; x < Chunk.CHUNKSIZE_X + (chunk.Chunk_X * Chunk.CHUNKSIZE_X); x++)
+                        {
+                            if (world.World.ChunkM.GetBlock(x, y, z) == null)
+                                continue;
 
-                        // Textur-Koordinate "berechnen"
-                        Vector2 textureOffset = new Vector2();
-                        Vector2 textureSize = new Vector2(0.49f, 0.49f);
-                        if (world.World.Chunk.Blocks[x, y, z] is GrassBlock)
-                        {
-                            textureOffset = new Vector2(0.005f, 0.005f);
-                        }
-                        else if (world.World.Chunk.Blocks[x, y, z] is SandBlock)
-                        {
-                            textureOffset = new Vector2(0.505f, 0.005f);
-                        }
+                            // Textur-Koordinate "berechnen"
+                            Vector2 textureOffset = new Vector2();
+                            Vector2 textureSize = new Vector2(0.49f, 0.49f);
+                            if (world.World.ChunkM.GetBlock(x, y, z) is GrassBlock)
+                            {
+                                textureOffset = new Vector2(0.005f, 0.005f);
+                            }
+                            else if (world.World.ChunkM.GetBlock(x, y, z) is SandBlock)
+                            {
+                                textureOffset = new Vector2(0.505f, 0.005f);
+                            }
 
-                        // Oben
-                        if (y == Chunk.CHUNKSIZE_Y - 1 || world.World.Chunk.Blocks[x, y + 1, z] == null)
-                        {
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 0), Vector3.Up, textureOffset));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 0), Vector3.Up, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 1), Vector3.Up, new Vector2(textureOffset.X, textureOffset.Y + textureSize.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 1), Vector3.Up, textureOffset + textureSize));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
-                        }
+                            // Oben
+                            if (world.World.ChunkM.GetBlock(x, y + 1, z) == null)
+                            {
+                                int localOffset = vertices.Count;
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 0), Vector3.Up, textureOffset));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 0), Vector3.Up, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 1), Vector3.Up, new Vector2(textureOffset.X, textureOffset.Y + textureSize.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 1), Vector3.Up, textureOffset + textureSize));
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 1);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 2);
+                            }
 
-                        // Links
-                        if (x == 0 || world.World.Chunk.Blocks[x - 1, y, z] == null)
-                        {
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 0), Vector3.Left, textureOffset));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 1), Vector3.Left, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 0), Vector3.Left, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 1), Vector3.Left, textureOffset + textureSize));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
-                        }
+                            // Links
+                            if (world.World.ChunkM.GetBlock(x - 1, y, z) == null)
+                            {
+                                int localOffset = vertices.Count;
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 0), Vector3.Left, textureOffset));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 1), Vector3.Left, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 0), Vector3.Left, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 1), Vector3.Left, textureOffset + textureSize));
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 1);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 2);
+                            }
 
-                        // Vorne
-                        if (z == Chunk.CHUNKSIZE_Z - 1 || world.World.Chunk.Blocks[x, y, z + 1] == null)
-                        {
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 1), Vector3.Forward, textureOffset));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 1), Vector3.Forward, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 1), Vector3.Forward, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 1), Vector3.Forward, textureOffset + textureSize));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
-                        }
+                            // Vorne
+                            if (world.World.ChunkM.GetBlock(x, y, z + 1) == null)
+                            {
+                                int localOffset = vertices.Count;
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 1), Vector3.Forward, textureOffset));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 1), Vector3.Forward, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 1), Vector3.Forward, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 1), Vector3.Forward, textureOffset + textureSize));
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 1);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 2);
+                            }
 
-                        // Rechts
-                        if (x == Chunk.CHUNKSIZE_X - 1 || world.World.Chunk.Blocks[x + 1, y, z] == null)
-                        {
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 1), Vector3.Right, textureOffset));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 0), Vector3.Right, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 1), Vector3.Right, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 0), Vector3.Right, textureOffset + textureSize));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
-                        }
+                            // Rechts
+                            if (world.World.ChunkM.GetBlock(x + 1, y, z) == null)
+                            {
+                                int localOffset = vertices.Count;
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 1), Vector3.Right, textureOffset));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 0), Vector3.Right, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 1), Vector3.Right, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 0), Vector3.Right, textureOffset + textureSize));
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 1);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 2);
+                            }
 
-                        // Hinten
-                        if (z == 0 || world.World.Chunk.Blocks[x, y, z - 1] == null)
-                        {
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 0), Vector3.Backward, textureOffset));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 0), Vector3.Backward, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 0), Vector3.Backward, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 0), Vector3.Backward, textureOffset + textureSize));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
-                        }
+                            // Hinten
+                            if (world.World.ChunkM.GetBlock(x, y, z - 1) == null)
+                            {
+                                int localOffset = vertices.Count;
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 1, z + 0), Vector3.Backward, textureOffset));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 1, z + 0), Vector3.Backward, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 0), Vector3.Backward, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 0), Vector3.Backward, textureOffset + textureSize));
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 1);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 2);
+                            }
 
-                        // Unten
-                        if (y == 0 || world.World.Chunk.Blocks[x, y - 1, z] == null)
-                        {
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 1), Vector3.Down, textureOffset));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 1), Vector3.Down, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 0), Vector3.Down, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
-                            vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 0), Vector3.Down, textureOffset + textureSize));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            // Unten
+                            if (world.World.ChunkM.GetBlock(x, y - 1, z) == null)
+                            {
+                                int localOffset = vertices.Count;
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 1), Vector3.Down, textureOffset));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 1), Vector3.Down, new Vector2(textureOffset.X + textureSize.X, textureOffset.Y)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 0, y + 0, z + 0), Vector3.Down, new Vector2(textureOffset.X, textureOffset.Y + +textureSize.X)));
+                                vertices.Add(new VertexPositionNormalTexture(new Vector3(x + 1, y + 0, z + 0), Vector3.Down, textureOffset + textureSize));
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 1);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 0);
+                                index.Add(localOffset + 3);
+                                index.Add(localOffset + 2);
+                            }
                         }
                     }
                 }
             }
-
             vertexCount = vertices.Count;
             indexCount = index.Count;
 
@@ -228,51 +230,51 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            int cellX = (int)world.World.Player.Position.X;
-            int cellY = (int)world.World.Player.Position.Y;
-            int cellZ = (int)world.World.Player.Position.Z;
+            //int cellX = (int)world.World.Player.Position.X;
+            //int cellY = (int)world.World.Player.Position.Y;
+            //int cellZ = (int)world.World.Player.Position.Z;
 
-            int range = 8;
-            Vector3? selected = null;
-            float? bestDistance = null;
-            for (int z = cellZ - range; z < cellZ + range; z++)
-            {
-                for (int y = cellY - range; y < cellY + range; y++)
-                {
-                    for (int x = cellX - range; x < cellX + range; x++)
-                    {
-                        if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                            y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                            z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                            continue;
+            //int range = 8;
+            //Vector3? selected = null;
+            //float? bestDistance = null;
+            //for (int z = cellZ - range; z < cellZ + range; z++)
+            //{
+            //    for (int y = cellY - range; y < cellY + range; y++)
+            //    {
+            //        for (int x = cellX - range; x < cellX + range; x++)
+            //        {
+            //            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+            //                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+            //                z < 0 || z >= Chunk.CHUNKSIZE_Z)
+            //                continue;
 
-                        IBlock block = world.World.Chunk.Blocks[x, y, z];
-                        if (block == null)
-                            continue;
+            //            IBlock block = world.World.Chunk.Blocks[x, y, z];
+            //            if (block == null)
+            //                continue;
 
-                        BoundingBox[] boxes = block.GetCollisionBoxes();
+            //            BoundingBox[] boxes = block.GetCollisionBoxes();
 
-                        foreach (var box in boxes)
-                        {
-                            BoundingBox transformedBox = new BoundingBox(
-                                box.Min + new Vector3(x, y, z), 
-                                box.Max + new Vector3(x, y, z));
+            //            foreach (var box in boxes)
+            //            {
+            //                BoundingBox transformedBox = new BoundingBox(
+            //                    box.Min + new Vector3(x, y, z), 
+            //                    box.Max + new Vector3(x, y, z));
 
-                            float? distance = camera.PickRay.Intersects(transformedBox);
-                            if (distance.HasValue)
-                            {
-                                if (!bestDistance.HasValue || bestDistance.Value > distance)
-                                {
-                                    bestDistance = distance.Value;
-                                    selected = new Vector3(x, y, z);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            //                float? distance = camera.PickRay.Intersects(transformedBox);
+            //                if (distance.HasValue)
+            //                {
+            //                    if (!bestDistance.HasValue || bestDistance.Value > distance)
+            //                    {
+            //                        bestDistance = distance.Value;
+            //                        selected = new Vector3(x, y, z);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
-            world.SelectedBox = selected;
+            //world.SelectedBox = selected;
             base.Update(gameTime);
         }
 

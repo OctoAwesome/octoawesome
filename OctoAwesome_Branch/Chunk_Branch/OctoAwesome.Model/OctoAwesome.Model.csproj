@@ -54,6 +54,7 @@
     <Compile Include="Blocks\SandBlock.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="Blocks\IBlock.cs" />
+    <Compile Include="ChunkManager.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -78,6 +79,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\sand_center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Noise\Noises.csproj">
+      <Project>{ed603cb7-688e-4aaf-96e3-9a8a966cff6b}</Project>
+      <Name>Noises</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
