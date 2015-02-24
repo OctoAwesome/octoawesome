@@ -19,6 +19,10 @@ namespace OctoAwesome.Components
         private float[] framebuffer;
         private int bufferindex = 0;
 
+        private int framecount = 0;
+        private double seconds = 0;
+        private double lastfps = 0f;
+
         public HudComponent(Game game, WorldComponent world) : base(game)
         {
             this.world = world;
@@ -41,21 +45,42 @@ namespace OctoAwesome.Components
 
         public override void Draw(GameTime gameTime)
         {
+            framecount++;
+            seconds += gameTime.ElapsedGameTime.TotalSeconds;
+            if (framecount == 10)
+            {
+                lastfps = seconds / framecount;
+                framecount = 0;
+                seconds = 0;
+            }
+
             framebuffer[bufferindex++] = (float)gameTime.ElapsedGameTime.TotalSeconds;
             bufferindex %= buffersize;
 
             batch.Begin();
             batch.DrawString(font, "Development Version", new Vector2(5, 5), Color.White);
 
-            string pos = "pos: " + world.World.Player.Position.ToString();
+            string pos = "pos: " + 
+                world.World.Player.Position.X.ToString("0.00") + "/" + 
+                world.World.Player.Position.Y.ToString("0.00") + "/" +
+                world.World.Player.Position.Z.ToString("0.00");
             var size = font.MeasureString(pos);
             batch.DrawString(font, pos, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 5), Color.White);
 
-            string rot = "rot: " + world.World.Player.Angle.ToString("0.00") + " / " + world.World.Player.Tilt.ToString("0.00");
+            float grad = (world.World.Player.Angle / MathHelper.TwoPi) * 360;
+
+            string rot = "rot: " + 
+                (((world.World.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " + 
+                ((world.World.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+
             size = font.MeasureString(rot);
             batch.DrawString(font, rot, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 25), Color.White);
 
-            string fps = "fps: " + (1f / (framebuffer.Sum() / buffersize)).ToString("0.00");
+            //string fps = "fps: " + (1f / (framebuffer.Sum() / buffersize)).ToString("0.00");
+            //size = font.MeasureString(fps);
+            //batch.DrawString(font, fps, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 45), Color.White);
+
+            string fps = "fps: " + (1f / lastfps).ToString("0.00");
             size = font.MeasureString(fps);
             batch.DrawString(font, fps, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 45), Color.White);
 
