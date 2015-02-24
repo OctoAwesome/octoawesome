@@ -163,5 +163,15 @@ namespace OctoAwesome.Model
 
             Player.Position += move;
         }
+
+        public void DeleteBlock(int x, int y, int z)
+        {
+            Chunk.Blocks[x, y, z] = null;
+        }
+
+        public void PutBlock(int x, int y, int z)
+        {
+            Chunk.Blocks[x, y, z] = new GrassBlock();
+        }
     }
 }
