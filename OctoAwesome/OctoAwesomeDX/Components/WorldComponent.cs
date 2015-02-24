@@ -33,7 +33,7 @@ namespace OctoAwesome.Components
             {
                 World.DeleteBlock(
                     (int)SelectedBox.Value.X, 
-                    (int)SelectedBox.Value.Z, 
+                    (int)SelectedBox.Value.Y, 
                     (int)SelectedBox.Value.Z);
                 Dirty = true;
             }
