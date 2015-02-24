@@ -108,29 +108,64 @@ namespace OctoAwesome.Model
                     bool collisionY = (transformedBox.Min.Y < playerBox.Max.Y && transformedBox.Max.Y > playerBox.Min.Y);
                     bool collisionZ = (transformedBox.Min.Z < playerBox.Max.Z && transformedBox.Max.Z > playerBox.Min.Z);
 
-                    float gap = 0.01f;
+                    float gap = 0.1f;
 
                     if (collisionX && collisionY && collisionZ)
                     {
                         // (2) Kollisionszeitpunkt ermitteln
+                        float max = 0f;
+                        Vector3 correctedMove = move;
+                        Vector3 correctedVelocity = Player.Velocity;
+                        bool correctedOnGroud = false;
+
                         float nx = 1f;
                         if (move.X > 0)
                         {
                             float diff = playerBox.Max.X - transformedBox.Min.X;
-                            if (diff < move.X) nx = 1f - (diff / move.X) - gap;
+                            if (diff < move.X)
+                            {
+                                nx = 1f - (diff / move.X) - gap;
+                                if (nx > max)
+                                {
+                                    max = nx;
+                                    correctedMove = new Vector3(move.X * nx, move.Y, move.Z);
+                                    correctedVelocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
+                                    correctedOnGroud = false;
+                                }
+                            }
 
                         }
                         else if (move.X < 0)
                         {
                             float diff = transformedBox.Max.X - playerBox.Min.X;
-                            if (diff < -move.X) nx = 1f - (diff / -move.X) - gap;
+                            if (diff < -move.X)
+                            {
+                                nx = 1f - (diff / -move.X) - gap;
+                                if (nx > max)
+                                {
+                                    max = nx;
+                                    correctedMove = new Vector3(move.X * nx, move.Y, move.Z);
+                                    correctedVelocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
+                                    correctedOnGroud = false;
+                                }
+                            }
                         }
 
                         float ny = 1f;
                         if (move.Y > 0)
                         {
                             float diff = playerBox.Max.Y - transformedBox.Min.Y;
-                            if (diff < move.Y) ny = 1f - (diff / move.Y) - gap;
+                            if (diff < move.Y)
+                            {
+                                ny = 1f - (diff / move.Y) - gap;
+                                if (ny > max)
+                                {
+                                    max = ny;
+                                    correctedMove = new Vector3(move.X, move.Y * ny, move.Z);
+                                    correctedVelocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
+                                    correctedOnGroud = false;
+                                }
+                            }
 
                         }
                         else if (move.Y < 0)
@@ -139,8 +174,13 @@ namespace OctoAwesome.Model
                             if (diff < -move.Y) // TODO: Toleranzfall (kleine Stufe) if (diff < -move.Y + 1.1f)
                             {
                                 ny = 1f - (diff / -move.Y) - gap;
-                                Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
-                                Player.OnGround = true;
+                                if (ny > max)
+                                {
+                                    max = ny;
+                                    correctedMove = new Vector3(move.X, move.Y * ny, move.Z);
+                                    correctedVelocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
+                                    correctedOnGroud = true;
+                                }
                             }
                         }
 
@@ -148,26 +188,50 @@ namespace OctoAwesome.Model
                         if (move.Z > 0)
                         {
                             float diff = playerBox.Max.Z - transformedBox.Min.Z;
-                            if (diff < move.Z) nz = 1f - (diff / move.Z) - gap;
+                            if (diff < move.Z)
+                            {
+                                nz = 1f - (diff / move.Z) - gap;
+                                if (nz > max)
+                                {
+                                    max = nz;
+                                    correctedMove = new Vector3(move.X, move.Y, move.Z * nz);
+                                    correctedVelocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, Player.Velocity.Z);
+                                    correctedOnGroud = false;
+                                }
+                            }
 
                         }
                         else if (move.Z < 0)
                         {
                             float diff = transformedBox.Max.Z - playerBox.Min.Z;
-                            if (diff < -move.Z) nz = 1f - (diff / -move.Z) - gap;
+                            if (diff < -move.Z)
+                            {
+                                nz = 1f - (diff / -move.Z) - gap;
+                                if (nz > max)
+                                {
+                                    max = nz;
+                                    correctedMove = new Vector3(move.X, move.Y, move.Z * nz);
+                                    correctedVelocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, Player.Velocity.Z);
+                                    correctedOnGroud = false;
+                                }
+                            }
                         }
 
-                        // (3) Kollisionsauflösung 
-                        if (nx < ny)
-                        {
-                            if (nx < nz) move = new Vector3(move.X * nx, move.Y, move.Z);
-                            else move = new Vector3(move.X, move.Y, move.Z * nz);
-                        }
-                        else
-                        {
-                            if (ny < nz) move = new Vector3(move.X, move.Y * ny, move.Z);
-                            else move = new Vector3(move.X, move.Y, move.Z * nz);
-                        }
+                        move = correctedMove;
+                        Player.Velocity = correctedVelocity;
+                        Player.OnGround = correctedOnGroud;
+
+                        //// (3) Kollisionsauflösung 
+                        //if (nx < ny)
+                        //{
+                        //    if (nx < nz) move = new Vector3(move.X * nx, move.Y, move.Z);
+                        //    else move = new Vector3(move.X, move.Y, move.Z * nz);
+                        //}
+                        //else
+                        //{
+                        //    if (ny < nz) move = new Vector3(move.X, move.Y * ny, move.Z);
+                        //    else move = new Vector3(move.X, move.Y, move.Z * nz);
+                        //}
                     }
                 }
             }
