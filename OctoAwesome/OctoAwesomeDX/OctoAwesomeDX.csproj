@@ -67,6 +67,7 @@
     <Content Include="Content\Textures\pix.png" />
     <Content Include="Copyright.txt" />
     <Content Include="octoawesome.ico" />
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
