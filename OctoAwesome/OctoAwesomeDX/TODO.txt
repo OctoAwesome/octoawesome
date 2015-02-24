@@ -1,0 +1,36 @@
+﻿Map Layout
+==========
+- Blocks
+  * Textures
+  * Orientierungen
+  * Dynamische Blocks (Wasser, Lava)
+  * Extensibility
+- Chunks
+  * Scrolling
+- Planets
+- Map Generator
+
+Extention Framework
+===================
+- Schnittstellen
+  * Blocks
+  * Map Generators
+  * NPCs
+- DLLs nachladen
+
+Physik
+======
+- Fortbewegung
+- Freier Fall
+- Kollision
+
+
+HUD & UI
+========
+- Controls
+- Screens
+
+Multiplayer
+===========
+- Client/Server Verbindungen
+- Welt-Kapselung
