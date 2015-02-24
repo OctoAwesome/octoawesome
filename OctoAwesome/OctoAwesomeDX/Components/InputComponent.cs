@@ -11,6 +11,7 @@ namespace OctoAwesome.Components
     {
         private bool lastInteract = false;
         private bool lastJump = false;
+        private bool lastApply = false;
         private GamePadInput gamepad;
         private KeyboardInput keyboard;
         private MouseInput mouse;
@@ -20,6 +21,7 @@ namespace OctoAwesome.Components
         public float HeadX { get; private set; }
         public float HeadY { get; private set; }
         public bool InteractTrigger { get; private set; }
+        public bool ApplyTrigger { get; private set; }
         public bool JumpTrigger { get; private set; }
 
         public InputComponent(Game game)
@@ -35,6 +37,7 @@ namespace OctoAwesome.Components
 
             bool nextInteract = false;
             bool nextJump = false;
+            bool nextApply = false;
             MoveX = 0f;
             MoveY = 0f;
             HeadX = 0f;
@@ -42,6 +45,7 @@ namespace OctoAwesome.Components
 
             gamepad.Update();
             nextInteract = gamepad.InteractTrigger;
+            nextApply = gamepad.ApplyTrigger;
             nextJump = gamepad.JumpTrigger;
 
             MoveX += gamepad.MoveX;
@@ -51,6 +55,7 @@ namespace OctoAwesome.Components
 
             keyboard.Update();
             nextInteract |= keyboard.InteractTrigger;
+            nextApply |= keyboard.ApplyTrigger;
             nextJump |= keyboard.JumpTrigger;
 
             MoveX += keyboard.MoveX;
@@ -61,6 +66,7 @@ namespace OctoAwesome.Components
             // Mouse
             // mouse.Update();
             nextInteract |= mouse.InteractTrigger;
+            nextApply |= mouse.ApplyTrigger;
             nextJump |= mouse.JumpTrigger;
 
             MoveX += mouse.MoveX;
@@ -78,6 +84,12 @@ namespace OctoAwesome.Components
             else
                 InteractTrigger = false;
             lastInteract = nextInteract;
+
+            if (nextApply && !lastApply)
+                ApplyTrigger = true;
+            else
+                ApplyTrigger = false;
+            lastApply = nextApply;
 
             if (nextJump && !lastJump)
                 JumpTrigger = true;

@@ -17,6 +17,8 @@ namespace OctoAwesome.Components
 
         bool InteractTrigger { get; }
 
+        bool ApplyTrigger { get; }
+
         bool JumpTrigger { get; }
     }
 }
