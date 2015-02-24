@@ -17,6 +17,7 @@ namespace OctoAwesome.Model
 
         public float Radius { get; private set; }
 
+        // TODO: Angle immer hübsch kürzen
         public float Angle { get; private set; }
 
         public float Height { get; private set; }
