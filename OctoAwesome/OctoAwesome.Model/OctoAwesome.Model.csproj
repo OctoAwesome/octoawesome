@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Axis.cs" />
     <Compile Include="Blocks\BaseBlock.cs" />
     <Compile Include="Blocks\GrassBlock.cs" />
     <Compile Include="Blocks\SandBlock.cs" />
