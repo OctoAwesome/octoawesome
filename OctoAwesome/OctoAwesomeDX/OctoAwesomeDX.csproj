@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\Camera3DComponent.cs" />
+    <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\EgoCameraComponent.cs" />
     <Compile Include="Components\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />

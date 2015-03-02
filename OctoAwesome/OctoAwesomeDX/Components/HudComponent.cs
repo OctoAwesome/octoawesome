@@ -23,7 +23,8 @@ namespace OctoAwesome.Components
         private double seconds = 0;
         private double lastfps = 0f;
 
-        public HudComponent(Game game, WorldComponent world) : base(game)
+        public HudComponent(Game game, WorldComponent world)
+            : base(game)
         {
             this.world = world;
 
@@ -60,17 +61,20 @@ namespace OctoAwesome.Components
             batch.Begin();
             batch.DrawString(font, "Development Version", new Vector2(5, 5), Color.White);
 
-            string pos = "pos: " + 
-                world.World.Player.Position.X.ToString("0.00") + "/" + 
-                world.World.Player.Position.Y.ToString("0.00") + "/" +
-                world.World.Player.Position.Z.ToString("0.00");
+            string pos = "pos: [" +
+                world.World.Player.Position.Block.X.ToString("0") + "/" +
+                world.World.Player.Position.Block.Y.ToString("0.00") + "/" +
+                world.World.Player.Position.Block.Z.ToString("0.00") + "] (" +
+                world.World.Player.Position.Position.X.ToString("0.00") + "/" +
+                world.World.Player.Position.Position.Y.ToString("0.00") + "/" +
+                world.World.Player.Position.Position.Z.ToString("0.00") + ")";
             var size = font.MeasureString(pos);
             batch.DrawString(font, pos, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 5), Color.White);
 
             float grad = (world.World.Player.Angle / MathHelper.TwoPi) * 360;
 
-            string rot = "rot: " + 
-                (((world.World.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " + 
+            string rot = "rot: " +
+                (((world.World.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
                 ((world.World.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
 
             size = font.MeasureString(rot);

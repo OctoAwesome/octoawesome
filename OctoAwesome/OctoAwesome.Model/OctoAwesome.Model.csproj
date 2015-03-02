@@ -55,6 +55,8 @@
     <Compile Include="Blocks\SandBlock.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="Blocks\IBlock.cs" />
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="Index3.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
