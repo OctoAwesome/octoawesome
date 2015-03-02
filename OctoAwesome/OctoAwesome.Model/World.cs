@@ -14,44 +14,6 @@ namespace OctoAwesome.Model
     {
         private readonly float Gap = 0.001f;
 
-        private readonly Vector3[] CollisionOrder = new[] 
-        {
-            new Vector3(0, -5, 0),
-            new Vector3(0, -4, 0),
-            new Vector3(0, -3, 0),
-            new Vector3(0, -2, 0),
-
-            // Block direkt unter dem Player
-            new Vector3(0, -1, 0),
-
-            // Blocks am Boden um den Player
-            new Vector3(-1, -1, -1),new Vector3(1, -1, -1),new Vector3(-1, -1, 1),new Vector3(1, -1, 1),
-            new Vector3(-1, -1, 0),new Vector3(1, -1, 0),new Vector3(0, -1, -1),new Vector3(0, -1, 1),
-
-            // Kollision mit der Decke
-            new Vector3(0, 6, 0),
-            new Vector3(-1, 6, -1),new Vector3(1, 6, -1),new Vector3(-1, 6, 1),new Vector3(1, 6, 1),
-            new Vector3(-1, 6, 0),new Vector3(1, 6, 0),new Vector3(0, 6, -1),new Vector3(0, 6, 1),
-            new Vector3(0, 5, 0),                
-            new Vector3(-1, 5, -1),new Vector3(1, 5, -1),new Vector3(-1, 5, 1),new Vector3(1, 5, 1),
-            new Vector3(-1, 5, 0),new Vector3(1, 5, 0),new Vector3(0, 5, -1),new Vector3(0, 5, 1),
-            new Vector3(0, 4, 0),                
-            new Vector3(-1, -1, -1),new Vector3(1, -1, -1),new Vector3(-1, -1, 1),new Vector3(1, -1, 1),
-            new Vector3(-1, 4, 0),new Vector3(1, 4, 0),new Vector3(0, 4, -1),new Vector3(0, 4, 1),
-            new Vector3(0, 3, 0),                
-            new Vector3(-1, 3, -1),new Vector3(1, 3, -1),new Vector3(-1, 3, 1),new Vector3(1, 3, 1),
-            new Vector3(-1, 3, 0),new Vector3(1, 3, 0),new Vector3(0, 3, -1),new Vector3(0, 3, 1),
-            new Vector3(0, 2, 0),                
-            new Vector3(-1, 2, -1),new Vector3(1, 2, -1),new Vector3(-1, 2, 1),new Vector3(1, 2, 1),
-            new Vector3(-1, 2, 0),new Vector3(1, 2, 0),new Vector3(0, 2, -1),new Vector3(0, 2, 1),
-            new Vector3(0, 1, 0),                
-            new Vector3(-1, 1, -1),new Vector3(1, 1, -1),new Vector3(-1, 1, 1),new Vector3(1, 1, 1),
-            new Vector3(-1, 1, 0),new Vector3(1, 1, 0),new Vector3(0, 1, -1),new Vector3(0, 1, 1),
-            new Vector3(0, 0, 0),                
-            new Vector3(-1, 0, -1),new Vector3(1, 0, -1),new Vector3(-1, 0, 1),new Vector3(1, 0, 1),
-            new Vector3(-1, 0, 0),new Vector3(1, 0, 0),new Vector3(0, 0, -1),new Vector3(0, 0, 1),
-        };
-
         public Chunk Chunk { get; private set; }
 
         public Player Player { get; private set; }
@@ -73,23 +35,23 @@ namespace OctoAwesome.Model
             Player.OnGround = false;
 
             int minx = (int)Math.Min(
-                Player.Position.X - Player.Radius,
-                Player.Position.X - Player.Radius + move.X);
+                Player.Position.AsVector3().X - Player.Radius,
+                Player.Position.AsVector3().X - Player.Radius + move.X);
             int maxx = (int)Math.Max(
-                Player.Position.X + Player.Radius,
-                Player.Position.X + Player.Radius + move.X);
+                Player.Position.AsVector3().X + Player.Radius,
+                Player.Position.AsVector3().X + Player.Radius + move.X);
             int miny = (int)Math.Min(
-                Player.Position.Y,
-                Player.Position.Y + move.Y);
+                Player.Position.AsVector3().Y,
+                Player.Position.AsVector3().Y + move.Y);
             int maxy = (int)Math.Max(
-                Player.Position.Y + Player.Height,
-                Player.Position.Y + Player.Height + move.Y);
+                Player.Position.AsVector3().Y + Player.Height,
+                Player.Position.AsVector3().Y + Player.Height + move.Y);
             int minz = (int)Math.Min(
-                Player.Position.Z - Player.Radius,
-                Player.Position.Z - Player.Radius + move.Z);
+                Player.Position.AsVector3().Z - Player.Radius,
+                Player.Position.AsVector3().Z - Player.Radius + move.Z);
             int maxz = (int)Math.Max(
-                Player.Position.Z + Player.Radius,
-                Player.Position.Z + Player.Radius + move.Z);
+                Player.Position.AsVector3().Z + Player.Radius,
+                Player.Position.AsVector3().Z + Player.Radius + move.Z);
 
             bool collision = false;
             int loops = 0;
@@ -98,13 +60,13 @@ namespace OctoAwesome.Model
             {
                 BoundingBox playerBox = new BoundingBox(
                     new Vector3(
-                        Player.Position.X + move.X - Player.Radius,
-                        Player.Position.Y + move.Y,
-                        Player.Position.Z + move.Z - Player.Radius),
+                        Player.Position.AsVector3().X + move.X - Player.Radius,
+                        Player.Position.AsVector3().Y + move.Y,
+                        Player.Position.AsVector3().Z + move.Z - Player.Radius),
                     new Vector3(
-                        Player.Position.X + move.X + Player.Radius,
-                        Player.Position.Y + move.Y + Player.Height,
-                        Player.Position.Z + move.Z + Player.Radius));
+                        Player.Position.AsVector3().X + move.X + Player.Radius,
+                        Player.Position.AsVector3().Y + move.Y + Player.Height,
+                        Player.Position.AsVector3().Z + move.Z + Player.Radius));
 
                 collision = false;
                 float min = 1f;
@@ -117,10 +79,6 @@ namespace OctoAwesome.Model
                     {
                         for (int x = minx; x <= maxx; x++)
                         {
-                            int ix = (int)(x + Player.Position.X + move.X);
-                            int iy = (int)(y + Player.Position.Y + move.Y);
-                            int iz = (int)(z + Player.Position.Z + move.Z);
-
                             if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
                                 y < 0 || y >= Chunk.CHUNKSIZE_Y ||
                                 z < 0 || z >= Chunk.CHUNKSIZE_Z)

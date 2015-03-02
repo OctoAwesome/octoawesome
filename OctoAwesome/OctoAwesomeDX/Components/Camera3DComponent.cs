@@ -27,12 +27,18 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            CameraPosition = new Vector3(world.World.Player.Position.X, 60, world.World.Player.Position.Y + 10);
+            CameraPosition = new Vector3(
+                world.World.Player.Position.AsVector3().X, 
+                60,
+                world.World.Player.Position.AsVector3().Y + 10);
             CameraUpVector = Vector3.Up;
 
             View = Matrix.CreateLookAt(
-                CameraPosition, 
-                new Vector3(world.World.Player.Position.X, 50, world.World.Player.Position.Y),
+                CameraPosition,
+                new Vector3(
+                    world.World.Player.Position.AsVector3().X, 
+                    50, 
+                    world.World.Player.Position.AsVector3().Y),
                 CameraUpVector);
         }
 

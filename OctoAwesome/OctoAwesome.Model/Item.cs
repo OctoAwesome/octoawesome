@@ -10,7 +10,7 @@ namespace OctoAwesome.Model
 {
     public abstract class Item
     {
-        public Vector3 Position { get; set; }
+        public Coordinate Position { get; set; }
 
         public float Mass { get; set; }
 

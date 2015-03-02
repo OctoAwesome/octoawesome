@@ -8,9 +8,9 @@ namespace OctoAwesome.Model
 {
     public class Chunk
     {
-        public const int CHUNKSIZE_X = 100;
-        public const int CHUNKSIZE_Y = 100;
-        public const int CHUNKSIZE_Z = 100;
+        public const int CHUNKSIZE_X = 32;
+        public const int CHUNKSIZE_Y = 32;
+        public const int CHUNKSIZE_Z = 32;
 
         public IBlock[,,] Blocks { get; set; }
 
@@ -20,17 +20,17 @@ namespace OctoAwesome.Model
 
             for (int z = 0; z < CHUNKSIZE_Z; z++)
             {
-                float heightZ = (float)Math.Sin((float)(z * Math.PI) / 25f);
+                float heightZ = (float)Math.Sin((float)(z * Math.PI) / 16f);
                 for (int y = 0; y < CHUNKSIZE_Y; y++)
                 {
                     for (int x = 0; x < CHUNKSIZE_X; x++)
                     {
-                        float heightX = (float)Math.Sin((float)(x * Math.PI) / 25f);
+                        float heightX = (float)Math.Sin((float)(x * Math.PI) / 16f);
 
-                        float height = (heightX + heightZ) * 5;
+                        float height = (heightX + heightZ) * 2;
 
 
-                        if (y < (int)(50 + height))
+                        if (y < (int)(16 + height))
                         {
                             if (x % 2 == 0 || y % 2 == 0)
                                 Blocks[x, y, z] = new GrassBlock();

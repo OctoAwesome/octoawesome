@@ -35,7 +35,7 @@ namespace OctoAwesome.Model
         public Player(IInputSet input)
         {
             this.input = input;
-            Position = new Vector3(50, 70, 50);
+            Position = new Coordinate(new Index3(16, 33, 16), Vector3.Zero);
             Velocity = new Vector3(0, 0, 0);
             Radius = 0.75f;
             Angle = 0f;
@@ -83,71 +83,6 @@ namespace OctoAwesome.Model
                 (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
                 (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
                 (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
-
-            //Vector3 force = new Vector3();
-            //force += new Vector3(lookX, 0, lookY) * input.MoveY;
-            //force += new Vector3(stafeX, 0, stafeY) * input.MoveX;
-            //force -= Velocity * 0.7f;
-            //force += new Vector3(0, -10, 0);
-            // Vector3 acceleration = force / Mass;
-
-            // Velocity += acceleration * (float)frameTime.ElapsedGameTime.TotalSeconds;
-
-            // Bewegungsberechnung
-            //if (Velocity.Length() > 0f)
-            //{
-            //    Velocity *= MAXSPEED;
-            //    State = PlayerState.Walk;
-            //}
-            //else
-            //{
-            //    State = PlayerState.Idle;
-            //}
-
-            //int cellX = (int)Position.X;
-            //int cellY = (int)Position.Y;
-
-            //// Umrechung in Grad
-            //float direction = (Angle * 360f) / (float)(2 * Math.PI);
-            //direction += 180;
-            //direction += 45;
-            //int sector = (int)(direction / 90);
-
-            //switch (sector)
-            //{
-            //    case 1: // oben
-            //        cellY -= 1;
-            //        break;
-            //    case 2: // rechts
-            //        cellX += 1;
-            //        break;
-            //    case 3: // unten
-            //        cellY += 1;
-            //        break;
-            //    case 4: // links
-            //        cellX -= 1;
-            //        break;
-            //}
-
-            //// Interaktion überprüfen
-            //if (input.Interact && InteractionPartner == null)
-            //{
-            //    InteractionPartner = map.Items.
-            //        Where(i => (int)i.Position.X == cellX && (int)i.Position.Y == cellY).
-            //        OfType<IHaveInventory>().
-            //        FirstOrDefault();
-            //}
-
-            //if (InteractionPartner != null)
-            //{
-            //    var partner = map.Items.
-            //        Where(i => (int)i.Position.X == cellX && (int)i.Position.Y == cellY).
-            //        OfType<IHaveInventory>().
-            //        FirstOrDefault();
-
-            //    if (InteractionPartner != partner)
-            //        InteractionPartner = null;
-            //}
         }
     }
 
