@@ -26,7 +26,7 @@ namespace OctoAwesome.Model
 
         public void Update(GameTime frameTime)
         {
-            Player.ExternalForce = new Vector3(0, -20f, 0) * Player.Mass;
+            Player.ExternalForce = new Vector3(0, 0, -20f) * Player.Mass;
 
             Player.Update(frameTime);
 
@@ -41,17 +41,17 @@ namespace OctoAwesome.Model
                 Player.Position.AsVector3().X + Player.Radius,
                 Player.Position.AsVector3().X + Player.Radius + move.X);
             int miny = (int)Math.Min(
-                Player.Position.AsVector3().Y,
-                Player.Position.AsVector3().Y + move.Y);
+                Player.Position.AsVector3().Y - Player.Radius,
+                Player.Position.AsVector3().Y - Player.Radius + move.Y);
             int maxy = (int)Math.Max(
-                Player.Position.AsVector3().Y + Player.Height,
-                Player.Position.AsVector3().Y + Player.Height + move.Y);
+                Player.Position.AsVector3().Y + Player.Radius,
+                Player.Position.AsVector3().Y + Player.Radius + move.Y);
             int minz = (int)Math.Min(
-                Player.Position.AsVector3().Z - Player.Radius,
-                Player.Position.AsVector3().Z - Player.Radius + move.Z);
+                Player.Position.AsVector3().Z,
+                Player.Position.AsVector3().Z + move.Z);
             int maxz = (int)Math.Max(
-                Player.Position.AsVector3().Z + Player.Radius,
-                Player.Position.AsVector3().Z + Player.Radius + move.Z);
+                Player.Position.AsVector3().Z + Player.Height,
+                Player.Position.AsVector3().Z + Player.Height + move.Z);
 
             bool collision = false;
             int loops = 0;
@@ -61,12 +61,12 @@ namespace OctoAwesome.Model
                 BoundingBox playerBox = new BoundingBox(
                     new Vector3(
                         Player.Position.AsVector3().X + move.X - Player.Radius,
-                        Player.Position.AsVector3().Y + move.Y,
-                        Player.Position.AsVector3().Z + move.Z - Player.Radius),
+                        Player.Position.AsVector3().Y + move.Y - Player.Radius,
+                        Player.Position.AsVector3().Z + move.Z),
                     new Vector3(
                         Player.Position.AsVector3().X + move.X + Player.Radius,
-                        Player.Position.AsVector3().Y + move.Y + Player.Height,
-                        Player.Position.AsVector3().Z + move.Z + Player.Radius));
+                        Player.Position.AsVector3().Y + move.Y + Player.Radius,
+                        Player.Position.AsVector3().Z + move.Z + Player.Height));
 
                 collision = false;
                 float min = 1f;
@@ -231,12 +231,12 @@ namespace OctoAwesome.Model
                             move.Y = 0;
                             Player.Position = Player.Position + new Vector3(0, minGap, 0);
                             Player.Velocity *= new Vector3(1, 0, 1);
-                            //if (Gap > 0) Player.OnGround = true;
                             break;
                         case Axis.Z:
                             move.Z = 0;
                             Player.Position = Player.Position + new Vector3(0, 0, minGap);
                             Player.Velocity *= new Vector3(1, 1, 0);
+                            if (minGap > 0) Player.OnGround = true;
                             break;
                     }
                 }
@@ -244,8 +244,6 @@ namespace OctoAwesome.Model
                 {
                     Player.Position += move;
                 }
-
-                Player.OnGround = true;
 
                 loops++;
 

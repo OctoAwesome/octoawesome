@@ -29,16 +29,16 @@ namespace OctoAwesome.Components
         {
             CameraPosition = new Vector3(
                 world.World.Player.Position.AsVector3().X, 
-                60,
-                world.World.Player.Position.AsVector3().Y + 10);
-            CameraUpVector = Vector3.Up;
+                world.World.Player.Position.AsVector3().Y + 10, 
+                60);
+            CameraUpVector = new Vector3(0, 0, 1f);
 
             View = Matrix.CreateLookAt(
                 CameraPosition,
                 new Vector3(
                     world.World.Player.Position.AsVector3().X, 
-                    50, 
-                    world.World.Player.Position.AsVector3().Y),
+                    world.World.Player.Position.AsVector3().Y,
+                    50),
                 CameraUpVector);
         }
 
