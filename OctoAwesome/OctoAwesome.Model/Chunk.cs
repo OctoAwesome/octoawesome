@@ -14,9 +14,14 @@ namespace OctoAwesome.Model
 
         private IBlock[, ,] blocks;
 
-        public Chunk()
+        public Index3 ChunkPosition { get; private set; }
+
+        public TimeSpan LastChange { get; private set; }
+
+        public Chunk(Index3 pos)
         {
             blocks = new IBlock[CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z];
+            ChunkPosition = pos;
 
             for (int z = 0; z < CHUNKSIZE_Z; z++)
             {
@@ -57,14 +62,15 @@ namespace OctoAwesome.Model
             return blocks[x, y, z];
         }
 
-        public void SetBlock(Index3 pos, IBlock block)
+        public void SetBlock(Index3 pos, IBlock block, TimeSpan time)
         {
-            SetBlock(pos.X, pos.Y, pos.Z, block);
+            SetBlock(pos.X, pos.Y, pos.Z, block, time);
         }
 
-        public void SetBlock(int x, int y, int z, IBlock block)
+        public void SetBlock(int x, int y, int z, IBlock block, TimeSpan time)
         {
             blocks[x, y, z] = block;
+            LastChange = time;
         }
     }
 }
