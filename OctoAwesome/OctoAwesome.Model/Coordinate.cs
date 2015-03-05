@@ -8,12 +8,15 @@ namespace OctoAwesome.Model
 {
     public struct Coordinate
     {
+        public int Planet;
+
         public Index3 Block;
 
         public Vector3 Position;
 
-        public Coordinate(Index3 block, Vector3 position)
+        public Coordinate(int planet, Index3 block, Vector3 position)
         {
+            Planet = planet;
             Block = block;
             Position = position;
             this.Normalize();
@@ -25,6 +28,22 @@ namespace OctoAwesome.Model
                 Block.X + Position.X, 
                 Block.Y + Position.Y, 
                 Block.Z + Position.Z);
+        }
+
+        public Index3 AsChunk()
+        {
+            return new Index3(
+                (int)(Block.X / Chunk.CHUNKSIZE_X), 
+                (int)(Block.Y / Chunk.CHUNKSIZE_Y), 
+                (int)(Block.Z / Chunk.CHUNKSIZE_Z));
+        }
+
+        public Vector3 AsLocalPosition()
+        {
+            return new Vector3(
+                Block.X % Chunk.CHUNKSIZE_X + Position.X,
+                Block.Y % Chunk.CHUNKSIZE_Y + Position.Y,
+                Block.Z % Chunk.CHUNKSIZE_Z + Position.Z);
         }
 
         public void Normalize()
@@ -44,7 +63,10 @@ namespace OctoAwesome.Model
             Vector3 position = i1.Position + i2.Position;
             Index3 block = i1.Block + i2.Block;
 
-            Coordinate result = new Coordinate(block, position);
+            if (i1.Planet != i2.Planet)
+                throw new NotSupportedException();
+
+            Coordinate result = new Coordinate(i1.Planet, block, position);
             result.Normalize();
             return result;
         }
@@ -54,9 +76,18 @@ namespace OctoAwesome.Model
             Vector3 position = i1.Position + i2;
             Index3 block = i1.Block;
 
-            Coordinate result = new Coordinate(block, position);
+            Coordinate result = new Coordinate(i1.Planet, block, position);
             result.Normalize();
             return result;
+        }
+
+        public override string ToString()
+        {
+            return 
+                "(" + Planet + "/" +
+                (Block.X + Position.X).ToString("0.00") + "/" + 
+                (Block.Y + Position.Y).ToString("0.00") + "/" + 
+                (Block.Z + Position.Z).ToString("0.00") + ")";
         }
     }
 }

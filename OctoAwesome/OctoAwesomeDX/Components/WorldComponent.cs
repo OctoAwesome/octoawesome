@@ -22,7 +22,7 @@ namespace OctoAwesome.Components
         {
             this.input = input;
 
-            World = new Model.World(input);
+            World = new Model.World(input, 1);
             SelectedBox = null;
             Dirty = false;
         }
