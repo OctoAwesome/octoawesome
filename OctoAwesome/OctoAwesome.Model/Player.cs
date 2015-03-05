@@ -39,7 +39,7 @@ namespace OctoAwesome.Model
         public Player(IInputSet input)
         {
             this.input = input;
-            Position = new Coordinate(new Index3(16, 16, 33), Vector3.Zero);
+            Position = new Coordinate(0, new Index3(16, 16, 33), Vector3.Zero);
             Velocity = new Vector3(0, 0, 0);
             Radius = 0.75f;
             Angle = 0f;
@@ -59,11 +59,11 @@ namespace OctoAwesome.Model
             Tilt = Math.Min(1.5f, Math.Max(-1.5f, Tilt));
 
             float lookX = (float)Math.Cos(Angle);
-            float lookY = (float)Math.Sin(Angle);
+            float lookY = -(float)Math.Sin(Angle);
             var VelocityDirection = new Vector3(lookX, lookY, 0) * input.MoveY;
 
             float stafeX = (float)Math.Cos(Angle + MathHelper.PiOver2);
-            float stafeY = (float)Math.Sin(Angle + MathHelper.PiOver2);
+            float stafeY = -(float)Math.Sin(Angle + MathHelper.PiOver2);
             VelocityDirection += new Vector3(stafeX, stafeY, 0) * input.MoveX;
 
             Vector3 Friction = new Vector3(1, 1, 0.1f) * FRICTION;

@@ -61,7 +61,7 @@ namespace OctoAwesome.Components
             chunkRenderer = new ChunkRenderer(
                 GraphicsDevice, 
                 camera.Projection, 
-                world.World.Chunk, 
+                world.World.GetPlanet(0).GetChunk(0,0,0), 
                 blockTextures);
 
             //effect = new BasicEffect(GraphicsDevice);
@@ -128,7 +128,7 @@ namespace OctoAwesome.Components
                             z < 0 || z >= Chunk.CHUNKSIZE_Z)
                             continue;
 
-                        IBlock block = world.World.Chunk.Blocks[x, y, z];
+                        IBlock block = world.World.GetPlanet(0).GetChunk(0,0,0).Blocks[x, y, z];
                         if (block == null)
                             continue;
 
