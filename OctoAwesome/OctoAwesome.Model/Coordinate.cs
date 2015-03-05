@@ -38,6 +38,14 @@ namespace OctoAwesome.Model
                 (int)(Block.Z / Chunk.CHUNKSIZE_Z));
         }
 
+        public Index3 AsLocalBlock()
+        {
+            return new Index3(
+                Block.X % Chunk.CHUNKSIZE_X, 
+                Block.Y % Chunk.CHUNKSIZE_Y, 
+                Block.Z % Chunk.CHUNKSIZE_Z);
+        }
+
         public Vector3 AsLocalPosition()
         {
             return new Vector3(

@@ -93,8 +93,11 @@ namespace OctoAwesome.Model
                                 y < 0 || y >= Chunk.CHUNKSIZE_Y ||
                                 z < 0 || z >= Chunk.CHUNKSIZE_Z)
                                 continue;
+                            
+                            Index3 pos = new Index3(x,y,z);
 
-                            IBlock block = GetPlanet(0).GetChunk(0, 0, 0).Blocks[x, y, z];
+
+                            IBlock block = GetPlanet(0).GetBlock(pos);
                             if (block == null)
                                 continue;
 
@@ -260,14 +263,15 @@ namespace OctoAwesome.Model
             } while (collision && loops < 3);
         }
 
-        public void DeleteBlock(int x, int y, int z)
+        public void DeleteBlock(Index3 pos)
         {
-            GetPlanet(0).GetChunk(0,0,0).Blocks[x, y, z] = null;
+            GetPlanet(0).SetBlock(pos, null);
+            
         }
 
-        public void PutBlock(int x, int y, int z)
+        public void PutBlock(Index3 pos)
         {
-            GetPlanet(0).GetChunk(0,0,0).Blocks[x, y, z] = new GrassBlock();
+            GetPlanet(0).SetBlock(pos, new GrassBlock());
         }
     }
 }

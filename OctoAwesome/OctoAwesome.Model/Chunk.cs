@@ -12,11 +12,11 @@ namespace OctoAwesome.Model
         public const int CHUNKSIZE_Y = 32;
         public const int CHUNKSIZE_Z = 32;
 
-        public IBlock[,,] Blocks { get; set; }
+        private IBlock[, ,] blocks;
 
         public Chunk()
         {
-            Blocks = new IBlock[CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z];
+            blocks = new IBlock[CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z];
 
             for (int z = 0; z < CHUNKSIZE_Z; z++)
             {
@@ -33,13 +33,38 @@ namespace OctoAwesome.Model
                         if (z < (int)(16 + height))
                         {
                             //if (x % 2 == 0 || y % 2 == 0)
-                            Blocks[x, y, z] = new GrassBlock();
+                            blocks[x, y, z] = new GrassBlock();
                             //else
                             //    Blocks[x, y, z] = new SandBlock();
                         }
                     }
                 }
             }
+        }
+
+        public IBlock GetBlock(Index3 pos)
+        {
+            return GetBlock(pos.X, pos.Y, pos.Z);
+        }
+
+        public IBlock GetBlock(int x, int y, int z)
+        {
+            if (x < 0 || x >= Chunk.CHUNKSIZE_X || 
+                y < 0 || y >= Chunk.CHUNKSIZE_Y || 
+                z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                throw new IndexOutOfRangeException();
+
+            return blocks[x, y, z];
+        }
+
+        public void SetBlock(Index3 pos, IBlock block)
+        {
+            SetBlock(pos.X, pos.Y, pos.Z, block);
+        }
+
+        public void SetBlock(int x, int y, int z, IBlock block)
+        {
+            blocks[x, y, z] = block;
         }
     }
 }
