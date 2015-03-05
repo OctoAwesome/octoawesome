@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using OctoAwesome.Model.Blocks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,7 +42,26 @@ namespace OctoAwesome.Model
 
         public Chunk GetChunk(int x, int y, int z)
         {
+            if (chunks[x,y,z] == null)
+            {
+                // TODO: Load from disk
+            }
+
             return chunks[x, y, z];
+        }
+
+        public IBlock GetBlock(Index3 pos)
+        {
+            Coordinate coordinate = new Coordinate(0, pos, Vector3.Zero);
+            Chunk chunk = GetChunk(coordinate.AsChunk());
+            return chunk.GetBlock(coordinate.AsLocalBlock());
+        }
+
+        public void SetBlock(Index3 pos, IBlock block)
+        {
+            Coordinate coordinate = new Coordinate(0, pos, Vector3.Zero);
+            Chunk chunk = GetChunk(coordinate.AsChunk());
+            chunk.SetBlock(coordinate.AsLocalBlock(), block);
         }
     }
 }

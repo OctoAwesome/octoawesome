@@ -31,10 +31,12 @@ namespace OctoAwesome.Components
         {
             if (input.ApplyTrigger && SelectedBox.HasValue)
             {
-                World.DeleteBlock(
-                    (int)SelectedBox.Value.X, 
-                    (int)SelectedBox.Value.Y, 
+                Index3 pos = new Index3(
+                    (int)SelectedBox.Value.X,
+                    (int)SelectedBox.Value.Y,
                     (int)SelectedBox.Value.Z);
+
+                World.DeleteBlock(pos);
                 Dirty = true;
             }
 

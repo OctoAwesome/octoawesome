@@ -128,7 +128,9 @@ namespace OctoAwesome.Components
                             z < 0 || z >= Chunk.CHUNKSIZE_Z)
                             continue;
 
-                        IBlock block = world.World.GetPlanet(0).GetChunk(0,0,0).Blocks[x, y, z];
+                        Index3 pos = new Index3(x, y, z);
+
+                        IBlock block = world.World.GetPlanet(0).GetBlock(pos);
                         if (block == null)
                             continue;
 
