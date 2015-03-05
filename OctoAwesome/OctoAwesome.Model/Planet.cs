@@ -9,7 +9,7 @@ namespace OctoAwesome.Model
 {
     public class Planet
     {
-        private Chunk[,,] chunks;
+        private Chunk[, ,] chunks;
 
         public int SizeX { get; private set; }
         public int SizeY { get; private set; }
@@ -29,7 +29,7 @@ namespace OctoAwesome.Model
                 {
                     for (int z = 0; z < sizeZ; z++)
                     {
-                        chunks[x, y, z] = new Chunk();
+                        chunks[x, y, z] = new Chunk(new Index3(x, y, z));
                     }
                 }
             }
@@ -42,7 +42,7 @@ namespace OctoAwesome.Model
 
         public Chunk GetChunk(int x, int y, int z)
         {
-            if (chunks[x,y,z] == null)
+            if (chunks[x, y, z] == null)
             {
                 // TODO: Load from disk
             }
@@ -57,11 +57,11 @@ namespace OctoAwesome.Model
             return chunk.GetBlock(coordinate.AsLocalBlock());
         }
 
-        public void SetBlock(Index3 pos, IBlock block)
+        public void SetBlock(Index3 pos, IBlock block, TimeSpan time)
         {
             Coordinate coordinate = new Coordinate(0, pos, Vector3.Zero);
             Chunk chunk = GetChunk(coordinate.AsChunk());
-            chunk.SetBlock(coordinate.AsLocalBlock(), block);
+            chunk.SetBlock(coordinate.AsLocalBlock(), block, time);
         }
     }
 }

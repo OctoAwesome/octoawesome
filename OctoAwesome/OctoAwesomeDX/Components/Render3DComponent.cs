@@ -17,17 +17,11 @@ namespace OctoAwesome.Components
         private WorldComponent world;
         private EgoCameraComponent camera;
 
-        private ChunkRenderer chunkRenderer;
+        private ChunkRenderer[, ,] chunkRenderer;
 
-        // private BasicEffect effect;
         private BasicEffect selectionEffect;
 
         private Texture2D blockTextures;
-
-        //private VertexBuffer vb;
-        //private IndexBuffer ib;
-        //private int vertexCount;
-        //private int indexCount;
 
         private VertexPositionColor[] selectionLines;
         private short[] selectionIndeces;
@@ -58,24 +52,23 @@ namespace OctoAwesome.Components
                 blockTextures = Texture2D.FromStream(GraphicsDevice, stream);
             }
 
-            chunkRenderer = new ChunkRenderer(
-                GraphicsDevice, 
-                camera.Projection, 
-                world.World.GetPlanet(0).GetChunk(0,0,0), 
-                blockTextures);
+            Planet planet = world.World.GetPlanet(0);
 
-            //effect = new BasicEffect(GraphicsDevice);
-            //effect.World = Matrix.Identity;
-            //effect.Projection = camera.Projection;
-            //effect.TextureEnabled = true;
-
-            //effect.EnableDefaultLighting();
-            //effect.LightingEnabled = true;
-            //effect.AmbientLightColor = Color.DarkGray.ToVector3();
-
-            //effect.DirectionalLight0.Enabled = true;
-            //effect.DirectionalLight0.Direction = new Vector3(-3, -3, -5);
-            //effect.DirectionalLight0.DiffuseColor = Color.Red.ToVector3();
+            chunkRenderer = new ChunkRenderer[planet.SizeX, planet.SizeY, planet.SizeZ];
+            for (int x = 0; x < planet.SizeX; x++)
+            {
+                for (int y = 0; y < planet.SizeY; y++)
+                {
+                    for (int z = 0; z < planet.SizeZ; z++)
+                    {
+                        chunkRenderer[x, y, z] = new ChunkRenderer(
+                            GraphicsDevice,
+                            camera.Projection,
+                            planet.GetChunk(x, y, z),
+                            blockTextures);
+                    }
+                }
+            }
 
             selectionLines = new[] 
             {
@@ -104,10 +97,15 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (world.Dirty)
+            for (int x = 0; x < chunkRenderer.GetLength(0); x++)
             {
-                chunkRenderer.RegenerateVertexBuffer();
-                world.Dirty = false;
+                for (int y = 0; y < chunkRenderer.GetLength(1); y++)
+                {
+                    for (int z = 0; z < chunkRenderer.GetLength(2); z++)
+                    {
+                        chunkRenderer[x, y, z].Update();
+                    }
+                }
             }
 
             int cellX = world.World.Player.Position.Block.X;
@@ -170,7 +168,17 @@ namespace OctoAwesome.Components
             // GraphicsDevice.RasterizerState.CullMode = CullMode.None;
             // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
 
-            chunkRenderer.Draw(camera.View);
+            for (int x = 0; x < chunkRenderer.GetLength(0); x++)
+            {
+                for (int y = 0; y < chunkRenderer.GetLength(1); y++)
+                {
+                    for (int z = 0; z < chunkRenderer.GetLength(2); z++)
+                    {
+                        chunkRenderer[x, y, z].Draw(camera.View);
+                    }
+                }
+            }
+            // ;
 
             if (world.SelectedBox.HasValue)
             {
@@ -185,6 +193,6 @@ namespace OctoAwesome.Components
             }
         }
 
-        
+
     }
 }
