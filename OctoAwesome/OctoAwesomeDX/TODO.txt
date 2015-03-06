@@ -1,29 +1,57 @@
 ﻿Map Layout
 ==========
 - Blocks
-  * Textures
-  * Orientierungen
-  * Dynamische Blocks (Wasser, Lava)
-  * Extensibility
-- Chunks
-  * Scrolling
-- Planets
+  x Simple Textures
+  - komplexere Texturen
+  - Orientierungen
+  - Dynamische Blocks (Wasser, Lava)
 - Map Generator
+- Serializer
 
 Extention Framework
 ===================
-- Schnittstellen
-  * Blocks
-  * Map Generators
-  * NPCs
 - DLLs nachladen
+- Schnittstellen
+  - Blocks
+  - Map Generators
+  - Items
+  - NPCs
 
 Physik
 ======
-- Fortbewegung
-- Freier Fall
+- Blockbewegung
+  - Fallende Blöcke (instabile Materialien wie Sand)
+  - Aktive Blöcke (Türen, Truhen,...)
 - Kollision
+  x simple kollision mit Blöcken
+  - Kollision auf Basis einer variablen Körperform (ducken, drehen(Körper breiter als tief))
+  - Automatischer Step-up bei Hindernissen, die einen bestimmten Höhenunterschied nicht überschreiten (50cm)
+  - Kletter-Modus (höhere Hindernisse, Leitern)
+  - Kollision mit beweglichen Blöcken (Türen, Truhen, fallende Materialien,...)
+  - Kollision mit anderen Items
 
+Game Model
+==========
+- Datenstruktur
+  - Planeten
+    x Definition
+	- Zeitzonen
+	- Klimazonen / Biome
+	- Kontinente
+  - Maps
+    x Chunks
+
+Rendering
+=========
+- Terrain
+  x mehrere Chunks
+  - dynamisches Scrolling der Map
+- Items
+  - statische Items (Blümchen)
+- Shader
+  - Terrain (simple)
+  - Terrain (lighing)
+  - Skybox
 
 HUD & UI
 ========
