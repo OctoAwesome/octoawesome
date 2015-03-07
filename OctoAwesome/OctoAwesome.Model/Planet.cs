@@ -39,6 +39,11 @@ namespace OctoAwesome.Model
 
         public IChunk GetChunk(Index3 index)
         {
+            if (index.X < 0 || index.X >= Size.X || 
+                index.Y < 0 || index.Y >= Size.Y || 
+                index.Z < 0 || index.Z >= Size.Z)
+                return null;
+
             if (chunks[index.X, index.Y, index.Z] == null)
             {
                 // TODO: Load from disk
