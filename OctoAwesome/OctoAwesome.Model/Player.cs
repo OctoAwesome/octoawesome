@@ -39,7 +39,7 @@ namespace OctoAwesome.Model
         public Player(IInputSet input)
         {
             this.input = input;
-            Position = new Coordinate(0, new Index3(16, 16, 33), Vector3.Zero);
+            Position = new Coordinate(0, new Index3(16, 16, 30), Vector3.Zero);
             Velocity = new Vector3(0, 0, 0);
             Radius = 0.75f;
             Angle = 0f;

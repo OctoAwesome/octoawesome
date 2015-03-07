@@ -23,6 +23,8 @@ namespace OctoAwesome.Components
         private int indexCount;
         private TimeSpan lastReset;
 
+        public Index3 RelativeIndex { get; set; }
+
         public ChunkRenderer(GraphicsDevice graphicsDevice, Matrix projection, Texture2D textures)
         {
             this.graphicsDevice = graphicsDevice;
@@ -46,6 +48,9 @@ namespace OctoAwesome.Components
 
         public void Update()
         {
+            if (chunk == null)
+                return;
+
             if (chunk.LastChange > lastReset)
                 RegenerateVertexBuffer();
         }
@@ -55,10 +60,14 @@ namespace OctoAwesome.Components
             if (chunk == null)
                 return;
 
+            //effect.World = Matrix.CreateTranslation(
+            //    chunk.Index.X * Chunk.CHUNKSIZE_X, 
+            //    chunk.Index.Y * Chunk.CHUNKSIZE_Y,
+            //    chunk.Index.Z * Chunk.CHUNKSIZE_Z);
             effect.World = Matrix.CreateTranslation(
-                chunk.Index.X * Chunk.CHUNKSIZE_X, 
-                chunk.Index.Y * Chunk.CHUNKSIZE_Y,
-                chunk.Index.Z * Chunk.CHUNKSIZE_Z);
+                RelativeIndex.X * Chunk.CHUNKSIZE_X, 
+                RelativeIndex.Y * Chunk.CHUNKSIZE_Y, 
+                RelativeIndex.Z * Chunk.CHUNKSIZE_Z);
             effect.View = view;
             effect.Texture = textures;
             graphicsDevice.SetVertexBuffer(vb);
