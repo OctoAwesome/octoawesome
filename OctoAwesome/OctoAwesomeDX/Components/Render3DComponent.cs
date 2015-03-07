@@ -124,6 +124,7 @@ namespace OctoAwesome.Components
 
             int range = 8;
             Vector3? selected = null;
+            IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
             float? bestDistance = null;
             for (int z = cellZ - range; z < cellZ + range; z++)
             {
@@ -131,14 +132,12 @@ namespace OctoAwesome.Components
                 {
                     for (int x = cellX - range; x < cellX + range; x++)
                     {
-                        if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                            y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                            z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                            continue;
+                        Index3 pos = new Index3(
+                            x + (chunkOffset.X * Chunk.CHUNKSIZE_X),
+                            y + (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
+                            z + (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
 
-                        Index3 pos = new Index3(x, y, z);
-
-                        IBlock block = world.World.GetPlanet(0).GetBlock(pos);
+                        IBlock block = planet.GetBlock(pos);
                         if (block == null)
                             continue;
 
@@ -196,9 +195,9 @@ namespace OctoAwesome.Components
             if (world.SelectedBox.HasValue)
             {
                 Vector3 selectedBoxPosition = new Vector3(
-                    world.SelectedBox.Value.X + (chunkOffset.X * Chunk.CHUNKSIZE_X),
-                    world.SelectedBox.Value.Y + (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
-                    world.SelectedBox.Value.Z + (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
+                    world.SelectedBox.Value.X - (chunkOffset.X * Chunk.CHUNKSIZE_X),
+                    world.SelectedBox.Value.Y - (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
+                    world.SelectedBox.Value.Z - (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
                 selectionEffect.World = Matrix.CreateTranslation(selectedBoxPosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
@@ -216,6 +215,11 @@ namespace OctoAwesome.Components
 
             if (centerChunk == chunkOffset)
                 return;
+
+            //if (centerChunk.X > chunkOffset.X)
+            //{
+            //    // Scrolling nach rechts
+            //}
 
             for (int x = -VIEWRANGE.X; x <= VIEWRANGE.X; x++)
             {
