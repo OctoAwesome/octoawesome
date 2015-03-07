@@ -265,6 +265,11 @@ namespace OctoAwesome.Model
                     Player.Position += move;
                 }
 
+                Coordinate playerPosition = Player.Position;
+                Index3 blockIndex = playerPosition.GlobalBlockIndex;
+                blockIndex.Normalize(planetSize);
+                Player.Position = new Coordinate(playerPosition.Planet, blockIndex, playerPosition.BlockPosition);
+
                 loops++;
 
             } while (collision && loops < 3);
