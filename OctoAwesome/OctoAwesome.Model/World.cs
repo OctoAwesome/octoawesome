@@ -14,22 +14,25 @@ namespace OctoAwesome.Model
     {
         private readonly float Gap = 0.001f;
 
-        private Planet[] planets;
+        private IPlanet[] planets;
 
         public Player Player { get; private set; }
 
         public World(IInputSet input, int planetCount)
         {
+            DebugMapGenerator mapGenerator = new DebugMapGenerator();
+
             Player = new Player(input);
 
             planets = new Planet[planetCount];
             for (int p = 0; p < planetCount; p++)
             {
-                planets[p] = new Planet(10, 10, 1);
+                planets[p] = mapGenerator.
+                    GeneratePlanet((int)DateTime.Now.Ticks);
             }
         }
 
-        public Planet GetPlanet(int id)
+        public IPlanet GetPlanet(int id)
         {
             return planets[id];
         }
@@ -89,9 +92,14 @@ namespace OctoAwesome.Model
                     {
                         for (int x = minx; x <= maxx; x++)
                         {
-                            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                                z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                            //if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+                            //    y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+                            //    z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                            //    continue;
+
+                            if (x < 0 || x >= Chunk.CHUNKSIZE_X * 10 ||
+                                y < 0 || y >= Chunk.CHUNKSIZE_Y * 10 ||
+                                z < 0 || z >= Chunk.CHUNKSIZE_Z * 1)
                                 continue;
                             
                             Index3 pos = new Index3(x,y,z);

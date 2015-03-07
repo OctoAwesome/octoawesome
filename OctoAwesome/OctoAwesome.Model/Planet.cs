@@ -7,60 +7,57 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
-    public class Planet
+    internal class Planet : IPlanet
     {
-        private Chunk[, ,] chunks;
+        private IMapGenerator generator;
 
-        public int SizeX { get; private set; }
-        public int SizeY { get; private set; }
-        public int SizeZ { get; private set; }
+        private IChunk[, ,] chunks;
 
-        public Planet(int sizeX, int sizeY, int sizeZ)
+        public int Seed { get; private set; }
+
+        public Index3 Size { get; private set; }
+
+        public Planet(Index3 size, IMapGenerator generator, int seed)
         {
-            SizeX = sizeX;
-            SizeY = sizeY;
-            SizeZ = sizeZ;
+            this.generator = generator;
+            Size = size;
+            Seed = seed;
 
-            chunks = new Chunk[sizeX, sizeY, sizeZ];
+            chunks = new Chunk[Size.X, Size.Y, Size.Z];
 
-            for (int x = 0; x < sizeX; x++)
+            for (int x = 0; x < Size.X; x++)
             {
-                for (int y = 0; y < sizeY; y++)
+                for (int y = 0; y < Size.Y; y++)
                 {
-                    for (int z = 0; z < sizeZ; z++)
+                    for (int z = 0; z < Size.Z; z++)
                     {
-                        chunks[x, y, z] = new Chunk(new Index3(x, y, z));
+                        chunks[x, y, z] = generator.GenerateChunk(this, new Index3(x, y, z));
                     }
                 }
             }
         }
 
-        public Chunk GetChunk(Index3 pos)
+        public IChunk GetChunk(Index3 index)
         {
-            return GetChunk(pos.X, pos.Y, pos.Z);
-        }
-
-        public Chunk GetChunk(int x, int y, int z)
-        {
-            if (chunks[x, y, z] == null)
+            if (chunks[index.X, index.Y, index.Z] == null)
             {
                 // TODO: Load from disk
             }
 
-            return chunks[x, y, z];
+            return chunks[index.X, index.Y, index.Z];
         }
 
-        public IBlock GetBlock(Index3 pos)
+        public IBlock GetBlock(Index3 index)
         {
-            Coordinate coordinate = new Coordinate(0, pos, Vector3.Zero);
-            Chunk chunk = GetChunk(coordinate.AsChunk());
+            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
+            IChunk chunk = GetChunk(coordinate.AsChunk());
             return chunk.GetBlock(coordinate.AsLocalBlock());
         }
 
-        public void SetBlock(Index3 pos, IBlock block, TimeSpan time)
+        public void SetBlock(Index3 index, IBlock block, TimeSpan time)
         {
-            Coordinate coordinate = new Coordinate(0, pos, Vector3.Zero);
-            Chunk chunk = GetChunk(coordinate.AsChunk());
+            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
+            IChunk chunk = GetChunk(coordinate.AsChunk());
             chunk.SetBlock(coordinate.AsLocalBlock(), block, time);
         }
     }
