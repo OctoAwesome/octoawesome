@@ -56,7 +56,12 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="DebugChunk.cs" />
+    <Compile Include="DebugMapGenerator.cs" />
+    <Compile Include="IChunk.cs" />
+    <Compile Include="IMapGenerator.cs" />
     <Compile Include="Index3.cs" />
+    <Compile Include="IPlanet.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

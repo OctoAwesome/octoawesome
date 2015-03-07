@@ -52,19 +52,19 @@ namespace OctoAwesome.Components
                 blockTextures = Texture2D.FromStream(GraphicsDevice, stream);
             }
 
-            Planet planet = world.World.GetPlanet(0);
+            IPlanet planet = world.World.GetPlanet(0);
 
-            chunkRenderer = new ChunkRenderer[planet.SizeX, planet.SizeY, planet.SizeZ];
-            for (int x = 0; x < planet.SizeX; x++)
+            chunkRenderer = new ChunkRenderer[planet.Size.X, planet.Size.Y, planet.Size.Z];
+            for (int x = 0; x < planet.Size.X; x++)
             {
-                for (int y = 0; y < planet.SizeY; y++)
+                for (int y = 0; y < planet.Size.Y; y++)
                 {
-                    for (int z = 0; z < planet.SizeZ; z++)
+                    for (int z = 0; z < planet.Size.Z; z++)
                     {
                         chunkRenderer[x, y, z] = new ChunkRenderer(
                             GraphicsDevice,
                             camera.Projection,
-                            planet.GetChunk(x, y, z),
+                            planet.GetChunk(new Index3(x, y, z)),
                             blockTextures);
                     }
                 }
