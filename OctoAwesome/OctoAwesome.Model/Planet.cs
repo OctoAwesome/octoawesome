@@ -54,6 +54,10 @@ namespace OctoAwesome.Model
 
         public IBlock GetBlock(Index3 index)
         {
+            index.Normalize(new Index3(
+                Size.X * Chunk.CHUNKSIZE_X, 
+                Size.Y * Chunk.CHUNKSIZE_Y, 
+                Size.Z * Chunk.CHUNKSIZE_Z));
             Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
             IChunk chunk = GetChunk(coordinate.ChunkIndex);
             return chunk.GetBlock(coordinate.LocalBlockIndex);
@@ -61,6 +65,10 @@ namespace OctoAwesome.Model
 
         public void SetBlock(Index3 index, IBlock block, TimeSpan time)
         {
+            index.Normalize(new Index3(
+                Size.X * Chunk.CHUNKSIZE_X,
+                Size.Y * Chunk.CHUNKSIZE_Y,
+                Size.Z * Chunk.CHUNKSIZE_Z));
             Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
             IChunk chunk = GetChunk(coordinate.ChunkIndex);
             chunk.SetBlock(coordinate.LocalBlockIndex, block, time);
