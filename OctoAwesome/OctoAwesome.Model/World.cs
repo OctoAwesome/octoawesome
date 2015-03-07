@@ -48,23 +48,23 @@ namespace OctoAwesome.Model
             Player.OnGround = false;
 
             int minx = (int)Math.Min(
-                Player.Position.AsVector3().X - Player.Radius,
-                Player.Position.AsVector3().X - Player.Radius + move.X);
+                Player.Position.GlobalPosition.X - Player.Radius,
+                Player.Position.GlobalPosition.X - Player.Radius + move.X);
             int maxx = (int)Math.Max(
-                Player.Position.AsVector3().X + Player.Radius,
-                Player.Position.AsVector3().X + Player.Radius + move.X);
+                Player.Position.GlobalPosition.X + Player.Radius,
+                Player.Position.GlobalPosition.X + Player.Radius + move.X);
             int miny = (int)Math.Min(
-                Player.Position.AsVector3().Y - Player.Radius,
-                Player.Position.AsVector3().Y - Player.Radius + move.Y);
+                Player.Position.GlobalPosition.Y - Player.Radius,
+                Player.Position.GlobalPosition.Y - Player.Radius + move.Y);
             int maxy = (int)Math.Max(
-                Player.Position.AsVector3().Y + Player.Radius,
-                Player.Position.AsVector3().Y + Player.Radius + move.Y);
+                Player.Position.GlobalPosition.Y + Player.Radius,
+                Player.Position.GlobalPosition.Y + Player.Radius + move.Y);
             int minz = (int)Math.Min(
-                Player.Position.AsVector3().Z,
-                Player.Position.AsVector3().Z + move.Z);
+                Player.Position.GlobalPosition.Z,
+                Player.Position.GlobalPosition.Z + move.Z);
             int maxz = (int)Math.Max(
-                Player.Position.AsVector3().Z + Player.Height,
-                Player.Position.AsVector3().Z + Player.Height + move.Z);
+                Player.Position.GlobalPosition.Z + Player.Height,
+                Player.Position.GlobalPosition.Z + Player.Height + move.Z);
 
             bool collision = false;
             int loops = 0;
@@ -73,13 +73,13 @@ namespace OctoAwesome.Model
             {
                 BoundingBox playerBox = new BoundingBox(
                     new Vector3(
-                        Player.Position.AsVector3().X + move.X - Player.Radius,
-                        Player.Position.AsVector3().Y + move.Y - Player.Radius,
-                        Player.Position.AsVector3().Z + move.Z),
+                        Player.Position.GlobalPosition.X + move.X - Player.Radius,
+                        Player.Position.GlobalPosition.Y + move.Y - Player.Radius,
+                        Player.Position.GlobalPosition.Z + move.Z),
                     new Vector3(
-                        Player.Position.AsVector3().X + move.X + Player.Radius,
-                        Player.Position.AsVector3().Y + move.Y + Player.Radius,
-                        Player.Position.AsVector3().Z + move.Z + Player.Height));
+                        Player.Position.GlobalPosition.X + move.X + Player.Radius,
+                        Player.Position.GlobalPosition.Y + move.Y + Player.Radius,
+                        Player.Position.GlobalPosition.Z + move.Z + Player.Height));
 
                 collision = false;
                 float min = 1f;
