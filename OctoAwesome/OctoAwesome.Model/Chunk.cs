@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
-    public abstract class Chunk : IChunk
+    public class Chunk : IChunk
     {
         public const int CHUNKSIZE_X = 32;
         public const int CHUNKSIZE_Y = 32;
