@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
-    internal class Planet : IPlanet
+    public class Planet : IPlanet
     {
         private IMapGenerator generator;
 
