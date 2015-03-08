@@ -5,7 +5,9 @@
   - komplexere Texturen
   - Orientierungen
   - Dynamische Blocks (Wasser, Lava)
+  - Weitere Basis-Blocks (Stein, Sand, Erde, Gras, Kies, Wasser)
 - Map Generator
+  - Schnittstelle -> umbauen auf IChunk[] GenerateChunks(IPlanet planet, Index2 index)
 - Serializer
 
 Extention Framework
