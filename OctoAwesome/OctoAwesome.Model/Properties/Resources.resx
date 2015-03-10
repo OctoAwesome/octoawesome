@@ -121,7 +121,16 @@
   <data name="grass_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\grass_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ground_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ground_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="sand_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sand_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stone_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stone_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="water_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\water_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

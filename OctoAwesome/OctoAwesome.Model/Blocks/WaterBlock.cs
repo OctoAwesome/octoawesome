@@ -7,8 +7,8 @@ using System.Text;
 
 namespace OctoAwesome.Model.Blocks
 {
-    public class SandBlock : Block
+    public sealed class WaterBlock : Block
     {
-        public static Bitmap Texture { get { return Resources.sand_center; } }
+        public static Bitmap Texture { get { return Resources.water_center; } }
     }
 }

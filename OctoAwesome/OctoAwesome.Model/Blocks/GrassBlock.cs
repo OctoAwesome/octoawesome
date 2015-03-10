@@ -8,7 +8,8 @@ using System.Text;
 
 namespace OctoAwesome.Model.Blocks
 {
-    public class GrassBlock : BaseBlock
+    [BlockDefinition(Name = "Grass")]
+    public class GrassBlock : Block
     {
         public static Bitmap Texture { get { return Resources.grass_center; } }
     }

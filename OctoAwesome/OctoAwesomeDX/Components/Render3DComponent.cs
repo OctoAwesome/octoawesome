@@ -40,12 +40,18 @@ namespace OctoAwesome.Components
         {
             Bitmap grassTex = GrassBlock.Texture;
             Bitmap sandTex = SandBlock.Texture;
+            Bitmap groundTex = GroundBlock.Texture;
+            Bitmap stoneTex = StoneBlock.Texture;
+            Bitmap waterTex = WaterBlock.Texture;
 
-            Bitmap blocks = new Bitmap(128, 128);
+            Bitmap blocks = new Bitmap(256, 256);
             using (Graphics g = Graphics.FromImage(blocks))
             {
                 g.DrawImage(grassTex, new PointF(0, 0));
                 g.DrawImage(sandTex, new PointF(64, 0));
+                g.DrawImage(groundTex, new PointF(128, 0));
+                g.DrawImage(stoneTex, new PointF(192, 0));
+                g.DrawImage(waterTex, new PointF(64, 1));
             }
 
             using (MemoryStream stream = new MemoryStream())

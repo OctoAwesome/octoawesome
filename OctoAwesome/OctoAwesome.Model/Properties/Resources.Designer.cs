@@ -73,9 +73,39 @@ namespace OctoAwesome.Model.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ground_center {
+            get {
+                object obj = ResourceManager.GetObject("ground_center", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap sand_center {
             get {
                 object obj = ResourceManager.GetObject("sand_center", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stone_center {
+            get {
+                object obj = ResourceManager.GetObject("stone_center", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap water_center {
+            get {
+                object obj = ResourceManager.GetObject("water_center", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
