@@ -9,6 +9,6 @@ namespace OctoAwesome.Model
     {
         IPlanet GeneratePlanet(int seed);
 
-        IChunk GenerateChunk(IPlanet planet, Index3 index);
+        IChunk[] GenerateChunk(IPlanet planet, Index2 index);
     }
 }
