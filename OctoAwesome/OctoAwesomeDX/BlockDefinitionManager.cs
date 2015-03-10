@@ -16,6 +16,10 @@ namespace OctoAwesome
             {
                 definitions = new List<IBlockDefinition>();
                 definitions.Add(new GrassBlockDefinition());
+                definitions.Add(new GroundBlockDefinition());
+                definitions.Add(new SandBlockDefinition());
+                definitions.Add(new StoneBlockDefinition());
+                definitions.Add(new WaterBlockDefinition());
             }
 
             return definitions;
