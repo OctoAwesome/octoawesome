@@ -114,14 +114,26 @@ namespace OctoAwesome.Components
 
                         // Textur-Koordinate "berechnen"
                         Vector2 textureOffset = new Vector2();
-                        Vector2 textureSize = new Vector2(0.49f, 0.49f);
+                        Vector2 textureSize = new Vector2(0.245f, 0.245f);
                         if (chunk.GetBlock(pos) is GrassBlock)
                         {
                             textureOffset = new Vector2(0.005f, 0.005f);
                         }
                         else if (chunk.GetBlock(pos) is SandBlock)
                         {
+                            textureOffset = new Vector2(0.255f, 0.005f);
+                        }
+                        else if (chunk.GetBlock(pos) is GroundBlock)
+                        {
                             textureOffset = new Vector2(0.505f, 0.005f);
+                        }
+                        else if (chunk.GetBlock(pos) is StoneBlock)
+                        {
+                            textureOffset = new Vector2(0.755f, 0.005f);
+                        }
+                        else if (chunk.GetBlock(pos) is WaterBlock)
+                        {
+                            textureOffset = new Vector2(0.005f, 0.255f);
                         }
 
                         // Oben

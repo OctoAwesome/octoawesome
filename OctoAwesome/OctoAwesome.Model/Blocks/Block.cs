@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Model.Blocks
 {
-    public abstract class BaseBlock : IBlock
+    public abstract class Block : IBlock
     {
         public virtual BoundingBox[] GetCollisionBoxes()
         {

@@ -50,9 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Axis.cs" />
-    <Compile Include="Blocks\BaseBlock.cs" />
+    <Compile Include="Blocks\Block.cs" />
+    <Compile Include="Blocks\BlockDefinition.cs" />
     <Compile Include="Blocks\GrassBlock.cs" />
+    <Compile Include="Blocks\GroundBlock.cs" />
     <Compile Include="Blocks\SandBlock.cs" />
+    <Compile Include="Blocks\StoneBlock.cs" />
+    <Compile Include="Blocks\WaterBlock.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Coordinate.cs" />
@@ -87,6 +91,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\sand_center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\ground_center.png" />
+    <Content Include="Resources\water_center.png" />
+    <Content Include="Resources\stone_center.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
