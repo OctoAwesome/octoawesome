@@ -9,6 +9,5 @@ namespace OctoAwesome.Model.Blocks
 {
     public sealed class GroundBlock : Block
     {
-        public static Bitmap Texture { get { return Resources.ground_center; } }
     }
 }

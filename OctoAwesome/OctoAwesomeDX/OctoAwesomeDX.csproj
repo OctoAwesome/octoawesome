@@ -42,6 +42,7 @@
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BlockDefinitionManager.cs" />
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\EgoCameraComponent.cs" />
     <Compile Include="Components\GamePadInput.cs" />

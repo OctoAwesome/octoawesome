@@ -51,12 +51,17 @@
   <ItemGroup>
     <Compile Include="Axis.cs" />
     <Compile Include="Blocks\Block.cs" />
-    <Compile Include="Blocks\BlockDefinition.cs" />
     <Compile Include="Blocks\GrassBlock.cs" />
+    <Compile Include="Blocks\GrassBlockDefinition.cs" />
     <Compile Include="Blocks\GroundBlock.cs" />
+    <Compile Include="Blocks\GroundBlockDefinition.cs" />
+    <Compile Include="Blocks\IBlockDefinition.cs" />
     <Compile Include="Blocks\SandBlock.cs" />
+    <Compile Include="Blocks\SandBlockDefinition.cs" />
     <Compile Include="Blocks\StoneBlock.cs" />
+    <Compile Include="Blocks\StoneBlockDefinition.cs" />
     <Compile Include="Blocks\WaterBlock.cs" />
+    <Compile Include="Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="Blocks\IBlock.cs" />
     <Compile Include="Coordinate.cs" />
@@ -87,15 +92,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\grass_center.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\sand_center.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\ground_center.png" />
-    <Content Include="Resources\water_center.png" />
-    <Content Include="Resources\stone_center.png" />
+    <None Include="Resources\water_top.png" />
+    <None Include="Resources\water_side.png" />
+    <None Include="Resources\water_bottom.png" />
+    <None Include="Resources\sand_top.png" />
+    <None Include="Resources\sand_side.png" />
+    <None Include="Resources\sand_bottom.png" />
+    <None Include="Resources\stone_top.png" />
+    <None Include="Resources\stone_side.png" />
+    <None Include="Resources\stone_bottom.png" />
+    <None Include="Resources\ground_top.png" />
+    <None Include="Resources\ground_side.png" />
+    <None Include="Resources\ground_bottom.png" />
+    <None Include="Resources\grass_top.png" />
+    <None Include="Resources\grass_side.png" />
+    <None Include="Resources\grass_bottom.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
