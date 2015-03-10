@@ -16,33 +16,44 @@ namespace OctoAwesome.Model
 
         public Index3 Index { get; private set; }
 
-        public TimeSpan LastChange { get; private set; }
+        public int ChangeCounter { get; private set; }
 
         public Chunk(Index3 pos)
         {
             blocks = new IBlock[CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z];
             Index = pos;
+            ChangeCounter = 0;
         }
 
         public IBlock GetBlock(Index3 index)
         {
-            if (index.X < 0 || index.X >= Chunk.CHUNKSIZE_X ||
-                index.Y < 0 || index.Y >= Chunk.CHUNKSIZE_Y ||
-                index.Z < 0 || index.Z >= Chunk.CHUNKSIZE_Z)
-                return null;
-
-            return blocks[index.X, index.Y, index.Z];
+            return GetBlock(index.X, index.Y, index.Z);
         }
 
-        public void SetBlock(Index3 index, IBlock block, TimeSpan time)
+        public IBlock GetBlock(int x, int y, int z)
         {
-            if (index.X < 0 || index.X >= Chunk.CHUNKSIZE_X ||
-                index.Y < 0 || index.Y >= Chunk.CHUNKSIZE_Y ||
-                index.Z < 0 || index.Z >= Chunk.CHUNKSIZE_Z)
+            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+                z < 0 || z >= Chunk.CHUNKSIZE_Z)
+                return null;
+
+            return blocks[x, y, z];
+        }
+
+        public void SetBlock(Index3 index, IBlock block)
+        {
+            SetBlock(index.X, index.Y, index.Z, block);
+        }
+
+        public void SetBlock(int x, int y, int z, IBlock block)
+        {
+            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+                z < 0 || z >= Chunk.CHUNKSIZE_Z)
                 return;
 
-            blocks[index.X, index.Y, index.Z] = block;
-            LastChange = time;
+            blocks[x, y, z] = block;
+            ChangeCounter++;
         }
     }
 }

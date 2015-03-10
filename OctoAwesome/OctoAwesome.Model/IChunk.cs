@@ -10,10 +10,14 @@ namespace OctoAwesome.Model
     {
         Index3 Index { get; }
 
-        TimeSpan LastChange { get; }
+        int ChangeCounter { get; }
 
         IBlock GetBlock(Index3 index);
 
-        void SetBlock(Index3 index, IBlock block, TimeSpan time);
+        IBlock GetBlock(int x, int y, int z);
+
+        void SetBlock(Index3 index, IBlock block);
+
+        void SetBlock(int x, int y, int z, IBlock block);
     }
 }
