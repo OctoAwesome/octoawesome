@@ -7,8 +7,7 @@ using System.Text;
 
 namespace OctoAwesome.Model.Blocks
 {
-    public class StoneBlock : Block
+    public sealed class StoneBlock : Block
     {
-        public static Bitmap Texture { get { return Resources.stone_center; } }
     }
 }

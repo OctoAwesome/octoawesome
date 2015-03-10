@@ -9,6 +9,5 @@ namespace OctoAwesome.Model.Blocks
 {
     public sealed class WaterBlock : Block
     {
-        public static Bitmap Texture { get { return Resources.water_center; } }
     }
 }

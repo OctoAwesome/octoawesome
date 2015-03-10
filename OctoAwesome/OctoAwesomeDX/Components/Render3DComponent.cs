@@ -15,6 +15,7 @@ namespace OctoAwesome.Components
     internal sealed class Render3DComponent : DrawableGameComponent
     {
         public static Index3 VIEWRANGE = new Index3(2, 2, 1);
+        public static int TEXTURESIZE = 64;
 
         private WorldComponent world;
         private EgoCameraComponent camera;
@@ -38,20 +39,30 @@ namespace OctoAwesome.Components
 
         protected override void LoadContent()
         {
-            Bitmap grassTex = GrassBlock.Texture;
-            Bitmap sandTex = SandBlock.Texture;
-            Bitmap groundTex = GroundBlock.Texture;
-            Bitmap stoneTex = StoneBlock.Texture;
-            Bitmap waterTex = WaterBlock.Texture;
+            var definitions = BlockDefinitionManager.GetBlockDefinitions();
 
-            Bitmap blocks = new Bitmap(256, 256);
+            int size = (int)Math.Ceiling(Math.Sqrt(definitions.Count() * 3));
+            Bitmap blocks = new Bitmap(size * TEXTURESIZE, size * TEXTURESIZE);
             using (Graphics g = Graphics.FromImage(blocks))
             {
-                g.DrawImage(grassTex, new PointF(0, 0));
-                g.DrawImage(sandTex, new PointF(64, 0));
-                g.DrawImage(groundTex, new PointF(128, 0));
-                g.DrawImage(stoneTex, new PointF(192, 0));
-                g.DrawImage(waterTex, new PointF(64, 1));
+                int counter = 0;
+                foreach (var definition in definitions)
+                {
+                    int x = counter % size;
+                    int y = (int)(counter / size);
+                    g.DrawImage(definition.TopTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                    counter++;
+
+                    x = counter % size;
+                    y = (int)(counter / size);
+                    g.DrawImage(definition.BottomTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                    counter++;
+
+                    x = counter % size;
+                    y = (int)(counter / size);
+                    g.DrawImage(definition.SideTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                    counter++;
+                }
             }
 
             using (MemoryStream stream = new MemoryStream())

@@ -61,10 +61,6 @@ namespace OctoAwesome.Components
             if (chunk == null)
                 return;
 
-            //effect.World = Matrix.CreateTranslation(
-            //    chunk.Index.X * Chunk.CHUNKSIZE_X, 
-            //    chunk.Index.Y * Chunk.CHUNKSIZE_Y,
-            //    chunk.Index.Z * Chunk.CHUNKSIZE_Z);
             effect.World = Matrix.CreateTranslation(
                 RelativeIndex.X * Chunk.CHUNKSIZE_X, 
                 RelativeIndex.Y * Chunk.CHUNKSIZE_Y, 
@@ -117,23 +113,23 @@ namespace OctoAwesome.Components
                         Vector2 textureSize = new Vector2(0.245f, 0.245f);
                         if (chunk.GetBlock(pos) is GrassBlock)
                         {
-                            textureOffset = new Vector2(0.005f, 0.005f);
+                            textureOffset = new Vector2(0.002f, 0.002f);
                         }
                         else if (chunk.GetBlock(pos) is SandBlock)
                         {
-                            textureOffset = new Vector2(0.255f, 0.005f);
+                            textureOffset = new Vector2(0.252f, 0.002f);
                         }
                         else if (chunk.GetBlock(pos) is GroundBlock)
                         {
-                            textureOffset = new Vector2(0.505f, 0.005f);
+                            textureOffset = new Vector2(0.502f, 0.002f);
                         }
                         else if (chunk.GetBlock(pos) is StoneBlock)
                         {
-                            textureOffset = new Vector2(0.755f, 0.005f);
+                            textureOffset = new Vector2(0.752f, 0.002f);
                         }
                         else if (chunk.GetBlock(pos) is WaterBlock)
                         {
-                            textureOffset = new Vector2(0.005f, 0.255f);
+                            textureOffset = new Vector2(0.002f, 0.252f);
                         }
 
                         // Oben

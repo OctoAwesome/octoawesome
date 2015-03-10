@@ -118,19 +118,49 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="grass_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\grass_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="grass_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\grass_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ground_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ground_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="grass_side" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\grass_side.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sand_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\sand_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="grass_top" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\grass_top.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="stone_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\stone_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ground_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ground_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="water_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\water_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ground_side" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ground_side.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ground_top" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ground_top.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sand_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sand_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sand_side" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sand_side.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sand_top" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sand_top.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stone_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stone_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stone_side" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stone_side.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="stone_top" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\stone_top.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="water_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\water_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="water_side" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\water_side.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="water_top" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\water_top.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

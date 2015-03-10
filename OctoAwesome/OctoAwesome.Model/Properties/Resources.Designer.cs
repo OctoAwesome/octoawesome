@@ -63,9 +63,9 @@ namespace OctoAwesome.Model.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap grass_center {
+        internal static System.Drawing.Bitmap grass_bottom {
             get {
-                object obj = ResourceManager.GetObject("grass_center", resourceCulture);
+                object obj = ResourceManager.GetObject("grass_bottom", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace OctoAwesome.Model.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ground_center {
+        internal static System.Drawing.Bitmap grass_side {
             get {
-                object obj = ResourceManager.GetObject("ground_center", resourceCulture);
+                object obj = ResourceManager.GetObject("grass_side", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace OctoAwesome.Model.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap sand_center {
+        internal static System.Drawing.Bitmap grass_top {
             get {
-                object obj = ResourceManager.GetObject("sand_center", resourceCulture);
+                object obj = ResourceManager.GetObject("grass_top", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace OctoAwesome.Model.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap stone_center {
+        internal static System.Drawing.Bitmap ground_bottom {
             get {
-                object obj = ResourceManager.GetObject("stone_center", resourceCulture);
+                object obj = ResourceManager.GetObject("ground_bottom", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,109 @@ namespace OctoAwesome.Model.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap water_center {
+        internal static System.Drawing.Bitmap ground_side {
             get {
-                object obj = ResourceManager.GetObject("water_center", resourceCulture);
+                object obj = ResourceManager.GetObject("ground_side", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ground_top {
+            get {
+                object obj = ResourceManager.GetObject("ground_top", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sand_bottom {
+            get {
+                object obj = ResourceManager.GetObject("sand_bottom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sand_side {
+            get {
+                object obj = ResourceManager.GetObject("sand_side", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sand_top {
+            get {
+                object obj = ResourceManager.GetObject("sand_top", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stone_bottom {
+            get {
+                object obj = ResourceManager.GetObject("stone_bottom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stone_side {
+            get {
+                object obj = ResourceManager.GetObject("stone_side", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stone_top {
+            get {
+                object obj = ResourceManager.GetObject("stone_top", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap water_bottom {
+            get {
+                object obj = ResourceManager.GetObject("water_bottom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap water_side {
+            get {
+                object obj = ResourceManager.GetObject("water_side", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap water_top {
+            get {
+                object obj = ResourceManager.GetObject("water_top", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
