@@ -1,0 +1,23 @@
+﻿Susch19 auf youtube (15.03.):
+=============================
+Index3 Normalisierungsmethode ist umständlicher als notwendig.
+Zeile 25 kürzt sich size.x raus -> wirklich?
+
+
+Andy per Email (14.03.):
+========================
+Modulo für negative Zahlen
+Y %= size.Y
+if (y < 0) Y += size.Y;
+
+Andy per Email (14.03.):
+========================
+Bessere Namenskonvention für die Offsets (block, chunk, absolute)
+
+Andy per Email (08.03.):
+========================
+Aktuellen Stand (wenn sinnvoll) als runterladbares Zip zur Verfügung stellen, damit kein VS notwendig ist
+
+Andy per Email (08.03.):
+========================
+Friction in den Blocktype
