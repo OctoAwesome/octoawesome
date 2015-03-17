@@ -41,6 +41,11 @@ namespace OctoAwesome.Model
             return new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z + i2.Z);
         }
 
+        public static Index3 operator -(Index3 i1, Index3 i2)
+        {
+            return new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z - i2.Z);
+        }
+
         public static bool operator ==(Index3 i1, Index3 i2)
         {
             return i1.Equals(i2);
