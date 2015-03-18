@@ -55,7 +55,7 @@ namespace OctoAwesome.Model
 
         public IBlock GetBlock(Index3 index)
         {
-            index.Normalize(new Index3(
+            index.NormalizeXYZ(new Index3(
                 Size.X * Chunk.CHUNKSIZE_X, 
                 Size.Y * Chunk.CHUNKSIZE_Y, 
                 Size.Z * Chunk.CHUNKSIZE_Z));
@@ -66,7 +66,7 @@ namespace OctoAwesome.Model
 
         public void SetBlock(Index3 index, IBlock block, TimeSpan time)
         {
-            index.Normalize(new Index3(
+            index.NormalizeXYZ(new Index3(
                 Size.X * Chunk.CHUNKSIZE_X,
                 Size.Y * Chunk.CHUNKSIZE_Y,
                 Size.Z * Chunk.CHUNKSIZE_Z));

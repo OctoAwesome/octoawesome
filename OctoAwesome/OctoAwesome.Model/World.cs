@@ -102,7 +102,7 @@ namespace OctoAwesome.Model
                                 continue;
 
                             Index3 pos = new Index3(x,y,z);
-                            pos.Normalize(planetSize);
+                            pos.NormalizeXYZ(planetSize);
 
                             IBlock block = GetPlanet(Player.Position.Planet).GetBlock(pos);
                             if (block == null)
@@ -267,7 +267,7 @@ namespace OctoAwesome.Model
 
                 Coordinate playerPosition = Player.Position;
                 Index3 blockIndex = playerPosition.GlobalBlockIndex;
-                blockIndex.Normalize(planetSize);
+                blockIndex.NormalizeXYZ(planetSize);
                 Player.Position = new Coordinate(playerPosition.Planet, blockIndex, playerPosition.BlockPosition);
 
                 loops++;
