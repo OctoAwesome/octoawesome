@@ -22,18 +22,41 @@ namespace OctoAwesome.Model
 
         public Index3(Index2 index, int z) : this(index.X, index.Y, z) { }
 
-        public void Normalize(Index3 size)
+        public void NormalizeX(int size)
         {
             if (X < 0)
-                X += (int)(-(X / size.X) + 1) * size.X;
-            if (Y < 0)
-                Y += (int)(-(Y / size.Y) + 1) * size.Y;
-            if (Z < 0)
-                Z += (int)(-(Z / size.Z) + 1) * size.Z;
+                X += (int)(-(X / size) + 1) * size;
 
-            X %= size.X;
-            Y %= size.Y;
-            Z %= size.Z;
+            X %= size;
+        }
+
+        public void NormalizeY(int size)
+        {
+            if (Y < 0)
+                Y += (int)(-(Y / size) + 1) * size;
+
+            Y %= size;
+        }
+
+        public void NormalizeZ(int size)
+        {
+            if (Z < 0)
+                Z += (int)(-(Z / size) + 1) * size;
+
+            Z %= size;
+        }
+
+        public void NormalizeXY(Index2 size)
+        {
+            NormalizeX(size.X);
+            NormalizeY(size.Y);
+        }
+
+        public void NormalizeXYZ(Index3 size)
+        {
+            NormalizeX(size.X);
+            NormalizeY(size.Y);
+            NormalizeZ(size.Z);
         }
 
         public static Index3 operator +(Index3 i1, Index3 i2)

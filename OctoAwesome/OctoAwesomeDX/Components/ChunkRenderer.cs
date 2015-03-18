@@ -25,6 +25,8 @@ namespace OctoAwesome.Components
 
         public Index3 RelativeIndex { get; set; }
 
+        public Index3 ChunkIndex { get; private set; }
+
         public bool InUse { get; set; }
 
         public ChunkRenderer(GraphicsDevice graphicsDevice, Matrix projection, Texture2D textures)
@@ -47,6 +49,7 @@ namespace OctoAwesome.Components
 
         public void SetChunk(IChunk chunk)
         {
+            ChunkIndex = chunk != null ? chunk.Index : new Index3(0, 0, 0);
             this.chunk = chunk;
             RegenerateVertexBuffer();
         }
@@ -60,10 +63,20 @@ namespace OctoAwesome.Components
                 RegenerateVertexBuffer();
         }
 
-        public void Draw(Matrix view)
+        public void Draw(Matrix view, Index3 chunkOffset)
         {
             if (!InUse || chunk == null)
                 return;
+
+            //Index3 relativeIndex = ChunkIndex - chunkOffset;
+            //if (relativeIndex.X < -1)
+            //    relativeIndex.X += planet.Size.X;
+            //else if (relativeIndex.X > 1)
+            //    relativeIndex.X -= planet.Size.X;
+            //if (relativeIndex.Y < -1)
+            //    relativeIndex.Y += planet.Size.Y;
+            //else if (relativeIndex.Y > 1)
+            //    relativeIndex.Y -= planet.Size.Y;
 
             effect.World = Matrix.CreateTranslation(
                 RelativeIndex.X * Chunk.CHUNKSIZE_X,
