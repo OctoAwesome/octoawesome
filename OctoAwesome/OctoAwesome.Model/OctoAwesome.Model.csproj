@@ -67,6 +67,7 @@
     <Compile Include="Coordinate.cs" />
     <Compile Include="DebugMapGenerator.cs" />
     <Compile Include="IChunk.cs" />
+    <Compile Include="IChunkPersistence.cs" />
     <Compile Include="IMapGenerator.cs" />
     <Compile Include="Index2.cs" />
     <Compile Include="Index3.cs" />

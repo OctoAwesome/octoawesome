@@ -13,7 +13,7 @@ namespace OctoAwesome.Model
         public const int CHUNKSIZE_Y = 32;
         public const int CHUNKSIZE_Z = 32;
 
-        protected IBlock[, ,] blocks;
+        protected IBlock[] blocks;
 
         public Index3 Index { get; private set; }
 
@@ -21,7 +21,7 @@ namespace OctoAwesome.Model
 
         public Chunk(Index3 pos)
         {
-            blocks = new IBlock[CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z];
+            blocks = new IBlock[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
             Index = pos;
             ChangeCounter = 0;
         }
@@ -38,7 +38,7 @@ namespace OctoAwesome.Model
                 z < 0 || z >= Chunk.CHUNKSIZE_Z)
                 return null;
 
-            return blocks[x, y, z];
+            return blocks[GetIndex(x, y, z)];
         }
 
         public void SetBlock(Index3 index, IBlock block)
@@ -53,21 +53,76 @@ namespace OctoAwesome.Model
                 z < 0 || z >= Chunk.CHUNKSIZE_Z)
                 return;
 
-            blocks[x, y, z] = block;
+            blocks[GetIndex(x, y, z)] = block;
             ChangeCounter++;
+        }
+
+        private int GetIndex(int x, int y, int z)
+        {
+            return
+                (z * CHUNKSIZE_X * CHUNKSIZE_Y) +
+                (y * CHUNKSIZE_X) +
+                x;
         }
 
         public void Serialize(Stream stream)
         {
             using (BinaryWriter bw = new BinaryWriter(stream))
             {
-                
+                List<Type> types = new List<Type>();
+
+                // Types sammeln
+                for (int i = 0; i < blocks.Length; i++)
+                {
+                    if (blocks[i] != null)
+                    {
+                        Type t = blocks[i].GetType();
+                        if (!types.Contains(t))
+                            types.Add(t);
+                    }
+                }
+
+                // Schreibe Phase 1
+                bw.Write(types.Count);
+                foreach (var t in types)
+                {
+                    bw.Write(t.FullName);
+                }
+
+                // Schreibe Phase 2
+                for (int i = 0; i < blocks.Length; i++)
+                {
+                    if (blocks[i] == null)
+                        bw.Write(0);
+                    else
+                        bw.Write(types.IndexOf(blocks[i].GetType()) + 1);
+                }
             }
         }
 
-        public void Deserialize(Stream stream)
+        public void Deserialize(Stream stream, IEnumerable<IBlockDefinition> knownBlocks)
         {
-            throw new NotImplementedException();
+            using (BinaryReader br = new BinaryReader(stream))
+            {
+                List<Type> types = new List<Type>();
+                int typecount = br.ReadInt32();
+                for (int i = 0; i < typecount; i++) 
+                {
+                    string typeName = br.ReadString();
+                    var blockDefinition = knownBlocks.First(d => d.GetBlockType().FullName == typeName);
+                    types.Add(blockDefinition.GetBlockType());
+                }
+
+                for (int i = 0; i < blocks.Length; i++)
+                {
+                    int typeIndex = br.ReadInt32();
+                    if (typeIndex > 0)
+                    {
+                        Type t = types[typeIndex];
+                        blocks[i] = (IBlock)Activator.CreateInstance(t);
+                    }
+                }
+            }
         }
     }
 }

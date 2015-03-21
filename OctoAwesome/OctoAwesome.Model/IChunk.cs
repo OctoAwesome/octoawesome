@@ -23,6 +23,6 @@ namespace OctoAwesome.Model
 
         void Serialize(Stream stream);
 
-        void Deserialize(Stream stream);
+        void Deserialize(Stream stream, IEnumerable<IBlockDefinition> knownBlocks);
     }
 }
