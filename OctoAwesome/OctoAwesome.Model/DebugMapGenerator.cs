@@ -35,7 +35,7 @@ namespace OctoAwesome.Model
 
                             if (z < (int)(16 + height))
                             {
-                                result[layer].SetBlock(x, y, z, new GrassBlock());
+                                result[layer].SetBlock(x, y, z, new SandBlock());
                             }
                         }
                     }
