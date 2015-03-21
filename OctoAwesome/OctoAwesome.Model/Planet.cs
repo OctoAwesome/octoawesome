@@ -9,9 +9,15 @@ namespace OctoAwesome.Model
 {
     public class Planet : IPlanet
     {
+        private readonly int CACHELIMIT = 500;
+
         private IMapGenerator generator;
 
         private IChunk[, ,] chunks;
+
+        private Dictionary<Index3, int> lastAccess = new Dictionary<Index3, int>();
+
+        private int accessCounter = 0;
 
         public int Id { get; private set; }
 
@@ -48,6 +54,7 @@ namespace OctoAwesome.Model
                     {
                         chunks[index.X, index.Y, z] = ChunkPersistence.Load(
                             Id, new Index3(index.X, index.Y, z));
+                        lastAccess.Add(new Index3(index.X, index.Y, z), accessCounter++);
                     }
                 }
                 else
@@ -56,8 +63,23 @@ namespace OctoAwesome.Model
                     for (int layer = 0; layer < this.Size.Z; layer++)
                     {
                         chunks[index.X, index.Y, layer] = result[layer];
+                        lastAccess.Add(new Index3(index.X, index.Y, layer), accessCounter++);
                     }
                 }
+
+                // Cache regulieren
+                while (lastAccess.Count > CACHELIMIT)
+                {
+                    Index3 oldest = lastAccess.OrderBy(a => a.Value).Select(a => a.Key).First();
+                    var chunk = chunks[oldest.X, oldest.Y, oldest.Z];
+                    ChunkPersistence.Save(chunk, Id);
+                    chunks[oldest.X, oldest.Y, oldest.Z] = null; // TODO: Pooling
+                    lastAccess.Remove(oldest);
+                }
+            }
+            else
+            {
+                lastAccess[index] = accessCounter++;
             }
 
             return chunks[index.X, index.Y, index.Z];

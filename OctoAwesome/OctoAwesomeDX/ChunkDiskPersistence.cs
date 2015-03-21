@@ -31,9 +31,10 @@ namespace OctoAwesome
             {
                 IChunk chunk = new Chunk(index);
                 chunk.Deserialize(stream, BlockDefinitionManager.GetBlockDefinitions());
+                return chunk;
             }
 
-            throw new NotImplementedException();
+
         }
     }
 }
