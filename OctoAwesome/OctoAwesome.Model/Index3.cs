@@ -69,6 +69,16 @@ namespace OctoAwesome.Model
             return new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z - i2.Z);
         }
 
+        public static Index3 operator *(Index3 i1, int scale)
+        {
+            return new Index3(i1.X * scale, i1.Y * scale, i1.Z * scale);
+        }
+
+        public static Index3 operator /(Index3 i1, int scale)
+        {
+            return new Index3(i1.X / scale, i1.Y / scale, i1.Z / scale);
+        }
+
         public static bool operator ==(Index3 i1, Index3 i2)
         {
             return i1.Equals(i2);
@@ -77,6 +87,25 @@ namespace OctoAwesome.Model
         public static bool operator !=(Index3 i1, Index3 i2)
         {
             return !i1.Equals(i2);
+        }
+
+        public static Index3 ShortestDistanceXY(Index3 origin, Index3 destination, Index2 size)
+        {
+            origin.NormalizeXY(size);
+            destination.NormalizeXY(size);
+            Index2 half = size / 2;
+
+            Index3 distance = destination - origin;
+            if (distance.X > half.X)
+                distance.X -= size.X;
+            else if (distance.X < -half.X)
+                distance.X += size.X;
+            if (distance.Y > half.Y)
+                distance.Y -= size.Y;
+            else if (distance.Y < -half.Y)
+                distance.Y += size.Y;
+
+            return distance;
         }
 
         public override string ToString()

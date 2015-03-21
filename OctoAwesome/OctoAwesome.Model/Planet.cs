@@ -55,12 +55,16 @@ namespace OctoAwesome.Model
 
         public IBlock GetBlock(Index3 index)
         {
-            index.NormalizeXYZ(new Index3(
+            index.NormalizeXY(new Index2(
                 Size.X * Chunk.CHUNKSIZE_X, 
-                Size.Y * Chunk.CHUNKSIZE_Y, 
-                Size.Z * Chunk.CHUNKSIZE_Z));
+                Size.Y * Chunk.CHUNKSIZE_Y));
             Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
+            
+            // Betroffener Chunk ermitteln
             IChunk chunk = GetChunk(coordinate.ChunkIndex);
+            if (chunk == null)
+                return null;
+
             return chunk.GetBlock(coordinate.LocalBlockIndex);
         }
 

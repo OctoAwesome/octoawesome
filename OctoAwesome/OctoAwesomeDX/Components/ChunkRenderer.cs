@@ -68,16 +68,6 @@ namespace OctoAwesome.Components
             if (!InUse || chunk == null)
                 return;
 
-            //Index3 relativeIndex = ChunkIndex - chunkOffset;
-            //if (relativeIndex.X < -1)
-            //    relativeIndex.X += planet.Size.X;
-            //else if (relativeIndex.X > 1)
-            //    relativeIndex.X -= planet.Size.X;
-            //if (relativeIndex.Y < -1)
-            //    relativeIndex.Y += planet.Size.Y;
-            //else if (relativeIndex.Y > 1)
-            //    relativeIndex.Y -= planet.Size.Y;
-
             effect.World = Matrix.CreateTranslation(
                 RelativeIndex.X * Chunk.CHUNKSIZE_X,
                 RelativeIndex.Y * Chunk.CHUNKSIZE_Y,

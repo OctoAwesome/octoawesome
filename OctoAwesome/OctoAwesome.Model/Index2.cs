@@ -33,6 +33,16 @@ namespace OctoAwesome.Model
             return new Index2(i1.X + i2.X, i1.Y + i2.Y);
         }
 
+        public static Index2 operator *(Index2 i1, int scale)
+        {
+            return new Index2(i1.X * scale, i1.Y * scale);
+        }
+
+        public static Index2 operator /(Index2 i1, int scale)
+        {
+            return new Index2(i1.X / scale, i1.Y / scale);
+        }
+
         public static bool operator ==(Index2 i1, Index2 i2)
         {
             return i1.Equals(i2);
