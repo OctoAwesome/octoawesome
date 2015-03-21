@@ -13,29 +13,22 @@ namespace OctoAwesome.Model
 
         private IChunk[, ,] chunks;
 
+        public int Id { get; private set; }
+
         public int Seed { get; private set; }
 
         public Index3 Size { get; private set; }
 
+        public IChunkPersistence ChunkPersistence { get; set; }
+
         public Planet(Index3 size, IMapGenerator generator, int seed)
         {
+            this.Id = 0;
             this.generator = generator;
             Size = size;
             Seed = seed;
 
             chunks = new Chunk[Size.X, Size.Y, Size.Z];
-
-            //for (int x = 0; x < Size.X; x++)
-            //{
-            //    for (int y = 0; y < Size.Y; y++)
-            //    {
-            //        IChunk[] result = generator.GenerateChunk(this, new Index2(x, y));
-            //        for (int layer = 0; layer < this.Size.Z; layer++)
-            //        {
-            //            chunks[x, y, layer] = result[layer];
-            //        }
-            //    }
-            //}
         }
 
         public IChunk GetChunk(Index3 index)
@@ -47,12 +40,23 @@ namespace OctoAwesome.Model
 
             if (chunks[index.X, index.Y, index.Z] == null)
             {
-                // TODO: Load from disk
-
-                IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
-                for (int layer = 0; layer < this.Size.Z; layer++)
+                // Load from disk
+                IChunk first = ChunkPersistence.Load(Id, index);
+                if (first != null)
                 {
-                    chunks[index.X, index.Y, layer] = result[layer];
+                    for (int z = 0; z < this.Size.Z; z++)
+                    {
+                        chunks[index.X, index.Y, z] = ChunkPersistence.Load(
+                            Id, new Index3(index.X, index.Y, z));
+                    }
+                }
+                else
+                {
+                    IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
+                    for (int layer = 0; layer < this.Size.Z; layer++)
+                    {
+                        chunks[index.X, index.Y, layer] = result[layer];
+                    }
                 }
             }
 
@@ -83,6 +87,21 @@ namespace OctoAwesome.Model
             Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
             IChunk chunk = GetChunk(coordinate.ChunkIndex);
             chunk.SetBlock(coordinate.LocalBlockIndex, block);
+        }
+
+        public void Save()
+        {
+            for (int z = 0; z < Size.Z; z++)
+            {
+                for (int y = 0; y < Size.Y; y++)
+                {
+                    for (int x = 0; x < Size.X; x++)
+                    {
+                        if (chunks[x, y, z] != null)
+                            ChunkPersistence.Save(chunks[x, y, z], Id);
+                    }
+                }
+            }
         }
     }
 }

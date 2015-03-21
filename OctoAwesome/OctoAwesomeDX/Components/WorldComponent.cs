@@ -20,7 +20,10 @@ namespace OctoAwesome.Components
         {
             this.input = input;
 
-            World = new Model.World(input, 1);
+            IMapGenerator mapGenerator = new DebugMapGenerator();
+            IChunkPersistence chunkPersistence = new ChunkDiskPersistence();
+
+            World = new Model.World(input, 1, mapGenerator, chunkPersistence);
             SelectedBox = null;
         }
 
@@ -37,6 +40,13 @@ namespace OctoAwesome.Components
             }
 
             World.Update(gameTime);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            World.Save();
+
+            base.Dispose(disposing);
         }
     }
 }
