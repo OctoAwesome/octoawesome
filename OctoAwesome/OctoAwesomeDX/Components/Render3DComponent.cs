@@ -14,7 +14,7 @@ namespace OctoAwesome.Components
 {
     internal sealed class Render3DComponent : DrawableGameComponent
     {
-        public static Index3 VIEWRANGE = new Index3(2, 2, 2);
+        public static Index3 VIEWRANGE = new Index3(10, 10, 2);
         public static int TEXTURESIZE = 64;
 
         private WorldComponent world;
