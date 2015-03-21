@@ -14,7 +14,7 @@ namespace OctoAwesome.Components
 {
     internal sealed class Render3DComponent : DrawableGameComponent
     {
-        public static Index3 VIEWRANGE = new Index3(2, 2, 1);
+        public static Index3 VIEWRANGE = new Index3(2, 2, 2);
         public static int TEXTURESIZE = 64;
 
         private WorldComponent world;
@@ -28,7 +28,7 @@ namespace OctoAwesome.Components
 
         private VertexPositionColor[] selectionLines;
         private short[] selectionIndeces;
-        private Index3 chunkOffset = new Index3(-1, -1, -1);
+        private Index3 currentChunk = new Index3(-1, -1, -1);
 
         public Render3DComponent(Game game, WorldComponent world, EgoCameraComponent camera)
             : base(game)
@@ -131,9 +131,9 @@ namespace OctoAwesome.Components
                     for (int x = cellX - range; x < cellX + range; x++)
                     {
                         Index3 pos = new Index3(
-                            x + (chunkOffset.X * Chunk.CHUNKSIZE_X),
-                            y + (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
-                            z + (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
+                            x + (currentChunk.X * Chunk.CHUNKSIZE_X),
+                            y + (currentChunk.Y * Chunk.CHUNKSIZE_Y),
+                            z + (currentChunk.Z * Chunk.CHUNKSIZE_Z));
 
                         IBlock block = planet.GetBlock(pos);
                         if (block == null)
@@ -202,39 +202,35 @@ namespace OctoAwesome.Components
 
         private void FillChunkRenderer()
         {
-            Index3 centerChunk = world.World.Player.Position.ChunkIndex;
+            Index3 destinationChunk = world.World.Player.Position.ChunkIndex;
             IPlanet planet = world.World.GetPlanet(0);
 
-            if (centerChunk == chunkOffset)
+            if (destinationChunk == currentChunk)
                 return;
 
-            Index3 delta = chunkOffset - centerChunk;
-            if (delta.X < -1)
-                delta.X += planet.Size.X;
-            else if (delta.X > 1)
-                delta.X -= planet.Size.X;
-            if (delta.Y < -1)
-                delta.Y += planet.Size.Y;
-            else if (delta.Y > 1)
-                delta.Y -= planet.Size.Y;
+            Index3 shift = Index3.ShortestDistanceXY(
+                currentChunk, 
+                destinationChunk, 
+                new Index2(planet.Size.X, planet.Size.Y));
 
             Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
             for (int i = 0; i < chunkRenderer.Length; i++)
             {
                 ChunkRenderer renderer = chunkRenderer[i];
 
-                renderer.RelativeIndex += delta;
+                renderer.RelativeIndex -= shift;
 
                 if (!renderer.InUse ||
-                    renderer.RelativeIndex.X <= -VIEWRANGE.X || renderer.RelativeIndex.X >= VIEWRANGE.X ||
-                    renderer.RelativeIndex.Y <= -VIEWRANGE.Y || renderer.RelativeIndex.Y >= VIEWRANGE.Y ||
-                    renderer.RelativeIndex.Z <= -VIEWRANGE.Z || renderer.RelativeIndex.Z >= VIEWRANGE.Z)
+                    renderer.RelativeIndex.X < -VIEWRANGE.X || renderer.RelativeIndex.X > VIEWRANGE.X ||
+                    renderer.RelativeIndex.Y < -VIEWRANGE.Y || renderer.RelativeIndex.Y > VIEWRANGE.Y ||
+                    renderer.RelativeIndex.Z < -VIEWRANGE.Z || renderer.RelativeIndex.Z > VIEWRANGE.Z)
                 {
                     renderer.InUse = false;
                     freeChunkRenderer.Enqueue(renderer);
                 }
             }
 
+            Console.WriteLine("Free Chunks: " + freeChunkRenderer.Count);
 
             for (int x = -VIEWRANGE.X; x <= VIEWRANGE.X; x++)
             {
@@ -243,12 +239,12 @@ namespace OctoAwesome.Components
                     for (int z = -VIEWRANGE.Z; z <= VIEWRANGE.Z; z++)
                     {
                         Index3 relative = new Index3(x, y, z);
-                        Index3 chunkIndex = centerChunk + relative;
+                        Index3 chunkIndex = destinationChunk + relative;
 
                         chunkIndex.NormalizeX(planet.Size.X);
                         chunkIndex.NormalizeY(planet.Size.Y);
 
-                        if (!chunkRenderer.Any(c => c.RelativeIndex == relative))
+                        if (!chunkRenderer.Any(c => c.RelativeIndex == relative && c.InUse))
                         {
                             IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
                             ChunkRenderer renderer = freeChunkRenderer.Dequeue();
@@ -260,7 +256,7 @@ namespace OctoAwesome.Components
                 }
             }
 
-            chunkOffset = centerChunk;
+            currentChunk = destinationChunk;
         }
     }
 }

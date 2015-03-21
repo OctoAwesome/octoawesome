@@ -71,7 +71,8 @@ namespace OctoAwesome.Model
 
             powerdirection += ExternalForce;
             powerdirection += (POWER * VelocityDirection);
-            if (OnGround && input.JumpTrigger)
+            // if (OnGround && input.JumpTrigger)
+            if (input.JumpTrigger)
             {
                 Vector3 jumpDirection = new Vector3(lookX, lookY, 0f) * input.MoveY * 0.1f;
                 jumpDirection.Z = 1f;
