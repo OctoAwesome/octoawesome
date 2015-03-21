@@ -25,17 +25,17 @@ namespace OctoAwesome.Model
 
             chunks = new Chunk[Size.X, Size.Y, Size.Z];
 
-            for (int x = 0; x < Size.X; x++)
-            {
-                for (int y = 0; y < Size.Y; y++)
-                {
-                    IChunk[] result = generator.GenerateChunk(this, new Index2(x, y));
-                    for (int layer = 0; layer < this.Size.Z; layer++)
-                    {
-                        chunks[x, y, layer] = result[layer];
-                    }
-                }
-            }
+            //for (int x = 0; x < Size.X; x++)
+            //{
+            //    for (int y = 0; y < Size.Y; y++)
+            //    {
+            //        IChunk[] result = generator.GenerateChunk(this, new Index2(x, y));
+            //        for (int layer = 0; layer < this.Size.Z; layer++)
+            //        {
+            //            chunks[x, y, layer] = result[layer];
+            //        }
+            //    }
+            //}
         }
 
         public IChunk GetChunk(Index3 index)
@@ -48,6 +48,12 @@ namespace OctoAwesome.Model
             if (chunks[index.X, index.Y, index.Z] == null)
             {
                 // TODO: Load from disk
+
+                IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
+                for (int layer = 0; layer < this.Size.Z; layer++)
+                {
+                    chunks[index.X, index.Y, layer] = result[layer];
+                }
             }
 
             return chunks[index.X, index.Y, index.Z];

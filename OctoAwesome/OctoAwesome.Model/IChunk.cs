@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Model.Blocks;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -19,5 +20,9 @@ namespace OctoAwesome.Model
         void SetBlock(Index3 index, IBlock block);
 
         void SetBlock(int x, int y, int z, IBlock block);
+
+        void Serialize(Stream stream);
+
+        void Deserialize(Stream stream);
     }
 }

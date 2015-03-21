@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Model.Blocks;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -54,6 +55,19 @@ namespace OctoAwesome.Model
 
             blocks[x, y, z] = block;
             ChangeCounter++;
+        }
+
+        public void Serialize(Stream stream)
+        {
+            using (BinaryWriter bw = new BinaryWriter(stream))
+            {
+                
+            }
+        }
+
+        public void Deserialize(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }
