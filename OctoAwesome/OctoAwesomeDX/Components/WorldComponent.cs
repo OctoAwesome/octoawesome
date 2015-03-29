@@ -36,7 +36,7 @@ namespace OctoAwesome.Components
                     (int)SelectedBox.Value.Y,
                     (int)SelectedBox.Value.Z);
 
-                World.GetPlanet(0).SetBlock(pos, null, gameTime.TotalGameTime);
+                World.GetPlanet(0).SetBlock(pos, null);
             }
 
             World.Update(gameTime);
