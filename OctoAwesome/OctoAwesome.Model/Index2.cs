@@ -5,18 +5,36 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
+    /// <summary>
+    /// Struktur zur Definierung einer zweidimensionalen Index-Position.
+    /// </summary>
     public struct Index2
     {
+        /// <summary>
+        /// X Anteil
+        /// </summary>
         public int X;
 
+        /// <summary>
+        /// Y Anteil
+        /// </summary>
         public int Y;
 
+        /// <summary>
+        /// Initialisierung
+        /// </summary>
+        /// <param name="x">X Anteil</param>
+        /// <param name="y">Y Anteil</param>
         public Index2(int x, int y)
         {
             X = x;
             Y = y;
         }
 
+        /// <summary>
+        /// Normalisiert den Wert von X und Y auf den angegebenen Grenzbereich.
+        /// </summary>
+        /// <param name="size"></param>
         public void Normalize(Index3 size)
         {
             if (X < 0)

@@ -7,16 +7,37 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
+    /// <summary>
+    /// Repräsentiert einen Karten-Abschnitt innerhalb des Planeten.
+    /// </summary>
     public class Chunk : IChunk
     {
+        /// <summary>
+        /// Größe eines Chunks in Blocks in X-Richtung.
+        /// </summary>
         public const int CHUNKSIZE_X = 32;
+        
+        /// <summary>
+        /// Größe eines Chunks in Blocks in Y-Richtung.
+        /// </summary>
         public const int CHUNKSIZE_Y = 32;
+
+        /// <summary>
+        /// Größe eines Chunks in Blocks in Z-Richtung.
+        /// </summary>
         public const int CHUNKSIZE_Z = 32;
 
         protected IBlock[] blocks;
 
+        /// <summary>
+        /// Chunk Index innerhalb des Planeten.
+        /// </summary>
         public Index3 Index { get; private set; }
 
+        /// <summary>
+        /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
+        /// dazu verwendet werden herauszufinden, ob es Änderungen gab.
+        /// </summary>
         public int ChangeCounter { get; private set; }
 
         public Chunk(Index3 pos)
@@ -26,11 +47,23 @@ namespace OctoAwesome.Model
             ChangeCounter = 0;
         }
 
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
+        /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public IBlock GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public IBlock GetBlock(int x, int y, int z)
         {
             if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
@@ -38,14 +71,26 @@ namespace OctoAwesome.Model
                 z < 0 || z >= Chunk.CHUNKSIZE_Z)
                 return null;
 
-            return blocks[GetIndex(x, y, z)];
+            return blocks[GetFlatIndex(x, y, z)];
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="index">Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
         public void SetBlock(Index3 index, IBlock block)
         {
             SetBlock(index.X, index.Y, index.Z, block);
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
         public void SetBlock(int x, int y, int z, IBlock block)
         {
             if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
@@ -53,11 +98,18 @@ namespace OctoAwesome.Model
                 z < 0 || z >= Chunk.CHUNKSIZE_Z)
                 return;
 
-            blocks[GetIndex(x, y, z)] = block;
+            blocks[GetFlatIndex(x, y, z)] = block;
             ChangeCounter++;
         }
 
-        private int GetIndex(int x, int y, int z)
+        /// <summary>
+        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate</param>
+        /// <param name="y">Y-Anteil der Koordinate</param>
+        /// <param name="z">Z-Anteil der Koordinate</param>
+        /// <returns>Index innerhalb des flachen Arrays</returns>
+        protected int GetFlatIndex(int x, int y, int z)
         {
             return
                 (z * CHUNKSIZE_X * CHUNKSIZE_Y) +
@@ -65,6 +117,20 @@ namespace OctoAwesome.Model
                 x;
         }
 
+        /// <summary>
+        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück.
+        /// </summary>
+        /// <param name="index">3D-Koordinate</param>
+        /// <returns>Index innerhalb des flachen Arrays</returns>
+        protected int GetFlatIndex(Index3 index)
+        {
+            return GetFlatIndex(index.X, index.Y, index.Z);
+        }
+
+        /// <summary>
+        /// Serialisiert den aktuellen Chunk in den angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Output Stream</param>
         public void Serialize(Stream stream)
         {
             using (BinaryWriter bw = new BinaryWriter(stream))
@@ -100,6 +166,11 @@ namespace OctoAwesome.Model
             }
         }
 
+        /// <summary>
+        /// Deserialisiert einen Chunk aus dem angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Input Stream</param>
+        /// <param name="knownBlocks">Liste der bekannten Block-Typen</param>
         public void Deserialize(Stream stream, IEnumerable<IBlockDefinition> knownBlocks)
         {
             using (BinaryReader br = new BinaryReader(stream))
