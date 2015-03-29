@@ -3,7 +3,6 @@
 Index3 Normalisierungsmethode ist umständlicher als notwendig.
 Zeile 25 kürzt sich size.x raus -> wirklich?
 
-
 Andy per Email (14.03.):
 ========================
 Modulo für negative Zahlen
@@ -58,4 +57,23 @@ Ralf via Codeplex (02.03.)
 7) Chunk Scrolling -> done
 8) Am Boden muss die Schildkröte kommen -> RIP Terry :-/
 
+Markus K via YT-Nachricht (29.03.)
+==================================
+- Allgemeineres Speicherverzeichnis (Vielleicht App-Verzeichnis oder per Config)
 
+
+Cleanup
+=======
+- Index2 / Index3 / 
+  * ToString/Equal
+  * Operatoren
+  * Default-Values
+- Normalisierung irgendwie vereinheitlichen (Index2, Index3, Koordinate)
+- Universe-Model einziehen
+- Parent-Referenzen (Planet/Chunk/Block?)
+- Texture (Mehrteilig)
+- Runtime-Assembly
+- Inventory-Zeug nochmal löschen (IventoryItem, IHaveInventory)
+- Chunk-Array im Planet abflachen
+- EgoCam und Renderer3D umbenennen (CameraComponent & SceneComponent)
+- Angle-Klasse

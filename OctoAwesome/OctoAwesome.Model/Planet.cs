@@ -7,26 +7,62 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
+    /// <summary>
+    /// Standard-Implementierung des Planeten.
+    /// </summary>
     public class Planet : IPlanet
     {
+        /// <summary>
+        /// Größe des Chunk-Caches. (Anzahl im speicher gehaltener Chunks)
+        /// </summary>
         private readonly int CACHELIMIT = 500;
 
+        /// <summary>
+        /// Referenz auf den verwendeten Map-Generator.
+        /// </summary>
         private IMapGenerator generator;
 
+        /// <summary>
+        /// Chunk Array.
+        /// </summary>
         private IChunk[, ,] chunks;
 
+        /// <summary>
+        /// Speicher für den letzten Zugriff auf Chunks (Caching)
+        /// </summary>
         private Dictionary<Index3, int> lastAccess = new Dictionary<Index3, int>();
 
+        /// <summary>
+        /// Fortlaufender Counter für den Zugriff auf Chunks.
+        /// </summary>
         private int accessCounter = 0;
 
+        /// <summary>
+        /// ID des Planeten.
+        /// </summary>
         public int Id { get; private set; }
 
+        /// <summary>
+        /// Seed des Zufallsgenerators dieses Planeten.
+        /// </summary>
         public int Seed { get; private set; }
 
+        /// <summary>
+        /// Die Größe des Planeten in Blocks.
+        /// </summary>
         public Index3 Size { get; private set; }
 
+        /// <summary>
+        /// Instanz der Persistierungseinheit.
+        /// </summary>
         public IChunkPersistence ChunkPersistence { get; set; }
 
+        /// <summary>
+        /// Initialisierung des Planeten
+        /// </summary>
+        /// <param name="size">Größe des Planeten in Blocks</param>
+        /// <param name="generator">Instanz des Map-Generators</param>
+        /// <param name="seed">Seed des Zufallsgenerators</param>
         public Planet(Index3 size, IMapGenerator generator, int seed)
         {
             this.Id = 0;
@@ -37,6 +73,11 @@ namespace OctoAwesome.Model
             chunks = new Chunk[Size.X, Size.Y, Size.Z];
         }
 
+        /// <summary>
+        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Chunk Index</param>
+        /// <returns>Instanz des Chunks</returns>
         public IChunk GetChunk(Index3 index)
         {
             if (index.X < 0 || index.X >= Size.X || 
@@ -85,6 +126,11 @@ namespace OctoAwesome.Model
             return chunks[index.X, index.Y, index.Z];
         }
 
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="index">Block Index</param>
+        /// <returns>Block oder null, falls dort kein Block existiert</returns>
         public IBlock GetBlock(Index3 index)
         {
             index.NormalizeXY(new Index2(
@@ -100,7 +146,12 @@ namespace OctoAwesome.Model
             return chunk.GetBlock(coordinate.LocalBlockIndex);
         }
 
-        public void SetBlock(Index3 index, IBlock block, TimeSpan time)
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="index">Block-Koordinate</param>
+        /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
+        public void SetBlock(Index3 index, IBlock block)
         {
             index.NormalizeXYZ(new Index3(
                 Size.X * Chunk.CHUNKSIZE_X,
@@ -111,6 +162,9 @@ namespace OctoAwesome.Model
             chunk.SetBlock(coordinate.LocalBlockIndex, block);
         }
 
+        /// <summary>
+        /// Persistiert den Planeten.
+        /// </summary>
         public void Save()
         {
             for (int z = 0; z < Size.Z; z++)

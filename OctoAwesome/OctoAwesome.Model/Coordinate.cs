@@ -11,10 +11,19 @@ namespace OctoAwesome.Model
     /// </summary>
     public struct Coordinate
     {
+        /// <summary>
+        /// Index des Planeten im Universum.
+        /// </summary>
         public int Planet;
 
+        /// <summary>
+        /// Index des betroffenen Blocks.
+        /// </summary>
         private Index3 block;
 
+        /// <summary>
+        /// Position innerhalb des Blocks (0...1).
+        /// </summary>
         private Vector3 position;
 
         public Coordinate(int planet, Index3 block, Vector3 position)

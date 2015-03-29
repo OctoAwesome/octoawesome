@@ -5,14 +5,32 @@ using System.Text;
 
 namespace OctoAwesome.Model
 {
+/// <summary>
+    /// Struktur zur Definierung einer dreidimensionalen Index-Position.
+    /// </summary>
     public struct Index3
     {
+        /// <summary>
+        /// X Anteil
+        /// </summary>
         public int X;
 
+        /// <summary>
+        /// Y Anteil
+        /// </summary>
         public int Y;
 
+        /// <summary>
+        /// Z Anteil
+        /// </summary>
         public int Z;
 
+        /// <summary>
+        /// Initialisierung
+        /// </summary>
+        /// <param name="x">X-Anteil</param>
+        /// <param name="y">Y-Anteil</param>
+        /// <param name="z">Z-Anteil</param>
         public Index3(int x, int y, int z)
         {
             X = x;
@@ -22,6 +40,10 @@ namespace OctoAwesome.Model
 
         public Index3(Index2 index, int z) : this(index.X, index.Y, z) { }
 
+        /// <summary>
+        /// Normalisiert die X-Achse auf die angegebene Größe.
+        /// </summary>
+        /// <param name="size">Maximalwert für X</param>
         public void NormalizeX(int size)
         {
             if (X < 0)
@@ -30,6 +52,10 @@ namespace OctoAwesome.Model
             X %= size;
         }
 
+        /// <summary>
+        /// Normalisiert die Y-Achse auf die angegebene Größe.
+        /// </summary>
+        /// <param name="size">Maximalwert für Y</param>
         public void NormalizeY(int size)
         {
             if (Y < 0)
@@ -38,6 +64,10 @@ namespace OctoAwesome.Model
             Y %= size;
         }
 
+        /// <summary>
+        /// Normalisiert die Z-Achse auf die angegebene Größe.
+        /// </summary>
+        /// <param name="size">Maximalwert für Z</param>
         public void NormalizeZ(int size)
         {
             if (Z < 0)
@@ -46,12 +76,20 @@ namespace OctoAwesome.Model
             Z %= size;
         }
 
+        /// <summary>
+        /// Normalisiert die X- und Y-Achse auf die angegebene Größe.
+        /// </summary>
+        /// <param name="size">Maximalwert für X und Y</param>
         public void NormalizeXY(Index2 size)
         {
             NormalizeX(size.X);
             NormalizeY(size.Y);
         }
 
+        /// <summary>
+        /// Normalisiert die X-, Y- und Z-Achse auf die angegebene Größe.
+        /// </summary>
+        /// <param name="size">Maximalwert für X, Y und Z</param>
         public void NormalizeXYZ(Index3 size)
         {
             NormalizeX(size.X);

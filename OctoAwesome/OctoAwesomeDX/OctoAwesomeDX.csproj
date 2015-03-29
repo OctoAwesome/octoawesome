@@ -83,9 +83,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="CompiledContent\grass.xnb" />
     <None Include="CompiledContent\Hud.xnb" />
-    <None Include="CompiledContent\test.xnb" />
     <None Include="CompiledContent\Textures\pix.xnb" />
     <None Include="Content\Hud.spritefont" />
   </ItemGroup>
