@@ -7,14 +7,13 @@ Lassi per Codeplex (17.03.)
 2) Noch ein Fehler bei der Berechnung
    "powerdirection += ExternalForce;" müsste "powerdirection += externalpower;" sein
 
+Karl-Josef Huber per YouTube (31.03.)
+=====================================
+- Umweg über DirectoryInfo umständlich. Einfach Path.GetDirectoryName verwenden
+- Path.FileSeprator verwenden
+
 Cleanup
 =======
-- Index2 / Index3 / 
-  * ToString/Equal
-  * Operatoren
-  * Default-Values
-  * Normalize Methoden in verschiedenen Überladungen (offscreen)
-- Normalisierung irgendwie vereinheitlichen (Index2, Index3, Koordinate)
 - Universe-Model einziehen
 - Parent-Referenzen (Planet/Chunk/Block?)
 - Texture (Mehrteilig)
