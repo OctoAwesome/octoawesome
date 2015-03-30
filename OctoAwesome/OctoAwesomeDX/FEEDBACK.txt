@@ -1,66 +1,11 @@
-﻿Susch19 auf youtube (15.03.):
-=============================
-Index3 Normalisierungsmethode ist umständlicher als notwendig.
-Zeile 25 kürzt sich size.x raus -> wirklich?
-
-Andy per Email (14.03.):
-========================
-Modulo für negative Zahlen
-Y %= size.Y
-if (y < 0) Y += size.Y;
-
-Ralf per Codeplex (13.03.)
+﻿Ralf per Codeplex (13.03.)
 ==========================
-- Normalize viel zu kompliziert ;)
 - Bitte dreifach-Operationen vereinfachen (also bei der ganzen Achsen-Trennung)
-
-Andy per Email (14.03.):
-========================
-Bessere Namenskonvention für die Offsets (block, chunk, absolute)
-
-Andy per Email (08.03.):
-========================
-Aktuellen Stand (wenn sinnvoll) als runterladbares Zip zur Verfügung stellen, damit kein VS notwendig ist
-
-Andy per Email (08.03.):
-========================
-Friction in den Blocktype
 
 Lassi per Codeplex (17.03.)
 ===========================
-1) Friction muss in den Block
 2) Noch ein Fehler bei der Berechnung
    "powerdirection += ExternalForce;" müsste "powerdirection += externalpower;" sein
-
-Ralf via Codeplex (17.02.)
-==========================
-Selektion nicht einfach Wireframe - irgendwas cooleres per Shader ;)
-
-Ralf via Codeplex (26.01.)
-==========================
-Zuordnung Blocktyp<->Werkzeug eher zum Werkzeug, damit neue Werkzeuge besser mit Blocks klar kommen
-Alternativ auch "Rollen" bzw. Eigenschaften (brennbar, abbaubar,...)
-
-Ralf via Codeplex (18.02.)
-==========================
-HUD nicht in jedem Frame rendern - in Textur puffern
-Niedrigere Framerate für HUD
-
-Ralf via Codeplex (02.03.)
-==========================
-1) Chunk Size Pow2 -> Done
-2) Chunk-Koordinate im Zentrum (-16 bis 16)
-3) Koord-Sys umstellen -> Done
-4) Persistenz - Nur Diff -> Kompression
-5) Adam immer 0/0/0
-6) Wie soll der Horizont aussehen?
-7) Chunk Scrolling -> done
-8) Am Boden muss die Schildkröte kommen -> RIP Terry :-/
-
-Markus K via YT-Nachricht (29.03.)
-==================================
-- Allgemeineres Speicherverzeichnis (Vielleicht App-Verzeichnis oder per Config)
-
 
 Cleanup
 =======
@@ -68,12 +13,15 @@ Cleanup
   * ToString/Equal
   * Operatoren
   * Default-Values
+  * Normalize Methoden in verschiedenen Überladungen (offscreen)
 - Normalisierung irgendwie vereinheitlichen (Index2, Index3, Koordinate)
 - Universe-Model einziehen
 - Parent-Referenzen (Planet/Chunk/Block?)
 - Texture (Mehrteilig)
+- Friction (Auf Block-Instanz)
 - Runtime-Assembly
 - Inventory-Zeug nochmal löschen (IventoryItem, IHaveInventory)
 - Chunk-Array im Planet abflachen
 - EgoCam und Renderer3D umbenennen (CameraComponent & SceneComponent)
 - Angle-Klasse
+- Chunkgröße auf 16 runter (short)
