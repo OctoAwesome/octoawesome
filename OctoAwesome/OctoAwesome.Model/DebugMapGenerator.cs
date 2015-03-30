@@ -10,7 +10,7 @@ namespace OctoAwesome.Model
     {
         public IPlanet GeneratePlanet(int seed)
         {
-            return new Planet(new Index3(1000, 1000, 100), this, seed);
+            return new Planet(new Index3(1000, 1000, 1), this, seed);
         }
 
         public IChunk[] GenerateChunk(IPlanet planet, Index2 index)

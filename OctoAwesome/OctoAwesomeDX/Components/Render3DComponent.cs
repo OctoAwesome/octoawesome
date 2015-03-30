@@ -16,7 +16,7 @@ namespace OctoAwesome.Components
 {
     internal sealed class Render3DComponent : DrawableGameComponent
     {
-        public static Index3 VIEWRANGE = new Index3(20, 20, 2);
+        public static Index3 VIEWRANGE = new Index3(15, 15, 10);
         public static int TEXTURESIZE = 64;
 
         private WorldComponent world;
@@ -217,10 +217,8 @@ namespace OctoAwesome.Components
             if (destinationChunk == currentChunk)
                 return;
 
-            Index3 shift = Index3.ShortestDistanceXY(
-                currentChunk,
-                destinationChunk,
-                new Index2(planet.Size.X, planet.Size.Y));
+            Index3 shift = currentChunk.ShortestDistanceXY(
+                destinationChunk, new Index2(planet.Size.X, planet.Size.Y));
 
             Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
             for (int i = 0; i < chunkRenderer.Length; i++)
