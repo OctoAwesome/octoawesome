@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Components
 {
@@ -202,6 +203,7 @@ namespace OctoAwesome.Components
 
         private void FillChunkRenderer()
         {
+
             Index3 destinationChunk = world.World.Player.Position.ChunkIndex;
             IPlanet planet = world.World.GetPlanet(0);
 
@@ -209,8 +211,8 @@ namespace OctoAwesome.Components
                 return;
 
             Index3 shift = Index3.ShortestDistanceXY(
-                currentChunk, 
-                destinationChunk, 
+                currentChunk,
+                destinationChunk,
                 new Index2(planet.Size.X, planet.Size.Y));
 
             Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
@@ -246,11 +248,16 @@ namespace OctoAwesome.Components
 
                         if (!chunkRenderer.Any(c => c.RelativeIndex == relative && c.InUse))
                         {
-                            IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
-                            ChunkRenderer renderer = freeChunkRenderer.Dequeue();
-                            renderer.SetChunk(chunk);
-                            renderer.RelativeIndex = relative;
-                            renderer.InUse = true;
+                            Task t = new Task(() =>
+                            {
+                                IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
+                                ChunkRenderer renderer = freeChunkRenderer.Dequeue();
+                                renderer.SetChunk(chunk);
+                                renderer.RelativeIndex = relative;
+                                renderer.InUse = true;
+                            });
+
+                            t.Start();
                         }
                     }
                 }
