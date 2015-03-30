@@ -15,7 +15,7 @@ namespace OctoAwesome.Model
         /// <summary>
         /// Größe des Chunk-Caches. (Anzahl im speicher gehaltener Chunks)
         /// </summary>
-        private readonly int CACHELIMIT = 500;
+        private readonly int CACHELIMIT = 10000;
 
         /// <summary>
         /// Referenz auf den verwendeten Map-Generator.

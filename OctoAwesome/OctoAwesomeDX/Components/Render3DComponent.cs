@@ -9,13 +9,14 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Components
 {
     internal sealed class Render3DComponent : DrawableGameComponent
     {
-        public static Index3 VIEWRANGE = new Index3(10, 10, 2);
+        public static Index3 VIEWRANGE = new Index3(20, 20, 2);
         public static int TEXTURESIZE = 64;
 
         private WorldComponent world;
@@ -30,6 +31,9 @@ namespace OctoAwesome.Components
         private VertexPositionColor[] selectionLines;
         private short[] selectionIndeces;
         private Index3 currentChunk = new Index3(-1, -1, -1);
+
+        private Thread backgroundThread;
+
 
         public Render3DComponent(Game game, WorldComponent world, EgoCameraComponent camera)
             : base(game)
@@ -83,7 +87,10 @@ namespace OctoAwesome.Components
             for (int i = 0; i < chunkRenderer.Length; i++)
                 chunkRenderer[i] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
 
-            FillChunkRenderer();
+            backgroundThread = new Thread(BackgroundLoop);
+            backgroundThread.Priority = ThreadPriority.Lowest;
+            backgroundThread.IsBackground = true;
+            backgroundThread.Start();
 
             selectionLines = new[] 
             {
@@ -112,7 +119,7 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            FillChunkRenderer();
+            // FillChunkRenderer();
 
             for (int i = 0; i < chunkRenderer.Length; i++)
                 chunkRenderer[i].Update();
@@ -248,22 +255,26 @@ namespace OctoAwesome.Components
 
                         if (!chunkRenderer.Any(c => c.RelativeIndex == relative && c.InUse))
                         {
-                            Task t = new Task(() =>
-                            {
-                                IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
-                                ChunkRenderer renderer = freeChunkRenderer.Dequeue();
-                                renderer.SetChunk(chunk);
-                                renderer.RelativeIndex = relative;
-                                renderer.InUse = true;
-                            });
-
-                            t.Start();
+                            IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
+                            ChunkRenderer renderer = freeChunkRenderer.Dequeue();
+                            renderer.SetChunk(chunk);
+                            renderer.RelativeIndex = relative;
+                            renderer.InUse = true;
                         }
                     }
                 }
             }
 
             currentChunk = destinationChunk;
+        }
+
+        private void BackgroundLoop()
+        {
+            while (true)
+            {
+                FillChunkRenderer();
+                Thread.Sleep(1);
+            }
         }
     }
 }
