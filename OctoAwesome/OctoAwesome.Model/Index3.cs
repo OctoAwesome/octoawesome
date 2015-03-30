@@ -46,10 +46,7 @@ namespace OctoAwesome.Model
         /// <param name="size">Maximalwert für X</param>
         public void NormalizeX(int size)
         {
-            if (X < 0)
-                X += (int)(-(X / size) + 1) * size;
-
-            X %= size;
+            X = Index2.Normalize(X, size);
         }
 
         /// <summary>
@@ -58,10 +55,7 @@ namespace OctoAwesome.Model
         /// <param name="size">Maximalwert für Y</param>
         public void NormalizeY(int size)
         {
-            if (Y < 0)
-                Y += (int)(-(Y / size) + 1) * size;
-
-            Y %= size;
+            Y = Index2.Normalize(Y, size);
         }
 
         /// <summary>
@@ -70,10 +64,7 @@ namespace OctoAwesome.Model
         /// <param name="size">Maximalwert für Z</param>
         public void NormalizeZ(int size)
         {
-            if (Z < 0)
-                Z += (int)(-(Z / size) + 1) * size;
-
-            Z %= size;
+            Z = Index2.Normalize(Z, size);
         }
 
         /// <summary>
