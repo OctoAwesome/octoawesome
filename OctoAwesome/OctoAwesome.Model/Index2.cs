@@ -83,7 +83,7 @@ namespace OctoAwesome.Model
         /// Normalisiert die Y-Achse auf die angegebene Größe.
         /// </summary>
         /// <param name="size">2D-Größe (Y-Anzeil wird genommen)</param>
-        public void NormaizeY(Index2 size)
+        public void NormalizeY(Index2 size)
         {
             NormalizeY(size.Y);
         }
@@ -92,7 +92,7 @@ namespace OctoAwesome.Model
         /// Normalisiert die Y-Achse auf die angegebene Größe.
         /// </summary>
         /// <param name="size">3D-Größe (Y-Anzeil wird genommen)</param>
-        public void NormaizeY(Index3 size)
+        public void NormalizeY(Index3 size)
         {
             NormalizeY(size.Y);
         }
@@ -102,7 +102,7 @@ namespace OctoAwesome.Model
         /// </summary>
         /// <param name="x">Größe in X-Richtung</param>
         /// <param name="y">Größe in Y-Richtung</param>
-        public void Normalize(int x, int y)
+        public void NormalizeXY(int x, int y)
         {
             NormalizeX(x);
             NormalizeY(y);
@@ -112,18 +112,18 @@ namespace OctoAwesome.Model
         /// Normalisiert den Wert von X und Y auf den angegebenen Grenzbereich.
         /// </summary>
         /// <param name="size">2D Size</param>
-        public void Normalize(Index2 size)
+        public void NormalizeXY(Index2 size)
         {
-            Normalize(size.X, size.Y);
+            NormalizeXY(size.X, size.Y);
         }
 
         /// <summary>
         /// Normalisiert den Wert von X und Y auf den angegebenen Grenzbereich.
         /// </summary>
         /// <param name="size">3D Size</param>
-        public void Normalize(Index3 size)
+        public void NormalizeXY(Index3 size)
         {
-            Normalize(size.X, size.Y);
+            NormalizeXY(size.X, size.Y);
         }
 
         /// <summary>
@@ -199,6 +199,10 @@ namespace OctoAwesome.Model
         /// <returns></returns>
         public static int NormalizeAxis(int value, int size)
         {
+            // Sicherheitsabfrage für die Normalisierungsgröße
+            if (size < 1)
+                throw new ArgumentException("Size darf nicht kleiner als 1 sein");
+
             value %= size;
             if (value < 0) value += size;
             return value;
@@ -214,7 +218,7 @@ namespace OctoAwesome.Model
         public static int ShortestDistanceOnAxis(int origin, int destination, int size)
         {
             origin = NormalizeAxis(origin, size);
-            destination = NormalizeAxis(origin, size);
+            destination = NormalizeAxis(destination, size);
             int half = size / 2;
 
             int distance = destination - origin;
