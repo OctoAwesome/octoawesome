@@ -15,9 +15,9 @@ namespace OctoAwesomeDX
 
         GraphicsDeviceManager graphics;
 
-        EgoCameraComponent egoCamera;
+        CameraComponent egoCamera;
         InputComponent input;
-        Render3DComponent render3d;
+        SceneComponent render3d;
         WorldComponent world;
         HudComponent hud;
 
@@ -41,11 +41,11 @@ namespace OctoAwesomeDX
             world.UpdateOrder = 2;
             Components.Add(world);
 
-            egoCamera = new EgoCameraComponent(this, world);
+            egoCamera = new CameraComponent(this, world);
             egoCamera.UpdateOrder = 3;
             Components.Add(egoCamera);
 
-            render3d = new Render3DComponent(this, world, egoCamera);
+            render3d = new SceneComponent(this, world, egoCamera);
             render3d.DrawOrder = 1;
             Components.Add(render3d);
 

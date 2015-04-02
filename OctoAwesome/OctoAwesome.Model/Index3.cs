@@ -272,6 +272,25 @@ namespace OctoAwesome.Model
                 ShortestDistanceZ(destination.Z, size.Z));
         }
 
+        /// <summary>
+        /// Ermittelt die Entferung zum Nullpunkt.
+        /// </summary>
+        /// <returns></returns>
+        public double Length()
+        {
+            return Math.Sqrt(LengthSquared());
+            
+        }
+
+        /// <summary>
+        /// Ermittelt die Entfernung zum Nullpunkt im Quadrat.
+        /// </summary>
+        /// <returns></returns>
+        public int LengthSquared()
+        {
+            return (X * X) + (Y * Y) + (Z * Z);
+        }
+
         public static Index3 operator +(Index3 i1, Index3 i2)
         {
             return new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z + i2.Z);

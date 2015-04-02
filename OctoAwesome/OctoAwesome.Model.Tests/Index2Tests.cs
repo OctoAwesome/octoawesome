@@ -264,5 +264,11 @@ namespace OctoAwesome.Model.Tests
             Assert.AreEqual(i2, i1 / 3);
             Assert.AreEqual(i3, i1 / -2);
         }
+
+        [TestMethod]
+        public void Index2LengthTest()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
