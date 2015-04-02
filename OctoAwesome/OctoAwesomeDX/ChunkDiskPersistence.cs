@@ -25,7 +25,7 @@ namespace OctoAwesome
         public IChunk Load(IPlanet planet, Index3 index)
         {
             var root = GetRoot();
-            string filename = planet.ToString() + "_" + index.X + "_" + index.Y + "_" + index.Z + ".chunk";
+            string filename = planet.Id.ToString() + "_" + index.X + "_" + index.Y + "_" + index.Z + ".chunk";
 
             if (!File.Exists(root.FullName + "\\" + filename))
                 return null;

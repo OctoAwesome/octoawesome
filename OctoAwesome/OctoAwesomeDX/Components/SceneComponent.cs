@@ -18,6 +18,7 @@ namespace OctoAwesome.Components
     {
         public static Index3 VIEWRANGE = new Index3(10, 10, 5);
         public static int TEXTURESIZE = 64;
+        public static int SELECTIONRANGE = 8;
 
         private WorldComponent world;
         private CameraComponent camera;
@@ -144,18 +145,22 @@ namespace OctoAwesome.Components
                     highPrioUpdate.Enqueue(renderer);
             }
 
-            Index3 cell = world.World.Player.Position.GlobalBlockIndex;
-            int range = 8;
+            Index3 localcell = world.World.Player.Position.LocalBlockIndex;
+            Index3 currentChunk = world.World.Player.Position.ChunkIndex;
+
             Vector3? selected = null;
             IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
             float? bestDistance = null;
-            for (int z = cell.Z - range; z < cell.Z + range; z++)
+            for (int z = localcell.Z - SELECTIONRANGE; z < localcell.Z + SELECTIONRANGE; z++)
             {
-                for (int y = cell.Y - range; y < cell.Y + range; y++)
+                for (int y = localcell.Y - SELECTIONRANGE; y < localcell.Y + SELECTIONRANGE; y++)
                 {
-                    for (int x = cell.X - range; x < cell.X + range; x++)
+                    for (int x = localcell.X - SELECTIONRANGE; x < localcell.X + SELECTIONRANGE; x++)
                     {
-                        Index3 pos = new Index3(x, y, z);
+                        Index3 pos = new Index3(
+                            x + (currentChunk.X * Chunk.CHUNKSIZE_X), 
+                            y + (currentChunk.Y * Chunk.CHUNKSIZE_Y), 
+                            z + (currentChunk.Z * Chunk.CHUNKSIZE_Z));
 
                         IBlock block = planet.GetBlock(pos);
                         if (block == null)
@@ -175,10 +180,11 @@ namespace OctoAwesome.Components
                                 if (!bestDistance.HasValue || bestDistance.Value > distance)
                                 {
                                     bestDistance = distance.Value;
-                                    selected = new Vector3(
-                                        (world.World.Player.Position.ChunkIndex.X * Chunk.CHUNKSIZE_X) + x,
-                                        (world.World.Player.Position.ChunkIndex.Y * Chunk.CHUNKSIZE_Y) + y,
-                                        (world.World.Player.Position.ChunkIndex.Z * Chunk.CHUNKSIZE_Z) + z);
+                                    selected = new Vector3(pos.X, pos.Y, pos.Z); 
+                                    //new Vector3(
+                                    //    (world.World.Player.Position.ChunkIndex.X * Chunk.CHUNKSIZE_X) + x,
+                                    //    (world.World.Player.Position.ChunkIndex.Y * Chunk.CHUNKSIZE_Y) + y,
+                                    //    (world.World.Player.Position.ChunkIndex.Z * Chunk.CHUNKSIZE_Z) + z);
                                 }
                             }
                         }
@@ -202,8 +208,31 @@ namespace OctoAwesome.Components
 
             Index3 chunkOffset = world.World.Player.Position.ChunkIndex;
 
-            for (int i = 0; i < chunkRenderer.Length; i++)
-                chunkRenderer[i].Draw(camera.View, chunkOffset);
+            int renderCounter = 0;
+            foreach (var renderer in activeChunkRenderer.ToArray())
+	        {
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    renderer.ChunkIndex, new Index2(
+                        renderer.Chunk.Planet.Size.X, 
+                        renderer.Chunk.Planet.Size.Y));
+
+                BoundingBox chunkBox = new BoundingBox(
+                new Vector3(
+                    shift.X * OctoAwesome.Model.Chunk.CHUNKSIZE_X,
+                    shift.Y * OctoAwesome.Model.Chunk.CHUNKSIZE_Y,
+                    shift.Z * OctoAwesome.Model.Chunk.CHUNKSIZE_Z),
+                new Vector3(
+                    (shift.X + 1) * OctoAwesome.Model.Chunk.CHUNKSIZE_X,
+                    (shift.Y + 1) * OctoAwesome.Model.Chunk.CHUNKSIZE_Y,
+                    (shift.Z + 1) * OctoAwesome.Model.Chunk.CHUNKSIZE_Z));
+
+                if (camera.Frustrum.Intersects(chunkBox))
+                {
+                    renderCounter++;
+                    renderer.Draw(camera, shift);
+                }
+	        }
+            Console.WriteLine(renderCounter);
 
             if (world.SelectedBox.HasValue)
             {
@@ -225,7 +254,9 @@ namespace OctoAwesome.Components
         private void FillChunkRenderer()
         {
             Index3 destinationChunk = world.World.Player.Position.ChunkIndex;
-            IPlanet planet = world.World.GetPlanet(0);
+            IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
+
+            HandleHighPrioUpdates();
 
             if (destinationChunk == currentChunk)
                 return;
@@ -254,13 +285,7 @@ namespace OctoAwesome.Components
 
             foreach (var distance in distances)
             {
-                // High Prio Interrupt
-                while (highPrioUpdate.Count > 0)
-                {
-                    var renderer = highPrioUpdate.Dequeue();
-                    if (activeChunkRenderer.Contains(renderer))
-                        renderer.RegenerateVertexBuffer();
-                }
+                HandleHighPrioUpdates();
 
                 Index3 chunkIndex = destinationChunk + distance;
 
@@ -282,6 +307,17 @@ namespace OctoAwesome.Components
             }
 
             currentChunk = destinationChunk;
+        }
+
+        private void HandleHighPrioUpdates()
+        {
+            // High Prio Interrupt
+            while (highPrioUpdate.Count > 0)
+            {
+                var renderer = highPrioUpdate.Dequeue();
+                if (activeChunkRenderer.Contains(renderer))
+                    renderer.RegenerateVertexBuffer();
+            }
         }
 
         private void BackgroundLoop()
