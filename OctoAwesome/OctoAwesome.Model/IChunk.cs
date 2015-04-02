@@ -13,6 +13,11 @@ namespace OctoAwesome.Model
     public interface IChunk
     {
         /// <summary>
+        /// Referenz auf den Planeten.
+        /// </summary>
+        IPlanet Planet { get; }
+
+        /// <summary>
         /// Chunk-Position innerhalb des Planeten.
         /// </summary>
         Index3 Index { get; }

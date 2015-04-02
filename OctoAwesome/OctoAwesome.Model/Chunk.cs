@@ -34,16 +34,19 @@ namespace OctoAwesome.Model
         /// </summary>
         public Index3 Index { get; private set; }
 
+        public IPlanet Planet { get; private set; }
+
         /// <summary>
         /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
         /// dazu verwendet werden herauszufinden, ob es Änderungen gab.
         /// </summary>
         public int ChangeCounter { get; private set; }
 
-        public Chunk(Index3 pos)
+        public Chunk(Index3 pos, IPlanet planet)
         {
             blocks = new IBlock[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
             Index = pos;
+            Planet = planet;
             ChangeCounter = 0;
         }
 
