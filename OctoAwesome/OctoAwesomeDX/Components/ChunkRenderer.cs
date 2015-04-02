@@ -109,7 +109,7 @@ namespace OctoAwesome.Components
             //{
                 List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
                 List<int> index = new List<int>();
-                int textureColumns = textures.Width / Render3DComponent.TEXTURESIZE;
+                int textureColumns = textures.Width / SceneComponent.TEXTURESIZE;
                 float textureWidth = 1f / textureColumns;
 
                 // BlockTypes sammlen

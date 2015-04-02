@@ -14,15 +14,19 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Components
 {
-    internal sealed class Render3DComponent : DrawableGameComponent
+    internal sealed class SceneComponent : DrawableGameComponent
     {
-        public static Index3 VIEWRANGE = new Index3(5, 5, 2);
+        public static Index3 VIEWRANGE = new Index3(10, 10, 5);
         public static int TEXTURESIZE = 64;
 
         private WorldComponent world;
-        private EgoCameraComponent camera;
+        private CameraComponent camera;
 
         private ChunkRenderer[] chunkRenderer;
+
+        private Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
+        private List<ChunkRenderer> activeChunkRenderer = new List<ChunkRenderer>();
+        private List<Index3> distances = new List<Index3>();
 
         private BasicEffect selectionEffect;
 
@@ -35,7 +39,7 @@ namespace OctoAwesome.Components
         private Thread backgroundThread;
 
 
-        public Render3DComponent(Game game, WorldComponent world, EgoCameraComponent camera)
+        public SceneComponent(Game game, WorldComponent world, CameraComponent camera)
             : base(game)
         {
             this.world = world;
@@ -85,7 +89,21 @@ namespace OctoAwesome.Components
                 ((VIEWRANGE.Z * 2) + 1)];
 
             for (int i = 0; i < chunkRenderer.Length; i++)
-                chunkRenderer[i] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
+            {
+                chunkRenderer[i] = new ChunkRenderer(
+                    GraphicsDevice, camera.Projection, blockTextures)
+                    {
+                        InUse = false
+                    };
+                freeChunkRenderer.Enqueue(chunkRenderer[i]);
+            }
+
+            // Entfernungsarray erzeugen
+            for (int x = -VIEWRANGE.X; x <= VIEWRANGE.X; x++)
+                for (int y = -VIEWRANGE.Y; y <= VIEWRANGE.Y; y++)
+                    for (int z = -VIEWRANGE.Z; z <= VIEWRANGE.Z; z++)
+                        distances.Add(new Index3(x, y, z));
+            distances = distances.OrderBy(d => d.LengthSquared()).ToList();
 
             backgroundThread = new Thread(BackgroundLoop);
             backgroundThread.Priority = ThreadPriority.Lowest;
@@ -119,8 +137,6 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            // FillChunkRenderer();
-
             for (int i = 0; i < chunkRenderer.Length; i++)
                 chunkRenderer[i].Update();
 
@@ -210,7 +226,6 @@ namespace OctoAwesome.Components
 
         private void FillChunkRenderer()
         {
-
             Index3 destinationChunk = world.World.Player.Position.ChunkIndex;
             IPlanet planet = world.World.GetPlanet(0);
 
@@ -220,8 +235,7 @@ namespace OctoAwesome.Components
             Index3 shift = currentChunk.ShortestDistanceXY(
                 destinationChunk, new Index2(planet.Size.X, planet.Size.Y));
 
-            Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
-            for (int i = 0; i < chunkRenderer.Length; i++)
+            for (int i = 0; i < activeChunkRenderer.Count; i++)
             {
                 ChunkRenderer renderer = chunkRenderer[i];
 
@@ -234,31 +248,29 @@ namespace OctoAwesome.Components
                 {
                     renderer.InUse = false;
                     freeChunkRenderer.Enqueue(renderer);
+                    activeChunkRenderer.Remove(renderer);
                 }
             }
 
             Console.WriteLine("Free Chunks: " + freeChunkRenderer.Count);
 
-            for (int x = -VIEWRANGE.X; x <= VIEWRANGE.X; x++)
+            foreach (var distance in distances)
             {
-                for (int y = -VIEWRANGE.Y; y <= VIEWRANGE.Y; y++)
+                Index3 chunkIndex = destinationChunk + distance;
+
+                chunkIndex.NormalizeX(planet.Size.X);
+                chunkIndex.NormalizeY(planet.Size.Y);
+
+                if (!activeChunkRenderer.Any(c => c.RelativeIndex == distance))
                 {
-                    for (int z = -VIEWRANGE.Z; z <= VIEWRANGE.Z; z++)
+                    IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
+                    if (chunk != null)
                     {
-                        Index3 relative = new Index3(x, y, z);
-                        Index3 chunkIndex = destinationChunk + relative;
-
-                        chunkIndex.NormalizeX(planet.Size.X);
-                        chunkIndex.NormalizeY(planet.Size.Y);
-
-                        if (!chunkRenderer.Any(c => c.RelativeIndex == relative && c.InUse))
-                        {
-                            IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
-                            ChunkRenderer renderer = freeChunkRenderer.Dequeue();
-                            renderer.SetChunk(chunk);
-                            renderer.RelativeIndex = relative;
-                            renderer.InUse = true;
-                        }
+                        ChunkRenderer renderer = freeChunkRenderer.Dequeue();
+                        renderer.SetChunk(chunk);
+                        renderer.RelativeIndex = distance;
+                        renderer.InUse = true;
+                        activeChunkRenderer.Add(renderer);
                     }
                 }
             }

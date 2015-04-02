@@ -45,13 +45,13 @@
     <Compile Include="BlockDefinitionManager.cs" />
     <Compile Include="ChunkDiskPersistence.cs" />
     <Compile Include="Components\ChunkRenderer.cs" />
-    <Compile Include="Components\EgoCameraComponent.cs" />
+    <Compile Include="Components\CameraComponent.cs" />
     <Compile Include="Components\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />
     <Compile Include="Components\InputComponent.cs" />
     <Compile Include="Components\KeyboardInput.cs" />
     <Compile Include="Components\MouseInput.cs" />
-    <Compile Include="Components\Render3DComponent.cs" />
+    <Compile Include="Components\SceneComponent.cs" />
     <Compile Include="Components\WorldComponent.cs" />
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />

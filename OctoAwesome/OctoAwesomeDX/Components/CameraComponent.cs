@@ -6,11 +6,11 @@ using System.Text;
 
 namespace OctoAwesome.Components
 {
-    internal sealed class EgoCameraComponent : DrawableGameComponent
+    internal sealed class CameraComponent : DrawableGameComponent
     {
         private WorldComponent world;
 
-        public EgoCameraComponent(Game game, WorldComponent world)
+        public CameraComponent(Game game, WorldComponent world)
             : base(game)
         {
             this.world = world;
