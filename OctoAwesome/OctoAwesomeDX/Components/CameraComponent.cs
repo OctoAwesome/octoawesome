@@ -59,6 +59,7 @@ namespace OctoAwesome.Components
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);
+            Frustrum = new BoundingFrustum(View);
         }
 
         public Vector3 CameraPosition { get; private set; }
@@ -69,6 +70,8 @@ namespace OctoAwesome.Components
 
         public Matrix Projection { get; private set; }
 
-        public Ray PickRay { get; set; }
+        public Ray PickRay { get; private set; }
+
+        public BoundingFrustum Frustrum { get; private set; }
     }
 }
