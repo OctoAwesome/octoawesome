@@ -26,6 +26,7 @@ namespace OctoAwesome.Components
 
         private Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
         private List<ChunkRenderer> activeChunkRenderer = new List<ChunkRenderer>();
+        private Queue<ChunkRenderer> highPrioUpdate = new Queue<ChunkRenderer>();
         private List<Index3> distances = new List<Index3>();
 
         private BasicEffect selectionEffect;
@@ -137,27 +138,24 @@ namespace OctoAwesome.Components
 
         public override void Update(GameTime gameTime)
         {
-            for (int i = 0; i < chunkRenderer.Length; i++)
-                chunkRenderer[i].Update();
+            foreach (var renderer in chunkRenderer)
+            {
+                if (renderer.NeedUpdate() && !highPrioUpdate.Contains(renderer))
+                    highPrioUpdate.Enqueue(renderer);
+            }
 
-            int cellX = world.World.Player.Position.LocalBlockIndex.X;
-            int cellY = world.World.Player.Position.LocalBlockIndex.Y;
-            int cellZ = world.World.Player.Position.LocalBlockIndex.Z;
-
+            Index3 cell = world.World.Player.Position.GlobalBlockIndex;
             int range = 8;
             Vector3? selected = null;
             IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
             float? bestDistance = null;
-            for (int z = cellZ - range; z < cellZ + range; z++)
+            for (int z = cell.Z - range; z < cell.Z + range; z++)
             {
-                for (int y = cellY - range; y < cellY + range; y++)
+                for (int y = cell.Y - range; y < cell.Y + range; y++)
                 {
-                    for (int x = cellX - range; x < cellX + range; x++)
+                    for (int x = cell.X - range; x < cell.X + range; x++)
                     {
-                        Index3 pos = new Index3(
-                            x + (currentChunk.X * Chunk.CHUNKSIZE_X),
-                            y + (currentChunk.Y * Chunk.CHUNKSIZE_Y),
-                            z + (currentChunk.Z * Chunk.CHUNKSIZE_Z));
+                        Index3 pos = new Index3(x, y, z);
 
                         IBlock block = planet.GetBlock(pos);
                         if (block == null)
@@ -256,6 +254,14 @@ namespace OctoAwesome.Components
 
             foreach (var distance in distances)
             {
+                // High Prio Interrupt
+                while (highPrioUpdate.Count > 0)
+                {
+                    var renderer = highPrioUpdate.Dequeue();
+                    if (activeChunkRenderer.Contains(renderer))
+                        renderer.RegenerateVertexBuffer();
+                }
+
                 Index3 chunkIndex = destinationChunk + distance;
 
                 chunkIndex.NormalizeX(planet.Size.X);
