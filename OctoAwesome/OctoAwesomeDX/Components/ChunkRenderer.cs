@@ -71,10 +71,13 @@ namespace OctoAwesome.Components
             if (!InUse || chunk == null)
                 return;
 
+            Index3 shift = chunkOffset.ShortestDistanceXY(
+                chunk.Index, new Index2(chunk.Planet.Size.X, chunk.Planet.Size.Y));
+
             effect.World = Matrix.CreateTranslation(
-                RelativeIndex.X * Chunk.CHUNKSIZE_X,
-                RelativeIndex.Y * Chunk.CHUNKSIZE_Y,
-                RelativeIndex.Z * Chunk.CHUNKSIZE_Z);
+                shift.X * Chunk.CHUNKSIZE_X,
+                shift.Y * Chunk.CHUNKSIZE_Y,
+                shift.Z * Chunk.CHUNKSIZE_Z);
             effect.View = view;
             effect.Texture = textures;
 
