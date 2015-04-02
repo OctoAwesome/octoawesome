@@ -10,7 +10,7 @@ namespace OctoAwesome.Model
     {
         public IPlanet GeneratePlanet(int seed)
         {
-            return new Planet(new Index3(1000, 1000, 1), this, seed);
+            return new Planet(new Index3(1000, 1000, 3), this, seed);
         }
 
         public IChunk[] GenerateChunk(IPlanet planet, Index2 index)
@@ -18,25 +18,25 @@ namespace OctoAwesome.Model
             IChunk[] result = new IChunk[planet.Size.Z];
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
-            {
                 result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet);
 
-                for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
+            int part = (planet.Size.Z * Chunk.CHUNKSIZE_Z) / 4;
+
+            for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
+            {
+                float heightY = (float)Math.Sin((float)(y * Math.PI) / 15f);
+                for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                 {
-                    for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
+                    float heightX = (float)Math.Sin((float)(x * Math.PI) / 18f);
+
+                    float height = ((heightX + heightY + 2) / 4) * (2 * part);
+                    for (int z = 0; z < planet.Size.Z * Chunk.CHUNKSIZE_Z; z++)
                     {
-                        float heightY = (float)Math.Sin((float)(y * Math.PI) / 32f);
-                        for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
+                        if (z < (int)(height + part))
                         {
-                            float heightX = (float)Math.Sin((float)(x * Math.PI) / 32f);
-
-                            float height = (heightX + heightY) * 2;
-
-
-                            if (z < (int)(16 + height))
-                            {
-                                result[layer].SetBlock(x, y, z, new SandBlock());
-                            }
+                            int block = z % (Chunk.CHUNKSIZE_Z);
+                            int layer = (int)((z - block) / Chunk.CHUNKSIZE_Z);
+                            result[layer].SetBlock(x, y, block, new SandBlock());
                         }
                     }
                 }
