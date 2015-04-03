@@ -12,6 +12,11 @@ Karl-Josef Huber per YouTube (31.03.)
 - Umweg über DirectoryInfo umständlich. Einfach Path.GetDirectoryName verwenden
 - Path.FileSeprator verwenden
 
+Andy via Email (03.04.)
+=======================
+- Cache an Viewrange koppeln, sonst überlauf
+- Viewrange unbedingt in App.Config
+
 Cleanup
 =======
 - Universe-Model einziehen
@@ -24,3 +29,5 @@ Cleanup
 - EgoCam und Renderer3D umbenennen (CameraComponent & SceneComponent)
 - Angle-Klasse
 - Chunkgröße auf 16 runter (short)
+- Cache generischer machen
+- Stabile Version einer exe zum Download
