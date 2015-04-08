@@ -207,8 +207,11 @@ namespace OctoAwesome.Components
 
             Index3 chunkOffset = world.World.Player.Position.ChunkIndex;
 
-            foreach (var renderer in activeChunkRenderer.ToArray())
+            foreach (var renderer in chunkRenderer)
 	        {
+                if (!renderer.InUse)
+                    continue;
+
                 Index3 shift = chunkOffset.ShortestDistanceXY(
                     renderer.ChunkIndex, new Index2(
                         renderer.Chunk.Planet.Size.X, 
