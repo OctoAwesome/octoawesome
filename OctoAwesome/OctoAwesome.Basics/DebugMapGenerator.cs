@@ -8,9 +8,14 @@ namespace OctoAwesome.Basics
 {
     public class DebugMapGenerator : IMapGenerator
     {
-        public IPlanet GeneratePlanet(int seed)
+        public IUniverse GenerateUniverse(string name)
         {
-            return new Planet(new Index3(1000, 1000, 3), this, seed);
+            return new Universe(0, name);
+        }
+
+        public IPlanet GeneratePlanet(IUniverse universe, int seed)
+        {
+            return new Planet(0, universe, new Index3(1000, 1000, 3), this, seed);
         }
 
         public IChunk[] GenerateChunk(IPlanet planet, Index2 index)

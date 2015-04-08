@@ -16,6 +16,11 @@ namespace OctoAwesome
         int Id { get; }
 
         /// <summary>
+        /// Referenz auf das Parent Universe
+        /// </summary>
+        IUniverse Universe { get; }
+
+        /// <summary>
         /// Seed des Zufallsgenerators dieses Planeten.
         /// </summary>
         int Seed { get; }
