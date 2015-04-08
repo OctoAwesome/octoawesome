@@ -4,18 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4B4EE9AE-5492-425B-BD42-813CAA6587E8}</ProjectGuid>
+    <ProjectGuid>{739F0779-A605-49C9-A298-FE30DC628C9E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OctoAwesome.Model</RootNamespace>
-    <AssemblyName>OctoAwesome.Model</AssemblyName>
+    <RootNamespace>OctoAwesome.Basics</RootNamespace>
+    <AssemblyName>OctoAwesome.Basics</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.3.0.1818, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -49,12 +44,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugMapGenerator.cs" />
+    <Compile Include="GrassBlock.cs" />
+    <Compile Include="GrassBlockDefinition.cs" />
+    <Compile Include="GroundBlock.cs" />
+    <Compile Include="GroundBlockDefinition.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SandBlock.cs" />
+    <Compile Include="SandBlockDefinition.cs" />
+    <Compile Include="StoneBlock.cs" />
+    <Compile Include="StoneBlockDefinition.cs" />
+    <Compile Include="WaterBlock.cs" />
+    <Compile Include="WaterBlockDefinition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
+      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
+      <Name>OctoAwesome</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -63,21 +75,49 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\water_top.png" />
-    <None Include="Resources\water_side.png" />
-    <None Include="Resources\water_bottom.png" />
-    <None Include="Resources\sand_top.png" />
-    <None Include="Resources\sand_side.png" />
-    <None Include="Resources\sand_bottom.png" />
-    <None Include="Resources\stone_top.png" />
-    <None Include="Resources\stone_side.png" />
-    <None Include="Resources\stone_bottom.png" />
-    <None Include="Resources\ground_top.png" />
-    <None Include="Resources\ground_side.png" />
-    <None Include="Resources\ground_bottom.png" />
-    <None Include="Resources\grass_top.png" />
-    <None Include="Resources\grass_side.png" />
     <None Include="Resources\grass_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grass_side.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\grass_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ground_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ground_side.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ground_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sand_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sand_side.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sand_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stone_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stone_side.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stone_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water_side.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\water_top.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

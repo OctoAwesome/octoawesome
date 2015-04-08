@@ -1,0 +1,43 @@
+﻿Ralf per Codeplex (13.03.)
+==========================
+- Bitte dreifach-Operationen vereinfachen (also bei der ganzen Achsen-Trennung)
+
+Lassi per Codeplex (17.03.)
+===========================
+2) Noch ein Fehler bei der Berechnung
+   "powerdirection += ExternalForce;" müsste "powerdirection += externalpower;" sein
+
+Karl-Josef Huber per YouTube (31.03.)
+=====================================
+- Umweg über DirectoryInfo umständlich. Einfach Path.GetDirectoryName verwenden
+- Path.FileSeprator verwenden
+
+Andy via Email (03.04.)
+=======================
+- Cache an Viewrange koppeln, sonst überlauf
+- Viewrange unbedingt in App.Config
+
+Andy via Email (07.04.)
+=======================
+- Game States (Loading, Playing, Saving) einführen
+- Nur Chunks speichern, die einen Dirty-Flag haben
+
+Cleanup
+=======
+1 Universe-Model einziehen
+1 Parent-Referenzen (Planet/Chunk/Block?)
+3 Texture (Mehrteilig)
+3 Friction (Auf Block-Instanz)
+1 Achitektur
+  * OctoAwesome Assembly (Basics, Model, Controller)
+  * Extentions (MapGenerator)
+  * Runtime (Extention Loader, Persistierung,...)
+  * Client (DX)
+  * Server (WinForms)
+- Runtime review
+  * Update Domains
+  * Handover
+- Chunk-Array im Planet abflachen -> Durch Cache ersetzen
+- Angle-Klasse
+- Chunkgröße auf 16 runter? Oder dynamisch machen
+- Cache generischer machen

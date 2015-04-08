@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4B4EE9AE-5492-425B-BD42-813CAA6587E8}</ProjectGuid>
+    <ProjectGuid>{93601DB8-F134-418E-8B35-11E30CFEC31C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OctoAwesome.Model</RootNamespace>
-    <AssemblyName>OctoAwesome.Model</AssemblyName>
+    <RootNamespace>OctoAwesome</RootNamespace>
+    <AssemblyName>OctoAwesome</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -49,35 +49,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Axis.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="Chunk.cs" />
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="IBlock.cs" />
+    <Compile Include="IBlockDefinition.cs" />
+    <Compile Include="IChunk.cs" />
+    <Compile Include="IChunkPersistence.cs" />
+    <Compile Include="IInputSet.cs" />
+    <Compile Include="IMapGenerator.cs" />
+    <Compile Include="Index2.cs" />
+    <Compile Include="Index3.cs" />
+    <Compile Include="IPlanet.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="Planet.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\water_top.png" />
-    <None Include="Resources\water_side.png" />
-    <None Include="Resources\water_bottom.png" />
-    <None Include="Resources\sand_top.png" />
-    <None Include="Resources\sand_side.png" />
-    <None Include="Resources\sand_bottom.png" />
-    <None Include="Resources\stone_top.png" />
-    <None Include="Resources\stone_side.png" />
-    <None Include="Resources\stone_bottom.png" />
-    <None Include="Resources\ground_top.png" />
-    <None Include="Resources\ground_side.png" />
-    <None Include="Resources\ground_bottom.png" />
-    <None Include="Resources\grass_top.png" />
-    <None Include="Resources\grass_side.png" />
-    <None Include="Resources\grass_bottom.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
