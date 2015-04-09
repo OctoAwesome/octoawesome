@@ -22,6 +22,20 @@ Andy via Email (07.04.)
 - Game States (Loading, Playing, Saving) einführen
 - Nur Chunks speichern, die einen Dirty-Flag haben
 
+Andy & Patrick
+==============
+- Zugriff auf ActiveChunk in Cleanup-Schleife ist mist (SceneComponent, Zeile 265)
+
+Patrick
+=======
+- Persistierung abschaltbar machen (per config oder pauschal bei Debug?)
+
+Ralf per Email (08.04.)
+=======================
+- Groß-Kleinschreibung beachten bei Pfaden im Persistieren
+- Groß-Kleinschreibung beachten bei vorkompilierten Assets "hud" vs. "Hud
+- FileSeparator richtig anwenden wegen Linux
+
 Cleanup
 =======
 1 Universe-Model einziehen
