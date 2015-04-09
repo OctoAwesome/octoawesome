@@ -57,6 +57,7 @@
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkPersistence.cs" />
+    <Compile Include="IClimateMap.cs" />
     <Compile Include="IInputSet.cs" />
     <Compile Include="IMapGenerator.cs" />
     <Compile Include="Index2.cs" />
@@ -64,6 +65,9 @@
     <Compile Include="IPlanet.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="Noise\INoise.cs" />
+    <Compile Include="Noise\PerlinNoiseGenerator.cs" />
+    <Compile Include="Noise\SimplexNoiseGenerator.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

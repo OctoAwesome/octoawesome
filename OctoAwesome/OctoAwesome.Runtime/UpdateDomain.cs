@@ -28,7 +28,7 @@ namespace OctoAwesome.Runtime
 
             for (int p = 0; p < planetCount; p++)
             {
-                IPlanet planet = mapGenerator.GeneratePlanet(universe, (int)DateTime.Now.Ticks);
+                IPlanet planet = mapGenerator.GeneratePlanet(universe, 244);
                 planet.ChunkPersistence = chunkPersistence;
                 universe.SetPlanet(planet);
             }

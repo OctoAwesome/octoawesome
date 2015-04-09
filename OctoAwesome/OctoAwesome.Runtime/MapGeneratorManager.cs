@@ -10,7 +10,7 @@ namespace OctoAwesome.Runtime
     {
         public static IEnumerable<IMapGenerator> GetMapGenerators()
         {
-            return new[] { new DebugMapGenerator() };
+            return new[] { new ComplexPlanetGenerator() };
         }
     }
 }

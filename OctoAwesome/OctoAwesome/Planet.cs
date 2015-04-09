@@ -46,6 +46,8 @@ namespace OctoAwesome
         /// </summary>
         public IUniverse Universe { get; private set; }
 
+        public IClimateMap ClimateMap { get; protected set; }
+
         /// <summary>
         /// Seed des Zufallsgenerators dieses Planeten.
         /// </summary>
