@@ -44,6 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Biomes\FlatlandBiome.cs" />
+    <Compile Include="Biomes\HighMountainBiome.cs" />
+    <Compile Include="Biomes\HillsBiome.cs" />
+    <Compile Include="Biomes\IBiome.cs" />
+    <Compile Include="Biomes\LandBiomeGenerator.cs" />
+    <Compile Include="Biomes\OceanBiomeGenerator.cs" />
+    <Compile Include="Biomes\SuperBiomeBase.cs" />
+    <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
+    <Compile Include="Climate\ComplexClimateMap.cs" />
+    <Compile Include="ComplexPlanet.cs" />
+    <Compile Include="ComplexPlanetGenerator.cs" />
     <Compile Include="DebugMapGenerator.cs" />
     <Compile Include="GrassBlock.cs" />
     <Compile Include="GrassBlockDefinition.cs" />

@@ -262,9 +262,9 @@ namespace OctoAwesome.Components
             Index3 shift = currentChunk.ShortestDistanceXY(
                 destinationChunk, new Index2(planet.Size.X, planet.Size.Y));
 
-            for (int i = 0; i < activeChunkRenderer.Count; i++)
+            for (int i = activeChunkRenderer.Count - 1; i >= 0; i--)
             {
-                ChunkRenderer renderer = chunkRenderer[i];
+                ChunkRenderer renderer = activeChunkRenderer[i];
 
                 renderer.RelativeIndex -= shift;
 

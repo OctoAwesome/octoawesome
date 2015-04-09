@@ -30,6 +30,8 @@ namespace OctoAwesome
         /// </summary>
         Index3 Size { get; }
 
+        IClimateMap ClimateMap { get; }
+
         /// <summary>
         /// Instanz der Persistierungseinheit.
         /// </summary>
