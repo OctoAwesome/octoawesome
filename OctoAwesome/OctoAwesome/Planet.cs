@@ -22,14 +22,9 @@ namespace OctoAwesome
         private IMapGenerator generator;
 
         /// <summary>
-        /// Chunk Array.
+        /// Chunk Cache.
         /// </summary>
-        private IChunk[, ,] chunks;
-
-        /// <summary>
-        /// Speicher für den letzten Zugriff auf Chunks (Caching)
-        /// </summary>
-        private Dictionary<Index3, int> lastAccess = new Dictionary<Index3, int>();
+        private Cache<Index3, IChunk> chunks;
 
         /// <summary>
         /// Fortlaufender Counter für den Zugriff auf Chunks.
@@ -77,7 +72,28 @@ namespace OctoAwesome
             Size = size;
             Seed = seed;
 
-            chunks = new Chunk[Size.X, Size.Y, Size.Z];
+            chunks = new Cache<Index3,IChunk>(CACHELIMIT, loadChunk, saveChunk);
+        }
+
+        private IChunk loadChunk(Index3 index)
+        {
+            // Load from disk
+            IChunk first = ChunkPersistence.Load(this, index);
+            if (first != null)
+                return first;
+
+            IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
+            if (result != null && result.Length > index.Z)
+            {
+                return result[index.Z];
+            }
+
+            return null;
+        }
+
+        private void saveChunk(Index3 index, IChunk value)
+        {
+            ChunkPersistence.Save(value, value.Planet);
         }
 
         /// <summary>
@@ -92,45 +108,7 @@ namespace OctoAwesome
                 index.Z < 0 || index.Z >= Size.Z)
                 return null;
 
-            if (chunks[index.X, index.Y, index.Z] == null)
-            {
-                // Load from disk
-                IChunk first = ChunkPersistence.Load(this, index);
-                if (first != null)
-                {
-                    for (int z = 0; z < this.Size.Z; z++)
-                    {
-                        chunks[index.X, index.Y, z] = ChunkPersistence.Load(
-                            this, new Index3(index.X, index.Y, z));
-                        lastAccess.Add(new Index3(index.X, index.Y, z), accessCounter++);
-                    }
-                }
-                else
-                {
-                    IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
-                    for (int layer = 0; layer < this.Size.Z; layer++)
-                    {
-                        chunks[index.X, index.Y, layer] = result[layer];
-                        lastAccess.Add(new Index3(index.X, index.Y, layer), accessCounter++);
-                    }
-                }
-
-                // Cache regulieren
-                while (lastAccess.Count > CACHELIMIT)
-                {
-                    Index3 oldest = lastAccess.OrderBy(a => a.Value).Select(a => a.Key).First();
-                    var chunk = chunks[oldest.X, oldest.Y, oldest.Z];
-                    ChunkPersistence.Save(chunk, this);
-                    chunks[oldest.X, oldest.Y, oldest.Z] = null; // TODO: Pooling
-                    lastAccess.Remove(oldest);
-                }
-            }
-            else
-            {
-                lastAccess[index] = accessCounter++;
-            }
-
-            return chunks[index.X, index.Y, index.Z];
+            return chunks.Get(index);
         }
 
         /// <summary>
@@ -174,17 +152,7 @@ namespace OctoAwesome
         /// </summary>
         public void Save()
         {
-            for (int z = 0; z < Size.Z; z++)
-            {
-                for (int y = 0; y < Size.Y; y++)
-                {
-                    for (int x = 0; x < Size.X; x++)
-                    {
-                        if (chunks[x, y, z] != null)
-                            ChunkPersistence.Save(chunks[x, y, z], this);
-                    }
-                }
-            }
+            chunks.Flush();
         }
     }
 }
