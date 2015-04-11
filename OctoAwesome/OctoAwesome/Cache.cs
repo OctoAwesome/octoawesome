@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +11,9 @@ namespace OctoAwesome
     {
         private int size;
 
-        private Dictionary<I, CacheItem> _cache;
+        // private Dictionary<I, CacheItem> _cache;
+
+        private ConcurrentDictionary<I, CacheItem> _cache;
 
         private Stopwatch watch = new Stopwatch();
 
@@ -29,7 +32,7 @@ namespace OctoAwesome
             this.size = size;
             this.loadDelegate = loadDelegate;
             this.saveDelegate = saveDelegate;
-            _cache = new Dictionary<I, CacheItem>(size + 1);
+            _cache = new ConcurrentDictionary<I, CacheItem>(2, size + 1);
             watch.Start();
         }
 
@@ -38,14 +41,14 @@ namespace OctoAwesome
             CacheItem item = null;
 
             // Cache prüfen
-            lock (_cache)
+            //lock (_cache)
+            //{
+            if (_cache.TryGetValue(index, out item))
             {
-                if (_cache.TryGetValue(index, out item))
-                {
-                    item.LastAccess = watch.Elapsed;
-                    return item.Value;
-                }
+                item.LastAccess = watch.Elapsed;
+                return item.Value;
             }
+            //}
 
             V result = loadDelegate(index);
             if (result != null)
@@ -58,19 +61,22 @@ namespace OctoAwesome
                 };
 
                 CacheItem toRemove = null;
-                lock (_cache)
+                //lock (_cache)
+                //{
+                if (!_cache.ContainsKey(index))
                 {
-                    if (!_cache.ContainsKey(index))
+                    _cache.AddOrUpdate(index, item, (i, value) =>
                     {
-                        _cache.Add(index, item);
-                    }
-
-                    if (_cache.Count > size)
-                    {
-                        toRemove = _cache.Values.OrderBy(v => v.LastAccess).First();
-                        _cache.Remove(toRemove.Index);
-                    }
+                        return value;
+                    });
                 }
+
+                if (_cache.Count > size)
+                {
+                    toRemove = _cache.Values.OrderBy(v => v.LastAccess).First();
+                    _cache.TryRemove(toRemove.Index, out toRemove);
+                }
+                //}
 
                 if (toRemove != null && saveDelegate != null)
                     saveDelegate(toRemove.Index, toRemove.Value);
@@ -86,18 +92,15 @@ namespace OctoAwesome
 
         public void Flush()
         {
-            lock (_cache)
+            if (saveDelegate != null)
             {
-                if (saveDelegate != null)
+                foreach (var item in _cache.Values)
                 {
-                    foreach (var item in _cache.Values)
-                    {
-                        saveDelegate(item.Index, item.Value);
-                    }
+                    saveDelegate(item.Index, item.Value);
                 }
-
-                _cache.Clear();
             }
+
+            _cache.Clear();
         }
 
         private class CacheItem

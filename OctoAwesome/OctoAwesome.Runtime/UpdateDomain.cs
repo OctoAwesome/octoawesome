@@ -15,6 +15,7 @@ namespace OctoAwesome.Runtime
 
         private IMapGenerator mapGenerator;
         private IChunkPersistence chunkPersistence;
+
         public Player Player { get; private set; }
 
         public UpdateDomain(IInputSet input, int planetCount, IMapGenerator mapGenerator, IChunkPersistence chunkPersistence)

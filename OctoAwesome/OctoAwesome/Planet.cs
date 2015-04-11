@@ -24,12 +24,12 @@ namespace OctoAwesome
         /// <summary>
         /// Chunk Cache.
         /// </summary>
-        private Cache<Index3, IChunk> chunks;
+        private Cache<Index3, IChunk> l1Cache;
 
         /// <summary>
-        /// Fortlaufender Counter für den Zugriff auf Chunks.
+        /// Chunk Cache.
         /// </summary>
-        private int accessCounter = 0;
+        private Cache<Index3, IChunk> l2Cache;
 
         /// <summary>
         /// ID des Planeten.
@@ -72,10 +72,16 @@ namespace OctoAwesome
             Size = size;
             Seed = seed;
 
-            chunks = new Cache<Index3,IChunk>(CACHELIMIT, loadChunk, saveChunk);
+            l1Cache = new Cache<Index3, IChunk>(10, loadL1Chunk, null);
+            l2Cache = new Cache<Index3,IChunk>(CACHELIMIT, loadL2Chunk, saveChunk);
         }
 
-        private IChunk loadChunk(Index3 index)
+        private IChunk loadL1Chunk(Index3 index)
+        {
+            return l2Cache.Get(index);
+        }
+
+        private IChunk loadL2Chunk(Index3 index)
         {
             // Load from disk
             IChunk first = ChunkPersistence.Load(this, index);
@@ -108,7 +114,7 @@ namespace OctoAwesome
                 index.Z < 0 || index.Z >= Size.Z)
                 return null;
 
-            return chunks.Get(index);
+            return l2Cache.Get(index);
         }
 
         /// <summary>
@@ -124,7 +130,8 @@ namespace OctoAwesome
             Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
             
             // Betroffener Chunk ermitteln
-            IChunk chunk = GetChunk(coordinate.ChunkIndex);
+            // IChunk chunk = GetChunk(coordinate.ChunkIndex);
+            IChunk chunk = l1Cache.Get(coordinate.ChunkIndex);
             if (chunk == null)
                 return null;
 
@@ -152,7 +159,7 @@ namespace OctoAwesome
         /// </summary>
         public void Save()
         {
-            chunks.Flush();
+            l2Cache.Flush();
         }
     }
 }
