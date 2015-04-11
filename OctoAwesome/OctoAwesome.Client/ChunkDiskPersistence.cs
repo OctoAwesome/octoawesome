@@ -14,9 +14,9 @@ namespace OctoAwesome
         public void Save(IChunk chunk, IPlanet planet)
         {
             var root = GetRoot();
-
+            
             string filename = planet.Id.ToString() + "_" + chunk.Index.X + "_" + chunk.Index.Y + "_" + chunk.Index.Z + ".chunk";
-            using (Stream stream = File.Open(root.FullName + "\\" + filename, FileMode.Create, FileAccess.Write))
+            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create, FileAccess.Write))
             {
                 chunk.Serialize(stream);
             }
@@ -27,10 +27,10 @@ namespace OctoAwesome
             var root = GetRoot();
             string filename = planet.Id.ToString() + "_" + index.X + "_" + index.Y + "_" + index.Z + ".chunk";
 
-            if (!File.Exists(root.FullName + "\\" + filename))
+            if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
                 return null;
 
-            using (Stream stream = File.Open(root.FullName + "\\" + filename, FileMode.Open, FileAccess.Read))
+            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
             {
                 IChunk chunk = new Chunk(index, planet);
                 chunk.Deserialize(stream, BlockDefinitionManager.GetBlockDefinitions());
@@ -47,8 +47,8 @@ namespace OctoAwesome
             }
             else
             {
-                FileInfo file = new FileInfo(Assembly.GetExecutingAssembly().Location);
-                DirectoryInfo root = new DirectoryInfo(file.Directory + "\\OctoMap");
+                var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                DirectoryInfo root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
                 if (!root.Exists) root.Create();
                 return root;
             }

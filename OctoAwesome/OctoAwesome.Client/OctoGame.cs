@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using OctoAwesome;
 using OctoAwesome.Components;
 using System;
+using System.Configuration;
 using System.Linq;
 
 namespace OctoAwesomeDX
@@ -32,6 +34,26 @@ namespace OctoAwesomeDX
             this.IsMouseVisible = false;
 
             this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
+
+            int viewrange;
+            if (int.TryParse(ConfigurationManager.AppSettings["Viewrange"], out viewrange))
+            {
+                if (viewrange < 1)
+                    throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");
+
+                SceneComponent.VIEWRANGE = viewrange;
+            }
+
+            int viewheight;
+            if (int.TryParse(ConfigurationManager.AppSettings["Viewheight"], out viewheight))
+            {
+                if (viewheight < 1)
+                    throw new NotSupportedException("Viewheight in app.config darf nicht kleiner 1 sein");
+
+                SceneComponent.VIEWHEIGHT = viewheight;
+            }
+
+            Planet.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * ((viewheight * 2) + 1) * 2;
 
             input = new InputComponent(this);
             input.UpdateOrder = 1;

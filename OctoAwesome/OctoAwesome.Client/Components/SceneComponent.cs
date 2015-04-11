@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -15,7 +16,8 @@ namespace OctoAwesome.Components
 {
     internal sealed class SceneComponent : DrawableGameComponent
     {
-        public static Index3 VIEWRANGE = new Index3(10, 10, 5);
+        public static int VIEWRANGE = 10;
+        public static int VIEWHEIGHT = 5;
         public static int TEXTURESIZE = 64;
         public static int SELECTIONRANGE = 8;
 
@@ -85,9 +87,9 @@ namespace OctoAwesome.Components
             IPlanet planet = world.World.GetPlanet(0);
 
             chunkRenderer = new ChunkRenderer[
-                ((VIEWRANGE.X * 2) + 1) *
-                ((VIEWRANGE.Y * 2) + 1) *
-                ((VIEWRANGE.Z * 2) + 1)];
+                ((VIEWRANGE * 2) + 1) *
+                ((VIEWRANGE * 2) + 1) *
+                ((VIEWHEIGHT * 2) + 1)];
 
             for (int i = 0; i < chunkRenderer.Length; i++)
             {
@@ -100,9 +102,9 @@ namespace OctoAwesome.Components
             }
 
             // Entfernungsarray erzeugen
-            for (int x = -VIEWRANGE.X; x <= VIEWRANGE.X; x++)
-                for (int y = -VIEWRANGE.Y; y <= VIEWRANGE.Y; y++)
-                    for (int z = -VIEWRANGE.Z; z <= VIEWRANGE.Z; z++)
+            for (int x = -VIEWRANGE; x <= VIEWRANGE; x++)
+                for (int y = -VIEWRANGE; y <= VIEWRANGE; y++)
+                    for (int z = -VIEWHEIGHT; z <= VIEWHEIGHT; z++)
                         distances.Add(new Index3(x, y, z));
             distances = distances.OrderBy(d => d.LengthSquared()).ToList();
 
@@ -269,9 +271,9 @@ namespace OctoAwesome.Components
                 renderer.RelativeIndex -= shift;
 
                 if (!renderer.InUse ||
-                    renderer.RelativeIndex.X < -VIEWRANGE.X || renderer.RelativeIndex.X > VIEWRANGE.X ||
-                    renderer.RelativeIndex.Y < -VIEWRANGE.Y || renderer.RelativeIndex.Y > VIEWRANGE.Y ||
-                    renderer.RelativeIndex.Z < -VIEWRANGE.Z || renderer.RelativeIndex.Z > VIEWRANGE.Z)
+                    renderer.RelativeIndex.X < -VIEWRANGE || renderer.RelativeIndex.X > VIEWRANGE ||
+                    renderer.RelativeIndex.Y < -VIEWRANGE || renderer.RelativeIndex.Y > VIEWRANGE ||
+                    renderer.RelativeIndex.Z < -VIEWHEIGHT || renderer.RelativeIndex.Z > VIEWHEIGHT)
                 {
                     renderer.InUse = false;
                     freeChunkRenderer.Enqueue(renderer);
