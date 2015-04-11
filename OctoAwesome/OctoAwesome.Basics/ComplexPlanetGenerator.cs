@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics
 
         public IPlanet GeneratePlanet(IUniverse universe, int seed)
         {
-            Index3 size = new Index3(50, 50, 5);
+            Index3 size = new Index3(5000, 5000, 5);
 
             ComplexPlanet planet = new ComplexPlanet(0, universe, size, this, seed);
 
