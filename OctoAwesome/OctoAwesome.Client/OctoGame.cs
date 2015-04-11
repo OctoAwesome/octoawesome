@@ -2,12 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OctoAwesome;
-using OctoAwesome.Components;
+using OctoAwesome.Client.Components;
 using System;
 using System.Configuration;
 using System.Linq;
 
-namespace OctoAwesomeDX
+namespace OctoAwesome.Client
 {
     /// <summary>
     /// This is the main type for your game
