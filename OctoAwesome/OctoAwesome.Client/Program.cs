@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 #endregion
 
-namespace OctoAwesomeDX
+namespace OctoAwesome.Client
 {
 #if WINDOWS || LINUX
     /// <summary>

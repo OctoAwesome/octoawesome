@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace OctoAwesome
+namespace OctoAwesome.Client
 {
     public class ChunkDiskPersistence : IChunkPersistence
     {

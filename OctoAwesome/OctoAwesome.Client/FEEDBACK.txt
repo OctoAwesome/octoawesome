@@ -33,3 +33,4 @@ Cleanup
 - ExtensionLoader
 - InstanceManager fur Universe, Planet, 
 - Persistierung von Chunks bereits beim Erzeugen
+- -> SimpleNoiseGenerator, line 162, serialisieren

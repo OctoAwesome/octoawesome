@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Components
+namespace OctoAwesome.Client.Components
 {
     internal sealed class InputComponent : GameComponent, IInputSet
     {
