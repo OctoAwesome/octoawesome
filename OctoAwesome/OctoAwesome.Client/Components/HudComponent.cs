@@ -39,7 +39,7 @@ namespace OctoAwesome.Components
 
         protected override void LoadContent()
         {
-            font = Game.Content.Load<SpriteFont>("hud");
+            font = Game.Content.Load<SpriteFont>("Hud");
             pix = Game.Content.Load<Texture2D>("Textures/pix");
             base.LoadContent();
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 
@@ -11,10 +12,7 @@ namespace OctoAwesome
     /// </summary>
     public class Planet : IPlanet
     {
-        /// <summary>
-        /// Größe des Chunk-Caches. (Anzahl im speicher gehaltener Chunks)
-        /// </summary>
-        private readonly int CACHELIMIT = 10000;
+        public static int CacheSize = 10000;
 
         /// <summary>
         /// Referenz auf den verwendeten Map-Generator.
@@ -30,6 +28,8 @@ namespace OctoAwesome
         /// Chunk Cache.
         /// </summary>
         private Cache<Index3, IChunk> l2Cache;
+
+        private bool disablePersistence = false;
 
         /// <summary>
         /// ID des Planeten.
@@ -73,7 +73,9 @@ namespace OctoAwesome
             Seed = seed;
 
             l1Cache = new Cache<Index3, IChunk>(10, loadL1Chunk, null);
-            l2Cache = new Cache<Index3,IChunk>(CACHELIMIT, loadL2Chunk, saveChunk);
+            l2Cache = new Cache<Index3,IChunk>(CacheSize, loadL2Chunk, saveChunk);
+
+            bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
         }
 
         private IChunk loadL1Chunk(Index3 index)
@@ -99,7 +101,8 @@ namespace OctoAwesome
 
         private void saveChunk(Index3 index, IChunk value)
         {
-            ChunkPersistence.Save(value, value.Planet);
+            if (!disablePersistence)
+                ChunkPersistence.Save(value, value.Planet);
         }
 
         /// <summary>

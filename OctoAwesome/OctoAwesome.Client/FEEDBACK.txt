@@ -7,34 +7,10 @@ Lassi per Codeplex (17.03.)
 2) Noch ein Fehler bei der Berechnung
    "powerdirection += ExternalForce;" müsste "powerdirection += externalpower;" sein
 
-Karl-Josef Huber per YouTube (31.03.)
-=====================================
-- Umweg über DirectoryInfo umständlich. Einfach Path.GetDirectoryName verwenden
-- Path.FileSeprator verwenden
-
-Andy via Email (03.04.)
-=======================
-- Cache an Viewrange koppeln, sonst überlauf
-- Viewrange unbedingt in App.Config
-
 Andy via Email (07.04.)
 =======================
 - Game States (Loading, Playing, Saving) einführen
 - Nur Chunks speichern, die einen Dirty-Flag haben -> ChangeCounter
-
-Andy & Patrick
-==============
-- Zugriff auf ActiveChunk in Cleanup-Schleife ist mist (SceneComponent, Zeile 265)
-
-Patrick
-=======
-- Persistierung abschaltbar machen (per config oder pauschal bei Debug?)
-
-Ralf per Email (08.04.)
-=======================
-- Groß-Kleinschreibung beachten bei Pfaden im Persistieren
-- Groß-Kleinschreibung beachten bei vorkompilierten Assets "hud" vs. "Hud
-- FileSeparator richtig anwenden wegen Linux
 
 RedworkDE via YouTube (11.04.)
 ==============================
