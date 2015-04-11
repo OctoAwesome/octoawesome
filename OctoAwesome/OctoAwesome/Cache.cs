@@ -11,8 +11,6 @@ namespace OctoAwesome
     {
         private int size;
 
-        // private Dictionary<I, CacheItem> _cache;
-
         private ConcurrentDictionary<I, CacheItem> _cache;
 
         private Stopwatch watch = new Stopwatch();
@@ -41,14 +39,11 @@ namespace OctoAwesome
             CacheItem item = null;
 
             // Cache prüfen
-            //lock (_cache)
-            //{
             if (_cache.TryGetValue(index, out item))
             {
                 item.LastAccess = watch.Elapsed;
                 return item.Value;
             }
-            //}
 
             V result = loadDelegate(index);
             if (result != null)
@@ -61,8 +56,6 @@ namespace OctoAwesome
                 };
 
                 CacheItem toRemove = null;
-                //lock (_cache)
-                //{
                 if (!_cache.ContainsKey(index))
                 {
                     _cache.AddOrUpdate(index, item, (i, value) =>
@@ -76,7 +69,6 @@ namespace OctoAwesome
                     toRemove = _cache.Values.OrderBy(v => v.LastAccess).First();
                     _cache.TryRemove(toRemove.Index, out toRemove);
                 }
-                //}
 
                 if (toRemove != null && saveDelegate != null)
                     saveDelegate(toRemove.Index, toRemove.Value);

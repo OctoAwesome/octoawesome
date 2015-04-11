@@ -20,7 +20,7 @@ Andy via Email (03.04.)
 Andy via Email (07.04.)
 =======================
 - Game States (Loading, Playing, Saving) einführen
-- Nur Chunks speichern, die einen Dirty-Flag haben
+- Nur Chunks speichern, die einen Dirty-Flag haben -> ChangeCounter
 
 Andy & Patrick
 ==============
@@ -36,22 +36,24 @@ Ralf per Email (08.04.)
 - Groß-Kleinschreibung beachten bei vorkompilierten Assets "hud" vs. "Hud
 - FileSeparator richtig anwenden wegen Linux
 
+RedworkDE via YouTube (11.04.)
+==============================
+- Chunk Serializer optimierung -> Wenn BlockTypes.Count == 0 -> alles luft - abbrechen
+- Bug in L2 wenn man aus dem Level fällt
+
+Andy via Email (10.04.)
+=======================
+- Liste "ActiveChunkRenderer" ist inzwischen unnötig
+- InUse kann auf chunk!=null gemappt werden
+- ChunkRenderer erst erzeugen, wenn gebraucht wird
+- Streuung im Index3-Hash? -> Dictionary O(1)
+
 Cleanup
 =======
-1 Universe-Model einziehen
-1 Parent-Referenzen (Planet/Chunk/Block?)
-3 Texture (Mehrteilig)
-3 Friction (Auf Block-Instanz)
-1 Achitektur
-  * OctoAwesome Assembly (Basics, Model, Controller)
-  * Extentions (MapGenerator)
-  * Runtime (Extention Loader, Persistierung,...)
-  * Client (DX)
-  * Server (WinForms)
-- Runtime review
-  * Update Domains
-  * Handover
-- Chunk-Array im Planet abflachen -> Durch Cache ersetzen
+- Texture (Mehrteilig)
+- Friction (Auf Block-Instanz)
 - Angle-Klasse
 - Chunkgröße auf 16 runter? Oder dynamisch machen
-- Cache generischer machen
+- ExtensionLoader
+- InstanceManager fur Universe, Planet, 
+- Persistierung von Chunks bereits beim Erzeugen

@@ -130,8 +130,12 @@ namespace OctoAwesome
             Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
             
             // Betroffener Chunk ermitteln
-            // IChunk chunk = GetChunk(coordinate.ChunkIndex);
-            IChunk chunk = l1Cache.Get(coordinate.ChunkIndex);
+            Index3 chunkIndex = coordinate.ChunkIndex;
+            if (chunkIndex.X < 0 || chunkIndex.X >= Size.X ||
+                chunkIndex.Y < 0 || chunkIndex.Y >= Size.Y ||
+                chunkIndex.Z < 0 || chunkIndex.Z >= Size.Z)
+                return null;
+            IChunk chunk = l1Cache.Get(chunkIndex);
             if (chunk == null)
                 return null;
 

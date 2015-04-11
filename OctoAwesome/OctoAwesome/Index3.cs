@@ -351,9 +351,9 @@ namespace OctoAwesome
         public override int GetHashCode()
         {
             return 
-                X.GetHashCode() + 
-                Y.GetHashCode() + 
-                Z.GetHashCode();
+                X + 
+                Y + 
+                Z;
         }
     }
 }
