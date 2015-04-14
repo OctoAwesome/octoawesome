@@ -24,6 +24,24 @@ Andy via Email (10.04.)
 - ChunkRenderer erst erzeugen, wenn gebraucht wird
 - Streuung im Index3-Hash? -> Dictionary O(1)
 
+Ralf per Email (13.04.)
+=======================
+- Cache Load-Issue im Cache (siehe Eintrag von Tom weiter unten)
+
+Tom (14.04.)
+============
+- Cache Getter gibt immernoch default(V) zurück, selbst wenn ein neues Element generiert wurde -> Am Anfang alles leer
+- Zugriffe auf die Festplatten- und Generatorzugriffe überschlagen sich (Cache) - vielleicht doch lock
+- Code Optimierung in SceneComponent (Zeile 290): Es gibt NormalizeXY mit Index3 als Parameter
+- Nebel im Chunk-Renderer einfügen!
+    effect.FogEnabled = true;
+    effect.FogColor = Color.CornflowerBlue.ToVector3();
+    effect.FogStart = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 0.3f;
+    effect.FogEnd = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 1.0f;
+- Speicherüberlauf in der Grafikkarte -> Absturz des GraKa-Treibers
+  * Speicher-Profiling in der GraKa
+  * VB und IB-Recycling?
+
 Cleanup
 =======
 - Texture (Mehrteilig)
@@ -34,3 +52,4 @@ Cleanup
 - InstanceManager fur Universe, Planet, 
 - Persistierung von Chunks bereits beim Erzeugen
 - -> SimpleNoiseGenerator, line 162, serialisieren
+- Smartere Priorisierung der ChunkRenderer (Neusortierung nach jedem Chunk, dann fällt auch die Highprio-Liste raus)
