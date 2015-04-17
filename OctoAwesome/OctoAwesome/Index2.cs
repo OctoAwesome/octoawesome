@@ -267,8 +267,8 @@ namespace OctoAwesome
         public override int GetHashCode()
         {
             return 
-                X.GetHashCode() + 
-                Y.GetHashCode();
+                (X << 16) + 
+                Y;
         }
     }
 }

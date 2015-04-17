@@ -27,16 +27,9 @@ Andy via Email (10.04.)
 - Liste "ActiveChunkRenderer" ist inzwischen unnötig
 - InUse kann auf chunk!=null gemappt werden
 - ChunkRenderer erst erzeugen, wenn gebraucht wird
-- Streuung im Index3-Hash? -> Dictionary O(1)
-
-Ralf per Email (13.04.)
-=======================
-- Cache Load-Issue im Cache (siehe Eintrag von Tom weiter unten)
 
 Tom (14.04.)
 ============
-- Cache Getter gibt immernoch default(V) zurück, selbst wenn ein neues Element generiert wurde -> Am Anfang alles leer
-- Zugriffe auf die Festplatten- und Generatorzugriffe überschlagen sich (Cache) - vielleicht doch lock
 - Code Optimierung in SceneComponent (Zeile 290): Es gibt NormalizeXY mit Index3 als Parameter
 - Nebel im Chunk-Renderer einfügen!
     effect.FogEnabled = true;
@@ -46,7 +39,6 @@ Tom (14.04.)
 - Speicherüberlauf in der Grafikkarte -> Absturz des GraKa-Treibers
   * Speicher-Profiling in der GraKa
   * VB und IB-Recycling?
-- Cache wieder synchronisieren mit ReaderWriterLockSlim
 
 Andy via Email (14.04.)
 =======================
@@ -59,16 +51,12 @@ Andy via Email (14.04.)
 Ralf via Email (15.04.)
 =======================
 - Performance Profiler ist Teil der Community Edition 2013 - hurra
-- Hashtable kein Baum. Schlechte Hash-Methode. Addition zu viele Kollisionen. Besser (Hash = (((Z * dimY) + Y )* dimZ + Z) % prim; mit prim nahe maxInt (ideal (2^n)-1, dann kann man bitweise-& statt %)
 - Ausgabe auf die Console nicht wirklich cool. Einbindung von log4net
 - evtl. Caching-Framework (ehcache.org)
 
 Andy via Email (16.04.)
 =======================
-- Hash-Generierung doof :) und kein Baum
-- Alternativ tryAdd bei ConcurrentDictionary?
 - 2-Level Cache hat ein Problem: L1 könnte Elemente halten die von L2 schon entfernt wurden
-- Cache zurück zum Lock
 - Fenstergröße bitte änderbar
 
 Cleanup
