@@ -351,8 +351,8 @@ namespace OctoAwesome
         public override int GetHashCode()
         {
             return 
-                X + 
-                Y + 
+                (X << 20) + 
+                (Y << 10) + 
                 Z;
         }
     }
