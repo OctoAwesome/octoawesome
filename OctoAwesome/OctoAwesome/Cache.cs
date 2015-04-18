@@ -102,15 +102,23 @@ namespace OctoAwesome
 
         public void Flush()
         {
-            if (saveDelegate != null)
+            cacheLock.EnterWriteLock();
+            try
             {
-                foreach (var item in _cache.Values)
+                if (saveDelegate != null)
                 {
-                    saveDelegate(item.Index, item.Value);
+                    foreach (var item in _cache.Values)
+                    {
+                        saveDelegate(item.Index, item.Value);
+                    }
                 }
-            }
 
-            _cache.Clear();
+                // _cache.Clear();
+            }
+            finally
+            {
+                cacheLock.ExitWriteLock();
+            }
         }
 
         private class CacheItem

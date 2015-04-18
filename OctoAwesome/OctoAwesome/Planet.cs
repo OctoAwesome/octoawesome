@@ -93,6 +93,7 @@ namespace OctoAwesome
             IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
             if (result != null && result.Length > index.Z)
             {
+                result[index.Z].ChangeCounter = 0;
                 return result[index.Z];
             }
 
@@ -101,8 +102,11 @@ namespace OctoAwesome
 
         private void saveChunk(Index3 index, IChunk value)
         {
-            if (!disablePersistence)
+            if (!disablePersistence && value.ChangeCounter > 0)
+            {
                 ChunkPersistence.Save(value, value.Planet);
+                value.ChangeCounter = 0;
+            }
         }
 
         /// <summary>

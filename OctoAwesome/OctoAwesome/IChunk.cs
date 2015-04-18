@@ -24,7 +24,7 @@ namespace OctoAwesome
         /// <summary>
         /// Veränderungs-Counter zur Ermittlung von Änderungen.
         /// </summary>
-        int ChangeCounter { get; }
+        int ChangeCounter { get; set; }
 
         /// <summary>
         /// Liefert den Block an der angegebenen Position zurück.

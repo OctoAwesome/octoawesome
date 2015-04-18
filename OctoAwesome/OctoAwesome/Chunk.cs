@@ -39,7 +39,7 @@ namespace OctoAwesome
         /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
         /// dazu verwendet werden herauszufinden, ob es Änderungen gab.
         /// </summary>
-        public int ChangeCounter { get; private set; }
+        public int ChangeCounter { get; set; }
 
         public Chunk(Index3 pos, IPlanet planet)
         {
@@ -152,6 +152,11 @@ namespace OctoAwesome
 
                 // Schreibe Phase 1
                 bw.Write(types.Count);
+
+                // Im Falle eines Luft-Chunks...
+                if (types.Count == 0)
+                    return;
+
                 foreach (var t in types)
                 {
                     bw.Write(t.FullName);
@@ -179,6 +184,11 @@ namespace OctoAwesome
             {
                 List<Type> types = new List<Type>();
                 int typecount = br.ReadInt32();
+
+                // Im Falle eines Luftchunks
+                if (typecount == 0)
+                    return;
+
                 for (int i = 0; i < typecount; i++) 
                 {
                     string typeName = br.ReadString();

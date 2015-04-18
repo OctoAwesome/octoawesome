@@ -10,16 +10,13 @@ Lassi per Codeplex (17.03.)
 Andy via Email (07.04.)
 =======================
 - Game States (Loading, Playing, Saving) einführen
-- Nur Chunks speichern, die einen Dirty-Flag haben -> ChangeCounter
 
 Nachtrag von Ralf per Email (16.04.)
 ====================================
-Umbau von Flush im Cache -> nicht leeren. So könnte man, wenn die "nur speichern wenn verändert"-Prüfung drin ist, regelmäßig Dumps auf die Platte speichern und minimiert dadurch den Speicherprozess am Ende des Spiels.
 Begrifflichkeiten im Cache irreführend. Sinnvolle wären die typischen Werte get(), put(), replace(), remove(), putIfAbsent()
 
 RedworkDE via YouTube (11.04.)
 ==============================
-- Chunk Serializer optimierung -> Wenn BlockTypes.Count == 0 -> alles luft - abbrechen
 - Bug in L2 wenn man aus dem Level fällt
 
 Andy via Email (10.04.)
@@ -58,6 +55,6 @@ Cleanup
 - Chunkgröße auf 16 runter? Oder dynamisch machen
 - ExtensionLoader
 - InstanceManager fur Universe, Planet, 
-- Persistierung von Chunks bereits beim Erzeugen
+- Persistierung von Chunks bereits beim Erzeugen?
 - -> SimpleNoiseGenerator, line 162, serialisieren
 - Smartere Priorisierung der ChunkRenderer (Neusortierung nach jedem Chunk, dann fällt auch die Highprio-Liste raus)
