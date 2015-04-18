@@ -32,6 +32,7 @@ namespace OctoAwesome.Client
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             this.IsMouseVisible = false;
+            this.Window.AllowUserResizing = true;
 
             this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 

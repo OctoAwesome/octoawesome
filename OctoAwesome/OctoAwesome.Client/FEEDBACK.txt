@@ -30,19 +30,12 @@ Andy via Email (10.04.)
 
 Tom (14.04.)
 ============
-- Code Optimierung in SceneComponent (Zeile 290): Es gibt NormalizeXY mit Index3 als Parameter
-- Nebel im Chunk-Renderer einfügen!
-    effect.FogEnabled = true;
-    effect.FogColor = Color.CornflowerBlue.ToVector3();
-    effect.FogStart = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 0.3f;
-    effect.FogEnd = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 1.0f;
 - Speicherüberlauf in der Grafikkarte -> Absturz des GraKa-Treibers
   * Speicher-Profiling in der GraKa
   * VB und IB-Recycling?
 
 Andy via Email (14.04.)
 =======================
-- Chunkrenderer-Limit nach oben destinationChunk.Z = Math.Max(0, Math.Min(planet.Size.Z, destinationChunk.Z)); nicht so clever. ViewRange nach oben sollte berücksichtigt werden.
 - Bug: Keine Maussteuerung möglich bei WASD-Steuerung? (kann ich leider nicht nachvollziehen)
 - Recycling für die Cache-Objekte
 - Performancen-Frage bei OrderBy im Cache (ermittlung des ältesten Elements) -> Alternative eine verkettete Liste als Queue
@@ -50,14 +43,12 @@ Andy via Email (14.04.)
 
 Ralf via Email (15.04.)
 =======================
-- Performance Profiler ist Teil der Community Edition 2013 - hurra
 - Ausgabe auf die Console nicht wirklich cool. Einbindung von log4net
 - evtl. Caching-Framework (ehcache.org)
 
 Andy via Email (16.04.)
 =======================
 - 2-Level Cache hat ein Problem: L1 könnte Elemente halten die von L2 schon entfernt wurden
-- Fenstergröße bitte änderbar
 
 Cleanup
 =======

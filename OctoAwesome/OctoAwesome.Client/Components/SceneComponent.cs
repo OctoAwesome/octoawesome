@@ -199,7 +199,9 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue);
+            Microsoft.Xna.Framework.Color background = 
+                new Microsoft.Xna.Framework.Color(181, 224, 255);
+            GraphicsDevice.Clear(background);
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -254,7 +256,7 @@ namespace OctoAwesome.Client.Components
         {
             Index3 destinationChunk = world.World.Player.Position.ChunkIndex;
             IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
-            destinationChunk.Z = Math.Max(0, Math.Min(planet.Size.Z, destinationChunk.Z));
+            destinationChunk.Z = Math.Max(VIEWHEIGHT, Math.Min(planet.Size.Z - VIEWHEIGHT, destinationChunk.Z));
 
             HandleHighPrioUpdates();
 
@@ -287,8 +289,7 @@ namespace OctoAwesome.Client.Components
 
                 Index3 chunkIndex = destinationChunk + distance;
 
-                chunkIndex.NormalizeX(planet.Size.X);
-                chunkIndex.NormalizeY(planet.Size.Y);
+                chunkIndex.NormalizeXY(planet.Size);
 
                 if (!activeChunkRenderer.Any(c => c.RelativeIndex == distance))
                 {
