@@ -15,6 +15,51 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D269F5F0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{B6C925CF-FF4E-4792-A862-30D6070FE606}"
+	ProjectSection(SolutionItems) = preProject
+		lib\Lidgren.Network.dll = lib\Lidgren.Network.dll
+		lib\Lidgren.Network.xml = lib\Lidgren.Network.xml
+		lib\MonoGame.Framework.dll = lib\MonoGame.Framework.dll
+		lib\MonoGame.Framework.Net.dll = lib\MonoGame.Framework.Net.dll
+		lib\MonoGame.Framework.Net.xml = lib\MonoGame.Framework.Net.xml
+		lib\MonoGame.Framework.xml = lib\MonoGame.Framework.xml
+		lib\SharpDX.D3DCompiler.dll = lib\SharpDX.D3DCompiler.dll
+		lib\SharpDX.D3DCompiler.xml = lib\SharpDX.D3DCompiler.xml
+		lib\SharpDX.Direct2D1.dll = lib\SharpDX.Direct2D1.dll
+		lib\SharpDX.Direct2D1.xml = lib\SharpDX.Direct2D1.xml
+		lib\SharpDX.Direct3D10.dll = lib\SharpDX.Direct3D10.dll
+		lib\SharpDX.Direct3D10.xml = lib\SharpDX.Direct3D10.xml
+		lib\SharpDX.Direct3D11.dll = lib\SharpDX.Direct3D11.dll
+		lib\SharpDX.Direct3D11.Effects.dll = lib\SharpDX.Direct3D11.Effects.dll
+		lib\SharpDX.Direct3D11.Effects.xml = lib\SharpDX.Direct3D11.Effects.xml
+		lib\SharpDX.Direct3D11.xml = lib\SharpDX.Direct3D11.xml
+		lib\SharpDX.Direct3D9.dll = lib\SharpDX.Direct3D9.dll
+		lib\SharpDX.Direct3D9.xml = lib\SharpDX.Direct3D9.xml
+		lib\SharpDX.DirectInput.dll = lib\SharpDX.DirectInput.dll
+		lib\SharpDX.DirectInput.xml = lib\SharpDX.DirectInput.xml
+		lib\SharpDX.DirectSound.dll = lib\SharpDX.DirectSound.dll
+		lib\SharpDX.DirectSound.xml = lib\SharpDX.DirectSound.xml
+		lib\SharpDX.dll = lib\SharpDX.dll
+		lib\SharpDX.DXGI.dll = lib\SharpDX.DXGI.dll
+		lib\SharpDX.DXGI.xml = lib\SharpDX.DXGI.xml
+		lib\SharpDX.MediaFoundation.dll = lib\SharpDX.MediaFoundation.dll
+		lib\SharpDX.MediaFoundation.xml = lib\SharpDX.MediaFoundation.xml
+		lib\SharpDX.RawInput.dll = lib\SharpDX.RawInput.dll
+		lib\SharpDX.RawInput.xml = lib\SharpDX.RawInput.xml
+		lib\SharpDX.XACT3.dll = lib\SharpDX.XACT3.dll
+		lib\SharpDX.XACT3.xml = lib\SharpDX.XACT3.xml
+		lib\SharpDX.XAudio2.dll = lib\SharpDX.XAudio2.dll
+		lib\SharpDX.XAudio2.xml = lib\SharpDX.XAudio2.xml
+		lib\SharpDX.XInput.dll = lib\SharpDX.XInput.dll
+		lib\SharpDX.XInput.xml = lib\SharpDX.XInput.xml
+		lib\SharpDX.xml = lib\SharpDX.xml
+		lib\sharpdx_direct3d11_1_effects_arm.dll = lib\sharpdx_direct3d11_1_effects_arm.dll
+		lib\sharpdx_direct3d11_1_effects_x64.dll = lib\sharpdx_direct3d11_1_effects_x64.dll
+		lib\sharpdx_direct3d11_1_effects_x86.dll = lib\sharpdx_direct3d11_1_effects_x86.dll
+		lib\sharpdx_direct3d11_effects_x64.dll = lib\sharpdx_direct3d11_effects_x64.dll
+		lib\sharpdx_direct3d11_effects_x86.dll = lib\sharpdx_direct3d11_effects_x86.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 6

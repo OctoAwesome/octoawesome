@@ -255,11 +255,15 @@ namespace OctoAwesome.Client.Components
             IndexBuffer ib2 = null;
             if (vertexCount > 0)
             {
-                vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
-                vb2.SetData<VertexPositionNormalTexture>(vertices.ToArray());
+                try
+                {
+                    vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
+                    vb2.SetData<VertexPositionNormalTexture>(vertices.ToArray());
 
-                ib2 = new IndexBuffer(graphicsDevice, IndexElementSize.ThirtyTwoBits, indexCount, BufferUsage.WriteOnly);
-                ib2.SetData<int>(index.ToArray());
+                    ib2 = new IndexBuffer(graphicsDevice, IndexElementSize.ThirtyTwoBits, indexCount, BufferUsage.WriteOnly);
+                    ib2.SetData<int>(index.ToArray());
+                }
+                catch (Exception) { }
             }
 
             VertexBuffer vbOld = vb;

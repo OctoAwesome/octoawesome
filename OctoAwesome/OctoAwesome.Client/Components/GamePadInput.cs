@@ -52,15 +52,19 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         public void Update()
         {
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            try
+            {
+                GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            InteractTrigger = gamePadState.Buttons.X == ButtonState.Pressed;
-            ApplyTrigger = gamePadState.Buttons.A == ButtonState.Pressed;
-            JumpTrigger = gamePadState.Buttons.Y == ButtonState.Pressed;
-            MoveX = gamePadState.ThumbSticks.Left.X;
-            MoveY = gamePadState.ThumbSticks.Left.Y;
-            HeadX = gamePadState.ThumbSticks.Right.X;
-            HeadY = gamePadState.ThumbSticks.Right.Y;
+                InteractTrigger = gamePadState.Buttons.X == ButtonState.Pressed;
+                ApplyTrigger = gamePadState.Buttons.A == ButtonState.Pressed;
+                JumpTrigger = gamePadState.Buttons.Y == ButtonState.Pressed;
+                MoveX = gamePadState.ThumbSticks.Left.X;
+                MoveY = gamePadState.ThumbSticks.Left.Y;
+                HeadX = gamePadState.ThumbSticks.Right.X;
+                HeadY = gamePadState.ThumbSticks.Right.Y;
+            }
+            catch (Exception) { }
         }
     }
 }
