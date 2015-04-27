@@ -20,10 +20,8 @@ namespace OctoAwesome.Client.Components
         {
             this.input = input;
 
-            IMapGenerator mapGenerator = MapGeneratorManager.GetMapGenerators().First();
-            IChunkPersistence chunkPersistence = new ChunkDiskPersistence();
 
-            World = new World(input, 1, mapGenerator, chunkPersistence);
+            World = new World(input, 1);
             SelectedBox = null;
         }
 
@@ -36,7 +34,7 @@ namespace OctoAwesome.Client.Components
                     (int)SelectedBox.Value.Y,
                     (int)SelectedBox.Value.Z);
 
-                World.GetPlanet(0).SetBlock(pos, null);
+                ResourceManager.Instance.SetBlock(pos, null);
             }
 
             World.Update(gameTime);

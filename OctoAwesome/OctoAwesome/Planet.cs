@@ -12,25 +12,6 @@ namespace OctoAwesome
     /// </summary>
     public class Planet : IPlanet
     {
-        public static int CacheSize = 10000;
-
-        /// <summary>
-        /// Referenz auf den verwendeten Map-Generator.
-        /// </summary>
-        private IMapGenerator generator;
-
-        /// <summary>
-        /// Chunk Cache.
-        /// </summary>
-        private Cache<Index3, IChunk> l1Cache;
-
-        /// <summary>
-        /// Chunk Cache.
-        /// </summary>
-        private Cache<Index3, IChunk> l2Cache;
-
-        private bool disablePersistence = false;
-
         /// <summary>
         /// ID des Planeten.
         /// </summary>
@@ -54,123 +35,17 @@ namespace OctoAwesome
         public Index3 Size { get; private set; }
 
         /// <summary>
-        /// Instanz der Persistierungseinheit.
-        /// </summary>
-        public IChunkPersistence ChunkPersistence { get; set; }
-
-        /// <summary>
         /// Initialisierung des Planeten
         /// </summary>
         /// <param name="size">Größe des Planeten in Blocks</param>
         /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
-        public Planet(int id, IUniverse universe, Index3 size, IMapGenerator generator, int seed)
+        public Planet(int id, IUniverse universe, Index3 size, int seed)
         {
             Id = id;
             Universe = universe;
-            this.generator = generator;
             Size = size;
             Seed = seed;
-
-            l1Cache = new Cache<Index3, IChunk>(10, loadL1Chunk, null);
-            l2Cache = new Cache<Index3,IChunk>(CacheSize, loadL2Chunk, saveChunk);
-
-            bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
-        }
-
-        private IChunk loadL1Chunk(Index3 index)
-        {
-            return l2Cache.Get(index);
-        }
-
-        private IChunk loadL2Chunk(Index3 index)
-        {
-            // Load from disk
-            IChunk first = ChunkPersistence.Load(this, index);
-            if (first != null)
-                return first;
-
-            IChunk[] result = generator.GenerateChunk(this, new Index2(index.X, index.Y));
-            if (result != null && result.Length > index.Z)
-            {
-                result[index.Z].ChangeCounter = 0;
-                return result[index.Z];
-            }
-
-            return null;
-        }
-
-        private void saveChunk(Index3 index, IChunk value)
-        {
-            if (!disablePersistence && value.ChangeCounter > 0)
-            {
-                ChunkPersistence.Save(value, value.Planet);
-                value.ChangeCounter = 0;
-            }
-        }
-
-        /// <summary>
-        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
-        /// </summary>
-        /// <param name="index">Chunk Index</param>
-        /// <returns>Instanz des Chunks</returns>
-        public IChunk GetChunk(Index3 index)
-        {
-            if (index.X < 0 || index.X >= Size.X || 
-                index.Y < 0 || index.Y >= Size.Y || 
-                index.Z < 0 || index.Z >= Size.Z)
-                return null;
-
-            return l2Cache.Get(index);
-        }
-
-        /// <summary>
-        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
-        /// </summary>
-        /// <param name="index">Block Index</param>
-        /// <returns>Block oder null, falls dort kein Block existiert</returns>
-        public IBlock GetBlock(Index3 index)
-        {
-            index.NormalizeXY(new Index2(
-                Size.X * Chunk.CHUNKSIZE_X, 
-                Size.Y * Chunk.CHUNKSIZE_Y));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-            
-            // Betroffener Chunk ermitteln
-            Index3 chunkIndex = coordinate.ChunkIndex;
-            if (chunkIndex.X < 0 || chunkIndex.X >= Size.X ||
-                chunkIndex.Y < 0 || chunkIndex.Y >= Size.Y ||
-                chunkIndex.Z < 0 || chunkIndex.Z >= Size.Z)
-                return null;
-            IChunk chunk = l1Cache.Get(chunkIndex);
-            if (chunk == null)
-                return null;
-
-            return chunk.GetBlock(coordinate.LocalBlockIndex);
-        }
-
-        /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
-        /// </summary>
-        /// <param name="index">Block-Koordinate</param>
-        /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
-        public void SetBlock(Index3 index, IBlock block)
-        {
-            index.NormalizeXYZ(new Index3(
-                Size.X * Chunk.CHUNKSIZE_X,
-                Size.Y * Chunk.CHUNKSIZE_Y,
-                Size.Z * Chunk.CHUNKSIZE_Z));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-            IChunk chunk = GetChunk(coordinate.ChunkIndex);
-            chunk.SetBlock(coordinate.LocalBlockIndex, block);
-        }
-
-        /// <summary>
-        /// Persistiert den Planeten.
-        /// </summary>
-        public void Save()
-        {
-            l2Cache.Flush();
         }
     }
 }

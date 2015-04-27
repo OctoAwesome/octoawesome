@@ -15,7 +15,7 @@ namespace OctoAwesome.Basics
 
         public IPlanet GeneratePlanet(IUniverse universe, int seed)
         {
-            return new Planet(0, universe, new Index3(1000, 1000, 3), this, seed);
+            return new Planet(0, universe, new Index3(1000, 1000, 3), seed);
         }
 
         public IChunk[] GenerateChunk(IPlanet planet, Index2 index)

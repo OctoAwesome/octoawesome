@@ -13,24 +13,17 @@ namespace OctoAwesome.Runtime
         // private IPlanet[] planets;
         private IUniverse universe;
 
-        private IMapGenerator mapGenerator;
-        private IChunkPersistence chunkPersistence;
-
         public Player Player { get; private set; }
 
-        public UpdateDomain(IInputSet input, int planetCount, IMapGenerator mapGenerator, IChunkPersistence chunkPersistence)
+        public UpdateDomain(IInputSet input, int planetCount)
         {
-            this.mapGenerator = mapGenerator;
-            this.chunkPersistence = chunkPersistence;
-
             Player = new Player(input);
 
-            universe = mapGenerator.GenerateUniverse("Milchstraße");
+            universe = ResourceManager.Instance.GetUniverse(0);
 
             for (int p = 0; p < planetCount; p++)
             {
-                IPlanet planet = mapGenerator.GeneratePlanet(universe, 244);
-                planet.ChunkPersistence = chunkPersistence;
+                IPlanet planet = ResourceManager.Instance.GetPlanet(universe, p);
                 universe.SetPlanet(planet);
             }
         }
@@ -98,7 +91,7 @@ namespace OctoAwesome.Runtime
                             Index3 pos = new Index3(x, y, z);
                             pos.NormalizeXY(planetSize);
 
-                            IBlock block = GetPlanet(Player.Position.Planet).GetBlock(pos);
+                            IBlock block = ResourceManager.Instance.GetBlock(pos);
                             if (block == null)
                                 continue;
 
@@ -276,7 +269,7 @@ namespace OctoAwesome.Runtime
 
         public void Save()
         {
-            universe.GetPlanet(0).Save();
+            ResourceManager.Instance.Save();
         }
     }
 }
