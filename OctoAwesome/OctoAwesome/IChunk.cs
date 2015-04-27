@@ -14,7 +14,7 @@ namespace OctoAwesome
         /// <summary>
         /// Referenz auf den Planeten.
         /// </summary>
-        IPlanet Planet { get; }
+        int Planet { get; }
 
         /// <summary>
         /// Chunk-Position innerhalb des Planeten.

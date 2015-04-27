@@ -9,7 +9,7 @@ namespace OctoAwesome
     {
         IUniverse GenerateUniverse(string name);
 
-        IPlanet GeneratePlanet(IUniverse universe, int seed);
+        IPlanet GeneratePlanet(int universe, int seed);
 
         IChunk[] GenerateChunk(IPlanet planet, Index2 index);
     }

@@ -11,21 +11,21 @@ namespace OctoAwesome.Runtime
 {
     public class ChunkDiskPersistence : IChunkPersistence
     {
-        public void Save(IChunk chunk, IPlanet planet)
+        public void Save(int universe, int planet, IChunk chunk)
         {
             var root = GetRoot();
             
-            string filename = planet.Id.ToString() + "_" + chunk.Index.X + "_" + chunk.Index.Y + "_" + chunk.Index.Z + ".chunk";
+            string filename = planet.ToString() + "_" + chunk.Index.X + "_" + chunk.Index.Y + "_" + chunk.Index.Z + ".chunk";
             using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create, FileAccess.Write))
             {
                 chunk.Serialize(stream);
             }
         }
 
-        public IChunk Load(IPlanet planet, Index3 index)
+        public IChunk Load(int universe, int planet, Index3 index)
         {
             var root = GetRoot();
-            string filename = planet.Id.ToString() + "_" + index.X + "_" + index.Y + "_" + index.Z + ".chunk";
+            string filename = planet.ToString() + "_" + index.X + "_" + index.Y + "_" + index.Z + ".chunk";
 
             if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
                 return null;

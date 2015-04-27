@@ -20,11 +20,6 @@ namespace OctoAwesome.Runtime
             updateDomains[0] = new UpdateDomain(input, planetCount);
         }
 
-        public IPlanet GetPlanet(int id)
-        {
-            return updateDomains[0].GetPlanet(id);
-        }
-
         public void Update(GameTime frameTime)
         {
             foreach (var updateDomain in updateDomains)

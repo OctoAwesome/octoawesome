@@ -18,14 +18,6 @@ namespace OctoAwesome.Runtime
         public UpdateDomain(IInputSet input, int planetCount)
         {
             Player = new Player(input);
-
-            universe = ResourceManager.Instance.GetUniverse(0);
-
-            for (int p = 0; p < planetCount; p++)
-            {
-                IPlanet planet = ResourceManager.Instance.GetPlanet(universe, p);
-                universe.SetPlanet(planet);
-            }
         }
 
         public void Update(GameTime frameTime)
@@ -35,7 +27,7 @@ namespace OctoAwesome.Runtime
             Player.Update(frameTime);
 
             Vector3 move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
-            IPlanet planet = GetPlanet(Player.Position.Planet);
+            IPlanet planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
             Index2 planetSize = new Index2(
                 planet.Size.X * Chunk.CHUNKSIZE_X,
@@ -260,11 +252,6 @@ namespace OctoAwesome.Runtime
                 loops++;
 
             } while (collision && loops < 3);
-        }
-
-        public IPlanet GetPlanet(int id)
-        {
-            return universe.GetPlanet(id);
         }
 
         public void Save()

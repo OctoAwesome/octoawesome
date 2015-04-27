@@ -15,7 +15,7 @@ namespace OctoAwesome.Basics
             return new Universe(0, name);
         }
 
-        public IPlanet GeneratePlanet(IUniverse universe, int seed)
+        public IPlanet GeneratePlanet(int universe, int seed)
         {
             Index3 size = new Index3(5000, 5000, 5);
 
@@ -36,7 +36,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)
-                chunks[i] = new Chunk(new Index3(index, i), planet);
+                chunks[i] = new Chunk(new Index3(index, i), planet.Id);
 
             int obersteSchicht;
             bool surfaceBlock;
