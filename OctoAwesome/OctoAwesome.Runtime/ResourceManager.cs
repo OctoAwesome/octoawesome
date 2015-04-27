@@ -54,7 +54,7 @@ namespace OctoAwesome.Runtime
             l2Cache = new Cache<Index3, IChunk>(CacheSize, loadL2Chunk, saveChunk);
 
             universe = mapGenerator.GenerateUniverse("Milchstraße");
-            planet = mapGenerator.GeneratePlanet(universe, 0);
+            planet = mapGenerator.GeneratePlanet(universe.Id, 0);
 
             bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
         }
@@ -64,7 +64,7 @@ namespace OctoAwesome.Runtime
             return universe;
         }
 
-        public IPlanet GetPlanet(IUniverse universe, int id)
+        public IPlanet GetPlanet(int id)
         {
             return planet;
         }
@@ -133,7 +133,7 @@ namespace OctoAwesome.Runtime
         private IChunk loadL2Chunk(Index3 index)
         {
             // Load from disk
-            IChunk first = chunkPersistence.Load(planet, index);
+            IChunk first = chunkPersistence.Load(universe.Id, planet.Id, index);
             if (first != null)
                 return first;
 
@@ -151,7 +151,7 @@ namespace OctoAwesome.Runtime
         {
             if (!disablePersistence && value.ChangeCounter > 0)
             {
-                chunkPersistence.Save(value, value.Planet);
+                chunkPersistence.Save(universe.Id, planet.Id, value);
                 value.ChangeCounter = 0;
             }
         }

@@ -7,8 +7,8 @@ namespace OctoAwesome
 {
     public interface IChunkPersistence
     {
-        void Save(IChunk chunk, IPlanet planet);
+        void Save(int universe, int planet, IChunk chunk);
 
-        IChunk Load(IPlanet planet, Index3 index);
+        IChunk Load(int universe, int planet, Index3 index);
     }
 }

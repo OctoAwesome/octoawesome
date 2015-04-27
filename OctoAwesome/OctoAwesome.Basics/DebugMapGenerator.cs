@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics
             return new Universe(0, name);
         }
 
-        public IPlanet GeneratePlanet(IUniverse universe, int seed)
+        public IPlanet GeneratePlanet(int universe, int seed)
         {
             return new Planet(0, universe, new Index3(1000, 1000, 3), seed);
         }
@@ -23,7 +23,7 @@ namespace OctoAwesome.Basics
             IChunk[] result = new IChunk[planet.Size.Z];
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
-                result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet);
+                result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet.Id);
 
             int part = (planet.Size.Z * Chunk.CHUNKSIZE_Z) / 4;
 

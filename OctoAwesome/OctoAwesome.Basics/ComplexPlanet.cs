@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics
 
         public SurfaceBiomeGenerator BiomeGenerator { get; private set; }
 
-        public ComplexPlanet(int id, IUniverse universe, Index3 size, IMapGenerator generator, int seed)
+        public ComplexPlanet(int id, int universe, Index3 size, IMapGenerator generator, int seed)
             : base(id, universe, size, seed)
         {
 

@@ -20,7 +20,7 @@ namespace OctoAwesome
         /// <summary>
         /// Referenz auf das Parent Universe
         /// </summary>
-        public IUniverse Universe { get; private set; }
+        public int Universe { get; private set; }
 
         public IClimateMap ClimateMap { get; protected set; }
 
@@ -40,7 +40,7 @@ namespace OctoAwesome
         /// <param name="size">Größe des Planeten in Blocks</param>
         /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
-        public Planet(int id, IUniverse universe, Index3 size, int seed)
+        public Planet(int id, int universe, Index3 size, int seed)
         {
             Id = id;
             Universe = universe;

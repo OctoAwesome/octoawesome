@@ -25,6 +25,7 @@ namespace OctoAwesome.Client.Components
         private CameraComponent camera;
 
         private ChunkRenderer[] chunkRenderer;
+        private IPlanet planet;
 
         private Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
         private List<ChunkRenderer> activeChunkRenderer = new List<ChunkRenderer>();
@@ -40,7 +41,6 @@ namespace OctoAwesome.Client.Components
         private Index3 currentChunk = new Index3(-1, -1, -1);
 
         private Thread backgroundThread;
-
 
         public SceneComponent(Game game, WorldComponent world, CameraComponent camera)
             : base(game)
@@ -84,7 +84,7 @@ namespace OctoAwesome.Client.Components
                 blockTextures = Texture2D.FromStream(GraphicsDevice, stream);
             }
 
-            IPlanet planet = world.World.GetPlanet(0);
+            planet = ResourceManager.Instance.GetPlanet(0);
 
             chunkRenderer = new ChunkRenderer[
                 ((VIEWRANGE * 2) + 1) *
@@ -150,7 +150,7 @@ namespace OctoAwesome.Client.Components
             Index3 currentChunk = world.World.Player.Position.ChunkIndex;
 
             Vector3? selected = null;
-            IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
+            IPlanet planet = ResourceManager.Instance.GetPlanet(world.World.Player.Position.Planet);
             float? bestDistance = null;
             for (int z = localcell.Z - SELECTIONRANGE; z < localcell.Z + SELECTIONRANGE; z++)
             {
@@ -218,8 +218,8 @@ namespace OctoAwesome.Client.Components
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(
                     renderer.ChunkIndex, new Index2(
-                        renderer.Chunk.Planet.Size.X, 
-                        renderer.Chunk.Planet.Size.Y));
+                        planet.Size.X, 
+                        planet.Size.Y));
 
                 BoundingBox chunkBox = new BoundingBox(
                 new Vector3(
@@ -255,7 +255,7 @@ namespace OctoAwesome.Client.Components
         private void FillChunkRenderer()
         {
             Index3 destinationChunk = world.World.Player.Position.ChunkIndex;
-            IPlanet planet = world.World.GetPlanet(world.World.Player.Position.Planet);
+            IPlanet planet = ResourceManager.Instance.GetPlanet(world.World.Player.Position.Planet);
             destinationChunk.Z = Math.Max(VIEWHEIGHT, Math.Min(planet.Size.Z - VIEWHEIGHT, destinationChunk.Z));
 
             HandleHighPrioUpdates();

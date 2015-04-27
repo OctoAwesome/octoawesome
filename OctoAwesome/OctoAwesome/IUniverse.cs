@@ -10,9 +10,5 @@ namespace OctoAwesome
         int Id { get; }
 
         string Name { get; }
-
-        IPlanet GetPlanet(int id);
-
-        void SetPlanet(IPlanet planet);
     }
 }

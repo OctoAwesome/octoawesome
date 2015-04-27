@@ -33,7 +33,7 @@ namespace OctoAwesome
         /// </summary>
         public Index3 Index { get; private set; }
 
-        public IPlanet Planet { get; private set; }
+        public int Planet { get; private set; }
 
         /// <summary>
         /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
@@ -41,7 +41,7 @@ namespace OctoAwesome
         /// </summary>
         public int ChangeCounter { get; set; }
 
-        public Chunk(Index3 pos, IPlanet planet)
+        public Chunk(Index3 pos, int planet)
         {
             blocks = new IBlock[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
             Index = pos;
