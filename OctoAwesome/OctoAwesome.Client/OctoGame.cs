@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OctoAwesome;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Runtime;
 using System;
 using System.Configuration;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace OctoAwesome.Client
                 SceneComponent.VIEWHEIGHT = viewheight;
             }
 
-            Planet.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * ((viewheight * 2) + 1) * 2;
+            ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * ((viewheight * 2) + 1) * 2;
 
             input = new InputComponent(this);
             input.UpdateOrder = 1;

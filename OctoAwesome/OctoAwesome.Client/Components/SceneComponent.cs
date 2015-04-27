@@ -163,7 +163,7 @@ namespace OctoAwesome.Client.Components
                             y + (currentChunk.Y * Chunk.CHUNKSIZE_Y), 
                             z + (currentChunk.Z * Chunk.CHUNKSIZE_Z));
 
-                        IBlock block = planet.GetBlock(pos);
+                        IBlock block = ResourceManager.Instance.GetBlock(pos);
                         if (block == null)
                             continue;
 
@@ -293,7 +293,7 @@ namespace OctoAwesome.Client.Components
 
                 if (!activeChunkRenderer.Any(c => c.RelativeIndex == distance))
                 {
-                    IChunk chunk = world.World.GetPlanet(0).GetChunk(chunkIndex);
+                    IChunk chunk = ResourceManager.Instance.GetChunk(chunkIndex);
                     if (chunk != null)
                     {
                         ChunkRenderer renderer = freeChunkRenderer.Dequeue();

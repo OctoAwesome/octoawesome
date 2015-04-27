@@ -57,6 +57,13 @@ namespace OctoAwesome
             if (item == null)
             {
                 cacheLock.EnterWriteLock();
+
+                if (_cache.TryGetValue(index, out item))
+                {
+                    item.LastAccess = watch.Elapsed;
+                    return item.Value;
+                }
+
                 try
                 {
                     V result = loadDelegate(index);
