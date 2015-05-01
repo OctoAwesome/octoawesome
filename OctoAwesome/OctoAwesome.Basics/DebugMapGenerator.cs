@@ -8,9 +8,9 @@ namespace OctoAwesome.Basics
 {
     public class DebugMapGenerator : IMapGenerator
     {
-        public IUniverse GenerateUniverse(string name)
+        public IUniverse GenerateUniverse(int id)
         {
-            return new Universe(0, name);
+            return new Universe(id, "Milchstrasse");
         }
 
         public IPlanet GeneratePlanet(int universe, int seed)

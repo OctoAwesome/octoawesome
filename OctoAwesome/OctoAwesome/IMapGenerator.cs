@@ -7,7 +7,7 @@ namespace OctoAwesome
 {
     public interface IMapGenerator
     {
-        IUniverse GenerateUniverse(string name);
+        IUniverse GenerateUniverse(int id);
 
         IPlanet GeneratePlanet(int universe, int seed);
 
