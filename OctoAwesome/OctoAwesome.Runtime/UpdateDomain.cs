@@ -83,7 +83,8 @@ namespace OctoAwesome.Runtime
                             Index3 pos = new Index3(x, y, z);
                             pos.NormalizeXY(planetSize);
 
-                            IBlock block = ResourceManager.Instance.GetBlock(pos);
+                            IBlock block = ResourceManager.Instance.GetBlock(
+                                Player.Position.Planet, pos);
                             if (block == null)
                                 continue;
 

@@ -34,7 +34,7 @@ namespace OctoAwesome.Client.Components
                     (int)SelectedBox.Value.Y,
                     (int)SelectedBox.Value.Z);
 
-                ResourceManager.Instance.SetBlock(pos, null);
+                // ResourceManager.Instance.SetBlock(pos, null);
             }
 
             World.Update(gameTime);
