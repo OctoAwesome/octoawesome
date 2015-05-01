@@ -12,12 +12,12 @@ namespace OctoAwesome.Runtime
     {
         private UpdateDomain[] updateDomains;
 
-        public Player Player { get { return updateDomains[0].Player; } }
+        public ActorHost Player { get { return updateDomains[0].ActorHosts[0]; } }
 
-        public World(IInputSet input, int planetCount)
+        public World(IInputSet input)
         {
             updateDomains = new UpdateDomain[1];
-            updateDomains[0] = new UpdateDomain(input, planetCount);
+            updateDomains[0] = new UpdateDomain(input);
         }
 
         public void Update(GameTime frameTime)
