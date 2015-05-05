@@ -21,7 +21,7 @@ namespace OctoAwesome.Client
         CameraComponent egoCamera;
         InputComponent input;
         SceneComponent render3d;
-        WorldComponent world;
+        PlayerComponent world;
         HudComponent hud;
 
         public OctoGame()
@@ -61,7 +61,7 @@ namespace OctoAwesome.Client
             input.UpdateOrder = 1;
             Components.Add(input);
 
-            world = new WorldComponent(this, input);
+            world = new PlayerComponent(this, input);
             world.UpdateOrder = 2;
             Components.Add(world);
 

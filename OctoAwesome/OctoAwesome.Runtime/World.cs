@@ -14,10 +14,10 @@ namespace OctoAwesome.Runtime
 
         public ActorHost Player { get { return updateDomains[0].ActorHosts[0]; } }
 
-        public World(IInputSet input)
+        public World()
         {
             updateDomains = new UpdateDomain[1];
-            updateDomains[0] = new UpdateDomain(input);
+            updateDomains[0] = new UpdateDomain();
         }
 
         public void Update(GameTime frameTime)
