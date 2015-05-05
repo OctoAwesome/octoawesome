@@ -8,8 +8,6 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
-        public static int SELECTIONRANGE = 8;
-
         private readonly float Gap = 0.001f;
 
         private IPlanet planet;
@@ -17,16 +15,13 @@ namespace OctoAwesome.Runtime
 
         private bool lastJump = false;
 
-        // private IInputSet input;
+        private Index3? lastInteract = null;
 
         public Player Player { get; private set; }
-
-        public Vector3? SelectedBox { get; private set; }
 
         public ActorHost(Player player)
         {
             Player = player;
-            SelectedBox = null;
             localChunkCache = new Cache<Index3, IChunk>(10, loadChunk, null);
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
         }
@@ -308,76 +303,12 @@ namespace OctoAwesome.Runtime
 
             #endregion
 
-            #region Selektion
-
-            Index3 localcell = Player.Position.LocalBlockIndex;
-            Index3 currentChunk = Player.Position.ChunkIndex;
-
-            Vector3 direction = new Vector3(
-                (float)Math.Cos(Player.Angle),
-                -(float)Math.Sin(Player.Angle),
-                (float)Math.Sin(Player.Tilt));
-            direction.Normalize();
-
-            Ray pickRay = new Ray(new Vector3(
-                        Player.Position.LocalPosition.X,
-                        Player.Position.LocalPosition.Y,
-                        Player.Position.LocalPosition.Z + 3.2f), direction);
-
-            Vector3? selected = null;
-            float? bestDistance = null;
-            for (int z = localcell.Z - SELECTIONRANGE; z < localcell.Z + SELECTIONRANGE; z++)
-            {
-                for (int y = localcell.Y - SELECTIONRANGE; y < localcell.Y + SELECTIONRANGE; y++)
-                {
-                    for (int x = localcell.X - SELECTIONRANGE; x < localcell.X + SELECTIONRANGE; x++)
-                    {
-                        Index3 pos = new Index3(
-                            x + (currentChunk.X * Chunk.CHUNKSIZE_X),
-                            y + (currentChunk.Y * Chunk.CHUNKSIZE_Y),
-                            z + (currentChunk.Z * Chunk.CHUNKSIZE_Z));
-
-                        IBlock block = GetBlock(pos);
-                        if (block == null)
-                            continue;
-
-                        BoundingBox[] boxes = block.GetCollisionBoxes();
-
-                        foreach (var box in boxes)
-                        {
-                            BoundingBox transformedBox = new BoundingBox(
-                                box.Min + new Vector3(x, y, z),
-                                box.Max + new Vector3(x, y, z));
-
-                            float? distance = pickRay.Intersects(transformedBox);
-                            if (distance.HasValue)
-                            {
-                                if (!bestDistance.HasValue || bestDistance.Value > distance)
-                                {
-                                    bestDistance = distance.Value;
-                                    selected = new Vector3(pos.X, pos.Y, pos.Z);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            SelectedBox = selected;
-
-            #endregion
-
             #region Block Interaktion
 
-            //if (input.ApplyTrigger && SelectedBox.HasValue)
-            //{
-            //    Index3 pos = new Index3(
-            //        (int)SelectedBox.Value.X,
-            //        (int)SelectedBox.Value.Y,
-            //        (int)SelectedBox.Value.Z);
-
-            //    ResourceManager.Instance.SetBlock(planet.Id, pos, null);
-            //}
+            if (lastInteract.HasValue)
+            {
+                ResourceManager.Instance.SetBlock(planet.Id, lastInteract.Value, null);
+            }
 
             #endregion
         }
@@ -471,9 +402,9 @@ namespace OctoAwesome.Runtime
             lastJump = true;
         }
 
-        public void Interact()
+        public void Interact(Index3 blockIndex)
         {
-            throw new NotImplementedException();
+            lastInteract = blockIndex;
         }
 
         public void Apply()

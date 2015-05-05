@@ -18,10 +18,10 @@ namespace OctoAwesome.Client
 
         GraphicsDeviceManager graphics;
 
-        CameraComponent egoCamera;
+        CameraComponent camera;
         InputComponent input;
-        SceneComponent render3d;
-        PlayerComponent world;
+        SceneComponent scene;
+        PlayerComponent player;
         HudComponent hud;
 
         public OctoGame()
@@ -61,19 +61,19 @@ namespace OctoAwesome.Client
             input.UpdateOrder = 1;
             Components.Add(input);
 
-            world = new PlayerComponent(this, input);
-            world.UpdateOrder = 2;
-            Components.Add(world);
+            player = new PlayerComponent(this, input);
+            player.UpdateOrder = 2;
+            Components.Add(player);
 
-            egoCamera = new CameraComponent(this, world);
-            egoCamera.UpdateOrder = 3;
-            Components.Add(egoCamera);
+            camera = new CameraComponent(this, player);
+            camera.UpdateOrder = 3;
+            Components.Add(camera);
 
-            render3d = new SceneComponent(this, world, egoCamera);
-            render3d.DrawOrder = 1;
-            Components.Add(render3d);
+            scene = new SceneComponent(this, player, camera);
+            scene.DrawOrder = 1;
+            Components.Add(scene);
 
-            hud = new HudComponent(this, world);
+            hud = new HudComponent(this, player);
             hud.DrawOrder = 2;
             Components.Add(hud);
         }

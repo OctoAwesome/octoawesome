@@ -15,6 +15,8 @@ namespace OctoAwesome.Client.Components
 
         public ActorHost Player { get { return world.Player; } }
 
+        public Index3? SelectedBox { get; set; }
+
         public PlayerComponent(Game game, InputComponent input)
             : base(game)
         {
@@ -29,10 +31,14 @@ namespace OctoAwesome.Client.Components
 
             if (input.JumpTrigger)
                 Player.Jump();
-            if (input.InteractTrigger)
-                Player.Interact();
+            if (input.InteractTrigger && SelectedBox.HasValue)
+            {
+                Player.Interact(SelectedBox.Value);
+            }
             if (input.ApplyTrigger)
+            {
                 Player.Apply();
+            }
 
             world.Update(gameTime);
         }
