@@ -23,6 +23,7 @@ namespace OctoAwesome.Client
         SceneComponent scene;
         PlayerComponent player;
         HudComponent hud;
+        SimulationComponent simulation;
 
         public OctoGame()
             : base()
@@ -61,21 +62,34 @@ namespace OctoAwesome.Client
             input.UpdateOrder = 1;
             Components.Add(input);
 
-            player = new PlayerComponent(this, input);
+            simulation = new SimulationComponent(this);
+            simulation.UpdateOrder = 3;
+            Components.Add(simulation);
+
+            player = new PlayerComponent(this, input, simulation);
             player.UpdateOrder = 2;
             Components.Add(player);
 
+
             camera = new CameraComponent(this, player);
-            camera.UpdateOrder = 3;
+            camera.UpdateOrder = 4;
             Components.Add(camera);
 
             scene = new SceneComponent(this, player, camera);
+            scene.UpdateOrder = 5;
             scene.DrawOrder = 1;
             Components.Add(scene);
 
             hud = new HudComponent(this, player);
+            hud.UpdateOrder = 6;
             hud.DrawOrder = 2;
             Components.Add(hud);
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            simulation.World.Save();
+            base.OnExiting(sender, args);
         }
     }
 }
