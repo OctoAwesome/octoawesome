@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace OctoAwesome.Runtime
 {
@@ -10,28 +12,57 @@ namespace OctoAwesome.Runtime
     {
         private IUniverse universe;
 
+        private Stopwatch watch;
+        private Thread thread;
+
         public List<ActorHost> ActorHosts { get; private set; }
 
-        public UpdateDomain()
+        public bool Running { get; set; }
+
+        public UpdateDomain(Stopwatch watch)
         {
+            this.watch = watch;
             ActorHosts = new List<ActorHost>();
             var host = new ActorHost(new Player());
             ActorHosts.Add(host);
+
+            Running = true;
+
+            thread = new Thread(updateLoop);
+            thread.IsBackground = true;
+            thread.Priority = ThreadPriority.BelowNormal;
+            thread.Start();
         }
 
-        public void Update(GameTime frameTime)
+        private void updateLoop()
         {
-            foreach (var actorHost in ActorHosts)
+            TimeSpan lastCall = new TimeSpan();
+            TimeSpan frameTime = new TimeSpan(0, 0, 0, 0, 16);
+            while (Running)
             {
-                actorHost.Update(frameTime);
+                GameTime gameTime = new GameTime(
+                    watch.Elapsed, frameTime); 
+                    //watch.Elapsed - lastCall);
+                lastCall = watch.Elapsed;
+
+                // TODO: Chunk Updates
+
+                Console.WriteLine(gameTime.ElapsedGameTime);
+                foreach (var actorHost in ActorHosts)
+                    actorHost.Update(gameTime);
+
+                if (watch.Elapsed - lastCall < frameTime)
+                {
+                    Thread.Sleep(frameTime - (watch.Elapsed - lastCall));
+                }
             }
         }
 
-
-
-        public void Save()
+        public void Update(GameTime gameTime)
         {
-            ResourceManager.Instance.Save();
+            
+            //foreach (var actorHost in ActorHosts)
+            //    actorHost.Update(gameTime);
         }
     }
 }

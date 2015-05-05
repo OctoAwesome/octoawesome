@@ -409,7 +409,6 @@ namespace OctoAwesome.Runtime
 
         public void Apply()
         {
-            throw new NotImplementedException();
         }
     }
 }
