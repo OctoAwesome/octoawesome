@@ -20,7 +20,7 @@ namespace OctoAwesome.Client.Components
         public static int VIEWHEIGHT = 5;
         public static int TEXTURESIZE = 64;
 
-        private WorldComponent world;
+        private PlayerComponent player;
         private CameraComponent camera;
 
         private ChunkRenderer[] chunkRenderer;
@@ -41,10 +41,10 @@ namespace OctoAwesome.Client.Components
 
         private Thread backgroundThread;
 
-        public SceneComponent(Game game, WorldComponent world, CameraComponent camera)
+        public SceneComponent(Game game, PlayerComponent player, CameraComponent camera)
             : base(game)
         {
-            this.world = world;
+            this.player = player;
             this.camera = camera;
         }
 
@@ -160,7 +160,7 @@ namespace OctoAwesome.Client.Components
             // GraphicsDevice.RasterizerState.CullMode = CullMode.None;
             // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
 
-            Index3 chunkOffset = world.World.Player.Player.Position.ChunkIndex;
+            Index3 chunkOffset = player.Player.Position.ChunkIndex;
 
             foreach (var renderer in chunkRenderer)
 	        {
@@ -186,12 +186,12 @@ namespace OctoAwesome.Client.Components
                     renderer.Draw(camera, shift);
 	        }
 
-            if (world.Player.SelectedBox.HasValue)
+            if (player.Player.SelectedBox.HasValue)
             {
                 Vector3 selectedBoxPosition = new Vector3(
-                    world.Player.SelectedBox.Value.X - (chunkOffset.X * Chunk.CHUNKSIZE_X),
-                    world.Player.SelectedBox.Value.Y - (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
-                    world.Player.SelectedBox.Value.Z - (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
+                    player.Player.SelectedBox.Value.X - (chunkOffset.X * Chunk.CHUNKSIZE_X),
+                    player.Player.SelectedBox.Value.Y - (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
+                    player.Player.SelectedBox.Value.Z - (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
                 selectionEffect.World = Matrix.CreateTranslation(selectedBoxPosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
@@ -205,8 +205,8 @@ namespace OctoAwesome.Client.Components
 
         private void FillChunkRenderer()
         {
-            Index3 destinationChunk = world.World.Player.Player.Position.ChunkIndex;
-            IPlanet planet = ResourceManager.Instance.GetPlanet(world.World.Player.Player.Position.Planet);
+            Index3 destinationChunk = player.Player.Position.ChunkIndex;
+            IPlanet planet = ResourceManager.Instance.GetPlanet(player.Player.Position.Planet);
             destinationChunk.Z = Math.Max(VIEWHEIGHT, Math.Min(planet.Size.Z - VIEWHEIGHT, destinationChunk.Z));
 
             HandleHighPrioUpdates();

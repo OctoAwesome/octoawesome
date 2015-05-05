@@ -12,10 +12,10 @@ namespace OctoAwesome.Runtime
 
         public List<ActorHost> ActorHosts { get; private set; }
 
-        public UpdateDomain(IInputSet input)
+        public UpdateDomain()
         {
             ActorHosts = new List<ActorHost>();
-            var host = new ActorHost(new Player(), input);
+            var host = new ActorHost(new Player());
             ActorHosts.Add(host);
         }
 
