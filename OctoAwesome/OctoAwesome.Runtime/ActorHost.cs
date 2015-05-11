@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using OctoAwesome.Basics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace OctoAwesome.Runtime
         private bool lastJump = false;
 
         private Index3? lastInteract = null;
+        private Index3? lastApply = null; 
 
         public Player Player { get; private set; }
 
@@ -308,6 +310,14 @@ namespace OctoAwesome.Runtime
             if (lastInteract.HasValue)
             {
                 ResourceManager.Instance.SetBlock(planet.Id, lastInteract.Value, null);
+                lastInteract = null;
+            }
+
+            if (lastApply.HasValue)
+            {
+                Index3 newIndex = new Index3(lastApply.Value.X, lastApply.Value.Y, lastApply.Value.Z + 1);
+                ResourceManager.Instance.SetBlock(planet.Id, newIndex, new SandBlock());
+                lastApply = null;
             }
 
             #endregion
@@ -407,8 +417,9 @@ namespace OctoAwesome.Runtime
             lastInteract = blockIndex;
         }
 
-        public void Apply()
+        public void Apply(Index3 blockIndex)
         {
+            lastApply = blockIndex;
         }
     }
 }

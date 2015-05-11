@@ -220,6 +220,13 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
+            if (selected.HasValue) {
+
+                
+            }
+
+            camera.PickRay.Intersects()
+
             player.SelectedBox = selected;
 
             #endregion
@@ -229,7 +236,7 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
-            Microsoft.Xna.Framework.Color background = 
+            Microsoft.Xna.Framework.Color background =
                 new Microsoft.Xna.Framework.Color(181, 224, 255);
             GraphicsDevice.Clear(background);
 
@@ -242,13 +249,13 @@ namespace OctoAwesome.Client.Components
             Index3 chunkOffset = player.Player.Position.ChunkIndex;
 
             foreach (var renderer in chunkRenderer)
-	        {
+            {
                 if (!renderer.InUse)
                     continue;
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(
                     renderer.ChunkIndex, new Index2(
-                        planet.Size.X, 
+                        planet.Size.X,
                         planet.Size.Y));
 
                 BoundingBox chunkBox = new BoundingBox(
@@ -263,7 +270,7 @@ namespace OctoAwesome.Client.Components
 
                 if (camera.Frustum.Intersects(chunkBox))
                     renderer.Draw(camera, shift);
-	        }
+            }
 
             if (player.SelectedBox.HasValue)
             {
