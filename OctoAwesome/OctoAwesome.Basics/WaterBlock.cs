@@ -9,5 +9,6 @@ namespace OctoAwesome.Basics
 {
     public sealed class WaterBlock : Block
     {
+        public WaterBlock(Index3 globalPosition) : base(globalPosition) { }
     }
 }

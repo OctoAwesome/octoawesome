@@ -29,9 +29,9 @@ namespace OctoAwesome.Basics
             get { return Resources.water_side; }
         }
 
-        public IBlock GetInstance()
+        public IBlock GetInstance(Index3 globalPosition)
         {
-            return new WaterBlock();
+            return new WaterBlock(globalPosition);
         }
 
         public Type GetBlockType()

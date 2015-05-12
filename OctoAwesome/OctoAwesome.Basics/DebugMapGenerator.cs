@@ -41,7 +41,10 @@ namespace OctoAwesome.Basics
                         {
                             int block = z % (Chunk.CHUNKSIZE_Z);
                             int layer = (int)(z / Chunk.CHUNKSIZE_Z);
-                            result[layer].SetBlock(x, y, block, new SandBlock());
+                            result[layer].SetBlock(x, y, block, new SandBlock(new Index3(
+                                (index.X * Chunk.CHUNKSIZE_X) + x, 
+                                (index.Y * Chunk.CHUNKSIZE_Y) + y, 
+                                (layer * Chunk.CHUNKSIZE_Z) + block)));
                         }
                     }
                 }

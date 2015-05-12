@@ -16,7 +16,7 @@ namespace OctoAwesome
         
         Bitmap SideTexture { get; }
 
-        IBlock GetInstance();
+        IBlock GetInstance(Index3 globalPosition);
 
         Type GetBlockType();
     }

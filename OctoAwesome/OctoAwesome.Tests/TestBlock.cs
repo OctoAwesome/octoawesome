@@ -8,6 +8,8 @@ namespace OctoAwesome.Tests
 {
     public class TestBlock : Block
     {
+        public TestBlock(Index3 position) : base(position) { }
+
         public override BoundingBox[] GetCollisionBoxes()
         {
             BoundingBox[] result = new BoundingBox[2];

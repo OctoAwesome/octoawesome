@@ -9,5 +9,6 @@ namespace OctoAwesome.Basics
 {
     public sealed class SandBlock : Block
     {
+        public SandBlock(Index3 globalPosition) : base(globalPosition) { }
     }
 }
