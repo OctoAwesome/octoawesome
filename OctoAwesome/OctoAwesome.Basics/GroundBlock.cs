@@ -9,5 +9,6 @@ namespace OctoAwesome.Basics
 {
     public sealed class GroundBlock : Block
     {
+        public GroundBlock(Index3 globalPosition) : base(globalPosition) { }
     }
 }

@@ -8,5 +8,6 @@ namespace OctoAwesome.Basics
 {
     public class GrassBlock : Block
     {
+        public GrassBlock(Index3 globalPosition) : base(globalPosition) { }
     }
 }

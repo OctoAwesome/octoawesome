@@ -55,6 +55,9 @@ namespace OctoAwesome.Basics
                         for (int z = Chunk.CHUNKSIZE_Z - 1; z >= 0; z--)
                         {
                             int absoluteZ = (z + (i * Chunk.CHUNKSIZE_Z));
+
+                            Index3 absolutePosition = new Index3(index.X * Chunk.CHUNKSIZE_X, index.Y * Chunk.CHUNKSIZE_Y, absoluteZ);
+
                             if (absoluteZ <= localHeightmap[x, y] * localPlanet.Size.Z * Chunk.CHUNKSIZE_Z)
                             {
                                 if (obersteSchicht > 0)
@@ -63,40 +66,40 @@ namespace OctoAwesome.Basics
 
                                     if ((ozeanSurface || surfaceBlock) && (absoluteZ <= (localPlanet.BiomeGenerator.SeaLevel + 2)) && (absoluteZ >= (localPlanet.BiomeGenerator.SeaLevel - 2)))
                                     {
-                                        chunks[i].SetBlock(x, y, z, new SandBlock());
+                                        chunks[i].SetBlock(x, y, z, new SandBlock(absolutePosition));
                                     }
                                     else if (temp >= 35)
                                     {
-                                        chunks[i].SetBlock(x, y, z, new SandBlock());
+                                        chunks[i].SetBlock(x, y, z, new SandBlock(absolutePosition));
                                     }
                                     else if (absoluteZ >= localPlanet.Size.Z * Chunk.CHUNKSIZE_Z * 0.6f)
                                     {
                                         if (temp > 12)
-                                            chunks[i].SetBlock(x, y, z, new GroundBlock());
+                                            chunks[i].SetBlock(x, y, z, new GroundBlock(absolutePosition));
                                         else
-                                            chunks[i].SetBlock(x, y, z, new StoneBlock());
+                                            chunks[i].SetBlock(x, y, z, new StoneBlock(absolutePosition));
                                     }
                                     else if (temp >= 8)
                                     {
                                         if (surfaceBlock && !ozeanSurface)
                                         {
-                                            chunks[i].SetBlock(x, y, z, new GrassBlock());
+                                            chunks[i].SetBlock(x, y, z, new GrassBlock(absolutePosition));
                                             surfaceBlock = false;
                                         }
                                         else
                                         {
-                                            chunks[i].SetBlock(x, y, z, new GroundBlock());
+                                            chunks[i].SetBlock(x, y, z, new GroundBlock(absolutePosition));
                                         }
                                     }
                                     else
                                     {
-                                        chunks[i].SetBlock(x, y, z, new GroundBlock());
+                                        chunks[i].SetBlock(x, y, z, new GroundBlock(absolutePosition));
                                     }
                                     obersteSchicht--;
                                 }
                                 else
                                 {
-                                    chunks[i].SetBlock(x, y, z, new StoneBlock());
+                                    chunks[i].SetBlock(x, y, z, new StoneBlock(absolutePosition));
                                 }
 
 
@@ -104,7 +107,7 @@ namespace OctoAwesome.Basics
                             else if ((z + (i * Chunk.CHUNKSIZE_Z)) <= localPlanet.BiomeGenerator.SeaLevel)
                             {
 
-                                chunks[i].SetBlock(x, y, z, new WaterBlock());
+                                chunks[i].SetBlock(x, y, z, new WaterBlock(absolutePosition));
                                 ozeanSurface = true;
                             }
 

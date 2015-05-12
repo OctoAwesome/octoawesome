@@ -12,7 +12,7 @@ namespace OctoAwesome.Tests
         [TestInitialize]
         public void Init()
         {
-            block = new TestBlock() { GlobalPosition = new Index3(10, 20, 30) };
+            block = new TestBlock(new Index3(10, 20, 30));
         }
 
         [TestCleanup]

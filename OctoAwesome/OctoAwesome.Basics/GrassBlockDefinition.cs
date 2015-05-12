@@ -29,9 +29,9 @@ namespace OctoAwesome.Basics
             get { return Resources.grass_side; }
         }
 
-        public IBlock GetInstance()
+        public IBlock GetInstance(Index3 globalPosition)
         {
-            return new GrassBlock();
+            return new GrassBlock(globalPosition);
         }
 
         public Type GetBlockType()

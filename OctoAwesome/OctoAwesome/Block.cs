@@ -10,155 +10,17 @@ namespace OctoAwesome
     {
         private readonly float Gap = 0.001f;
 
-        public Index3 GlobalPosition { get; set; }
+        public Block(Index3 globalPosition)
+        {
+            GlobalPosition = globalPosition;
+        }
+
+        public Index3 GlobalPosition { get; private set; }
 
         public virtual BoundingBox[] GetCollisionBoxes()
         {
             return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
         }
-
-        //public float? Intersect(BoundingBox box, Vector3 move, out Axis? collisionAxis)
-        //{
-        //    bool collision = false;
-        //    float min = 1f;
-        //    float minGap = 0f;
-        //    Axis minAxis = Axis.None;
-
-        //    BoundingBox[] boxes = GetCollisionBoxes();
-
-        //    foreach (var localBox in boxes)
-        //    {
-        //        BoundingBox transformedBox = new BoundingBox(
-        //            localBox.Min + new Vector3(GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z),
-        //            localBox.Max + new Vector3(GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z));
-
-        //        // (1) Kollisionscheck
-        //        bool collisionX = (transformedBox.Min.X <= box.Max.X && transformedBox.Max.X >= box.Min.X);
-        //        bool collisionY = (transformedBox.Min.Y <= box.Max.Y && transformedBox.Max.Y >= box.Min.Y);
-        //        bool collisionZ = (transformedBox.Min.Z <= box.Max.Z && transformedBox.Max.Z >= box.Min.Z);
-
-        //        if (collisionX && collisionY && collisionZ)
-        //        {
-        //            collision = true;
-
-        //            // (2) Kollisionszeitpunkt ermitteln
-        //            float max = 0f;
-        //            Axis maxAxis = Axis.None;
-        //            float maxGap = 0f;
-
-        //            float nx = 1f;
-        //            if (move.X > 0)
-        //            {
-        //                float diff = box.Max.X - transformedBox.Min.X;
-        //                if (diff < move.X)
-        //                {
-        //                    nx = 1f - (diff / move.X);
-        //                    if (nx > max)
-        //                    {
-        //                        max = nx;
-        //                        maxAxis = Axis.X;
-        //                        maxGap = -Gap;
-        //                    }
-        //                }
-
-        //            }
-        //            else if (move.X < 0)
-        //            {
-        //                float diff = transformedBox.Max.X - box.Min.X;
-        //                if (diff < -move.X)
-        //                {
-        //                    nx = 1f - (diff / -move.X);
-        //                    if (nx > max)
-        //                    {
-        //                        max = nx;
-        //                        maxAxis = Axis.X;
-        //                        maxGap = Gap;
-        //                    }
-        //                }
-        //            }
-
-        //            float ny = 1f;
-        //            if (move.Y > 0)
-        //            {
-        //                float diff = box.Max.Y - transformedBox.Min.Y;
-        //                if (diff < move.Y)
-        //                {
-        //                    ny = 1f - (diff / move.Y);
-        //                    if (ny > max)
-        //                    {
-        //                        max = ny;
-        //                        maxAxis = Axis.Y;
-        //                        maxGap = -Gap;
-        //                    }
-        //                }
-
-        //            }
-        //            else if (move.Y < 0)
-        //            {
-        //                float diff = transformedBox.Max.Y - box.Min.Y;
-        //                if (diff < -move.Y)
-        //                {
-        //                    ny = 1f - (diff / -move.Y);
-        //                    if (ny > max)
-        //                    {
-        //                        max = ny;
-        //                        maxAxis = Axis.Y;
-        //                        maxGap = Gap;
-        //                    }
-        //                }
-        //            }
-
-        //            float nz = 1f;
-        //            if (move.Z > 0)
-        //            {
-        //                float diff = box.Max.Z - transformedBox.Min.Z;
-        //                if (diff < move.Z)
-        //                {
-        //                    nz = 1f - (diff / move.Z);
-        //                    if (nz > max)
-        //                    {
-        //                        max = nz;
-        //                        maxAxis = Axis.Z;
-        //                        maxGap = -Gap;
-        //                    }
-        //                }
-
-        //            }
-        //            else if (move.Z < 0)
-        //            {
-        //                float diff = transformedBox.Max.Z - box.Min.Z;
-        //                if (diff < -move.Z)
-        //                {
-        //                    nz = 1f - (diff / -move.Z);
-        //                    if (nz > max)
-        //                    {
-        //                        max = nz;
-        //                        maxAxis = Axis.Z;
-        //                        maxGap = Gap;
-        //                    }
-        //                }
-        //            }
-
-        //            if (max < min)
-        //            {
-        //                min = max;
-        //                minAxis = maxAxis;
-        //                minGap = maxGap;
-        //            }
-        //        }
-        //    }
-
-        //    if (collision)
-        //    {
-        //        collisionAxis = minAxis;
-        //        return min;
-        //    }
-        //    else
-        //    {
-        //        collisionAxis = null;
-        //        return null;
-        //    }
-        //}
 
         public float? Intersect(Vector3 position, Vector3 move, out Axis? collisionAxis)
         {
