@@ -37,6 +37,7 @@ namespace OctoAwesome.Model.Tests
             try
             {
                 Index2.NormalizeAxis(10, 0);
+                Assert.Fail();
             }
             catch (ArgumentException) { }
 
@@ -44,6 +45,7 @@ namespace OctoAwesome.Model.Tests
             try
             {
                 Index2.NormalizeAxis(10, -1);
+                Assert.Fail();
             }
             catch (ArgumentException) { }
 
