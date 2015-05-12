@@ -225,7 +225,7 @@ namespace OctoAwesome.Client.Components
                 
             }
 
-            camera.PickRay.Intersects()
+            
 
             player.SelectedBox = selected;
 
