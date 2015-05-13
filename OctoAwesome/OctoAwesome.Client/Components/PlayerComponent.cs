@@ -35,7 +35,7 @@ namespace OctoAwesome.Client.Components
             {
                 Player.Interact(SelectedBox.Value);
             }
-            if (input.ApplyTrigger)
+            if (input.ApplyTrigger && SelectedBox.HasValue)
             {
                 Player.Apply(SelectedBox.Value);
             }

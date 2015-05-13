@@ -29,9 +29,9 @@ namespace OctoAwesome.Basics
             get { return Resources.ground_side; }
         }
 
-        public IBlock GetInstance(Index3 globalPosition)
+        public IBlock GetInstance()
         {
-            return new GroundBlock(globalPosition);
+            return new GroundBlock();
         }
 
         public Type GetBlockType()

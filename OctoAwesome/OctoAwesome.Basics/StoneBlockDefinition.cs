@@ -29,9 +29,9 @@ namespace OctoAwesome.Basics
             get { return Resources.stone_side; }
         }
 
-        public IBlock GetInstance(Index3 globalPosition)
+        public IBlock GetInstance()
         {
-            return new StoneBlock(globalPosition);
+            return new StoneBlock();
         }
 
 
