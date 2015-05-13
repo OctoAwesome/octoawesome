@@ -9,6 +9,5 @@ namespace OctoAwesome.Basics
 {
     public sealed class StoneBlock : Block
     {
-        public StoneBlock(Index3 globalPosition) : base(globalPosition) { }
     }
 }

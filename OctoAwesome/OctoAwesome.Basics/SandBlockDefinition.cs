@@ -29,7 +29,7 @@ namespace OctoAwesome.Basics
             get { return Resources.sand_side; }
         }
 
-        public IBlock GetInstance(Index3 globalPosition)
+        public IBlock GetInstance()
         {
             throw new NotImplementedException();
         }

@@ -17,7 +17,7 @@ namespace OctoAwesome.Runtime
         private bool lastJump = false;
 
         private Index3? lastInteract = null;
-        private Index3? lastApply = null; 
+        private Index3? lastApply = null;
 
         public Player Player { get; private set; }
 
@@ -104,20 +104,23 @@ namespace OctoAwesome.Runtime
                 Player.Position.GlobalPosition.Z + Player.Height,
                 Player.Position.GlobalPosition.Z + Player.Height + move.Z);
 
+            BoundingBox playerBox = new BoundingBox(
+                    new Vector3(
+                        Player.Position.GlobalPosition.X - Player.Radius,
+                        Player.Position.GlobalPosition.Y - Player.Radius,
+                        Player.Position.GlobalPosition.Z),
+                    new Vector3(
+                        Player.Position.GlobalPosition.X + Player.Radius,
+                        Player.Position.GlobalPosition.Y + Player.Radius,
+                        Player.Position.GlobalPosition.Z + Player.Height));
+
             bool collision = false;
-            int loops = 0;
-
-            Vector3 playerCorner = new Vector3(
-                        Player.Position.GlobalPosition.X + (move.X > 0 ? Player.Radius : -Player.Radius),
-                        Player.Position.GlobalPosition.Y + (move.Y > 0 ? Player.Radius : -Player.Radius),
-                        Player.Position.GlobalPosition.Z + (move.Z > 0 ? Player.Height : 0));
-
+            int loop = 0;
             do
             {
-                //collision = false;
-                //float min = 1f;
-                //float minGap = 0f;
-                //Axis minAxis = Axis.None;
+                collision = false;
+                float min = 1f;
+                Axis minAxis = Axis.None;
 
                 for (int z = minz; z <= maxz; z++)
                 {
@@ -133,61 +136,42 @@ namespace OctoAwesome.Runtime
                                 continue;
 
                             Axis? localAxis;
-                            float? moveFactor = block.Intersect(playerCorner, move, out localAxis);
+                            float? moveFactor = block.Intersect(pos, playerBox, move, out localAxis);
 
-                            if (moveFactor.HasValue)
+                            if (moveFactor.HasValue && moveFactor.Value < min)
                             {
-                                move *= moveFactor.Value;
-                                switch (localAxis)
-                                {
-                                    case Axis.X: move.X = 0f; break;
-                                    case Axis.Y: move.Y = 0f; break;
-                                    case Axis.Z: move.Z = 0f; break;
-                                }
+                                collision = true;
+                                min = moveFactor.Value;
+                                minAxis = localAxis.Value;
                             }
                         }
                     }
                 }
 
-                //if (collision)
-                //{
-                //    Vector3 movePart = move * min;
-                //    Player.Position += movePart;
-                //    move *= 1 - min;
-                //    switch (minAxis)
-                //    {
-                //        case Axis.X:
-                //            move.X = 0;
-                //            Player.Position = Player.Position + new Vector3(minGap, 0, 0);
-                //            Player.Velocity *= new Vector3(0, 1, 1);
-                //            break;
-                //        case Axis.Y:
-                //            move.Y = 0;
-                //            Player.Position = Player.Position + new Vector3(0, minGap, 0);
-                //            Player.Velocity *= new Vector3(1, 0, 1);
-                //            break;
-                //        case Axis.Z:
-                //            move.Z = 0;
-                //            Player.Position = Player.Position + new Vector3(0, 0, minGap);
-                //            Player.Velocity *= new Vector3(1, 1, 0);
-                //            if (minGap > 0) Player.OnGround = true;
-                //            break;
-                //    }
-                //}
-                //else
-                //{
-                //    Player.Position += move;
-                //}
-
-                //Coordinate playerPosition = Player.Position;
-                //Index3 blockIndex = playerPosition.GlobalBlockIndex;
-                //blockIndex.NormalizeXY(planetSize);
-                //Player.Position = new Coordinate(playerPosition.Planet, blockIndex, playerPosition.BlockPosition);
-
-                loops++;
-
-            } while (collision && loops < 3);
-            Player.Position += move;
+                Player.Position += (move * min);
+                move *= (1f - min);
+                switch (minAxis)
+                {
+                    case Axis.X:
+                        Player.Velocity *= new Vector3(0, 1, 1);
+                        Player.Position += new Vector3(move.X > 0 ? -Gap : Gap, 0, 0);
+                        move.X = 0f;
+                        break;
+                    case Axis.Y:
+                        Player.Velocity *= new Vector3(1, 0, 1);
+                        Player.Position += new Vector3(0, move.Z > 0 ? -Gap : Gap, 0);
+                        move.Y = 0f;
+                        break;
+                    case Axis.Z:
+                        Player.OnGround = true;
+                        Player.Velocity *= new Vector3(1, 1, 0);
+                        Player.Position += new Vector3(0, 0, move.Z > 0 ? -Gap : Gap);
+                        move.Z = 0f;
+                        break;
+                }
+                loop++;
+            }
+            while (collision && loop < 3);
 
             #endregion
 
@@ -202,7 +186,7 @@ namespace OctoAwesome.Runtime
             if (lastApply.HasValue)
             {
                 Index3 newIndex = new Index3(lastApply.Value.X, lastApply.Value.Y, lastApply.Value.Z + 1);
-                ResourceManager.Instance.SetBlock(planet.Id, newIndex, new SandBlock(newIndex));
+                ResourceManager.Instance.SetBlock(planet.Id, newIndex, new SandBlock());
                 lastApply = null;
             }
 

@@ -65,23 +65,23 @@ Global
 		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs02
-		SccProjectUniqueName0 = OctoAwesome\\OctoAwesome.csproj
-		SccProjectName0 = OctoAwesome
-		SccLocalPath0 = OctoAwesome
-		SccProjectUniqueName1 = OctoAwesome.Basics\\OctoAwesome.Basics.csproj
-		SccProjectName1 = OctoAwesome.Basics
-		SccLocalPath1 = OctoAwesome.Basics
-		SccProjectUniqueName2 = OctoAwesome.Runtime\\OctoAwesome.Runtime.csproj
-		SccProjectName2 = OctoAwesome.Runtime
-		SccLocalPath2 = OctoAwesome.Runtime
-		SccProjectUniqueName3 = OctoAwesome.Tests\\OctoAwesome.Tests.csproj
-		SccProjectTopLevelParentUniqueName3 = OctoAwesome.sln
-		SccProjectName3 = OctoAwesome.Tests
-		SccLocalPath3 = OctoAwesome.Tests
-		SccProjectUniqueName4 = OctoAwesome.Client\\OctoAwesome.Client.csproj
-		SccProjectName4 = OctoAwesome.Client
-		SccLocalPath4 = OctoAwesome.Client
-		SccLocalPath5 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = OctoAwesome\\OctoAwesome.csproj
+		SccProjectName1 = OctoAwesome
+		SccLocalPath1 = OctoAwesome
+		SccProjectUniqueName2 = OctoAwesome.Basics\\OctoAwesome.Basics.csproj
+		SccProjectName2 = OctoAwesome.Basics
+		SccLocalPath2 = OctoAwesome.Basics
+		SccProjectUniqueName3 = OctoAwesome.Runtime\\OctoAwesome.Runtime.csproj
+		SccProjectName3 = OctoAwesome.Runtime
+		SccLocalPath3 = OctoAwesome.Runtime
+		SccProjectUniqueName4 = OctoAwesome.Tests\\OctoAwesome.Tests.csproj
+		SccProjectTopLevelParentUniqueName4 = OctoAwesome.sln
+		SccProjectName4 = OctoAwesome.Tests
+		SccLocalPath4 = OctoAwesome.Tests
+		SccProjectUniqueName5 = OctoAwesome.Client\\OctoAwesome.Client.csproj
+		SccProjectName5 = OctoAwesome.Client
+		SccLocalPath5 = OctoAwesome.Client
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +114,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0468B67C-E076-4B19-833C-382513606A5A} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
