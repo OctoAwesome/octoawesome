@@ -42,12 +42,13 @@ namespace OctoAwesome.Runtime
             {
                 GameTime gameTime = new GameTime(
                     watch.Elapsed, frameTime); 
-                    //watch.Elapsed - lastCall);
+                    // watch.Elapsed - lastCall);
                 lastCall = watch.Elapsed;
 
                 // TODO: Chunk Updates
 
-                Console.WriteLine(gameTime.ElapsedGameTime);
+                Console.WriteLine(watch.Elapsed - lastCall);
+
                 foreach (var actorHost in ActorHosts)
                     actorHost.Update(gameTime);
 
@@ -60,7 +61,6 @@ namespace OctoAwesome.Runtime
 
         public void Update(GameTime gameTime)
         {
-            
             //foreach (var actorHost in ActorHosts)
             //    actorHost.Update(gameTime);
         }

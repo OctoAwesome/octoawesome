@@ -161,6 +161,17 @@ namespace OctoAwesome
             position = position - shift;
         }
 
+        /// <summary>
+        /// Normalisiert den ChunkIndex auf die gegebenen Limits.
+        /// </summary>
+        /// <param name="limit"></param>
+        public void NormalizeChunkIndexXY(Index3 limit)
+        {
+            Index3 index = ChunkIndex;
+            index.NormalizeXY(limit);
+            ChunkIndex = index;
+        }
+
         public static Coordinate operator +(Coordinate i1, Coordinate i2)
         {
             if (i1.Planet != i2.Planet)

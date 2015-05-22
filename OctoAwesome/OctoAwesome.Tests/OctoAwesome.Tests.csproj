@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="BlockIntersectTests.cs" />
     <Compile Include="AssertEx.cs" />
+    <Compile Include="CollisionTests.cs" />
     <Compile Include="Index2Tests.cs" />
     <Compile Include="Index3Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
