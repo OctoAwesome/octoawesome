@@ -91,6 +91,8 @@ namespace OctoAwesome
                         (move.Z > 0 ? player.Max.Z : player.Min.Z));
 
             Vector3 targetPosition = playerCorner + move;
+
+            // Version 1: Box um Start- und Zielblock spannen (Mehr Kollisionen als tatsächlich vorhanden)
             BoundingBox playerBox = new BoundingBox(
                     new Vector3(
                         Math.Min(player.Min.X, player.Min.X + move.X),
@@ -100,6 +102,9 @@ namespace OctoAwesome
                         Math.Max(player.Max.X, player.Max.X + move.X),
                         Math.Max(player.Max.Y, player.Max.Y + move.Y),
                         Math.Max(player.Max.Z, player.Max.Z + move.Z)));
+
+            // Version 2: Nur Zielblock auf Kollision prüfen -> Durchdringung
+            // BoundingBox playerBox = new BoundingBox(player.Min + move, player.Max + move);
 
             BoundingBox[] boxes = GetCollisionBoxes();
 

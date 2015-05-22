@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace OctoAwesome.Tests
 {
@@ -153,8 +154,9 @@ namespace OctoAwesome.Tests
         /// Durchdrungene Achsen ignorieren
         /// </summary>
         [TestMethod]
-        public void BlockInteractSliding()
+        public void BlockIntersectSliding()
         {
+            // X
             Axis? collisionAxis;
             float? distance = block.Intersect(new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 20.5f, 30), new Vector3(9, 21.5f, 31)), new Vector3(2, 0.5f, 0), out collisionAxis);
             Assert.AreEqual(Axis.X, collisionAxis);
@@ -164,13 +166,147 @@ namespace OctoAwesome.Tests
         /// <summary>
         /// Durchdringung abfangen
         /// </summary>
-        public void BlockInteractDiffusion()
+        public void BlockIntersectDiffusion()
         {
             // Muss trotz vollständiger Durchdringung eine Kollision ermitteln
             Axis? collisionAxis;
             float? distance = block.Intersect(new Index3(10, 20, 30), new BoundingBox(new Vector3(9, 19, 29), new Vector3(10, 20, 30)), new Vector3(5, 5, 5), out collisionAxis);
             Assert.AreEqual(Axis.X, collisionAxis);
             Assert.AreEqual(1f / 3f, distance);
+        }
+
+        /// <summary>
+        /// Testet die Kollision, wenn eine Ecke kollidiert, die nicht die Move-Ecke des Spielers ist.
+        /// </summary>
+        [TestMethod]
+        public void OppositCornerIntersect()
+        {
+            // x
+            Axis? collisionAxis;
+            float? distance = block.Intersect(new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 20, 30), new Vector3(9, 21, 31)), new Vector3(2, 1.5f, 0), out collisionAxis);
+            Assert.AreEqual(Axis.X, collisionAxis);
+            Assert.AreEqual(0.5f, distance);
+
+            // y
+            distance = block.Intersect(new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 18, 30), new Vector3(11, 19, 31)), new Vector3(0, 2f, 1.5f), out collisionAxis);
+            Assert.AreEqual(Axis.Y, collisionAxis);
+            Assert.AreEqual(0.5f, distance);
+
+            // z
+            distance = block.Intersect(new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 20, 28), new Vector3(11, 21, 29)), new Vector3(0, 1.5f, 2), out collisionAxis);
+            Assert.AreEqual(Axis.Z, collisionAxis);
+            Assert.AreEqual(0.5f, distance);
+        }
+
+        /// <summary>
+        /// Prüft das Verhalten der Kollision bei Blocks, die sich knapp übers Eck aneinander vorbei bewegen
+        /// </summary>
+        [TestMethod]
+        public void NonContactCornerIntersect()
+        {
+            // x
+            Axis? collisionAxis;
+            float? distance = block.Intersect(new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 20, 30), new Vector3(9, 21, 31)), new Vector3(2, 2.5f, 0), out collisionAxis);
+            Assert.IsNull(collisionAxis);
+            Assert.IsNull(distance);
+        }
+
+        // Prüft das Entlang schlittern an einer Wand
+        [TestMethod]
+        public void SlidingWall()
+        {
+            // ###
+            //  3#
+            //  2#
+            // 1
+
+            Dictionary<Index3, IBlock> blocks = new Dictionary<Index3, IBlock>();
+            blocks.Add(new Index3(2, 2, 1), new TestBlock());
+            blocks.Add(new Index3(3, 2, 1), new TestBlock());
+            blocks.Add(new Index3(4, 2, 1), new TestBlock());
+            blocks.Add(new Index3(4, 3, 1), new TestBlock());
+            blocks.Add(new Index3(4, 4, 1), new TestBlock());
+
+            BoundingBox player = new BoundingBox(new Vector3(2, 5, 1), new Vector3(3, 6, 1));
+            Vector3 move = new Vector3(0.75f, -0.75f, 0);
+            Axis? collisionAxis;
+            float? distance;
+
+            // Step 1 (2/5 -> 2.75/4.25 (keine Kollision)
+            foreach (var pos in blocks.Keys)
+            {
+                IBlock block = blocks[pos];
+                distance = block.Intersect(pos, player, move, out collisionAxis);
+                Assert.IsNull(collisionAxis);
+                Assert.IsNull(distance);
+            }
+
+            // Step 2 (2.75/4.25 -> 3.5/3.5 (kollision X) -> 3.0/3.5
+            player = new BoundingBox(player.Min + move, player.Max + move);
+            foreach (var pos in blocks.Keys)
+            {
+                IBlock block = blocks[pos];
+                distance = block.Intersect(pos, player, move, out collisionAxis);
+
+                if (pos == new Index3(4, 3, 1) || pos == new Index3(4, 4, 1))
+                {
+                    Assert.AreEqual(Axis.X, collisionAxis);
+                    Assert.AreEqual(1f / 3f, distance);
+                }
+                else
+                {
+                    Assert.IsNull(collisionAxis);
+                    Assert.IsNull(distance);
+                }
+            }
+
+            // Step 3 (3.0/3.5 -> 3.75/2.75 (Kollision X & Y) -> 3/3
+            player = new BoundingBox(new Vector3(3, 3.5f, 1), new Vector3(4, 4.5f, 1));
+            foreach (var pos in blocks.Keys)
+            {
+                IBlock block = blocks[pos];
+                distance = block.Intersect(pos, player, move, out collisionAxis);
+
+                if (pos == new Index3(4, 3, 1) || pos == new Index3(4, 4, 1))
+                {
+                    Assert.AreEqual(Axis.X, collisionAxis);
+                    Assert.AreEqual(0f, distance);
+                }
+                else if (pos == new Index3(2, 2, 1) || pos == new Index3(3, 2, 1) || pos == new Index3(4, 2, 1))
+                {
+                    Assert.AreEqual(Axis.Y, collisionAxis);
+                    Assert.AreEqual(2f / 3f, distance);
+                }
+                else
+                {
+                    Assert.IsNull(collisionAxis);
+                    Assert.IsNull(distance);
+                }
+            }
+
+            // Step 4 (freeze) 3/3 -> 3.75/2.25 (Kollision X & Y) -> 3/3
+            player = new BoundingBox(new Vector3(3, 3, 1), new Vector3(4, 3, 1));
+            foreach (var pos in blocks.Keys)
+            {
+                IBlock block = blocks[pos];
+                distance = block.Intersect(pos, player, move, out collisionAxis);
+
+                if (pos == new Index3(4, 2, 1) || pos == new Index3(4, 3, 1))
+                {
+                    Assert.AreEqual(Axis.X, collisionAxis);
+                    Assert.AreEqual(0f, distance);
+                }
+                else if (pos == new Index3(2, 2, 1) || pos == new Index3(3, 2, 1))
+                {
+                    Assert.AreEqual(Axis.Y, collisionAxis);
+                    Assert.AreEqual(0, distance);
+                }
+                else
+                {
+                    Assert.IsNull(collisionAxis);
+                    Assert.IsNull(distance);
+                }
+            }
         }
     }
 }
