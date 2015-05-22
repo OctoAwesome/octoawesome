@@ -9,7 +9,7 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
-        private readonly float Gap = 0.001f;
+        private readonly float Gap = 0;//.00001f;
 
         private IPlanet planet;
         private Cache<Index3, IChunk> localChunkCache;
@@ -79,46 +79,43 @@ namespace OctoAwesome.Runtime
             Vector3 move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
             IPlanet planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            Index2 planetSize = new Index2(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y);
-
             Player.OnGround = false;
-
-            
-
             bool collision = false;
             int loop = 0;
+
             do
             {
-                int minx = (int)Math.Min(
-                Player.Position.GlobalPosition.X - Player.Radius,
-                Player.Position.GlobalPosition.X - Player.Radius + move.X);
-                int maxx = (int)Math.Max(
-                    Player.Position.GlobalPosition.X + Player.Radius,
-                    Player.Position.GlobalPosition.X + Player.Radius + move.X);
-                int miny = (int)Math.Min(
-                    Player.Position.GlobalPosition.Y - Player.Radius,
-                    Player.Position.GlobalPosition.Y - Player.Radius + move.Y);
-                int maxy = (int)Math.Max(
-                    Player.Position.GlobalPosition.Y + Player.Radius,
-                    Player.Position.GlobalPosition.Y + Player.Radius + move.Y);
-                int minz = (int)Math.Min(
-                    Player.Position.GlobalPosition.Z,
-                    Player.Position.GlobalPosition.Z + move.Z);
-                int maxz = (int)Math.Max(
-                    Player.Position.GlobalPosition.Z + Player.Height,
-                    Player.Position.GlobalPosition.Z + Player.Height + move.Z);
+                Index3 tempCenter = Player.Position.GlobalBlockIndex;
 
+                int minx = (int)Math.Floor(Math.Min(
+                    Player.Position.GlobalPosition.X - Player.Radius,
+                    Player.Position.GlobalPosition.X - Player.Radius + move.X));
+                int maxx = (int)Math.Floor(Math.Max(
+                    Player.Position.GlobalPosition.X + Player.Radius,
+                    Player.Position.GlobalPosition.X + Player.Radius + move.X));
+                int miny = (int)Math.Floor(Math.Min(
+                    Player.Position.GlobalPosition.Y - Player.Radius,
+                    Player.Position.GlobalPosition.Y - Player.Radius + move.Y));
+                int maxy = (int)Math.Floor(Math.Max(
+                    Player.Position.GlobalPosition.Y + Player.Radius,
+                    Player.Position.GlobalPosition.Y + Player.Radius + move.Y));
+                int minz = (int)Math.Floor(Math.Min(
+                    Player.Position.GlobalPosition.Z,
+                    Player.Position.GlobalPosition.Z + move.Z));
+                int maxz = (int)Math.Floor(Math.Max(
+                    Player.Position.GlobalPosition.Z + Player.Height,
+                    Player.Position.GlobalPosition.Z + Player.Height + move.Z));
+
+                // Relative PlayerBox
                 BoundingBox playerBox = new BoundingBox(
                     new Vector3(
-                        Player.Position.GlobalPosition.X - Player.Radius,
-                        Player.Position.GlobalPosition.Y - Player.Radius,
-                        Player.Position.GlobalPosition.Z),
+                        Player.Position.BlockPosition.X - Player.Radius,
+                        Player.Position.BlockPosition.Y - Player.Radius,
+                        Player.Position.BlockPosition.Z),
                     new Vector3(
-                        Player.Position.GlobalPosition.X + Player.Radius,
-                        Player.Position.GlobalPosition.Y + Player.Radius,
-                        Player.Position.GlobalPosition.Z + Player.Height));
+                        Player.Position.BlockPosition.X + Player.Radius,
+                        Player.Position.BlockPosition.Y + Player.Radius,
+                        Player.Position.BlockPosition.Z + Player.Height));
 
                 collision = false;
                 float min = 1f;
@@ -131,14 +128,12 @@ namespace OctoAwesome.Runtime
                         for (int x = minx; x <= maxx; x++)
                         {
                             Index3 pos = new Index3(x, y, z);
-                            pos.NormalizeXY(planetSize);
-
                             IBlock block = GetBlock(pos);
                             if (block == null)
                                 continue;
 
                             Axis? localAxis;
-                            float? moveFactor = block.Intersect(pos, playerBox, move, out localAxis);
+                            float? moveFactor = block.Intersect(pos - tempCenter, playerBox, move, out localAxis);
 
                             if (moveFactor.HasValue && moveFactor.Value < min)
                             {
@@ -161,7 +156,7 @@ namespace OctoAwesome.Runtime
                         break;
                     case Axis.Y:
                         Player.Velocity *= new Vector3(1, 0, 1);
-                        Player.Position += new Vector3(0, move.Z > 0 ? -Gap : Gap, 0);
+                        Player.Position += new Vector3(0, move.Y > 0 ? -Gap : Gap, 0);
                         move.Y = 0f;
                         break;
                     case Axis.Z:
@@ -172,9 +167,10 @@ namespace OctoAwesome.Runtime
                         break;
                 }
 
-                Coordinate xy = Player.Position;
-                xy.NormalizeXY(planet.Size);
-                Player.Position = xy;
+                // Koordinate normalisieren (Rundwelt)
+                Coordinate position = Player.Position;
+                position.NormalizeChunkIndexXY(planet.Size);
+                Player.Position = position;
 
                 loop++;
             }

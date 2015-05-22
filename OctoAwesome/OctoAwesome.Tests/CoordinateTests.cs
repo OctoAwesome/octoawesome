@@ -399,8 +399,8 @@ namespace OctoAwesome.Tests
 
             // Addition Coordinate + Vector3
             Coordinate c4 = c1 + new Vector3(10.3f, 27.1f, 9.9f);
-            Assert.AreEqual(new Index3(20, 39, 23), c3.GlobalBlockIndex);
-            AssertEx.AreEqual(new Vector3(0.7f, 0.6f, 0.5f), c3.BlockPosition);
+            Assert.AreEqual(new Index3(20, 39, 23), c4.GlobalBlockIndex);
+            AssertEx.AreEqual(new Vector3(0.7f, 0.6f, 0.5f), c4.BlockPosition);
         }
     }
 }

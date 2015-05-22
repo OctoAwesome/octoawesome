@@ -92,39 +92,28 @@ namespace OctoAwesome
 
             Vector3 targetPosition = playerCorner + move;
 
-            // Version 1: Box um Start- und Zielblock spannen (Mehr Kollisionen als tatsächlich vorhanden)
-            BoundingBox playerBox = new BoundingBox(
-                    new Vector3(
-                        Math.Min(player.Min.X, player.Min.X + move.X),
-                        Math.Min(player.Min.Y, player.Min.Y + move.Y),
-                        Math.Min(player.Min.Z, player.Min.Z + move.Z)),
-                    new Vector3(
-                        Math.Max(player.Max.X, player.Max.X + move.X),
-                        Math.Max(player.Max.Y, player.Max.Y + move.Y),
-                        Math.Max(player.Max.Z, player.Max.Z + move.Z)));
-
-            // Version 2: Nur Zielblock auf Kollision prüfen -> Durchdringung
-            // BoundingBox playerBox = new BoundingBox(player.Min + move, player.Max + move);
-
-            BoundingBox[] boxes = GetCollisionBoxes();
+            Vector3 playerMin = player.Min + move;
+            Vector3 playerMax = player.Max + move;
 
             Vector3 min = new Vector3(1, 1, 1);
             bool collided = false;
 
-            foreach (var localBox in boxes)
+            foreach (var localBox in GetCollisionBoxes())
             {
-                BoundingBox transformedBox = new BoundingBox(
-                    localBox.Min + new Vector3(boxPosition.X, boxPosition.Y, boxPosition.Z),
-                    localBox.Max + new Vector3(boxPosition.X, boxPosition.Y, boxPosition.Z));
+                Vector3 boxMin = localBox.Min + new Vector3(boxPosition.X, boxPosition.Y, boxPosition.Z);
+                Vector3 boxMax = localBox.Max + new Vector3(boxPosition.X, boxPosition.Y, boxPosition.Z);
 
-                // Skipp, wenn es keine Kollision gibt
-                if (!playerBox.Intersects(transformedBox))
-                    continue;
+                bool collide = 
+                    playerMin.X < boxMax.X && playerMax.X > boxMin.X &&
+                    playerMin.Y < boxMax.Y && playerMax.Y > boxMin.Y &&
+                    playerMin.Z < boxMax.Z && playerMax.Z > boxMin.Z;
+
+                if (!collide) continue;
 
                 Vector3 boxCorner = new Vector3(
-                        move.X > 0 ? transformedBox.Min.X : transformedBox.Max.X,
-                        move.Y > 0 ? transformedBox.Min.Y : transformedBox.Max.Y,
-                        move.Z > 0 ? transformedBox.Min.Z : transformedBox.Max.Z);
+                        move.X > 0 ? boxMin.X : boxMax.X,
+                        move.Y > 0 ? boxMin.Y : boxMax.Y,
+                        move.Z > 0 ? boxMin.Z : boxMax.Z);
 
                 Vector3 n = (boxCorner - playerCorner) / move;
                 min = new Vector3(Math.Min(min.X, n.X), Math.Min(min.Y, n.Y), Math.Min(min.Z, n.Z));
@@ -133,7 +122,7 @@ namespace OctoAwesome
 
             if (collided)
             {
-                float max = -1f;
+                float max = -10f;
                 Axis? axis = null;
 
                 // Fall X
