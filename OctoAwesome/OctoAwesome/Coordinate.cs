@@ -42,16 +42,17 @@ namespace OctoAwesome
             get
             {
                 return new Index3(
-                (int)(block.X / Chunk.CHUNKSIZE_X),
-                (int)(block.Y / Chunk.CHUNKSIZE_Y),
-                (int)(block.Z / Chunk.CHUNKSIZE_Z));
+                    (int)Math.Floor((double)block.X / Chunk.CHUNKSIZE_X),
+                    (int)Math.Floor((double)block.Y / Chunk.CHUNKSIZE_Y),
+                    (int)Math.Floor((double)block.Z / Chunk.CHUNKSIZE_Z));
             }
             set
             {
-                Vector3 localPosition = new Vector3(
-                    block.X % Chunk.CHUNKSIZE_X + position.X,
-                    block.Y % Chunk.CHUNKSIZE_Y + position.Y,
-                    block.Z % Chunk.CHUNKSIZE_Z + position.Z);
+                Index3 localBlockIndex = LocalBlockIndex;
+                block = new Index3(
+                    (value.X * Chunk.CHUNKSIZE_X) + localBlockIndex.X,
+                    (value.Y * Chunk.CHUNKSIZE_Y) + localBlockIndex.Y,
+                    (value.Z * Chunk.CHUNKSIZE_Z) + localBlockIndex.Z);
             }
         }
 
@@ -71,15 +72,19 @@ namespace OctoAwesome
         {
             get
             {
+                Index3 chunk = ChunkIndex;
                 return new Index3(
-                    block.X % Chunk.CHUNKSIZE_X,
-                    block.Y % Chunk.CHUNKSIZE_Y,
-                    block.Z % Chunk.CHUNKSIZE_Z);
+                    block.X - (chunk.X * Chunk.CHUNKSIZE_X),
+                    block.Y - (chunk.Y * Chunk.CHUNKSIZE_Y),
+                    block.Z - (chunk.Z * Chunk.CHUNKSIZE_Z));
             }
             set
             {
                 Index3 chunk = ChunkIndex;
-                GlobalBlockIndex = chunk + value;
+                GlobalBlockIndex = new Index3(
+                    (chunk.X * Chunk.CHUNKSIZE_X) + value.X,
+                    (chunk.Y * Chunk.CHUNKSIZE_Y) + value.Y,
+                    (chunk.Z * Chunk.CHUNKSIZE_Z) + value.Z);
                 Normalize();
             }
         }
@@ -98,7 +103,8 @@ namespace OctoAwesome
             }
             set
             {
-                position = GlobalPosition;
+                block = Index3.Zero;
+                position = value;
                 Normalize();
             }
         }
@@ -144,39 +150,28 @@ namespace OctoAwesome
         /// <summary>
         /// Normalisiert die vorhandenen Parameter auf den Position-Wertebereich von [0...1] und die damit verbundene Verschiebung im Block.
         /// </summary>
-        public void Normalize()
+        private void Normalize()
         {
-            block.X += (int)Math.Floor(position.X);
-            position.X = (position.X >= 0) ? (position.X = position.X % 1) : (1f + (position.X % 1));
+            Index3 shift = new Index3(
+                (int)Math.Floor(position.X),
+                (int)Math.Floor(position.Y),
+                (int)Math.Floor(position.Z));
 
-            block.Y += (int)Math.Floor(position.Y);
-            position.Y = (position.Y >= 0) ? (position.Y = position.Y % 1) : (1f + (position.Y % 1));
-
-            block.Z += (int)Math.Floor(position.Z);
-            position.Z = (position.Z >= 0) ? (position.Z = position.Z % 1) : (1f + (position.Z % 1));
+            block += shift;
+            position = position - shift;
         }
 
         public static Coordinate operator +(Coordinate i1, Coordinate i2)
         {
-            Vector3 position = i1.position + i2.position;
-            Index3 block = i1.block + i2.block;
-
             if (i1.Planet != i2.Planet)
                 throw new NotSupportedException();
 
-            Coordinate result = new Coordinate(i1.Planet, block, position);
-            result.Normalize();
-            return result;
+            return new Coordinate(i1.Planet, i1.block + i2.block, i1.position + i2.position);
         }
 
         public static Coordinate operator +(Coordinate i1, Vector3 i2)
         {
-            Vector3 position = i1.position + i2;
-            Index3 block = i1.block;
-
-            Coordinate result = new Coordinate(i1.Planet, block, position);
-            result.Normalize();
-            return result;
+            return new Coordinate(i1.Planet, i1.block, i1.position + i2);
         }
 
         public override string ToString()

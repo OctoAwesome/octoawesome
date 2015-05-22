@@ -85,26 +85,32 @@ namespace OctoAwesome.Runtime
 
             Player.OnGround = false;
 
-            int minx = (int)Math.Min(
+            
+
+            bool collision = false;
+            int loop = 0;
+            do
+            {
+                int minx = (int)Math.Min(
                 Player.Position.GlobalPosition.X - Player.Radius,
                 Player.Position.GlobalPosition.X - Player.Radius + move.X);
-            int maxx = (int)Math.Max(
-                Player.Position.GlobalPosition.X + Player.Radius,
-                Player.Position.GlobalPosition.X + Player.Radius + move.X);
-            int miny = (int)Math.Min(
-                Player.Position.GlobalPosition.Y - Player.Radius,
-                Player.Position.GlobalPosition.Y - Player.Radius + move.Y);
-            int maxy = (int)Math.Max(
-                Player.Position.GlobalPosition.Y + Player.Radius,
-                Player.Position.GlobalPosition.Y + Player.Radius + move.Y);
-            int minz = (int)Math.Min(
-                Player.Position.GlobalPosition.Z,
-                Player.Position.GlobalPosition.Z + move.Z);
-            int maxz = (int)Math.Max(
-                Player.Position.GlobalPosition.Z + Player.Height,
-                Player.Position.GlobalPosition.Z + Player.Height + move.Z);
+                int maxx = (int)Math.Max(
+                    Player.Position.GlobalPosition.X + Player.Radius,
+                    Player.Position.GlobalPosition.X + Player.Radius + move.X);
+                int miny = (int)Math.Min(
+                    Player.Position.GlobalPosition.Y - Player.Radius,
+                    Player.Position.GlobalPosition.Y - Player.Radius + move.Y);
+                int maxy = (int)Math.Max(
+                    Player.Position.GlobalPosition.Y + Player.Radius,
+                    Player.Position.GlobalPosition.Y + Player.Radius + move.Y);
+                int minz = (int)Math.Min(
+                    Player.Position.GlobalPosition.Z,
+                    Player.Position.GlobalPosition.Z + move.Z);
+                int maxz = (int)Math.Max(
+                    Player.Position.GlobalPosition.Z + Player.Height,
+                    Player.Position.GlobalPosition.Z + Player.Height + move.Z);
 
-            BoundingBox playerBox = new BoundingBox(
+                BoundingBox playerBox = new BoundingBox(
                     new Vector3(
                         Player.Position.GlobalPosition.X - Player.Radius,
                         Player.Position.GlobalPosition.Y - Player.Radius,
@@ -114,10 +120,6 @@ namespace OctoAwesome.Runtime
                         Player.Position.GlobalPosition.Y + Player.Radius,
                         Player.Position.GlobalPosition.Z + Player.Height));
 
-            bool collision = false;
-            int loop = 0;
-            do
-            {
                 collision = false;
                 float min = 1f;
                 Axis minAxis = Axis.None;
@@ -169,6 +171,11 @@ namespace OctoAwesome.Runtime
                         move.Z = 0f;
                         break;
                 }
+
+                Coordinate xy = Player.Position;
+                xy.NormalizeXY(planet.Size);
+                Player.Position = xy;
+
                 loop++;
             }
             while (collision && loop < 3);

@@ -272,5 +272,17 @@ namespace OctoAwesome.Model.Tests
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Testet die Konstanten
+        /// </summary>
+        [TestMethod]
+        public void Index2Constants()
+        {
+            Assert.AreEqual(new Index2(0, 0), Index2.Zero);
+            Assert.AreEqual(new Index2(1, 1), Index2.One);
+            Assert.AreEqual(new Index2(1, 0), Index2.UnitX);
+            Assert.AreEqual(new Index2(0, 1), Index2.UnitY);
+        }
     }
 }

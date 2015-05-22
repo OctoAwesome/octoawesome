@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -210,6 +211,11 @@ namespace OctoAwesome
             return !i1.Equals(i2);
         }
 
+        public static implicit operator Vector2(Index2 index)
+        {
+            return new Vector2(index.X, index.Y);
+        }
+
         /// <summary>
         /// Normalisiert einen Integer auf die angegebene Maximalgröße.
         /// </summary>
@@ -270,5 +276,25 @@ namespace OctoAwesome
                 (X << 16) + 
                 Y;
         }
+
+        /// <summary>
+        /// Null-Index
+        /// </summary>
+        public static Index2 Zero { get { return new Index2(0, 0); } }
+
+        /// <summary>
+        /// Index(1,1)
+        /// </summary>
+        public static Index2 One { get { return new Index2(1, 1); } }
+
+        /// <summary>
+        /// Einheitsindex für X
+        /// </summary>
+        public static Index2 UnitX { get { return new Index2(1, 0); } }
+
+        /// <summary>
+        /// Einheitsindex für Y
+        /// </summary>
+        public static Index2 UnitY { get { return new Index2(0, 1); } }
     }
 }
