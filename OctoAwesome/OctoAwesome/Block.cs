@@ -8,6 +8,8 @@ namespace OctoAwesome
 {
     public abstract class Block : IBlock
     {
+        private readonly float Gap = 0.00001f;
+
         public virtual BoundingBox[] GetCollisionBoxes()
         {
             return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
@@ -111,9 +113,9 @@ namespace OctoAwesome
                 if (!collide) continue;
 
                 Vector3 boxCorner = new Vector3(
-                        move.X > 0 ? boxMin.X : boxMax.X,
-                        move.Y > 0 ? boxMin.Y : boxMax.Y,
-                        move.Z > 0 ? boxMin.Z : boxMax.Z);
+                        move.X > 0 ? boxMin.X - Gap : boxMax.X + Gap,
+                        move.Y > 0 ? boxMin.Y - Gap : boxMax.Y + Gap,
+                        move.Z > 0 ? boxMin.Z - Gap : boxMax.Z + Gap);
 
                 Vector3 n = (boxCorner - playerCorner) / move;
                 min = new Vector3(Math.Min(min.X, n.X), Math.Min(min.Y, n.Y), Math.Min(min.Z, n.Z));
