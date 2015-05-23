@@ -317,6 +317,11 @@ namespace OctoAwesome
             return new Index3(i1.X * scale, i1.Y * scale, i1.Z * scale);
         }
 
+        public static Index3 operator *(Index3 i1, Index3 i2)
+        {
+            return new Index3(i1.X * i2.X, i1.Y * i2.Y, i1.Z * i2.Z);
+        }
+
         public static Index3 operator /(Index3 i1, int scale)
         {
             return new Index3(i1.X / scale, i1.Y / scale, i1.Z / scale);

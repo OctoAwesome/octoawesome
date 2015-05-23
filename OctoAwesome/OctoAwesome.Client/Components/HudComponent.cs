@@ -82,6 +82,13 @@ namespace OctoAwesome.Client.Components
             size = font.MeasureString(fps);
             batch.DrawString(font, fps, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 45), Color.White);
 
+            if (player.SelectedBox.HasValue)
+            {
+                string selection = "box: " + player.SelectedBox.Value.ToString() + " on " + player.SelectedOrientation.ToString();
+                batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - 40), Color.White);
+            }
+
+
             int centerX = GraphicsDevice.Viewport.Width / 2;
             int centerY = GraphicsDevice.Viewport.Height / 2;
 

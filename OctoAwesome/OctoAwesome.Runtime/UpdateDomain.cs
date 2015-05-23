@@ -47,7 +47,7 @@ namespace OctoAwesome.Runtime
 
                 // TODO: Chunk Updates
 
-                Console.WriteLine(watch.Elapsed - lastCall);
+                // Console.WriteLine(watch.Elapsed - lastCall);
 
                 foreach (var actorHost in ActorHosts)
                     actorHost.Update(gameTime);

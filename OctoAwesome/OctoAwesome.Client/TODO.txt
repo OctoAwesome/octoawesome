@@ -5,7 +5,7 @@
   - komplexere Texturen
   - Orientierungen
   - Dynamische Blocks (Wasser, Lava)
-  - Weitere Basis-Blocks (Stein, Sand, Erde, Gras, Kies, Wasser)
+  x Weitere Basis-Blocks (Stein, Sand, Erde, Gras, Kies, Wasser)
 - Map Generator
   X Schnittstelle -> umbauen auf IChunk[] GenerateChunks(IPlanet planet, Index2 index)
 - Serializer
@@ -39,7 +39,7 @@ Game Model
     x Definition
 	- Zeitzonen
 	- Klimazonen / Biome
-	- Kontinente
+	x Kontinente
   - Maps
     x Chunks
 
@@ -63,4 +63,4 @@ HUD & UI
 Multiplayer
 ===========
 - Client/Server Verbindungen
-- Welt-Kapselung
+x Welt-Kapselung

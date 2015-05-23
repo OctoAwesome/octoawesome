@@ -10,6 +10,8 @@ namespace OctoAwesome
     {
         BoundingBox[] GetCollisionBoxes();
 
+        float? Intersect(Index3 boxPosition, Ray ray, out Axis? collisionAxis);
+
         float? Intersect(Index3 boxPosition, BoundingBox position, Vector3 move, out Axis? collisionAxis);
     }
 }

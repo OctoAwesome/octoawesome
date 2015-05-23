@@ -26,6 +26,8 @@ namespace OctoAwesome
         /// </summary>
         public const int CHUNKSIZE_Z = 32;
 
+        public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
+
         protected IBlock[] blocks;
 
         /// <summary>
