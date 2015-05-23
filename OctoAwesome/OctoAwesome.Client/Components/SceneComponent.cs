@@ -178,56 +178,54 @@ namespace OctoAwesome.Client.Components
 
             #region Selektion
 
-            Index3 localcell = player.Player.Position.LocalBlockIndex;
-            Index3 currentChunk = player.Player.Position.ChunkIndex;
+            //Index3 localcell = player.Player.Position.LocalBlockIndex;
+            //Index3 currentChunk = player.Player.Position.ChunkIndex;
+            Index3 centerblock = player.Player.Position.GlobalBlockIndex;
+            Index3 renderOffset = player.Player.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
             Index3? selected = null;
-            float? bestDistance = null;
-            for (int z = localcell.Z - Player.SELECTIONRANGE; z < localcell.Z + Player.SELECTIONRANGE; z++)
+            Axis? selectedAxis = null;
+            float bestDistance = 9999;
+            for (int z = centerblock.Z - Player.SELECTIONRANGE; z < centerblock.Z + Player.SELECTIONRANGE; z++)
             {
-                for (int y = localcell.Y - Player.SELECTIONRANGE; y < localcell.Y + Player.SELECTIONRANGE; y++)
+                for (int y = centerblock.Y - Player.SELECTIONRANGE; y < centerblock.Y + Player.SELECTIONRANGE; y++)
                 {
-                    for (int x = localcell.X - Player.SELECTIONRANGE; x < localcell.X + Player.SELECTIONRANGE; x++)
+                    for (int x = centerblock.X - Player.SELECTIONRANGE; x < centerblock.X + Player.SELECTIONRANGE; x++)
                     {
-                        Index3 pos = new Index3(
-                            x + (currentChunk.X * Chunk.CHUNKSIZE_X),
-                            y + (currentChunk.Y * Chunk.CHUNKSIZE_Y),
-                            z + (currentChunk.Z * Chunk.CHUNKSIZE_Z));
+                        Index3 pos = new Index3(x, y, z);
+                        pos.NormalizeXY(planet.Size);
 
                         IBlock block = GetBlock(player.Player.Position.Planet, pos);
                         if (block == null)
                             continue;
 
-                        BoundingBox[] boxes = block.GetCollisionBoxes();
+                        Axis? collisionAxis;
+                        float? distance = block.Intersect(pos - renderOffset, camera.PickRay, out collisionAxis);
 
-                        foreach (var box in boxes)
+                        if (distance.HasValue && distance < bestDistance)
                         {
-                            BoundingBox transformedBox = new BoundingBox(
-                                box.Min + new Vector3(x, y, z),
-                                box.Max + new Vector3(x, y, z));
-
-                            float? distance = camera.PickRay.Intersects(transformedBox);
-                            if (distance.HasValue)
-                            {
-                                if (!bestDistance.HasValue || bestDistance.Value > distance)
-                                {
-                                    bestDistance = distance.Value;
-                                    selected = pos;
-                                }
-                            }
+                            selected = pos;
+                            selectedAxis = collisionAxis;
                         }
                     }
                 }
             }
 
-            if (selected.HasValue) {
-
-                
+            if (selected != null)
+            {
+                player.SelectedBox = selected;
+                switch (selectedAxis)
+                {
+                    case Axis.X: player.SelectedOrientation = (camera.PickRay.Direction.X > 0 ? OrientationFlags.SideNegativeX : OrientationFlags.SidePositiveX); break;
+                    case Axis.Y: player.SelectedOrientation = (camera.PickRay.Direction.Y > 0 ? OrientationFlags.SideNegativeY : OrientationFlags.SidePositiveY); break;
+                    case Axis.Z: player.SelectedOrientation = (camera.PickRay.Direction.Z > 0 ? OrientationFlags.SideNegativeZ : OrientationFlags.SidePositiveZ); break;
+                }
             }
-
-            
-
-            player.SelectedBox = selected;
+            else
+            {
+                player.SelectedBox = null;
+                player.SelectedOrientation = OrientationFlags.None;
+            }
 
             #endregion
 

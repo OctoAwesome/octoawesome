@@ -183,7 +183,7 @@ namespace OctoAwesome.Runtime
 
             if (lastApply.HasValue)
             {
-                Index3 newIndex = new Index3(lastApply.Value.X, lastApply.Value.Y, lastApply.Value.Z + 1);
+                Index3 newIndex = new Index3(lastApply.Value.X, lastApply.Value.Y, lastApply.Value.Z);
                 ResourceManager.Instance.SetBlock(planet.Id, newIndex, new SandBlock());
                 lastApply = null;
             }
