@@ -9,8 +9,6 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
-        private readonly float Gap = 0;//.00001f;
-
         private IPlanet planet;
         private Cache<Index3, IChunk> localChunkCache;
 
@@ -151,18 +149,15 @@ namespace OctoAwesome.Runtime
                 {
                     case Axis.X:
                         Player.Velocity *= new Vector3(0, 1, 1);
-                        Player.Position += new Vector3(move.X > 0 ? -Gap : Gap, 0, 0);
                         move.X = 0f;
                         break;
                     case Axis.Y:
                         Player.Velocity *= new Vector3(1, 0, 1);
-                        Player.Position += new Vector3(0, move.Y > 0 ? -Gap : Gap, 0);
                         move.Y = 0f;
                         break;
                     case Axis.Z:
                         Player.OnGround = true;
                         Player.Velocity *= new Vector3(1, 1, 0);
-                        Player.Position += new Vector3(0, 0, move.Z > 0 ? -Gap : Gap);
                         move.Z = 0f;
                         break;
                 }
