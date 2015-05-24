@@ -1,4 +1,20 @@
-﻿Map Layout
+﻿Plan für die kommenden Folgen:
+==============================
+
+1 Block-Placement
+2 Block-Definition Holz
+3 Block-Placement 2 (HUD mit Auswahl)
+4 komplexe Blöcke -> visuelle Attribute
+5 Performance Optimierung VertexBuffer-Generierung
+  - Block-Visibility Berücksichtigen
+  - Flackern bei Chunkwechsel
+  - Chunk-Render optimierung
+
+======================================
+Langzeit-TODOs
+======================================
+
+Map Layout
 ==========
 - Blocks
   x Simple Textures
