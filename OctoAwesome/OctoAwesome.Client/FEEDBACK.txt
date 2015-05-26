@@ -71,6 +71,18 @@ Ralf @ Email (20.04.)
 - Neue dll-Lösung (Monogame mit ins Repository) ist nicht so smart für Linux-User
 - DisablePersistence vom Namen her blöd. EnablePersistence
 
+Ralf @ Email (25.05.)
+=====================
+- Kollision zwecks besserer testbarkeit auslagern
+- Intersects zusammen fassen (Pickray und Boundingbox)
+- Intersects mit Result-Struct (distanz, Axe, Einschlagspunkt?)
+- Überlagerung mehrerer Kollisionsachsen (bsp: X & Y)
+- Funktion "move *= (1f - min);" muss mit negativen Werten arbeiten können!
+
+Susch @ YouTube (25.05)
+=======================
+- Boden-Glitsch passiert, weil die Prüfung im ActorHost  "Min.X > max" lautet. Sollte aber "Min.X >= max" sein
+- Wand-Glitsch beginnt schlagartig bei Koordinate 1000/1000. 999 ist ok
 
 Cleanup
 =======
