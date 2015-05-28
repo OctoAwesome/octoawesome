@@ -10,11 +10,13 @@ namespace OctoAwesome
     {
         string Name { get; }
 
-        Bitmap TopTexture { get; }
+        IEnumerable<Bitmap> Textures { get; }
+
+        //Bitmap TopTexture { get; }
         
-        Bitmap BottomTexture { get; }
+        //Bitmap BottomTexture { get; }
         
-        Bitmap SideTexture { get; }
+        //Bitmap SideTexture { get; }
 
         IBlock GetInstance();
 

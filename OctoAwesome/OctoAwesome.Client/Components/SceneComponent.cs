@@ -81,30 +81,41 @@ namespace OctoAwesome.Client.Components
 
         protected override void LoadContent()
         {
+            List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = BlockDefinitionManager.GetBlockDefinitions();
+            foreach (var definition in definitions)
+                bitmaps.AddRange(definition.Textures);
 
-            int size = (int)Math.Ceiling(Math.Sqrt(definitions.Count() * 3));
+            int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
             Bitmap blocks = new Bitmap(size * TEXTURESIZE, size * TEXTURESIZE);
             using (Graphics g = Graphics.FromImage(blocks))
             {
                 int counter = 0;
-                foreach (var definition in definitions)
+                foreach (var bitmap in bitmaps)
                 {
                     int x = counter % size;
                     int y = (int)(counter / size);
-                    g.DrawImage(definition.TopTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
-                    counter++;
-
-                    x = counter % size;
-                    y = (int)(counter / size);
-                    g.DrawImage(definition.BottomTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
-                    counter++;
-
-                    x = counter % size;
-                    y = (int)(counter / size);
-                    g.DrawImage(definition.SideTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                    g.DrawImage(bitmap, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
                     counter++;
                 }
+
+                //foreach (var definition in definitions)
+                //{
+                //    int x = counter % size;
+                //    int y = (int)(counter / size);
+                //    g.DrawImage(definition.TopTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                //    counter++;
+
+                //    x = counter % size;
+                //    y = (int)(counter / size);
+                //    g.DrawImage(definition.BottomTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                //    counter++;
+
+                //    x = counter % size;
+                //    y = (int)(counter / size);
+                //    g.DrawImage(definition.SideTexture, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                //    counter++;
+                //}
             }
 
             using (MemoryStream stream = new MemoryStream())
@@ -203,6 +214,7 @@ namespace OctoAwesome.Client.Components
 
                         if (distance.HasValue && distance.Value < bestDistance)
                         {
+                            pos.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
                             selected = pos;
                             selectedAxis = collisionAxis;
                             bestDistance = distance.Value;
@@ -211,7 +223,7 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-            if (selected != null)
+            if (selected.HasValue)
             {
                 player.SelectedBox = selected;
                 switch (selectedAxis)
@@ -272,11 +284,19 @@ namespace OctoAwesome.Client.Components
 
             if (player.SelectedBox.HasValue)
             {
+                Index3 offset = player.Player.Position.ChunkIndex * Chunk.CHUNKSIZE;
+                Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
+                Index3 relativePosition = new Index3(
+                    Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBox.Value.X, planetSize.X),
+                    Index2.ShortestDistanceOnAxis(offset.Y, player.SelectedBox.Value.Y, planetSize.Y),
+                    player.SelectedBox.Value.Z - offset.Z);
+
                 Vector3 selectedBoxPosition = new Vector3(
                     player.SelectedBox.Value.X - (chunkOffset.X * Chunk.CHUNKSIZE_X),
                     player.SelectedBox.Value.Y - (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
                     player.SelectedBox.Value.Z - (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
-                selectionEffect.World = Matrix.CreateTranslation(selectedBoxPosition);
+                // selectionEffect.World = Matrix.CreateTranslation(selectedBoxPosition);
+                selectionEffect.World = Matrix.CreateTranslation(relativePosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
