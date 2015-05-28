@@ -14,20 +14,31 @@ namespace OctoAwesome.Basics
             get { return "Water"; }
         }
 
-        public Bitmap TopTexture
+        public IEnumerable<Bitmap> Textures
         {
-            get { return Resources.water_top; }
+            get
+            {
+                return new[] { 
+                    Resources.water_top, 
+                    Resources.water_side
+                };
+            }
         }
 
-        public Bitmap BottomTexture
-        {
-            get { return Resources.water_bottom; }
-        }
+        //public Bitmap TopTexture
+        //{
+        //    get { return Resources.water_top; }
+        //}
 
-        public Bitmap SideTexture
-        {
-            get { return Resources.water_side; }
-        }
+        //public Bitmap BottomTexture
+        //{
+        //    get { return Resources.water_bottom; }
+        //}
+
+        //public Bitmap SideTexture
+        //{
+        //    get { return Resources.water_side; }
+        //}
 
         public IBlock GetInstance()
         {
