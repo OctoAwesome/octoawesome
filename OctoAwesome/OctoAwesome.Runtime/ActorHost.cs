@@ -9,6 +9,8 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
+        private readonly float Gap = 0.00001f;
+
         private IPlanet planet;
         private Cache<Index3, IChunk> localChunkCache;
 
@@ -83,26 +85,24 @@ namespace OctoAwesome.Runtime
 
             do
             {
-                Index3 tempCenter = Player.Position.GlobalBlockIndex;
-
                 int minx = (int)Math.Floor(Math.Min(
-                    Player.Position.GlobalPosition.X - Player.Radius,
-                    Player.Position.GlobalPosition.X - Player.Radius + move.X));
+                    Player.Position.BlockPosition.X - Player.Radius,
+                    Player.Position.BlockPosition.X - Player.Radius + move.X));
                 int maxx = (int)Math.Floor(Math.Max(
-                    Player.Position.GlobalPosition.X + Player.Radius,
-                    Player.Position.GlobalPosition.X + Player.Radius + move.X));
+                    Player.Position.BlockPosition.X + Player.Radius,
+                    Player.Position.BlockPosition.X + Player.Radius + move.X));
                 int miny = (int)Math.Floor(Math.Min(
-                    Player.Position.GlobalPosition.Y - Player.Radius,
-                    Player.Position.GlobalPosition.Y - Player.Radius + move.Y));
+                    Player.Position.BlockPosition.Y - Player.Radius,
+                    Player.Position.BlockPosition.Y - Player.Radius + move.Y));
                 int maxy = (int)Math.Floor(Math.Max(
-                    Player.Position.GlobalPosition.Y + Player.Radius,
-                    Player.Position.GlobalPosition.Y + Player.Radius + move.Y));
+                    Player.Position.BlockPosition.Y + Player.Radius,
+                    Player.Position.BlockPosition.Y + Player.Radius + move.Y));
                 int minz = (int)Math.Floor(Math.Min(
-                    Player.Position.GlobalPosition.Z,
-                    Player.Position.GlobalPosition.Z + move.Z));
+                    Player.Position.BlockPosition.Z,
+                    Player.Position.BlockPosition.Z + move.Z));
                 int maxz = (int)Math.Floor(Math.Max(
-                    Player.Position.GlobalPosition.Z + Player.Height,
-                    Player.Position.GlobalPosition.Z + Player.Height + move.Z));
+                    Player.Position.BlockPosition.Z + Player.Height,
+                    Player.Position.BlockPosition.Z + Player.Height + move.Z));
 
                 // Relative PlayerBox
                 BoundingBox playerBox = new BoundingBox(
@@ -126,12 +126,13 @@ namespace OctoAwesome.Runtime
                         for (int x = minx; x <= maxx; x++)
                         {
                             Index3 pos = new Index3(x, y, z);
-                            IBlock block = GetBlock(pos);
+                            IBlock block = GetBlock(pos + 
+                                Player.Position.GlobalBlockIndex);
                             if (block == null)
                                 continue;
 
                             Axis? localAxis;
-                            float? moveFactor = block.Intersect(pos - tempCenter, playerBox, move, out localAxis);
+                            float? moveFactor = block.Intersect(pos, playerBox, move, out localAxis);
 
                             if (moveFactor.HasValue && moveFactor.Value < min)
                             {
@@ -149,15 +150,18 @@ namespace OctoAwesome.Runtime
                 {
                     case Axis.X:
                         Player.Velocity *= new Vector3(0, 1, 1);
+                        Player.Position += new Vector3(move.X > 0 ? -Gap : Gap, 0, 0);
                         move.X = 0f;
                         break;
                     case Axis.Y:
                         Player.Velocity *= new Vector3(1, 0, 1);
+                        Player.Position += new Vector3(0, move.Y > 0 ? -Gap : Gap, 0);
                         move.Y = 0f;
                         break;
                     case Axis.Z:
                         Player.OnGround = true;
                         Player.Velocity *= new Vector3(1, 1, 0);
+                        Player.Position += new Vector3(0, 0, move.Z > 0 ? -Gap : Gap);
                         move.Z = 0f;
                         break;
                 }
