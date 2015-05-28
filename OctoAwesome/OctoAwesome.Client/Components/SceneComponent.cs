@@ -186,15 +186,14 @@ namespace OctoAwesome.Client.Components
             Index3? selected = null;
             Axis? selectedAxis = null;
             float bestDistance = 9999;
-            for (int z = centerblock.Z - Player.SELECTIONRANGE; z < centerblock.Z + Player.SELECTIONRANGE; z++)
+            for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
             {
-                for (int y = centerblock.Y - Player.SELECTIONRANGE; y < centerblock.Y + Player.SELECTIONRANGE; y++)
+                for (int y = -Player.SELECTIONRANGE; y < Player.SELECTIONRANGE; y++)
                 {
-                    for (int x = centerblock.X - Player.SELECTIONRANGE; x < centerblock.X + Player.SELECTIONRANGE; x++)
+                    for (int x = -Player.SELECTIONRANGE; x < Player.SELECTIONRANGE; x++)
                     {
-                        Index3 pos = new Index3(x, y, z);
-                        pos.NormalizeXY(planet.Size);
-
+                        Index3 range = new Index3(x, y, z);
+                        Index3 pos = range + centerblock;
                         IBlock block = GetBlock(player.Player.Position.Planet, pos);
                         if (block == null)
                             continue;
@@ -202,10 +201,11 @@ namespace OctoAwesome.Client.Components
                         Axis? collisionAxis;
                         float? distance = block.Intersect(pos - renderOffset, camera.PickRay, out collisionAxis);
 
-                        if (distance.HasValue && distance < bestDistance)
+                        if (distance.HasValue && distance.Value < bestDistance)
                         {
                             selected = pos;
                             selectedAxis = collisionAxis;
+                            bestDistance = distance.Value;
                         }
                     }
                 }
