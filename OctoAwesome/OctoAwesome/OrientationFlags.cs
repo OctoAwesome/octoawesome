@@ -62,7 +62,7 @@ namespace OctoAwesome
         /// <summary>
         /// Beschreibt die komplette Seite von -X
         /// </summary>
-        SideNegativeX = 
+        SideWest = 
             OrientationFlags.Corner000 | 
             OrientationFlags.Corner001 | 
             OrientationFlags.Corner010 | 
@@ -71,7 +71,7 @@ namespace OctoAwesome
         /// <summary>
         /// Beschreibt die komplette Seite von +X
         /// </summary>
-        SidePositiveX =
+        SideEast =
             OrientationFlags.Corner100 | 
             OrientationFlags.Corner101 | 
             OrientationFlags.Corner110 | 
@@ -80,7 +80,7 @@ namespace OctoAwesome
         /// <summary>
         /// Beschreibt die komplette Seite von -Y
         /// </summary>
-        SideNegativeY =
+        SideSouth =
             OrientationFlags.Corner000 | 
             OrientationFlags.Corner001 | 
             OrientationFlags.Corner100 | 
@@ -89,7 +89,7 @@ namespace OctoAwesome
         /// <summary>
         /// Beschreibt die komplette Seite von +Y
         /// </summary>
-        SidePositiveY =
+        SideNorth =
             OrientationFlags.Corner010 | 
             OrientationFlags.Corner011 | 
             OrientationFlags.Corner110 | 
@@ -98,7 +98,7 @@ namespace OctoAwesome
         /// <summary>
         /// Beschreibt die komplette Seite von -Z
         /// </summary>
-        SideNegativeZ =
+        SideBottom =
             OrientationFlags.Corner010 |
             OrientationFlags.Corner000 |
             OrientationFlags.Corner110 |
@@ -107,11 +107,75 @@ namespace OctoAwesome
         /// <summary>
         /// Beschreibt die komplette Seite von +Z
         /// </summary>
-        SidePositiveZ =
+        SideTop =
             OrientationFlags.Corner011 |
             OrientationFlags.Corner001 |
             OrientationFlags.Corner111 |
             OrientationFlags.Corner101,
+
+        #endregion
+
+        #region Edges
+
+        /// <summary>
+        /// Beschreibt die obere Kante der Westseite [-X,-Y,+Z] -> [-X,+Y,+Z]
+        /// </summary>
+        EdgeWestTop = Corner001 | Corner011,
+        
+        /// <summary>
+        /// Beschreibt die untere Kante der Westseite [-X,-Y,-Z] -> [-X,+Y,-Z]
+        /// </summary>
+        EdgeWestBottom = Corner000 | Corner010,
+
+        /// <summary>
+        /// Beschreibt die obere Kante der Ostseite [+X,-Y,+Z] -> [+X,+Y,+Z]
+        /// </summary>
+        EdgeEastTop = Corner101 | Corner111,
+
+        /// <summary>
+        /// Beschreibt die untere Kante der Ostseite [+X,-Y,-Z] -> [+X,+Y,-Z]
+        /// </summary>
+        EdgeEastBottom = Corner100 | Corner110,
+
+        /// <summary>
+        /// Beschreibt die obere Kante der Nordseite [-X,+Y,+Z] -> [+X,+Y,+Z]
+        /// </summary>
+        EdgeNorthTop = Corner011 | Corner111,
+
+        /// <summary>
+        /// Beschreibt die untere Kante der Nordseite [-X,+Y,-Z] -> [+X,+Y,-Z]
+        /// </summary>
+        EdgeNorthBottom = Corner010 | Corner110,
+
+        /// <summary>
+        /// Beschreibt die obere Kante der Südseite [-X,-Y,+Z] -> [+X,-Y,+Z]
+        /// </summary>
+        EdgeSouthTop = Corner001 | Corner101,
+
+        /// <summary>
+        /// Beschreibt die untere Kante der Südseite [-X,-Y,-Z] -> [+X,-Y,-Z]
+        /// </summary>
+        EdgeSouthBottom = Corner000 | Corner100,
+
+        /// <summary>
+        /// Beschreibt die Senkrechte zwischen Nord und West [-X,+Y,-Z] -> [-X,+Y,+Z]
+        /// </summary>
+        EdgeNorthWest = Corner010 | Corner011,
+
+        /// <summary>
+        /// Beschreibt die Senkrechte zwischen Nord und Ost [+X,+Y,-Z] -> [+X,+Y,+Z]
+        /// </summary>
+        EdgeNorthEast = Corner110 | Corner111,
+
+        /// <summary>
+        /// Beschreibt die Senkrechte zwischen Süd und West [-X,-Y,-Z] -> [-X,-Y,+Z]
+        /// </summary>
+        EdgeSouthWest = Corner000 | Corner001,
+
+        /// <summary>
+        /// Beschreibt die Senkrechte zwischen Süd und Ost [+X,-Y,-Z] -> [+X,-Y,+Z]
+        /// </summary>
+        EdgeSouthEast = Corner100 | Corner101,
 
         #endregion
     }

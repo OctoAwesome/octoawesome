@@ -23,13 +23,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
                     return 1;
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -39,13 +39,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
                     return 1;
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -55,13 +55,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
                     return 0;
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 1;
             }
@@ -71,13 +71,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
                     return 0;
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 1;
             }
@@ -88,13 +88,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
                     return 0;
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 1;
             }
@@ -105,13 +105,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
                     return 0;
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 1;
             }
@@ -121,13 +121,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
                     return 1;
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -137,13 +137,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
                     return 1;
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -153,13 +153,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
                     return 1;
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -169,13 +169,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
                     return 1;
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -185,13 +185,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
                     return 1;
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }
@@ -201,13 +201,13 @@ namespace OctoAwesome.Basics
         {
             switch (block.Orientation)
             {
-                case OrientationFlags.SideNegativeX:
-                case OrientationFlags.SidePositiveX:
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
                     return 1;
-                case OrientationFlags.SideNegativeY:
-                case OrientationFlags.SidePositiveY:
-                case OrientationFlags.SideNegativeZ:
-                case OrientationFlags.SidePositiveZ:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
                 default:
                     return 0;
             }

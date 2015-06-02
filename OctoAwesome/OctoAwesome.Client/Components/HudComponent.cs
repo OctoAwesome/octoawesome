@@ -74,18 +74,15 @@ namespace OctoAwesome.Client.Components
             size = font.MeasureString(rot);
             batch.DrawString(font, rot, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 25), Color.White);
 
-            //string fps = "fps: " + (1f / (framebuffer.Sum() / buffersize)).ToString("0.00");
-            //size = font.MeasureString(fps);
-            //batch.DrawString(font, fps, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 45), Color.White);
-
             string fps = "fps: " + (1f / lastfps).ToString("0.00");
             size = font.MeasureString(fps);
             batch.DrawString(font, fps, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 45), Color.White);
 
             if (player.SelectedBox.HasValue)
             {
-                string selection = "box: " + player.SelectedBox.Value.ToString() + " on " + player.SelectedOrientation.ToString();
-                batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - 40), Color.White);
+                string selection = "box: " + player.SelectedBox.Value.ToString() + " on " + player.SelectedSide.ToString() + " (" + player.SelectedPoint.Value.X.ToString("0.00") + "/" + player.SelectedPoint.Value.Y.ToString("0.00") + ") -> Edge: " + player.SelectedEdge.ToString() + " -> Corner: " + player.SelectedCorner.ToString();
+                size = font.MeasureString(selection);
+                batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
             }
 
 

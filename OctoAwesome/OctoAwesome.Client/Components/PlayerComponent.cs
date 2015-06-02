@@ -17,7 +17,13 @@ namespace OctoAwesome.Client.Components
 
         public Index3? SelectedBox { get; set; }
 
-        public OrientationFlags SelectedOrientation { get; set; }
+        public Vector2? SelectedPoint { get; set; }
+
+        public OrientationFlags SelectedSide { get; set; }
+
+        public OrientationFlags SelectedEdge { get; set; }
+
+        public OrientationFlags SelectedCorner { get; set; }
 
         public PlayerComponent(Game game, InputComponent input, SimulationComponent simulation)
             : base(game)
@@ -39,7 +45,7 @@ namespace OctoAwesome.Client.Components
             }
             if (input.ApplyTrigger && SelectedBox.HasValue)
             {
-                Player.Apply(SelectedBox.Value, SelectedOrientation);
+                Player.Apply(SelectedBox.Value, SelectedSide);
             }
         }
     }

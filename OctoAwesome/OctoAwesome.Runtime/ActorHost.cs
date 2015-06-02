@@ -196,12 +196,12 @@ namespace OctoAwesome.Runtime
                     Index3 add = new Index3();
                     switch (lastOrientation)
                     {
-                        case OrientationFlags.SideNegativeX: add = new Index3(-1, 0, 0); break;
-                        case OrientationFlags.SidePositiveX: add = new Index3(1, 0, 0); break;
-                        case OrientationFlags.SideNegativeY: add = new Index3(0, -1, 0); break;
-                        case OrientationFlags.SidePositiveY: add = new Index3(0, 1, 0); break;
-                        case OrientationFlags.SideNegativeZ: add = new Index3(0, 0, -1); break;
-                        case OrientationFlags.SidePositiveZ: add = new Index3(0, 0, 1); break;
+                        case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
+                        case OrientationFlags.SideEast: add = new Index3(1, 0, 0); break;
+                        case OrientationFlags.SideSouth: add = new Index3(0, -1, 0); break;
+                        case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
+                        case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
+                        case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
                     ResourceManager.Instance.SetBlock(planet.Id, 
