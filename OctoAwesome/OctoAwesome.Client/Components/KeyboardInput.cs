@@ -60,6 +60,11 @@ namespace OctoAwesome.Client.Components
             InteractTrigger = keyboardState.IsKeyDown(Keys.E);
             ApplyTrigger = keyboardState.IsKeyDown(Keys.Q);
             JumpTrigger = keyboardState.IsKeyDown(Keys.Space);
+            Slot1Trigger = keyboardState.IsKeyDown(Keys.D1);
+            Slot2Trigger = keyboardState.IsKeyDown(Keys.D2);
+            Slot3Trigger = keyboardState.IsKeyDown(Keys.D3);
+            Slot4Trigger = keyboardState.IsKeyDown(Keys.D4);
+            Slot5Trigger = keyboardState.IsKeyDown(Keys.D5);
             MoveX -= (keyboardState.IsKeyDown(Keys.A) ? 1 : 0);
             MoveX += (keyboardState.IsKeyDown(Keys.D) ? 1 : 0);
             MoveY -= (keyboardState.IsKeyDown(Keys.S) ? 1 : 0);
@@ -69,5 +74,16 @@ namespace OctoAwesome.Client.Components
             HeadY -= (keyboardState.IsKeyDown(Keys.Up) ? 1 : 0);
             HeadY += (keyboardState.IsKeyDown(Keys.Down) ? 1 : 0);
         }
+
+
+        public bool Slot1Trigger { get; private set; }
+
+        public bool Slot2Trigger { get; private set; }
+
+        public bool Slot3Trigger { get; private set; }
+
+        public bool Slot4Trigger { get; private set; }
+
+        public bool Slot5Trigger { get; private set; }
     }
 }

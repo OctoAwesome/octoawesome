@@ -80,9 +80,16 @@ namespace OctoAwesome.Client.Components
 
             if (player.SelectedBox.HasValue)
             {
-                string selection = "box: " + player.SelectedBox.Value.ToString() + " on " + player.SelectedSide.ToString() + " (" + player.SelectedPoint.Value.X.ToString("0.00") + "/" + player.SelectedPoint.Value.Y.ToString("0.00") + ") -> Edge: " + player.SelectedEdge.ToString() + " -> Corner: " + player.SelectedCorner.ToString();
+                string selection = "box: " + player.SelectedBox.Value.ToString() + " on " + player.SelectedSide.ToString() + " (" + player.SelectedPoint.Value.X.ToString("0.00") + "/" + player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " + player.SelectedEdge.ToString() + " -> " + player.SelectedCorner.ToString();
                 size = font.MeasureString(selection);
                 batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
+            }
+
+            if (player.Player.BlockTool != null)
+            {
+                string tool = "Tool: " + player.Player.BlockTool.Name;
+                size = font.MeasureString(tool);
+                batch.DrawString(font, tool, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
             }
 
 
