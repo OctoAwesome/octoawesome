@@ -39,18 +39,7 @@ namespace OctoAwesome.Client.Components
             }
             if (input.ApplyTrigger && SelectedBox.HasValue)
             {
-                Index3 add = new Index3();
-                switch (SelectedOrientation)
-                {
-                    case OrientationFlags.SideNegativeX: add = new Index3(-1, 0, 0); break;
-                    case OrientationFlags.SidePositiveX: add = new Index3(1, 0, 0); break;
-                    case OrientationFlags.SideNegativeY: add = new Index3(0, -1, 0); break;
-                    case OrientationFlags.SidePositiveY: add = new Index3(0, 1, 0); break;
-                    case OrientationFlags.SideNegativeZ: add = new Index3(0, 0, -1); break;
-                    case OrientationFlags.SidePositiveZ: add = new Index3(0, 0, 1); break;
-                }
-
-                Player.Apply(SelectedBox.Value + add);
+                Player.Apply(SelectedBox.Value, SelectedOrientation);
             }
         }
     }

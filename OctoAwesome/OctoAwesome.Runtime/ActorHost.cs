@@ -16,8 +16,10 @@ namespace OctoAwesome.Runtime
 
         private bool lastJump = false;
 
+        private IBlockDefinition tool = null;
         private Index3? lastInteract = null;
         private Index3? lastApply = null;
+        private OrientationFlags lastOrientation = OrientationFlags.None;
 
         public Player Player { get; private set; }
 
@@ -26,6 +28,8 @@ namespace OctoAwesome.Runtime
             Player = player;
             localChunkCache = new Cache<Index3, IChunk>(10, loadChunk, null);
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
+
+            tool = BlockDefinitionManager.GetBlockDefinitions().OfType<WoodBlockDefinition>().FirstOrDefault();
         }
 
         public void Update(GameTime frameTime)
@@ -187,9 +191,23 @@ namespace OctoAwesome.Runtime
 
             if (lastApply.HasValue)
             {
-                Index3 newIndex = new Index3(lastApply.Value.X, lastApply.Value.Y, lastApply.Value.Z);
-                ResourceManager.Instance.SetBlock(planet.Id, newIndex, new SandBlock());
-                lastApply = null;
+                if (tool != null)
+                {
+                    Index3 add = new Index3();
+                    switch (lastOrientation)
+                    {
+                        case OrientationFlags.SideNegativeX: add = new Index3(-1, 0, 0); break;
+                        case OrientationFlags.SidePositiveX: add = new Index3(1, 0, 0); break;
+                        case OrientationFlags.SideNegativeY: add = new Index3(0, -1, 0); break;
+                        case OrientationFlags.SidePositiveY: add = new Index3(0, 1, 0); break;
+                        case OrientationFlags.SideNegativeZ: add = new Index3(0, 0, -1); break;
+                        case OrientationFlags.SidePositiveZ: add = new Index3(0, 0, 1); break;
+                    }
+
+                    ResourceManager.Instance.SetBlock(planet.Id, 
+                        lastApply.Value + add, tool.GetInstance(lastOrientation));
+                    lastApply = null;
+                }
             }
 
             #endregion
@@ -289,9 +307,10 @@ namespace OctoAwesome.Runtime
             lastInteract = blockIndex;
         }
 
-        public void Apply(Index3 blockIndex)
+        public void Apply(Index3 blockIndex, OrientationFlags orientation)
         {
             lastApply = blockIndex;
+            lastOrientation = orientation;
         }
     }
 }

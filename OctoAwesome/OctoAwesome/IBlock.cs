@@ -8,19 +8,7 @@ namespace OctoAwesome
 {
     public interface IBlock
     {
-        OrientationFlags Orientation { get; }
-
-        int TopTexture { get; }
-
-        int BottomTexture { get; }
-
-        int NorthTexture { get; }
-
-        int SouthTexture { get; }
-
-        int WestTexture { get; }
-
-        int EastTexture { get; }
+        OrientationFlags Orientation { get; set; }
 
         BoundingBox[] GetCollisionBoxes();
 

@@ -28,6 +28,6 @@ namespace OctoAwesome.Runtime
 
         void Interact(Index3 blockIndex);
 
-        void Apply(Index3 blockIndex);
+        void Apply(Index3 blockIndex, OrientationFlags orientation);
     }
 }
