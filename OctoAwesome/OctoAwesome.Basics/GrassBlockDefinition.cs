@@ -26,22 +26,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        //public Bitmap TopTexture
-        //{
-        //    get { return Resources.grass_top; }
-        //}
-
-        //public Bitmap BottomTexture
-        //{
-        //    get { return Resources.grass_bottom; }
-        //}
-
-        //public Bitmap SideTexture
-        //{
-        //    get { return Resources.grass_side; }
-        //}
-
-        public IBlock GetInstance()
+        public IBlock GetInstance(OrientationFlags orientation)
         {
             return new GrassBlock();
         }
@@ -49,6 +34,67 @@ namespace OctoAwesome.Basics
         public Type GetBlockType()
         {
             return typeof(GrassBlock);
+        }
+
+
+        public int GetTopTextureIndex(IBlock block)
+        {
+            return 0;
+        }
+
+        public int GetBottomTextureIndex(IBlock block)
+        {
+            return 1;
+        }
+
+        public int GetNorthTextureIndex(IBlock block)
+        {
+            return 2;
+        }
+
+        public int GetSouthTextureIndex(IBlock block)
+        {
+            return 2;
+        }
+
+        public int GetWestTextureIndex(IBlock block)
+        {
+            return 2;
+        }
+
+        public int GetEastTextureIndex(IBlock block)
+        {
+            return 2;
+        }
+
+        public int GetTopTextureRotation(IBlock block)
+        {
+            return 0;
+        }
+
+        public int GetBottomTextureRotation(IBlock block)
+        {
+            return 0;
+        }
+
+        public int GetEastTextureRotation(IBlock block)
+        {
+            return 0;
+        }
+
+        public int GetWestTextureRotation(IBlock block)
+        {
+            return 0;
+        }
+
+        public int GetNorthTextureRotation(IBlock block)
+        {
+            return 0;
+        }
+
+        public int GetSouthTextureRotation(IBlock block)
+        {
+            return 0;
         }
     }
 }

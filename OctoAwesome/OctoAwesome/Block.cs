@@ -10,18 +10,6 @@ namespace OctoAwesome
     {
         public OrientationFlags Orientation { get; set; }
 
-        public int TopTexture { get; set; }
-
-        public int BottomTexture { get; set; }
-
-        public int NorthTexture { get; set; }
-
-        public int SouthTexture { get; set; }
-
-        public int WestTexture { get; set; }
-
-        public int EastTexture { get; set; }
-
         public virtual BoundingBox[] GetCollisionBoxes()
         {
             return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
