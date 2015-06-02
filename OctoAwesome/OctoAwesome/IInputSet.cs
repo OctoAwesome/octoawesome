@@ -44,5 +44,15 @@ namespace OctoAwesome
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
         bool JumpTrigger { get; }
+
+        bool Slot1Trigger { get; }
+
+        bool Slot2Trigger { get; }
+        
+        bool Slot3Trigger { get; }
+        
+        bool Slot4Trigger { get; }
+        
+        bool Slot5Trigger { get; }
     }
 }

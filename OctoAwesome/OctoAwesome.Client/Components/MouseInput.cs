@@ -89,5 +89,31 @@ namespace OctoAwesome.Client.Components
             }
             init = true;            
         }
+
+
+        public bool Slot1Trigger
+        {
+            get { return false; }
+        }
+
+        public bool Slot2Trigger
+        {
+            get { return false; }
+        }
+
+        public bool Slot3Trigger
+        {
+            get { return false; }
+        }
+
+        public bool Slot4Trigger
+        {
+            get { return false; }
+        }
+
+        public bool Slot5Trigger
+        {
+            get { return false; }
+        }
     }
 }

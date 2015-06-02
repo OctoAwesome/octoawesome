@@ -12,6 +12,11 @@ namespace OctoAwesome.Client.Components
         private bool lastInteract = false;
         private bool lastJump = false;
         private bool lastApply = false;
+        private bool lastSlot1 = false;
+        private bool lastSlot2 = false;
+        private bool lastSlot3 = false;
+        private bool lastSlot4 = false;
+        private bool lastSlot5 = false;
         private GamePadInput gamepad;
         private KeyboardInput keyboard;
         private MouseInput mouse;
@@ -23,6 +28,16 @@ namespace OctoAwesome.Client.Components
         public bool InteractTrigger { get; private set; }
         public bool ApplyTrigger { get; private set; }
         public bool JumpTrigger { get; private set; }
+
+        public bool Slot1Trigger { get; private set; }
+
+        public bool Slot2Trigger { get; private set; }
+
+        public bool Slot3Trigger { get; private set; }
+
+        public bool Slot4Trigger { get; private set; }
+
+        public bool Slot5Trigger { get; private set; }
 
         public InputComponent(Game game)
             : base(game)
@@ -38,6 +53,11 @@ namespace OctoAwesome.Client.Components
             bool nextInteract = false;
             bool nextJump = false;
             bool nextApply = false;
+            bool nextSlot1 = false;
+            bool nextSlot2 = false;
+            bool nextSlot3 = false;
+            bool nextSlot4 = false;
+            bool nextSlot5 = false;
             MoveX = 0f;
             MoveY = 0f;
             HeadX = 0f;
@@ -47,6 +67,11 @@ namespace OctoAwesome.Client.Components
             nextInteract = gamepad.InteractTrigger;
             nextApply = gamepad.ApplyTrigger;
             nextJump = gamepad.JumpTrigger;
+            nextSlot1 = gamepad.Slot1Trigger;
+            nextSlot2 = gamepad.Slot2Trigger;
+            nextSlot3 = gamepad.Slot3Trigger;
+            nextSlot4 = gamepad.Slot4Trigger;
+            nextSlot5 = gamepad.Slot5Trigger;
 
             MoveX += gamepad.MoveX;
             MoveY += gamepad.MoveY;
@@ -57,6 +82,11 @@ namespace OctoAwesome.Client.Components
             nextInteract |= keyboard.InteractTrigger;
             nextApply |= keyboard.ApplyTrigger;
             nextJump |= keyboard.JumpTrigger;
+            nextSlot1 |= keyboard.Slot1Trigger;
+            nextSlot2 |= keyboard.Slot2Trigger;
+            nextSlot3 |= keyboard.Slot3Trigger;
+            nextSlot4 |= keyboard.Slot4Trigger;
+            nextSlot5 |= keyboard.Slot5Trigger;
 
             MoveX += keyboard.MoveX;
             MoveY += keyboard.MoveY;
@@ -69,6 +99,12 @@ namespace OctoAwesome.Client.Components
             nextInteract |= mouse.InteractTrigger;
             nextApply |= mouse.ApplyTrigger;
             nextJump |= mouse.JumpTrigger;
+            nextSlot1 |= mouse.Slot1Trigger;
+            nextSlot2 |= mouse.Slot2Trigger;
+            nextSlot3 |= mouse.Slot3Trigger;
+            nextSlot4 |= mouse.Slot4Trigger;
+            nextSlot5 |= mouse.Slot5Trigger;
+
 
             MoveX += mouse.MoveX;
             MoveY += mouse.MoveY;
@@ -97,6 +133,39 @@ namespace OctoAwesome.Client.Components
             else
                 JumpTrigger = false;
             lastJump = nextJump;
+
+            if (nextSlot1 && !lastSlot1)
+                Slot1Trigger = true;
+            else
+                Slot1Trigger = false;
+            lastSlot1 = nextSlot1;
+
+            if (nextSlot2 && !lastSlot2)
+                Slot2Trigger = true;
+            else
+                Slot2Trigger = false;
+            lastSlot2 = nextSlot2;
+
+            if (nextSlot3 && !lastSlot3)
+                Slot3Trigger = true;
+            else
+                Slot3Trigger = false;
+            lastSlot3 = nextSlot3;
+
+            if (nextSlot4 && !lastSlot4)
+                Slot4Trigger = true;
+            else
+                Slot4Trigger = false;
+            lastSlot4 = nextSlot4;
+
+            if (nextSlot5 && !lastSlot5)
+                Slot5Trigger = true;
+            else
+                Slot5Trigger = false;
+            lastSlot5 = nextSlot5;
         }
+
+
+        
     }
 }
