@@ -28,7 +28,6 @@ namespace OctoAwesome.Client.Components
 
         private Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
         private List<ChunkRenderer> activeChunkRenderer = new List<ChunkRenderer>();
-        private Queue<ChunkRenderer> highPrioUpdate = new Queue<ChunkRenderer>();
         private List<Index3> distances = new List<Index3>();
 
         private BasicEffect selectionEffect;
@@ -116,11 +115,7 @@ namespace OctoAwesome.Client.Components
 
             for (int i = 0; i < chunkRenderer.Length; i++)
             {
-                chunkRenderer[i] = new ChunkRenderer(
-                    GraphicsDevice, camera.Projection, blockTextures)
-                    {
-                        InUse = false
-                    };
+                chunkRenderer[i] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
                 freeChunkRenderer.Enqueue(chunkRenderer[i]);
             }
 
@@ -163,14 +158,6 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var renderer in chunkRenderer)
-            {
-                if (renderer.NeedUpdate() && !highPrioUpdate.Contains(renderer))
-                    highPrioUpdate.Enqueue(renderer);
-            }
-
-            #region Selektion
-
             Index3 centerblock = player.Player.Position.GlobalBlockIndex;
             Index3 renderOffset = player.Player.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
@@ -251,7 +238,7 @@ namespace OctoAwesome.Client.Components
                 }
 
                 player.SelectedPoint = new Vector2(
-                    Math.Min(1f, Math.Max(0f, player.SelectedPoint.Value.X)), 
+                    Math.Min(1f, Math.Max(0f, player.SelectedPoint.Value.X)),
                     Math.Min(1f, Math.Max(0f, player.SelectedPoint.Value.Y)));
             }
             else
@@ -262,8 +249,6 @@ namespace OctoAwesome.Client.Components
                 player.SelectedEdge = OrientationFlags.None;
                 player.SelectedCorner = OrientationFlags.None;
             }
-
-            #endregion
 
             base.Update(gameTime);
         }
@@ -284,11 +269,11 @@ namespace OctoAwesome.Client.Components
 
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.InUse)
+                if (!renderer.ChunkPosition.HasValue)
                     continue;
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(
-                    renderer.ChunkIndex, new Index2(
+                    renderer.ChunkPosition.Value.ChunkIndex, new Index2(
                         planet.Size.X,
                         planet.Size.Y));
 
@@ -337,10 +322,25 @@ namespace OctoAwesome.Client.Components
             IPlanet planet = ResourceManager.Instance.GetPlanet(player.Player.Position.Planet);
             destinationChunk.Z = Math.Max(VIEWHEIGHT, Math.Min(planet.Size.Z - VIEWHEIGHT, destinationChunk.Z));
 
-            HandleHighPrioUpdates();
+            var updates = activeChunkRenderer.
+                Where(r => r.NeedUpdate()).OrderBy(r =>
+                {
+                    Index3 absoluteIndex = r.ChunkPosition.Value.ChunkIndex;
+                    Index3 relativeIndex = destinationChunk.ShortestDistanceXY(
+                                       absoluteIndex, new Index2(
+                                           planet.Size.X,
+                                           planet.Size.Y));
+                    return relativeIndex.LengthSquared();
+                }).FirstOrDefault();
 
+            if (updates != null)
+                updates.RegenerateVertexBuffer();
+
+            // Restlichen Code nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk == currentChunk)
                 return;
+
+            #region Shift durchführen
 
             Index3 shift = currentChunk.ShortestDistanceXY(
                 destinationChunk, new Index2(planet.Size.X, planet.Size.Y));
@@ -349,53 +349,47 @@ namespace OctoAwesome.Client.Components
             {
                 ChunkRenderer renderer = activeChunkRenderer[i];
 
-                renderer.RelativeIndex -= shift;
+                Index3 absoluteIndex = renderer.ChunkPosition.Value.ChunkIndex;
+                Index3 relativeIndex = destinationChunk.ShortestDistanceXY(
+                    absoluteIndex, new Index2(
+                        planet.Size.X,
+                        planet.Size.Y));
 
-                if (!renderer.InUse ||
-                    renderer.RelativeIndex.X < -VIEWRANGE || renderer.RelativeIndex.X > VIEWRANGE ||
-                    renderer.RelativeIndex.Y < -VIEWRANGE || renderer.RelativeIndex.Y > VIEWRANGE ||
-                    renderer.RelativeIndex.Z < -VIEWHEIGHT || renderer.RelativeIndex.Z > VIEWHEIGHT)
+                if (!renderer.ChunkPosition.HasValue ||
+                    relativeIndex.X < -VIEWRANGE || relativeIndex.X > VIEWRANGE ||
+                    relativeIndex.Y < -VIEWRANGE || relativeIndex.Y > VIEWRANGE ||
+                    relativeIndex.Z < -VIEWHEIGHT || relativeIndex.Z > VIEWHEIGHT)
                 {
-                    renderer.InUse = false;
+                    renderer.SetChunk(null);
+
                     freeChunkRenderer.Enqueue(renderer);
                     activeChunkRenderer.Remove(renderer);
                 }
             }
 
+            #endregion
+
+            #region Ungenutzte Chunks auffüllen
+
             foreach (var distance in distances)
             {
-                HandleHighPrioUpdates();
-
                 Index3 chunkIndex = destinationChunk + distance;
-
                 chunkIndex.NormalizeXY(planet.Size);
 
-                if (!activeChunkRenderer.Any(c => c.RelativeIndex == distance))
+                PlanetIndex3 chunkPosition = new PlanetIndex3(
+                    player.Player.Position.Planet, chunkIndex);
+
+                if (!activeChunkRenderer.Any(c => c.ChunkPosition == chunkPosition))
                 {
-                    IChunk chunk = ResourceManager.Instance.GetChunk(planet.Id, chunkIndex);
-                    if (chunk != null)
-                    {
-                        ChunkRenderer renderer = freeChunkRenderer.Dequeue();
-                        renderer.SetChunk(chunk);
-                        renderer.RelativeIndex = distance;
-                        renderer.InUse = true;
-                        activeChunkRenderer.Add(renderer);
-                    }
+                    ChunkRenderer renderer = freeChunkRenderer.Dequeue();
+                    renderer.SetChunk(chunkPosition);
+                    activeChunkRenderer.Add(renderer);
                 }
             }
 
-            currentChunk = destinationChunk;
-        }
+            #endregion
 
-        private void HandleHighPrioUpdates()
-        {
-            // High Prio Interrupt
-            while (highPrioUpdate.Count > 0)
-            {
-                var renderer = highPrioUpdate.Dequeue();
-                if (activeChunkRenderer.Contains(renderer))
-                    renderer.RegenerateVertexBuffer();
-            }
+            currentChunk = destinationChunk;
         }
 
         private void BackgroundLoop()

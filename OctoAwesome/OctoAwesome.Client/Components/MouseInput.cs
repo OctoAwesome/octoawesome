@@ -17,6 +17,8 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         private float mouseSpeed = 0.2f;
 
+        private int lastWheelState = 0;
+
         private Game game;
 
         private bool init = false;
@@ -56,6 +58,12 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         public bool JumpTrigger { get; private set; }
 
+        public bool[] SlotTrigger { get { return null; } }
+
+        public bool SlotLeftTrigger { get; private set; }
+
+        public bool SlotRightTrigger { get; private set; }
+
         /// <summary>
         /// Initialisierung. Benötigt eine Game-Instanz zur Ermittlung der Fenstergröße
         /// </summary>
@@ -87,33 +95,11 @@ namespace OctoAwesome.Client.Components
                 HeadX = deltaX * mouseSpeed;
                 HeadY = -deltaY * mouseSpeed;
             }
-            init = true;            
-        }
+            init = true;
 
-
-        public bool Slot1Trigger
-        {
-            get { return false; }
-        }
-
-        public bool Slot2Trigger
-        {
-            get { return false; }
-        }
-
-        public bool Slot3Trigger
-        {
-            get { return false; }
-        }
-
-        public bool Slot4Trigger
-        {
-            get { return false; }
-        }
-
-        public bool Slot5Trigger
-        {
-            get { return false; }
+            SlotLeftTrigger = state.ScrollWheelValue < lastWheelState;
+            SlotRightTrigger = state.ScrollWheelValue > lastWheelState;
+            lastWheelState = state.ScrollWheelValue;
         }
     }
 }

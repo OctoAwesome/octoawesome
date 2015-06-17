@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -23,6 +25,8 @@ namespace OctoAwesome.Client.Components
         private double seconds = 0;
         private double lastfps = 0f;
 
+        private Texture2D[] toolTextures;
+
         public HudComponent(Game game, PlayerComponent player)
             : base(game)
         {
@@ -41,6 +45,21 @@ namespace OctoAwesome.Client.Components
         {
             font = Game.Content.Load<SpriteFont>("Hud");
             pix = Game.Content.Load<Texture2D>("Textures/pix");
+
+            toolTextures = new Texture2D[player.Tools.Length];
+            int index = 0;
+            foreach (var tool in player.Tools)
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    System.Drawing.Bitmap bitmap = tool.Textures.First();
+                    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    toolTextures[index++] = Texture2D.FromStream(GraphicsDevice, stream);
+                }
+            }
+
             base.LoadContent();
         }
 
@@ -85,13 +104,23 @@ namespace OctoAwesome.Client.Components
                 batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
             }
 
-            if (player.Player.BlockTool != null)
+            if (player.Tools != null && player.Tools.Length > 0)
             {
-                string tool = "Tool: " + player.Player.BlockTool.Name;
-                size = font.MeasureString(tool);
-                batch.DrawString(font, tool, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
-            }
+                int width = player.Tools.Length * 32 + (player.Tools.Length - 1) * 10;
+                int offset = (GraphicsDevice.Viewport.Width - width) / 2;
+                int index = 0;
+                foreach (var definition in BlockDefinitionManager.GetBlockDefinitions())
+                {
+                    if (player.Player.ActiveTool == definition)
+                    {
+                        batch.Draw(pix, new Rectangle(offset + (index * 42) - 2, GraphicsDevice.Viewport.Height - 60 - 2, 36, 36), Color.White);
+                    }
 
+                    batch.Draw(toolTextures[index], new Rectangle(offset + (index * 42), GraphicsDevice.Viewport.Height - 60, 32, 32), Color.White);
+
+                    index++;
+                }
+            }
 
             int centerX = GraphicsDevice.Viewport.Width / 2;
             int centerY = GraphicsDevice.Viewport.Height / 2;
