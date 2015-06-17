@@ -45,14 +45,20 @@ namespace OctoAwesome
         /// </summary>
         bool JumpTrigger { get; }
 
-        bool Slot1Trigger { get; }
+        bool[] SlotTrigger { get; }
 
-        bool Slot2Trigger { get; }
+        bool SlotLeftTrigger { get; }
+
+        bool SlotRightTrigger { get; }
+
+        //bool Slot1Trigger { get; }
+
+        //bool Slot2Trigger { get; }
         
-        bool Slot3Trigger { get; }
+        //bool Slot3Trigger { get; }
         
-        bool Slot4Trigger { get; }
+        //bool Slot4Trigger { get; }
         
-        bool Slot5Trigger { get; }
+        //bool Slot5Trigger { get; }
     }
 }

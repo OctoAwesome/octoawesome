@@ -25,13 +25,19 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
-        public IBlockDefinition BlockTool { get; set; }
+        public IBlockDefinition[] Tools { get; set; }
 
         public PlayerComponent(Game game, InputComponent input, SimulationComponent simulation)
             : base(game)
         {
             this.simulation = simulation;
             this.input = input;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            Tools = BlockDefinitionManager.GetBlockDefinitions().ToArray();
         }
 
         public override void Update(GameTime gameTime)
@@ -50,26 +56,41 @@ namespace OctoAwesome.Client.Components
                 Player.Apply(SelectedBox.Value, SelectedSide);
             }
 
-            if (input.Slot1Trigger)
+            if (Tools != null && input.SlotTrigger != null)
             {
-                Player.BlockTool = BlockDefinitionManager.GetBlockDefinitions().ToArray()[1];
+                for (int i = 0; i < Math.Min(Tools.Length, input.SlotTrigger.Length); i++)
+                {
+                    if (input.SlotTrigger[i])
+                        Player.ActiveTool = Tools[i];
+                }
             }
-            if (input.Slot2Trigger)
+
+            // Index des aktiven Werkzeugs ermitteln
+            int activeTool = -1;
+            if (Tools != null && Player.ActiveTool != null)
             {
-                Player.BlockTool = BlockDefinitionManager.GetBlockDefinitions().ToArray()[2];
+                for (int i = 0; i < Tools.Length; i++)
+                {
+                    if (Tools[i] == Player.ActiveTool)
+                    {
+                        activeTool = i;
+                        break;
+                    }
+                }
             }
-            if (input.Slot3Trigger)
+
+            if (activeTool > -1)
             {
-                Player.BlockTool = BlockDefinitionManager.GetBlockDefinitions().ToArray()[3];
+                if (input.SlotLeftTrigger)
+                    activeTool--;
+
+                if (input.SlotRightTrigger)
+                    activeTool++;
+
+                activeTool = (activeTool + Tools.Length) % Tools.Length;
+                Player.ActiveTool = Tools[activeTool];
             }
-            if (input.Slot4Trigger)
-            {
-                Player.BlockTool = BlockDefinitionManager.GetBlockDefinitions().ToArray()[5];
-            }
-            //if (input.Slot5Trigger)
-            //{
-            //    Player.BlockTool = BlockDefinitionManager.GetBlockDefinitions().ToArray()[4];
-            //}
+
         }
     }
 }

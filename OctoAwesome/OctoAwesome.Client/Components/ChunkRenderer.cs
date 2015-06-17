@@ -18,19 +18,31 @@ namespace OctoAwesome.Client.Components
 
         private Texture2D textures;
 
+        /// <summary>
+        /// Gibt an ob der aktuelle Chunk geladen wurde
+        /// </summary>
+        private bool chunkLoaded;
+
+        /// <summary>
+        /// Referenz auf den aktuellen Chunk (falls vorhanden)
+        /// </summary>
+        private IChunk chunk;
+
         private VertexBuffer vb;
         private IndexBuffer ib;
         private int vertexCount;
         private int indexCount;
         private int lastReset;
 
-        public IChunk Chunk { get; private set; }
+        /// <summary>
+        /// Referenz auf den aktuell gerenderten Chunk
+        /// </summary>
+        
 
-        public Index3 ChunkIndex { get; private set; }
-
-        public Index3 RelativeIndex { get; set; }
-
-        public bool InUse { get; set; }
+        /// <summary>
+        /// Adresse des aktuellen Chunks
+        /// </summary>
+        public PlanetIndex3? ChunkPosition { get; private set; }
 
         public ChunkRenderer(GraphicsDevice graphicsDevice, Matrix projection, Texture2D textures)
         {
@@ -51,28 +63,36 @@ namespace OctoAwesome.Client.Components
             effect.FogColor = new Color(181, 224, 255).ToVector3();
             effect.FogStart = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 0.5f;
             effect.FogEnd = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 0.9f;
-
-            InUse = false;
         }
 
-        public void SetChunk(IChunk chunk)
+        public void SetChunk(PlanetIndex3? index)
         {
-            ChunkIndex = chunk != null ? chunk.Index : new Index3(0, 0, 0);
-            Chunk = chunk;
-            RegenerateVertexBuffer();
+            ChunkPosition = index;
+            chunkLoaded = false;
+            chunk = null;
         }
 
         public bool NeedUpdate()
         {
-            if (!InUse || Chunk == null)
+            // Kein Chunk selektiert -> kein Update notwendig
+            if (!ChunkPosition.HasValue)
                 return false;
 
-            return Chunk.ChangeCounter > lastReset;
+            // Selektierter Chunk noch nicht geladen -> Update
+            if (!chunkLoaded)
+                return true;
+
+            // Chunk vollständig geladen aber nicht vorahden -> kein Update
+            if (chunk == null)
+                return false;
+
+            // Chunk geladen und existient -> nur Update, wenn sich seit dem letzten Reset was verändert hat.
+            return chunk.ChangeCounter > lastReset;
         }
 
         public void Draw(CameraComponent camera, Index3 shift)
         {
-            if (!InUse || Chunk == null)
+            if (chunk == null)
                 return;
 
             effect.World = Matrix.CreateTranslation(
@@ -100,7 +120,20 @@ namespace OctoAwesome.Client.Components
 
         public void RegenerateVertexBuffer()
         {
-            if (Chunk == null)
+            if (!ChunkPosition.HasValue)
+                return;
+
+            // Chunk nachladen
+            if (!chunkLoaded)
+            {
+                chunk = ResourceManager.Instance.GetChunk(
+                    ChunkPosition.Value.Planet, 
+                    ChunkPosition.Value.ChunkIndex);
+                chunkLoaded = true;
+            }
+
+            // Ignorieren, falls 
+            if (chunk == null)
                 return;
 
             List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
@@ -127,7 +160,7 @@ namespace OctoAwesome.Client.Components
                 {
                     for (int x = 0; x < OctoAwesome.Chunk.CHUNKSIZE_X; x++)
                     {
-                        IBlock block = Chunk.GetBlock(x, y, z);
+                        IBlock block = chunk.GetBlock(x, y, z);
                         if (block == null)
                             continue;
 
@@ -145,7 +178,7 @@ namespace OctoAwesome.Client.Components
                         Vector2 textureSize = new Vector2(textureWidth - 0.005f, textureWidth - 0.005f);
 
                         // Top
-                        if (z == OctoAwesome.Chunk.CHUNKSIZE_Z - 1 || Chunk.GetBlock(new Index3(x, y, z + 1)) == null)
+                        if (z == OctoAwesome.Chunk.CHUNKSIZE_Z - 1 || chunk.GetBlock(new Index3(x, y, z + 1)) == null)
                         {
                             textureOffset = new Vector2(
                                 (((textureIndex + definition.GetTopTextureIndex(block)) % textureColumns) * textureWidth) + 0.002f,
@@ -173,7 +206,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         // Unten
-                        if (z == 0 || Chunk.GetBlock(new Index3(x, y, z - 1)) == null)
+                        if (z == 0 || chunk.GetBlock(new Index3(x, y, z - 1)) == null)
                         {
                             textureOffset = new Vector2(
                                 (((textureIndex + definition.GetBottomTextureIndex(block)) % textureColumns) * textureWidth) + 0.002f,
@@ -201,7 +234,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         // South
-                        if (y == OctoAwesome.Chunk.CHUNKSIZE_Y - 1 || Chunk.GetBlock(new Index3(x, y + 1, z)) == null)
+                        if (y == OctoAwesome.Chunk.CHUNKSIZE_Y - 1 || chunk.GetBlock(new Index3(x, y + 1, z)) == null)
                         {
                             textureOffset = new Vector2(
                                 (((textureIndex + definition.GetSouthTextureIndex(block)) % textureColumns) * textureWidth) + 0.002f,
@@ -230,7 +263,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         // North
-                        if (y == 0 || Chunk.GetBlock(new Index3(x, y - 1, z)) == null)
+                        if (y == 0 || chunk.GetBlock(new Index3(x, y - 1, z)) == null)
                         {
                             textureOffset = new Vector2(
                                 (((textureIndex + definition.GetNorthTextureIndex(block)) % textureColumns) * textureWidth) + 0.002f,
@@ -258,7 +291,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         // West
-                        if (x == 0 || Chunk.GetBlock(new Index3(x - 1, y, z)) == null)
+                        if (x == 0 || chunk.GetBlock(new Index3(x - 1, y, z)) == null)
                         {
                             textureOffset = new Vector2(
                                 (((textureIndex + definition.GetWestTextureIndex(block)) % textureColumns) * textureWidth) + 0.002f,
@@ -286,7 +319,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         // Ost
-                        if (x == OctoAwesome.Chunk.CHUNKSIZE_X - 1 || Chunk.GetBlock(new Index3(x + 1, y, z)) == null)
+                        if (x == OctoAwesome.Chunk.CHUNKSIZE_X - 1 || chunk.GetBlock(new Index3(x + 1, y, z)) == null)
                         {
                             textureOffset = new Vector2(
                                 (((textureIndex + definition.GetEastTextureIndex(block)) % textureColumns) * textureWidth) + 0.002f,
@@ -350,7 +383,7 @@ namespace OctoAwesome.Client.Components
             if (ibOld != null)
                 ibOld.Dispose();
 
-            lastReset = Chunk.ChangeCounter;
+            lastReset = chunk.ChangeCounter;
         }
 
         public void Dispose()

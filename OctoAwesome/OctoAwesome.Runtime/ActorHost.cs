@@ -22,7 +22,7 @@ namespace OctoAwesome.Runtime
 
         public Player Player { get; private set; }
 
-        public IBlockDefinition BlockTool { get; set; }
+        public IBlockDefinition ActiveTool { get; set; }
 
         public ActorHost(Player player)
         {
@@ -30,7 +30,7 @@ namespace OctoAwesome.Runtime
             localChunkCache = new Cache<Index3, IChunk>(10, loadChunk, null);
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            BlockTool = BlockDefinitionManager.GetBlockDefinitions().OfType<WoodBlockDefinition>().FirstOrDefault();
+            ActiveTool = null;
         }
 
         public void Update(GameTime frameTime)
@@ -192,7 +192,7 @@ namespace OctoAwesome.Runtime
 
             if (lastApply.HasValue)
             {
-                if (BlockTool != null)
+                if (ActiveTool != null)
                 {
                     Index3 add = new Index3();
                     switch (lastOrientation)
@@ -206,7 +206,7 @@ namespace OctoAwesome.Runtime
                     }
 
                     ResourceManager.Instance.SetBlock(planet.Id, 
-                        lastApply.Value + add, BlockTool.GetInstance(lastOrientation));
+                        lastApply.Value + add, ActiveTool.GetInstance(lastOrientation));
                     lastApply = null;
                 }
             }

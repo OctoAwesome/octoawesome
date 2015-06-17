@@ -17,6 +17,28 @@ namespace OctoAwesome
             ChunkIndex = chunkIndex;
         }
 
+        public static bool operator ==(PlanetIndex3 i1, PlanetIndex3 i2)
+        {
+            return i1.Equals(i2);
+        }
+
+        public static bool operator !=(PlanetIndex3 i1, PlanetIndex3 i2)
+        {
+            return !i1.Equals(i2);
+        }
+        public override bool Equals(object obj)
+        {
+            if (!(obj is PlanetIndex3))
+                return false;
+
+            PlanetIndex3 other = (PlanetIndex3)obj;
+            return (
+                other.Planet == this.Planet &&
+                other.ChunkIndex.X == this.ChunkIndex.X &&
+                other.ChunkIndex.Y == this.ChunkIndex.Y &&
+                other.ChunkIndex.Z == this.ChunkIndex.Z);
+        }
+
         public override int GetHashCode()
         {
             return

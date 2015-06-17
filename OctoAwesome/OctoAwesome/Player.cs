@@ -31,7 +31,7 @@ namespace OctoAwesome
 
         public Player()
         {
-            Position = new Coordinate(0, new Index3(16, 16, 100), Vector3.Zero);
+            Position = new Coordinate(0, new Index3(82109, 74365, 45), Vector3.Zero);
             Velocity = new Vector3(0, 0, 0);
             Radius = 0.75f;
             Angle = 0f;

@@ -9,17 +9,19 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class InputComponent : GameComponent, IInputSet
     {
+        private const int SlotTriggerLength = 10;
+
         private bool lastInteract = false;
         private bool lastJump = false;
+        private bool[] lastSlotTrigger = new bool[SlotTriggerLength];
         private bool lastApply = false;
-        private bool lastSlot1 = false;
-        private bool lastSlot2 = false;
-        private bool lastSlot3 = false;
-        private bool lastSlot4 = false;
-        private bool lastSlot5 = false;
+        private bool lastSlotLeftTrigger = false;
+        private bool lastSlotRightTrigger = false;
         private GamePadInput gamepad;
         private KeyboardInput keyboard;
         private MouseInput mouse;
+
+        private bool[] slotTriggers = new bool[SlotTriggerLength];
 
         public float MoveX { get; private set; }
         public float MoveY { get; private set; }
@@ -29,15 +31,11 @@ namespace OctoAwesome.Client.Components
         public bool ApplyTrigger { get; private set; }
         public bool JumpTrigger { get; private set; }
 
-        public bool Slot1Trigger { get; private set; }
+        public bool[] SlotTrigger { get { return slotTriggers; } }
 
-        public bool Slot2Trigger { get; private set; }
+        public bool SlotLeftTrigger { get; private set; }
 
-        public bool Slot3Trigger { get; private set; }
-
-        public bool Slot4Trigger { get; private set; }
-
-        public bool Slot5Trigger { get; private set; }
+        public bool SlotRightTrigger { get; private set; }
 
         public InputComponent(Game game)
             : base(game)
@@ -53,11 +51,9 @@ namespace OctoAwesome.Client.Components
             bool nextInteract = false;
             bool nextJump = false;
             bool nextApply = false;
-            bool nextSlot1 = false;
-            bool nextSlot2 = false;
-            bool nextSlot3 = false;
-            bool nextSlot4 = false;
-            bool nextSlot5 = false;
+            bool[] nextSlot = new bool[SlotTriggerLength];
+            bool nextSlotLeft = false;
+            bool nextSlotRight = false;
             MoveX = 0f;
             MoveY = 0f;
             HeadX = 0f;
@@ -67,11 +63,11 @@ namespace OctoAwesome.Client.Components
             nextInteract = gamepad.InteractTrigger;
             nextApply = gamepad.ApplyTrigger;
             nextJump = gamepad.JumpTrigger;
-            nextSlot1 = gamepad.Slot1Trigger;
-            nextSlot2 = gamepad.Slot2Trigger;
-            nextSlot3 = gamepad.Slot3Trigger;
-            nextSlot4 = gamepad.Slot4Trigger;
-            nextSlot5 = gamepad.Slot5Trigger;
+            nextSlotLeft = gamepad.SlotLeftTrigger;
+            nextSlotRight = gamepad.SlotRightTrigger;
+            if (gamepad.SlotTrigger != null)
+                for (int i = 0; i < Math.Min(gamepad.SlotTrigger.Length, SlotTriggerLength); i++)
+                    nextSlot[i] = gamepad.SlotTrigger[i];
 
             MoveX += gamepad.MoveX;
             MoveY += gamepad.MoveY;
@@ -82,11 +78,12 @@ namespace OctoAwesome.Client.Components
             nextInteract |= keyboard.InteractTrigger;
             nextApply |= keyboard.ApplyTrigger;
             nextJump |= keyboard.JumpTrigger;
-            nextSlot1 |= keyboard.Slot1Trigger;
-            nextSlot2 |= keyboard.Slot2Trigger;
-            nextSlot3 |= keyboard.Slot3Trigger;
-            nextSlot4 |= keyboard.Slot4Trigger;
-            nextSlot5 |= keyboard.Slot5Trigger;
+            nextSlotLeft |= keyboard.SlotLeftTrigger;
+            nextSlotRight |= keyboard.SlotRightTrigger;
+            if (keyboard.SlotTrigger != null)
+                for (int i = 0; i < Math.Min(keyboard.SlotTrigger.Length, SlotTriggerLength); i++)
+                    nextSlot[i] |= keyboard.SlotTrigger[i];
+
 
             MoveX += keyboard.MoveX;
             MoveY += keyboard.MoveY;
@@ -99,12 +96,11 @@ namespace OctoAwesome.Client.Components
             nextInteract |= mouse.InteractTrigger;
             nextApply |= mouse.ApplyTrigger;
             nextJump |= mouse.JumpTrigger;
-            nextSlot1 |= mouse.Slot1Trigger;
-            nextSlot2 |= mouse.Slot2Trigger;
-            nextSlot3 |= mouse.Slot3Trigger;
-            nextSlot4 |= mouse.Slot4Trigger;
-            nextSlot5 |= mouse.Slot5Trigger;
-
+            nextSlotLeft |= mouse.SlotLeftTrigger;
+            nextSlotRight |= mouse.SlotRightTrigger;
+            if (mouse.SlotTrigger != null)
+                for (int i = 0; i < Math.Min(mouse.SlotTrigger.Length, SlotTriggerLength); i++)
+                    nextSlot[i] |= mouse.SlotTrigger[i];
 
             MoveX += mouse.MoveX;
             MoveY += mouse.MoveY;
@@ -134,38 +130,20 @@ namespace OctoAwesome.Client.Components
                 JumpTrigger = false;
             lastJump = nextJump;
 
-            if (nextSlot1 && !lastSlot1)
-                Slot1Trigger = true;
-            else
-                Slot1Trigger = false;
-            lastSlot1 = nextSlot1;
+            SlotLeftTrigger = nextSlotLeft && !lastSlotLeftTrigger;
+            lastSlotLeftTrigger = nextSlotLeft;
 
-            if (nextSlot2 && !lastSlot2)
-                Slot2Trigger = true;
-            else
-                Slot2Trigger = false;
-            lastSlot2 = nextSlot2;
+            SlotRightTrigger = nextSlotRight && !lastSlotRightTrigger;
+            lastSlotRightTrigger = nextSlotRight;
 
-            if (nextSlot3 && !lastSlot3)
-                Slot3Trigger = true;
-            else
-                Slot3Trigger = false;
-            lastSlot3 = nextSlot3;
-
-            if (nextSlot4 && !lastSlot4)
-                Slot4Trigger = true;
-            else
-                Slot4Trigger = false;
-            lastSlot4 = nextSlot4;
-
-            if (nextSlot5 && !lastSlot5)
-                Slot5Trigger = true;
-            else
-                Slot5Trigger = false;
-            lastSlot5 = nextSlot5;
+            for (int i = 0; i < SlotTriggerLength; i++)
+            {
+                if (nextSlot[i] && lastSlotTrigger[i])
+                    slotTriggers[i] = true;
+                else
+                    slotTriggers[i] = false;
+                lastSlotTrigger[i] = nextSlot[i];
+            }
         }
-
-
-        
     }
 }
