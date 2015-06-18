@@ -38,6 +38,8 @@ namespace OctoAwesome.Client.Components
         {
             base.Initialize();
             Tools = BlockDefinitionManager.GetBlockDefinitions().ToArray();
+            if (Tools != null && Tools.Length > 0)
+                Player.ActiveTool = Tools[0];
         }
 
         public override void Update(GameTime gameTime)

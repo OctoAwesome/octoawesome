@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Client.Components
+namespace OctoAwesome.Client.Components.Input
 { 
     /// <summary>
     /// Keyboard-Implementierung der Input-Schnittstelle.
     /// </summary>
     internal sealed class KeyboardInput : IInputSet
     {
-        bool[] slotTriggers = new bool[10];
-
         /// <summary>
         /// Anteil der Seitwärtsbewegung (-1...1)
         /// </summary>
@@ -36,23 +34,38 @@ namespace OctoAwesome.Client.Components
         /// <summary>
         /// Interaktionstrigger (löst eine Interaktion mit dem markierten Element aus)
         /// </summary>
-        public bool InteractTrigger { get; private set; }
+        public Trigger<bool> InteractTrigger { get; private set; }
 
         /// <summary>
         /// Anwendungstrigger (Verwendet das aktuelle Werkzeug auf die markierte Stelle an)
         /// </summary>
-        public bool ApplyTrigger { get; private set; }
+        public Trigger<bool> ApplyTrigger { get; private set; }
 
         /// <summary>
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
-        public bool JumpTrigger { get; private set; }
+        public Trigger<bool> JumpTrigger { get; private set; }
 
-        public bool[] SlotTrigger { get { return slotTriggers; } }
+        public Trigger<bool>[] SlotTrigger { get; private set; }
 
-        public bool SlotLeftTrigger { get; private set; }
+        public Trigger<bool> SlotLeftTrigger { get; private set; }
 
-        public bool SlotRightTrigger { get; private set; }
+        public Trigger<bool> SlotRightTrigger { get; private set; }
+
+        public KeyboardInput()
+        {
+            InteractTrigger = new Trigger<bool>();
+            ApplyTrigger = new Trigger<bool>();
+            JumpTrigger = new Trigger<bool>();
+            SlotLeftTrigger = new Trigger<bool>();
+            SlotRightTrigger = new Trigger<bool>();
+
+            SlotTrigger = new Trigger<bool>[InputComponent.SlotTriggerLength];
+            for (int i = 0; i < SlotTrigger.Length; i++)
+            {
+                SlotTrigger[i] = new Trigger<bool>();
+            }
+        }
 
         /// <summary>
         /// Frame Update zur Ermittlung der Veränderungen.
@@ -65,19 +78,19 @@ namespace OctoAwesome.Client.Components
             MoveY = 0f;
             HeadX = 0f;
             HeadY = 0f;
-            InteractTrigger = keyboardState.IsKeyDown(Keys.E);
-            ApplyTrigger = keyboardState.IsKeyDown(Keys.Q);
-            JumpTrigger = keyboardState.IsKeyDown(Keys.Space);
-            slotTriggers[0] = keyboardState.IsKeyDown(Keys.D1);
-            slotTriggers[1] = keyboardState.IsKeyDown(Keys.D2);
-            slotTriggers[2] = keyboardState.IsKeyDown(Keys.D3);
-            slotTriggers[3] = keyboardState.IsKeyDown(Keys.D4);
-            slotTriggers[4] = keyboardState.IsKeyDown(Keys.D5);
-            slotTriggers[5] = keyboardState.IsKeyDown(Keys.D6);
-            slotTriggers[6] = keyboardState.IsKeyDown(Keys.D7);
-            slotTriggers[7] = keyboardState.IsKeyDown(Keys.D8);
-            slotTriggers[8] = keyboardState.IsKeyDown(Keys.D9);
-            slotTriggers[9] = keyboardState.IsKeyDown(Keys.D0);
+            InteractTrigger.Value = keyboardState.IsKeyDown(Keys.E);
+            ApplyTrigger.Value = keyboardState.IsKeyDown(Keys.Q);
+            JumpTrigger.Value = keyboardState.IsKeyDown(Keys.Space);
+            SlotTrigger[0].Value = keyboardState.IsKeyDown(Keys.NumPad1);
+            SlotTrigger[1].Value = keyboardState.IsKeyDown(Keys.D2);
+            SlotTrigger[2].Value = keyboardState.IsKeyDown(Keys.D3);
+            SlotTrigger[3].Value = keyboardState.IsKeyDown(Keys.D4);
+            SlotTrigger[4].Value = keyboardState.IsKeyDown(Keys.D5);
+            SlotTrigger[5].Value = keyboardState.IsKeyDown(Keys.D6);
+            SlotTrigger[6].Value = keyboardState.IsKeyDown(Keys.D7);
+            SlotTrigger[7].Value = keyboardState.IsKeyDown(Keys.D8);
+            SlotTrigger[8].Value = keyboardState.IsKeyDown(Keys.D9);
+            SlotTrigger[9].Value = keyboardState.IsKeyDown(Keys.D0);
             MoveX -= (keyboardState.IsKeyDown(Keys.A) ? 1 : 0);
             MoveX += (keyboardState.IsKeyDown(Keys.D) ? 1 : 0);
             MoveY -= (keyboardState.IsKeyDown(Keys.S) ? 1 : 0);

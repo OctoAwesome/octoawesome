@@ -84,6 +84,18 @@ Susch @ YouTube (25.05)
 - Boden-Glitsch passiert, weil die Prüfung im ActorHost  "Min.X > max" lautet. Sollte aber "Min.X >= max" sein
 - Wand-Glitsch beginnt schlagartig bei Koordinate 1000/1000. 999 ist ok
 
+Ralf @ Email (17.06)
+====================
+- Left/Right -> NumPad+/- oder Bild hoch/runter
+- SlotLeft/Right -> +1 für Integer
+- Mapping der Nummern nicht D0-9 sondern NumPad0-9
+
+Andy @ Email (17.08)
+====================
+- Trigger-Klasse anstatt den Trigger-Mechanismus jedes mal
+- Konvertierungsumweg über PNG kostet performance -> lieber BMP
+- 
+
 Cleanup
 =======
 - Texture (Mehrteilig)

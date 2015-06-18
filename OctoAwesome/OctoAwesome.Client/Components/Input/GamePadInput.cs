@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Client.Components
+namespace OctoAwesome.Client.Components.Input
 {
     /// <summary>
     /// Gamepad Implementierung der Input-Schnittstelle.
@@ -35,17 +35,32 @@ namespace OctoAwesome.Client.Components
         /// <summary>
         /// Interaktionstrigger (löst eine Interaktion mit dem markierten Element aus)
         /// </summary>
-        public bool InteractTrigger { get; private set; }
+        public Trigger<bool> InteractTrigger { get; private set; }
 
         /// <summary>
         /// Anwendungstrigger (Verwendet das aktuelle Werkzeug auf die markierte Stelle an)
         /// </summary>
-        public bool ApplyTrigger { get; private set; }
+        public Trigger<bool> ApplyTrigger { get; private set; }
 
         /// <summary>
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
-        public bool JumpTrigger { get; private set; }
+        public Trigger<bool> JumpTrigger { get; private set; }
+
+        public Trigger<bool>[] SlotTrigger { get { return null; } }
+
+        public Trigger<bool> SlotLeftTrigger { get; private set; }
+
+        public Trigger<bool> SlotRightTrigger { get; private set; }
+
+        public GamePadInput()
+        {
+            InteractTrigger = new Trigger<bool>();
+            ApplyTrigger = new Trigger<bool>();
+            JumpTrigger = new Trigger<bool>();
+            SlotLeftTrigger = new Trigger<bool>();
+            SlotRightTrigger = new Trigger<bool>();
+        }
 
         /// <summary>
         /// Frame-Update zur Ermittlung der Veränderungen.
@@ -56,11 +71,11 @@ namespace OctoAwesome.Client.Components
             {
                 GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
-                InteractTrigger = gamePadState.Buttons.X == ButtonState.Pressed;
-                ApplyTrigger = gamePadState.Buttons.A == ButtonState.Pressed;
-                JumpTrigger = gamePadState.Buttons.Y == ButtonState.Pressed;
-                SlotLeftTrigger = gamePadState.Buttons.LeftShoulder == ButtonState.Pressed;
-                SlotRightTrigger = gamePadState.Buttons.RightShoulder == ButtonState.Pressed;
+                InteractTrigger.Value = gamePadState.Buttons.X == ButtonState.Pressed;
+                ApplyTrigger.Value = gamePadState.Buttons.A == ButtonState.Pressed;
+                JumpTrigger.Value = gamePadState.Buttons.Y == ButtonState.Pressed;
+                SlotLeftTrigger.Value = gamePadState.Buttons.LeftShoulder == ButtonState.Pressed;
+                SlotRightTrigger.Value = gamePadState.Buttons.RightShoulder == ButtonState.Pressed;
                 MoveX = gamePadState.ThumbSticks.Left.X;
                 MoveY = gamePadState.ThumbSticks.Left.Y;
                 HeadX = gamePadState.ThumbSticks.Right.X;
@@ -69,10 +84,6 @@ namespace OctoAwesome.Client.Components
             catch (Exception) { }
         }
 
-        public bool[] SlotTrigger { get { return null; } }
-
-        public bool SlotLeftTrigger { get; private set; }
-
-        public bool SlotRightTrigger { get; private set; }
+        
     }
 }
