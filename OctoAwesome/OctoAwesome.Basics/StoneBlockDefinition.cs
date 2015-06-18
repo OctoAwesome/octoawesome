@@ -85,6 +85,36 @@ namespace OctoAwesome.Basics
             return 0;
         }
 
+        public bool IsTopSolidWall(IBlock block)
+        {
+            return true;
+        }
+
+        public bool IsBottomSolidWall(IBlock block)
+        {
+            return true;
+        }
+
+        public bool IsNorthSolidWall(IBlock block)
+        {
+            return true;
+        }
+
+        public bool IsSouthSolidWall(IBlock block)
+        {
+            return true;
+        }
+
+        public bool IsWestSolidWall(IBlock block)
+        {
+            return true;
+        }
+
+        public bool IsEastSolidWall(IBlock block)
+        {
+            return true;
+        }
+
         public IBlock GetInstance(OrientationFlags orientation)
         {
             return new StoneBlock();

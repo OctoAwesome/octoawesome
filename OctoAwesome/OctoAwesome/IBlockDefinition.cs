@@ -36,6 +36,18 @@ namespace OctoAwesome
         
         int GetSouthTextureRotation(IBlock block);
 
+        bool IsTopSolidWall(IBlock block);
+
+        bool IsBottomSolidWall(IBlock block);
+
+        bool IsNorthSolidWall(IBlock block);
+        
+        bool IsSouthSolidWall(IBlock block);
+        
+        bool IsWestSolidWall(IBlock block);
+        
+        bool IsEastSolidWall(IBlock block);
+
         IBlock GetInstance(OrientationFlags orientation);
 
         Type GetBlockType();

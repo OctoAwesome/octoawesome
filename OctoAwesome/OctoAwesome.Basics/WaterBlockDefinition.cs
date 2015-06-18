@@ -85,6 +85,36 @@ namespace OctoAwesome.Basics
             return 0;
         }
 
+        public bool IsTopSolidWall(IBlock block)
+        {
+            return false;
+        }
+
+        public bool IsBottomSolidWall(IBlock block)
+        {
+            return false;
+        }
+
+        public bool IsNorthSolidWall(IBlock block)
+        {
+            return false;
+        }
+
+        public bool IsSouthSolidWall(IBlock block)
+        {
+            return false;
+        }
+
+        public bool IsWestSolidWall(IBlock block)
+        {
+            return false;
+        }
+
+        public bool IsEastSolidWall(IBlock block)
+        {
+            return false;
+        }
+
         public IBlock GetInstance(OrientationFlags orientation)
         {
             return new WaterBlock();
