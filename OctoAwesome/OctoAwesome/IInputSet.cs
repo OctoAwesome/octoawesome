@@ -33,32 +33,22 @@ namespace OctoAwesome
         /// <summary>
         /// Interaktionstrigger (löst eine Interaktion mit dem markierten Element aus)
         /// </summary>
-        bool InteractTrigger { get; }
+        Trigger<bool> InteractTrigger { get; }
 
         /// <summary>
         /// Anwendungstrigger (Verwendet das aktuelle Werkzeug auf die markierte Stelle an)
         /// </summary>
-        bool ApplyTrigger { get; }
+        Trigger<bool> ApplyTrigger { get; }
 
         /// <summary>
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
-        bool JumpTrigger { get; }
+        Trigger<bool> JumpTrigger { get; }
 
-        bool[] SlotTrigger { get; }
+        Trigger<bool>[] SlotTrigger { get; }
 
-        bool SlotLeftTrigger { get; }
+        Trigger<bool> SlotLeftTrigger { get; }
 
-        bool SlotRightTrigger { get; }
-
-        //bool Slot1Trigger { get; }
-
-        //bool Slot2Trigger { get; }
-        
-        //bool Slot3Trigger { get; }
-        
-        //bool Slot4Trigger { get; }
-        
-        //bool Slot5Trigger { get; }
+        Trigger<bool> SlotRightTrigger { get; }
     }
 }

@@ -46,11 +46,11 @@
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
-    <Compile Include="Components\GamePadInput.cs" />
+    <Compile Include="Components\Input\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />
     <Compile Include="Components\InputComponent.cs" />
-    <Compile Include="Components\KeyboardInput.cs" />
-    <Compile Include="Components\MouseInput.cs" />
+    <Compile Include="Components\Input\KeyboardInput.cs" />
+    <Compile Include="Components\Input\MouseInput.cs" />
     <Compile Include="Components\SceneComponent.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />

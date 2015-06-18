@@ -78,6 +78,7 @@ namespace OctoAwesome.Client.Components
             bufferindex %= buffersize;
 
             batch.Begin();
+
             batch.DrawString(font, "Development Version", new Vector2(5, 5), Color.White);
 
             string pos = "pos: " + player.Player.Position.ToString();
@@ -99,7 +100,12 @@ namespace OctoAwesome.Client.Components
 
             if (player.SelectedBox.HasValue)
             {
-                string selection = "box: " + player.SelectedBox.Value.ToString() + " on " + player.SelectedSide.ToString() + " (" + player.SelectedPoint.Value.X.ToString("0.00") + "/" + player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " + player.SelectedEdge.ToString() + " -> " + player.SelectedCorner.ToString();
+                string selection = "box: " + 
+                    player.SelectedBox.Value.ToString() + " on " + 
+                    player.SelectedSide.ToString() + " (" + 
+                    player.SelectedPoint.Value.X.ToString("0.00") + "/" + 
+                    player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " + 
+                    player.SelectedEdge.ToString() + " -> " + player.SelectedCorner.ToString();
                 size = font.MeasureString(selection);
                 batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
             }
@@ -111,11 +117,8 @@ namespace OctoAwesome.Client.Components
                 int index = 0;
                 foreach (var definition in BlockDefinitionManager.GetBlockDefinitions())
                 {
-                    if (player.Player.ActiveTool == definition)
-                    {
-                        batch.Draw(pix, new Rectangle(offset + (index * 42) - 2, GraphicsDevice.Viewport.Height - 60 - 2, 36, 36), Color.White);
-                    }
-
+                    batch.Draw(pix, new Rectangle(offset + (index * 42) - 2, GraphicsDevice.Viewport.Height - 60 - 2, 36, 36), 
+                        player.Player.ActiveTool == definition ? Color.White : Color.DarkGray);
                     batch.Draw(toolTextures[index], new Rectangle(offset + (index * 42), GraphicsDevice.Viewport.Height - 60, 32, 32), Color.White);
 
                     index++;
