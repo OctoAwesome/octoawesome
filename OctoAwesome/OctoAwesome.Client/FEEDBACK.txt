@@ -1,8 +1,4 @@
-﻿Ralf per Codeplex (13.03.)
-==========================
-- Bitte dreifach-Operationen vereinfachen (also bei der ganzen Achsen-Trennung)
-
-Lassi per Codeplex (17.03.)
+﻿Lassi per Codeplex (17.03.)
 ===========================
 2) Noch ein Fehler bei der Berechnung
    "powerdirection += ExternalForce;" müsste "powerdirection += externalpower;" sein
@@ -14,10 +10,6 @@ Andy via Email (07.04.)
 Nachtrag von Ralf per Email (16.04.)
 ====================================
 Begrifflichkeiten im Cache irreführend. Sinnvolle wären die typischen Werte get(), put(), replace(), remove(), putIfAbsent()
-
-RedworkDE via YouTube (11.04.)
-==============================
-- Bug in L2 wenn man aus dem Level fällt
 
 Andy via Email (10.04.)
 =======================
@@ -79,10 +71,11 @@ Ralf @ Email (25.05.)
 - Überlagerung mehrerer Kollisionsachsen (bsp: X & Y)
 - Funktion "move *= (1f - min);" muss mit negativen Werten arbeiten können!
 
-Susch @ YouTube (25.05)
-=======================
-- Boden-Glitsch passiert, weil die Prüfung im ActorHost  "Min.X > max" lautet. Sollte aber "Min.X >= max" sein
-- Wand-Glitsch beginnt schlagartig bei Koordinate 1000/1000. 999 ist ok
+Ralf @ Email (16.06)
+====================
+- Trigger (Left/Right) als Integer
+- Left/Right auf +/- oder Bild hoch/runter
+- Nummern-Mapping bei Keyboard-Input von D0-9 auf KeyPad0-9
 
 Ralf @ Email (17.06)
 ====================
@@ -90,11 +83,25 @@ Ralf @ Email (17.06)
 - SlotLeft/Right -> +1 für Integer
 - Mapping der Nummern nicht D0-9 sondern NumPad0-9
 
-Andy @ Email (17.08)
+Andy @ Email (17.06)
 ====================
 - Trigger-Klasse anstatt den Trigger-Mechanismus jedes mal
 - Konvertierungsumweg über PNG kostet performance -> lieber BMP
-- 
+
+susch @ YT (21.06.)
+===================
+- Fullscreen Mode!
+
+Ralf @ Email (23.06.)
+=====================
+- Trigger braucht noch einen Peek
+- Trigger in eine Event-Queue (noch nicht sicher ob wir diese Komplexität brauchen. Mal merken fürs UI Framework)
+
+Andy @ Email (24.06.)
+=====================
+- Reihenfolge Shift und FillChunkrenderer tauschen? Shift zuerst, damit keine unnötigen Renderer aktualisiert werden
+- Chunkrenderer nicht sortieren sondern händisch durchlaufen (O(n log n) vs. O(n))
+- Thread.Sleep verzögert die Updates unnötig. Vielleicht mit nem bool arbeiten
 
 Cleanup
 =======

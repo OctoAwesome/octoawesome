@@ -87,7 +87,7 @@ namespace OctoAwesome.Client.Components
                 return false;
 
             // Chunk geladen und existient -> nur Update, wenn sich seit dem letzten Reset was verändert hat.
-            return chunk.ChangeCounter > lastReset;
+            return chunk.ChangeCounter != lastReset;
         }
 
         public void Draw(CameraComponent camera, Index3 shift)
