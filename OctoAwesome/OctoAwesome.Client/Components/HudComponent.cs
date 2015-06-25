@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OctoAwesome.Client.Components.Hud;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,6 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class HudComponent : DrawableGameComponent
     {
-        private PlayerComponent player;
-
         private SpriteBatch batch;
         private SpriteFont font;
         private Texture2D pix;
@@ -25,14 +24,20 @@ namespace OctoAwesome.Client.Components
         private double seconds = 0;
         private double lastfps = 0f;
 
-        private Texture2D[] toolTextures;
+        private List<Control> controls = new List<Control>();
+        private Toolbar toolbar;
+
+        public PlayerComponent Player { get; private set; }
 
         public HudComponent(Game game, PlayerComponent player)
             : base(game)
         {
-            this.player = player;
+            Player = player;
 
             framebuffer = new float[buffersize];
+
+            toolbar = new Toolbar(this);
+            controls.Add(toolbar);
         }
 
         public override void Initialize()
@@ -46,19 +51,11 @@ namespace OctoAwesome.Client.Components
             font = Game.Content.Load<SpriteFont>("Hud");
             pix = Game.Content.Load<Texture2D>("Textures/pix");
 
-            toolTextures = new Texture2D[player.Tools.Length];
-            int index = 0;
-            foreach (var tool in player.Tools)
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    System.Drawing.Bitmap bitmap = tool.Textures.First();
-                    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                    stream.Seek(0, SeekOrigin.Begin);
+            toolbar.Position = new Index2(0, GraphicsDevice.Viewport.Height - 100);
+            toolbar.Size = new Index2(GraphicsDevice.Viewport.Width, 100);
 
-                    toolTextures[index++] = Texture2D.FromStream(GraphicsDevice, stream);
-                }
-            }
+            foreach (var control in controls)
+                control.LoadContent();
 
             base.LoadContent();
         }
@@ -77,19 +74,21 @@ namespace OctoAwesome.Client.Components
             framebuffer[bufferindex++] = (float)gameTime.ElapsedGameTime.TotalSeconds;
             bufferindex %= buffersize;
 
-            batch.Begin();
+            // SortMode auf BackToFront BlendState.NonPremultiplied
+
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             batch.DrawString(font, "Development Version", new Vector2(5, 5), Color.White);
 
-            string pos = "pos: " + player.Player.Position.ToString();
+            string pos = "pos: " + Player.Player.Position.ToString();
             var size = font.MeasureString(pos);
             batch.DrawString(font, pos, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 5), Color.White);
 
-            float grad = (player.Player.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.Player.Angle / MathHelper.TwoPi) * 360;
 
             string rot = "rot: " +
-                (((player.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((player.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
 
             size = font.MeasureString(rot);
             batch.DrawString(font, rot, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 25), Color.White);
@@ -98,31 +97,16 @@ namespace OctoAwesome.Client.Components
             size = font.MeasureString(fps);
             batch.DrawString(font, fps, new Vector2(GraphicsDevice.Viewport.Width - size.X - 5, 45), Color.White);
 
-            if (player.SelectedBox.HasValue)
+            if (Player.SelectedBox.HasValue)
             {
                 string selection = "box: " + 
-                    player.SelectedBox.Value.ToString() + " on " + 
-                    player.SelectedSide.ToString() + " (" + 
-                    player.SelectedPoint.Value.X.ToString("0.00") + "/" + 
-                    player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " + 
-                    player.SelectedEdge.ToString() + " -> " + player.SelectedCorner.ToString();
+                    Player.SelectedBox.Value.ToString() + " on " + 
+                    Player.SelectedSide.ToString() + " (" + 
+                    Player.SelectedPoint.Value.X.ToString("0.00") + "/" + 
+                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " + 
+                    Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
                 size = font.MeasureString(selection);
                 batch.DrawString(font, selection, new Vector2(5, GraphicsDevice.Viewport.Height - size.Y - 5), Color.White);
-            }
-
-            if (player.Tools != null && player.Tools.Length > 0)
-            {
-                int width = player.Tools.Length * 32 + (player.Tools.Length - 1) * 10;
-                int offset = (GraphicsDevice.Viewport.Width - width) / 2;
-                int index = 0;
-                foreach (var definition in BlockDefinitionManager.GetBlockDefinitions())
-                {
-                    batch.Draw(pix, new Rectangle(offset + (index * 42) - 2, GraphicsDevice.Viewport.Height - 60 - 2, 36, 36), 
-                        player.Player.ActiveTool == definition ? Color.White : Color.DarkGray);
-                    batch.Draw(toolTextures[index], new Rectangle(offset + (index * 42), GraphicsDevice.Viewport.Height - 60, 32, 32), Color.White);
-
-                    index++;
-                }
             }
 
             int centerX = GraphicsDevice.Viewport.Width / 2;
@@ -130,6 +114,9 @@ namespace OctoAwesome.Client.Components
 
             batch.Draw(pix, new Rectangle(centerX - 1, centerY - 15, 2, 30), Color.White * 0.5f);
             batch.Draw(pix, new Rectangle(centerX - 15, centerY - 1, 30, 2), Color.White * 0.5f);
+
+            foreach (var control in controls)
+                control.Draw(batch);
 
             batch.End();
         }

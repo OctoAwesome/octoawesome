@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\Hud\Control.cs" />
+    <Compile Include="Components\Hud\Toolbar.cs" />
     <Compile Include="Components\Input\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />
     <Compile Include="Components\InputComponent.cs" />
