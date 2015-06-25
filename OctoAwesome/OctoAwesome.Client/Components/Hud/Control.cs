@@ -13,15 +13,21 @@ namespace OctoAwesome.Client.Components.Hud
 
         public Index2 Size { get; set; }
 
+        public bool Enabled { get; set; }
+
+        public bool Visible { get; set; }
+
         protected HudComponent Hud { get; private set; }
 
         public Control(HudComponent hud)
         {
             Hud = hud;
+            Enabled = true;
+            Visible = true;
         }
 
         public abstract void LoadContent();
 
-        public abstract void Draw(SpriteBatch batch);
+        public abstract void Draw(SpriteBatch batch, GameTime gameTime);
     }
 }

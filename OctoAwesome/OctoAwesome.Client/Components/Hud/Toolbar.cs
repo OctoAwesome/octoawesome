@@ -14,7 +14,6 @@ namespace OctoAwesome.Client.Components.Hud
         private Texture2D[] toolTextures;
         private Texture2D pix;
 
-
         public Toolbar(HudComponent hud) : base(hud)
         {
             
@@ -39,8 +38,13 @@ namespace OctoAwesome.Client.Components.Hud
             }
         }
 
-        public override void Draw(SpriteBatch batch)
+        public override void Draw(SpriteBatch batch, GameTime gameTime)
         {
+            if (!Visible || !Enabled)
+                return;
+
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+
             if (Hud.Player.Tools != null && Hud.Player.Tools.Length > 0)
             {
                 int width = Hud.Player.Tools.Length * 32 + (Hud.Player.Tools.Length - 1) * 10;
@@ -56,6 +60,8 @@ namespace OctoAwesome.Client.Components.Hud
                     index++;
                 }
             }
+
+            batch.End();
         }
     }
 }

@@ -46,7 +46,9 @@
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\Hud\Compass.cs" />
     <Compile Include="Components\Hud\Control.cs" />
+    <Compile Include="Components\Hud\DebugInfos.cs" />
     <Compile Include="Components\Hud\Toolbar.cs" />
     <Compile Include="Components\Input\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />
@@ -71,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Textures\compass.png" />
     <Content Include="Content\Textures\pix.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
