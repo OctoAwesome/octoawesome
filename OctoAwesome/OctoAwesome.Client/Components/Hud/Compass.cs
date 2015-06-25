@@ -23,9 +23,18 @@ namespace OctoAwesome.Client.Components.Hud
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)
         {
-            batch.Begin();
+            float compassValue = Hud.Player.Player.Angle / (float)(2 * Math.PI);
+            compassValue %= 1f;
+            if (compassValue < 0)
+                compassValue += 1f;
 
-            batch.Draw(compassTexture, new Vector2(0, 0), Color.White);
+            batch.Begin(samplerState: SamplerState.LinearWrap);
+
+            int offset = (int)(compassTexture.Width * compassValue);
+            offset -= Size.X / 2;
+            
+
+            batch.Draw(compassTexture, new Rectangle(Position.X, Position.Y, Size.X, Size.Y), new Rectangle(offset, 0, Size.X, Size.Y), Color.White);
 
             batch.End();
         }

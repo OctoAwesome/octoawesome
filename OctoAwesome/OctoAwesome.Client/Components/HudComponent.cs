@@ -47,8 +47,9 @@ namespace OctoAwesome.Client.Components
             toolbar.Size = new Index2(GraphicsDevice.Viewport.Width, 100);
             debugInfos.Position = new Index2();
             debugInfos.Size = new Index2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            compass.Position = new Index2();
-            compass.Size = new Index2(GraphicsDevice.Viewport.Width, 100);
+            
+            compass.Position = new Index2((GraphicsDevice.Viewport.Width - 200) / 2, 10);
+            compass.Size = new Index2(200, 30);
 
             foreach (var control in controls)
                 control.LoadContent();
