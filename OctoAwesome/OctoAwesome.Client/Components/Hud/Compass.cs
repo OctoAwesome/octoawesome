@@ -13,7 +13,6 @@ namespace OctoAwesome.Client.Components.Hud
 
         public Compass(HudComponent hud) : base(hud)
         {
-
         }
 
         public override void LoadContent()
@@ -32,9 +31,9 @@ namespace OctoAwesome.Client.Components.Hud
 
             int offset = (int)(compassTexture.Width * compassValue);
             offset -= Size.X / 2;
-            
+            int offsetY = (-compassTexture.Height - Size.Y) / 2;
 
-            batch.Draw(compassTexture, new Rectangle(Position.X, Position.Y, Size.X, Size.Y), new Rectangle(offset, 0, Size.X, Size.Y), Color.White);
+            batch.Draw(compassTexture, new Rectangle(Position.X, Position.Y, Size.X, Size.Y), new Rectangle(offset, offsetY, Size.X, Size.Y), Color.White);
 
             batch.End();
         }

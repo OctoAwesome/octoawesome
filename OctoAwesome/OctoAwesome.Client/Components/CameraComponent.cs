@@ -51,6 +51,14 @@ namespace OctoAwesome.Client.Components
                     player.Player.Position.LocalPosition.Z + 3.2f + height),
                 CameraUpVector);
 
+            MinimapView = Matrix.CreateLookAt(
+                new Vector3(CameraPosition.X, CameraPosition.Y, 100),
+                new Vector3(
+                    player.Player.Position.LocalPosition.X,
+                    player.Player.Position.LocalPosition.Y,
+                    0f),
+                new Vector3(0f, -1f, 0f));
+
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;
 
@@ -67,6 +75,8 @@ namespace OctoAwesome.Client.Components
         public Vector3 CameraUpVector { get; private set; }
 
         public Matrix View { get; private set; }
+
+        public Matrix MinimapView { get; private set; }
 
         public Matrix Projection { get; private set; }
 

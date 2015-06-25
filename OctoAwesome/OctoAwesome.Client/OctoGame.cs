@@ -80,7 +80,7 @@ namespace OctoAwesome.Client
             scene.DrawOrder = 1;
             Components.Add(scene);
 
-            hud = new HudComponent(this, player);
+            hud = new HudComponent(this, player, scene);
             hud.UpdateOrder = 6;
             hud.DrawOrder = 2;
             Components.Add(hud);

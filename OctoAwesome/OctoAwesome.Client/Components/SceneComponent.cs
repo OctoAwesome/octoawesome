@@ -31,6 +31,7 @@ namespace OctoAwesome.Client.Components
         private List<Index3> distances = new List<Index3>();
 
         private BasicEffect selectionEffect;
+        private BasicEffect minimapEffect;
 
         private Texture2D blockTextures;
 
@@ -41,6 +42,8 @@ namespace OctoAwesome.Client.Components
         private Thread backgroundThread;
 
         private Cache<Index3, IChunk> cache;
+
+        public RenderTarget2D MiniMapTexture { get; set; }
 
         public SceneComponent(Game game, PlayerComponent player, CameraComponent camera)
             : base(game)
@@ -153,6 +156,12 @@ namespace OctoAwesome.Client.Components
             selectionEffect = new BasicEffect(GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
+            MiniMapTexture = new RenderTarget2D(GraphicsDevice, 128, 128);
+
+            minimapEffect = new BasicEffect(GraphicsDevice);
+            minimapEffect.Projection = Matrix.CreateOrthographic(100, 100, 1, 10000);
+            minimapEffect.EnableDefaultLighting();
+
             base.LoadContent();
         }
 
@@ -262,9 +271,6 @@ namespace OctoAwesome.Client.Components
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            // GraphicsDevice.RasterizerState.CullMode = CullMode.None;
-            // GraphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
-
             Index3 chunkOffset = player.Player.Position.ChunkIndex;
 
             foreach (var renderer in chunkRenderer)
@@ -314,6 +320,36 @@ namespace OctoAwesome.Client.Components
                     GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(PrimitiveType.LineList, selectionLines, 0, 8, selectionIndeces, 0, 12);
                 }
             }
+
+            GraphicsDevice.SetRenderTarget(MiniMapTexture);
+
+            minimapEffect.View = camera.MinimapView;
+
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue)
+                    continue;
+
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    renderer.ChunkPosition.Value.ChunkIndex, new Index2(
+                        planet.Size.X,
+                        planet.Size.Y));
+
+                BoundingBox chunkBox = new BoundingBox(
+                new Vector3(
+                    shift.X * OctoAwesome.Chunk.CHUNKSIZE_X,
+                    shift.Y * OctoAwesome.Chunk.CHUNKSIZE_Y,
+                    shift.Z * OctoAwesome.Chunk.CHUNKSIZE_Z),
+                new Vector3(
+                    (shift.X + 1) * OctoAwesome.Chunk.CHUNKSIZE_X,
+                    (shift.Y + 1) * OctoAwesome.Chunk.CHUNKSIZE_Y,
+                    (shift.Z + 1) * OctoAwesome.Chunk.CHUNKSIZE_Z));
+
+                if (camera.Frustum.Intersects(chunkBox))
+                    renderer.DrawMinimap(minimapEffect, shift);
+            }
+
+            GraphicsDevice.SetRenderTarget(null);
         }
 
         private bool FillChunkRenderer()

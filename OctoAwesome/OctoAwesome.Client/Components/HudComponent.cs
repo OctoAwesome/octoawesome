@@ -23,10 +23,13 @@ namespace OctoAwesome.Client.Components
 
         public PlayerComponent Player { get; private set; }
 
-        public HudComponent(Game game, PlayerComponent player)
+        public SceneComponent Scene { get; set; }
+
+        public HudComponent(Game game, PlayerComponent player, SceneComponent scene)
             : base(game)
         {
             Player = player;
+            Scene = scene;
 
             controls.Add(toolbar = new Toolbar(this));
             controls.Add(debugInfos = new DebugInfos(this));
@@ -48,8 +51,8 @@ namespace OctoAwesome.Client.Components
             debugInfos.Position = new Index2();
             debugInfos.Size = new Index2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             
-            compass.Position = new Index2((GraphicsDevice.Viewport.Width - 200) / 2, 10);
-            compass.Size = new Index2(200, 30);
+            compass.Position = new Index2((GraphicsDevice.Viewport.Width - 300) / 2, 10);
+            compass.Size = new Index2(300, 20);
 
             foreach (var control in controls)
                 control.LoadContent();
@@ -69,6 +72,8 @@ namespace OctoAwesome.Client.Components
 
             batch.Draw(pix, new Rectangle(centerX - 1, centerY - 15, 2, 30), Color.White * 0.5f);
             batch.Draw(pix, new Rectangle(centerX - 15, centerY - 1, 30, 2), Color.White * 0.5f);
+
+            batch.Draw(Scene.MiniMapTexture, new Vector2(0, 0), Color.White);
 
             batch.End();
         }
