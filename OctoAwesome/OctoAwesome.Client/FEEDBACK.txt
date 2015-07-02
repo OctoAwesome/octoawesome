@@ -103,6 +103,35 @@ Andy @ Email (24.06.)
 - Chunkrenderer nicht sortieren sondern händisch durchlaufen (O(n log n) vs. O(n))
 - Thread.Sleep verzögert die Updates unnötig. Vielleicht mit nem bool arbeiten
 
+Alexander Stärk @ YouTube (01.07.)
+==================================
+- MonoGame als NuGet Package
+
+Anteru @ LiveCoding.tv (23.06.)
+https://www.livecoding.tv/video/ger-make-it-suck-less-3/
+===============================
+- Render-Reihenfolge (Erst Minimap, dann Scene)
+- Projection Matrix direkt beim Draw, nicht an zwei Stellen (damit fällt DrawMinimap raus)
+- DrawMinimap() raus und Draw anstatt CameraComponent einfach View und Projection matrix mitgeben
+- Mipmaps in unseren Texturen
+- Blöcke IMMER von unten nach oben rendern (Blöcke & Chunks) -> Minimap ohne Tiefenpuffer
+- ViewRange (near- und farplane) optimieren. Range ist zu groß
+- HUD in einem Rutsch malen (mal sehen ob der Spritebatch da was hat)
+- Einsortierung der CunkRenderer in einen Quad/OctTree
+
+Anteru @ LiveCoding.tv (23.06.)
+https://www.livecoding.tv/video/ger-make-it-suck-less-2/
+https://www.livecoding.tv/video/ger-make-it-suck-less/
+===============================
+- Eigene Shader!!! :) BasicShader ist schlecht gecoded
+- Vertex Koordinaten optimieren (Kleinerer Wertebereich)
+- Normalen optimieren (auf die 6 Richtungen -> 3 Byte)
+- Textur-Koordinaten notwendig?
+- Textures als Texture2D-Array - keine Rand-Probleme mehr
+- zentralen IndexBuffer verwenden (wenn nicht sogar vollständig auslassen dank Shader)
+- Tiefenpuffer-Range optimieren
+
+
 Cleanup
 =======
 - Texture (Mehrteilig)

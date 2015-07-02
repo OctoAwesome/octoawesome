@@ -156,7 +156,7 @@ namespace OctoAwesome.Client.Components
             selectionEffect = new BasicEffect(GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
-            MiniMapTexture = new RenderTarget2D(GraphicsDevice, 128, 128);
+            MiniMapTexture = new RenderTarget2D(GraphicsDevice, 128, 128, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
 
             minimapEffect = new BasicEffect(GraphicsDevice);
             minimapEffect.Projection = Matrix.CreateOrthographic(100, 100, 1, 10000);
@@ -322,6 +322,7 @@ namespace OctoAwesome.Client.Components
             }
 
             GraphicsDevice.SetRenderTarget(MiniMapTexture);
+            
 
             minimapEffect.View = camera.MinimapView;
 
