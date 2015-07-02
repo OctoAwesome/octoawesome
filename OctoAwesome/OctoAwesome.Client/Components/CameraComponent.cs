@@ -57,7 +57,9 @@ namespace OctoAwesome.Client.Components
                     player.Player.Position.LocalPosition.X,
                     player.Player.Position.LocalPosition.Y,
                     0f),
-                new Vector3(0f, -1f, 0f));
+                new Vector3(
+                    (float)Math.Cos(player.Player.Angle), 
+                    (float)Math.Sin(-player.Player.Angle), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;

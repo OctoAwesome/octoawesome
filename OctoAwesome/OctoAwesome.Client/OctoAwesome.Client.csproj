@@ -33,6 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -49,6 +50,7 @@
     <Compile Include="Components\Hud\Compass.cs" />
     <Compile Include="Components\Hud\Control.cs" />
     <Compile Include="Components\Hud\DebugInfos.cs" />
+    <Compile Include="Components\Hud\MiniMap.cs" />
     <Compile Include="Components\Hud\Toolbar.cs" />
     <Compile Include="Components\Input\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />
