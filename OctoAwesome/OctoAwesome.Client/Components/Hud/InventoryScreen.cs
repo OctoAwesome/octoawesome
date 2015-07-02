@@ -10,6 +10,7 @@ namespace OctoAwesome.Client.Components.Hud
     internal class InventoryScreen : Screen
     {
         private Texture2D pix;
+        private Texture2D panelTexture;
 
         private PanelControl panel;
 
@@ -21,10 +22,11 @@ namespace OctoAwesome.Client.Components.Hud
         public override void LoadContent()
         {
             pix = Hud.Game.Content.Load<Texture2D>("Textures/pix");
+            panelTexture = Hud.Game.Content.Load<Texture2D>("Textures/panel");
 
             Controls.Add(panel = new PanelControl(Hud));
 
-            panel.BackgroundTexture = pix;
+            panel.BackgroundTexture = panelTexture;
             panel.Position = new Index2(
                 (Hud.GraphicsDevice.Viewport.Width - 600) / 2, 
                 (Hud.GraphicsDevice.Viewport.Height - 400) / 2);
