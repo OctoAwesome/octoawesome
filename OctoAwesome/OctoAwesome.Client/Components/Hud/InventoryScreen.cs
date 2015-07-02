@@ -11,6 +11,8 @@ namespace OctoAwesome.Client.Components.Hud
     {
         private Texture2D pix;
 
+        private PanelControl panel;
+
         public InventoryScreen(HudComponent hud) : base(hud)
         {
 
@@ -19,13 +21,23 @@ namespace OctoAwesome.Client.Components.Hud
         public override void LoadContent()
         {
             pix = Hud.Game.Content.Load<Texture2D>("Textures/pix");
+
+            Controls.Add(panel = new PanelControl(Hud));
+
+            panel.BackgroundTexture = pix;
+            panel.Position = new Index2(
+                (Hud.GraphicsDevice.Viewport.Width - 600) / 2, 
+                (Hud.GraphicsDevice.Viewport.Height - 400) / 2);
+            panel.Size = new Index2(600, 400);
+
+            foreach (var control in Controls)
+                control.LoadContent();
         }
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)
         {
-            batch.Begin();
-            batch.Draw(pix, new Rectangle(0, 0, Hud.Game.GraphicsDevice.Viewport.Width, Hud.Game.GraphicsDevice.Viewport.Height), Color.Red);
-            batch.End();
+            foreach (var control in Controls)
+                control.Draw(batch, gameTime);
         }
     }
 }
