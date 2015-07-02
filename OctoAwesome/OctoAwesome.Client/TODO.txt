@@ -22,7 +22,7 @@ Map Layout
   X Schnittstelle -> umbauen auf IChunk[] GenerateChunks(IPlanet planet, Index2 index)
 - Serializer
 
-Extention Framework
+Extension Framework
 ===================
 - DLLs nachladen
 - Schnittstellen

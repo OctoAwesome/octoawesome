@@ -105,6 +105,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="CompiledContent\Hud.xnb" />
+    <None Include="CompiledContent\Textures\compass.xnb" />
+    <None Include="CompiledContent\Textures\panel.xnb" />
     <None Include="CompiledContent\Textures\pix.xnb" />
     <None Include="Content\Hud.spritefont" />
   </ItemGroup>
