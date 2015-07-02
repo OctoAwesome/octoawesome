@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OctoAwesome.Client.Components.Hud
 {
-    internal abstract class Control
+    internal abstract class Control : UiElement
     {
         public Index2 Position { get; set; }
 
@@ -17,17 +17,12 @@ namespace OctoAwesome.Client.Components.Hud
 
         public bool Visible { get; set; }
 
-        protected HudComponent Hud { get; private set; }
-
-        public Control(HudComponent hud)
+        public Control(HudComponent hud) : base(hud)
         {
-            Hud = hud;
             Enabled = true;
             Visible = true;
         }
 
-        public abstract void LoadContent();
-
-        public abstract void Draw(SpriteBatch batch, GameTime gameTime);
+        
     }
 }

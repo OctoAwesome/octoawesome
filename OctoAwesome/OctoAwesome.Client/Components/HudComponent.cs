@@ -22,6 +22,8 @@ namespace OctoAwesome.Client.Components
         private Compass compass;
         private MiniMap miniMap;
 
+        private InventoryScreen inventory;
+
         public PlayerComponent Player { get; private set; }
 
         public SceneComponent Scene { get; set; }
@@ -36,6 +38,8 @@ namespace OctoAwesome.Client.Components
             controls.Add(debugInfos = new DebugInfos(this));
             controls.Add(compass = new Compass(this));
             controls.Add(miniMap = new MiniMap(this));
+
+            inventory = new InventoryScreen(this);
         }
 
         public override void Initialize()
@@ -62,6 +66,8 @@ namespace OctoAwesome.Client.Components
             foreach (var control in controls)
                 control.LoadContent();
 
+            inventory.LoadContent();
+
             base.LoadContent();
         }
 
@@ -79,6 +85,8 @@ namespace OctoAwesome.Client.Components
             batch.Draw(pix, new Rectangle(centerX - 15, centerY - 1, 30, 2), Color.White * 0.5f);
 
             batch.End();
+
+            inventory.Draw(batch, gameTime);
         }
     }
 }

@@ -50,8 +50,11 @@
     <Compile Include="Components\Hud\Compass.cs" />
     <Compile Include="Components\Hud\Control.cs" />
     <Compile Include="Components\Hud\DebugInfos.cs" />
+    <Compile Include="Components\Hud\InventoryScreen.cs" />
     <Compile Include="Components\Hud\MiniMap.cs" />
+    <Compile Include="Components\Hud\Screen.cs" />
     <Compile Include="Components\Hud\Toolbar.cs" />
+    <Compile Include="Components\Hud\UiElement.cs" />
     <Compile Include="Components\Input\GamePadInput.cs" />
     <Compile Include="Components\HudComponent.cs" />
     <Compile Include="Components\InputComponent.cs" />

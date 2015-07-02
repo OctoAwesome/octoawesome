@@ -156,7 +156,7 @@ namespace OctoAwesome.Client.Components
             selectionEffect = new BasicEffect(GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
-            MiniMapTexture = new RenderTarget2D(GraphicsDevice, 128, 128); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
+            MiniMapTexture = new RenderTarget2D(GraphicsDevice, 128, 128, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
 
             base.LoadContent();
@@ -262,8 +262,11 @@ namespace OctoAwesome.Client.Components
         public override void Draw(GameTime gameTime)
         {
             Index3 chunkOffset = player.Player.Position.ChunkIndex;
+            Microsoft.Xna.Framework.Color background =
+                new Microsoft.Xna.Framework.Color(181, 224, 255);
 
             GraphicsDevice.SetRenderTarget(MiniMapTexture);
+            GraphicsDevice.Clear(background);
 
             foreach (var renderer in chunkRenderer)
             {
@@ -285,14 +288,13 @@ namespace OctoAwesome.Client.Components
                     (shift.Y + 1) * OctoAwesome.Chunk.CHUNKSIZE_Y,
                     (shift.Z + 1) * OctoAwesome.Chunk.CHUNKSIZE_Z));
 
-                //if (camera.Frustum.Intersects(chunkBox))
+                int range = 3;
+                if (shift.X >= -range && shift.X <= range && 
+                    shift.Y >= -range && shift.Y <= range)
                     renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
             }
 
             GraphicsDevice.SetRenderTarget(null);
-
-            Microsoft.Xna.Framework.Color background =
-                new Microsoft.Xna.Framework.Color(181, 224, 255);
             GraphicsDevice.Clear(background);
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
