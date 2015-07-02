@@ -42,6 +42,8 @@ namespace OctoAwesome.Client.Components.Input
         /// </summary>
         public Trigger<bool> ApplyTrigger { get; private set; }
 
+        public Trigger<bool> InventoryTrigger { get; private set; }
+
         /// <summary>
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
@@ -60,6 +62,7 @@ namespace OctoAwesome.Client.Components.Input
             JumpTrigger = new Trigger<bool>();
             SlotLeftTrigger = new Trigger<bool>();
             SlotRightTrigger = new Trigger<bool>();
+            InventoryTrigger = new Trigger<bool>();
         }
 
         /// <summary>
@@ -73,6 +76,7 @@ namespace OctoAwesome.Client.Components.Input
 
                 InteractTrigger.Value = gamePadState.Buttons.X == ButtonState.Pressed;
                 ApplyTrigger.Value = gamePadState.Buttons.A == ButtonState.Pressed;
+                InventoryTrigger.Value = gamePadState.Buttons.Back == ButtonState.Pressed;
                 JumpTrigger.Value = gamePadState.Buttons.Y == ButtonState.Pressed;
                 SlotLeftTrigger.Value = gamePadState.Buttons.LeftShoulder == ButtonState.Pressed;
                 SlotRightTrigger.Value = gamePadState.Buttons.RightShoulder == ButtonState.Pressed;

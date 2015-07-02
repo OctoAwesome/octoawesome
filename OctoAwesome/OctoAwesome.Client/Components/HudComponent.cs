@@ -23,16 +23,20 @@ namespace OctoAwesome.Client.Components
         private MiniMap miniMap;
 
         private InventoryScreen inventory;
+        private bool inventoryVisible = false;
 
         public PlayerComponent Player { get; private set; }
 
+        public InputComponent Input { get; private set; }
+
         public SceneComponent Scene { get; set; }
 
-        public HudComponent(Game game, PlayerComponent player, SceneComponent scene)
+        public HudComponent(Game game, PlayerComponent player, SceneComponent scene, InputComponent input)
             : base(game)
         {
             Player = player;
             Scene = scene;
+            Input = input;
 
             controls.Add(toolbar = new Toolbar(this));
             controls.Add(debugInfos = new DebugInfos(this));
@@ -71,6 +75,13 @@ namespace OctoAwesome.Client.Components
             base.LoadContent();
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (Input.InventoryTrigger)
+                inventoryVisible = !inventoryVisible;
+            Input.ScreenMode = inventoryVisible;
+        }
+
         public override void Draw(GameTime gameTime)
         {
             foreach (var control in controls)
@@ -86,7 +97,10 @@ namespace OctoAwesome.Client.Components
 
             batch.End();
 
-            inventory.Draw(batch, gameTime);
+            if (inventoryVisible)
+            {
+                inventory.Draw(batch, gameTime);
+            }
         }
     }
 }

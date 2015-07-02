@@ -41,6 +41,11 @@ namespace OctoAwesome
         Trigger<bool> ApplyTrigger { get; }
 
         /// <summary>
+        /// Inventartrigger
+        /// </summary>
+        Trigger<bool> InventoryTrigger { get; }
+
+        /// <summary>
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
         Trigger<bool> JumpTrigger { get; }

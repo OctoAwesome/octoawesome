@@ -61,6 +61,7 @@
     <Compile Include="Components\InputComponent.cs" />
     <Compile Include="Components\Input\KeyboardInput.cs" />
     <Compile Include="Components\Input\MouseInput.cs" />
+    <Compile Include="Components\Input\MouseScreenInput.cs" />
     <Compile Include="Components\SceneComponent.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />

@@ -66,6 +66,7 @@
     <Compile Include="Index2.cs" />
     <Compile Include="Index3.cs" />
     <Compile Include="IPlanet.cs" />
+    <Compile Include="IScreenInputSet.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="Noise\INoise.cs" />

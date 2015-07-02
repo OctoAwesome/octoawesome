@@ -41,6 +41,8 @@ namespace OctoAwesome.Client.Components.Input
         /// </summary>
         public Trigger<bool> ApplyTrigger { get; private set; }
 
+        public Trigger<bool> InventoryTrigger { get; private set; }
+
         /// <summary>
         /// Sprung-Trigger (löst einen Sprung aus)
         /// </summary>
@@ -56,6 +58,7 @@ namespace OctoAwesome.Client.Components.Input
         {
             InteractTrigger = new Trigger<bool>();
             ApplyTrigger = new Trigger<bool>();
+            InventoryTrigger = new Trigger<bool>();
             JumpTrigger = new Trigger<bool>();
             SlotLeftTrigger = new Trigger<bool>();
             SlotRightTrigger = new Trigger<bool>();
@@ -80,6 +83,7 @@ namespace OctoAwesome.Client.Components.Input
             HeadY = 0f;
             InteractTrigger.Value = keyboardState.IsKeyDown(Keys.E);
             ApplyTrigger.Value = keyboardState.IsKeyDown(Keys.Q);
+            InventoryTrigger.Value = keyboardState.IsKeyDown(Keys.I) || keyboardState.IsKeyDown(Keys.Tab);
             JumpTrigger.Value = keyboardState.IsKeyDown(Keys.Space);
             SlotTrigger[0].Value = keyboardState.IsKeyDown(Keys.NumPad1);
             SlotTrigger[1].Value = keyboardState.IsKeyDown(Keys.D2);
