@@ -16,5 +16,8 @@ namespace OctoAwesome.Client.Components.Input
             PointerPosition = new Index2(state.X, state.Y);
         }
 
+        public event OnKeyChange OnKeyDown;
+
+        public event OnKeyChange OnKeyUp;
     }
 }

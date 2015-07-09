@@ -23,6 +23,7 @@ namespace OctoAwesome.Client
         SceneComponent scene;
         PlayerComponent player;
         HudComponent hud;
+        ScreenManagerComponent screenManager;
         SimulationComponent simulation;
 
         public OctoGame()
@@ -84,6 +85,11 @@ namespace OctoAwesome.Client
             hud.UpdateOrder = 6;
             hud.DrawOrder = 2;
             Components.Add(hud);
+
+            screenManager = new ScreenManagerComponent(this, input);
+            screenManager.UpdateOrder = 7;
+            screenManager.DrawOrder = 3;
+            Components.Add(screenManager);
         }
 
         protected override void OnExiting(object sender, EventArgs args)

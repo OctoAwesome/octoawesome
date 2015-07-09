@@ -12,7 +12,6 @@ namespace OctoAwesome.Client.Components.Hud
     internal class Toolbar : Control
     {
         private Texture2D[] toolTextures;
-        private Texture2D pix;
 
         public PlayerComponent Player { get; set; }
 
@@ -53,7 +52,7 @@ namespace OctoAwesome.Client.Components.Hud
                 int index = 0;
                 foreach (var definition in BlockDefinitionManager.GetBlockDefinitions())
                 {
-                    batch.Draw(pix, new Rectangle(offset + (index * 42) - 2 + Position.X, Size.Y - 60 - 2 + Position.Y, 36, 36),
+                    batch.Draw(ScreenManager.Pix, new Rectangle(offset + (index * 42) - 2 + Position.X, Size.Y - 60 - 2 + Position.Y, 36, 36),
                         Player.Player.ActiveTool == definition ? Color.White : new Color(Color.White, 0.3f));
                     batch.Draw(toolTextures[index], new Rectangle(offset + (index * 42) + Position.X, Size.Y - 60 + Position.Y, 32, 32),
                         Player.Player.ActiveTool == definition ? Color.White : new Color(Color.White, 0.3f));

@@ -12,13 +12,6 @@ namespace OctoAwesome.Client.Components
     {
         public const int SlotTriggerLength = 10;
 
-        //private bool lastInteract = false;
-        //private bool lastJump = false;
-        //private bool[] lastSlotTrigger = new bool[SlotTriggerLength];
-        //private bool lastApply = false;
-        //private bool lastSlotLeftTrigger = false;
-        //private bool lastSlotRightTrigger = false;
-
         private List<IInputSet> inputDevices;
         private List<IScreenInputSet> screenInputDevices;
 
@@ -27,6 +20,7 @@ namespace OctoAwesome.Client.Components
         private GamePadInput gamepad;
 
         private MouseScreenInput screenMouse;
+        private KeyboardScreenInput screenKeyboard;
 
         public bool ScreenMode { get; set; }
         public Index2 PointerPosition { get; private set; }
@@ -38,12 +32,8 @@ namespace OctoAwesome.Client.Components
         public Trigger<bool> ApplyTrigger { get; private set; }
         public Trigger<bool> JumpTrigger { get; private set; }
         public Trigger<bool> InventoryTrigger { get; private set; }
-
-
         public Trigger<bool>[] SlotTrigger { get; private set; }
-
         public Trigger<bool> SlotLeftTrigger { get; private set; }
-
         public Trigger<bool> SlotRightTrigger { get; private set; }
 
         public InputComponent(Game game)
@@ -63,6 +53,10 @@ namespace OctoAwesome.Client.Components
             keyboard = new KeyboardInput();
             mouse = new MouseInput(game);
             screenMouse = new MouseScreenInput();
+            screenKeyboard = new KeyboardScreenInput();
+
+            screenKeyboard.OnKeyDown += (key) => { if (OnKeyDown != null) OnKeyDown(key); };
+            screenKeyboard.OnKeyUp += (key) => { if (OnKeyUp != null) OnKeyUp(key); };
 
             inputDevices = new List<IInputSet>{
                 gamepad, 
@@ -94,6 +88,7 @@ namespace OctoAwesome.Client.Components
             {
                 Game.IsMouseVisible = true;
                 screenMouse.Update();
+                screenKeyboard.Update();
                 PointerPosition = screenMouse.PointerPosition;
             }
             else
@@ -135,5 +130,9 @@ namespace OctoAwesome.Client.Components
                 MoveY = Math.Min(1, Math.Max(-1, MoveY));
             }
         }
+
+        public event OnKeyChange OnKeyDown;
+
+        public event OnKeyChange OnKeyUp;
     }
 }
