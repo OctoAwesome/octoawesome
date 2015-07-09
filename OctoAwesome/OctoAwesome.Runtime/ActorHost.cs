@@ -40,6 +40,7 @@ namespace OctoAwesome.Runtime
             #region Inputverarbeitung
 
             Vector3 externalPower = ((Player.ExternalForce * Player.ExternalForce) / (2 * Player.Mass)) * (float)frameTime.ElapsedGameTime.TotalSeconds;
+	    externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X),Math.Sign(Player.ExternalForce.Y),Math.Sign(Player.ExternalForce.Z));
 
             // Input verarbeiten
             Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
@@ -57,7 +58,7 @@ namespace OctoAwesome.Runtime
             Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
             Vector3 powerdirection = new Vector3();
 
-            powerdirection += Player.ExternalForce;
+	    powerdirection += externalPower;
             powerdirection += (Player.POWER * VelocityDirection);
             // if (OnGround && input.JumpTrigger)
             if (lastJump)

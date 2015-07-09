@@ -14,7 +14,7 @@ namespace OctoAwesome
 
         public const float POWER = 600f;
 
-        public const float JUMPPOWER = 800000f;
+        public const float JUMPPOWER = 400000f;
 
         public const float FRICTION = 60f;
 
