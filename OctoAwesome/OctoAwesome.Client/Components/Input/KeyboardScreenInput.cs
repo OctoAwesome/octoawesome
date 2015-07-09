@@ -14,6 +14,7 @@ namespace OctoAwesome.Client.Components.Input
         public Index2 PointerPosition
         {
             get { return Index2.Zero; }
+            set { }
         }
 
         public void Update()

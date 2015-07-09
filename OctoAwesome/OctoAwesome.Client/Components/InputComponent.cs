@@ -15,6 +15,8 @@ namespace OctoAwesome.Client.Components
         private List<IInputSet> inputDevices;
         private List<IScreenInputSet> screenInputDevices;
 
+        private Index2 mousePointer;
+
         private MouseInput mouse;
         private KeyboardInput keyboard;
         private GamePadInput gamepad;
@@ -23,7 +25,12 @@ namespace OctoAwesome.Client.Components
         private KeyboardScreenInput screenKeyboard;
 
         public bool ScreenMode { get; set; }
-        public Index2 PointerPosition { get; private set; }
+        public Index2 PointerPosition
+        {
+            get { return mousePointer; }
+            set { screenMouse.PointerPosition = value; }
+        }
+
         public float MoveX { get; private set; }
         public float MoveY { get; private set; }
         public float HeadX { get; private set; }
@@ -89,7 +96,7 @@ namespace OctoAwesome.Client.Components
                 Game.IsMouseVisible = true;
                 screenMouse.Update();
                 screenKeyboard.Update();
-                PointerPosition = screenMouse.PointerPosition;
+                mousePointer = screenMouse.PointerPosition;
             }
             else
             {

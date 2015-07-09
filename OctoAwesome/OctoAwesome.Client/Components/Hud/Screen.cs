@@ -11,7 +11,7 @@ namespace OctoAwesome.Client.Components.Hud
 
         private List<Control> controls = new List<Control>();
 
-        protected List<Control> Controls
+        public List<Control> Controls
         {
             get
             {

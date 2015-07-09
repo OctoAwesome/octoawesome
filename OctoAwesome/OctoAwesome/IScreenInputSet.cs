@@ -8,7 +8,7 @@ namespace OctoAwesome
 {
     public interface IScreenInputSet
     {
-        Index2 PointerPosition { get; }
+        Index2 PointerPosition { get; set; }
         
         event OnKeyChange OnKeyDown;
 

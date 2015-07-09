@@ -8,12 +8,21 @@ namespace OctoAwesome.Client.Components.Input
 {
     internal class MouseScreenInput : IScreenInputSet
     {
-        public Index2 PointerPosition { get; private set; }
+        private Index2 mousePointer;
+
+        public Index2 PointerPosition
+        {
+            get { return mousePointer; }
+            set
+            {
+                Mouse.SetPosition(value.X, value.Y);
+            }
+        }
 
         public void Update()
         {
             MouseState state = Mouse.GetState();
-            PointerPosition = new Index2(state.X, state.Y);
+            mousePointer = new Index2(state.X, state.Y);
         }
 
         public event OnKeyChange OnKeyDown;

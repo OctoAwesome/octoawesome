@@ -32,12 +32,17 @@ namespace OctoAwesome.Client.Components
 
         void input_OnKeyUp(Keys key)
         {
-            throw new NotImplementedException();
+            if (key == Keys.Escape)
+            {
+                ActiveScreen = null;
+                input.PointerPosition = ScreenSize / 2;
+                input.ScreenMode = false;
+            }
         }
 
         void input_OnKeyDown(Keys key)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         protected override void LoadContent()
@@ -58,6 +63,17 @@ namespace OctoAwesome.Client.Components
             {
                 ActiveScreen = screens["inventory"];
                 input.ScreenMode = true;
+            }
+
+            if (ActiveScreen != null)
+            {
+                foreach (var control in ActiveScreen.Controls)
+                {
+                    control.IsHovered = (input.PointerPosition.X >= control.Position.X && 
+                        input.PointerPosition.X <= control.Position.X + control.Size.X && 
+                        input.PointerPosition.Y >= control.Position.Y && 
+                        input.PointerPosition.Y <= control.Position.Y + control.Size.Y);
+                }
             }
 
             base.Update(gameTime);
