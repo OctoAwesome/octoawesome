@@ -17,7 +17,7 @@ namespace OctoAwesome.Client.Components.Hud
 
         public bool Visible { get; set; }
 
-        public Control(HudComponent hud) : base(hud)
+        public Control(IScreenManager screenManager) : base(screenManager)
         {
             Enabled = true;
             Visible = true;

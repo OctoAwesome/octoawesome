@@ -13,9 +13,9 @@ namespace OctoAwesome.Client.Components.Hud
 
         public Color Color { get; set; }
 
-        public SolidColorBrush(HudComponent hud)
+        public SolidColorBrush(IScreenManager screenManager)
         {
-            pix = hud.Game.Content.Load<Texture2D>("Textures/pix");
+            pix = screenManager.Pix;
         }
 
         public override void Draw(SpriteBatch batch, Rectangle rectangle)

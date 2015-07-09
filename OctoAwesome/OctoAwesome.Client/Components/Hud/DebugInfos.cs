@@ -18,18 +18,15 @@ namespace OctoAwesome.Client.Components.Hud
         private double seconds = 0;
         private double lastfps = 0f;
 
-        private SpriteFont font;
+        public PlayerComponent Player { get; set; }
 
         private Trigger<bool> debugTrigger = new Trigger<bool>();
 
-        public DebugInfos(HudComponent hud) : base(hud)
+        public DebugInfos(IScreenManager screenManager, PlayerComponent player)
+            : base(screenManager)
         {
             framebuffer = new float[buffersize];
-        }
-
-        public override void LoadContent()
-        {
-            font = Hud.Game.Content.Load<SpriteFont>("Hud");
+            Player = player;
         }
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)
@@ -55,35 +52,35 @@ namespace OctoAwesome.Client.Components.Hud
 
             batch.Begin();
 
-            batch.DrawString(font, "Development Version", new Vector2(5, 5), Color.White);
+            batch.DrawString(ScreenManager.NormalText, "Development Version", new Vector2(5, 5), Color.White);
 
-            string pos = "pos: " + Hud.Player.Player.Position.ToString();
-            var size = font.MeasureString(pos);
-            batch.DrawString(font, pos, new Vector2(Size.X - size.X - 5, 5), Color.White);
+            string pos = "pos: " + Player.Player.Position.ToString();
+            var size = ScreenManager.NormalText.MeasureString(pos);
+            batch.DrawString(ScreenManager.NormalText, pos, new Vector2(Size.X - size.X - 5, 5), Color.White);
 
-            float grad = (Hud.Player.Player.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.Player.Angle / MathHelper.TwoPi) * 360;
 
             string rot = "rot: " +
-                (((Hud.Player.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Hud.Player.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
 
-            size = font.MeasureString(rot);
-            batch.DrawString(font, rot, new Vector2(Size.X - size.X - 5, 25), Color.White);
+            size = ScreenManager.NormalText.MeasureString(rot);
+            batch.DrawString(ScreenManager.NormalText, rot, new Vector2(Size.X - size.X - 5, 25), Color.White);
 
             string fps = "fps: " + (1f / lastfps).ToString("0.00");
-            size = font.MeasureString(fps);
-            batch.DrawString(font, fps, new Vector2(Size.X - size.X - 5, 45), Color.White);
+            size = ScreenManager.NormalText.MeasureString(fps);
+            batch.DrawString(ScreenManager.NormalText, fps, new Vector2(Size.X - size.X - 5, 45), Color.White);
 
-            if (Hud.Player.SelectedBox.HasValue)
+            if (Player.SelectedBox.HasValue)
             {
                 string selection = "box: " +
-                    Hud.Player.SelectedBox.Value.ToString() + " on " +
-                    Hud.Player.SelectedSide.ToString() + " (" +
-                    Hud.Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
-                    Hud.Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +
-                    Hud.Player.SelectedEdge.ToString() + " -> " + Hud.Player.SelectedCorner.ToString();
-                size = font.MeasureString(selection);
-                batch.DrawString(font, selection, new Vector2(5, Size.Y - size.Y - 5), Color.White);
+                    Player.SelectedBox.Value.ToString() + " on " +
+                    Player.SelectedSide.ToString() + " (" +
+                    Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
+                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +
+                    Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
+                size = ScreenManager.NormalText.MeasureString(selection);
+                batch.DrawString(ScreenManager.NormalText, selection, new Vector2(5, Size.Y - size.Y - 5), Color.White);
             }
 
             batch.End();

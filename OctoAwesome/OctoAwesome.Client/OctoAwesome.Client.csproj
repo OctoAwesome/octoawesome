@@ -52,6 +52,8 @@
     <Compile Include="Components\Hud\Control.cs" />
     <Compile Include="Components\Hud\DebugInfos.cs" />
     <Compile Include="Components\Hud\InventoryScreen.cs" />
+    <Compile Include="Components\Hud\IScreenManager.cs" />
+    <Compile Include="Components\Hud\LabelControl.cs" />
     <Compile Include="Components\Hud\MiniMap.cs" />
     <Compile Include="Components\Hud\NineTileBrush.cs" />
     <Compile Include="Components\Hud\PanelControl.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="Components\Input\MouseScreenInput.cs" />
     <Compile Include="Components\SceneComponent.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
+    <Compile Include="Components\ScreenManagerComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />

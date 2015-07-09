@@ -9,11 +9,11 @@ namespace OctoAwesome.Client.Components.Hud
 {
     internal abstract class UiElement
     {
-        protected HudComponent Hud { get; private set; }
+        protected IScreenManager ScreenManager { get; private set; }
 
-        public UiElement(HudComponent hud)
+        public UiElement(IScreenManager screenManager)
         {
-            Hud = hud;
+            ScreenManager = screenManager;
         }
 
         public virtual void LoadContent() { }
