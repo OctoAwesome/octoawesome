@@ -9,90 +9,74 @@ namespace OctoAwesome.Client.Components.Hud
 {
     internal class PanelControl : Control
     {
-        public bool Tiles { get; set; }
-
-        private bool dirty = true;
-
-        private Texture2D backgroundTexture;
-
-        private Texture2D[] tileTextures;
-
-        public Texture2D BackgroundTexture
-        {
-            get { return backgroundTexture; }
-            set
-            {
-                backgroundTexture = value;
-                dirty = true;
-            }
-        }
-
-
+        public Brush Background { get; set; }
 
         public PanelControl(HudComponent hud)
             : base(hud)
         {
-            Tiles = true;
         }
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)
         {
-            if (BackgroundTexture == null)
-                return;
+            if (Background != null)
+                Background.Draw(batch, new Rectangle(Position.X, Position.Y, Size.X, Size.Y));
 
-            if (dirty)
-            {
-                dirty = false;
-            }
+            //if (BackgroundTexture == null)
+            //    return;
 
-            batch.Begin(samplerState: SamplerState.LinearWrap);
+            //if (dirty)
+            //{
+            //    dirty = false;
+            //}
 
-            int cut = 33;
+            //batch.Begin(samplerState: SamplerState.LinearWrap);
 
-            batch.Draw(BackgroundTexture,
-                    new Rectangle(Position.X, Position.Y, Size.X, Size.Y),
-                    new Rectangle(cut, cut, cut, cut),
-                    Color.White);
+            //int cut = 33;
 
-            batch.Draw(BackgroundTexture,
-                    new Rectangle(Position.X, Position.Y, Size.X, cut),
-                    new Rectangle(cut, 0, cut, cut),
-                    Color.White);
+            //batch.Draw(BackgroundTexture,
+            //        new Rectangle(Position.X, Position.Y, Size.X, Size.Y),
+            //        new Rectangle(cut, cut, cut, cut),
+            //        Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X, Position.Y + Size.Y - cut, Size.X, cut),
-                new Rectangle(cut, cut + cut, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //        new Rectangle(Position.X, Position.Y, Size.X, cut),
+            //        new Rectangle(cut, 0, cut, cut),
+            //        Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X, Position.Y, cut, Size.Y),
-                new Rectangle(0, cut, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X, Position.Y + Size.Y - cut, Size.X, cut),
+            //    new Rectangle(cut, cut + cut, cut, cut),
+            //    Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X + Size.X - cut, Position.Y, cut, Size.Y),
-                new Rectangle(cut + cut, cut, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X, Position.Y, cut, Size.Y),
+            //    new Rectangle(0, cut, cut, cut),
+            //    Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X, Position.Y, cut, cut),
-                new Rectangle(0, 0, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X + Size.X - cut, Position.Y, cut, Size.Y),
+            //    new Rectangle(cut + cut, cut, cut, cut),
+            //    Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X + Size.X - cut, Position.Y, cut, cut),
-                new Rectangle(cut + cut, 0, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X, Position.Y, cut, cut),
+            //    new Rectangle(0, 0, cut, cut),
+            //    Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X, Position.Y + Size.Y - cut, cut, cut),
-                new Rectangle(0, cut + cut, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X + Size.X - cut, Position.Y, cut, cut),
+            //    new Rectangle(cut + cut, 0, cut, cut),
+            //    Color.White);
 
-            batch.Draw(BackgroundTexture,
-                new Rectangle(Position.X + Size.X - cut, Position.Y + Size.Y - cut, cut, cut),
-                new Rectangle(cut + cut, cut + cut, cut, cut),
-                Color.White);
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X, Position.Y + Size.Y - cut, cut, cut),
+            //    new Rectangle(0, cut + cut, cut, cut),
+            //    Color.White);
+
+            //batch.Draw(BackgroundTexture,
+            //    new Rectangle(Position.X + Size.X - cut, Position.Y + Size.Y - cut, cut, cut),
+            //    new Rectangle(cut + cut, cut + cut, cut, cut),
+            //    Color.White);
 
             //if (Tiles)
             //{
@@ -110,7 +94,7 @@ namespace OctoAwesome.Client.Components.Hud
             //        new Rectangle(0, 0, BackgroundTexture.Width, BackgroundTexture.Height),
             //        Color.White);
             //}
-            batch.End();
+            // batch.End();
         }
     }
 }

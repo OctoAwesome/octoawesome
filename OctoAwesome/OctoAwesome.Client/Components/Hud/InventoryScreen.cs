@@ -26,7 +26,10 @@ namespace OctoAwesome.Client.Components.Hud
 
             Controls.Add(panel = new PanelControl(Hud));
 
-            panel.BackgroundTexture = panelTexture;
+            // panel.Background = new SolidColorBrush(Hud) { Color = Color.Red };
+            panel.Background = new NineTileBrush(panelTexture, 30);
+
+            //panel.BackgroundTexture = panelTexture;
             panel.Position = new Index2(
                 (Hud.GraphicsDevice.Viewport.Width - 600) / 2, 
                 (Hud.GraphicsDevice.Viewport.Height - 400) / 2);
