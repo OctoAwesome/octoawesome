@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Textures\compass.png" />
+    <Content Include="Content\Textures\panel.png" />
     <Content Include="Content\Textures\pix.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />

@@ -117,7 +117,7 @@ https://www.livecoding.tv/video/ger-make-it-suck-less-3/
 - Blöcke IMMER von unten nach oben rendern (Blöcke & Chunks) -> Minimap ohne Tiefenpuffer
 - ViewRange (near- und farplane) optimieren. Range ist zu groß
 - HUD in einem Rutsch malen (mal sehen ob der Spritebatch da was hat)
-- Einsortierung der CunkRenderer in einen Quad/OctTree
+- Einsortierung der ChunkRenderer in einen Quad/OctTree
 
 Anteru @ LiveCoding.tv (23.06.)
 https://www.livecoding.tv/video/ger-make-it-suck-less-2/
@@ -130,6 +130,10 @@ https://www.livecoding.tv/video/ger-make-it-suck-less/
 - Textures als Texture2D-Array - keine Rand-Probleme mehr
 - zentralen IndexBuffer verwenden (wenn nicht sogar vollständig auslassen dank Shader)
 - Tiefenpuffer-Range optimieren
+
+Thomas Caesar @ YT (06.07.)
+===========================
+- Minimap Player-Position eher ein kleines Dreieck
 
 
 Cleanup
