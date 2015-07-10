@@ -26,8 +26,8 @@ namespace OctoAwesome.Client.Components.Hud
 
             Controls.Add(panel = new PanelControl(ScreenManager));
 
-            panel.Background = new SolidColorBrush(ScreenManager) { Color = new Color(211, 191, 143) };
-            // panel.Background = new NineTileBrush(panelTexture, 30);
+            // panel.Background = new SolidColorBrush(ScreenManager) { Color = new Color(211, 191, 143) };
+            panel.Background = NineTileBrush.FromFullTexture(panelTexture, 30, 30);
             panel.Position = new Index2(
                 (ScreenManager.ScreenSize.X - 600) / 2,
                 (ScreenManager.ScreenSize.Y - 400) / 2);
