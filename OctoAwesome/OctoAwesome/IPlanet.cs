@@ -26,7 +26,7 @@ namespace OctoAwesome
         int Seed { get; }
 
         /// <summary>
-        /// Die Größe des Planeten in Blocks.
+        /// Die Größe des Planeten in Chunks.
         /// </summary>
         Index3 Size { get; }
 

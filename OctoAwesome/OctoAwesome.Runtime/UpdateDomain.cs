@@ -25,11 +25,9 @@ namespace OctoAwesome.Runtime
         {
             this.watch = watch;
             ActorHosts = new List<ActorHost>();
-            //var host = new ActorHost(new Player());
-            //ActorHosts.Add(host);
 
             Running = true;
-            State = WorldState.Loading;
+            State = WorldState.Running;
 
             thread = new Thread(updateLoop);
             thread.IsBackground = true;
@@ -45,27 +43,16 @@ namespace OctoAwesome.Runtime
             {
                 GameTime gameTime = new GameTime(
                     watch.Elapsed, frameTime); 
-                    // watch.Elapsed - lastCall);
                 lastCall = watch.Elapsed;
 
                 // TODO: Chunk Updates
-
-                // Console.WriteLine(watch.Elapsed - lastCall);
 
                 foreach (var actorHost in ActorHosts)
                     actorHost.Update(gameTime);
 
                 if (watch.Elapsed - lastCall < frameTime)
-                {
                     Thread.Sleep(frameTime - (watch.Elapsed - lastCall));
-                }
             }
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            //foreach (var actorHost in ActorHosts)
-            //    actorHost.Update(gameTime);
         }
     }
 }

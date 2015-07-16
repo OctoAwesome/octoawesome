@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
-    enum WorldState
+    public enum WorldState
     {
         Loading,
         Running,

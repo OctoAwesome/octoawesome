@@ -24,6 +24,8 @@ namespace OctoAwesome.Runtime
 
         public IBlockDefinition ActiveTool { get; set; }
 
+        public WorldState State { get; private set; }
+
         public ActorHost(Player player)
         {
             Player = player;
@@ -31,6 +33,29 @@ namespace OctoAwesome.Runtime
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
             ActiveTool = null;
+            State = WorldState.Loading;
+        }
+
+        public void Initialize()
+        {
+            State = WorldState.Loading;
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    for (int z = -1; z <= 1; z++)
+                    {
+                        if (z < 0 || z >= planet.Size.Z)
+                            continue;
+
+                        var chunkPosition = Player.Position.ChunkIndex + new Index3(x, y, z);
+                        chunkPosition.NormalizeXY(planet.Size);
+                        localChunkCache.Get(chunkPosition);
+                    }
+                }
+            }
+
+            State = WorldState.Running;
         }
 
         public void Update(GameTime frameTime)
@@ -131,7 +156,7 @@ namespace OctoAwesome.Runtime
                         for (int x = minx; x <= maxx; x++)
                         {
                             Index3 pos = new Index3(x, y, z);
-                            IBlock block = GetBlock(pos + 
+                            IBlock block = GetBlock(pos +
                                 Player.Position.GlobalBlockIndex);
                             if (block == null)
                                 continue;
@@ -205,7 +230,7 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    ResourceManager.Instance.SetBlock(planet.Id, 
+                    ResourceManager.Instance.SetBlock(planet.Id,
                         lastApply.Value + add, ActiveTool.GetInstance(lastOrientation));
                     lastApply = null;
                 }

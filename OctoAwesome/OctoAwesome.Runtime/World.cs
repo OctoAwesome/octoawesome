@@ -15,16 +15,18 @@ namespace OctoAwesome.Runtime
 
         private UpdateDomain[] updateDomains;
 
+        public WorldState State { get; private set; }
+
         public World()
         {
             watch.Start();
             updateDomains = new UpdateDomain[1];
             updateDomains[0] = new UpdateDomain(watch);
+            State = WorldState.Running;
         }
 
         public void Update(GameTime frameTime)
         {
-            updateDomains[0].Update(frameTime);
         }
 
         public void Save()
