@@ -64,6 +64,7 @@ namespace OctoAwesome.Client.Components
 
             screenKeyboard.OnKeyDown += (key) => { if (OnKeyDown != null) OnKeyDown(key); };
             screenKeyboard.OnKeyUp += (key) => { if (OnKeyUp != null) OnKeyUp(key); };
+            screenMouse.OnLeftMouseUp += (position) => { if (OnLeftMouseUp != null) OnLeftMouseUp(position); };
 
             inputDevices = new List<IInputSet>{
                 gamepad, 
@@ -141,5 +142,8 @@ namespace OctoAwesome.Client.Components
         public event OnKeyChange OnKeyDown;
 
         public event OnKeyChange OnKeyUp;
+
+
+        public event OnMouseKeyChange OnLeftMouseUp;
     }
 }

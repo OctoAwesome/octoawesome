@@ -34,15 +34,25 @@ namespace OctoAwesome.Client.Components
         {
             if (key == Keys.Escape)
             {
-                ActiveScreen = null;
-                input.PointerPosition = ScreenSize / 2;
-                input.ScreenMode = false;
+                Close();
             }
         }
 
         void input_OnKeyDown(Keys key)
         {
-            // throw new NotImplementedException();
+            if (ActiveScreen != null)
+            {
+                foreach (var control in ActiveScreen.Controls)
+                {
+                    if (input.PointerPosition.X >= control.Position.X &&
+                        input.PointerPosition.X <= control.Position.X + control.Size.X &&
+                        input.PointerPosition.Y >= control.Position.Y &&
+                        input.PointerPosition.Y <= control.Position.Y + control.Size.Y)
+                    {
+                        control.FireMouseUp();
+                    }
+                }
+            }
         }
 
         protected override void LoadContent()
@@ -110,6 +120,14 @@ namespace OctoAwesome.Client.Components
         public GraphicsDevice GraphicsDevice
         {
             get { return base.GraphicsDevice; }
+        }
+
+
+        public void Close()
+        {
+            ActiveScreen = null;
+            input.PointerPosition = ScreenSize / 2;
+            input.ScreenMode = false;
         }
     }
 }

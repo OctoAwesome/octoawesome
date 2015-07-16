@@ -25,6 +25,18 @@ namespace OctoAwesome.Client.Components.Hud
             Visible = true;
         }
 
-        
+        internal void FireMouseUp()
+        {
+            if (MouseUp != null)
+                MouseUp();
+
+            OnMouseUp();
+        }
+
+        protected virtual void OnMouseUp() { }
+
+        public event MouseEventDelegate MouseUp;
     }
+
+    public delegate void MouseEventDelegate();
 }
