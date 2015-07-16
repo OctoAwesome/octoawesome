@@ -15,21 +15,10 @@ namespace OctoAwesome.Runtime
             if (mapGenerators == null)
             {
                 mapGenerators = new List<IMapGenerator>();
-
-                var a = Assembly.LoadFrom(".\\OctoAwesome.Basics.dll");
-
-                foreach (var t in a.GetTypes())
-                {
-                    if (!t.IsPublic) continue;
-
-                    if (typeof(IMapGenerator).IsAssignableFrom(t))
-                    {
-                        mapGenerators.Add((IMapGenerator)Activator.CreateInstance(t));
-                    }
-                }
+                mapGenerators.AddRange(ExtensionManager.GetInstances<IMapGenerator>());
             }
 
-            return mapGenerators; // new[] { new ComplexPlanetGenerator() };
+            return mapGenerators;
         }
     }
 }
