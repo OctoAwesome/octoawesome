@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using OctoAwesome.Basics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
