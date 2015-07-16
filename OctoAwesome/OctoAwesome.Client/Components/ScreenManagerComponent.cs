@@ -26,8 +26,26 @@ namespace OctoAwesome.Client.Components
 
             this.input.OnKeyDown += input_OnKeyDown;
             this.input.OnKeyUp += input_OnKeyUp;
+            this.input.OnLeftMouseUp += input_OnLeftMouseUp;
 
             screens.Add("inventory", new InventoryScreen(this));
+        }
+
+        void input_OnLeftMouseUp(Index2 position)
+        {
+            if (ActiveScreen != null)
+            {
+                foreach (var control in ActiveScreen.Controls)
+                {
+                    if (position.X >= control.Position.X &&
+                        position.X <= control.Position.X + control.Size.X &&
+                        position.Y >= control.Position.Y &&
+                        position.Y <= control.Position.Y + control.Size.Y)
+                    {
+                        control.FireMouseUp();
+                    }
+                }
+            }
         }
 
         void input_OnKeyUp(Keys key)
@@ -40,19 +58,7 @@ namespace OctoAwesome.Client.Components
 
         void input_OnKeyDown(Keys key)
         {
-            if (ActiveScreen != null)
-            {
-                foreach (var control in ActiveScreen.Controls)
-                {
-                    if (input.PointerPosition.X >= control.Position.X &&
-                        input.PointerPosition.X <= control.Position.X + control.Size.X &&
-                        input.PointerPosition.Y >= control.Position.Y &&
-                        input.PointerPosition.Y <= control.Position.Y + control.Size.Y)
-                    {
-                        control.FireMouseUp();
-                    }
-                }
-            }
+            
         }
 
         protected override void LoadContent()

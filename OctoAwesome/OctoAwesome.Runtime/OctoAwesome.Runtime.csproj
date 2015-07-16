@@ -58,6 +58,7 @@
     <Compile Include="ResourceManager.cs" />
     <Compile Include="UpdateDomain.cs" />
     <Compile Include="World.cs" />
+    <Compile Include="WorldState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj">
