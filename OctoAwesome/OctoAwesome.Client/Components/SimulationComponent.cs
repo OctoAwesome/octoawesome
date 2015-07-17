@@ -58,7 +58,7 @@ namespace OctoAwesome.Client.Components
             string filename = "player.info";
 
             if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
-                return null;
+                return new Player();
 
             using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
             {
