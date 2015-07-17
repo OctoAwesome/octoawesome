@@ -9,6 +9,8 @@ namespace OctoAwesome
     public interface IScreenInputSet
     {
         Index2 PointerPosition { get; set; }
+
+        event OnMouseKeyChange OnLeftMouseUp;
         
         event OnKeyChange OnKeyDown;
 
@@ -16,4 +18,6 @@ namespace OctoAwesome
     }
 
     public delegate void OnKeyChange(Keys key);
+
+    public delegate void OnMouseKeyChange(Index2 position);
 }

@@ -19,5 +19,7 @@ namespace OctoAwesome.Client.Components.Hud
         ContentManager Content { get; }
 
         GraphicsDevice GraphicsDevice { get; }
+
+        void Close();
     }
 }

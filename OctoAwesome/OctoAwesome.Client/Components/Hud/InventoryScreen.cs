@@ -55,11 +55,17 @@ namespace OctoAwesome.Client.Components.Hud
                     ((ScreenManager.ScreenSize.Y - 400) / 2) + 170),
                 Size = new Index2(200, 50),
             };
+            closeButton.MouseUp += closeButton_MouseUp;
 
             Controls.Add(closeButton);
 
             foreach (var control in Controls)
                 control.LoadContent();
+        }
+
+        void closeButton_MouseUp()
+        {
+            ScreenManager.Close();
         }
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)

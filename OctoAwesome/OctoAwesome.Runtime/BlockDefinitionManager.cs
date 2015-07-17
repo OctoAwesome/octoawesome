@@ -1,7 +1,7 @@
-﻿using OctoAwesome.Basics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace OctoAwesome.Runtime
@@ -15,12 +15,7 @@ namespace OctoAwesome.Runtime
             if (definitions == null)
             {
                 definitions = new List<IBlockDefinition>();
-                definitions.Add(new GrassBlockDefinition());
-                definitions.Add(new GroundBlockDefinition());
-                definitions.Add(new SandBlockDefinition());
-                definitions.Add(new StoneBlockDefinition());
-                definitions.Add(new WaterBlockDefinition());
-                definitions.Add(new WoodBlockDefinition());
+                definitions.AddRange(ExtensionManager.GetInstances<IBlockDefinition>());
             }
 
             return definitions;

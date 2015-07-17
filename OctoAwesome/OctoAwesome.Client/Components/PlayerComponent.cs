@@ -13,7 +13,7 @@ namespace OctoAwesome.Client.Components
 
         private SimulationComponent simulation;
 
-        public ActorHost Player { get { return simulation.World.Player; } }
+        public ActorHost Player { get { return simulation.Player; } }
 
         public Index3? SelectedBox { get; set; }
 

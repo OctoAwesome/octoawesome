@@ -107,5 +107,10 @@ namespace OctoAwesome.Client.Components
         {
             get { return Game.Content; }
         }
+
+
+        public void Close()
+        {
+        }
     }
 }

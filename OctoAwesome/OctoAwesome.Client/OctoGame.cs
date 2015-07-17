@@ -94,6 +94,8 @@ namespace OctoAwesome.Client
 
         protected override void OnExiting(object sender, EventArgs args)
         {
+            simulation.Save();
+
             simulation.World.Save();
             base.OnExiting(sender, args);
         }

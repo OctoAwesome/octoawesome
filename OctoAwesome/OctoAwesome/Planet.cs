@@ -37,7 +37,7 @@ namespace OctoAwesome
         /// <summary>
         /// Initialisierung des Planeten
         /// </summary>
-        /// <param name="size">Größe des Planeten in Blocks</param>
+        /// <param name="size">Größe des Planeten in Chunks</param>
         /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
         public Planet(int id, int universe, Index3 size, int seed)
