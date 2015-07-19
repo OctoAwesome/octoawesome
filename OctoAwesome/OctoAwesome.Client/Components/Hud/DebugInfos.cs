@@ -54,15 +54,15 @@ namespace OctoAwesome.Client.Components.Hud
 
             batch.DrawString(ScreenManager.NormalText, "Development Version", new Vector2(5, 5), Color.White);
 
-            string pos = "pos: " + Player.Player.Position.ToString();
+            string pos = "pos: " + Player.ActorHost.Position.ToString();
             var size = ScreenManager.NormalText.MeasureString(pos);
             batch.DrawString(ScreenManager.NormalText, pos, new Vector2(Size.X - size.X - 5, 5), Color.White);
 
-            float grad = (Player.Player.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.ActorHost.Angle / MathHelper.TwoPi) * 360;
 
             string rot = "rot: " +
-                (((Player.Player.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.ActorHost.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.ActorHost.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
 
             size = ScreenManager.NormalText.MeasureString(rot);
             batch.DrawString(ScreenManager.NormalText, rot, new Vector2(Size.X - size.X - 5, 25), Color.White);

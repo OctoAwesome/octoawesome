@@ -27,39 +27,39 @@ namespace OctoAwesome.Client.Components
         public override void Update(GameTime gameTime)
         {
             CameraPosition = new Vector3(
-                player.Player.Position.LocalPosition.X,
-                player.Player.Position.LocalPosition.Y,
-                player.Player.Position.LocalPosition.Z + 3.2f);
+                player.ActorHost.Position.LocalPosition.X,
+                player.ActorHost.Position.LocalPosition.Y,
+                player.ActorHost.Position.LocalPosition.Z + 3.2f);
             CameraUpVector = new Vector3(0, 0, 1f);
 
-            float height = (float)Math.Sin(player.Player.Tilt);
-            float distance = (float)Math.Cos(player.Player.Tilt);
+            float height = (float)Math.Sin(player.ActorHost.Tilt);
+            float distance = (float)Math.Cos(player.ActorHost.Tilt);
 
-            float lookX = (float)Math.Cos(player.Player.Angle) * distance;
-            float lookY = -(float)Math.Sin(player.Player.Angle) * distance;
+            float lookX = (float)Math.Cos(player.ActorHost.Angle) * distance;
+            float lookY = -(float)Math.Sin(player.ActorHost.Angle) * distance;
 
-            float strafeX = (float)Math.Cos(player.Player.Angle + MathHelper.PiOver2);
-            float strafeY = -(float)Math.Sin(player.Player.Angle + MathHelper.PiOver2);
+            float strafeX = (float)Math.Cos(player.ActorHost.Angle + MathHelper.PiOver2);
+            float strafeY = -(float)Math.Sin(player.ActorHost.Angle + MathHelper.PiOver2);
 
             CameraUpVector = Vector3.Cross(new Vector3(strafeX, strafeY, 0), new Vector3(lookX, lookY, height));
 
             View = Matrix.CreateLookAt(
                 CameraPosition,
                 new Vector3(
-                    player.Player.Position.LocalPosition.X + lookX,
-                    player.Player.Position.LocalPosition.Y + lookY,
-                    player.Player.Position.LocalPosition.Z + 3.2f + height),
+                    player.ActorHost.Position.LocalPosition.X + lookX,
+                    player.ActorHost.Position.LocalPosition.Y + lookY,
+                    player.ActorHost.Position.LocalPosition.Z + 3.2f + height),
                 CameraUpVector);
 
             MinimapView = Matrix.CreateLookAt(
                 new Vector3(CameraPosition.X, CameraPosition.Y, 100),
                 new Vector3(
-                    player.Player.Position.LocalPosition.X,
-                    player.Player.Position.LocalPosition.Y,
+                    player.ActorHost.Position.LocalPosition.X,
+                    player.ActorHost.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(player.Player.Angle), 
-                    (float)Math.Sin(-player.Player.Angle), 0f));
+                    (float)Math.Cos(player.ActorHost.Angle), 
+                    (float)Math.Sin(-player.ActorHost.Angle), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;

@@ -25,7 +25,7 @@ namespace OctoAwesome.Client.Components.Hud
 
         public override void Draw(SpriteBatch batch, GameTime gameTime)
         {
-            float compassValue = Player.Player.Angle / (float)(2 * Math.PI);
+            float compassValue = Player.ActorHost.Angle / (float)(2 * Math.PI);
             compassValue %= 1f;
             if (compassValue < 0)
                 compassValue += 1f;

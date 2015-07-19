@@ -19,7 +19,7 @@ namespace OctoAwesome.Client.Components
 
         private Screen ActiveScreen = null;
 
-        public ScreenManagerComponent(Game game, InputComponent input)
+        public ScreenManagerComponent(Game game, InputComponent input, PlayerComponent player)
             : base(game)
         {
             this.input = input;
@@ -28,7 +28,7 @@ namespace OctoAwesome.Client.Components
             this.input.OnKeyUp += input_OnKeyUp;
             this.input.OnLeftMouseUp += input_OnLeftMouseUp;
 
-            screens.Add("inventory", new InventoryScreen(this));
+            screens.Add("inventory", new InventoryScreen(this, player));
         }
 
         void input_OnLeftMouseUp(Index2 position)

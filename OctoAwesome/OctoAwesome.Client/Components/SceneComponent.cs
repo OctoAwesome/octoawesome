@@ -56,7 +56,7 @@ namespace OctoAwesome.Client.Components
 
         private IChunk loadChunk(Index3 index)
         {
-            return ResourceManager.Instance.GetChunk(player.Player.Position.Planet, index);
+            return ResourceManager.Instance.GetChunk(player.ActorHost.Position.Planet, index);
         }
 
         private IBlock GetBlock(int planetId, Index3 index)
@@ -164,8 +164,8 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
-            Index3 centerblock = player.Player.Position.GlobalBlockIndex;
-            Index3 renderOffset = player.Player.Position.ChunkIndex * Chunk.CHUNKSIZE;
+            Index3 centerblock = player.ActorHost.Position.GlobalBlockIndex;
+            Index3 renderOffset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
             Index3? selected = null;
             Axis? selectedAxis = null;
@@ -179,7 +179,7 @@ namespace OctoAwesome.Client.Components
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        IBlock block = GetBlock(player.Player.Position.Planet, pos);
+                        IBlock block = GetBlock(player.ActorHost.Position.Planet, pos);
                         if (block == null)
                             continue;
 
@@ -261,7 +261,7 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
-            Index3 chunkOffset = player.Player.Position.ChunkIndex;
+            Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Microsoft.Xna.Framework.Color background =
                 new Microsoft.Xna.Framework.Color(181, 224, 255);
 
@@ -326,7 +326,7 @@ namespace OctoAwesome.Client.Components
 
             if (player.SelectedBox.HasValue)
             {
-                Index3 offset = player.Player.Position.ChunkIndex * Chunk.CHUNKSIZE;
+                Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
                 Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
                 Index3 relativePosition = new Index3(
                     Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBox.Value.X, planetSize.X),
@@ -353,8 +353,8 @@ namespace OctoAwesome.Client.Components
 
         private bool FillChunkRenderer()
         {
-            Index3 destinationChunk = player.Player.Position.ChunkIndex;
-            IPlanet planet = ResourceManager.Instance.GetPlanet(player.Player.Position.Planet);
+            Index3 destinationChunk = player.ActorHost.Position.ChunkIndex;
+            IPlanet planet = ResourceManager.Instance.GetPlanet(player.ActorHost.Position.Planet);
             destinationChunk.Z = Math.Max(VIEWHEIGHT, Math.Min(planet.Size.Z - VIEWHEIGHT, destinationChunk.Z));
 
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
@@ -397,7 +397,7 @@ namespace OctoAwesome.Client.Components
                     chunkIndex.NormalizeXY(planet.Size);
 
                     PlanetIndex3 chunkPosition = new PlanetIndex3(
-                        player.Player.Position.Planet, chunkIndex);
+                        player.ActorHost.Position.Planet, chunkIndex);
 
                     if (!activeChunkRenderer.Any(c => c.ChunkPosition == chunkPosition))
                     {

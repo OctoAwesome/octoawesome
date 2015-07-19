@@ -53,9 +53,9 @@ namespace OctoAwesome.Client.Components.Hud
                 foreach (var definition in BlockDefinitionManager.GetBlockDefinitions())
                 {
                     batch.Draw(ScreenManager.Pix, new Rectangle(offset + (index * 42) - 2 + Position.X, Size.Y - 60 - 2 + Position.Y, 36, 36),
-                        Player.Player.ActiveTool == definition ? Color.White : new Color(Color.White, 0.3f));
+                        Player.ActorHost.ActiveTool == definition ? Color.White : new Color(Color.White, 0.3f));
                     batch.Draw(toolTextures[index], new Rectangle(offset + (index * 42) + Position.X, Size.Y - 60 + Position.Y, 32, 32),
-                        Player.Player.ActiveTool == definition ? Color.White : new Color(Color.White, 0.3f));
+                        Player.ActorHost.ActiveTool == definition ? Color.White : new Color(Color.White, 0.3f));
 
                     index++;
                 }

@@ -13,7 +13,7 @@ namespace OctoAwesome.Client.Components
 
         private SimulationComponent simulation;
 
-        public ActorHost Player { get { return simulation.Player; } }
+        public ActorHost ActorHost { get { return simulation.Player; } }
 
         public Index3? SelectedBox { get; set; }
 
@@ -39,23 +39,23 @@ namespace OctoAwesome.Client.Components
             base.Initialize();
             Tools = BlockDefinitionManager.GetBlockDefinitions().ToArray();
             if (Tools != null && Tools.Length > 0)
-                Player.ActiveTool = Tools[0];
+                ActorHost.ActiveTool = Tools[0];
         }
 
         public override void Update(GameTime gameTime)
         {
-            Player.Head = new Vector2(input.HeadX, input.HeadY);
-            Player.Move = new Vector2(input.MoveX, input.MoveY);
+            ActorHost.Head = new Vector2(input.HeadX, input.HeadY);
+            ActorHost.Move = new Vector2(input.MoveX, input.MoveY);
 
             if (input.JumpTrigger)
-                Player.Jump();
+                ActorHost.Jump();
             if (input.InteractTrigger && SelectedBox.HasValue)
             {
-                Player.Interact(SelectedBox.Value);
+                ActorHost.Interact(SelectedBox.Value);
             }
             if (input.ApplyTrigger && SelectedBox.HasValue)
             {
-                Player.Apply(SelectedBox.Value, SelectedSide);
+                ActorHost.Apply(SelectedBox.Value, SelectedSide);
             }
 
             if (Tools != null && input.SlotTrigger != null)
@@ -63,17 +63,17 @@ namespace OctoAwesome.Client.Components
                 for (int i = 0; i < Math.Min(Tools.Length, input.SlotTrigger.Length); i++)
                 {
                     if (input.SlotTrigger[i])
-                        Player.ActiveTool = Tools[i];
+                        ActorHost.ActiveTool = Tools[i];
                 }
             }
 
             // Index des aktiven Werkzeugs ermitteln
             int activeTool = -1;
-            if (Tools != null && Player.ActiveTool != null)
+            if (Tools != null && ActorHost.ActiveTool != null)
             {
                 for (int i = 0; i < Tools.Length; i++)
                 {
-                    if (Tools[i] == Player.ActiveTool)
+                    if (Tools[i] == ActorHost.ActiveTool)
                     {
                         activeTool = i;
                         break;
@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Components
                     activeTool++;
 
                 activeTool = (activeTool + Tools.Length) % Tools.Length;
-                Player.ActiveTool = Tools[activeTool];
+                ActorHost.ActiveTool = Tools[activeTool];
             }
 
         }

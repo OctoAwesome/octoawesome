@@ -21,7 +21,7 @@ namespace OctoAwesome.Client
         CameraComponent camera;
         InputComponent input;
         SceneComponent scene;
-        PlayerComponent player;
+        PlayerComponent playerComponent;
         HudComponent hud;
         ScreenManagerComponent screenManager;
         SimulationComponent simulation;
@@ -67,26 +67,26 @@ namespace OctoAwesome.Client
             simulation.UpdateOrder = 3;
             Components.Add(simulation);
 
-            player = new PlayerComponent(this, input, simulation);
-            player.UpdateOrder = 2;
-            Components.Add(player);
+            playerComponent = new PlayerComponent(this, input, simulation);
+            playerComponent.UpdateOrder = 2;
+            Components.Add(playerComponent);
 
 
-            camera = new CameraComponent(this, player);
+            camera = new CameraComponent(this, playerComponent);
             camera.UpdateOrder = 4;
             Components.Add(camera);
 
-            scene = new SceneComponent(this, player, camera);
+            scene = new SceneComponent(this, playerComponent, camera);
             scene.UpdateOrder = 5;
             scene.DrawOrder = 1;
             Components.Add(scene);
 
-            hud = new HudComponent(this, player, scene, input);
+            hud = new HudComponent(this, playerComponent, scene, input);
             hud.UpdateOrder = 6;
             hud.DrawOrder = 2;
             Components.Add(hud);
 
-            screenManager = new ScreenManagerComponent(this, input);
+            screenManager = new ScreenManagerComponent(this, input, playerComponent);
             screenManager.UpdateOrder = 7;
             screenManager.DrawOrder = 3;
             Components.Add(screenManager);

@@ -207,11 +207,13 @@ namespace OctoAwesome.Runtime
 
             #endregion
 
-            #region Block Interaktion
+            #region Block Interaction
 
             if (lastInteract.HasValue)
             {
+                IBlock lastBlock = ResourceManager.Instance.GetBlock(planet.Id, lastInteract.Value);
                 ResourceManager.Instance.SetBlock(planet.Id, lastInteract.Value, null);
+                Player.Inventory.Add(lastBlock);
                 lastInteract = null;
             }
 
