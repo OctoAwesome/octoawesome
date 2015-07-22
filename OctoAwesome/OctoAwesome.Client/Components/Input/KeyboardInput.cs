@@ -85,7 +85,7 @@ namespace OctoAwesome.Client.Components.Input
             ApplyTrigger.Value = keyboardState.IsKeyDown(Keys.Q);
             InventoryTrigger.Value = keyboardState.IsKeyDown(Keys.I) || keyboardState.IsKeyDown(Keys.Tab);
             JumpTrigger.Value = keyboardState.IsKeyDown(Keys.Space);
-            SlotTrigger[0].Value = keyboardState.IsKeyDown(Keys.NumPad1);
+            SlotTrigger[0].Value = keyboardState.IsKeyDown(Keys.D1);
             SlotTrigger[1].Value = keyboardState.IsKeyDown(Keys.D2);
             SlotTrigger[2].Value = keyboardState.IsKeyDown(Keys.D3);
             SlotTrigger[3].Value = keyboardState.IsKeyDown(Keys.D4);
