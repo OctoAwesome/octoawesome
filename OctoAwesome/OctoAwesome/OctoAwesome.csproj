@@ -65,7 +65,9 @@
     <Compile Include="IMapGenerator.cs" />
     <Compile Include="Index2.cs" />
     <Compile Include="Index3.cs" />
+    <Compile Include="InventorySlot.cs" />
     <Compile Include="IPlanet.cs" />
+    <Compile Include="IResource.cs" />
     <Compile Include="IScreenInputSet.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />

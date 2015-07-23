@@ -64,7 +64,7 @@ namespace OctoAwesome.Runtime
             #region Inputverarbeitung
 
             Vector3 externalPower = ((Player.ExternalForce * Player.ExternalForce) / (2 * Player.Mass)) * (float)frameTime.ElapsedGameTime.TotalSeconds;
-	    externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X),Math.Sign(Player.ExternalForce.Y),Math.Sign(Player.ExternalForce.Z));
+            externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X), Math.Sign(Player.ExternalForce.Y), Math.Sign(Player.ExternalForce.Z));
 
             // Input verarbeiten
             Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
@@ -82,7 +82,7 @@ namespace OctoAwesome.Runtime
             Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
             Vector3 powerdirection = new Vector3();
 
-	    powerdirection += externalPower;
+            powerdirection += externalPower;
             powerdirection += (Player.POWER * VelocityDirection);
             // if (OnGround && input.JumpTrigger)
             if (lastJump)
@@ -213,7 +213,21 @@ namespace OctoAwesome.Runtime
             {
                 IBlock lastBlock = ResourceManager.Instance.GetBlock(planet.Id, lastInteract.Value);
                 ResourceManager.Instance.SetBlock(planet.Id, lastInteract.Value, null);
-                Player.Inventory.Add(lastBlock);
+
+                if (lastBlock != null)
+                {
+                    var slot = Player.Inventory.SingleOrDefault(s => s.ItemType == lastBlock.GetType());
+                    if (slot == null)
+                    {
+                        slot = new InventorySlot()
+                        {
+                            ItemType = lastBlock.GetType(),
+                            Amount = 0
+                        };
+                        Player.Inventory.Add(slot);
+                    }
+                    slot.Amount++;
+                }
                 lastInteract = null;
             }
 
