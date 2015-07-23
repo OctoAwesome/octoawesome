@@ -21,7 +21,7 @@ namespace OctoAwesome.Runtime
 
         public Player Player { get; private set; }
 
-        public IBlockDefinition ActiveTool { get; set; }
+        public InventorySlot ActiveTool { get; set; }
 
         public WorldState State { get; private set; }
 
@@ -219,8 +219,12 @@ namespace OctoAwesome.Runtime
                     var slot = Player.Inventory.SingleOrDefault(s => s.ItemType == lastBlock.GetType());
                     if (slot == null)
                     {
+                        var definition = BlockDefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetBlockType() == lastBlock.GetType());
+
                         slot = new InventorySlot()
                         {
+                            Name = definition.Name,
+                            Icon = definition.Icon,
                             ItemType = lastBlock.GetType(),
                             Amount = 0
                         };
@@ -246,8 +250,8 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    ResourceManager.Instance.SetBlock(planet.Id,
-                        lastApply.Value + add, ActiveTool.GetInstance(lastOrientation));
+                    //ResourceManager.Instance.SetBlock(planet.Id,
+                    //    lastApply.Value + add, ActiveTool.GetInstance(lastOrientation));
                     lastApply = null;
                 }
             }

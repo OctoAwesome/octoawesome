@@ -14,6 +14,11 @@ namespace OctoAwesome.Basics
             get { return "Wood"; }
         }
 
+        public Bitmap Icon
+        {
+            get { return Resources.wood_bottom; }
+        }
+
         public IEnumerable<Bitmap> Textures
         {
             get { return new[] { Resources.wood_bottom, Resources.wood_side }; }
