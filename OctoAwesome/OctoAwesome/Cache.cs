@@ -12,15 +12,22 @@ namespace OctoAwesome
     {
         private int size;
 
-        private Dictionary<I, CacheItem> _cache;
+        private readonly Dictionary<I, CacheItem> _cache;
 
-        private Stopwatch watch = new Stopwatch();
+        private readonly Stopwatch watch = new Stopwatch();
 
         private Func<I, V> loadDelegate;
 
         private Action<I, V> saveDelegate;
 
         private ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
+
+        private readonly List<V> _values;
+        
+        /// <summary>
+        /// Liste aller gecacheten Werte
+        /// </summary>
+        public IList<V> Values { get { return _values; } } 
 
         public Cache(int size, Func<I, V> loadDelegate, Action<I, V> saveDelegate)
         {
@@ -34,6 +41,7 @@ namespace OctoAwesome
             this.loadDelegate = loadDelegate;
             this.saveDelegate = saveDelegate;
             _cache = new Dictionary<I, CacheItem>(size + 1);
+            _values = new List<V>();
             watch.Start();
         }
 
@@ -94,6 +102,7 @@ namespace OctoAwesome
             if (!_cache.ContainsKey(index))
             {
                 _cache.Add(index, item);
+                _values.Add(value);
             }
 
             if (_cache.Count > size)
@@ -102,8 +111,13 @@ namespace OctoAwesome
                 _cache.Remove(toRemove.Index);
             }
 
-            if (toRemove != null && saveDelegate != null)
-                saveDelegate(toRemove.Index, toRemove.Value);
+            if (toRemove != null)
+            {
+                _values.Remove(toRemove.Value);
+
+                if(saveDelegate != null)
+                    saveDelegate(toRemove.Index, toRemove.Value);
+            }
         }
 
         public void Flush()
