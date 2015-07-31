@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace OctoAwesome
 {
@@ -29,6 +30,7 @@ namespace OctoAwesome
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
 
         protected IBlock[] blocks;
+        private IList<int> _updateableBlockIndices;
 
         /// <summary>
         /// Chunk Index innerhalb des Planeten.
@@ -46,6 +48,8 @@ namespace OctoAwesome
         public Chunk(Index3 pos, int planet)
         {
             blocks = new IBlock[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            _updateableBlockIndices = new List<int>();
+
             Index = pos;
             Planet = planet;
             ChangeCounter = 0;
@@ -102,7 +106,16 @@ namespace OctoAwesome
                 z < 0 || z >= Chunk.CHUNKSIZE_Z)
                 return;
 
-            blocks[GetFlatIndex(x, y, z)] = block;
+            var flatIndex = GetFlatIndex(x, y, z);
+
+            if (_updateableBlockIndices.Contains(flatIndex))
+                _updateableBlockIndices.Remove(flatIndex);
+
+            blocks[flatIndex] = block;
+
+            if(block is IUpdateable)
+                _updateableBlockIndices.Add(flatIndex);
+
             ChangeCounter++;
         }
 
@@ -129,6 +142,20 @@ namespace OctoAwesome
         protected int GetFlatIndex(Index3 index)
         {
             return GetFlatIndex(index.X, index.Y, index.Z);
+        }
+
+        /// <summary>
+        /// Reicht das Update an alle Blöcke weiter, welche geupdatet werden sollen
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime)
+        {
+            foreach (var index in _updateableBlockIndices)
+            {
+                var block = blocks[index] as IUpdateable;
+                if(block != null)
+                    block.Update(gameTime);
+            }
         }
 
         /// <summary>

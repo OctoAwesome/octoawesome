@@ -17,6 +17,8 @@ namespace OctoAwesome.Runtime
 
         public List<ActorHost> ActorHosts { get; private set; }
 
+        public IList<IChunk> ActiveChunks { get; set; } 
+
         public bool Running { get; set; }
 
         public WorldState State { get; private set; }
@@ -25,6 +27,7 @@ namespace OctoAwesome.Runtime
         {
             this.watch = watch;
             ActorHosts = new List<ActorHost>();
+            ActiveChunks = new List<IChunk>();
 
             Running = true;
             State = WorldState.Running;
@@ -45,7 +48,8 @@ namespace OctoAwesome.Runtime
                     watch.Elapsed, frameTime); 
                 lastCall = watch.Elapsed;
 
-                // TODO: Chunk Updates
+                foreach (var activeChunk in ActiveChunks)
+                    activeChunk.Update(gameTime);
 
                 foreach (var actorHost in ActorHosts)
                     actorHost.Update(gameTime);

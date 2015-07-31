@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
-    public class ActorHost : IPlayerController
+    public class ActorHost : IPlayerController, IUpdateable
     {
         private readonly float Gap = 0.00001f;
 

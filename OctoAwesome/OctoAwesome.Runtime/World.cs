@@ -39,6 +39,11 @@ namespace OctoAwesome.Runtime
         {
             var host = new ActorHost(player);
             updateDomains[0].ActorHosts.Add(host);
+
+            // Eine notgedrungene Lösung um an die geladenen Chunks zu kommen.
+            // TODO: Nur die Chunks als aktive einstufen, die in der Nähe des actors sind.
+            updateDomains[0].ActiveChunks = ResourceManager.Instance.ActiveChunks;
+
             return host;
         }
     }
