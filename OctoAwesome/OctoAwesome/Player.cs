@@ -30,14 +30,16 @@ namespace OctoAwesome
 
         public float Tilt { get; set; }
 
+        public int InventorySlots { get; set; }
+
         [XmlIgnore]
-        public List<IBlock> Inventory { get; set; }
+        public List<InventorySlot> Inventory { get; set; }
 
         public Player()
         {
             Position = new Coordinate(0, new Index3(82109, 74365, 45), Vector3.Zero);
             Velocity = new Vector3(0, 0, 0);
-            Inventory = new List<IBlock>();
+            Inventory = new List<InventorySlot>();
             Radius = 0.75f;
             Angle = 0f;
             Height = 3.5f;

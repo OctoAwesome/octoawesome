@@ -25,7 +25,7 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
-        public IBlockDefinition[] Tools { get; set; }
+        public List<InventorySlot> Tools { get; set; }
 
         public PlayerComponent(Game game, InputComponent input, SimulationComponent simulation)
             : base(game)
@@ -37,9 +37,9 @@ namespace OctoAwesome.Client.Components
         public override void Initialize()
         {
             base.Initialize();
-            Tools = BlockDefinitionManager.GetBlockDefinitions().ToArray();
-            if (Tools != null && Tools.Length > 0)
-                ActorHost.ActiveTool = Tools[0];
+            Tools = new List<InventorySlot>(); // BlockDefinitionManager.GetBlockDefinitions().ToArray();
+            //if (Tools != null && Tools.Length > 0)
+            //    ActorHost.ActiveTool = Tools[0];
         }
 
         public override void Update(GameTime gameTime)
@@ -58,9 +58,9 @@ namespace OctoAwesome.Client.Components
                 ActorHost.Apply(SelectedBox.Value, SelectedSide);
             }
 
-            if (Tools != null && input.SlotTrigger != null)
+            if (Tools != null && Tools.Count > 0 && input.SlotTrigger != null)
             {
-                for (int i = 0; i < Math.Min(Tools.Length, input.SlotTrigger.Length); i++)
+                for (int i = 0; i < Math.Min(Tools.Count, input.SlotTrigger.Length); i++)
                 {
                     if (input.SlotTrigger[i])
                         ActorHost.ActiveTool = Tools[i];
@@ -71,7 +71,7 @@ namespace OctoAwesome.Client.Components
             int activeTool = -1;
             if (Tools != null && ActorHost.ActiveTool != null)
             {
-                for (int i = 0; i < Tools.Length; i++)
+                for (int i = 0; i < Tools.Count; i++)
                 {
                     if (Tools[i] == ActorHost.ActiveTool)
                     {
@@ -89,7 +89,7 @@ namespace OctoAwesome.Client.Components
                 if (input.SlotRightTrigger)
                     activeTool++;
 
-                activeTool = (activeTool + Tools.Length) % Tools.Length;
+                activeTool = (activeTool + Tools.Count) % Tools.Count;
                 ActorHost.ActiveTool = Tools[activeTool];
             }
 

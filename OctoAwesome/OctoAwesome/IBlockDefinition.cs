@@ -10,6 +10,8 @@ namespace OctoAwesome
     {
         string Name { get; }
 
+        Bitmap Icon { get; }
+
         IEnumerable<Bitmap> Textures { get; }
 
         int GetTopTextureIndex(IBlock block);
