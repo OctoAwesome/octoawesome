@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
 EndProject
@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D269F5F0-2B6A-471A-8A44-253DEF5D98A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
+	ProjectSection(ProjectDependencies) = postProject
+		{739F0779-A605-49C9-A298-FE30DC628C9E} = {739F0779-A605-49C9-A298-FE30DC628C9E}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{B6C925CF-FF4E-4792-A862-30D6070FE606}"
 	ProjectSection(SolutionItems) = preProject

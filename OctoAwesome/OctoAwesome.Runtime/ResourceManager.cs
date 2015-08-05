@@ -43,6 +43,11 @@ namespace OctoAwesome.Runtime
 
         #endregion
 
+        public IList<IChunk> ActiveChunks
+        {
+            get { return chunkCache.Values; }
+        }
+
         private ResourceManager()
         {
             mapGenerator = MapGeneratorManager.GetMapGenerators().First();

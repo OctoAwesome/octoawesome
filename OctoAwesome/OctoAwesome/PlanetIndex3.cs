@@ -47,5 +47,10 @@ namespace OctoAwesome
                (ChunkIndex.Y << 8) +
                ChunkIndex.Z;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Planet: {0}, Index: {1}", Planet, ChunkIndex);
+        }
     }
 }
