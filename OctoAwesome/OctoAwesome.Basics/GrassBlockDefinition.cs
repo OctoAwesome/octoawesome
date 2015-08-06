@@ -42,6 +42,11 @@ namespace OctoAwesome.Basics
             };
         }
 
+        public void Hit(IBlock block, PhysicalProperties itemProperties)
+        {
+            block.Condition -= 10;
+        }
+
         public IBlock GetInstance(OrientationFlags orientation)
         {
             return new GrassBlock();

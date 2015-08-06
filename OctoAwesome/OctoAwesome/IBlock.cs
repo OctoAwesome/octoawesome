@@ -10,6 +10,8 @@ namespace OctoAwesome
     {
         OrientationFlags Orientation { get; set; }
 
+        int Condition { get; set; }
+
         List<IResource> Resources { get; }
 
         BoundingBox[] GetCollisionBoxes();

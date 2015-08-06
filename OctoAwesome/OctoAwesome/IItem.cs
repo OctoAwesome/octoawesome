@@ -7,10 +7,10 @@ namespace OctoAwesome
 {
     public interface IItem
     {
-        IEnumerable<IResource> Resources { get; }
+        List<IResource> Resources { get; }
 
         Coordinate? Position { get; set; }
 
-        void Hit(IItem item);
+        int Condition { get; set; }
     }
 }

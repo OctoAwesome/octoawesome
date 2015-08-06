@@ -50,8 +50,9 @@ namespace OctoAwesome.Runtime
                 foreach (var actorHost in ActorHosts)
                     actorHost.Update(gameTime);
 
-                if (watch.Elapsed - lastCall < frameTime)
-                    Thread.Sleep(frameTime - (watch.Elapsed - lastCall));
+                TimeSpan diff = frameTime - (watch.Elapsed - lastCall);
+                if (diff > TimeSpan.Zero)
+                    Thread.Sleep(diff);
             }
         }
     }

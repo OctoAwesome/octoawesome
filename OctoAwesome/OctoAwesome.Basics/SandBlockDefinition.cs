@@ -41,6 +41,11 @@ namespace OctoAwesome.Basics
             };
         }
 
+        public void Hit(IBlock block, PhysicalProperties itemProperties)
+        {
+            throw new NotImplementedException();
+        }
+
         public int GetTopTextureIndex(IBlock block)
         {
             return 0;

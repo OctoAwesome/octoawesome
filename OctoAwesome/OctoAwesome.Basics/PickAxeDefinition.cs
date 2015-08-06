@@ -35,5 +35,10 @@ namespace OctoAwesome.Basics
                 Hardness = 1f
             };
         }
+
+        public void Hit(IItem item, PhysicalProperties itemProperties)
+        {
+            // item.Condition--;
+        }
     }
 }

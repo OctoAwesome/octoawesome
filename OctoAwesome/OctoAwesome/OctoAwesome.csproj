@@ -73,6 +73,7 @@
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IScreenInputSet.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Noise\PerlinNoiseGenerator.cs" />

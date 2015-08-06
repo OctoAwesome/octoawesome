@@ -30,6 +30,12 @@ namespace OctoAwesome.Basics
             };
         }
 
+        public void Hit(IBlock block, PhysicalProperties itemProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public IEnumerable<Bitmap> Textures
         {
             get
