@@ -10,6 +10,13 @@ namespace OctoAwesome
     {
         public OrientationFlags Orientation { get; set; }
 
+        public List<IResource> Resources { get; private set; }
+
+        public Block()
+        {
+            Resources = new List<IResource>();
+        }
+
         public virtual BoundingBox[] GetCollisionBoxes()
         {
             return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };

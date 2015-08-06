@@ -19,6 +19,16 @@ namespace OctoAwesome.Basics
             get { return Resources.wood_bottom; }
         }
 
+        public PhysicalProperties GetProperties(IBlock block)
+        {
+            return new PhysicalProperties()
+            {
+                Density = 0.3f,
+                FractureToughness = 0.3f,
+                Granularity = 0.9f,
+                Hardness = 0.1f
+            };
+        }
 
         public IEnumerable<Bitmap> Textures
         {

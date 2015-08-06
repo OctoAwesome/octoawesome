@@ -7,8 +7,6 @@ namespace OctoAwesome
 {
     public interface IItem
     {
-        
-
         IEnumerable<IResource> Resources { get; }
 
         void Hit(IItem item);

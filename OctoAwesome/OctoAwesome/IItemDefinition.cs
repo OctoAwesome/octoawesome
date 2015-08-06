@@ -6,14 +6,12 @@ using System.Text;
 
 namespace OctoAwesome
 {
-    public interface IResourceDefinition
+    public interface IItemDefinition
     {
         string Name { get; }
 
         Bitmap Icon { get; }
 
-        IResource GetInstance();
-
-        Type GetResourceType();
+        PhysicalProperties GetProperties(IItem item);
     }
 }

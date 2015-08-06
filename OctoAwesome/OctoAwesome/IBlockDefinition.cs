@@ -12,6 +12,8 @@ namespace OctoAwesome
 
         Bitmap Icon { get; }
 
+        PhysicalProperties GetProperties(IBlock block);
+
         IEnumerable<Bitmap> Textures { get; }
 
         int GetTopTextureIndex(IBlock block);

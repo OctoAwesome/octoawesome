@@ -10,6 +10,8 @@ namespace OctoAwesome
     {
         OrientationFlags Orientation { get; set; }
 
+        List<IResource> Resources { get; }
+
         BoundingBox[] GetCollisionBoxes();
 
         float? Intersect(Index3 boxPosition, Ray ray, out Axis? collisionAxis);

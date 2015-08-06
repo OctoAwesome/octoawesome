@@ -63,6 +63,7 @@
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IInputSet.cs" />
     <Compile Include="IItem.cs" />
+    <Compile Include="IItemDefinition.cs" />
     <Compile Include="IMapGenerator.cs" />
     <Compile Include="Index2.cs" />
     <Compile Include="Index3.cs" />

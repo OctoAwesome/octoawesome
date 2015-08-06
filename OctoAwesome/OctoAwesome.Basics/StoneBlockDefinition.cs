@@ -31,6 +31,17 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public PhysicalProperties GetProperties(IBlock block)
+        {
+            return new PhysicalProperties()
+            {
+                Density = 0.9f,
+                FractureToughness = 0.1f,
+                Granularity = 0.1f,
+                Hardness = 0.9f
+            };
+        }
+
         public int GetTopTextureIndex(IBlock block)
         {
             return 0;
