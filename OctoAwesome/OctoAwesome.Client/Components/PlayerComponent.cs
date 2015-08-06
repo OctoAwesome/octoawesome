@@ -37,9 +37,7 @@ namespace OctoAwesome.Client.Components
         public override void Initialize()
         {
             base.Initialize();
-            Tools = new List<InventorySlot>(); // BlockDefinitionManager.GetBlockDefinitions().ToArray();
-            //if (Tools != null && Tools.Length > 0)
-            //    ActorHost.ActiveTool = Tools[0];
+            Tools = new List<InventorySlot>(ActorHost.Player.Inventory);
         }
 
         public override void Update(GameTime gameTime)

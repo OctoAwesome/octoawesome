@@ -8,11 +8,7 @@ namespace OctoAwesome
 {
     public class InventorySlot
     {
-        public string Name { get; set; }
-
-        public Bitmap Icon { get; set; }
-
-        public Type ItemType { get; set; }
+        public IItemDefinition Definition { get; set; }
 
         public int Amount { get; set; }        
     }

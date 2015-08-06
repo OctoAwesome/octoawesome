@@ -24,6 +24,11 @@ namespace OctoAwesome.Client.Components
             World = new World();
 
             var p = Load();
+            foreach (var item in ItemDefinitionManager.GetBlockDefinitions())
+            {
+                p.Inventory.Add(new InventorySlot() { Definition = item, Amount = 1 });
+            }
+
             Player = World.InjectPlayer(p);
             Player.Initialize();
 

@@ -98,8 +98,8 @@ namespace OctoAwesome.Client.Components
             get
             {
                 return new Index2(
-                  (int)GraphicsDevice.Viewport.Width,
-                  (int)GraphicsDevice.Viewport.Height);
+                  GraphicsDevice.Viewport.Width,
+                  GraphicsDevice.Viewport.Height);
             }
         }
 

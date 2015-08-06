@@ -7,6 +7,8 @@ namespace OctoAwesome.Basics
 {
     public class Pickaxe : IItem
     {
+        public Coordinate? Position { get; set; }
+
         public IEnumerable<IResource> Resources
         {
             get

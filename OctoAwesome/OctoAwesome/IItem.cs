@@ -9,6 +9,8 @@ namespace OctoAwesome
     {
         IEnumerable<IResource> Resources { get; }
 
+        Coordinate? Position { get; set; }
+
         void Hit(IItem item);
     }
 }

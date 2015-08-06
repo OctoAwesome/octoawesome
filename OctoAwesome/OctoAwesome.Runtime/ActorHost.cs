@@ -216,16 +216,15 @@ namespace OctoAwesome.Runtime
 
                 if (lastBlock != null)
                 {
-                    var slot = Player.Inventory.SingleOrDefault(s => s.ItemType == lastBlock.GetType());
+                    var slot = Player.Inventory.SingleOrDefault(s => s.Definition == lastBlock.GetType());
                     if (slot == null)
                     {
                         var definition = BlockDefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetBlockType() == lastBlock.GetType());
 
+                        // TODO: ItemDefinition finden
                         slot = new InventorySlot()
                         {
-                            Name = definition.Name,
-                            Icon = definition.Icon,
-                            ItemType = lastBlock.GetType(),
+                            Definition = null,
                             Amount = 0
                         };
                         Player.Inventory.Add(slot);

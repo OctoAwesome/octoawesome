@@ -88,7 +88,7 @@ namespace OctoAwesome.Client.Components.Hud
                 StringBuilder sb = new StringBuilder();
                 foreach (var slot in player.ActorHost.Player.Inventory)
                 {
-                    sb.Append(string.Format("{0}: {1} |", slot.Name, slot.Amount));
+                    sb.Append(string.Format("{0}: {1} |", slot.Definition.Name, slot.Amount));
                 }
 
                 counter.Text = sb.ToString();

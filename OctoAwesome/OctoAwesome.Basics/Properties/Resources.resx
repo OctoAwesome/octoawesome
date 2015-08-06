@@ -130,6 +130,9 @@
   <data name="ground_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ground_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="pick_iron" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pick_iron.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="sand_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sand_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
