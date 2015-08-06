@@ -62,12 +62,14 @@
     <Compile Include="IChunkPersistence.cs" />
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IInputSet.cs" />
+    <Compile Include="IItem.cs" />
     <Compile Include="IMapGenerator.cs" />
     <Compile Include="Index2.cs" />
     <Compile Include="Index3.cs" />
     <Compile Include="InventorySlot.cs" />
     <Compile Include="IPlanet.cs" />
     <Compile Include="IResource.cs" />
+    <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IScreenInputSet.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Noise\PerlinNoiseGenerator.cs" />
     <Compile Include="Noise\SimplexNoiseGenerator.cs" />
     <Compile Include="OrientationFlags.cs" />
+    <Compile Include="PhysicalProperties.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
