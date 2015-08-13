@@ -93,41 +93,35 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\grass_bottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\grass_side.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\grass_top.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ground_bottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\sand_bottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\stone_bottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\stone_side.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\water_bottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\water_side.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\wood_bottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\wood_side.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\pick_iron.png" />
+    <Content Include="Assets\dirt.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\dirt_grass.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\grass_top.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\pick_iron.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\sand.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\stone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\water.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\wood_side.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\wood_top.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

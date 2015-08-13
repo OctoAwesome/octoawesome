@@ -16,17 +16,19 @@ namespace OctoAwesome.Basics
 
         public Bitmap Icon
         {
-            get { return Resources.grass_top; }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/grass_top.png"); }
         }
 
         public IEnumerable<Bitmap> Textures
         {
             get
             {
-                return new[] { 
-                    Resources.grass_top, 
-                    Resources.grass_bottom, 
-                    Resources.grass_side 
+                
+
+                return new[] {
+                    (Bitmap)Bitmap.FromFile("./Assets/grass_top.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/dirt.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/dirt_grass.png"),
                 };
             }
         }

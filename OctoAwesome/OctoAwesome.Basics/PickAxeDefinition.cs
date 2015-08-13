@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return Resources.pick_iron;
+                return (Bitmap)Bitmap.FromFile("./Assets/pick_iron.png");
             }
         }
 

@@ -16,7 +16,7 @@ namespace OctoAwesome.Basics
 
         public Bitmap Icon
         {
-            get { return Resources.wood_bottom; }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/stone.png"); }
         }
 
 
@@ -24,9 +24,8 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return new[] { 
-                    Resources.stone_bottom, 
-                    Resources.stone_side
+                return new[] {
+                    (Bitmap)Bitmap.FromFile("./Assets/stone.png"),
                 };
             }
         }
@@ -59,22 +58,22 @@ namespace OctoAwesome.Basics
 
         public int GetNorthTextureIndex(IBlock block)
         {
-            return 1;
+            return 0;
         }
 
         public int GetSouthTextureIndex(IBlock block)
         {
-            return 1;
+            return 0;
         }
 
         public int GetWestTextureIndex(IBlock block)
         {
-            return 1;
+            return 0;
         }
 
         public int GetEastTextureIndex(IBlock block)
         {
-            return 1;
+            return 0;
         }
 
         public int GetTopTextureRotation(IBlock block)

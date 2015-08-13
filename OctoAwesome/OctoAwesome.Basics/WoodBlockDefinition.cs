@@ -16,12 +16,17 @@ namespace OctoAwesome.Basics
 
         public Bitmap Icon
         {
-            get { return Resources.wood_bottom; }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/wood_top.png"); }
         }
 
         public IEnumerable<Bitmap> Textures
         {
-            get { return new[] { Resources.wood_bottom, Resources.wood_side }; }
+            get
+            {
+                return new[] {
+                (Bitmap)Bitmap.FromFile("./Assets/wood_top.png"),
+                (Bitmap)Bitmap.FromFile("./Assets/wood_side.png") };
+            }
         }
 
         public PhysicalProperties GetProperties(IBlock block)
