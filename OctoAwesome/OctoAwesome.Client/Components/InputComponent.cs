@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using OctoAwesome.Client.Components.Input;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Client.Components
 {
@@ -38,6 +35,7 @@ namespace OctoAwesome.Client.Components
         public Trigger<bool> InteractTrigger { get; private set; }
         public Trigger<bool> ApplyTrigger { get; private set; }
         public Trigger<bool> JumpTrigger { get; private set; }
+        public Trigger<bool> ToggleFlyMode { get; private set; }
         public Trigger<bool> InventoryTrigger { get; private set; }
         public Trigger<bool>[] SlotTrigger { get; private set; }
         public Trigger<bool> SlotLeftTrigger { get; private set; }
@@ -50,6 +48,7 @@ namespace OctoAwesome.Client.Components
             ApplyTrigger = new Trigger<bool>();
             InventoryTrigger = new Trigger<bool>();
             JumpTrigger = new Trigger<bool>();
+            ToggleFlyMode = new Trigger<bool>();
             SlotLeftTrigger = new Trigger<bool>();
             SlotRightTrigger = new Trigger<bool>();
             SlotTrigger = new Trigger<bool>[SlotTriggerLength];
@@ -86,6 +85,7 @@ namespace OctoAwesome.Client.Components
             bool nextInventory = false;
             bool[] nextSlot = new bool[SlotTriggerLength];
             bool nextSlotLeft = false;
+            bool nextToggleFlyMode = false;
             bool nextSlotRight = false;
             MoveX = 0f;
             MoveY = 0f;
@@ -113,6 +113,7 @@ namespace OctoAwesome.Client.Components
                     nextApply |= device.ApplyTrigger;
                     nextJump |= device.JumpTrigger;
                     nextInventory |= device.InventoryTrigger;
+                    nextToggleFlyMode |= device.ToggleFlyMode;
                     nextSlotLeft |= device.SlotLeftTrigger;
                     nextSlotRight |= device.SlotRightTrigger;
                     if (device.SlotTrigger != null)
@@ -129,6 +130,7 @@ namespace OctoAwesome.Client.Components
                 ApplyTrigger.Value = nextApply;
                 InventoryTrigger.Value = nextInventory;
                 JumpTrigger.Value = nextJump;
+                ToggleFlyMode.Value = nextToggleFlyMode;
                 SlotLeftTrigger.Value = nextSlotLeft;
                 SlotRightTrigger.Value = nextSlotRight;
                 for (int i = 0; i < SlotTriggerLength; i++)

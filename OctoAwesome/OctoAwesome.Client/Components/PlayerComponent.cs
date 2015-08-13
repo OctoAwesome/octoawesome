@@ -55,6 +55,10 @@ namespace OctoAwesome.Client.Components
             {
                 ActorHost.Apply(SelectedBox.Value, SelectedSide);
             }
+            if (input.ToggleFlyMode)
+            {
+                ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
+            }
 
             if (Tools != null && Tools.Count > 0 && input.SlotTrigger != null)
             {

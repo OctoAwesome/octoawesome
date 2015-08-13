@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
-        private readonly float Gap = 0.00001f;
+        private readonly float Gap = 0.001f;
 
         private IPlanet planet;
         private Cache<Index3, IChunk> localChunkCache;
@@ -59,7 +60,14 @@ namespace OctoAwesome.Runtime
 
         public void Update(GameTime frameTime)
         {
-            Player.ExternalForce = new Vector3(0, 0, -20f) * Player.Mass;
+            if (!Player.FlyMode)
+            {
+                Player.ExternalForce = new Vector3(0, 0, -20f) * Player.Mass;
+            }
+            else
+            {
+                Player.ExternalForce = Vector3.Zero;
+            }
 
             #region Inputverarbeitung
 
@@ -81,6 +89,12 @@ namespace OctoAwesome.Runtime
 
             Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
             Vector3 powerdirection = new Vector3();
+
+            if (Player.FlyMode)
+            {
+                VelocityDirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
+                Friction = Vector3.One * Player.FRICTION;
+            }
 
             powerdirection += externalPower;
             powerdirection += (Player.POWER * VelocityDirection);

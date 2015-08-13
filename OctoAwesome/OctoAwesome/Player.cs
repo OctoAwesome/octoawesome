@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace OctoAwesome
@@ -32,6 +27,8 @@ namespace OctoAwesome
 
         public int InventorySlots { get; set; }
 
+        public bool FlyMode { get; set; }
+
         [XmlIgnore]
         public List<InventorySlot> Inventory { get; set; }
 
@@ -44,6 +41,7 @@ namespace OctoAwesome
             Angle = 0f;
             Height = 3.5f;
             Mass = 100;
+            FlyMode = false;
         }
     }
 }

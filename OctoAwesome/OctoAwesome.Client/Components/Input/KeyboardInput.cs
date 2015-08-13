@@ -48,6 +48,8 @@ namespace OctoAwesome.Client.Components.Input
         /// </summary>
         public Trigger<bool> JumpTrigger { get; private set; }
 
+        public Trigger<bool> ToggleFlyMode { get; private set; }
+
         public Trigger<bool>[] SlotTrigger { get; private set; }
 
         public Trigger<bool> SlotLeftTrigger { get; private set; }
@@ -62,6 +64,7 @@ namespace OctoAwesome.Client.Components.Input
             JumpTrigger = new Trigger<bool>();
             SlotLeftTrigger = new Trigger<bool>();
             SlotRightTrigger = new Trigger<bool>();
+            ToggleFlyMode = new Trigger<bool>();
 
             SlotTrigger = new Trigger<bool>[InputComponent.SlotTriggerLength];
             for (int i = 0; i < SlotTrigger.Length; i++)
@@ -103,6 +106,7 @@ namespace OctoAwesome.Client.Components.Input
             HeadX += (keyboardState.IsKeyDown(Keys.Right) ? 1 : 0);
             HeadY -= (keyboardState.IsKeyDown(Keys.Up) ? 1 : 0);
             HeadY += (keyboardState.IsKeyDown(Keys.Down) ? 1 : 0);
+            ToggleFlyMode.Value = keyboardState.IsKeyDown(Keys.Scroll);
         }
     }
 }

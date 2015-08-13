@@ -60,6 +60,8 @@ namespace OctoAwesome.Client.Components.Input
         /// </summary>
         public Trigger<bool> JumpTrigger { get; private set; }
 
+        public Trigger<bool> ToggleFlyMode { get; private set; }
+
         public Trigger<bool>[] SlotTrigger { get { return null; } }
 
         public Trigger<bool> SlotLeftTrigger { get; private set; }
@@ -80,6 +82,7 @@ namespace OctoAwesome.Client.Components.Input
             JumpTrigger = new Trigger<bool>();
             SlotLeftTrigger = new Trigger<bool>();
             SlotRightTrigger = new Trigger<bool>();
+            ToggleFlyMode = new Trigger<bool>();
         }
 
         /// <summary>
