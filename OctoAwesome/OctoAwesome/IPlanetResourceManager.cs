@@ -1,4 +1,4 @@
-﻿namespace OctoAwesome.Runtime
+﻿namespace OctoAwesome
 {
     public interface IPlanetResourceManager
     {

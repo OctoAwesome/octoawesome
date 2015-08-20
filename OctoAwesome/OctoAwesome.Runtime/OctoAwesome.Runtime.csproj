@@ -54,7 +54,6 @@
     <Compile Include="BlockDefinitionManager.cs" />
     <Compile Include="ChunkDiskPersistence.cs" />
     <Compile Include="ExtensionManager.cs" />
-    <Compile Include="IPlanetResourceManager.cs" />
     <Compile Include="IPlayerController.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="ItemDefinitionManager.cs" />
