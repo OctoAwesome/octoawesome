@@ -53,12 +53,17 @@
   <ItemGroup>
     <Compile Include="Axis.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="BlockDefinition.cs" />
+    <Compile Include="Blocks.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="Chunk.cs" />
+    <Compile Include="ChunkCache.cs" />
+    <Compile Include="ChunkLoader.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="IBlock.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
+    <Compile Include="IChunkCache.cs" />
     <Compile Include="IChunkPersistence.cs" />
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IInputSet.cs" />
@@ -69,6 +74,7 @@
     <Compile Include="Index3.cs" />
     <Compile Include="InventorySlot.cs" />
     <Compile Include="IPlanet.cs" />
+    <Compile Include="IPlanetResourceManager.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IScreenInputSet.cs" />

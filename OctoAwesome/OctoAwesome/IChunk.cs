@@ -31,7 +31,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Index des Blocks innerhalb des Chunks</param>
         /// <returns>Block-Instanz oder null, falls dort kein Block vorhanden ist.</returns>
-        IBlock GetBlock(Index3 index);
+        ushort GetBlock(Index3 index);
 
         /// <summary>
         /// Liefert den Block an der angegebenen Position zurück.
@@ -40,14 +40,14 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate innerhalb des Chunks.</param>
         /// <param name="z">Z-Anteil der Koordinate innerhalb des Chunks.</param>
         /// <returns>Block-Instanz oder null, falls dort kein Block vorhanden ist.</returns>
-        IBlock GetBlock(int x, int y, int z);
+        ushort GetBlock(int x, int y, int z);
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.
         /// </summary>
         /// <param name="index">Koordinate des Zielblocks innerhalb des Chunks.</param>
         /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
-        void SetBlock(Index3 index, IBlock block);
+        void SetBlock(Index3 index, ushort block);
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.
@@ -56,7 +56,15 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate innerhalb des Chunks.</param>
         /// <param name="z">Z-Anteil der Koordinate innerhalb des Chunks.</param>
         /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
-        void SetBlock(int x, int y, int z, IBlock block);
+        void SetBlock(int x, int y, int z, ushort block);
+
+        int GetBlockMeta(int x, int y, int z);
+
+        void SetBlockMeta(int x, int y, int z, int meta);
+
+        ushort[] GetBlockResources(int x, int y, int z);
+
+        void SetBlockResources(int x, int y, int z, ushort[] resources);
 
         /// <summary>
         /// Serialisiert den aktuellen Chunk in den angegebenen Stream.

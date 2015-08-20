@@ -40,8 +40,7 @@ namespace OctoAwesome.Client.Components
         private Index3 currentChunk = new Index3(-1, -1, -1);
 
         private Thread backgroundThread;
-
-        private Cache<Index3, IChunk> cache;
+        private readonly IPlanetResourceManager _manager;
 
         public RenderTarget2D MiniMapTexture { get; set; }
 
@@ -51,34 +50,12 @@ namespace OctoAwesome.Client.Components
             this.player = player;
             this.camera = camera;
 
-            cache = new Cache<Index3, IChunk>(10, loadChunk, null);
+            _manager = ResourceManager.Instance.GetManagerForPlanet(player.ActorHost.Player.Position.Planet);
         }
 
-        private IChunk loadChunk(Index3 index)
+        private IBlock GetBlock(Index3 index)
         {
-            return ResourceManager.Instance.GetChunk(player.ActorHost.Position.Planet, index);
-        }
-
-        private IBlock GetBlock(int planetId, Index3 index)
-        {
-            IPlanet planet = ResourceManager.Instance.GetPlanet(planetId);
-
-            index.NormalizeXY(new Index2(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-
-            // Betroffener Chunk ermitteln
-            Index3 chunkIndex = coordinate.ChunkIndex;
-            if (chunkIndex.X < 0 || chunkIndex.X >= planet.Size.X ||
-                chunkIndex.Y < 0 || chunkIndex.Y >= planet.Size.Y ||
-                chunkIndex.Z < 0 || chunkIndex.Z >= planet.Size.Z)
-                return null;
-            IChunk chunk = cache.Get(chunkIndex);
-            if (chunk == null)
-                return null;
-
-            return chunk.GetBlock(coordinate.LocalBlockIndex);
+            return _manager.GetBlock(index);
         }
 
         protected override void LoadContent()
@@ -179,7 +156,7 @@ namespace OctoAwesome.Client.Components
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        IBlock block = GetBlock(player.ActorHost.Position.Planet, pos);
+                        IBlock block = GetBlock(pos);
                         if (block == null)
                             continue;
 
