@@ -9,7 +9,7 @@ namespace OctoAwesome
     /// <summary>
     /// Repräsentiert einen Karten-Abschnitt innerhalb des Planeten.
     /// </summary>
-    public class Chunk : IChunk
+    public sealed class Chunk : IChunk
     {
         public const int LimitX = 5;
         public const int LimitY = 5;
@@ -33,7 +33,10 @@ namespace OctoAwesome
 
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
 
-        protected IBlock[] blocks;
+        private readonly ushort[] _blocks;
+        private readonly int[] _metaData;
+        private readonly ushort[][] _resources;
+
 
         /// <summary>
         /// Chunk Index innerhalb des Planeten.
@@ -50,7 +53,10 @@ namespace OctoAwesome
 
         public Chunk(Index3 pos, int planet)
         {
-            blocks = new IBlock[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            _blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            _metaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            _resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
+
             Index = pos;
             Planet = planet;
             ChangeCounter = 0;
@@ -61,7 +67,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
-        public IBlock GetBlock(Index3 index)
+        public ushort GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
@@ -73,14 +79,14 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
-        public IBlock GetBlock(int x, int y, int z)
+        public ushort GetBlock(int x, int y, int z)
         {
-            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                return null;
+//            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+//                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+//                z < 0 || z >= Chunk.CHUNKSIZE_Z)
+//                return Blocks.Air;
 
-            return blocks[GetFlatIndex(x, y, z)];
+            return _blocks[GetFlatIndex(x, y, z)];
         }
 
         /// <summary>
@@ -88,10 +94,11 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
-        public void SetBlock(Index3 index, IBlock block)
+        public void SetBlock(Index3 index, ushort block)
         {
             SetBlock(index.X, index.Y, index.Z, block);
         }
+
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Koordinate.
@@ -100,14 +107,42 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
-        public void SetBlock(int x, int y, int z, IBlock block)
+        public void SetBlock(int x, int y, int z, ushort block)
         {
-            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                return;
+//            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
+//                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
+//                z < 0 || z >= Chunk.CHUNKSIZE_Z)
+//                return;
 
-            blocks[GetFlatIndex(x, y, z)] = block;
+            _blocks[GetFlatIndex(x, y, z)] = block;
+           
+            //TODO: ChangeCounter überdenken, eventuell eine bool
+            ChangeCounter++;
+        }
+
+        public int GetBlockMeta(int x, int y, int z)
+        {
+            return _metaData[GetFlatIndex(x, y, z)];
+        }
+
+        public void SetBlockMeta(int x, int y, int z, int meta)
+        {
+            _metaData[GetFlatIndex(x, y, z)] = meta;
+
+            //TODO: ChangeCounter überdenken, eventuell eine bool
+            ChangeCounter++;
+        }
+
+        public ushort[] GetBlockResources(int x, int y, int z)
+        {
+            return _resources[GetFlatIndex(x, y, z)];
+        }
+
+        public void SetBlockResources(int x, int y, int z, ushort[] resources)
+        {
+            _resources[GetFlatIndex(x, y, z)] = resources;
+
+            //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
         }
 
@@ -118,19 +153,11 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate</param>
         /// <param name="z">Z-Anteil der Koordinate</param>
         /// <returns>Index innerhalb des flachen Arrays</returns>
-        protected int GetFlatIndex(int x, int y, int z)
+        private int GetFlatIndex(int x, int y, int z)
         {
-            return (z * CHUNKSIZE_X * CHUNKSIZE_Y) + (y * CHUNKSIZE_X) + x;
-        }
-
-        /// <summary>
-        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück.
-        /// </summary>
-        /// <param name="index">3D-Koordinate</param>
-        /// <returns>Index innerhalb des flachen Arrays</returns>
-        protected int GetFlatIndex(Index3 index)
-        {
-            return GetFlatIndex(index.X, index.Y, index.Z);
+            return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
+                   | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
+                   | ((x & (CHUNKSIZE_X - 1)));
         }
 
         /// <summary>
@@ -144,11 +171,11 @@ namespace OctoAwesome
                 List<Type> types = new List<Type>();
 
                 // Types sammeln
-                for (int i = 0; i < blocks.Length; i++)
+                for (int i = 0; i < _blocks.Length; i++)
                 {
-                    if (blocks[i] != null)
+                    if (_blocks[i] != null)
                     {
-                        Type t = blocks[i].GetType();
+                        Type t = _blocks[i].GetType();
                         if (!types.Contains(t))
                             types.Add(t);
                     }
@@ -167,14 +194,16 @@ namespace OctoAwesome
                 }
 
                 // Schreibe Phase 2
-                for (int i = 0; i < blocks.Length; i++)
+                for (int i = 0; i < _blocks.Length; i++)
                 {
-                    if (blocks[i] == null)
+                    if (_blocks[i] == null)
                         bw.Write(0);
                     else
                     {
-                        bw.Write(types.IndexOf(blocks[i].GetType()) + 1);
-                        bw.Write((byte)blocks[i].Orientation);
+                        bw.Write(types.IndexOf(_blocks[i].GetType()) + 1);
+
+                        //TODO: Überarbeiten für Metainfos
+                      //  bw.Write((byte)_blocks[i].Orientation);
                     }
                 }
             }
@@ -203,15 +232,15 @@ namespace OctoAwesome
                     types.Add(blockDefinition.GetBlockType());
                 }
 
-                for (int i = 0; i < blocks.Length; i++)
+                for (int i = 0; i < _blocks.Length; i++)
                 {
                     int typeIndex = br.ReadInt32();
                     if (typeIndex > 0)
                     {
                         OrientationFlags orientation = (OrientationFlags)br.ReadByte();
                         Type t = types[typeIndex - 1];
-                        blocks[i] = (IBlock)Activator.CreateInstance(t);
-                        blocks[i].Orientation = orientation;
+                     //   _blocks[i] = (IBlock)Activator.CreateInstance(t);
+                      //  _blocks[i].Orientation = orientation;
                     }
                 }
             }

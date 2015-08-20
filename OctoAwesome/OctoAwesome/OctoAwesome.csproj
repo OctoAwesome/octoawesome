@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Axis.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="BlockDefinition.cs" />
+    <Compile Include="Blocks.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkCache.cs" />
