@@ -138,7 +138,8 @@ namespace OctoAwesome.Basics
 
         public IBlock GetInstance(OrientationFlags orientation)
         {
-            return new SandBlock();
+            var sandBlock = new SandBlock();
+            return sandBlock;
         }
 
         public Type GetBlockType()

@@ -40,6 +40,7 @@ namespace OctoAwesome.Client.Components
         private Index3 currentChunk = new Index3(-1, -1, -1);
 
         private Thread backgroundThread;
+        private readonly IPlanetResourceManager _manager;
 
         public RenderTarget2D MiniMapTexture { get; set; }
 
@@ -48,11 +49,13 @@ namespace OctoAwesome.Client.Components
         {
             this.player = player;
             this.camera = camera;
+
+            _manager = ResourceManager.Instance.GetManagerForPlanet(player.ActorHost.Player.Position.Planet);
         }
 
-        private IBlock GetBlock(int planetId, Index3 index)
+        private IBlock GetBlock(Index3 index)
         {
-            return ResourceManager.Instance.GetBlock(planetId, index);
+            return _manager.GetBlock(index);
         }
 
         protected override void LoadContent()
@@ -153,7 +156,7 @@ namespace OctoAwesome.Client.Components
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        IBlock block = GetBlock(player.ActorHost.Position.Planet, pos);
+                        IBlock block = GetBlock(pos);
                         if (block == null)
                             continue;
 

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
-    public class ResourceManager
+    public class ResourceManager : IResourceManager
     {
         public static int CacheSize = 10000;
 
@@ -28,7 +28,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         //private Cache<PlanetIndex3, IChunk> chunkCache;
 
-        private IDictionary<int, IChunkCache> _chunkCaches; 
+        private IDictionary<int, PlanetResourceManager> _managers; 
 
         private IUniverse universeCache;
 
@@ -52,7 +52,7 @@ namespace OctoAwesome.Runtime
             mapGenerator = MapGeneratorManager.GetMapGenerators().First();
             chunkPersistence = new ChunkDiskPersistence();
 
-            _chunkCaches = new Dictionary<int, IChunkCache>();
+            _managers = new Dictionary<int, PlanetResourceManager>();
             _planets = new[] {loadPlanet(0)};
 
             //planetCache = new Cache<int, IPlanet>(1, loadPlanet, savePlanet);
@@ -74,76 +74,12 @@ namespace OctoAwesome.Runtime
             return _planets[id];
         }
 
-        /// <summary>
-        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
-        /// </summary>
-        /// <param name="index">Chunk Index</param>
-        /// <returns>Instanz des Chunks</returns>
-        public IChunk GetChunk(int planetId, Index3 index)
-        {
-            IPlanet planet = GetPlanet(planetId);
-
-            if (index.X < 0 || index.X >= planet.Size.X ||
-                index.Y < 0 || index.Y >= planet.Size.Y ||
-                index.Z < 0 || index.Z >= planet.Size.Z)
-                return null;
-
-            return _chunkCaches[planetId].Get(index); //chunkCache.Get(new PlanetIndex3(planetId, index));
-        }
-
-        /// <summary>
-        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
-        /// </summary>
-        /// <param name="index">Block Index</param>
-        /// <returns>Block oder null, falls dort kein Block existiert</returns>
-        public IBlock GetBlock(int planetId, Index3 index)
-        {
-            // var chunk = get chunck()
-            // return chunk.getBlock();
-
-            IPlanet planet = GetPlanet(planetId);
-
-            index.NormalizeXY(new Index2(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-
-            // Betroffener Chunk ermitteln
-            Index3 chunkIndex = coordinate.ChunkIndex;
-            if (chunkIndex.X < 0 || chunkIndex.X >= planet.Size.X ||
-                chunkIndex.Y < 0 || chunkIndex.Y >= planet.Size.Y ||
-                chunkIndex.Z < 0 || chunkIndex.Z >= planet.Size.Z)
-                return null;
-            IChunk chunk = _chunkCaches[planetId].Get(chunkIndex);
-            if (chunk == null)
-                return null;
-
-            return chunk.GetBlock(coordinate.LocalBlockIndex);
-        }
-
-        /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
-        /// </summary>
-        /// <param name="index">Block-Koordinate</param>
-        /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
-        public void SetBlock(int planetId, Index3 index, IBlock block)
-        {
-            IPlanet planet = GetPlanet(planetId);
-
-            index.NormalizeXYZ(new Index3(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y,
-                planet.Size.Z * Chunk.CHUNKSIZE_Z));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-            IChunk chunk = GetChunk(planetId, coordinate.ChunkIndex);
-            chunk.SetBlock(coordinate.LocalBlockIndex, block);
-        }
-        
         private IPlanet loadPlanet(int index)
         {
             IUniverse universe = GetUniverse(0);
 
-            _chunkCaches[index] = new ChunkCache(idx => loadChunk(index, idx), (_, chunk) => saveChunk(index, chunk));
+            var cache = new ChunkCache(idx => loadChunk(index, idx), (_, chunk) => saveChunk(index, chunk));
+            _managers[index] = new PlanetResourceManager(cache);
 
             return mapGenerator.GeneratePlanet(universe.Id, index);
         }
@@ -188,15 +124,20 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void Save()
         {
-            foreach (var chunkCach in _chunkCaches)
+            foreach (var manager in _managers)
             {
-                chunkCach.Value.Flush();
+                manager.Value.ChunkCache.Flush();
             }
+        }
+
+        public IPlanetResourceManager GetManagerForPlanet(int planet)
+        {
+            return _managers[planet];
         }
 
         public IChunkCache GetCacheForPlanet(int planet)
         {
-            return _chunkCaches[planet];
+            return _managers[planet].ChunkCache;
         }
     }
 }

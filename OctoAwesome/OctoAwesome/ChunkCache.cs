@@ -32,6 +32,11 @@ namespace OctoAwesome
             return _chunks[FlatIndex(idx.X, idx.Y, idx.Z)];
         }
 
+        public IChunk Get(int x, int y, int z)
+        {
+            return _chunks[FlatIndex(x,y,z)];
+        }
+
         public void EnsureLoaded(Index3 idx)
         {
             var flat = FlatIndex(idx.X, idx.Y, idx.Z);
@@ -48,6 +53,19 @@ namespace OctoAwesome
             if (chunk != null)
             {
                 _saveDelegate(idx, chunk);
+                _chunks[flat] = null;
+            }
+        }
+
+        public void Release(int x, int y, int z)
+        {
+            var flat = FlatIndex(x,y,z);
+
+            var chunk = _chunks[flat];
+
+            if (chunk != null)
+            {
+                _saveDelegate(chunk.Index, chunk);
                 _chunks[flat] = null;
             }
         }
