@@ -11,20 +11,25 @@ namespace OctoAwesome
     /// </summary>
     public class Chunk : IChunk
     {
+        public const int LimitX = 5;
+        public const int LimitY = 5;
+        public const int LimitZ = 5;
+
         /// <summary>
         /// Größe eines Chunks in Blocks in X-Richtung.
         /// </summary>
-        public const int CHUNKSIZE_X = 32;
+        public const int CHUNKSIZE_X = 1 << LimitX;
         
         /// <summary>
         /// Größe eines Chunks in Blocks in Y-Richtung.
         /// </summary>
-        public const int CHUNKSIZE_Y = 32;
+        public const int CHUNKSIZE_Y = 1 << LimitY;
 
         /// <summary>
         /// Größe eines Chunks in Blocks in Z-Richtung.
         /// </summary>
-        public const int CHUNKSIZE_Z = 32;
+        public const int CHUNKSIZE_Z = 1 << LimitZ;
+
 
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
 
@@ -115,10 +120,7 @@ namespace OctoAwesome
         /// <returns>Index innerhalb des flachen Arrays</returns>
         protected int GetFlatIndex(int x, int y, int z)
         {
-            return
-                (z * CHUNKSIZE_X * CHUNKSIZE_Y) +
-                (y * CHUNKSIZE_X) +
-                x;
+            return (z * CHUNKSIZE_X * CHUNKSIZE_Y) + (y * CHUNKSIZE_X) + x;
         }
 
         /// <summary>
