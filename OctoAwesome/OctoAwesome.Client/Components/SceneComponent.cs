@@ -41,8 +41,6 @@ namespace OctoAwesome.Client.Components
 
         private Thread backgroundThread;
 
-        private Cache<Index3, IChunk> cache;
-
         public RenderTarget2D MiniMapTexture { get; set; }
 
         public SceneComponent(Game game, PlayerComponent player, CameraComponent camera)
@@ -50,35 +48,11 @@ namespace OctoAwesome.Client.Components
         {
             this.player = player;
             this.camera = camera;
-
-            cache = new Cache<Index3, IChunk>(10, loadChunk, null);
-        }
-
-        private IChunk loadChunk(Index3 index)
-        {
-            return ResourceManager.Instance.GetChunk(player.ActorHost.Position.Planet, index);
         }
 
         private IBlock GetBlock(int planetId, Index3 index)
         {
-            IPlanet planet = ResourceManager.Instance.GetPlanet(planetId);
-
-            index.NormalizeXY(new Index2(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-
-            // Betroffener Chunk ermitteln
-            Index3 chunkIndex = coordinate.ChunkIndex;
-            if (chunkIndex.X < 0 || chunkIndex.X >= planet.Size.X ||
-                chunkIndex.Y < 0 || chunkIndex.Y >= planet.Size.Y ||
-                chunkIndex.Z < 0 || chunkIndex.Z >= planet.Size.Z)
-                return null;
-            IChunk chunk = cache.Get(chunkIndex);
-            if (chunk == null)
-                return null;
-
-            return chunk.GetBlock(coordinate.LocalBlockIndex);
+            return ResourceManager.Instance.GetBlock(planetId, index);
         }
 
         protected override void LoadContent()

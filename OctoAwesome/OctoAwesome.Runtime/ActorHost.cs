@@ -9,16 +9,17 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
+        private readonly IChunkLoader _chunkLoader;
         private readonly float Gap = 0.001f;
 
         private IPlanet planet;
-        private Cache<Index3, IChunk> localChunkCache;
 
         private bool lastJump = false;
 
         private Index3? lastInteract = null;
         private Index3? lastApply = null;
         private OrientationFlags lastOrientation = OrientationFlags.None;
+        private Index3 _oldIndex;
 
         public Player Player { get; private set; }
 
@@ -26,11 +27,14 @@ namespace OctoAwesome.Runtime
 
         public WorldState State { get; private set; }
 
-        public ActorHost(Player player)
+        public ActorHost(Player player, IChunkLoader chunkLoader)
         {
+            _chunkLoader = chunkLoader;
+
             Player = player;
-            localChunkCache = new Cache<Index3, IChunk>(10, loadChunk, null);
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
+
+            _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
             State = WorldState.Loading;
@@ -50,12 +54,14 @@ namespace OctoAwesome.Runtime
 
                         var chunkPosition = Player.Position.ChunkIndex + new Index3(x, y, z);
                         chunkPosition.NormalizeXY(planet.Size);
-                        localChunkCache.Get(chunkPosition);
+                        ResourceManager.Instance.GetChunk(planet.Id, chunkPosition);
                     }
                 }
             }
 
             State = WorldState.Running;
+
+            _chunkLoader.UpdatePosition(0, 0, 0);
         }
 
         public void Update(GameTime frameTime)
@@ -219,6 +225,14 @@ namespace OctoAwesome.Runtime
             }
             while (collision && loop < 3);
 
+            if (Player.Position.ChunkIndex != _oldIndex)
+            {
+                //TODO: Planeten rundung beachten :)
+
+                _chunkLoader.UpdatePosition(Player.Position.ChunkIndex.X - _oldIndex.X, Player.Position.ChunkIndex.Y - _oldIndex.Y, Player.Position.ChunkIndex.Z - _oldIndex.Z);
+                _oldIndex = Player.Position.ChunkIndex;
+            }
+
             #endregion
 
             #region Block Interaction
@@ -276,11 +290,6 @@ namespace OctoAwesome.Runtime
 
             #endregion
         }
-        private IChunk loadChunk(Index3 index)
-        {
-            IPlanet planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
-            return ResourceManager.Instance.GetChunk(planet.Id, index);
-        }
 
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
@@ -289,24 +298,7 @@ namespace OctoAwesome.Runtime
         /// <returns>Block oder null, falls dort kein Block existiert</returns>
         public IBlock GetBlock(Index3 index)
         {
-            IPlanet planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
-
-            index.NormalizeXY(new Index2(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-
-            // Betroffener Chunk ermitteln
-            Index3 chunkIndex = coordinate.ChunkIndex;
-            if (chunkIndex.X < 0 || chunkIndex.X >= planet.Size.X ||
-                chunkIndex.Y < 0 || chunkIndex.Y >= planet.Size.Y ||
-                chunkIndex.Z < 0 || chunkIndex.Z >= planet.Size.Z)
-                return null;
-            IChunk chunk = localChunkCache.Get(chunkIndex);
-            if (chunk == null)
-                return null;
-
-            return chunk.GetBlock(coordinate.LocalBlockIndex);
+            return ResourceManager.Instance.GetBlock(planet.Id, index);
         }
 
         /// <summary>
@@ -316,15 +308,7 @@ namespace OctoAwesome.Runtime
         /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
         public void SetBlock(Index3 index, IBlock block)
         {
-            IPlanet planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
-
-            index.NormalizeXYZ(new Index3(
-                planet.Size.X * Chunk.CHUNKSIZE_X,
-                planet.Size.Y * Chunk.CHUNKSIZE_Y,
-                planet.Size.Z * Chunk.CHUNKSIZE_Z));
-            Coordinate coordinate = new Coordinate(0, index, Vector3.Zero);
-            IChunk chunk = localChunkCache.Get(coordinate.ChunkIndex);
-            chunk.SetBlock(coordinate.LocalBlockIndex, block);
+            ResourceManager.Instance.SetBlock(planet.Id, index, block);
         }
 
         public Coordinate Position
