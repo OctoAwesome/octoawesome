@@ -75,11 +75,6 @@ namespace OctoAwesome
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public IBlock GetBlock(int x, int y, int z)
         {
-            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                return null;
-
             return blocks[GetFlatIndex(x, y, z)];
         }
 
@@ -102,11 +97,6 @@ namespace OctoAwesome
         /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
         public void SetBlock(int x, int y, int z, IBlock block)
         {
-            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-                return;
-
             blocks[GetFlatIndex(x, y, z)] = block;
             ChangeCounter++;
         }
@@ -120,7 +110,9 @@ namespace OctoAwesome
         /// <returns>Index innerhalb des flachen Arrays</returns>
         protected int GetFlatIndex(int x, int y, int z)
         {
-            return (z * CHUNKSIZE_X * CHUNKSIZE_Y) + (y * CHUNKSIZE_X) + x;
+            return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
+                   | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
+                   | ((x & (CHUNKSIZE_X - 1)));
         }
 
         /// <summary>

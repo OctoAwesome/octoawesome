@@ -29,8 +29,13 @@ namespace OctoAwesome.Runtime
 
         public IBlock GetBlock(int x, int y, int z)
         {
-            var chunk = _chunkCache.Get(x, y, z);
-            return chunk.GetBlock(x, y, z);
+            var chunk = _chunkCache.Get(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+
+            //TODO: Prüfen, ob dieser Fall eintreten darf. 
+            if (chunk != null) 
+                return chunk.GetBlock(x, y, z);
+            
+            return null;
         }
 
         [Obsolete]
@@ -41,7 +46,7 @@ namespace OctoAwesome.Runtime
 
         public void SetBlock(int x, int y, int z, IBlock block)
         {
-            var chunk = _chunkCache.Get(x, y, z);
+            var chunk = _chunkCache.Get(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
             chunk.SetBlock(x, y, z, block);
         }
     }
