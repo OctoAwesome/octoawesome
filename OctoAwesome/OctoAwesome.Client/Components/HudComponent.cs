@@ -49,7 +49,7 @@ namespace OctoAwesome.Client.Components
         protected override void LoadContent()
         {
             Pix = Game.Content.Load<Texture2D>("Textures/pix");
-            NormalText = Game.Content.Load<SpriteFont>("hud");
+            NormalText = Game.Content.Load<SpriteFont>("Hud");
 
             toolbar.Position = new Index2(0, GraphicsDevice.Viewport.Height - 100);
             toolbar.Size = new Index2(GraphicsDevice.Viewport.Width, 100);
