@@ -9,7 +9,7 @@ namespace OctoAwesome
     /// Liste von Flags zur Beschreibung der Block-Ausrichtung.
     /// </summary>
     [Flags]
-    public enum OrientationFlags
+    public enum OrientationFlags : byte
     {
         None,
 
