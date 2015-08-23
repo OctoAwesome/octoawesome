@@ -16,6 +16,9 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+# Diagnostics Files
+[Dd]iagnostics/
+
 # Roslyn cache directories
 *.ide/
 
