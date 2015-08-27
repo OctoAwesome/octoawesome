@@ -81,12 +81,7 @@ namespace OctoAwesome
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public ushort GetBlock(int x, int y, int z)
         {
-//            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-//                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-//                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-//                return Blocks.Air;
-
-            return _blocks[GetFlatIndex(x, y, z)];
+            return blocks[GetFlatIndex(x, y, z)];
         }
 
         /// <summary>
