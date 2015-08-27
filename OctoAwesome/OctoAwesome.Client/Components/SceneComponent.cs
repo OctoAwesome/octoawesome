@@ -53,7 +53,7 @@ namespace OctoAwesome.Client.Components
             _manager = ResourceManager.Instance.GetManagerForPlanet(player.ActorHost.Player.Position.Planet);
         }
 
-        private IBlock GetBlock(Index3 index)
+        private BlockDefinition GetBlock(Index3 index)
         {
             return _manager.GetBlock(index);
         }
@@ -156,7 +156,7 @@ namespace OctoAwesome.Client.Components
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        IBlock block = GetBlock(pos);
+                        BlockDefinition block = GetBlock(pos);
                         if (block == null)
                             continue;
 

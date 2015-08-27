@@ -81,11 +81,6 @@ namespace OctoAwesome
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public ushort GetBlock(int x, int y, int z)
         {
-//            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-//                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-//                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-//                return Blocks.Air;
-
             return _blocks[GetFlatIndex(x, y, z)];
         }
 
@@ -94,7 +89,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
-        public void SetBlock(Index3 index, ushort block)
+        public void SetBlock(Index3 index, ushort block, int meta = 0)
         {
             SetBlock(index.X, index.Y, index.Z, block);
         }
@@ -107,14 +102,11 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Der neue Block oder null, fall der Block geleert werden soll</param>
-        public void SetBlock(int x, int y, int z, ushort block)
+        public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
-//            if (x < 0 || x >= Chunk.CHUNKSIZE_X ||
-//                y < 0 || y >= Chunk.CHUNKSIZE_Y ||
-//                z < 0 || z >= Chunk.CHUNKSIZE_Z)
-//                return;
-
-            _blocks[GetFlatIndex(x, y, z)] = block;
+            int index = GetFlatIndex(x, y, z);
+            _blocks[index] = block;
+            _metaData[index] = meta;
            
             //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
@@ -158,92 +150,6 @@ namespace OctoAwesome
             return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
                    | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
                    | ((x & (CHUNKSIZE_X - 1)));
-        }
-
-        /// <summary>
-        /// Serialisiert den aktuellen Chunk in den angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Output Stream</param>
-        public void Serialize(Stream stream)
-        {
-            using (BinaryWriter bw = new BinaryWriter(stream))
-            {
-                List<Type> types = new List<Type>();
-
-                // Types sammeln
-                for (int i = 0; i < _blocks.Length; i++)
-                {
-                    if (_blocks[i] != null)
-                    {
-                        Type t = _blocks[i].GetType();
-                        if (!types.Contains(t))
-                            types.Add(t);
-                    }
-                }
-
-                // Schreibe Phase 1
-                bw.Write(types.Count);
-
-                // Im Falle eines Luft-Chunks...
-                if (types.Count == 0)
-                    return;
-
-                foreach (var t in types)
-                {
-                    bw.Write(t.FullName);
-                }
-
-                // Schreibe Phase 2
-                for (int i = 0; i < _blocks.Length; i++)
-                {
-                    if (_blocks[i] == null)
-                        bw.Write(0);
-                    else
-                    {
-                        bw.Write(types.IndexOf(_blocks[i].GetType()) + 1);
-
-                        //TODO: Überarbeiten für Metainfos
-                      //  bw.Write((byte)_blocks[i].Orientation);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Deserialisiert einen Chunk aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Input Stream</param>
-        /// <param name="knownBlocks">Liste der bekannten Block-Typen</param>
-        public void Deserialize(Stream stream, IEnumerable<IBlockDefinition> knownBlocks)
-        {
-            using (BinaryReader br = new BinaryReader(stream))
-            {
-                List<Type> types = new List<Type>();
-                int typecount = br.ReadInt32();
-
-                // Im Falle eines Luftchunks
-                if (typecount == 0)
-                    return;
-
-                for (int i = 0; i < typecount; i++) 
-                {
-                    string typeName = br.ReadString();
-                    var blockDefinition = knownBlocks.First(d => d.GetBlockType().FullName == typeName);
-                    types.Add(blockDefinition.GetBlockType());
-                }
-
-                for (int i = 0; i < _blocks.Length; i++)
-                {
-                    int typeIndex = br.ReadInt32();
-                    if (typeIndex > 0)
-                    {
-                        OrientationFlags orientation = (OrientationFlags)br.ReadByte();
-                        Type t = types[typeIndex - 1];
-                     //   _blocks[i] = (IBlock)Activator.CreateInstance(t);
-                      //  _blocks[i].Orientation = orientation;
-                    }
-                }
-            }
         }
     }
 }

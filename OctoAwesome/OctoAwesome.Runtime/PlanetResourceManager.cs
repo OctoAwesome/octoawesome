@@ -22,24 +22,24 @@ namespace OctoAwesome.Runtime
         }
 
         [Obsolete]
-        public IBlock GetBlock(Index3 index)
+        public BlockDefinition GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
 
-        public IBlock GetBlock(int x, int y, int z)
+        public BlockDefinition GetBlock(int x, int y, int z)
         {
             var chunk = _chunkCache.Get(x, y, z);
             return chunk.GetBlock(x, y, z);
         }
 
         [Obsolete]
-        public void SetBlock(Index3 index, IBlock block)
+        public void SetBlock(Index3 index, BlockDefinition block)
         {
             SetBlock(index.X, index.Y, index.Z, block);
         }
 
-        public void SetBlock(int x, int y, int z, IBlock block)
+        public void SetBlock(int x, int y, int z, BlockDefinition block)
         {
             var chunk = _chunkCache.Get(x, y, z);
             chunk.SetBlock(x, y, z, block);

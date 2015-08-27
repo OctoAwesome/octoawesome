@@ -62,9 +62,11 @@
     <Compile Include="Coordinate.cs" />
     <Compile Include="IBlock.cs" />
     <Compile Include="IBlockDefinition.cs" />
+    <Compile Include="IBlockRenderer.cs" />
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkCache.cs" />
     <Compile Include="IChunkPersistence.cs" />
+    <Compile Include="IChunkSerializer.cs" />
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IInputSet.cs" />
     <Compile Include="IItem.cs" />

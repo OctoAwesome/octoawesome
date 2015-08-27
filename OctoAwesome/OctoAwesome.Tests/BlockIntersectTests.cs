@@ -8,7 +8,7 @@ namespace OctoAwesome.Tests
     [TestClass]
     public class BlockIntersectTests
     {
-        IBlock block;
+        BlockDefinition block;
 
         [TestInitialize]
         public void Init()
@@ -220,7 +220,7 @@ namespace OctoAwesome.Tests
             //  2#
             // 1
 
-            Dictionary<Index3, IBlock> blocks = new Dictionary<Index3, IBlock>();
+            Dictionary<Index3, BlockDefinition> blocks = new Dictionary<Index3, BlockDefinition>();
             blocks.Add(new Index3(2, 2, 1), new TestBlock());
             blocks.Add(new Index3(3, 2, 1), new TestBlock());
             blocks.Add(new Index3(4, 2, 1), new TestBlock());
@@ -235,7 +235,7 @@ namespace OctoAwesome.Tests
             // Step 1 (2/5 -> 2.75/4.25 (keine Kollision)
             foreach (var pos in blocks.Keys)
             {
-                IBlock block = blocks[pos];
+                BlockDefinition block = blocks[pos];
                 distance = block.Intersect(pos, player, move, out collisionAxis);
                 Assert.IsNull(collisionAxis);
                 Assert.IsNull(distance);
@@ -245,7 +245,7 @@ namespace OctoAwesome.Tests
             player = new BoundingBox(player.Min + move, player.Max + move);
             foreach (var pos in blocks.Keys)
             {
-                IBlock block = blocks[pos];
+                BlockDefinition block = blocks[pos];
                 distance = block.Intersect(pos, player, move, out collisionAxis);
 
                 if (pos == new Index3(4, 3, 1) || pos == new Index3(4, 4, 1))
@@ -264,7 +264,7 @@ namespace OctoAwesome.Tests
             player = new BoundingBox(new Vector3(3, 3.5f, 1), new Vector3(4, 4.5f, 1));
             foreach (var pos in blocks.Keys)
             {
-                IBlock block = blocks[pos];
+                BlockDefinition block = blocks[pos];
                 distance = block.Intersect(pos, player, move, out collisionAxis);
 
                 if (pos == new Index3(4, 3, 1) || pos == new Index3(4, 4, 1))
@@ -288,7 +288,7 @@ namespace OctoAwesome.Tests
             player = new BoundingBox(new Vector3(3, 3, 1), new Vector3(4, 3, 1));
             foreach (var pos in blocks.Keys)
             {
-                IBlock block = blocks[pos];
+                BlockDefinition block = blocks[pos];
                 distance = block.Intersect(pos, player, move, out collisionAxis);
 
                 if (pos == new Index3(4, 2, 1) || pos == new Index3(4, 3, 1))

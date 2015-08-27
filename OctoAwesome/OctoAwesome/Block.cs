@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome
 {
-    public abstract class Block : IBlock
+    public abstract class Block : BlockDefinition
     {
         public OrientationFlags Orientation { get; set; }
 

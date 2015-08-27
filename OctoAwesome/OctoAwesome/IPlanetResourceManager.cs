@@ -14,8 +14,8 @@
         /// </summary>
         /// <param name="index">Block Index</param>
         /// <returns>Block oder null, falls dort kein Block existiert</returns>
-        IBlock GetBlock(Index3 index);
-        IBlock GetBlock(int x, int y, int z);
+        BlockDefinition GetBlock(Index3 index);
+        BlockDefinition GetBlock(int x, int y, int z);
 
 
         /// <summary>
@@ -23,8 +23,8 @@
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
-        void SetBlock(Index3 index, IBlock block);
+        void SetBlock(Index3 index, BlockDefinition block);
         
-        void SetBlock(int x, int y, int z, IBlock block);
+        void SetBlock(int x, int y, int z, BlockDefinition block);
     }
 }

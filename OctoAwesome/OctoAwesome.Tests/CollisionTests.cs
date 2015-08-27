@@ -15,7 +15,7 @@ namespace OctoAwesome.Tests
         private float playerRadius = 0.5f;
         private float playerHeight = 2f;
         private Vector3 move;
-        private Dictionary<Index3, IBlock> blocks = new Dictionary<Index3, IBlock>();
+        private Dictionary<Index3, BlockDefinition> blocks = new Dictionary<Index3, BlockDefinition>();
 
         [TestMethod]
         public void CollisionFromEastToWestTest()
@@ -205,7 +205,7 @@ namespace OctoAwesome.Tests
 
                 foreach (var pos in blocks.Keys)
                 {
-                    IBlock block = blocks[pos];
+                    BlockDefinition block = blocks[pos];
                     if (block == null)
                         continue;
 

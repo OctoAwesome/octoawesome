@@ -8,19 +8,19 @@ namespace OctoAwesome.Runtime
 {
     public static class BlockDefinitionManager
     {
-        private static IBlockDefinition[] _definitions;
+        private static BlockDefinition[] _definitions;
 
-        public static IEnumerable<IBlockDefinition> GetBlockDefinitions()
+        public static IEnumerable<BlockDefinition> GetBlockDefinitions()
         {
             if (_definitions == null)
             {
-                _definitions = ExtensionManager.GetInstances<IBlockDefinition>().ToArray();
+                _definitions = ExtensionManager.GetInstances<BlockDefinition>().ToArray();
             }
 
             return _definitions;
         }
 
-        public static IBlockDefinition GetForType(ushort type)
+        public static BlockDefinition GetForType(ushort type)
         {
             return _definitions[type & Blocks.TypeMask];
         }
