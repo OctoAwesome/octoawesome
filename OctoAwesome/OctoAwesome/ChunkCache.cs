@@ -5,7 +5,6 @@ namespace OctoAwesome
 {
     public class ChunkCache : IChunkCache
     {
-        //private readonly IDictionary<Index3, IChunk> _chunks = new Dictionary<Index3, IChunk>();
         private readonly IChunk[] _chunks;
         private readonly Func<Index3, IChunk> _loadDelegate;
         private readonly Action<Index3, IChunk> _saveDelegate;

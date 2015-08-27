@@ -7,19 +7,19 @@ using System.Text;
 
 namespace OctoAwesome.Basics
 {
-    public sealed class WoodBlockDefinition : IBlockDefinition
+    public sealed class WoodBlockDefinition : BlockDefinition
     {
-        public string Name
+        public override string Name
         {
             get { return "Wood"; }
         }
 
-        public Bitmap Icon
+        public override Bitmap Icon
         {
             get { return (Bitmap)Bitmap.FromFile("./Assets/wood_top.png"); }
         }
 
-        public IEnumerable<Bitmap> Textures
+        public override Bitmap[] Textures
         {
             get
             {
@@ -29,7 +29,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public PhysicalProperties GetProperties(IBlock block)
+        public override PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z)
         {
             return new PhysicalProperties()
             {
@@ -40,12 +40,30 @@ namespace OctoAwesome.Basics
             };
         }
 
-        public void Hit(IBlock block, PhysicalProperties itemProperties)
+        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
         {
             throw new NotImplementedException();
         }
 
-        public int GetTopTextureIndex(IBlock block)
+        public override int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        {
+            // OrientationFlags orientation = manager.GetBlock()
+
+            switch (block.Orientation)
+            {
+                case OrientationFlags.SideWest:
+                case OrientationFlags.SideEast:
+                case OrientationFlags.SideSouth:
+                case OrientationFlags.SideNorth:
+                    return 1;
+                case OrientationFlags.SideBottom:
+                case OrientationFlags.SideTop:
+                default:
+                    return 0;
+            }
+        }
+
+        public override int GetBottomTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -61,23 +79,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetBottomTextureIndex(IBlock block)
-        {
-            switch (block.Orientation)
-            {
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                    return 1;
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 0;
-            }
-        }
-
-        public int GetNorthTextureIndex(IBlock block)
+        public override int GetNorthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -93,7 +95,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetSouthTextureIndex(IBlock block)
+        public override int GetSouthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -110,7 +112,7 @@ namespace OctoAwesome.Basics
 
         }
 
-        public int GetWestTextureIndex(IBlock block)
+        public override int GetWestTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -127,7 +129,7 @@ namespace OctoAwesome.Basics
 
         }
 
-        public int GetEastTextureIndex(IBlock block)
+        public override int GetEastTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -143,7 +145,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetTopTextureRotation(IBlock block)
+        public override int GetTopTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -159,7 +161,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetBottomTextureRotation(IBlock block)
+        public override int GetBottomTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -175,7 +177,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetEastTextureRotation(IBlock block)
+        public override int GetEastTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -191,7 +193,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetWestTextureRotation(IBlock block)
+        public override int GetWestTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -207,7 +209,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetNorthTextureRotation(IBlock block)
+        public override int GetNorthTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -223,7 +225,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public int GetSouthTextureRotation(IBlock block)
+        public override int GetSouthTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
             switch (block.Orientation)
             {
@@ -237,49 +239,6 @@ namespace OctoAwesome.Basics
                 default:
                     return 0;
             }
-        }
-
-        public bool IsTopSolidWall(IBlock block)
-        {
-            return true;
-        }
-
-        public bool IsBottomSolidWall(IBlock block)
-        {
-            return true;
-        }
-
-        public bool IsNorthSolidWall(IBlock block)
-        {
-            return true;
-        }
-
-        public bool IsSouthSolidWall(IBlock block)
-        {
-            return true;
-        }
-
-        public bool IsWestSolidWall(IBlock block)
-        {
-            return true;
-        }
-
-        public bool IsEastSolidWall(IBlock block)
-        {
-            return true;
-        }
-
-        public IBlock GetInstance(OrientationFlags orientation)
-        {
-            return new WoodBlock()
-            {
-                Orientation = orientation
-            };
-        }
-
-        public Type GetBlockType()
-        {
-            return typeof(WoodBlock);
         }
     }
 }

@@ -57,9 +57,7 @@
     <Compile Include="ComplexPlanet.cs" />
     <Compile Include="ComplexPlanetGenerator.cs" />
     <Compile Include="DebugMapGenerator.cs" />
-    <Compile Include="GrassBlock.cs" />
     <Compile Include="GrassBlockDefinition.cs" />
-    <Compile Include="GroundBlock.cs" />
     <Compile Include="GroundBlockDefinition.cs" />
     <Compile Include="IronOre.cs" />
     <Compile Include="IronOreDefinition.cs" />
@@ -71,13 +69,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SandBlock.cs" />
     <Compile Include="SandBlockDefinition.cs" />
-    <Compile Include="StoneBlock.cs" />
     <Compile Include="StoneBlockDefinition.cs" />
-    <Compile Include="WaterBlock.cs" />
     <Compile Include="WaterBlockDefinition.cs" />
-    <Compile Include="WoodBlock.cs" />
     <Compile Include="WoodBlockDefinition.cs" />
   </ItemGroup>
   <ItemGroup>

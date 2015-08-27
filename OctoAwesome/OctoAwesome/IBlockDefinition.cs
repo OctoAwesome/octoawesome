@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
 
 namespace OctoAwesome
 {
@@ -12,50 +8,46 @@ namespace OctoAwesome
 
         Bitmap Icon { get; }
 
-        PhysicalProperties GetProperties(IBlock block);
+        void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
 
-        void Hit(IBlock block, PhysicalProperties itemProperties);
+        Bitmap[] Textures { get; }
 
-        IEnumerable<Bitmap> Textures { get; }
+        PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetTopTextureIndex(IBlock block);
+        int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetBottomTextureIndex(IBlock block);
+        int GetBottomTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetNorthTextureIndex(IBlock block);
+        int GetNorthTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetSouthTextureIndex(IBlock block);
+        int GetSouthTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetWestTextureIndex(IBlock block);
+        int GetWestTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetEastTextureIndex(IBlock block);
+        int GetEastTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetTopTextureRotation(IBlock block);
-        
-        int GetBottomTextureRotation(IBlock block);
-        
-        int GetEastTextureRotation(IBlock block);
-        
-        int GetWestTextureRotation(IBlock block);
-        
-        int GetNorthTextureRotation(IBlock block);
-        
-        int GetSouthTextureRotation(IBlock block);
+        int GetTopTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
 
-        bool IsTopSolidWall(IBlock block);
+        int GetBottomTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
 
-        bool IsBottomSolidWall(IBlock block);
+        int GetEastTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
 
-        bool IsNorthSolidWall(IBlock block);
-        
-        bool IsSouthSolidWall(IBlock block);
-        
-        bool IsWestSolidWall(IBlock block);
-        
-        bool IsEastSolidWall(IBlock block);
+        int GetWestTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
 
-       // IBlock GetInstance(OrientationFlags orientation);
+        int GetNorthTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
 
-        Type GetBlockType();
+        int GetSouthTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+
+        bool IsTopSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+
+        bool IsBottomSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+
+        bool IsNorthSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+
+        bool IsSouthSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+
+        bool IsWestSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+
+        bool IsEastSolidWall(IPlanetResourceManager manager, int x, int y, int z);
     }
 }

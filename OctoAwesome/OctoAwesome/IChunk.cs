@@ -47,7 +47,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Koordinate des Zielblocks innerhalb des Chunks.</param>
         /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
-        void SetBlock(Index3 index, ushort block);
+        void SetBlock(Index3 index, ushort block, int meta = 0);
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.
@@ -56,7 +56,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate innerhalb des Chunks.</param>
         /// <param name="z">Z-Anteil der Koordinate innerhalb des Chunks.</param>
         /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
-        void SetBlock(int x, int y, int z, ushort block);
+        void SetBlock(int x, int y, int z, ushort block, int meta = 0);
 
         int GetBlockMeta(int x, int y, int z);
 
@@ -65,18 +65,5 @@ namespace OctoAwesome
         ushort[] GetBlockResources(int x, int y, int z);
 
         void SetBlockResources(int x, int y, int z, ushort[] resources);
-
-        /// <summary>
-        /// Serialisiert den aktuellen Chunk in den angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Output Stream</param>
-        void Serialize(Stream stream);
-
-        /// <summary>
-        /// Deserialisiert einen Chunk aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Input Stream</param>
-        /// <param name="knownBlocks">Liste der bekannten Block-Typen</param>
-        void Deserialize(Stream stream, IEnumerable<IBlockDefinition> knownBlocks);
     }
 }

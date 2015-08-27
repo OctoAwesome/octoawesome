@@ -162,7 +162,7 @@ namespace OctoAwesome.Runtime
                         for (int x = minx; x <= maxx; x++)
                         {
                             Index3 pos = new Index3(x, y, z);
-                            IBlock block = GetBlock(pos +
+                            BlockDefinition block = GetBlock(pos +
                                 Player.Position.GlobalBlockIndex);
                             if (block == null)
                                 continue;
@@ -225,7 +225,7 @@ namespace OctoAwesome.Runtime
 
             if (lastInteract.HasValue)
             {
-                IBlock lastBlock = _manager.GetBlock(lastInteract.Value);
+                BlockDefinition lastBlock = _manager.GetBlock(lastInteract.Value);
                 _manager.SetBlock(lastInteract.Value, null);
 
                 if (lastBlock != null)
@@ -263,8 +263,8 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    IBlock block = _manager.GetBlock(lastApply.Value);
-                    IBlockDefinition blockDefinition = BlockDefinitionManager.GetBlockDefinitions().FirstOrDefault(d => d.GetBlockType() == block.GetType());
+                    BlockDefinition block = _manager.GetBlock(lastApply.Value);
+                    BlockDefinition blockDefinition = BlockDefinitionManager.GetBlockDefinitions().FirstOrDefault(d => d.GetBlockType() == block.GetType());
                     IItemDefinition itemDefinition = ActiveTool.Definition;
 
                     blockDefinition.Hit(block, itemDefinition.GetProperties(null));
@@ -282,7 +282,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="index">Block Index</param>
         /// <returns>Block oder null, falls dort kein Block existiert</returns>
-        public IBlock GetBlock(Index3 index)
+        public BlockDefinition GetBlock(Index3 index)
         {
             return _manager.GetBlock(index);
         }
@@ -292,7 +292,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
-        public void SetBlock(Index3 index, IBlock block)
+        public void SetBlock(Index3 index, BlockDefinition block)
         {
             _manager.SetBlock(index, block);
         }
