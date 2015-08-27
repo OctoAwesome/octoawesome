@@ -47,9 +47,9 @@ namespace OctoAwesome.Basics
 
         public override int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
-            // OrientationFlags orientation = manager.GetBlock()
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
 
-            switch (block.Orientation)
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -65,7 +65,9 @@ namespace OctoAwesome.Basics
 
         public override int GetBottomTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -81,7 +83,9 @@ namespace OctoAwesome.Basics
 
         public override int GetNorthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideSouth:
                 case OrientationFlags.SideNorth:
@@ -97,7 +101,9 @@ namespace OctoAwesome.Basics
 
         public override int GetSouthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideSouth:
                 case OrientationFlags.SideNorth:
@@ -114,7 +120,9 @@ namespace OctoAwesome.Basics
 
         public override int GetWestTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -131,7 +139,9 @@ namespace OctoAwesome.Basics
 
         public override int GetEastTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -147,7 +157,9 @@ namespace OctoAwesome.Basics
 
         public override int GetTopTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -163,7 +175,9 @@ namespace OctoAwesome.Basics
 
         public override int GetBottomTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -179,7 +193,9 @@ namespace OctoAwesome.Basics
 
         public override int GetEastTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideSouth:
                 case OrientationFlags.SideNorth:
@@ -195,7 +211,9 @@ namespace OctoAwesome.Basics
 
         public override int GetWestTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideSouth:
                 case OrientationFlags.SideNorth:
@@ -211,7 +229,9 @@ namespace OctoAwesome.Basics
 
         public override int GetNorthTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:
@@ -227,7 +247,9 @@ namespace OctoAwesome.Basics
 
         public override int GetSouthTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
         {
-            switch (block.Orientation)
+            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+
+            switch (orientation)
             {
                 case OrientationFlags.SideWest:
                 case OrientationFlags.SideEast:

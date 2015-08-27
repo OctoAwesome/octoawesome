@@ -21,6 +21,12 @@ namespace OctoAwesome
         /// </summary>
         Index3 Index { get; }
 
+        ushort[] Blocks { get; }
+
+        int[] MetaData { get; }
+
+        ushort[][] Resources { get; }
+
         /// <summary>
         /// Veränderungs-Counter zur Ermittlung von Änderungen.
         /// </summary>

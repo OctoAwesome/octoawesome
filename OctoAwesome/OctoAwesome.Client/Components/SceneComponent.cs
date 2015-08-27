@@ -52,11 +52,6 @@ namespace OctoAwesome.Client.Components
 
         }
 
-        private BlockDefinition GetBlock(Index3 index)
-        {
-            return _manager.GetBlock(index);
-        }
-
         protected override void LoadContent()
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
@@ -158,12 +153,14 @@ namespace OctoAwesome.Client.Components
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        BlockDefinition block = GetBlock(pos);
-                        if (block == null)
+                        ushort block = _manager.GetBlock(pos);
+                        if (block == 0)
                             continue;
 
+                        IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
+
                         Axis? collisionAxis;
-                        float? distance = block.Intersect(pos - renderOffset, camera.PickRay, out collisionAxis);
+                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(_manager, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
 
                         if (distance.HasValue && distance.Value < bestDistance)
                         {

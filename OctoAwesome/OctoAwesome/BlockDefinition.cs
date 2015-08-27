@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Drawing;
 
 namespace OctoAwesome
@@ -14,6 +15,11 @@ namespace OctoAwesome
         public abstract PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
 
         public abstract void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
+
+        public virtual BoundingBox[] GetCollisionBoxes(IPlanetResourceManager manager, int x, int y, int z)
+        {
+            return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+        }
 
         public virtual int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
         {

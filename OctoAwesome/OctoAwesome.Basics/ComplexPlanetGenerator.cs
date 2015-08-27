@@ -24,8 +24,22 @@ namespace OctoAwesome.Basics
             return planet;
         }
 
-        public IChunk[] GenerateChunk(IPlanet planet, Index2 index)
+        public IChunk[] GenerateChunk(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
         {
+            IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
+            ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
+
+            IBlockDefinition groundDefinition = blockDefinitions.FirstOrDefault(d => typeof(GroundBlockDefinition) == d.GetType());
+            ushort groundIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), groundDefinition) + 1);
+
+            IBlockDefinition stoneDefinition = blockDefinitions.FirstOrDefault(d => typeof(StoneBlockDefinition) == d.GetType());
+            ushort stoneIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), stoneDefinition) + 1);
+
+            IBlockDefinition waterDefinition = blockDefinitions.FirstOrDefault(d => typeof(WaterBlockDefinition) == d.GetType());
+            ushort waterIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), waterDefinition) + 1);
+
+            IBlockDefinition grassDefinition = blockDefinitions.FirstOrDefault(d => typeof(GrassBlockDefinition) == d.GetType());
+            ushort grassIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), grassDefinition) + 1);
 
             if (!(planet is ComplexPlanet))
                 throw new ArgumentException("planet is not a Type of ComplexPlanet");
@@ -64,40 +78,40 @@ namespace OctoAwesome.Basics
 
                                     if ((ozeanSurface || surfaceBlock) && (absoluteZ <= (localPlanet.BiomeGenerator.SeaLevel + 2)) && (absoluteZ >= (localPlanet.BiomeGenerator.SeaLevel - 2)))
                                     {
-                                        chunks[i].SetBlock(x, y, z, new SandBlock());
+                                        chunks[i].SetBlock(x, y, z, sandIndex);
                                     }
                                     else if (temp >= 35)
                                     {
-                                        chunks[i].SetBlock(x, y, z, new SandBlock());
+                                        chunks[i].SetBlock(x, y, z, sandIndex);
                                     }
                                     else if (absoluteZ >= localPlanet.Size.Z * Chunk.CHUNKSIZE_Z * 0.6f)
                                     {
                                         if (temp > 12)
-                                            chunks[i].SetBlock(x, y, z, new GroundBlock());
+                                            chunks[i].SetBlock(x, y, z, groundIndex);
                                         else
-                                            chunks[i].SetBlock(x, y, z, new StoneBlock());
+                                            chunks[i].SetBlock(x, y, z, stoneIndex);
                                     }
                                     else if (temp >= 8)
                                     {
                                         if (surfaceBlock && !ozeanSurface)
                                         {
-                                            chunks[i].SetBlock(x, y, z, new GrassBlock());
+                                            chunks[i].SetBlock(x, y, z, grassIndex);
                                             surfaceBlock = false;
                                         }
                                         else
                                         {
-                                            chunks[i].SetBlock(x, y, z, new GroundBlock());
+                                            chunks[i].SetBlock(x, y, z, groundIndex);
                                         }
                                     }
                                     else
                                     {
-                                        chunks[i].SetBlock(x, y, z, new GroundBlock());
+                                        chunks[i].SetBlock(x, y, z, groundIndex);
                                     }
                                     obersteSchicht--;
                                 }
                                 else
                                 {
-                                    chunks[i].SetBlock(x, y, z, new StoneBlock());
+                                    chunks[i].SetBlock(x, y, z, stoneIndex);
                                 }
 
 
@@ -105,7 +119,7 @@ namespace OctoAwesome.Basics
                             else if ((z + (i * Chunk.CHUNKSIZE_Z)) <= localPlanet.BiomeGenerator.SeaLevel)
                             {
 
-                                chunks[i].SetBlock(x, y, z, new WaterBlock());
+                                chunks[i].SetBlock(x, y, z, waterIndex);
                                 ozeanSurface = true;
                             }
 

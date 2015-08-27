@@ -22,12 +22,12 @@ namespace OctoAwesome.Runtime
         }
 
         [Obsolete]
-        public BlockDefinition GetBlock(Index3 index)
+        public ushort GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
 
-        public BlockDefinition GetBlock(int x, int y, int z)
+        public ushort GetBlock(int x, int y, int z)
         {
             var chunk = _chunkCache.Get(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
 
@@ -35,19 +35,31 @@ namespace OctoAwesome.Runtime
             if (chunk != null) 
                 return chunk.GetBlock(x, y, z);
             
-            return null;
+            return 0;
         }
 
         [Obsolete]
-        public void SetBlock(Index3 index, BlockDefinition block)
+        public void SetBlock(Index3 index, ushort block)
         {
             SetBlock(index.X, index.Y, index.Z, block);
         }
 
-        public void SetBlock(int x, int y, int z, BlockDefinition block)
+        public void SetBlock(int x, int y, int z, ushort block)
         {
             var chunk = _chunkCache.Get(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
             chunk.SetBlock(x, y, z, block);
+        }
+
+        public int GetBlockMeta(int x, int y, int z)
+        {
+            var chunk = _chunkCache.Get(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            return chunk.GetBlockMeta(x, y, z);
+        }
+
+        public void SetBlockMeta(int x, int y, int z, int meta)
+        {
+            var chunk = _chunkCache.Get(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            chunk.SetBlockMeta(x, y, z, meta);
         }
     }
 }

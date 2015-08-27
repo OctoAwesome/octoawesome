@@ -33,9 +33,11 @@ namespace OctoAwesome
 
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
 
-        private readonly ushort[] _blocks;
-        private readonly int[] _metaData;
-        private readonly ushort[][] _resources;
+        public ushort[] Blocks { get; private set; }
+
+        public int[] MetaData { get; private set; }
+
+        public ushort[][] Resources { get; private set; }
 
 
         /// <summary>
@@ -53,9 +55,9 @@ namespace OctoAwesome
 
         public Chunk(Index3 pos, int planet)
         {
-            _blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            _metaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            _resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
+            Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            MetaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            Resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
 
             Index = pos;
             Planet = planet;
@@ -81,7 +83,7 @@ namespace OctoAwesome
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public ushort GetBlock(int x, int y, int z)
         {
-            return blocks[GetFlatIndex(x, y, z)];
+            return Blocks[GetFlatIndex(x, y, z)];
         }
 
         /// <summary>
@@ -105,8 +107,8 @@ namespace OctoAwesome
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
             int index = GetFlatIndex(x, y, z);
-            _blocks[index] = block;
-            _metaData[index] = meta;
+            Blocks[index] = block;
+            MetaData[index] = meta;
 
             //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
@@ -114,12 +116,12 @@ namespace OctoAwesome
 
         public int GetBlockMeta(int x, int y, int z)
         {
-            return _metaData[GetFlatIndex(x, y, z)];
+            return MetaData[GetFlatIndex(x, y, z)];
         }
 
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
-            _metaData[GetFlatIndex(x, y, z)] = meta;
+            MetaData[GetFlatIndex(x, y, z)] = meta;
 
             //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
@@ -127,12 +129,12 @@ namespace OctoAwesome
 
         public ushort[] GetBlockResources(int x, int y, int z)
         {
-            return _resources[GetFlatIndex(x, y, z)];
+            return Resources[GetFlatIndex(x, y, z)];
         }
 
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
-            _resources[GetFlatIndex(x, y, z)] = resources;
+            Resources[GetFlatIndex(x, y, z)] = resources;
 
             //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;

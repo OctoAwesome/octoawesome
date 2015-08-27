@@ -11,6 +11,6 @@ namespace OctoAwesome
 
         IPlanet GeneratePlanet(int universe, int seed);
 
-        IChunk[] GenerateChunk(IPlanet planet, Index2 index);
+        IChunk[] GenerateChunk(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index);
     }
 }

@@ -6,36 +6,16 @@ using System.Text;
 
 namespace OctoAwesome
 {
-    public abstract class Block : BlockDefinition
+    public static class Block
     {
-        public OrientationFlags Orientation { get; set; }
-
-        /// <summary>
-        /// Zustand des Blocks im Wertebereich von 0...99
-        /// </summary>
-        public int Condition { get; set; }
-
-        public List<IResource> Resources { get; private set; }
-
-        public Block()
-        {
-            Resources = new List<IResource>();
-            Condition = 99;
-        }
-
-        public virtual BoundingBox[] GetCollisionBoxes()
-        {
-            return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
-        }
-
-        public float? Intersect(Index3 boxPosition, Ray ray, out Axis? collisionAxis)
+        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
             float raylength = Player.SELECTIONRANGE * 2;
             float? minDistance = null;
             bool collided = false;
 
-            foreach (var localBox in GetCollisionBoxes())
+            foreach (var localBox in collisionBoxes)
             {
                 BoundingBox box = new BoundingBox(localBox.Min + boxPosition, localBox.Max + boxPosition);
 
@@ -95,7 +75,7 @@ namespace OctoAwesome
             }
         }
 
-        public float? Intersect(Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
+        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
         {
             Vector3 playerCorner = new Vector3(
                         (move.X > 0 ? player.Max.X : player.Min.X),
@@ -110,7 +90,7 @@ namespace OctoAwesome
             Vector3 min = new Vector3(1, 1, 1);
             bool collided = false;
 
-            foreach (var localBox in GetCollisionBoxes())
+            foreach (var localBox in collisionBoxes)
             {
                 Vector3 boxMin = localBox.Min + new Vector3(boxPosition.X, boxPosition.Y, boxPosition.Z);
                 Vector3 boxMax = localBox.Max + new Vector3(boxPosition.X, boxPosition.Y, boxPosition.Z);

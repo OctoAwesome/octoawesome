@@ -162,13 +162,16 @@ namespace OctoAwesome.Runtime
                         for (int x = minx; x <= maxx; x++)
                         {
                             Index3 pos = new Index3(x, y, z);
-                            BlockDefinition block = GetBlock(pos +
-                                Player.Position.GlobalBlockIndex);
-                            if (block == null)
+                            Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
+                            ushort block = _manager.GetBlock(blockPos);
+                            if (block == 0)
                                 continue;
 
                             Axis? localAxis;
-                            float? moveFactor = block.Intersect(pos, playerBox, move, out localAxis);
+                            IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
+                            float? moveFactor = Block.Intersect(
+                                blockDefinition.GetCollisionBoxes(_manager, blockPos.X, blockPos.Y, blockPos.Z),  
+                                pos, playerBox, move, out localAxis);
 
                             if (moveFactor.HasValue && moveFactor.Value < min)
                             {
@@ -225,17 +228,18 @@ namespace OctoAwesome.Runtime
 
             if (lastInteract.HasValue)
             {
-                BlockDefinition lastBlock = _manager.GetBlock(lastInteract.Value);
-                _manager.SetBlock(lastInteract.Value, null);
+                ushort lastBlock = _manager.GetBlock(lastInteract.Value);
+                _manager.SetBlock(lastInteract.Value, 0);
 
-                if (lastBlock != null)
+                if (lastBlock != 0)
                 {
                     var slot = Player.Inventory.SingleOrDefault(s => s.Definition == lastBlock.GetType());
                     if (slot == null)
                     {
-                        var definition = BlockDefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetBlockType() == lastBlock.GetType());
-
                         // TODO: ItemDefinition finden
+                        // var definition = BlockDefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetBlockType() == lastBlock.GetType());
+
+
                         slot = new InventorySlot()
                         {
                             Definition = null,
@@ -263,38 +267,19 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    BlockDefinition block = _manager.GetBlock(lastApply.Value);
-                    BlockDefinition blockDefinition = BlockDefinitionManager.GetBlockDefinitions().FirstOrDefault(d => d.GetBlockType() == block.GetType());
+                    // TODO: Fix Interaction ;)
+                    ushort block = _manager.GetBlock(lastApply.Value);
+                    IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
                     IItemDefinition itemDefinition = ActiveTool.Definition;
 
-                    blockDefinition.Hit(block, itemDefinition.GetProperties(null));
-                    itemDefinition.Hit(null, blockDefinition.GetProperties(block));
+                    //blockDefinition.Hit(blockDefinition, itemDefinition.GetProperties(null));
+                    //itemDefinition.Hit(null, blockDefinition.GetProperties(block));
                 }
 
                 lastApply = null;
             }
 
             #endregion
-        }
-
-        /// <summary>
-        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
-        /// </summary>
-        /// <param name="index">Block Index</param>
-        /// <returns>Block oder null, falls dort kein Block existiert</returns>
-        public BlockDefinition GetBlock(Index3 index)
-        {
-            return _manager.GetBlock(index);
-        }
-
-        /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
-        /// </summary>
-        /// <param name="index">Block-Koordinate</param>
-        /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
-        public void SetBlock(Index3 index, BlockDefinition block)
-        {
-            _manager.SetBlock(index, block);
         }
 
         public Coordinate Position

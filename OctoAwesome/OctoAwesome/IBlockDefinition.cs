@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Microsoft.Xna.Framework;
+using System.Drawing;
 
 namespace OctoAwesome
 {
@@ -11,6 +12,8 @@ namespace OctoAwesome
         void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
 
         Bitmap[] Textures { get; }
+
+        BoundingBox[] GetCollisionBoxes(IPlanetResourceManager manager, int x, int y, int z);
 
         PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
 
