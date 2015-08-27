@@ -40,7 +40,7 @@ namespace OctoAwesome.Client.Components
         private Index3 currentChunk = new Index3(-1, -1, -1);
 
         private Thread backgroundThread;
-        private readonly IPlanetResourceManager _manager;
+        private IPlanetResourceManager _manager;
 
         public RenderTarget2D MiniMapTexture { get; set; }
 
@@ -50,7 +50,6 @@ namespace OctoAwesome.Client.Components
             this.player = player;
             this.camera = camera;
 
-            _manager = ResourceManager.Instance.GetManagerForPlanet(player.ActorHost.Player.Position.Planet);
         }
 
         private BlockDefinition GetBlock(Index3 index)
@@ -87,6 +86,8 @@ namespace OctoAwesome.Client.Components
             }
 
             planet = ResourceManager.Instance.GetPlanet(0);
+
+            _manager = ResourceManager.Instance.GetManagerForPlanet(planet.Id);
 
             chunkRenderer = new ChunkRenderer[
                 ((VIEWRANGE * 2) + 1) *
@@ -137,6 +138,7 @@ namespace OctoAwesome.Client.Components
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
 
             base.LoadContent();
+
         }
 
         public override void Update(GameTime gameTime)

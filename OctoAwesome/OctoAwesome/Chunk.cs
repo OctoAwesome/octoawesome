@@ -81,7 +81,7 @@ namespace OctoAwesome
         /// <returns>Block oder null, falls es dort keinen Block gibt.</returns>
         public ushort GetBlock(int x, int y, int z)
         {
-            return _blocks[GetFlatIndex(x, y, z)];
+            return blocks[GetFlatIndex(x, y, z)];
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace OctoAwesome
             int index = GetFlatIndex(x, y, z);
             _blocks[index] = block;
             _metaData[index] = meta;
-           
+
             //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
         }
