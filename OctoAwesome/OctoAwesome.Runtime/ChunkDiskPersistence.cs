@@ -42,17 +42,24 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        private DirectoryInfo root;
+
         private DirectoryInfo GetRoot()
         {
+            if (root != null)
+                return root;
+
             string appconfig = ConfigurationManager.AppSettings["ChunkRoot"];
             if (!string.IsNullOrEmpty(appconfig))
             {
-                return new DirectoryInfo(appconfig);
+                root = new DirectoryInfo(appconfig);
+                if (!root.Exists) root.Create();
+                return root;
             }
             else
             {
                 var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                DirectoryInfo root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
+                root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
                 if (!root.Exists) root.Create();
                 return root;
             }
