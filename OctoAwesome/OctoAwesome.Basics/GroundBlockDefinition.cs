@@ -30,7 +30,7 @@ namespace OctoAwesome.Basics
         {
             return new PhysicalProperties()
             {
-                Density = 0.3f,
+                Density = 2f,
                 FractureToughness = 0.3f,
                 Granularity = 0.9f,
                 Hardness = 0.1f
