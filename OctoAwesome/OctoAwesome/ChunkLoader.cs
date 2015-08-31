@@ -39,6 +39,23 @@ namespace OctoAwesome
         {
             _cache.EnsureLoaded(_center);
 
+            for (int i = 0; i < ChunkCache.RangeX; i++)
+                for (int j = 0; j < ChunkCache.RangeY; j++)
+                    for (int k = 0; k < ChunkCache.RangeZ; k++)
+                    {
+                        if (i < _maxRange && j < _maxRange && k < _maxRange)
+                            continue;
+
+                        _cache.Release(_center.X + i, _center.Y + j, _center.Z + k);
+                        _cache.Release(_center.X + i, _center.Y - j, _center.Z + k);
+                        _cache.Release(_center.X - i, _center.Y + j, _center.Z + k);
+                        _cache.Release(_center.X - i, _center.Y - j, _center.Z + k);
+                        _cache.Release(_center.X + i, _center.Y + j, _center.Z - k);
+                        _cache.Release(_center.X + i, _center.Y - j, _center.Z - k);
+                        _cache.Release(_center.X - i, _center.Y + j, _center.Z - k);
+                        _cache.Release(_center.X - i, _center.Y - j, _center.Z - k);
+                    }
+
             for (int range = 1; range < _maxRange; range ++) 
                  for (int i = 0; i <= range; i++) 
                      for (int j = 0; j <= range; j++)
