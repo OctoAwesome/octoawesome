@@ -90,7 +90,6 @@
   <ItemGroup>
     <Content Include="Content\Textures\compass.png" />
     <Content Include="Content\Textures\panel.png" />
-    <Content Include="Content\Textures\pix.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
@@ -116,7 +115,6 @@
     <None Include="CompiledContent\Hud.xnb" />
     <None Include="CompiledContent\Textures\compass.xnb" />
     <None Include="CompiledContent\Textures\panel.xnb" />
-    <None Include="CompiledContent\Textures\pix.xnb" />
     <None Include="Content\Hud.spritefont" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

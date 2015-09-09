@@ -65,7 +65,9 @@ namespace OctoAwesome.Client.Components
         {
             base.LoadContent();
 
-            Pix = Game.Content.Load<Texture2D>("Textures/pix");
+            Pix = new Texture2D(GraphicsDevice, 1, 1);
+            Pix.SetData(new[] { Color.White });
+
             NormalText = Game.Content.Load<SpriteFont>("hud");
             batch = new SpriteBatch(GraphicsDevice);
 
