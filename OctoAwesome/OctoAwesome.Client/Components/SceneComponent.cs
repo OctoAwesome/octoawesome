@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class SceneComponent : DrawableGameComponent
     {
-        public static int VIEWRANGE = 3; // Anzahl Chunks als Potenz (Volle Sichtweite)
+        public static int VIEWRANGE = 2; // Anzahl Chunks als Potenz (Volle Sichtweite)
         public static int TEXTURESIZE = 64;
 
         private PlayerComponent player;
@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.Components
 
         private VertexPositionColor[] selectionLines;
         private short[] selectionIndeces;
-        private Index3 currentChunk = new Index3(-1, -1, -1);
+        private Index2 currentChunk = new Index2(-1, -1);
 
         private Thread backgroundThread;
         private IPlanetResourceManager _manager;
@@ -330,16 +330,11 @@ namespace OctoAwesome.Client.Components
 
         private bool FillChunkRenderer()
         {
-            Index3 destinationChunk = player.ActorHost.Position.ChunkIndex;
-            //IPlanet planet = ResourceManager.Instance.GetPlanet(player.ActorHost.Position.Planet);
-            //destinationChunk.Z = Math.Max(0, Math.Min(planet.Size.Z, destinationChunk.Z));
+            Index2 destinationChunk = new Index2(player.ActorHost.Position.ChunkIndex);
 
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
-                int absoluteX = destinationChunk.X;
-                int absoluteY = destinationChunk.Y;
-
                 int mask = (int)Math.Pow(2, VIEWRANGE) - 1;
 
                 int span = (int)Math.Pow(2, VIEWRANGE);
@@ -349,70 +344,21 @@ namespace OctoAwesome.Client.Components
                 {
                     for (int y = 0; y < span; y++)
                     {
-                        int xx = x + absoluteX - spanOver2;
-                        int yy = y + absoluteY - spanOver2;
+                        Index2 local = new Index2(x - spanOver2, y - spanOver2) + destinationChunk;
+                        local.NormalizeXY(planet.Size);
 
-                        int virtualX = xx & mask;
-                        int virtualY = yy & mask;
+                        int virtualX = local.X & mask;
+                        int virtualY = local.Y & mask;
 
                         int rendererIndex = virtualX + 
                             (virtualY << VIEWRANGE);
 
                         for (int z = 0; z < planet.Size.Z; z++)
                         {
-                            chunkRenderer[rendererIndex, z].SetChunk(_manager, xx, yy, z);
+                            chunkRenderer[rendererIndex, z].SetChunk(_manager, local.X, local.Y, z);
                         }
                     }
                 }
-
-            //    #region Shift durchführen
-
-            //    Index3 shift = currentChunk.ShortestDistanceXY(
-            //        destinationChunk, new Index2(planet.Size.X, planet.Size.Y));
-
-            //    for (int i = activeChunkRenderer.Count - 1; i >= 0; i--)
-            //    {
-            //        ChunkRenderer renderer = activeChunkRenderer[i];
-
-            //        Index3 absoluteIndex = renderer.ChunkPosition.Value.ChunkIndex;
-            //        Index3 relativeIndex = destinationChunk.ShortestDistanceXY(
-            //            absoluteIndex, new Index2(
-            //                planet.Size.X,
-            //                planet.Size.Y));
-
-            //        if (!renderer.ChunkPosition.HasValue ||
-            //            relativeIndex.X < -VIEWRANGE || relativeIndex.X > VIEWRANGE ||
-            //            relativeIndex.Y < -VIEWRANGE || relativeIndex.Y > VIEWRANGE ||
-            //            relativeIndex.Z < 0 || relativeIndex.Z > planet.Size.Z)
-            //        {
-            //            renderer.SetChunk(null);
-
-            //            freeChunkRenderer.Enqueue(renderer);
-            //            activeChunkRenderer.Remove(renderer);
-            //        }
-            //    }
-
-            //    #endregion
-
-            //    #region Ungenutzte Chunks auffüllen
-
-            //    foreach (var distance in distances)
-            //    {
-            //        Index3 chunkIndex = destinationChunk + distance;
-            //        chunkIndex.NormalizeXY(planet.Size);
-
-            //        PlanetIndex3 chunkPosition = new PlanetIndex3(
-            //            player.ActorHost.Position.Planet, chunkIndex);
-
-            //        if (!activeChunkRenderer.Any(c => c.ChunkPosition == chunkPosition))
-            //        {
-            //            ChunkRenderer renderer = freeChunkRenderer.Dequeue();
-            //            renderer.SetChunk(chunkPosition);
-            //            activeChunkRenderer.Add(renderer);
-            //        }
-            //    }
-
-            //    #endregion
 
                 currentChunk = destinationChunk;
             }
@@ -426,8 +372,8 @@ namespace OctoAwesome.Client.Components
                 if (!renderer.NeedUpdate())
                     continue;
 
-                Index3 absoluteIndex = renderer.ChunkPosition.Value.ChunkIndex;
-                Index3 relativeIndex = destinationChunk.ShortestDistanceXY(
+                Index2 absoluteIndex = new Index2(renderer.ChunkPosition.Value.ChunkIndex);
+                Index2 relativeIndex = destinationChunk.ShortestDistanceXY(
                                    absoluteIndex, new Index2(
                                        planet.Size.X,
                                        planet.Size.Y));

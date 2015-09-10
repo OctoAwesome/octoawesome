@@ -139,10 +139,6 @@ namespace OctoAwesome.Client.Components
                 chunkLoaded = true;
             }
 
-            // Ignorieren, falls 
-            if (chunk == null)
-                return;
-
             List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
             List<int> index = new List<int>();
             int textureColumns = textures.Width / SceneComponent.TEXTURESIZE;
