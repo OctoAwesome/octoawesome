@@ -66,16 +66,16 @@ namespace OctoAwesome.Client.Components
             effect.FogEnd = SceneComponent.VIEWRANGE * OctoAwesome.Chunk.CHUNKSIZE_X * 0.9f;
         }
 
-        public void SetChunk(PlanetIndex3? index)
+        public void SetChunk(IPlanetResourceManager manager, int x, int y, int z)
         {
-            ChunkPosition = index;
+            var newPosition = new PlanetIndex3(0, new Index3(x, y, z));
+
+            if (newPosition == ChunkPosition) return;
+
+            ChunkPosition = newPosition;
             chunkLoaded = false;
             chunk = null;
-
-            if (index != null)
-                _manager = ResourceManager.Instance.GetManagerForPlanet(index.Value.Planet);
-            else
-                _manager = null;
+            _manager = manager;
         }
 
         public bool NeedUpdate()

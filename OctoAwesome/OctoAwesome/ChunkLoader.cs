@@ -39,38 +39,55 @@ namespace OctoAwesome
         {
             _cache.EnsureLoaded(_center);
 
-            for (int range = 1; range < _maxRange; range++)
-                for (int i = 0; i <= range; i++)
-                    for (int j = 0; j <= range; j++)
-                        for (int k = 0; k < range; k++)
-                        {
-                            if (i != range && j != range && k != range)
-                                continue;
+            for (int i = 0; i < ChunkCache.RangeX; i++)
+                for (int j = 0; j < ChunkCache.RangeY; j++)
+                    for (int k = 0; k < ChunkCache.RangeZ; k++)
+                    {
+                        if (i < _maxRange && j < _maxRange && k < _maxRange)
+                            continue;
 
-                            _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y + j, _center.Z + k));
-                            if (token.IsCancellationRequested) return;
+                        _cache.Release(_center.X + i, _center.Y + j, _center.Z + k);
+                        _cache.Release(_center.X + i, _center.Y - j, _center.Z + k);
+                        _cache.Release(_center.X - i, _center.Y + j, _center.Z + k);
+                        _cache.Release(_center.X - i, _center.Y - j, _center.Z + k);
+                        _cache.Release(_center.X + i, _center.Y + j, _center.Z - k);
+                        _cache.Release(_center.X + i, _center.Y - j, _center.Z - k);
+                        _cache.Release(_center.X - i, _center.Y + j, _center.Z - k);
+                        _cache.Release(_center.X - i, _center.Y - j, _center.Z - k);
+                    }
 
-                            _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y - j, _center.Z + k));
-                            if (token.IsCancellationRequested) return;
+            for (int range = 1; range < _maxRange; range ++) 
+                 for (int i = 0; i <= range; i++) 
+                     for (int j = 0; j <= range; j++)
+                         for (int k = 0; k < range; k++)
+                         {
+                             if (i != range && j != range && k != range)
+                                 continue;
 
-                            _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y + j, _center.Z + k));
-                            if (token.IsCancellationRequested) return;
+                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y + j, _center.Z + k));
+                             if (token.IsCancellationRequested) return;
 
-                            _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y - j, _center.Z + k));
-                            if (token.IsCancellationRequested) return;
+                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y - j, _center.Z + k));
+                             if (token.IsCancellationRequested) return;
 
-                            _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y + j, _center.Z - k));
-                            if (token.IsCancellationRequested) return;
+                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y + j, _center.Z + k));
+                             if (token.IsCancellationRequested) return;
 
-                            _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y - j, _center.Z - k));
-                            if (token.IsCancellationRequested) return;
+                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y - j, _center.Z + k));
+                             if (token.IsCancellationRequested) return;
 
-                            _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y + j, _center.Z - k));
-                            if (token.IsCancellationRequested) return;
+                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y + j, _center.Z - k));
+                             if (token.IsCancellationRequested) return;
 
-                            _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y - j, _center.Z - k));
-                            if (token.IsCancellationRequested) return;
-                        }
+                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y - j, _center.Z - k));
+                             if (token.IsCancellationRequested) return;
+
+                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y + j, _center.Z - k));
+                             if (token.IsCancellationRequested) return;
+
+                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y - j, _center.Z - k));
+                             if (token.IsCancellationRequested) return;
+                         }
         }
     }
 
