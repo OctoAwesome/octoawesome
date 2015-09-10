@@ -25,8 +25,6 @@ namespace OctoAwesome.Client.Components
         private ChunkRenderer[,] chunkRenderer;
         private IPlanet planet;
 
-        // private Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
-        // private List<ChunkRenderer> activeChunkRenderer = new List<ChunkRenderer>();
         // private List<Index3> distances = new List<Index3>();
 
         private BasicEffect selectionEffect;
@@ -88,13 +86,8 @@ namespace OctoAwesome.Client.Components
                 planet.Size.Z];
 
             for (int i = 0; i < chunkRenderer.GetLength(0); i++)
-            {
                 for (int j = 0; j < chunkRenderer.GetLength(1); j++)
-                {
                     chunkRenderer[i, j] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
-                    // freeChunkRenderer.Enqueue(chunkRenderer[i, j]);
-                }
-            }
 
             // Entfernungsarray erzeugen
             //for (int x = -VIEWRANGE; x <= VIEWRANGE; x++)
@@ -251,19 +244,19 @@ namespace OctoAwesome.Client.Components
                     continue;
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(
-                    renderer.ChunkPosition.Value.ChunkIndex, new Index2(
+                    renderer.ChunkPosition.Value, new Index2(
                         planet.Size.X,
                         planet.Size.Y));
 
                 BoundingBox chunkBox = new BoundingBox(
                 new Vector3(
-                    shift.X * OctoAwesome.Chunk.CHUNKSIZE_X,
-                    shift.Y * OctoAwesome.Chunk.CHUNKSIZE_Y,
-                    shift.Z * OctoAwesome.Chunk.CHUNKSIZE_Z),
+                    shift.X * Chunk.CHUNKSIZE_X,
+                    shift.Y * Chunk.CHUNKSIZE_Y,
+                    shift.Z * Chunk.CHUNKSIZE_Z),
                 new Vector3(
-                    (shift.X + 1) * OctoAwesome.Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * OctoAwesome.Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * OctoAwesome.Chunk.CHUNKSIZE_Z));
+                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
+                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
+                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 int range = 3;
                 if (shift.X >= -range && shift.X <= range && 
@@ -283,7 +276,7 @@ namespace OctoAwesome.Client.Components
                     continue;
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(
-                    renderer.ChunkPosition.Value.ChunkIndex, new Index2(
+                    renderer.ChunkPosition.Value, new Index2(
                         planet.Size.X,
                         planet.Size.Y));
 
@@ -372,7 +365,7 @@ namespace OctoAwesome.Client.Components
                 if (!renderer.NeedUpdate())
                     continue;
 
-                Index2 absoluteIndex = new Index2(renderer.ChunkPosition.Value.ChunkIndex);
+                Index2 absoluteIndex = new Index2(renderer.ChunkPosition.Value);
                 Index2 relativeIndex = destinationChunk.ShortestDistanceXY(
                                    absoluteIndex, new Index2(
                                        planet.Size.X,
