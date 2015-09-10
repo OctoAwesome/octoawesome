@@ -11,11 +11,15 @@ namespace OctoAwesome
 
         private const int LimitX = 5;
         private const int LimitY = 5;
-        //private const int ZLimit = 5;
+        private const int LimitZ = 5;
 
-        private const int XMask = 31;
-        private const int YMask = 31;
-        private const int ZMask = 31;
+        private const int XMask = (1 << LimitX ) - 1;
+        private const int YMask = (1 << LimitY) - 1;
+        private const int ZMask = (1 << LimitZ) - 1;
+
+        public const int RangeX = (1 << LimitX - 1);
+        public const int RangeY = (1 << LimitY - 1);
+        public const int RangeZ = (1 << LimitZ - 1);
 
 
         public ChunkCache(Func<Index3, IChunk> loadDelegate, Action<Index3, IChunk> saveDelegate)
