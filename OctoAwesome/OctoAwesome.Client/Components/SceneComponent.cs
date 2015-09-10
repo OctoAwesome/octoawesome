@@ -17,13 +17,13 @@ namespace OctoAwesome.Client.Components
     internal sealed class SceneComponent : DrawableGameComponent
     {
         public static int VIEWRANGE = 10;
-        public static int VIEWHEIGHT = 5;
+        // public static int VIEWHEIGHT = 5;
         public static int TEXTURESIZE = 64;
 
         private PlayerComponent player;
         private CameraComponent camera;
 
-        private ChunkRenderer[] chunkRenderer;
+        private ChunkRenderer[,] chunkRenderer;
         private IPlanet planet;
 
         private Queue<ChunkRenderer> freeChunkRenderer = new Queue<ChunkRenderer>();
@@ -86,19 +86,22 @@ namespace OctoAwesome.Client.Components
 
             chunkRenderer = new ChunkRenderer[
                 ((VIEWRANGE * 2) + 1) *
-                ((VIEWRANGE * 2) + 1) *
-                ((VIEWHEIGHT * 2) + 1)];
+                ((VIEWRANGE * 2) + 1),
+                planet.Size.Z];
 
-            for (int i = 0; i < chunkRenderer.Length; i++)
+            for (int i = 0; i < chunkRenderer.GetLength(0); i++)
             {
-                chunkRenderer[i] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
-                freeChunkRenderer.Enqueue(chunkRenderer[i]);
+                for (int j = 0; j < chunkRenderer.GetLength(1); j++)
+                {
+                    chunkRenderer[i, j] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
+                    freeChunkRenderer.Enqueue(chunkRenderer[i, j]);
+                }
             }
 
             // Entfernungsarray erzeugen
             for (int x = -VIEWRANGE; x <= VIEWRANGE; x++)
                 for (int y = -VIEWRANGE; y <= VIEWRANGE; y++)
-                    for (int z = -VIEWHEIGHT; z <= VIEWHEIGHT; z++)
+                    for (int z = 0; z <= planet.Size.Z; z++)
                         distances.Add(new Index3(x, y, z));
             distances = distances.OrderBy(d => d.LengthSquared()).ToList();
 
@@ -331,7 +334,7 @@ namespace OctoAwesome.Client.Components
         {
             Index3 destinationChunk = player.ActorHost.Position.ChunkIndex;
             IPlanet planet = ResourceManager.Instance.GetPlanet(player.ActorHost.Position.Planet);
-            destinationChunk.Z = Math.Max(VIEWHEIGHT, Math.Min(planet.Size.Z - VIEWHEIGHT, destinationChunk.Z));
+            destinationChunk.Z = Math.Max(0, Math.Min(planet.Size.Z, destinationChunk.Z));
 
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
@@ -354,7 +357,7 @@ namespace OctoAwesome.Client.Components
                     if (!renderer.ChunkPosition.HasValue ||
                         relativeIndex.X < -VIEWRANGE || relativeIndex.X > VIEWRANGE ||
                         relativeIndex.Y < -VIEWRANGE || relativeIndex.Y > VIEWRANGE ||
-                        relativeIndex.Z < -VIEWHEIGHT || relativeIndex.Z > VIEWHEIGHT)
+                        relativeIndex.Z < 0 || relativeIndex.Z > planet.Size.Z)
                     {
                         renderer.SetChunk(null);
 

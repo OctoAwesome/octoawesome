@@ -134,6 +134,8 @@ namespace OctoAwesome.Client.Components
             if (!chunkLoaded)
             {
                 chunk = _manager.GetChunk(ChunkPosition.Value.ChunkIndex);
+                if (chunk == null) return;
+
                 chunkLoaded = true;
             }
 

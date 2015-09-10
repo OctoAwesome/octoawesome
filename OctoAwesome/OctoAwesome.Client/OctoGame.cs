@@ -48,16 +48,16 @@ namespace OctoAwesome.Client
                 SceneComponent.VIEWRANGE = viewrange;
             }
 
-            int viewheight;
-            if (int.TryParse(ConfigurationManager.AppSettings["Viewheight"], out viewheight))
-            {
-                if (viewheight < 1)
-                    throw new NotSupportedException("Viewheight in app.config darf nicht kleiner 1 sein");
+            //int viewheight;
+            //if (int.TryParse(ConfigurationManager.AppSettings["Viewheight"], out viewheight))
+            //{
+            //    if (viewheight < 1)
+            //        throw new NotSupportedException("Viewheight in app.config darf nicht kleiner 1 sein");
 
-                SceneComponent.VIEWHEIGHT = viewheight;
-            }
+            //    SceneComponent.VIEWHEIGHT = viewheight;
+            //}
 
-            ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * ((viewheight * 2) + 1) * 2;
+            ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
             input = new InputComponent(this);
             input.UpdateOrder = 1;
