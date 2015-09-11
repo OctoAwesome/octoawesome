@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class SceneComponent : DrawableGameComponent
     {
-        public static int VIEWRANGE = 2; // Anzahl Chunks als Potenz (Volle Sichtweite)
+        public static int VIEWRANGE = 4; // Anzahl Chunks als Potenz (Volle Sichtweite)
         public static int TEXTURESIZE = 64;
 
         private PlayerComponent player;
@@ -358,33 +358,36 @@ namespace OctoAwesome.Client.Components
 
             #region Chunkrenderer updaten
 
-            int shortestDistance = int.MaxValue;
-            ChunkRenderer updatableRenderer = null;
+//            int shortestDistance = int.MaxValue;
+//            ChunkRenderer updatableRenderer = null;
             foreach (var renderer in chunkRenderer)
             {
                 if (!renderer.NeedUpdate())
                     continue;
 
-                Index2 absoluteIndex = new Index2(renderer.ChunkPosition.Value);
-                Index2 relativeIndex = destinationChunk.ShortestDistanceXY(
-                                   absoluteIndex, new Index2(
-                                       planet.Size.X,
-                                       planet.Size.Y));
+                renderer.RegenerateVertexBuffer();
 
-                int distance = relativeIndex.LengthSquared();
-                if (distance < shortestDistance)
-                {
-                    updatableRenderer = renderer;
-                    shortestDistance = distance;
-                }
+//                Index2 absoluteIndex = new Index2(renderer.ChunkPosition.Value);
+//                Index2 relativeIndex = destinationChunk.ShortestDistanceXY(
+//                                   absoluteIndex, new Index2(
+//                                       planet.Size.X,
+//                                       planet.Size.Y));
+//
+//                int distance = relativeIndex.LengthSquared();
+//                if (distance < shortestDistance)
+//                {
+//                    updatableRenderer = renderer;
+//                    shortestDistance = distance;
+//                }
             }
 
-            if (updatableRenderer != null)
-                updatableRenderer.RegenerateVertexBuffer();
+//            if (updatableRenderer != null)
+//                updatableRenderer.RegenerateVertexBuffer();
 
             #endregion
 
-            return updatableRenderer != null;
+            return true;
+//            return updatableRenderer != null;
         }
 
         private void BackgroundLoop()
