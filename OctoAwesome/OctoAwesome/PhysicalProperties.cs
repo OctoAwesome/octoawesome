@@ -13,7 +13,7 @@ namespace OctoAwesome
         public float Hardness { get; set; }
 
         /// <summary>
-        /// Dichte
+        /// Dichte in kg/dm^3
         /// </summary>
         public float Density { get; set; }
 
