@@ -26,6 +26,8 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
+            CameraChunk = player.ActorHost.Position.ChunkIndex;
+
             CameraPosition = new Vector3(
                 player.ActorHost.Position.LocalPosition.X,
                 player.ActorHost.Position.LocalPosition.Y,
@@ -71,6 +73,8 @@ namespace OctoAwesome.Client.Components
             PickRay = new Ray(nearPoint, direction);
             Frustum = new BoundingFrustum(View * Projection);
         }
+
+        public Index3 CameraChunk { get; private set; }
 
         public Vector3 CameraPosition { get; private set; }
 

@@ -231,7 +231,8 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
-            Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
+            // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
+            Index3 chunkOffset = camera.CameraChunk;
             Microsoft.Xna.Framework.Color background =
                 new Microsoft.Xna.Framework.Color(181, 224, 255);
 
@@ -282,13 +283,13 @@ namespace OctoAwesome.Client.Components
 
                 BoundingBox chunkBox = new BoundingBox(
                 new Vector3(
-                    shift.X * OctoAwesome.Chunk.CHUNKSIZE_X,
-                    shift.Y * OctoAwesome.Chunk.CHUNKSIZE_Y,
-                    shift.Z * OctoAwesome.Chunk.CHUNKSIZE_Z),
+                    shift.X * Chunk.CHUNKSIZE_X,
+                    shift.Y * Chunk.CHUNKSIZE_Y,
+                    shift.Z * Chunk.CHUNKSIZE_Z),
                 new Vector3(
-                    (shift.X + 1) * OctoAwesome.Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * OctoAwesome.Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * OctoAwesome.Chunk.CHUNKSIZE_Z));
+                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
+                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
+                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 if (camera.Frustum.Intersects(chunkBox))
                     renderer.Draw(camera.View, camera.Projection, shift);
@@ -296,7 +297,8 @@ namespace OctoAwesome.Client.Components
 
             if (player.SelectedBox.HasValue)
             {
-                Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
+                // Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
+                Index3 offset = camera.CameraChunk * Chunk.CHUNKSIZE;
                 Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
                 Index3 relativePosition = new Index3(
                     Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBox.Value.X, planetSize.X),

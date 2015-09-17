@@ -18,6 +18,7 @@ namespace OctoAwesome.Client.Components
         /// Referenz auf den aktuellen Chunk (falls vorhanden)
         /// </summary>
         private IChunk chunk;
+        private bool loaded = false;
 
         private VertexBuffer vb;
         private IndexBuffer ib;
@@ -68,6 +69,7 @@ namespace OctoAwesome.Client.Components
             ChunkPosition = newPosition;
 
             chunk = null;
+            loaded = false;
         }
 
         public bool NeedUpdate()
@@ -86,7 +88,7 @@ namespace OctoAwesome.Client.Components
 
         public void Draw(Matrix view, Matrix projection, Index3 shift)
         {
-            if (chunk == null)
+            if (!loaded)
                 return;
 
             effect.World = Matrix.CreateTranslation(
@@ -385,6 +387,7 @@ namespace OctoAwesome.Client.Components
             {
                 vb = vb2;
                 ib = ib2;
+                loaded = true;
             }
 
             if (vbOld != null)
