@@ -16,7 +16,10 @@ namespace OctoAwesome.Runtime
             {
                 List<IBlockDefinition> types = new List<IBlockDefinition>();
                 Dictionary<ushort, ushort> map = new Dictionary<ushort, ushort>();
-                int typecount = br.ReadInt32();
+
+                bool longIndex = br.ReadByte() > 0;
+
+                int typecount = longIndex ? br.ReadUInt16() : br.ReadByte();
 
                 // Im Falle eines Luftchunks
                 if (typecount == 0)
@@ -29,12 +32,12 @@ namespace OctoAwesome.Runtime
                     var blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                     types.Add(blockDefinition);
 
-                    map.Add((ushort)(types.Count - 1), (ushort)Array.IndexOf(definitions, blockDefinition));
+                    map.Add((ushort)types.Count, (ushort)(Array.IndexOf(definitions, blockDefinition) + 1));
                 }
 
                 for (int i = 0; i < chunk.Blocks.Length; i++)
                 {
-                    ushort typeIndex = br.ReadUInt16();
+                    ushort typeIndex = longIndex ? br.ReadUInt16() : br.ReadByte();
                     chunk.MetaData[i] = br.ReadInt32();
                     if (typeIndex > 0)
                     {
@@ -63,8 +66,14 @@ namespace OctoAwesome.Runtime
                     }
                 }
 
+                bool longIndex = definitions.Count > 254;
+                bw.Write((byte)((longIndex) ? 1 : 0));
+
                 // Schreibe Phase 1
-                bw.Write(definitions.Count);
+                if (longIndex)
+                    bw.Write((ushort)definitions.Count);
+                else
+                    bw.Write((byte)definitions.Count);
 
                 // Im Falle eines Luft-Chunks...
                 if (definitions.Count == 0)
@@ -81,7 +90,10 @@ namespace OctoAwesome.Runtime
                     if (chunk.Blocks[i] == 0)
                     {
                         // Definition Index (Air)
-                        bw.Write((ushort)0);
+                        if (longIndex)
+                            bw.Write((ushort)0);
+                        else
+                            bw.Write((byte)0);
 
                         // Meta Data
                         bw.Write(0);
@@ -90,7 +102,11 @@ namespace OctoAwesome.Runtime
                     {
                         // Definition Index
                         IBlockDefinition definition = BlockDefinitionManager.GetForType(chunk.Blocks[i]);
-                        bw.Write((ushort)definitions.IndexOf(definition) + 1);
+
+                        if (longIndex)
+                            bw.Write((ushort)(definitions.IndexOf(definition) + 1));
+                        else
+                            bw.Write((byte)(definitions.IndexOf(definition) + 1));
 
                         // Meta Data
                         bw.Write(chunk.MetaData[i]);
