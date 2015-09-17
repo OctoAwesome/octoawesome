@@ -12,8 +12,11 @@ namespace OctoAwesome
 
         Bitmap Icon { get; }
 
-        PhysicalProperties GetProperties(IItem item);
+        int StackLimit { get; }
 
-        void Hit(IItem item, PhysicalProperties itemProperties);
+
+        //PhysicalProperties GetProperties(IItem item);
+
+        //void Hit(IItem item, PhysicalProperties itemProperties);
     }
 }

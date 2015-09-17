@@ -25,6 +25,14 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public int StackLimit
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
         public PhysicalProperties GetProperties(IItem item)
         {
             return new PhysicalProperties()

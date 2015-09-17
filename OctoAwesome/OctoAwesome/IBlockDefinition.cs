@@ -3,19 +3,15 @@ using System.Drawing;
 
 namespace OctoAwesome
 {
-    public interface IBlockDefinition
+    public interface IBlockDefinition : IItemDefinition
     {
-        string Name { get; }
-
-        Bitmap Icon { get; }
-
         void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
 
         Bitmap[] Textures { get; }
 
         BoundingBox[] GetCollisionBoxes(IPlanetResourceManager manager, int x, int y, int z);
 
-        PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
+        // PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
 
         int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
 

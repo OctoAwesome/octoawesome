@@ -10,6 +10,8 @@ namespace OctoAwesome
 
         public abstract Bitmap Icon { get; }
 
+        public virtual int StackLimit { get { return 100; } }
+
         public abstract Bitmap[] Textures { get; }
 
         public abstract PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
