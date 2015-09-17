@@ -51,10 +51,10 @@ namespace OctoAwesome.Client.Components
             effect.SpecularColor = Color.Black.ToVector3();
             effect.SpecularPower = 0.1f;
 
-            effect.FogEnabled = true;
-            effect.FogColor = new Color(181, 224, 255).ToVector3();
-            effect.FogStart = SceneComponent.VIEWRANGE * Chunk.CHUNKSIZE_X * 0.5f;
-            effect.FogEnd = SceneComponent.VIEWRANGE * Chunk.CHUNKSIZE_X * 0.9f;
+            //effect.FogEnabled = true;
+            //effect.FogColor = new Color(181, 224, 255).ToVector3();
+            //effect.FogStart = SceneComponent.VIEWRANGE * Chunk.CHUNKSIZE_X * 0.5f;
+            //effect.FogEnd = SceneComponent.VIEWRANGE * Chunk.CHUNKSIZE_X * 0.9f;
         }
 
         public void SetChunk(IPlanetResourceManager manager, int x, int y, int z)
