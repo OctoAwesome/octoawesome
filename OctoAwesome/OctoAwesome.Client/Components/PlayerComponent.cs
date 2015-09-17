@@ -37,11 +37,14 @@ namespace OctoAwesome.Client.Components
         public override void Initialize()
         {
             base.Initialize();
-            Tools = new List<InventorySlot>(ActorHost.Player.Inventory);
+            Tools = new List<InventorySlot>();
         }
 
         public override void Update(GameTime gameTime)
         {
+            Tools.Clear();
+            Tools.AddRange(ActorHost.Player.Inventory);
+
             ActorHost.Head = new Vector2(input.HeadX, input.HeadY);
             ActorHost.Move = new Vector2(input.MoveX, input.MoveY);
 

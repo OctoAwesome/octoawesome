@@ -267,10 +267,23 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
+                    if (ActiveTool.Definition is IBlockDefinition)
+                    {
+                        IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
+                        _manager.SetBlock(lastApply.Value + add, BlockDefinitionManager.GetDefinitionIndex(definition));
+
+                        //ActiveTool.Amount--;
+                        //if (ActiveTool.Amount <= 0)
+                        //{
+                        //    Player.Inventory.Remove(ActiveTool);
+                        //    ActiveTool = null;
+                        //}
+                    }
+
                     // TODO: Fix Interaction ;)
-                    ushort block = _manager.GetBlock(lastApply.Value);
-                    IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
-                    IItemDefinition itemDefinition = ActiveTool.Definition;
+                    //ushort block = _manager.GetBlock(lastApply.Value);
+                    //IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
+                    //IItemDefinition itemDefinition = ActiveTool.Definition;
 
                     //blockDefinition.Hit(blockDefinition, itemDefinition.GetProperties(null));
                     //itemDefinition.Hit(null, blockDefinition.GetProperties(block));

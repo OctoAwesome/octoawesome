@@ -27,5 +27,10 @@ namespace OctoAwesome.Runtime
 
             return _definitions[(type & Blocks.TypeMask) - 1];
         }
+
+        public static ushort GetDefinitionIndex(IBlockDefinition definition)
+        {
+            return (ushort)(Array.IndexOf(_definitions, definition) + 1);
+        }
     }
 }
