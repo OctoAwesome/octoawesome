@@ -51,6 +51,8 @@ namespace OctoAwesome.Client.Components
 
         protected override void LoadContent()
         {
+            Effect simpleShader = Game.Content.Load<Effect>("simple");
+
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = BlockDefinitionManager.GetBlockDefinitions();
             foreach (var definition in definitions)
@@ -87,7 +89,7 @@ namespace OctoAwesome.Client.Components
 
             for (int i = 0; i < chunkRenderer.GetLength(0); i++)
                 for (int j = 0; j < chunkRenderer.GetLength(1); j++)
-                    chunkRenderer[i, j] = new ChunkRenderer(GraphicsDevice, camera.Projection, blockTextures);
+                    chunkRenderer[i, j] = new ChunkRenderer(simpleShader, GraphicsDevice, camera.Projection, blockTextures);
 
             // Entfernungsarray erzeugen
             //for (int x = -VIEWRANGE; x <= VIEWRANGE; x++)

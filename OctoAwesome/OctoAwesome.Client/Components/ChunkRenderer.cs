@@ -10,6 +10,7 @@ namespace OctoAwesome.Client.Components
     internal sealed class ChunkRenderer : IDisposable
     {
         private BasicEffect effect;
+        private Effect simple;
         private GraphicsDevice graphicsDevice;
 
         private Texture2D textures;
@@ -37,11 +38,13 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         public Index3? ChunkPosition { get; private set; }
 
-        public ChunkRenderer(GraphicsDevice graphicsDevice, Matrix projection, Texture2D textures)
+        public ChunkRenderer(Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2D textures)
         {
             this.graphicsDevice = graphicsDevice;
             this.textures = textures;
             this.lastReset = -1;
+
+            simple = simpleShader;
 
             effect = new BasicEffect(graphicsDevice);
             effect.World = Matrix.Identity;
@@ -91,13 +94,28 @@ namespace OctoAwesome.Client.Components
             if (!loaded)
                 return;
 
-            effect.World = Matrix.CreateTranslation(
+            Matrix worldViewProj = Matrix.CreateTranslation(
                 shift.X * Chunk.CHUNKSIZE_X,
                 shift.Y * Chunk.CHUNKSIZE_Y,
-                shift.Z * Chunk.CHUNKSIZE_Z);
-            effect.Projection = projection;
-            effect.View = view;
-            effect.Texture = textures;
+                shift.Z * Chunk.CHUNKSIZE_Z) * view * projection;
+
+            //effect.World = Matrix.CreateTranslation(
+            //    shift.X * Chunk.CHUNKSIZE_X,
+            //    shift.Y * Chunk.CHUNKSIZE_Y,
+            //    shift.Z * Chunk.CHUNKSIZE_Z);
+            //effect.Projection = projection;
+            //effect.View = view;
+            //effect.Texture = textures;
+
+            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
+            simple.Parameters["BlockTextures"].SetValue(textures);
+
+            simple.Parameters["AmbientIntensity"].SetValue(0.3f);
+            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+
+            simple.Parameters["DiffuseColor"].SetValue(Color.White.ToVector4());
+            simple.Parameters["DiffuseIntensity"].SetValue(0.7f);
+            simple.Parameters["DiffuseDirection"].SetValue(new Vector3(1, 1, 1));
 
             lock (this)
             {
@@ -107,7 +125,7 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.SetVertexBuffer(vb);
                 graphicsDevice.Indices = ib;
 
-                foreach (var pass in effect.CurrentTechnique.Passes)
+                foreach (var pass in simple.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);

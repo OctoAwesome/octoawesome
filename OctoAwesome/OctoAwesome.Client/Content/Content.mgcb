@@ -41,3 +41,9 @@
 /processorParam:TextureFormat=Color
 /build:Textures/panel.png
 
+#begin simple.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Debug
+/build:simple.fx
+
