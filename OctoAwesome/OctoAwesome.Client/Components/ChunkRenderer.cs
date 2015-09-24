@@ -28,11 +28,6 @@ namespace OctoAwesome.Client.Components
         private IPlanetResourceManager _manager;
 
         /// <summary>
-        /// Referenz auf den aktuell gerenderten Chunk
-        /// </summary>
-
-
-        /// <summary>
         /// Adresse des aktuellen Chunks
         /// </summary>
         public Index3? ChunkPosition { get; private set; }
@@ -89,10 +84,6 @@ namespace OctoAwesome.Client.Components
 
             simple.Parameters["AmbientIntensity"].SetValue(0.4f);
             simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
-
-            simple.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190).ToVector4());
-            simple.Parameters["DiffuseIntensity"].SetValue(0.6f);
-            simple.Parameters["DiffuseDirection"].SetValue(new Vector3(1, 1, -1));
 
             lock (this)
             {

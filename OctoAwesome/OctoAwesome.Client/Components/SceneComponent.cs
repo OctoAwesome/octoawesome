@@ -38,8 +38,12 @@ namespace OctoAwesome.Client.Components
 
         private Thread backgroundThread;
         private IPlanetResourceManager _manager;
+        private Effect simpleShader;
 
         public RenderTarget2D MiniMapTexture { get; set; }
+
+        private float sunPosition = 0f;
+        private float sunRadius = 1000f;
 
         public SceneComponent(Game game, PlayerComponent player, CameraComponent camera)
             : base(game)
@@ -51,7 +55,7 @@ namespace OctoAwesome.Client.Components
 
         protected override void LoadContent()
         {
-            Effect simpleShader = Game.Content.Load<Effect>("simple");
+            simpleShader = Game.Content.Load<Effect>("simple");
 
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = BlockDefinitionManager.GetBlockDefinitions();
@@ -134,6 +138,8 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
+            sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
+
             Index3 centerblock = player.ActorHost.Position.GlobalBlockIndex;
             Index3 renderOffset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
@@ -233,6 +239,32 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
+            float playerPosX = ((float)player.ActorHost.Player.Position.ChunkIndex.X / planet.Size.X) * MathHelper.TwoPi;
+            float playerPosY = ((float)player.ActorHost.Player.Position.ChunkIndex.Y / planet.Size.Y) * MathHelper.TwoPi;
+
+            float relativeSunPosX = sunPosition - playerPosX;
+            float relativeSunPosY = 0.5f - playerPosY;
+
+            relativeSunPosX += MathHelper.TwoPi;
+            relativeSunPosX %= MathHelper.TwoPi;
+
+            relativeSunPosY += MathHelper.TwoPi;
+            relativeSunPosY %= MathHelper.TwoPi;
+
+            Vector3 direction = new Vector3(
+                (float)(Math.Sin(relativeSunPosY) * Math.Cos(relativeSunPosX)),
+                (float)(Math.Sin(relativeSunPosY) * Math.Sin(relativeSunPosX)),
+                (float)(Math.Cos(relativeSunPosY)));
+
+            //Vector3 direction = new Vector3(-relativeSunPosX, -relativeSunPosY, -1f);
+            //direction.Normalize();
+
+            simpleShader.Parameters["DiffuseColor"].SetValue(new Microsoft.Xna.Framework.Color(190, 190, 190).ToVector4());
+            simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
+            simpleShader.Parameters["DiffuseDirection"].SetValue(direction);
+
+            Console.WriteLine(direction + " | " + direction.Length());
+
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
             Microsoft.Xna.Framework.Color background =
