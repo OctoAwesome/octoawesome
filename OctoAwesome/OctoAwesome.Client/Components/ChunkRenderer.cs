@@ -9,7 +9,6 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class ChunkRenderer : IDisposable
     {
-        private BasicEffect effect;
         private Effect simple;
         private GraphicsDevice graphicsDevice;
 
@@ -45,20 +44,6 @@ namespace OctoAwesome.Client.Components
             this.lastReset = -1;
 
             simple = simpleShader;
-
-            effect = new BasicEffect(graphicsDevice);
-            effect.World = Matrix.Identity;
-            effect.Projection = projection;
-            effect.TextureEnabled = true;
-
-            effect.EnableDefaultLighting();
-            effect.SpecularColor = Color.Black.ToVector3();
-            effect.SpecularPower = 0.1f;
-
-            //effect.FogEnabled = true;
-            //effect.FogColor = new Color(181, 224, 255).ToVector3();
-            //effect.FogStart = SceneComponent.VIEWRANGE * Chunk.CHUNKSIZE_X * 0.5f;
-            //effect.FogEnd = SceneComponent.VIEWRANGE * Chunk.CHUNKSIZE_X * 0.9f;
         }
 
         public void SetChunk(IPlanetResourceManager manager, int x, int y, int z)
@@ -99,23 +84,15 @@ namespace OctoAwesome.Client.Components
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z) * view * projection;
 
-            //effect.World = Matrix.CreateTranslation(
-            //    shift.X * Chunk.CHUNKSIZE_X,
-            //    shift.Y * Chunk.CHUNKSIZE_Y,
-            //    shift.Z * Chunk.CHUNKSIZE_Z);
-            //effect.Projection = projection;
-            //effect.View = view;
-            //effect.Texture = textures;
-
             simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
             simple.Parameters["BlockTextures"].SetValue(textures);
 
-            simple.Parameters["AmbientIntensity"].SetValue(0.3f);
+            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
             simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
 
-            simple.Parameters["DiffuseColor"].SetValue(Color.White.ToVector4());
-            simple.Parameters["DiffuseIntensity"].SetValue(0.7f);
-            simple.Parameters["DiffuseDirection"].SetValue(new Vector3(1, 1, 1));
+            simple.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190).ToVector4());
+            simple.Parameters["DiffuseIntensity"].SetValue(0.6f);
+            simple.Parameters["DiffuseDirection"].SetValue(new Vector3(1, 1, -1));
 
             lock (this)
             {
