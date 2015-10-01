@@ -265,7 +265,7 @@ namespace OctoAwesome.Client.Components
             float inclination = ((float)Math.Sin(playerPosY) * inclinationVariance) + MathHelper.Pi / 6f;
 
 
-            Matrix sunMovement = Matrix.CreateRotationX(inclination) * Matrix.CreateRotationY(MathHelper.Pi); // * Matrix.CreateRotationY((float)diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi);
+            Matrix sunMovement = Matrix.CreateRotationX(inclination) * Matrix.CreateRotationY((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi); //  Matrix.CreateRotationY((float)diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi);
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
@@ -313,6 +313,19 @@ namespace OctoAwesome.Client.Components
             GraphicsDevice.Clear(background);
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
+            // Draw Sun
+            // GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            sunEffect.Texture = sunTexture;
+            Matrix billboard = Matrix.Invert(camera.View);
+            billboard.Translation = player.ActorHost.Position.LocalPosition + (sunDirection * -10);
+            sunEffect.World = billboard;
+            sunEffect.View = camera.View;
+            sunEffect.Projection = camera.Projection;
+            sunEffect.CurrentTechnique.Passes[0].Apply();
+            GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, billboardVertices, 0, 2);
+
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             foreach (var renderer in chunkRenderer)
@@ -364,19 +377,8 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-            Matrix billboard = Matrix.Invert(camera.View);
-            billboard.Translation = new Vector3(0, 0, 10);
-            sunEffect.World = billboard;
 
-            // Draw Sun
-            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             
-            sunEffect.Texture = sunTexture;
-            // sunEffect.World = Matrix.CreateTranslation(0, 0, 10);
-            sunEffect.View = camera.View; // Matrix.CreateBillboard(new Vector3(0, 0, 10), camera.CameraPosition, camera.CameraUpVector, null);
-            sunEffect.Projection = camera.Projection;
-            sunEffect.CurrentTechnique.Passes[0].Apply();
-            GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, billboardVertices, 0, 2);
             
         }
 
