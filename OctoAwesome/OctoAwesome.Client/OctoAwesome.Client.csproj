@@ -91,6 +91,7 @@
     <Content Include="Content\simple.fx" />
     <Content Include="Content\Textures\compass.png" />
     <Content Include="Content\Textures\panel.png" />
+    <Content Include="Content\Textures\sun.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
