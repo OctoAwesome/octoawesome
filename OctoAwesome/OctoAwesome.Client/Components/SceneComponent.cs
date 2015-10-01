@@ -257,15 +257,17 @@ namespace OctoAwesome.Client.Components
             float octoDaysPerEarthDay = 3600f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
-            float playerPosX = ((float)player.ActorHost.Player.Position.ChunkIndex.X / planet.Size.X) * MathHelper.TwoPi;
-            float playerPosY = ((float)player.ActorHost.Player.Position.ChunkIndex.Y / planet.Size.Y) * MathHelper.TwoPi;
+            float playerPosX = ((float)player.ActorHost.Player.Position.GlobalBlockIndex.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
+            float playerPosY = ((float)player.ActorHost.Player.Position.GlobalBlockIndex.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
 
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
             float inclination = ((float)Math.Sin(playerPosY) * inclinationVariance) + MathHelper.Pi / 6f;
-
-
-            Matrix sunMovement = Matrix.CreateRotationX(inclination) * Matrix.CreateRotationY((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi); //  Matrix.CreateRotationY((float)diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi);
+            Console.WriteLine("Stand: " + (MathHelper.Pi + playerPosX) + " Neigung: " + inclination);
+            Matrix sunMovement =
+                Matrix.CreateRotationX(inclination) * 
+                Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
+            //  Matrix.CreateRotationY((float)diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi);
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
@@ -273,7 +275,7 @@ namespace OctoAwesome.Client.Components
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
-            Console.WriteLine(sunDirection);
+            // Console.WriteLine(sunDirection);
 
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
