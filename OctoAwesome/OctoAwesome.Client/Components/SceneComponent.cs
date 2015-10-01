@@ -239,31 +239,28 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
+            float octoDaysPerEarthDay = 4f;
+            float inclinationVariance = MathHelper.Pi / 3f;
+
             float playerPosX = ((float)player.ActorHost.Player.Position.ChunkIndex.X / planet.Size.X) * MathHelper.TwoPi;
             float playerPosY = ((float)player.ActorHost.Player.Position.ChunkIndex.Y / planet.Size.Y) * MathHelper.TwoPi;
 
-            float relativeSunPosX = sunPosition - playerPosX;
-            float relativeSunPosY = 0.5f - playerPosY;
+            Vector3 sunDirection = new Vector3(0, 0, 1);
 
-            relativeSunPosX += MathHelper.TwoPi;
-            relativeSunPosX %= MathHelper.TwoPi;
+            TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
-            relativeSunPosY += MathHelper.TwoPi;
-            relativeSunPosY %= MathHelper.TwoPi;
+            float inclination = ((float)Math.Sin(playerPosY) * inclinationVariance) + MathHelper.Pi / 6f;
 
-            Vector3 direction = new Vector3(
-                (float)(Math.Sin(relativeSunPosY) * Math.Cos(relativeSunPosX)),
-                (float)(Math.Sin(relativeSunPosY) * Math.Sin(relativeSunPosX)),
-                (float)(Math.Cos(relativeSunPosY)));
 
-            //Vector3 direction = new Vector3(-relativeSunPosX, -relativeSunPosY, -1f);
-            //direction.Normalize();
+            Matrix sunMovement = Matrix.CreateRotationX(inclination) * Matrix.CreateRotationY((float)diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi);
+
+            sunDirection = Vector3.Transform(sunDirection, sunMovement);
 
             simpleShader.Parameters["DiffuseColor"].SetValue(new Microsoft.Xna.Framework.Color(190, 190, 190).ToVector4());
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
-            simpleShader.Parameters["DiffuseDirection"].SetValue(direction);
+            simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
-            Console.WriteLine(direction + " | " + direction.Length());
+            // Console.WriteLine(sunRotation);
 
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
