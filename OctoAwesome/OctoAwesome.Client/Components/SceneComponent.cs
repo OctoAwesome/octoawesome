@@ -254,7 +254,7 @@ namespace OctoAwesome.Client.Components
 
         public override void Draw(GameTime gameTime)
         {
-            float octoDaysPerEarthDay = 1000f;
+            float octoDaysPerEarthDay = 3600f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
             float playerPosX = ((float)player.ActorHost.Player.Position.GlobalBlockIndex.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
@@ -267,7 +267,7 @@ namespace OctoAwesome.Client.Components
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) * 
                 //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
-                Matrix.CreateRotationY((float)((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi)% MathHelper.TwoPi));
+                Matrix.CreateRotationY((float)(MathHelper.TwoPi-((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi)% MathHelper.TwoPi)));
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
