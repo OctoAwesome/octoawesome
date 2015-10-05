@@ -266,8 +266,8 @@ namespace OctoAwesome.Client.Components
             Console.WriteLine("Stand: " + (MathHelper.Pi + playerPosX) + " Neigung: " + inclination);
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) * 
-                Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
-            //  Matrix.CreateRotationY((float)diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi);
+                //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
+                Matrix.CreateRotationY((float)(MathHelper.TwoPi-((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi)% MathHelper.TwoPi)));
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
