@@ -235,7 +235,7 @@ namespace OctoAwesome.Runtime
                 {
                     var blockDefinition = BlockDefinitionManager.GetForType(lastBlock);
 
-                    var slot = Player.Inventory.SingleOrDefault(s => s.Definition == blockDefinition);
+                    var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
 
                     // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
                     if (slot == null || slot.Amount >= blockDefinition.StackLimit)
@@ -272,12 +272,12 @@ namespace OctoAwesome.Runtime
                         IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
                         _manager.SetBlock(lastApply.Value + add, BlockDefinitionManager.GetDefinitionIndex(definition));
 
-                        //ActiveTool.Amount--;
-                        //if (ActiveTool.Amount <= 0)
-                        //{
-                        //    Player.Inventory.Remove(ActiveTool);
-                        //    ActiveTool = null;
-                        //}
+                        ActiveTool.Amount--;
+                        if (ActiveTool.Amount <= 0)
+                        {
+                            Player.Inventory.Remove(ActiveTool);
+                            ActiveTool = null;
+                        }
                     }
 
                     // TODO: Fix Interaction ;)
