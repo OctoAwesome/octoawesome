@@ -9,6 +9,8 @@ namespace OctoAwesome
 
         Bitmap[] Textures { get; }
 
+        bool HasMetaData { get; }
+
         BoundingBox[] GetCollisionBoxes(IPlanetResourceManager manager, int x, int y, int z);
 
         // PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);

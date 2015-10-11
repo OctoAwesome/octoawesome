@@ -19,6 +19,8 @@ namespace OctoAwesome.Basics
             get { return (Bitmap)Bitmap.FromFile("./Assets/wood_top.png"); }
         }
 
+        public override bool HasMetaData { get { return true; } }
+
         public override Bitmap[] Textures
         {
             get

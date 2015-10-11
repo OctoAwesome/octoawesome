@@ -38,10 +38,14 @@ namespace OctoAwesome.Runtime
                 for (int i = 0; i < chunk.Blocks.Length; i++)
                 {
                     ushort typeIndex = longIndex ? br.ReadUInt16() : br.ReadByte();
-                    chunk.MetaData[i] = br.ReadInt32();
+                    chunk.MetaData[i] = 0;
                     if (typeIndex > 0)
                     {
                         chunk.Blocks[i] = map[typeIndex];
+
+                        var definition = BlockDefinitionManager.GetForType(map[typeIndex]);
+                        if (definition.HasMetaData)
+                            chunk.MetaData[i] = br.ReadInt32();
                     }
                 }
             }
@@ -94,9 +98,6 @@ namespace OctoAwesome.Runtime
                             bw.Write((ushort)0);
                         else
                             bw.Write((byte)0);
-
-                        // Meta Data
-                        bw.Write(0);
                     }
                     else
                     {
@@ -109,7 +110,8 @@ namespace OctoAwesome.Runtime
                             bw.Write((byte)(definitions.IndexOf(definition) + 1));
 
                         // Meta Data
-                        bw.Write(chunk.MetaData[i]);
+                        if (definition.HasMetaData)
+                            bw.Write(chunk.MetaData[i]);
                     }
                 }
             }

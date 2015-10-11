@@ -14,6 +14,8 @@ namespace OctoAwesome
 
         public abstract Bitmap[] Textures { get; }
 
+        public virtual bool HasMetaData { get { return false; } }
+
         public abstract PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
 
         public abstract void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
