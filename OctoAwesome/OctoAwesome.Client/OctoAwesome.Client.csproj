@@ -74,11 +74,16 @@
     <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\ScreenManagerComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
+    <Compile Include="Controls\CompassControl.cs" />
+    <Compile Include="Controls\DebugControl.cs" />
+    <Compile Include="Controls\MinimapControl.cs" />
     <Compile Include="Controls\SceneControl.cs" />
+    <Compile Include="Controls\ToolbarControl.cs" />
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\GameScreen.cs" />
+    <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\MainScreen.cs" />
   </ItemGroup>
   <ItemGroup>

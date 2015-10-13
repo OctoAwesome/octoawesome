@@ -253,7 +253,7 @@ namespace OctoAwesome.Client.Controls
                 player.SelectedCorner = OrientationFlags.None;
             }
 
-            base.Update(gameTime);
+            base.OnUpdate(gameTime);
         }
 
         protected override void OnPreDraw(GameTime gameTime)
@@ -458,6 +458,15 @@ namespace OctoAwesome.Client.Controls
 
             return true;
             //            return updatableRenderer != null;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs args)
+        {
+            if (Focused == TreeState.Active)
+            {
+                args.ResetPosition = true;
+                args.Handled = true;
+            }
         }
 
         private void BackgroundLoop()
