@@ -58,3 +58,21 @@
 /processorParam:TextureFormat=Color
 /build:Textures/sun.png
 
+#begin GameFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:GameFont.spritefont
+
+#begin HeadlineFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:HeadlineFont.spritefont
+
+#begin BoldFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:BoldFont.spritefont
+

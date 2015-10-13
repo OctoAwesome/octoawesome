@@ -25,17 +25,18 @@ namespace OctoAwesome.Client
         HudComponent hud;
         ScreenManagerComponent screenManager;
         SimulationComponent simulation;
+        ScreenComponent screens;
 
         public OctoGame()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            this.Window.Title = "OctoAwesome";
+            Window.Title = "OctoAwesome";
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            this.IsMouseVisible = false;
-            this.Window.AllowUserResizing = true;
+            IsMouseVisible = true;
+            Window.AllowUserResizing = true;
 
             this.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
@@ -59,44 +60,50 @@ namespace OctoAwesome.Client
 
             ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
-            input = new InputComponent(this);
-            input.UpdateOrder = 1;
-            Components.Add(input);
+            //input = new InputComponent(this);
+            //input.UpdateOrder = 1;
+            //Components.Add(input);
 
-            simulation = new SimulationComponent(this);
-            simulation.UpdateOrder = 3;
-            Components.Add(simulation);
+            //simulation = new SimulationComponent(this);
+            //simulation.UpdateOrder = 3;
+            //Components.Add(simulation);
 
-            playerComponent = new PlayerComponent(this, input, simulation);
-            playerComponent.UpdateOrder = 2;
-            Components.Add(playerComponent);
+            //playerComponent = new PlayerComponent(this, input, simulation);
+            //playerComponent.UpdateOrder = 2;
+            //Components.Add(playerComponent);
 
 
-            camera = new CameraComponent(this, playerComponent);
-            camera.UpdateOrder = 4;
-            Components.Add(camera);
+            //camera = new CameraComponent(this, playerComponent);
+            //camera.UpdateOrder = 4;
+            //Components.Add(camera);
 
-            scene = new SceneComponent(this, playerComponent, camera);
-            scene.UpdateOrder = 5;
-            scene.DrawOrder = 1;
-            Components.Add(scene);
+            //scene = new SceneComponent(this, playerComponent, camera);
+            //scene.UpdateOrder = 5;
+            //scene.DrawOrder = 1;
+            //Components.Add(scene);
 
-            hud = new HudComponent(this, playerComponent, scene, input);
-            hud.UpdateOrder = 6;
-            hud.DrawOrder = 2;
-            Components.Add(hud);
+            //hud = new HudComponent(this, playerComponent, scene, input);
+            //hud.UpdateOrder = 6;
+            //hud.DrawOrder = 2;
+            //Components.Add(hud);
 
-            screenManager = new ScreenManagerComponent(this, input, playerComponent);
-            screenManager.UpdateOrder = 7;
-            screenManager.DrawOrder = 3;
-            Components.Add(screenManager);
+            //screenManager = new ScreenManagerComponent(this, input, playerComponent);
+            //screenManager.UpdateOrder = 7;
+            //screenManager.DrawOrder = 3;
+            //Components.Add(screenManager);
+
+            screens = new ScreenComponent(this);
+            screens.UpdateOrder = 8;
+            screens.DrawOrder = 4;
+            Components.Add(screens);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            simulation.Save();
+            //simulation.Save();
 
-            simulation.World.Save();
+            //simulation.World.Save();
+
             base.OnExiting(sender, args);
         }
     }

@@ -71,16 +71,21 @@
     <Compile Include="Components\Input\MouseScreenInput.cs" />
     <Compile Include="Components\SceneComponent.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
+    <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\ScreenManagerComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\MainScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoGameUi">
+      <HintPath>..\libs\MonoGameUi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -117,6 +122,9 @@
     <None Include="CompiledContent\Hud.xnb" />
     <None Include="CompiledContent\Textures\compass.xnb" />
     <None Include="CompiledContent\Textures\panel.xnb" />
+    <None Include="Content\BoldFont.spritefont" />
+    <None Include="Content\GameFont.spritefont" />
+    <None Include="Content\HeadlineFont.spritefont" />
     <None Include="Content\Hud.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
