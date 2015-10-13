@@ -1,9 +1,6 @@
-﻿using OctoAwesome.Noise;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics
 {
@@ -17,9 +14,7 @@ namespace OctoAwesome.Basics
 
         public IPlanet GeneratePlanet(int universe, int seed)
         {
-            // Index3 size = new Index3(4096, 4096, 4);
-            Index3 size = new Index3(8, 8, 2);
-
+            Index3 size = new Index3(12, 12, 3);
             ComplexPlanet planet = new ComplexPlanet(0, universe, size, this, seed);
 
             return planet;
