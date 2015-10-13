@@ -79,66 +79,66 @@ namespace OctoAwesome.Client.Components
         public override void Update(GameTime gameTime)
         {
 
-            bool nextInteract = false;
-            bool nextJump = false;
-            bool nextApply = false;
-            bool nextInventory = false;
-            bool[] nextSlot = new bool[SlotTriggerLength];
-            bool nextSlotLeft = false;
-            bool nextToggleFlyMode = false;
-            bool nextSlotRight = false;
-            MoveX = 0f;
-            MoveY = 0f;
-            HeadX = 0f;
-            HeadY = 0f;
+            //bool nextInteract = false;
+            //bool nextJump = false;
+            //bool nextApply = false;
+            //bool nextInventory = false;
+            //bool[] nextSlot = new bool[SlotTriggerLength];
+            //bool nextSlotLeft = false;
+            //bool nextToggleFlyMode = false;
+            //bool nextSlotRight = false;
+            //MoveX = 0f;
+            //MoveY = 0f;
+            //HeadX = 0f;
+            //HeadY = 0f;
 
-            if (ScreenMode)
-            {
-                Game.IsMouseVisible = true;
-                screenMouse.Update();
-                screenKeyboard.Update();
-                mousePointer = screenMouse.PointerPosition;
-            }
-            else
-            {
-                Game.IsMouseVisible = false;
-                gamepad.Update();
-                keyboard.Update();
-                if (Game.IsActive)
-                    mouse.Update();
+            //if (ScreenMode)
+            //{
+            //    Game.IsMouseVisible = true;
+            //    screenMouse.Update();
+            //    screenKeyboard.Update();
+            //    mousePointer = screenMouse.PointerPosition;
+            //}
+            //else
+            //{
+            //    Game.IsMouseVisible = false;
+            //    gamepad.Update();
+            //    keyboard.Update();
+            //    if (Game.IsActive)
+            //        mouse.Update();
 
-                foreach (var device in inputDevices)
-                {
-                    nextInteract |= device.InteractTrigger;
-                    nextApply |= device.ApplyTrigger;
-                    nextJump |= device.JumpTrigger;
-                    nextInventory |= device.InventoryTrigger;
-                    nextToggleFlyMode |= device.ToggleFlyMode;
-                    nextSlotLeft |= device.SlotLeftTrigger;
-                    nextSlotRight |= device.SlotRightTrigger;
-                    if (device.SlotTrigger != null)
-                        for (int i = 0; i < Math.Min(device.SlotTrigger.Length, SlotTriggerLength); i++)
-                            nextSlot[i] |= device.SlotTrigger[i];
+            //    foreach (var device in inputDevices)
+            //    {
+            //        nextInteract |= device.InteractTrigger;
+            //        nextApply |= device.ApplyTrigger;
+            //        nextJump |= device.JumpTrigger;
+            //        nextInventory |= device.InventoryTrigger;
+            //        nextToggleFlyMode |= device.ToggleFlyMode;
+            //        nextSlotLeft |= device.SlotLeftTrigger;
+            //        nextSlotRight |= device.SlotRightTrigger;
+            //        if (device.SlotTrigger != null)
+            //            for (int i = 0; i < Math.Min(device.SlotTrigger.Length, SlotTriggerLength); i++)
+            //                nextSlot[i] |= device.SlotTrigger[i];
 
-                    MoveX += device.MoveX;
-                    MoveY += device.MoveY;
-                    HeadX += device.HeadX;
-                    HeadY += device.HeadY;
-                }
+            //        MoveX += device.MoveX;
+            //        MoveY += device.MoveY;
+            //        HeadX += device.HeadX;
+            //        HeadY += device.HeadY;
+            //    }
 
-                InteractTrigger.Value = nextInteract;
-                ApplyTrigger.Value = nextApply;
-                InventoryTrigger.Value = nextInventory;
-                JumpTrigger.Value = nextJump;
-                ToggleFlyMode.Value = nextToggleFlyMode;
-                SlotLeftTrigger.Value = nextSlotLeft;
-                SlotRightTrigger.Value = nextSlotRight;
-                for (int i = 0; i < SlotTriggerLength; i++)
-                    SlotTrigger[i].Value = nextSlot[i];
+            //    InteractTrigger.Value = nextInteract;
+            //    ApplyTrigger.Value = nextApply;
+            //    InventoryTrigger.Value = nextInventory;
+            //    JumpTrigger.Value = nextJump;
+            //    ToggleFlyMode.Value = nextToggleFlyMode;
+            //    SlotLeftTrigger.Value = nextSlotLeft;
+            //    SlotRightTrigger.Value = nextSlotRight;
+            //    for (int i = 0; i < SlotTriggerLength; i++)
+            //        SlotTrigger[i].Value = nextSlot[i];
 
-                MoveX = Math.Min(1, Math.Max(-1, MoveX));
-                MoveY = Math.Min(1, Math.Max(-1, MoveY));
-            }
+            //    MoveX = Math.Min(1, Math.Max(-1, MoveX));
+            //    MoveY = Math.Min(1, Math.Max(-1, MoveY));
+            //}
         }
 
         public event OnKeyChange OnKeyDown;

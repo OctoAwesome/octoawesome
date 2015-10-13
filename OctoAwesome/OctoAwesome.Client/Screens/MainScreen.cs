@@ -1,4 +1,5 @@
-﻿using MonoGameUi;
+﻿using Microsoft.Xna.Framework;
+using MonoGameUi;
 using OctoAwesome.Client.Components;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,20 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(stack);
 
             Button startButton = Button.TextButton(manager, "Start");
+            startButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             startButton.LeftMouseClick += (s, e) =>
             {
-
+                manager.NavigateToScreen(new GameScreen(manager));
             };
             stack.Controls.Add(startButton);
 
             Button optionButton = Button.TextButton(manager, "Options");
+            optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            optionButton.MinWidth = 200;
             stack.Controls.Add(optionButton);
 
             Button exitButton = Button.TextButton(manager, "Exit");
+            exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
         }

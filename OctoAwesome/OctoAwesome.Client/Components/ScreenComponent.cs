@@ -7,8 +7,14 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class ScreenComponent : BaseScreenComponent
     {
-        public ScreenComponent(Game game) : base(game)
+        public PlayerComponent Player { get; private set; }
+
+        public CameraComponent Camera { get; private set; }
+
+        public ScreenComponent(Game game, PlayerComponent player, CameraComponent camera) : base(game)
         {
+            Player = player;
+            Camera = camera;
         }
 
         protected override void LoadContent()
