@@ -100,7 +100,7 @@ namespace OctoAwesome.Runtime
             if (first != null)
                 return first;
 
-            IChunk[] result = mapGenerator.GenerateChunk(BlockDefinitionManager.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
+            IChunk[] result = mapGenerator.GenerateChunk(DefinitionManager.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
             if (result != null && result.Length > index.Z && index.Z >= 0)
             {
                 result[index.Z].ChangeCounter = 0;

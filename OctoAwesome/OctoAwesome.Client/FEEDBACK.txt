@@ -11,12 +11,6 @@ Nachtrag von Ralf per Email (16.04.)
 ====================================
 Begrifflichkeiten im Cache irreführend. Sinnvolle wären die typischen Werte get(), put(), replace(), remove(), putIfAbsent()
 
-Andy via Email (10.04.)
-=======================
-- Liste "ActiveChunkRenderer" ist inzwischen unnötig
-- InUse kann auf chunk!=null gemappt werden
-- ChunkRenderer erst erzeugen, wenn gebraucht wird
-
 Tom (14.04.)
 ============
 - Speicherüberlauf in der Grafikkarte -> Absturz des GraKa-Treibers
@@ -25,42 +19,19 @@ Tom (14.04.)
 
 Andy via Email (14.04.)
 =======================
-- Recycling für die Cache-Objekte
 - Performancen-Frage bei OrderBy im Cache (ermittlung des ältesten Elements) -> Alternative eine verkettete Liste als Queue
 - Performance-Frage bei Ermittlung des ElapsedMilliseconds der StopWatch. int++ schneller
 
 Ralf via Email (15.04.)
 =======================
 - Ausgabe auf die Console nicht wirklich cool. Einbindung von log4net
-- evtl. Caching-Framework (ehcache.org)
-
-Andy via Email (16.04.)
-=======================
-- 2-Level Cache hat ein Problem: L1 könnte Elemente halten die von L2 schon entfernt wurden
-
-RedworksDE @ YouTube (20.04.)
-=============================
-- Anstatt !cache.Contains() und cache.Add() tuts auch cache[index] = value;
-
-Lassi @ Youtube (21.04.)
-========================
-- Kollision Property für Blocks
-- Besseres Transparenz-Handling für Wasserblocks
 
 Sansero Games @ YouTube (21.04.)
 ================================
 - Dynamische Nebelweite in Abhängigkeit der geladenenen Chunks
 
-Andy @ Email (20.04.)
-=====================
-x Lock taugt immernoch nichts, sollte Eintrag nicht im Cache sein
-- Deserialisierung wird ärger machen, wenn wir in einen recycle-Chunk schreiben (da wir 0-Blocks nicht wirklich mit null setzen)
-- L1- und L2-Cache unnötig
-- Set-Methode im Cache -> private Set ohne Lock, public Set mit lock und Aufruf auf private Set
-
 Ralf @ Email (20.04.)
 =====================
-- Neue dll-Lösung (Monogame mit ins Repository) ist nicht so smart für Linux-User
 - DisablePersistence vom Namen her blöd. EnablePersistence
 
 Ralf @ Email (25.05.)

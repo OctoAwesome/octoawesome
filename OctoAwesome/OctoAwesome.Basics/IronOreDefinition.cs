@@ -24,6 +24,14 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public int StackLimit
+        {
+            get
+            {
+                return 50;
+            }
+        }
+
         public IResource GetInstance()
         {
             throw new NotImplementedException();

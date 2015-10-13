@@ -168,7 +168,7 @@ namespace OctoAwesome.Runtime
                                 continue;
 
                             Axis? localAxis;
-                            IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
+                            IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
                             float? moveFactor = Block.Intersect(
                                 blockDefinition.GetCollisionBoxes(_manager, blockPos.X, blockPos.Y, blockPos.Z),
                                 pos, playerBox, move, out localAxis);
@@ -233,7 +233,7 @@ namespace OctoAwesome.Runtime
 
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = BlockDefinitionManager.GetForType(lastBlock);
+                    var blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(lastBlock);
 
                     var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
 
@@ -270,7 +270,7 @@ namespace OctoAwesome.Runtime
                     if (ActiveTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
-                        _manager.SetBlock(lastApply.Value + add, BlockDefinitionManager.GetDefinitionIndex(definition));
+                        _manager.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
 
                         ActiveTool.Amount--;
                         if (ActiveTool.Amount <= 0)

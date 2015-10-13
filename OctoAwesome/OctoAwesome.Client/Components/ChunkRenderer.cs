@@ -125,7 +125,7 @@ namespace OctoAwesome.Client.Components
             Dictionary<IBlockDefinition, int> textureOffsets = new Dictionary<IBlockDefinition, int>();
             // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
             int definitionIndex = 0;
-            foreach (var definition in BlockDefinitionManager.GetBlockDefinitions())
+            foreach (var definition in DefinitionManager.GetBlockDefinitions())
             {
                 int textureCount = definition.Textures.Count();
                 textureOffsets.Add(definition, definitionIndex);
@@ -143,7 +143,7 @@ namespace OctoAwesome.Client.Components
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
+                        IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
                         if (blockDefinition == null)
                             continue;
 
@@ -157,7 +157,7 @@ namespace OctoAwesome.Client.Components
 
 
                         ushort topBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z + 1));
-                        IBlockDefinition topBlockDefintion = BlockDefinitionManager.GetForType(topBlock);
+                        IBlockDefinition topBlockDefintion = DefinitionManager.GetBlockDefinitionByIndex(topBlock);
 
                         // Top
                         if (topBlock == 0 || (!topBlockDefintion.IsBottomSolidWall(_manager, x, y, z + 1) && topBlock != block))
@@ -188,7 +188,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort bottomBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z - 1));
-                        IBlockDefinition bottomBlockDefintion = BlockDefinitionManager.GetForType(bottomBlock);
+                        IBlockDefinition bottomBlockDefintion = DefinitionManager.GetBlockDefinitionByIndex(bottomBlock);
 
 
                         // Unten
@@ -220,7 +220,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort southBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y + 1, z));
-                        IBlockDefinition southBlockDefintion = BlockDefinitionManager.GetForType(southBlock);
+                        IBlockDefinition southBlockDefintion = DefinitionManager.GetBlockDefinitionByIndex(southBlock);
 
                         // South
                         if (southBlock == 0 || (!southBlockDefintion.IsNorthSolidWall(_manager, x, y + 1, z) && southBlock != block))
@@ -252,7 +252,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort northBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y - 1, z));
-                        IBlockDefinition northBlockDefintion = BlockDefinitionManager.GetForType(northBlock);
+                        IBlockDefinition northBlockDefintion = DefinitionManager.GetBlockDefinitionByIndex(northBlock);
 
                         // North
                         if (northBlock == 0 || (!northBlockDefintion.IsSouthSolidWall(_manager, x, y - 1, z) && northBlock != block))
@@ -283,7 +283,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort westBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x - 1, y, z));
-                        IBlockDefinition westBlockDefintion = BlockDefinitionManager.GetForType(westBlock);
+                        IBlockDefinition westBlockDefintion = DefinitionManager.GetBlockDefinitionByIndex(westBlock);
 
                         // West
                         if (westBlock == 0 || (!westBlockDefintion.IsEastSolidWall(_manager, x - 1, y, z) && westBlock != block))
@@ -314,7 +314,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort eastBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x + 1, y, z));
-                        IBlockDefinition eastBlockDefintion = BlockDefinitionManager.GetForType(eastBlock);
+                        IBlockDefinition eastBlockDefintion = DefinitionManager.GetBlockDefinitionByIndex(eastBlock);
 
                         // Ost
                         if (eastBlock == 0 || (!eastBlockDefintion.IsWestSolidWall(_manager, x + 1, y, z) && eastBlock != block))
