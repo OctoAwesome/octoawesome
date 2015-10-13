@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
@@ -118,7 +119,7 @@ namespace OctoAwesome.Client.Components
 
             List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
             List<int> index = new List<int>();
-            int textureColumns = textures.Width / SceneComponent.TEXTURESIZE;
+            int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
             float textureWidth = 1f / textureColumns;
 
             // BlockTypes sammlen
