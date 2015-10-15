@@ -18,7 +18,8 @@ namespace OctoAwesome.Client.Screens
             player = manager.Player;
             IsOverlay = true;
 
-            Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
+            //Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
+            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
             Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
 
             HorizontalAlignment = HorizontalAlignment.Center;

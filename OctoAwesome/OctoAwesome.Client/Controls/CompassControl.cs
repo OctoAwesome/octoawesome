@@ -16,7 +16,8 @@ namespace OctoAwesome.Client.Controls
         {
             Player = screenManager.Player;
 
-            compassTexture = ScreenManager.Content.Load<Texture2D>("Textures/compass");
+            //compassTexture = ScreenManager.Content.Load<Texture2D>("Textures/compass");
+            compassTexture = ScreenManager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/compass.png", ScreenManager.GraphicsDevice);
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
