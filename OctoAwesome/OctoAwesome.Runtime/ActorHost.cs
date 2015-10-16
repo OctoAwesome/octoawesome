@@ -23,6 +23,8 @@ namespace OctoAwesome.Runtime
 
         private IPlanetResourceManager _manager;
 
+        private ChunkCache localChunkCache;
+
         public Player Player { get; private set; }
 
         public InventorySlot ActiveTool { get; set; }
@@ -35,6 +37,8 @@ namespace OctoAwesome.Runtime
 
             Player = player;
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
+
+            localChunkCache = new ChunkCache()
 
             _oldIndex = Player.Position.ChunkIndex;
 

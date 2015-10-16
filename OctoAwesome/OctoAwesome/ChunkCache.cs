@@ -8,6 +8,7 @@ namespace OctoAwesome
         private readonly IChunk[] _chunks;
         private readonly Func<Index3, IChunk> _loadDelegate;
         private readonly Action<Index3, IChunk> _saveDelegate;
+        private readonly IResourceManager resourceManager;
 
         private const int LimitX = 5;
         private const int LimitY = 5;
@@ -30,6 +31,13 @@ namespace OctoAwesome
             _chunks = new IChunk[(XMask+1) * (YMask+1) * (ZMask+1)];
         }
 
+        public ChunkCache(IResourceManager resourceManager)
+        {
+            this.resourceManager = resourceManager;
+
+            _chunks = new IChunk[(XMask + 1) * (YMask + 1) * (ZMask + 1)];
+        }
+
         public IChunk Get(Index3 idx)
         {
             return _chunks[FlatIndex(idx.X, idx.Y, idx.Z)];
@@ -40,22 +48,22 @@ namespace OctoAwesome
             return _chunks[FlatIndex(x,y,z)];
         }
 
-        public void EnsureLoaded(Index3 idx)
+        public void EnsureLoaded(PlanetIndex3 idx)
         {
-            var flat = FlatIndex(idx.X, idx.Y, idx.Z);
+            var flat = FlatIndex(idx.ChunkIndex.X, idx.ChunkIndex.Y, idx.ChunkIndex.Z);
             if (_chunks[flat] == null)
-                _chunks[flat] = _loadDelegate(idx);
+                _chunks[flat] = resourceManager.SubscribeChunk(idx);
         }
 
-        public void Release(Index3 idx)
+        public void Release(PlanetIndex3 idx)
         {
-            var flat = FlatIndex(idx.X, idx.Y, idx.Z);
+            var flat = FlatIndex(idx.ChunkIndex.X, idx.ChunkIndex.Y, idx.ChunkIndex.Z);
 
             var chunk = _chunks[flat];
 
             if (chunk != null)
             {
-                _saveDelegate(idx, chunk);
+                resourceManager.ReleaseChunk(idx);
                 _chunks[flat] = null;
             }
         }

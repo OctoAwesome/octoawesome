@@ -7,20 +7,20 @@ namespace OctoAwesome
     {
         private readonly IChunkCache _cache;
         private readonly int _maxRange;
-        private Index3 _center;
+        private PlanetIndex3 _center;
         private Task _loadingTask;
         private CancellationTokenSource _cancellationToken;
 
-        public ChunkLoader(IChunkCache cache, int range, Index3 center)
+        public ChunkLoader(IChunkCache cache, int range, PlanetIndex3 center)
         {
             _center = center;
             _maxRange = range;
             _cache = cache;
         }
 
-        public void UpdatePosition(int i, int j, int k)
+        public void UpdatePosition(int planet, int i, int j, int k)
         {
-            _center = new Index3(_center.X + i, _center.Y + j, _center.Z + k);
+            _center = new PlanetIndex3(planet, _center.ChunkIndex + new Index3(i, j, k));
 
             if (_loadingTask != null && !_loadingTask.IsCompleted)
             {
@@ -46,14 +46,14 @@ namespace OctoAwesome
                         if (i < _maxRange && j < _maxRange && k < _maxRange)
                             continue;
 
-                        _cache.Release(_center.X + i, _center.Y + j, _center.Z + k);
-                        _cache.Release(_center.X + i, _center.Y - j, _center.Z + k);
-                        _cache.Release(_center.X - i, _center.Y + j, _center.Z + k);
-                        _cache.Release(_center.X - i, _center.Y - j, _center.Z + k);
-                        _cache.Release(_center.X + i, _center.Y + j, _center.Z - k);
-                        _cache.Release(_center.X + i, _center.Y - j, _center.Z - k);
-                        _cache.Release(_center.X - i, _center.Y + j, _center.Z - k);
-                        _cache.Release(_center.X - i, _center.Y - j, _center.Z - k);
+                        _cache.Release(_center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k);
+                        _cache.Release(_center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k);
+                        _cache.Release(_center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k);
+                        _cache.Release(_center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k);
+                        _cache.Release(_center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k);
+                        _cache.Release(_center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k);
+                        _cache.Release(_center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k);
+                        _cache.Release(_center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k);
                     }
 
             for (int range = 1; range < _maxRange; range ++) 
@@ -64,28 +64,28 @@ namespace OctoAwesome
                              if (i != range && j != range && k != range)
                                  continue;
 
-                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y + j, _center.Z + k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y - j, _center.Z + k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y + j, _center.Z + k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y - j, _center.Z + k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y + j, _center.Z - k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X + i, _center.Y - j, _center.Z - k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y + j, _center.Z - k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.X - i, _center.Y - j, _center.Z - k));
+                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
                          }
         }
@@ -99,6 +99,6 @@ namespace OctoAwesome
         /// <param name="i"></param>
         /// <param name="j"></param>
         /// <param name="k"></param>
-        void UpdatePosition(int i, int j, int k);
+        void UpdatePosition(int planet, int i, int j, int k);
     }
 }

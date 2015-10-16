@@ -17,6 +17,8 @@ namespace OctoAwesome.Runtime
         private IChunkPersistence chunkPersistence = null;
         private IChunkSerializer chunkSerializer = null;
 
+        private GlobalChunkCache globalChunkCache = null;
+
         /// <summary>
         /// Planet Cache.
         /// </summary>
@@ -53,6 +55,10 @@ namespace OctoAwesome.Runtime
             mapGenerator = MapGeneratorManager.GetMapGenerators().First();
             chunkSerializer = new ChunkSerializer();
             chunkPersistence = new ChunkDiskPersistence(chunkSerializer);
+
+            globalChunkCache = new GlobalChunkCache(
+                (i) => loadChunk(i.Planet, i.ChunkIndex), 
+                (i, c) => saveChunk(i.Planet, c));
 
             _managers = new Dictionary<int, PlanetResourceManager>();
             _planets = new[] {loadPlanet(0)};
@@ -119,6 +125,16 @@ namespace OctoAwesome.Runtime
                 chunkPersistence.Save(universe.Id, planetId, value);
                 value.ChangeCounter = 0;
             }
+        }
+
+        public IChunk SubscribeChunk(PlanetIndex3 index)
+        {
+            return globalChunkCache.Subscribe(index);
+        }
+
+        public void ReleaseChunk(PlanetIndex3 index)
+        {
+            globalChunkCache.Release(index);
         }
 
         /// <summary>

@@ -56,7 +56,6 @@
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />
     <Compile Include="IPlayerController.cs" />
-    <Compile Include="IResourceManager.cs" />
     <Compile Include="MapGeneratorManager.cs" />
     <Compile Include="PlanetResourceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
