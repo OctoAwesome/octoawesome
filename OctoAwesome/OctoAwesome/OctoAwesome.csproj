@@ -60,6 +60,7 @@
     <Compile Include="ChunkCache.cs" />
     <Compile Include="ChunkLoader.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlock.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IBlockRenderer.cs" />
