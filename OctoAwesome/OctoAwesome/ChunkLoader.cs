@@ -67,25 +67,25 @@ namespace OctoAwesome
                              _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z + k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X + i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X + i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X - i, _center.ChunkIndex.Y + j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
 
-                             _cache.EnsureLoaded(new Index3(_center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k));
+                             _cache.EnsureLoaded(new PlanetIndex3(_center.Planet, _center.ChunkIndex.X - i, _center.ChunkIndex.Y - j, _center.ChunkIndex.Z - k));
                              if (token.IsCancellationRequested) return;
                          }
         }

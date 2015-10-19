@@ -38,7 +38,7 @@ namespace OctoAwesome.Runtime
             Player = player;
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            localChunkCache = new ChunkCache()
+            // localChunkCache = new ChunkCache()
 
             _oldIndex = Player.Position.ChunkIndex;
 
@@ -52,7 +52,7 @@ namespace OctoAwesome.Runtime
 
             State = WorldState.Running;
 
-            _chunkLoader.UpdatePosition(0, 0, 0);
+            _chunkLoader.UpdatePosition(0, 0, 0, 0);
         }
 
         public void Update(GameTime frameTime)
@@ -222,7 +222,11 @@ namespace OctoAwesome.Runtime
             {
                 //TODO: Planeten rundung beachten :)
 
-                _chunkLoader.UpdatePosition(Player.Position.ChunkIndex.X - _oldIndex.X, Player.Position.ChunkIndex.Y - _oldIndex.Y, Player.Position.ChunkIndex.Z - _oldIndex.Z);
+                _chunkLoader.UpdatePosition(
+                    Player.Position.Planet, 
+                    Player.Position.ChunkIndex.X - _oldIndex.X, 
+                    Player.Position.ChunkIndex.Y - _oldIndex.Y, 
+                    Player.Position.ChunkIndex.Z - _oldIndex.Z);
                 _oldIndex = Player.Position.ChunkIndex;
             }
 

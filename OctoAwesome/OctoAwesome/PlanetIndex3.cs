@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace OctoAwesome
+﻿namespace OctoAwesome
 {
     public struct PlanetIndex3
     {
@@ -16,6 +11,8 @@ namespace OctoAwesome
             Planet = planet;
             ChunkIndex = chunkIndex;
         }
+
+        public PlanetIndex3(int planet, int x, int y, int z) : this(planet, new Index3(x, y, z)) { }
 
         public static bool operator ==(PlanetIndex3 i1, PlanetIndex3 i2)
         {
@@ -33,10 +30,10 @@ namespace OctoAwesome
 
             PlanetIndex3 other = (PlanetIndex3)obj;
             return (
-                other.Planet == this.Planet &&
-                other.ChunkIndex.X == this.ChunkIndex.X &&
-                other.ChunkIndex.Y == this.ChunkIndex.Y &&
-                other.ChunkIndex.Z == this.ChunkIndex.Z);
+                other.Planet == Planet &&
+                other.ChunkIndex.X == ChunkIndex.X &&
+                other.ChunkIndex.Y == ChunkIndex.Y &&
+                other.ChunkIndex.Z == ChunkIndex.Z);
         }
 
         public override int GetHashCode()
