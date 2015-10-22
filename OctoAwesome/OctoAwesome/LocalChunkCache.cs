@@ -28,6 +28,9 @@ namespace OctoAwesome
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
         public LocalChunkCache(IGlobalChunkCache globalCache, Index2 dimensions, int range)
         {
+            if (Math.Pow(Math.Min(dimensions.X, dimensions.Y), 2) < (range * 2) + 1)
+                throw new ArgumentException("Range too big");
+
             this.globalCache = globalCache;
             this.range = range;
 
@@ -93,19 +96,27 @@ namespace OctoAwesome
                 chunks[i] = new IChunk[height];
         }
 
-        public IChunk GetChunk(PlanetIndex3 index)
+        public IChunk GetChunk(int x, int y, int z)
         {
-            throw new NotImplementedException();
+            IChunk chunk = chunks[FlatIndex(x,y)][z % planet.Size.Z];
+            if (chunk != null && chunk.Index.X == x && chunk.Index.Y == y && chunk.Index.Z == z)
+                return chunk;
+            return null;
         }
 
+        [Obsolete]
         public ushort GetBlock(Index3 index)
         {
-            throw new NotImplementedException();
+            return GetBlock(index.X, index.Y, index.Z);
         }
 
         public ushort GetBlock(int x, int y, int z)
         {
-            throw new NotImplementedException();
+            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            if (chunk != null)
+                return chunk.GetBlock(x, y, z);
+
+            return 0;
         }
 
         /// <summary>
@@ -113,24 +124,33 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
+        [Obsolete]
         public void SetBlock(Index3 index, ushort block)
         {
-            throw new NotImplementedException();
+            SetBlock(index.X, index.Y, index.Z, block);
         }
 
         public void SetBlock(int x, int y, int z, ushort block)
         {
-            throw new NotImplementedException();
+            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            if (chunk != null)
+                chunk.SetBlock(x, y, z, block);
         }
 
         public int GetBlockMeta(int x, int y, int z)
         {
-            throw new NotImplementedException();
+            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            if (chunk != null)
+                return chunk.GetBlockMeta(x, y, z);
+
+            return 0;
         }
 
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
-            throw new NotImplementedException();
+            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            if (chunk != null)
+                chunk.SetBlockMeta(x, y, z, meta);
         }
 
         public void Flush()
