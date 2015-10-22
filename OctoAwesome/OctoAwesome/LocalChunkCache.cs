@@ -10,24 +10,26 @@ namespace OctoAwesome
     /// </summary>
     public sealed class LocalChunkCache
     {
-        private IResourceManager resourceManager;
+        private IGlobalChunkCache globalCache;
 
         private readonly IChunk[][] chunks;
 
-        private int? planet;
+        private IPlanet planet;
         private int limitX;
         private int limitY;
         private int maskX;
         private int maskY;
+        private int range;
 
         /// <summary>
         /// Instanziert einen neuen local Chunk Cache.
         /// </summary>
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
-        public LocalChunkCache(IResourceManager resourceManager, IGlobalChunkCache globalCache, Index2 dimensions)
+        public LocalChunkCache(IGlobalChunkCache globalCache, Index2 dimensions, int range)
         {
-            this.resourceManager = resourceManager;
+            this.globalCache = globalCache;
+            this.range = range;
 
             limitX = dimensions.X;
             limitY = dimensions.Y;
@@ -36,20 +38,56 @@ namespace OctoAwesome
             chunks = new IChunk[(maskX + 1) * (maskY + 1)][];
         }
 
-        public void SetCenter(PlanetIndex3 index)
+        public void SetCenter(IPlanet planet, Index3 index)
         {
             // Planet resetten falls notwendig
-            if (index.Planet != planet)
-                InitializePlanet(index.Planet);
+            if (this.planet != planet)
+                InitializePlanet(planet);
 
+            if (planet == null) return;
+
+            for (int x = -range; x <= range; x++)
+            {
+                for (int y = -range; y <= range; y++)
+                {
+                    for (int z = 0; z < planet.Size.Z; z++)
+                    {
+                        Index3 local = new Index3(
+                            index.X + x,
+                            index.Y + y,
+                            z);
+
+                        local.NormalizeXY(planet.Size);
+
+                        int localX = local.X & maskX;
+                        int localY = local.Y & maskY;
+
+                        IChunk chunk = chunks[FlatIndex(localX, localY)][z];
+
+                        // Alten Chunk entfernen, falls notwendig
+                        if (chunk != null && chunk.Index != local)
+                        {
+                            globalCache.Release(new PlanetIndex3(planet.Id, local));
+                            chunks[FlatIndex(localX, localY)][z] = null;
+                            chunk = null;
+                        }
+
+                        // Neuen Chunk laden
+                        if (chunk == null)
+                        {
+                            chunk = globalCache.Subscribe(new PlanetIndex3(planet.Id, local));
+                            chunks[FlatIndex(localX, localY)][z] = chunk;
+                        }
+                    }
+                }
+            }
         }
 
-        private void InitializePlanet(int planet)
+        private void InitializePlanet(IPlanet planet)
         {
             Flush();
 
-            IPlanet p = resourceManager.GetPlanet(planet);
-            int height = p.Size.Z;
+            int height = planet.Size.Z;
 
             for (int i = 0; i < chunks.Length; i++)
                 chunks[i] = new IChunk[height];
@@ -97,7 +135,18 @@ namespace OctoAwesome
 
         public void Flush()
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < chunks.Length; i++)
+            {
+                for (int h = 0; h < chunks[i].Length; h++)
+                {
+                    IChunk chunk = chunks[i][h];
+                    if (chunk != null)
+                    {
+                        globalCache.Release(new PlanetIndex3(chunk.Planet, chunk.Index));
+                        chunks[i][h] = null;
+                    }
+                }
+            }
         }
 
         private int FlatIndex(int x, int y)
