@@ -18,7 +18,7 @@ namespace OctoAwesome
         public GlobalChunkCache(Func<PlanetIndex3, IChunk> loadDelegate, 
             Action<PlanetIndex3, IChunk> saveDelegate)
         {
-            if (loadDelegate == null) throw new ArgumentNullException("loadDegate");
+            if (loadDelegate == null) throw new ArgumentNullException("loadDelegate");
             if (saveDelegate == null) throw new ArgumentNullException("saveDelegate");
 
             this.loadDelegate = loadDelegate;

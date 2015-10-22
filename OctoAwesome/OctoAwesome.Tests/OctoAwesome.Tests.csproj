@@ -57,7 +57,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -65,6 +67,7 @@
     <Compile Include="BlockIntersectTests.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="CollisionTests.cs" />
+    <Compile Include="GlobalChunkCacheTest.cs" />
     <Compile Include="Index2Tests.cs" />
     <Compile Include="Index3Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
