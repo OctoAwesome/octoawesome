@@ -69,6 +69,7 @@
     <Compile Include="IChunkPersistence.cs" />
     <Compile Include="IChunkSerializer.cs" />
     <Compile Include="IClimateMap.cs" />
+    <Compile Include="IGlobalChunkCache.cs" />
     <Compile Include="IInputSet.cs" />
     <Compile Include="IItem.cs" />
     <Compile Include="IItemDefinition.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="LocalChunkCache.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Noise\PerlinNoiseGenerator.cs" />
     <Compile Include="Noise\SimplexNoiseGenerator.cs" />

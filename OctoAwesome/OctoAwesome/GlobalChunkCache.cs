@@ -5,7 +5,10 @@ using System.Text;
 
 namespace OctoAwesome
 {
-    public sealed class GlobalChunkCache
+    /// <summary>
+    /// Globaler Cache für Chunks
+    /// </summary>
+    public sealed class GlobalChunkCache : IGlobalChunkCache
     {
         private Dictionary<PlanetIndex3, CacheItem> cache;
 
@@ -14,6 +17,11 @@ namespace OctoAwesome
         private Action<PlanetIndex3, IChunk> saveDelegate;
 
         private object lockObject = new object();
+
+        /// <summary>
+        /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
+        /// </summary>
+        public int LoadedChunks { get { return cache.Count; } }
 
         public GlobalChunkCache(Func<PlanetIndex3, IChunk> loadDelegate, 
             Action<PlanetIndex3, IChunk> saveDelegate)
@@ -27,6 +35,11 @@ namespace OctoAwesome
             cache = new Dictionary<PlanetIndex3, CacheItem>();
         }
 
+        /// <summary>
+        /// Abonniert einen Chunk.
+        /// </summary>
+        /// <param name="position">Position des Chunks</param>
+        /// <returns></returns>
         public IChunk Subscribe(PlanetIndex3 position)
         {
             lock (lockObject)
@@ -48,6 +61,10 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Gibt einen abonnierten Chunk wieder frei.
+        /// </summary>
+        /// <param name="position"></param>
         public void Release(PlanetIndex3 position)
         {
             lock (lockObject)
@@ -55,7 +72,7 @@ namespace OctoAwesome
                 CacheItem cacheItem = null;
                 if (!cache.TryGetValue(position, out cacheItem))
                 {
-                    throw new Exception("Kein Chunk für Position in Cache");
+                    throw new NotSupportedException("Kein Chunk für Position in Cache");
                 }
 
                 cacheItem.References--;
