@@ -15,10 +15,8 @@ namespace OctoAwesome
         private readonly IChunk[][] chunks;
 
         private IPlanet planet;
-        private int limitX;
-        private int limitY;
-        private int maskX;
-        private int maskY;
+        private int limit;
+        private int mask;
         private int range;
 
         /// <summary>
@@ -26,19 +24,17 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
-        public LocalChunkCache(IGlobalChunkCache globalCache, Index2 dimensions, int range)
+        public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range)
         {
-            if (Math.Pow(Math.Min(dimensions.X, dimensions.Y), 2) < (range * 2) + 1)
+            if (Math.Pow(dimensions, 2) < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
             this.globalCache = globalCache;
             this.range = range;
 
-            limitX = dimensions.X;
-            limitY = dimensions.Y;
-            maskX = (1 << limitX) - 1;
-            maskY = (1 << limitY) - 1;
-            chunks = new IChunk[(maskX + 1) * (maskY + 1)][];
+            limit = dimensions;
+            mask = (1 << limit) - 1;
+            chunks = new IChunk[(mask + 1) * (mask + 1)][];
         }
 
         public void SetCenter(IPlanet planet, Index3 index)
@@ -62,8 +58,8 @@ namespace OctoAwesome
 
                         local.NormalizeXY(planet.Size);
 
-                        int localX = local.X & maskX;
-                        int localY = local.Y & maskY;
+                        int localX = local.X & mask;
+                        int localY = local.Y & mask;
 
                         IChunk chunk = chunks[FlatIndex(localX, localY)][z];
 
@@ -90,6 +86,7 @@ namespace OctoAwesome
         {
             Flush();
 
+            this.planet = planet;
             int height = planet.Size.Z;
 
             for (int i = 0; i < chunks.Length; i++)
@@ -171,7 +168,7 @@ namespace OctoAwesome
 
         private int FlatIndex(int x, int y)
         {
-            return (((y & (maskY)) << limitX) | ((x & (maskX))));
+            return (((y & (mask)) << limit) | ((x & (mask))));
         }
     }
 }

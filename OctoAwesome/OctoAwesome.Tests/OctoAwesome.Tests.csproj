@@ -76,6 +76,7 @@
     <Compile Include="TestBlockDefinition.cs" />
     <Compile Include="TestChunk.cs" />
     <Compile Include="TestGlobalCache.cs" />
+    <Compile Include="TestPlanet.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
