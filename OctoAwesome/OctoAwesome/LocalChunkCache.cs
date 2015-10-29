@@ -24,9 +24,10 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
+        /// <param name="range">Gibt die Range in alle Richtungen an.</param>
         public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range)
         {
-            if (Math.Pow(dimensions, 2) < (range * 2) + 1)
+            if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
             this.globalCache = globalCache;
@@ -102,7 +103,11 @@ namespace OctoAwesome
 
         public IChunk GetChunk(int x, int y, int z)
         {
-            IChunk chunk = chunks[FlatIndex(x,y)][z % planet.Size.Z];
+            if (planet == null) return null;
+            if (z < 0) return null;
+            if (z >= planet.Size.Z) return null;
+
+            IChunk chunk = chunks[FlatIndex(x, y)][z];
             if (chunk != null && chunk.Index.X == x && chunk.Index.Y == y && chunk.Index.Z == z)
                 return chunk;
             return null;

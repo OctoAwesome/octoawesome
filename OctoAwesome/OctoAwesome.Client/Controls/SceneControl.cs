@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Controls
             planet = ResourceManager.Instance.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE, VIEWRANGE);
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE + 1, 15);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -399,6 +399,10 @@ namespace OctoAwesome.Client.Controls
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
+                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
+                    localChunkCache.SetCenter(planet, player.ActorHost.Position.ChunkIndex));
+                t.Start();
+
                 int mask = (int)Math.Pow(2, VIEWRANGE) - 1;
 
                 int span = (int)Math.Pow(2, VIEWRANGE);
