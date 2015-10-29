@@ -69,6 +69,8 @@ namespace OctoAwesome.Runtime
             bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
         }
 
+        public IGlobalChunkCache GlobalChunkCache { get { return globalChunkCache; } }
+
         public IUniverse GetUniverse(int id)
         {
             if (universeCache == null)

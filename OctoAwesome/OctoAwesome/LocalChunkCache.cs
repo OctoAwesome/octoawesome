@@ -84,7 +84,8 @@ namespace OctoAwesome
 
         private void InitializePlanet(IPlanet planet)
         {
-            Flush();
+            if (this.planet != null)
+                Flush();
 
             this.planet = planet;
             int height = planet.Size.Z;
@@ -154,6 +155,7 @@ namespace OctoAwesome
         {
             for (int i = 0; i < chunks.Length; i++)
             {
+                if (chunks[i] == null) continue;
                 for (int h = 0; h < chunks[i].Length; h++)
                 {
                     IChunk chunk = chunks[i][h];

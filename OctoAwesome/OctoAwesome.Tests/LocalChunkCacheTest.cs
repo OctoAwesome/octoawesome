@@ -20,7 +20,7 @@ namespace OctoAwesome.Tests
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void SimpleLoad()
         {
             LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
             TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
@@ -28,14 +28,76 @@ namespace OctoAwesome.Tests
             cache.SetCenter(planet, new Index3(15, 15, 2));
 
             Assert.AreEqual(27, globalCache.LoadCounter);
+            Assert.AreEqual(0, globalCache.SaveCounter);
 
-            // Chunks laden
-            // Chunks neu laden
-            // Chunks flushen
+            // Chunk im Zentrum
+            IChunk chunk = cache.GetChunk(15, 15, 1);
+            Assert.IsNotNull(chunk);
+            Assert.AreEqual(chunk.Index, new Index3(15, 15, 1));
 
-            //
-            // TODO: Add test logic here
-            //
+            // Chunk in der Ecke
+            chunk = cache.GetChunk(14, 14, 0);
+            Assert.IsNotNull(chunk);
+            Assert.AreEqual(chunk.Index, new Index3(14, 14, 0));
+
+            // Chunk in der Ecke
+            chunk = cache.GetChunk(16, 16, 2);
+            Assert.IsNotNull(chunk);
+            Assert.AreEqual(chunk.Index, new Index3(16, 16, 2));
+
+            // Chunk außerhalb des Centers
+            chunk = cache.GetChunk(10, 10, 1);
+            Assert.IsNull(chunk);
+
+            cache.Flush();
+
+            Assert.AreEqual(27, globalCache.LoadCounter);
+            Assert.AreEqual(27, globalCache.SaveCounter);
+
+            // Chunk im Zentrum
+            chunk = cache.GetChunk(15, 15, 1);
+            Assert.IsNull(chunk);
+
+            // Chunk in der Ecke
+            chunk = cache.GetChunk(14, 14, 0);
+            Assert.IsNull(chunk);
+
+            // Chunk in der Ecke
+            chunk = cache.GetChunk(16, 16, 2);
+            Assert.IsNull(chunk);
+
+            // Chunk außerhalb des Centers
+            chunk = cache.GetChunk(10, 10, 1);
+            Assert.IsNull(chunk);
+        }
+
+        [TestMethod]
+        public void MovingCenter()
+        {
+            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
+            TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
+
+            cache.SetCenter(planet, new Index3(15, 15, 2));
+            Assert.AreEqual(27, globalCache.LoadCounter);
+            Assert.AreEqual(0, globalCache.SaveCounter);
+
+            cache.SetCenter(planet, new Index3(14, 15, 2));
+            Assert.AreEqual(36, globalCache.LoadCounter);
+            Assert.AreEqual(0, globalCache.SaveCounter);
+
+            cache.SetCenter(planet, new Index3(13, 15, 2));
+            Assert.AreEqual(45, globalCache.LoadCounter);
+            Assert.AreEqual(9, globalCache.SaveCounter);
+
+            // Chunk im Zentrum
+            IChunk chunk = cache.GetChunk(13, 15, 0);
+            Assert.IsNotNull(chunk);
+            Assert.AreEqual(chunk.Index, new Index3(13, 15, 0));
+
+            // Chunk in der Ecke
+            chunk = cache.GetChunk(15, 15, 0);
+            Assert.IsNotNull(chunk);
+            Assert.AreEqual(chunk.Index, new Index3(15, 15, 0));
         }
     }
 

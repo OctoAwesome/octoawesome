@@ -23,7 +23,7 @@ namespace OctoAwesome.Runtime
 
         private IPlanetResourceManager _manager;
 
-        private ChunkCache localChunkCache;
+        private LocalChunkCache localChunkCache;
 
         public Player Player { get; private set; }
 
@@ -38,7 +38,8 @@ namespace OctoAwesome.Runtime
             Player = player;
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            // localChunkCache = new ChunkCache()
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
+            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
 
             _oldIndex = Player.Position.ChunkIndex;
 
@@ -228,6 +229,7 @@ namespace OctoAwesome.Runtime
                     Player.Position.ChunkIndex.Y - _oldIndex.Y, 
                     Player.Position.ChunkIndex.Z - _oldIndex.Z);
                 _oldIndex = Player.Position.ChunkIndex;
+                localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
             }
 
             #endregion
