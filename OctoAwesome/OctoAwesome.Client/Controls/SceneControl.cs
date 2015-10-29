@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Controls
             planet = ResourceManager.Instance.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE + 1, 15);
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE + 1, 1);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -261,7 +261,7 @@ namespace OctoAwesome.Client.Controls
         {
             if (ControlTexture == null)
             {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height);
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             }
 
             float octoDaysPerEarthDay = 360f;
@@ -293,6 +293,7 @@ namespace OctoAwesome.Client.Controls
                 new Microsoft.Xna.Framework.Color(181, 224, 255);
 
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
+            Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Manager.GraphicsDevice.Clear(background);
 
             foreach (var renderer in chunkRenderer)
@@ -463,15 +464,6 @@ namespace OctoAwesome.Client.Controls
 
             return true;
             //            return updatableRenderer != null;
-        }
-
-        protected override void OnMouseMove(MouseEventArgs args)
-        {
-            if (Focused == TreeState.Active)
-            {
-                args.ResetPosition = true;
-                args.Handled = true;
-            }
         }
 
         private void BackgroundLoop()

@@ -45,6 +45,8 @@ namespace OctoAwesome.Client.Screens
             minimap.Height = 128;
             minimap.Margin = Border.All(5);
             Controls.Add(minimap);
+
+            manager.Player.InputActive = true;
         }
 
         protected override void OnKeyPress(KeyEventArgs args)
