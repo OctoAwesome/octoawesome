@@ -8,7 +8,7 @@ namespace OctoAwesome
     /// <summary>
     /// Chunk Cache für lokale Anwendungen.
     /// </summary>
-    public sealed class LocalChunkCache
+    public sealed class LocalChunkCache : ILocalChunkCache
     {
         private IGlobalChunkCache globalCache;
 
@@ -92,6 +92,12 @@ namespace OctoAwesome
 
             for (int i = 0; i < chunks.Length; i++)
                 chunks[i] = new IChunk[height];
+        }
+
+        [Obsolete]
+        public IChunk GetChunk(Index3 index)
+        {
+            return GetChunk(index.X, index.Y, index.Z);
         }
 
         public IChunk GetChunk(int x, int y, int z)

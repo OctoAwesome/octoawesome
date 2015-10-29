@@ -32,7 +32,7 @@ namespace OctoAwesome.Tests
             }
         }
 
-        public override PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z)
+        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
             throw new NotImplementedException();
         }

@@ -9,7 +9,6 @@ namespace OctoAwesome.Runtime
 {
     public class ActorHost : IPlayerController
     {
-        private readonly IChunkLoader _chunkLoader;
         private readonly float Gap = 0.001f;
 
         private IPlanet planet;
@@ -21,9 +20,7 @@ namespace OctoAwesome.Runtime
         private OrientationFlags lastOrientation = OrientationFlags.None;
         private Index3 _oldIndex;
 
-        private IPlanetResourceManager _manager;
-
-        private LocalChunkCache localChunkCache;
+        private ILocalChunkCache localChunkCache;
 
         public Player Player { get; private set; }
 
@@ -31,16 +28,12 @@ namespace OctoAwesome.Runtime
 
         public WorldState State { get; private set; }
 
-        public ActorHost(Player player, IChunkLoader chunkLoader)
+        public ActorHost(Player player)
         {
-            _chunkLoader = chunkLoader;
-
             Player = player;
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
             localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
-
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
@@ -49,11 +42,8 @@ namespace OctoAwesome.Runtime
 
         public void Initialize()
         {
-            _manager = ResourceManager.Instance.GetManagerForPlanet(planet.Id);
-
             State = WorldState.Running;
-
-            _chunkLoader.UpdatePosition(0, 0, 0, 0);
+            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
         }
 
         public void Update(GameTime frameTime)
@@ -168,14 +158,14 @@ namespace OctoAwesome.Runtime
                         {
                             Index3 pos = new Index3(x, y, z);
                             Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
-                            ushort block = _manager.GetBlock(blockPos);
+                            ushort block = localChunkCache.GetBlock(blockPos);
                             if (block == 0)
                                 continue;
 
                             Axis? localAxis;
                             IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
                             float? moveFactor = Block.Intersect(
-                                blockDefinition.GetCollisionBoxes(_manager, blockPos.X, blockPos.Y, blockPos.Z),
+                                blockDefinition.GetCollisionBoxes(localChunkCache, blockPos.X, blockPos.Y, blockPos.Z),
                                 pos, playerBox, move, out localAxis);
 
                             if (moveFactor.HasValue && moveFactor.Value < min)
@@ -222,12 +212,6 @@ namespace OctoAwesome.Runtime
             if (Player.Position.ChunkIndex != _oldIndex)
             {
                 //TODO: Planeten rundung beachten :)
-
-                _chunkLoader.UpdatePosition(
-                    Player.Position.Planet, 
-                    Player.Position.ChunkIndex.X - _oldIndex.X, 
-                    Player.Position.ChunkIndex.Y - _oldIndex.Y, 
-                    Player.Position.ChunkIndex.Z - _oldIndex.Z);
                 _oldIndex = Player.Position.ChunkIndex;
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
             }
@@ -238,8 +222,8 @@ namespace OctoAwesome.Runtime
 
             if (lastInteract.HasValue)
             {
-                ushort lastBlock = _manager.GetBlock(lastInteract.Value);
-                _manager.SetBlock(lastInteract.Value, 0);
+                ushort lastBlock = localChunkCache.GetBlock(lastInteract.Value);
+                localChunkCache.SetBlock(lastInteract.Value, 0);
 
                 if (lastBlock != 0)
                 {
@@ -280,7 +264,7 @@ namespace OctoAwesome.Runtime
                     if (ActiveTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
-                        _manager.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
+                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
 
                         ActiveTool.Amount--;
                         if (ActiveTool.Amount <= 0)

@@ -78,7 +78,7 @@
     <Compile Include="Index3.cs" />
     <Compile Include="InventorySlot.cs" />
     <Compile Include="IPlanet.cs" />
-    <Compile Include="IPlanetResourceManager.cs" />
+    <Compile Include="ILocalChunkCache.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />

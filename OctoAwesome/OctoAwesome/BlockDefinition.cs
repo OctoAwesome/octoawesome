@@ -16,101 +16,101 @@ namespace OctoAwesome
 
         public virtual bool HasMetaData { get { return false; } }
 
-        public abstract PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
+        public abstract PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z);
 
         public abstract void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
 
-        public virtual BoundingBox[] GetCollisionBoxes(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
         {
             return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
         }
 
-        public virtual int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetTopTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetBottomTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetNorthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetSouthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetWestTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetEastTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetTopTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetTopTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetBottomTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetBottomTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetEastTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetEastTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetWestTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetWestTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetNorthTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetNorthTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual int GetSouthTextureRotation(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual int GetSouthTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
             return 0;
         }
 
-        public virtual bool IsTopSolidWall(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual bool IsTopSolidWall(ILocalChunkCache manager, int x, int y, int z)
         {
             return true;
         }
 
-        public virtual bool IsBottomSolidWall(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual bool IsBottomSolidWall(ILocalChunkCache manager, int x, int y, int z)
         {
             return true;
         }
 
-        public virtual bool IsNorthSolidWall(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual bool IsNorthSolidWall(ILocalChunkCache manager, int x, int y, int z)
         {
             return true;
         }
 
-        public virtual bool IsSouthSolidWall(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual bool IsSouthSolidWall(ILocalChunkCache manager, int x, int y, int z)
         {
             return true;
         }
 
-        public virtual bool IsWestSolidWall(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual bool IsWestSolidWall(ILocalChunkCache manager, int x, int y, int z)
         {
             return true;
         }
 
-        public virtual bool IsEastSolidWall(IPlanetResourceManager manager, int x, int y, int z)
+        public virtual bool IsEastSolidWall(ILocalChunkCache manager, int x, int y, int z)
         {
             return true;
         }
@@ -118,6 +118,6 @@ namespace OctoAwesome
 
     public interface IUpdateable
     {
-        void Tick(IPlanetResourceManager manager, int x, int y, int z);
+        void Tick(ILocalChunkCache manager, int x, int y, int z);
     }
 }

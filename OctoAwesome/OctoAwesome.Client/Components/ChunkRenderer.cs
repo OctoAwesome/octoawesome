@@ -26,7 +26,7 @@ namespace OctoAwesome.Client.Components
         private int vertexCount;
         private int indexCount;
         private int lastReset;
-        private IPlanetResourceManager _manager;
+        private ILocalChunkCache _manager;
 
         /// <summary>
         /// Adresse des aktuellen Chunks
@@ -42,7 +42,7 @@ namespace OctoAwesome.Client.Components
             simple = simpleShader;
         }
 
-        public void SetChunk(IPlanetResourceManager manager, int x, int y, int z)
+        public void SetChunk(ILocalChunkCache manager, int x, int y, int z)
         {
             var newPosition = new Index3(x, y, z);
 

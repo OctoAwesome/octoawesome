@@ -37,14 +37,14 @@ namespace OctoAwesome.Runtime
 
         public ActorHost InjectPlayer(Player player)
         {
-            var cache = ResourceManager.Instance.GetCacheForPlanet(player.Position.Planet);
-            var loader = new ChunkLoader(cache, 14, new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex));
+            //var cache = ResourceManager.Instance.GetCacheForPlanet(player.Position.Planet);
+            //var loader = new ChunkLoader(cache, 14, new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex));
 
-            cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex));
-            cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex + new Index3(0, 0, 1)));
-            cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex + new Index3(0, 0, - 1)));
+            //cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex));
+            //cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex + new Index3(0, 0, 1)));
+            //cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex + new Index3(0, 0, - 1)));
 
-            var host = new ActorHost(player, loader);
+            var host = new ActorHost(player);
             updateDomains[0].ActorHosts.Add(host);
             return host;
         }

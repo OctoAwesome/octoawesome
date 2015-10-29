@@ -26,13 +26,6 @@ namespace OctoAwesome.Runtime
 
         private IPlanet[] _planets;
 
-        /// <summary>
-        /// Chunk Cache.
-        /// </summary>
-        //private Cache<PlanetIndex3, IChunk> chunkCache;
-
-        private IDictionary<int, PlanetResourceManager> _managers; 
-
         private IUniverse universeCache;
 
         #region Singleton
@@ -60,7 +53,6 @@ namespace OctoAwesome.Runtime
                 (i) => loadChunk(i.Planet, i.ChunkIndex), 
                 (i, c) => saveChunk(i.Planet, c));
 
-            _managers = new Dictionary<int, PlanetResourceManager>();
             _planets = new[] {loadPlanet(0)};
 
             //planetCache = new Cache<int, IPlanet>(1, loadPlanet, savePlanet);
@@ -87,9 +79,6 @@ namespace OctoAwesome.Runtime
         private IPlanet loadPlanet(int index)
         {
             IUniverse universe = GetUniverse(0);
-
-            var cache = new ChunkCache(idx => loadChunk(index, idx), (_, chunk) => saveChunk(index, chunk));
-            _managers[index] = new PlanetResourceManager(cache);
 
             return mapGenerator.GeneratePlanet(universe.Id, 4567);
         }
@@ -144,20 +133,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void Save()
         {
-            foreach (var manager in _managers)
-            {
-                manager.Value.ChunkCache.Flush();
-            }
-        }
-
-        public IPlanetResourceManager GetManagerForPlanet(int planet)
-        {
-            return _managers[planet];
-        }
-
-        public IChunkCache GetCacheForPlanet(int planet)
-        {
-            return _managers[planet].ChunkCache;
+            // TODO: handle Save (Flush in Global Cache vielleicht)
         }
     }
 }

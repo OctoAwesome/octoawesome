@@ -40,7 +40,7 @@ namespace OctoAwesome.Client.Controls
         private Index2 currentChunk = new Index2(-1, -1);
 
         private Thread backgroundThread;
-        private IPlanetResourceManager _manager;
+        private ILocalChunkCache localChunkCache;
         private Effect simpleShader;
 
         public RenderTarget2D MiniMapTexture { get; set; }
@@ -89,7 +89,8 @@ namespace OctoAwesome.Client.Controls
 
             planet = ResourceManager.Instance.GetPlanet(0);
 
-            _manager = ResourceManager.Instance.GetManagerForPlanet(planet.Id);
+            // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE, VIEWRANGE);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -174,14 +175,14 @@ namespace OctoAwesome.Client.Controls
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        ushort block = _manager.GetBlock(pos);
+                        ushort block = localChunkCache.GetBlock(pos);
                         if (block == 0)
                             continue;
 
                         IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
 
                         Axis? collisionAxis;
-                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(_manager, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
+                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
 
                         if (distance.HasValue && distance.Value < bestDistance)
                         {
@@ -418,7 +419,7 @@ namespace OctoAwesome.Client.Controls
 
                         for (int z = 0; z < planet.Size.Z; z++)
                         {
-                            chunkRenderer[rendererIndex, z].SetChunk(_manager, local.X, local.Y, z);
+                            chunkRenderer[rendererIndex, z].SetChunk(localChunkCache, local.X, local.Y, z);
                         }
                     }
                 }
