@@ -149,6 +149,8 @@ namespace OctoAwesome.Client.Controls
                     Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
                 box.Text = selection;
             }
+            else
+                box.Text = "";
             
         }
     }
