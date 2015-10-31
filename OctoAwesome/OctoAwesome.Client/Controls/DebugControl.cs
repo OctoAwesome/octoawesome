@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameUi;
 using System.Collections.Generic;
+using OctoAwesome.Runtime;
 using OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Controls
@@ -17,12 +18,14 @@ namespace OctoAwesome.Client.Controls
         private double seconds = 0;
         private double lastfps = 0f;
 
+        ResourceManager resMan;
+
         public PlayerComponent Player { get; set; }
 
         private Trigger<bool> debugTrigger = new Trigger<bool>();
 
         StackPanel leftView, rightView;
-        Label devText, position, rotation, fps, box, controlInfo;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -30,6 +33,11 @@ namespace OctoAwesome.Client.Controls
             framebuffer = new float[buffersize];
             Player = screenManager.Player;
 
+            //Get ResourceManager for further Information later...
+            resMan = ResourceManager.Instance;
+           
+
+            
 
             //Brush for Debug Background - Transparent Black does NOT work!
             BorderBrush bg = new BorderBrush(Color.TransparentBlack);
@@ -48,6 +56,9 @@ namespace OctoAwesome.Client.Controls
             devText = new Label(ScreenManager);
             devText.Text = "Developement Version";
             leftView.Controls.Add(devText);
+
+            loadedChunks = new Label(ScreenManager);
+            leftView.Controls.Add(loadedChunks);
 
             position = new Label(ScreenManager);
             rightView.Controls.Add(position);
@@ -118,7 +129,7 @@ namespace OctoAwesome.Client.Controls
             framebuffer[bufferindex++] = (float)gameTime.ElapsedGameTime.TotalSeconds;
             bufferindex %= buffersize;
 
-
+           
 
             //Draw Control Info
             controlInfo.Text = "Active Controls: " + ScreenManager.ActiveScreen.Controls.Count;
@@ -137,6 +148,9 @@ namespace OctoAwesome.Client.Controls
             //Draw Fps
             string fpsString = "fps: " + (1f / lastfps).ToString("0.00");
             fps.Text = fpsString;
+
+            //Draw Loaded Chunks
+            loadedChunks.Text = "Loaded Chunks: " + resMan.GlobalChunkCache.LoadedChunks;
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)
