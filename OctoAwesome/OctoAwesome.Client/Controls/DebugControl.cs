@@ -5,6 +5,7 @@ using MonoGameUi;
 using System.Collections.Generic;
 using OctoAwesome.Runtime;
 using OctoAwesome.Client.Components;
+using System;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -107,12 +108,7 @@ namespace OctoAwesome.Client.Controls
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
-        {
-            //Enable / Disable Debug Menu
-            debugTrigger.Value = Keyboard.GetState().IsKeyDown(Keys.F10);
-            if (debugTrigger)
-                Visible = !Visible;
-
+        { 
             if (!Visible || !Enabled)
                 return;
 
