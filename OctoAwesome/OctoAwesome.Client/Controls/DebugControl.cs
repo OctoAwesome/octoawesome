@@ -77,7 +77,7 @@ namespace OctoAwesome.Client.Controls
                 if(control is Label)
                 {
                     ((Label)control).TextColor = Color.White;
-                    ((Label)control).Background = bg;
+                    ((Label)control).Background = bg;   //Useless with TransparentBlack
                     ((Label)control).HorizontalTextAlignment = HorizontalAlignment.Left; //Not yet working
                 }
             }
@@ -86,7 +86,7 @@ namespace OctoAwesome.Client.Controls
                 if (control is Label)
                 {
                     ((Label)control).TextColor = Color.White;
-                    ((Label)control).Background = bg;
+                    ((Label)control).Background = bg;  //Useless with TransparentBlack
                     ((Label)control).HorizontalTextAlignment = HorizontalAlignment.Right; //Not yet working
                 }
             }
