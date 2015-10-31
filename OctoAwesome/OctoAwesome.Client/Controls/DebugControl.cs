@@ -65,6 +65,8 @@ namespace OctoAwesome.Client.Controls
             box = new Label(ScreenManager);
             box.VerticalAlignment = VerticalAlignment.Bottom;
             box.HorizontalAlignment = HorizontalAlignment.Left;
+            box.TextColor = Color.White;
+            Controls.Add(box);
 
             //Add the left & right side to the root
             Controls.Add(leftView);
