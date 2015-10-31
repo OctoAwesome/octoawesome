@@ -96,6 +96,8 @@ namespace OctoAwesome.Runtime
                 powerdirection += jumpDirection * Player.JUMPPOWER;
             }
 
+            
+
             Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
                 (float)frameTime.ElapsedGameTime.TotalSeconds;
 
@@ -203,11 +205,21 @@ namespace OctoAwesome.Runtime
                 // Koordinate normalisieren (Rundwelt)
                 Coordinate position = Player.Position;
                 position.NormalizeChunkIndexXY(planet.Size);
+                
+                //Beam me up
+                KeyboardState ks = Keyboard.GetState();
+                if (ks.IsKeyDown(Keys.P))
+                {
+                    position = position + new Vector3(0, 0, 10);
+                }
+
                 Player.Position = position;
 
                 loop++;
             }
             while (collision && loop < 3);
+
+            
 
             if (Player.Position.ChunkIndex != _oldIndex)
             {
