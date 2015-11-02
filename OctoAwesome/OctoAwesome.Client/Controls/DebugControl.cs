@@ -26,7 +26,7 @@ namespace OctoAwesome.Client.Controls
         private Trigger<bool> debugTrigger = new Trigger<bool>();
 
         StackPanel leftView, rightView;
-        Label devText, position, rotation, fps, box, controlInfo, loadedChunks;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -61,6 +61,9 @@ namespace OctoAwesome.Client.Controls
             loadedChunks = new Label(ScreenManager);
             leftView.Controls.Add(loadedChunks);
 
+            loadedInfo = new Label(ScreenManager);
+            leftView.Controls.Add(loadedInfo);
+
             position = new Label(ScreenManager);
             rightView.Controls.Add(position);
 
@@ -72,6 +75,9 @@ namespace OctoAwesome.Client.Controls
 
             controlInfo = new Label(ScreenManager);
             leftView.Controls.Add(controlInfo);
+
+            activeTool = new Label(ScreenManager);
+            rightView.Controls.Add(activeTool);
 
             //This Label gets added to the root and is set to Bottom Left
             box = new Label(ScreenManager);
@@ -147,6 +153,16 @@ namespace OctoAwesome.Client.Controls
 
             //Draw Loaded Chunks
             loadedChunks.Text = "Loaded Chunks: " + resMan.GlobalChunkCache.LoadedChunks;
+
+            //Get Number of Loaded Items/Blocks
+            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " Items - " + 
+                (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
+
+            //Additional Play Information
+
+                //Active Tool
+                if(Player.ActorHost.ActiveTool != null)
+                activeTool.Text = "Active Item/Tool: " + Player.ActorHost.ActiveTool.Definition.Name;
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)
