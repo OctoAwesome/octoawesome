@@ -53,27 +53,32 @@ namespace OctoAwesome.Client.Screens
             
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs args)
+        {
+            Manager.CaptureMouse();
+            base.OnNavigatedTo(args);
+        }
+
+
         protected override void OnKeyPress(KeyEventArgs args)
         {
             if (args.Key == Keys.I)
             {
                 args.Handled = true;
-                Manager.Player.InputActive = false;
-                Manager.Game.IsMouseVisible = true;
+                Manager.FreeMouse();
                 Manager.NavigateToScreen(new InventoryScreen(Manager));
                 
             }
-
-            if(args.Key == Keys.F10)
-            {
-
-            }
-               
 
             //Enable / Disable Debug
             if(args.Key == Keys.F10)
             {
                 debug.Visible = !debug.Visible;
+            }
+
+            if(args.Key == Keys.Escape)
+            {
+                Manager.NavigateToScreen(new MainScreen(Manager));
             }
         }
     }

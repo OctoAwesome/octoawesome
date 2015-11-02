@@ -10,8 +10,12 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class MainScreen : Screen
     {
+        ScreenComponent Manager;
+
         public MainScreen(ScreenComponent manager) : base(manager)
         {
+            Manager = manager;
+
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
 
@@ -32,6 +36,12 @@ namespace OctoAwesome.Client.Screens
             exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs args)
+        {
+            Manager.FreeMouse();
+            base.OnNavigatedTo(args);
         }
     }
 }
