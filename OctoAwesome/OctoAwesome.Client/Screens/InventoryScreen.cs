@@ -34,7 +34,7 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(headLine);
 
             Button closeButton = Button.TextButton(Manager, "Close");
-            closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack(); };
+            closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack(); manager.Player.InputActive = true; manager.Game.IsMouseVisible = false; };
             Controls.Add(closeButton);
 
 

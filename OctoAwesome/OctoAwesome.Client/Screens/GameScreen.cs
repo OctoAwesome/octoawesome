@@ -58,8 +58,17 @@ namespace OctoAwesome.Client.Screens
             if (args.Key == Keys.I)
             {
                 args.Handled = true;
+                Manager.Player.InputActive = false;
+                Manager.Game.IsMouseVisible = true;
                 Manager.NavigateToScreen(new InventoryScreen(Manager));
+                
             }
+
+            if(args.Key == Keys.F10)
+            {
+
+            }
+               
 
             //Enable / Disable Debug
             if(args.Key == Keys.F10)

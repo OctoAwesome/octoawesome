@@ -101,6 +101,7 @@ namespace OctoAwesome.Client.Components
             }
             else
             {
+                
                 Game.IsMouseVisible = false;
                 gamepad.Update();
                 keyboard.Update();
