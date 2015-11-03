@@ -44,6 +44,11 @@ namespace OctoAwesome.Runtime
         {
             State = WorldState.Running;
             localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
+            while(localChunkCache.GetBlock(Player.Position.GlobalBlockIndex) != 0)
+            {
+                Player.Position += new Vector3(0, 0, 5);
+            }
+            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
         }
 
         public void Update(GameTime frameTime)
