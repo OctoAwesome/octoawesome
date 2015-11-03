@@ -29,7 +29,7 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public override PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z)
+        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
             return new PhysicalProperties()
             {
@@ -45,27 +45,27 @@ namespace OctoAwesome.Basics
             throw new NotImplementedException();
         }
 
-        public override int GetBottomTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public override int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 1;
         }
 
-        public override int GetNorthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public override int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 2;
         }
 
-        public override int GetSouthTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public override int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 2;
         }
 
-        public override int GetWestTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 2;
         }
 
-        public override int GetEastTextureIndex(IPlanetResourceManager manager, int x, int y, int z)
+        public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
             return 2;
         }

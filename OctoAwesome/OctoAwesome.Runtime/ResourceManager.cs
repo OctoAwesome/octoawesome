@@ -17,19 +17,14 @@ namespace OctoAwesome.Runtime
         private IChunkPersistence chunkPersistence = null;
         private IChunkSerializer chunkSerializer = null;
 
+        private GlobalChunkCache globalChunkCache = null;
+
         /// <summary>
         /// Planet Cache.
         /// </summary>
         // private Cache<int, IPlanet> planetCache;
 
         private IPlanet[] _planets;
-
-        /// <summary>
-        /// Chunk Cache.
-        /// </summary>
-        //private Cache<PlanetIndex3, IChunk> chunkCache;
-
-        private IDictionary<int, PlanetResourceManager> _managers; 
 
         private IUniverse universeCache;
 
@@ -54,7 +49,10 @@ namespace OctoAwesome.Runtime
             chunkSerializer = new ChunkSerializer();
             chunkPersistence = new ChunkDiskPersistence(chunkSerializer);
 
-            _managers = new Dictionary<int, PlanetResourceManager>();
+            globalChunkCache = new GlobalChunkCache(
+                (i) => loadChunk(i.Planet, i.ChunkIndex), 
+                (i, c) => saveChunk(i.Planet, c));
+
             _planets = new[] {loadPlanet(0)};
 
             //planetCache = new Cache<int, IPlanet>(1, loadPlanet, savePlanet);
@@ -62,6 +60,8 @@ namespace OctoAwesome.Runtime
 
             bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
         }
+
+        public IGlobalChunkCache GlobalChunkCache { get { return globalChunkCache; } }
 
         public IUniverse GetUniverse(int id)
         {
@@ -79,9 +79,6 @@ namespace OctoAwesome.Runtime
         private IPlanet loadPlanet(int index)
         {
             IUniverse universe = GetUniverse(0);
-
-            var cache = new ChunkCache(idx => loadChunk(index, idx), (_, chunk) => saveChunk(index, chunk));
-            _managers[index] = new PlanetResourceManager(cache);
 
             return mapGenerator.GeneratePlanet(universe.Id, 4567);
         }
@@ -121,25 +118,22 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        public IChunk SubscribeChunk(PlanetIndex3 index)
+        {
+            return globalChunkCache.Subscribe(index);
+        }
+
+        public void ReleaseChunk(PlanetIndex3 index)
+        {
+            globalChunkCache.Release(index);
+        }
+
         /// <summary>
         /// Persistiert den Planeten.
         /// </summary>
         public void Save()
         {
-            foreach (var manager in _managers)
-            {
-                manager.Value.ChunkCache.Flush();
-            }
-        }
-
-        public IPlanetResourceManager GetManagerForPlanet(int planet)
-        {
-            return _managers[planet];
-        }
-
-        public IChunkCache GetCacheForPlanet(int planet)
-        {
-            return _managers[planet].ChunkCache;
+            // TODO: handle Save (Flush in Global Cache vielleicht)
         }
     }
 }

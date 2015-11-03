@@ -1,4 +1,4 @@
-namespace OctoAwesome.Runtime
+namespace OctoAwesome
 {
     public interface IResourceManager
     {
@@ -6,6 +6,6 @@ namespace OctoAwesome.Runtime
         
         IPlanet GetPlanet(int id);
 
-        IPlanetResourceManager GetManagerForPlanet(int planetId);
+        IGlobalChunkCache GlobalChunkCache { get; }
     }
 }

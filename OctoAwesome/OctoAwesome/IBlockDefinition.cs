@@ -11,44 +11,44 @@ namespace OctoAwesome
 
         bool HasMetaData { get; }
 
-        BoundingBox[] GetCollisionBoxes(IPlanetResourceManager manager, int x, int y, int z);
+        BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z);
 
         // PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
 
-        int GetTopTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
+        int GetTopTextureIndex(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetBottomTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
+        int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetNorthTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
+        int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetSouthTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
+        int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetWestTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
+        int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetEastTextureIndex(IPlanetResourceManager manager, int x, int y, int z);
+        int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetTopTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+        int GetTopTextureRotation(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetBottomTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+        int GetBottomTextureRotation(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetEastTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+        int GetEastTextureRotation(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetWestTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+        int GetWestTextureRotation(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetNorthTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+        int GetNorthTextureRotation(ILocalChunkCache manager, int x, int y, int z);
 
-        int GetSouthTextureRotation(IPlanetResourceManager manager, int x, int y, int z);
+        int GetSouthTextureRotation(ILocalChunkCache manager, int x, int y, int z);
 
-        bool IsTopSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+        bool IsTopSolidWall(ILocalChunkCache manager, int x, int y, int z);
 
-        bool IsBottomSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+        bool IsBottomSolidWall(ILocalChunkCache manager, int x, int y, int z);
 
-        bool IsNorthSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+        bool IsNorthSolidWall(ILocalChunkCache manager, int x, int y, int z);
 
-        bool IsSouthSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+        bool IsSouthSolidWall(ILocalChunkCache manager, int x, int y, int z);
 
-        bool IsWestSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+        bool IsWestSolidWall(ILocalChunkCache manager, int x, int y, int z);
 
-        bool IsEastSolidWall(IPlanetResourceManager manager, int x, int y, int z);
+        bool IsEastSolidWall(ILocalChunkCache manager, int x, int y, int z);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace OctoAwesome
 {
-    public interface IPlanetResourceManager
+    public interface ILocalChunkCache
     {
         /// <summary>
         /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
@@ -8,6 +8,8 @@
         /// <param name="index">Chunk Index</param>
         /// <returns>Instanz des Chunks</returns>
         IChunk GetChunk(Index3 index);
+
+        void SetCenter(IPlanet planet, Index3 index);
 
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
@@ -24,7 +26,7 @@
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
         void SetBlock(Index3 index, ushort block);
-        
+
         void SetBlock(int x, int y, int z, ushort block);
 
         int GetBlockMeta(int x, int y, int z);

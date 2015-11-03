@@ -40,7 +40,7 @@ namespace OctoAwesome.Client.Controls
         private Index2 currentChunk = new Index2(-1, -1);
 
         private Thread backgroundThread;
-        private IPlanetResourceManager _manager;
+        private ILocalChunkCache localChunkCache;
         private Effect simpleShader;
 
         public RenderTarget2D MiniMapTexture { get; set; }
@@ -90,7 +90,8 @@ namespace OctoAwesome.Client.Controls
 
             planet = ResourceManager.Instance.GetPlanet(0);
 
-            _manager = ResourceManager.Instance.GetManagerForPlanet(planet.Id);
+            // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE + 1, 1);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -175,14 +176,14 @@ namespace OctoAwesome.Client.Controls
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        ushort block = _manager.GetBlock(pos);
+                        ushort block = localChunkCache.GetBlock(pos);
                         if (block == 0)
                             continue;
 
                         IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
 
                         Axis? collisionAxis;
-                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(_manager, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
+                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
 
                         if (distance.HasValue && distance.Value < bestDistance)
                         {
@@ -261,7 +262,7 @@ namespace OctoAwesome.Client.Controls
         {
             if (ControlTexture == null)
             {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height);
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             }
 
             float octoDaysPerEarthDay = 360f;
@@ -293,6 +294,7 @@ namespace OctoAwesome.Client.Controls
                 new Microsoft.Xna.Framework.Color(181, 224, 255);
 
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
+            Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Manager.GraphicsDevice.Clear(background);
 
             foreach (var renderer in chunkRenderer)
@@ -399,6 +401,10 @@ namespace OctoAwesome.Client.Controls
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
+                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
+                    localChunkCache.SetCenter(planet, player.ActorHost.Position.ChunkIndex));
+                t.Start();
+
                 int mask = (int)Math.Pow(2, VIEWRANGE) - 1;
 
                 int span = (int)Math.Pow(2, VIEWRANGE);
@@ -419,7 +425,7 @@ namespace OctoAwesome.Client.Controls
 
                         for (int z = 0; z < planet.Size.Z; z++)
                         {
-                            chunkRenderer[rendererIndex, z].SetChunk(_manager, local.X, local.Y, z);
+                            chunkRenderer[rendererIndex, z].SetChunk(localChunkCache, local.X, local.Y, z);
                         }
                     }
                 }
@@ -459,15 +465,6 @@ namespace OctoAwesome.Client.Controls
 
             return true;
             //            return updatableRenderer != null;
-        }
-
-        protected override void OnMouseMove(MouseEventArgs args)
-        {
-            if (Focused == TreeState.Active)
-            {
-                args.ResetPosition = true;
-                args.Handled = true;
-            }
         }
 
         private void BackgroundLoop()

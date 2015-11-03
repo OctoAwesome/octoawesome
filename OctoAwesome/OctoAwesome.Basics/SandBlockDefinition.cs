@@ -31,7 +31,7 @@ namespace OctoAwesome.Basics
             throw new NotImplementedException();
         }
 
-        public override PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z)
+        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
             return new PhysicalProperties()
             {

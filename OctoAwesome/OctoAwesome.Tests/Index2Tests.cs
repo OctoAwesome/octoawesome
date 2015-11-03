@@ -142,7 +142,7 @@ namespace OctoAwesome.Model.Tests
             Assert.AreNotEqual(i1, i2);
             Assert.AreNotEqual(i1, i3);
 
-            Assert.IsTrue(i1 == i1);
+            // Assert.IsTrue(i1 == i1);
             Assert.IsTrue(i1 == i4);
             Assert.IsTrue(i1 != i2);
             Assert.IsTrue(i1 != i3);

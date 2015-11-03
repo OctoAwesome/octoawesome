@@ -1,9 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Tests
 {
@@ -15,7 +13,20 @@ namespace OctoAwesome.Tests
         private float playerRadius = 0.5f;
         private float playerHeight = 2f;
         private Vector3 move;
-        private Dictionary<Index3, BlockDefinition> blocks = new Dictionary<Index3, BlockDefinition>();
+        private BlockDefinition blockDefinition = new TestBlockDefinition();
+        private List<Index3> blocks = new List<Index3>();
+
+        [TestInitialize]
+        public void Init()
+        {
+            blocks.Clear();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+
+        }
 
         [TestMethod]
         public void CollisionFromEastToWestTest()
@@ -24,30 +35,30 @@ namespace OctoAwesome.Tests
             player.GlobalPosition = new Vector3(10.6f, 10.5f, 10f);
 
             // Wand
-            blocks.Add(new Index3(7, 9, 10), new TestBlock());
-            blocks.Add(new Index3(7, 10, 10), new TestBlock());
-            blocks.Add(new Index3(7, 11, 10), new TestBlock());
+            blocks.Add(new Index3(7, 9, 10));
+            blocks.Add(new Index3(7, 10, 10));
+            blocks.Add(new Index3(7, 11, 10));
             
             // boden y-1
-            blocks.Add(new Index3(7, 9, 9), new TestBlock());
-            blocks.Add(new Index3(8, 9, 9), new TestBlock());
-            blocks.Add(new Index3(9, 9, 9), new TestBlock());
-            blocks.Add(new Index3(10, 9, 9), new TestBlock());
-            blocks.Add(new Index3(11, 9, 9), new TestBlock());
+            blocks.Add(new Index3(7, 9, 9));
+            blocks.Add(new Index3(8, 9, 9));
+            blocks.Add(new Index3(9, 9, 9));
+            blocks.Add(new Index3(10, 9, 9));
+            blocks.Add(new Index3(11, 9, 9));
             
             // Boden mitte
-            blocks.Add(new Index3(7, 10, 9), new TestBlock());
-            blocks.Add(new Index3(8, 10, 9), new TestBlock());
-            blocks.Add(new Index3(9, 10, 9), new TestBlock());
-            blocks.Add(new Index3(10, 10, 9), new TestBlock());
-            blocks.Add(new Index3(11, 10, 9), new TestBlock());
+            blocks.Add(new Index3(7, 10, 9));
+            blocks.Add(new Index3(8, 10, 9));
+            blocks.Add(new Index3(9, 10, 9));
+            blocks.Add(new Index3(10, 10, 9));
+            blocks.Add(new Index3(11, 10, 9));
 
             // boden y+1
-            blocks.Add(new Index3(7, 11, 9), new TestBlock());
-            blocks.Add(new Index3(8, 11, 9), new TestBlock());
-            blocks.Add(new Index3(9, 11, 9), new TestBlock());
-            blocks.Add(new Index3(10, 11, 9), new TestBlock());
-            blocks.Add(new Index3(11, 11, 9), new TestBlock());
+            blocks.Add(new Index3(7, 11, 9));
+            blocks.Add(new Index3(8, 11, 9));
+            blocks.Add(new Index3(9, 11, 9));
+            blocks.Add(new Index3(10, 11, 9));
+            blocks.Add(new Index3(11, 11, 9));
 
 
 
@@ -81,30 +92,30 @@ namespace OctoAwesome.Tests
             player.GlobalPosition = new Vector3(max + 10.5f, max + 10.5f, max + 10f);
 
             // Wand
-            blocks.Add(new Index3(max + 7, max + 9, max + 10), new TestBlock());
-            blocks.Add(new Index3(max + 7, max + 10, max + 10), new TestBlock());
-            blocks.Add(new Index3(max + 7, max + 11, max + 10), new TestBlock());
+            blocks.Add(new Index3(max + 7, max + 9, max + 10));
+            blocks.Add(new Index3(max + 7, max + 10, max + 10));
+            blocks.Add(new Index3(max + 7, max + 11, max + 10));
 
             // boden y-1
-            blocks.Add(new Index3(max + 7, max + 9, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 8, max + 9, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 9, max + 9, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 10, max + 9, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 11, max + 9, max + 9), new TestBlock());
+            blocks.Add(new Index3(max + 7, max + 9, max + 9));
+            blocks.Add(new Index3(max + 8, max + 9, max + 9));
+            blocks.Add(new Index3(max + 9, max + 9, max + 9));
+            blocks.Add(new Index3(max + 10, max + 9, max + 9));
+            blocks.Add(new Index3(max + 11, max + 9, max + 9));
 
             // Boden mitte
-            blocks.Add(new Index3(max + 7, max + 10, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 8, max + 10, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 9, max + 10, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 10, max + 10, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 11, max + 10, max + 9), new TestBlock());
+            blocks.Add(new Index3(max + 7, max + 10, max + 9));
+            blocks.Add(new Index3(max + 8, max + 10, max + 9));
+            blocks.Add(new Index3(max + 9, max + 10, max + 9));
+            blocks.Add(new Index3(max + 10, max + 10, max + 9));
+            blocks.Add(new Index3(max + 11, max + 10, max + 9));
 
             // boden y+1
-            blocks.Add(new Index3(max + 7, max + 11, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 8, max + 11, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 9, max + 11, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 10, max + 11, max + 9), new TestBlock());
-            blocks.Add(new Index3(max + 11, max + 11, max + 9), new TestBlock());
+            blocks.Add(new Index3(max + 7, max + 11, max + 9));
+            blocks.Add(new Index3(max + 8, max + 11, max + 9));
+            blocks.Add(new Index3(max + 9, max + 11, max + 9));
+            blocks.Add(new Index3(max + 10, max + 11, max + 9));
+            blocks.Add(new Index3(max + 11, max + 11, max + 9));
 
 
 
@@ -136,30 +147,30 @@ namespace OctoAwesome.Tests
             player.GlobalPosition = new Vector3(10.5f, 10.5f, 10f);
 
             // Wand
-            blocks.Add(new Index3(9, 7, 10), new TestBlock());
-            blocks.Add(new Index3(10, 7, 10), new TestBlock());
-            blocks.Add(new Index3(11, 7, 10), new TestBlock());
+            blocks.Add(new Index3(9, 7, 10));
+            blocks.Add(new Index3(10, 7, 10));
+            blocks.Add(new Index3(11, 7, 10));
 
             // boden y-1
-            blocks.Add(new Index3(9, 7, 9), new TestBlock());
-            blocks.Add(new Index3(9, 8, 9), new TestBlock());
-            blocks.Add(new Index3(9, 9, 9), new TestBlock());
-            blocks.Add(new Index3(9, 10, 9), new TestBlock());
-            blocks.Add(new Index3(9, 11, 9), new TestBlock());
+            blocks.Add(new Index3(9, 7, 9));
+            blocks.Add(new Index3(9, 8, 9));
+            blocks.Add(new Index3(9, 9, 9));
+            blocks.Add(new Index3(9, 10, 9));
+            blocks.Add(new Index3(9, 11, 9));
 
             // Boden mitte
-            blocks.Add(new Index3(10, 7, 9), new TestBlock());
-            blocks.Add(new Index3(10, 8, 9), new TestBlock());
-            blocks.Add(new Index3(10, 9, 9), new TestBlock());
-            blocks.Add(new Index3(10, 10, 9), new TestBlock());
-            blocks.Add(new Index3(10, 11, 9), new TestBlock());
+            blocks.Add(new Index3(10, 7, 9));
+            blocks.Add(new Index3(10, 8, 9));
+            blocks.Add(new Index3(10, 9, 9));
+            blocks.Add(new Index3(10, 10, 9));
+            blocks.Add(new Index3(10, 11, 9));
 
             // boden y+1
-            blocks.Add(new Index3(11, 7, 9), new TestBlock());
-            blocks.Add(new Index3(11, 8, 9), new TestBlock());
-            blocks.Add(new Index3(11, 9, 9), new TestBlock());
-            blocks.Add(new Index3(11, 10, 9), new TestBlock());
-            blocks.Add(new Index3(11, 11, 9), new TestBlock());
+            blocks.Add(new Index3(11, 7, 9));
+            blocks.Add(new Index3(11, 8, 9));
+            blocks.Add(new Index3(11, 9, 9));
+            blocks.Add(new Index3(11, 10, 9));
+            blocks.Add(new Index3(11, 11, 9));
 
             move = new Vector3(0f, -1, -0.1f);
             Move();
@@ -203,14 +214,10 @@ namespace OctoAwesome.Tests
                 float min = 1f;
                 Axis minAxis = Axis.None;
 
-                foreach (var pos in blocks.Keys)
+                foreach (var pos in blocks)
                 {
-                    BlockDefinition block = blocks[pos];
-                    if (block == null)
-                        continue;
-
                     Axis? localAxis;
-                    float? moveFactor = block.Intersect(pos, playerBox, move, out localAxis);
+                    float? moveFactor = Block.Intersect(blockDefinition.GetCollisionBoxes(null, pos.X, pos.Y, pos.Z), pos, playerBox, move, out localAxis);
 
                     if (moveFactor.HasValue && moveFactor.Value < min)
                     {

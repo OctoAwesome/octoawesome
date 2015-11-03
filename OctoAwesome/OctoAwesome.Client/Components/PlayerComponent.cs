@@ -34,6 +34,8 @@ namespace OctoAwesome.Client.Components
             this.input = input;
         }
 
+        public bool InputActive { get; set; }
+
         public override void Initialize()
         {
             base.Initialize();
@@ -45,59 +47,63 @@ namespace OctoAwesome.Client.Components
             Tools.Clear();
             Tools.AddRange(ActorHost.Player.Inventory);
 
-            ActorHost.Head = new Vector2(input.HeadX, input.HeadY);
-            ActorHost.Move = new Vector2(input.MoveX, input.MoveY);
+            if (InputActive)
+            {
+                input.UpdateInput(gameTime);
 
-            if (input.JumpTrigger)
-                ActorHost.Jump();
-            if (input.InteractTrigger && SelectedBox.HasValue)
-            {
-                ActorHost.Interact(SelectedBox.Value);
-            }
-            if (input.ApplyTrigger && SelectedBox.HasValue)
-            {
-                ActorHost.Apply(SelectedBox.Value, SelectedSide);
-            }
-            if (input.ToggleFlyMode)
-            {
-                ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
-            }
+                ActorHost.Head = new Vector2(input.HeadX, input.HeadY);
+                ActorHost.Move = new Vector2(input.MoveX, input.MoveY);
 
-            if (Tools != null && Tools.Count > 0 && input.SlotTrigger != null)
-            {
-                for (int i = 0; i < Math.Min(Tools.Count, input.SlotTrigger.Length); i++)
+                if (input.JumpTrigger)
+                    ActorHost.Jump();
+                if (input.InteractTrigger && SelectedBox.HasValue)
                 {
-                    if (input.SlotTrigger[i])
-                        ActorHost.ActiveTool = Tools[i];
+                    ActorHost.Interact(SelectedBox.Value);
                 }
-            }
-
-            // Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            if (Tools != null && ActorHost.ActiveTool != null)
-            {
-                for (int i = 0; i < Tools.Count; i++)
+                if (input.ApplyTrigger && SelectedBox.HasValue)
                 {
-                    if (Tools[i] == ActorHost.ActiveTool)
+                    ActorHost.Apply(SelectedBox.Value, SelectedSide);
+                }
+                if (input.ToggleFlyMode)
+                {
+                    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
+                }
+
+                if (Tools != null && Tools.Count > 0 && input.SlotTrigger != null)
+                {
+                    for (int i = 0; i < Math.Min(Tools.Count, input.SlotTrigger.Length); i++)
                     {
-                        activeTool = i;
-                        break;
+                        if (input.SlotTrigger[i])
+                            ActorHost.ActiveTool = Tools[i];
                     }
                 }
+
+                // Index des aktiven Werkzeugs ermitteln
+                int activeTool = -1;
+                if (Tools != null && ActorHost.ActiveTool != null)
+                {
+                    for (int i = 0; i < Tools.Count; i++)
+                    {
+                        if (Tools[i] == ActorHost.ActiveTool)
+                        {
+                            activeTool = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (activeTool > -1)
+                {
+                    if (input.SlotLeftTrigger)
+                        activeTool--;
+
+                    if (input.SlotRightTrigger)
+                        activeTool++;
+
+                    activeTool = (activeTool + Tools.Count) % Tools.Count;
+                    ActorHost.ActiveTool = Tools[activeTool];
+                }
             }
-
-            if (activeTool > -1)
-            {
-                if (input.SlotLeftTrigger)
-                    activeTool--;
-
-                if (input.SlotRightTrigger)
-                    activeTool++;
-
-                activeTool = (activeTool + Tools.Count) % Tools.Count;
-                ActorHost.ActiveTool = Tools[activeTool];
-            }
-
         }
     }
 }

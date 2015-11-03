@@ -39,14 +39,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.3.0.2238, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\MonoGame.Framework.dll</HintPath>
+    <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -56,7 +57,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -64,16 +67,25 @@
     <Compile Include="BlockIntersectTests.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="CollisionTests.cs" />
+    <Compile Include="GlobalChunkCacheTest.cs" />
     <Compile Include="Index2Tests.cs" />
     <Compile Include="Index3Tests.cs" />
+    <Compile Include="LocalChunkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoordinateTests.cs" />
+    <Compile Include="TestBlockDefinition.cs" />
+    <Compile Include="TestChunk.cs" />
+    <Compile Include="TestGlobalCache.cs" />
+    <Compile Include="TestPlanet.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
       <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
       <Name>OctoAwesome</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

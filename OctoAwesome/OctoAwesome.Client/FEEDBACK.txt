@@ -74,10 +74,6 @@ Andy @ Email (24.06.)
 - Chunkrenderer nicht sortieren sondern händisch durchlaufen (O(n log n) vs. O(n))
 - Thread.Sleep verzögert die Updates unnötig. Vielleicht mit nem bool arbeiten
 
-Alexander Stärk @ YouTube (01.07.)
-==================================
-- MonoGame als NuGet Package
-
 Anteru @ LiveCoding.tv (23.06.)
 https://www.livecoding.tv/video/ger-make-it-suck-less-3/
 ===============================
@@ -113,7 +109,6 @@ Cleanup
 - Friction (Auf Block-Instanz)
 - Angle-Klasse
 - Chunkgröße auf 16 runter? Oder dynamisch machen
-- ExtensionLoader
 - InstanceManager fur Universe, Planet, 
 - Persistierung von Chunks bereits beim Erzeugen?
 - -> SimpleNoiseGenerator, line 162, serialisieren
