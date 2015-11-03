@@ -2,11 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameUi;
+using System.Collections.Generic;
+using OctoAwesome.Runtime;
 using OctoAwesome.Client.Components;
+using System;
 
 namespace OctoAwesome.Client.Controls
 {
-    internal class DebugControl : Control
+    internal class DebugControl : Panel
     {
         private int buffersize = 10;
         private float[] framebuffer;
@@ -16,26 +19,106 @@ namespace OctoAwesome.Client.Controls
         private double seconds = 0;
         private double lastfps = 0f;
 
+        ResourceManager resMan;
+
         public PlayerComponent Player { get; set; }
 
         private Trigger<bool> debugTrigger = new Trigger<bool>();
+
+        StackPanel leftView, rightView;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
         {
             framebuffer = new float[buffersize];
             Player = screenManager.Player;
+
+            //Get ResourceManager for further Information later...
+            resMan = ResourceManager.Instance;
+           
+
+            
+
+            //Brush for Debug Background - Transparent Black does NOT work!
+            BorderBrush bg = new BorderBrush(Color.TransparentBlack);
+
+            //The left side of the Screen 
+            leftView = new StackPanel(ScreenManager);
+            leftView.HorizontalAlignment = HorizontalAlignment.Left;
+            leftView.VerticalAlignment = VerticalAlignment.Stretch;
+
+            //The right Side of the Screen
+            rightView = new StackPanel(ScreenManager);
+            rightView.HorizontalAlignment = HorizontalAlignment.Right;
+            rightView.VerticalAlignment = VerticalAlignment.Stretch;
+
+            //Creating all Labels
+            devText = new Label(ScreenManager);
+            devText.Text = "Developement Version";
+            leftView.Controls.Add(devText);
+
+            loadedChunks = new Label(ScreenManager);
+            leftView.Controls.Add(loadedChunks);
+
+            loadedInfo = new Label(ScreenManager);
+            leftView.Controls.Add(loadedInfo);
+
+            position = new Label(ScreenManager);
+            rightView.Controls.Add(position);
+
+            rotation = new Label(ScreenManager);
+            rightView.Controls.Add(rotation);
+
+            fps = new Label(ScreenManager);
+            rightView.Controls.Add(fps);
+
+            controlInfo = new Label(ScreenManager);
+            leftView.Controls.Add(controlInfo);
+
+            activeTool = new Label(ScreenManager);
+            rightView.Controls.Add(activeTool);
+
+            //This Label gets added to the root and is set to Bottom Left
+            box = new Label(ScreenManager);
+            box.VerticalAlignment = VerticalAlignment.Bottom;
+            box.HorizontalAlignment = HorizontalAlignment.Left;
+            box.TextColor = Color.White;
+            Controls.Add(box);
+
+            //Add the left & right side to the root
+            Controls.Add(leftView);
+            Controls.Add(rightView);
+
+
+            //Label Setup - Set Settings for all Labels in one place
+            foreach(Control control in leftView.Controls)
+            {
+                if(control is Label)
+                {
+                    ((Label)control).TextColor = Color.White;
+                    ((Label)control).Background = bg;   //Useless with TransparentBlack
+                    ((Label)control).HorizontalTextAlignment = HorizontalAlignment.Left; //Not yet working
+                }
+            }
+            foreach (Control control in rightView.Controls)
+            {
+                if (control is Label)
+                {
+                    ((Label)control).TextColor = Color.White;
+                    ((Label)control).Background = bg;  //Useless with TransparentBlack
+                    ((Label)control).HorizontalTextAlignment = HorizontalAlignment.Right; //Not yet working
+                }
+            }
+
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
-        {
-            debugTrigger.Value = Keyboard.GetState().IsKeyDown(Keys.F10);
-            if (debugTrigger)
-                Visible = !Visible;
-
+        { 
             if (!Visible || !Enabled)
                 return;
 
+            //Calculate FPS
             framecount++;
             seconds += gameTime.ElapsedGameTime.TotalSeconds;
             if (framecount == 10)
@@ -48,25 +131,40 @@ namespace OctoAwesome.Client.Controls
             framebuffer[bufferindex++] = (float)gameTime.ElapsedGameTime.TotalSeconds;
             bufferindex %= buffersize;
 
-            batch.DrawString(Skin.Current.TextFont, "Development Version", new Vector2(5, 5), Color.White);
+           
 
+            //Draw Control Info
+            controlInfo.Text = "Active Controls: " + ScreenManager.ActiveScreen.Controls.Count;
+
+            //Draw Position
             string pos = "pos: " + Player.ActorHost.Position.ToString();
-            var size = Skin.Current.TextFont.MeasureString(pos);
-            batch.DrawString(Skin.Current.TextFont, pos, new Vector2(contentArea.Width - size.X - 5, 5), Color.White);
+            position.Text = pos;
 
+            //Draw Rotation
             float grad = (Player.ActorHost.Angle / MathHelper.TwoPi) * 360;
-
             string rot = "rot: " +
                 (((Player.ActorHost.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
                 ((Player.ActorHost.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+            rotation.Text = rot;
 
-            size = Skin.Current.TextFont.MeasureString(rot);
-            batch.DrawString(Skin.Current.TextFont, rot, new Vector2(contentArea.Width - size.X - 5, 25), Color.White);
+            //Draw Fps
+            string fpsString = "fps: " + (1f / lastfps).ToString("0.00");
+            fps.Text = fpsString;
 
-            string fps = "fps: " + (1f / lastfps).ToString("0.00");
-            size = Skin.Current.TextFont.MeasureString(fps);
-            batch.DrawString(Skin.Current.TextFont, fps, new Vector2(contentArea.Width - size.X - 5, 45), Color.White);
+            //Draw Loaded Chunks
+            loadedChunks.Text = "Loaded Chunks: " + resMan.GlobalChunkCache.LoadedChunks;
 
+            //Get Number of Loaded Items/Blocks
+            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " Items - " + 
+                (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
+
+            //Additional Play Information
+
+                //Active Tool
+                if(Player.ActorHost.ActiveTool != null)
+                activeTool.Text = "Active Item/Tool: " + Player.ActorHost.ActiveTool.Definition.Name;
+
+            //Draw Box Information
             if (Player.SelectedBox.HasValue)
             {
                 string selection = "box: " +
@@ -75,9 +173,11 @@ namespace OctoAwesome.Client.Controls
                     Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
                     Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +
                     Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
-                size = Skin.Current.TextFont.MeasureString(selection);
-                batch.DrawString(Skin.Current.TextFont, selection, new Vector2(5, contentArea.Height - size.Y - 5), Color.White);
+                box.Text = selection;
             }
+            else
+                box.Text = "";
+            
         }
     }
 }

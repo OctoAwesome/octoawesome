@@ -10,6 +10,8 @@ namespace OctoAwesome.Client.Screens
     {
         private ScreenComponent Manager { get; set; }
 
+        DebugControl debug;
+
         public GameScreen(ScreenComponent manager) : base(manager)
         {
             Manager = manager;
@@ -20,7 +22,7 @@ namespace OctoAwesome.Client.Screens
             scene.VerticalAlignment = VerticalAlignment.Stretch;
             Controls.Add(scene);
 
-            DebugControl debug = new DebugControl(manager);
+            debug = new DebugControl(manager);
             debug.HorizontalAlignment = HorizontalAlignment.Stretch;
             debug.VerticalAlignment = VerticalAlignment.Stretch;
             Controls.Add(debug);
@@ -47,14 +49,36 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(minimap);
 
             manager.Player.InputActive = true;
+
+            
         }
+
+        protected override void OnNavigatedTo(NavigationEventArgs args)
+        {
+            Manager.CaptureMouse();
+            base.OnNavigatedTo(args);
+        }
+
 
         protected override void OnKeyPress(KeyEventArgs args)
         {
             if (args.Key == Keys.I)
             {
                 args.Handled = true;
+                Manager.FreeMouse();
                 Manager.NavigateToScreen(new InventoryScreen(Manager));
+                
+            }
+
+            //Enable / Disable Debug
+            if(args.Key == Keys.F10)
+            {
+                debug.Visible = !debug.Visible;
+            }
+
+            if(args.Key == Keys.Escape)
+            {
+                Manager.NavigateToScreen(new MainScreen(Manager));
             }
         }
     }

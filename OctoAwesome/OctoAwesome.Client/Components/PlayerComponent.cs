@@ -71,6 +71,7 @@ namespace OctoAwesome.Client.Components
 
                 if (Tools != null && Tools.Count > 0 && input.SlotTrigger != null)
                 {
+                    if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = Tools[0];
                     for (int i = 0; i < Math.Min(Tools.Count, input.SlotTrigger.Length); i++)
                     {
                         if (input.SlotTrigger[i])

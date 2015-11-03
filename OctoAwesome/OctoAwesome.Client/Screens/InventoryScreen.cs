@@ -13,9 +13,12 @@ namespace OctoAwesome.Client.Screens
     {
         private PlayerComponent player;
 
+        private ScreenComponent Manager;
+
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
             player = manager.Player;
+            Manager = manager;
             IsOverlay = true;
 
             Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
@@ -34,9 +37,8 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(headLine);
 
             Button closeButton = Button.TextButton(Manager, "Close");
-            closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack(); };
+            closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack();};
             Controls.Add(closeButton);
-
 
             //counter = new LabelControl(ScreenManager)
             //{
@@ -46,6 +48,12 @@ namespace OctoAwesome.Client.Screens
             //        ((ScreenManager.ScreenSize.Y - 400) / 2) + 140),
             //};
             //Controls.Add(counter);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs args)
+        {
+            Manager.FreeMouse();
+            base.OnNavigatedTo(args);
         }
 
         protected override void OnKeyPress(KeyEventArgs args)

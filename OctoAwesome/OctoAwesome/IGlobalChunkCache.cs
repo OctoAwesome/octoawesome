@@ -9,6 +9,8 @@
         /// <returns></returns>
         IChunk Subscribe(PlanetIndex3 position);
 
+        int LoadedChunks { get; }
+
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
