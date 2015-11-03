@@ -43,6 +43,15 @@ namespace OctoAwesome.Client.Screens
             optionButton.MinWidth = 300;
             stack.Controls.Add(optionButton);
 
+            Button creditsButton = Button.TextButton(manager, "Credits / Crew");
+            creditsButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            creditsButton.Margin = new Border(0, 0, 0, 10);
+            creditsButton.LeftMouseClick += (s, e) =>
+            {
+                manager.NavigateToScreen(new CreditsScreen(manager));
+            };
+            stack.Controls.Add(creditsButton);
+
             Button exitButton = Button.TextButton(manager, "Exit");
             exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             exitButton.Margin = new Border(0, 0, 0, 10);
