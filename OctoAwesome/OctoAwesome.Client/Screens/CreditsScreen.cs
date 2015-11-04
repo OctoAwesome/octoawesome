@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Storage;
 using OctoAwesome.Client.Components;
 using MonoGameUi;
 
@@ -18,6 +19,8 @@ namespace OctoAwesome.Client.Screens
             Manager = manager;
 
             Padding = new Border(0, 0, 0, 0);
+
+            
 
             Image background = new Image(manager);
             background.Texture = Manager.Content.Load<Texture2D>("Textures/background_notext");
