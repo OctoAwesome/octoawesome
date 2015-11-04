@@ -36,22 +36,25 @@ namespace OctoAwesome.Client.Controls
 
             //Get ResourceManager for further Information later...
             resMan = ResourceManager.Instance;
-           
 
-            
-
-            //Brush for Debug Background - Transparent Black does NOT work!
-            BorderBrush bg = new BorderBrush(Color.TransparentBlack);
+            //Brush for Debug Background
+            BorderBrush bg = new BorderBrush(Color.Black * 0.2f);
 
             //The left side of the Screen 
-            leftView = new StackPanel(ScreenManager);
-            leftView.HorizontalAlignment = HorizontalAlignment.Left;
-            leftView.VerticalAlignment = VerticalAlignment.Stretch;
+            leftView = new StackPanel(ScreenManager)
+            {
+                Background = bg,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
 
             //The right Side of the Screen
-            rightView = new StackPanel(ScreenManager);
-            rightView.HorizontalAlignment = HorizontalAlignment.Right;
-            rightView.VerticalAlignment = VerticalAlignment.Stretch;
+            rightView = new StackPanel(ScreenManager)
+            {
+                Background = bg,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
 
             //Creating all Labels
             devText = new Label(ScreenManager);
@@ -93,31 +96,28 @@ namespace OctoAwesome.Client.Controls
             Controls.Add(leftView);
             Controls.Add(rightView);
 
-
             //Label Setup - Set Settings for all Labels in one place
-            foreach(Control control in leftView.Controls)
+            foreach (Control control in leftView.Controls)
             {
-                if(control is Label)
+                control.HorizontalAlignment = HorizontalAlignment.Left;
+                if (control is Label)
                 {
                     ((Label)control).TextColor = Color.White;
-                    ((Label)control).Background = bg;   //Useless with TransparentBlack
-                    ((Label)control).HorizontalTextAlignment = HorizontalAlignment.Left; //Not yet working
                 }
             }
             foreach (Control control in rightView.Controls)
             {
+                control.HorizontalAlignment = HorizontalAlignment.Right;
                 if (control is Label)
                 {
                     ((Label)control).TextColor = Color.White;
-                    ((Label)control).Background = bg;  //Useless with TransparentBlack
-                    ((Label)control).HorizontalTextAlignment = HorizontalAlignment.Right; //Not yet working
+                    
                 }
             }
-
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
-        { 
+        {
             if (!Visible || !Enabled)
                 return;
 
@@ -133,8 +133,6 @@ namespace OctoAwesome.Client.Controls
 
             framebuffer[bufferindex++] = (float)gameTime.ElapsedGameTime.TotalSeconds;
             bufferindex %= buffersize;
-
-           
 
             //Draw Control Info
             controlInfo.Text = "Active Controls: " + ScreenManager.ActiveScreen.Controls.Count;
@@ -158,13 +156,13 @@ namespace OctoAwesome.Client.Controls
             loadedChunks.Text = "Loaded Chunks: " + resMan.GlobalChunkCache.LoadedChunks;
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " Items - " + 
+            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " Items - " +
                 (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
 
             //Additional Play Information
 
-                //Active Tool
-                if(Player.ActorHost.ActiveTool != null)
+            //Active Tool
+            if (Player.ActorHost.ActiveTool != null)
                 activeTool.Text = "Active Item/Tool: " + Player.ActorHost.ActiveTool.Definition.Name;
 
                 //Fly Info
@@ -184,7 +182,7 @@ namespace OctoAwesome.Client.Controls
             }
             else
                 box.Text = "";
-            
+
         }
     }
 }
