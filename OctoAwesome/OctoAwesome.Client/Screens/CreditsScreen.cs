@@ -37,32 +37,52 @@ namespace OctoAwesome.Client.Screens
 
             List<CrewMember> crew = CrewMember.getCrew(manager.Content);
 
-            Listbox<string> crewList = new Listbox<string>(manager);
-            crewList.VerticalAlignment = VerticalAlignment.Stretch;
-            crewList.Background = new BorderBrush(new Color(Color.Gray, 0.4f));
-            crewList.Padding = new Border(10, 10, 10, 10);
-            crewList.Margin = new Border(20, 20, 20, 20);
-            crewList.Height = MaxHeight - 10;
-            crewList.SelectedItemBrush = new BorderBrush(Color.GhostWhite);
-            crewList.TemplateGenerator = (item) =>
+            ScrollContainer crewScroll = new ScrollContainer(manager)
             {
-                return new Label(manager) { Text = item, Width = 600, Padding = new Border(5,5,5,5)};
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Margin = new Border(10, 10, 10, 10),
+                CanFocus = false
             };
 
-            crewList.LeftMouseClick += (s, e) =>
-            {
-                if (crewList.SelectedItem != null)
-                {
-                    manager.NavigateToScreen(new CrewMemberScreen(manager, crew.First(item => item.Username == crewList.SelectedItem)));
-                }
+            StackPanel crewList = new StackPanel(manager) {
+                MinWidth = 700,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Orientation = Orientation.Vertical,
             };
-            
+            crewScroll.Content = crewList;
+
             foreach(CrewMember member in crew)
             {
-                crewList.Items.Add(member.Username);
-            }
+                Panel memberPanel = new Panel(manager)
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    MinHeight = 30,
+                    Background = new BorderBrush(Color.White),
+                    Margin = new Border(5, 5, 5, 5),
+                    HoveredBackground = new BorderBrush(Color.LightGray)
 
-            Controls.Add(crewList);
+                };
+
+                memberPanel.LeftMouseClick += (s, e) =>
+                {
+                    manager.NavigateToScreen(new CrewMemberScreen(manager, member));
+                };
+
+                Label name = new Label(manager)
+                {
+                    Text = member.Username,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Padding = new Border(5, 5, 5, 5)
+                };
+
+                memberPanel.Controls.Add(name);
+                crewList.Controls.Add(memberPanel);
+
+            }
+            
+
+            Controls.Add(crewScroll);
         }
 
         private void CrewList_LeftMouseClick(Control sender, MouseEventArgs args)
