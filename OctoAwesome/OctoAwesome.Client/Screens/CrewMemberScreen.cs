@@ -33,8 +33,9 @@ namespace OctoAwesome.Client.Screens
             Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
             Panel panel = new Panel(manager)
             {
-                Width = 1000,
+                MaxWidth = 750,
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+                Padding = new Border(15, 15, 15, 15),
             };
 
             Controls.Add(panel);
@@ -45,28 +46,28 @@ namespace OctoAwesome.Client.Screens
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Orientation = Orientation.Vertical,
-                Padding = new Border(20, 20, 20, 20),
             };
-            panel.Controls.Add(verticalStack);
+           // panel.Controls.Add(verticalStack);
 
             
 
                 //The Main Stack - Split the Panel in half Horizontal
                 StackPanel horizontalStack = new StackPanel(manager)
                 {
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    Orientation = Orientation.Horizontal,
-                    MaxHeight = 300,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Orientation = Orientation.Horizontal
                 };
-                verticalStack.Controls.Add(horizontalStack);
+                panel.Controls.Add(horizontalStack);
 
 
                     //The Profile Image
                     Image profileImage = new Image(manager)
                     {
-                        MaxHeight = 200,
-                        MaxWidth = 200,
-                        VerticalAlignment = VerticalAlignment.Top
+                        Height = 200,
+                        Width = 200,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Padding = new Border(0, 0, 10, 0)
                     };  
                     if (member.Picture == null)
                         profileImage.Texture = manager.Content.Load<Texture2D>("Textures/Crew/Base");
@@ -74,10 +75,12 @@ namespace OctoAwesome.Client.Screens
                     horizontalStack.Controls.Add(profileImage);
 
 
+
                     //The Text Stack
                     StackPanel textStack = new StackPanel(manager);
                     textStack.VerticalAlignment = VerticalAlignment.Stretch;
-                    textStack.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    textStack.HorizontalAlignment = HorizontalAlignment.Left;
+                    textStack.Width = 430;
                     horizontalStack.Controls.Add(textStack);
 
                         //The Username
@@ -119,6 +122,8 @@ namespace OctoAwesome.Client.Screens
                         achievementStack.Controls.Add(achievementsTitle);
                         achievementStack.Controls.Add(achievements);
 
+
+
             Panel DescriptionPanel = new Panel(manager)
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -131,12 +136,15 @@ namespace OctoAwesome.Client.Screens
                 Text = member.Description,
                 WordWrap = true,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                HorizontalTextAlignment = HorizontalAlignment.Left,
                 VerticalTextAlignment = VerticalAlignment.Top,
-                Width = 700
+                
             };
             Description.InvalidateDimensions();
             DescriptionPanel.Controls.Add(Description);
+
+            panel.Width = 700;
 
             //The Back Button
             Button backButton = Button.TextButton(manager, "Back");
@@ -148,6 +156,8 @@ namespace OctoAwesome.Client.Screens
             };
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
+
+
         }
     }
 }
