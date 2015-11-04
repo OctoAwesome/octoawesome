@@ -26,7 +26,7 @@ namespace OctoAwesome.Client.Controls
         private Trigger<bool> debugTrigger = new Trigger<bool>();
 
         StackPanel leftView, rightView;
-        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo, flyInfo;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -78,6 +78,9 @@ namespace OctoAwesome.Client.Controls
 
             activeTool = new Label(ScreenManager);
             rightView.Controls.Add(activeTool);
+
+            flyInfo = new Label(ScreenManager);
+            rightView.Controls.Add(flyInfo);
 
             //This Label gets added to the root and is set to Bottom Left
             box = new Label(ScreenManager);
@@ -163,6 +166,10 @@ namespace OctoAwesome.Client.Controls
                 //Active Tool
                 if(Player.ActorHost.ActiveTool != null)
                 activeTool.Text = "Active Item/Tool: " + Player.ActorHost.ActiveTool.Definition.Name;
+
+                //Fly Info
+                if (Player.ActorHost.Player.FlyMode) flyInfo.Text = "Flymode enabled";
+                else flyInfo.Text = "";
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)
