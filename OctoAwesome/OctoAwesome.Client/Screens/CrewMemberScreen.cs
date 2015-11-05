@@ -157,7 +157,7 @@ namespace OctoAwesome.Client.Screens
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
 
-
+            Title = member.Alias;
         }
     }
 }

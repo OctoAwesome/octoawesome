@@ -54,7 +54,7 @@ namespace OctoAwesome.Client.Screens
 
             manager.Player.InputActive = true;
 
-            
+            Title = "Game";
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)

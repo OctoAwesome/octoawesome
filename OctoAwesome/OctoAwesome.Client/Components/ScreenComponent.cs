@@ -15,6 +15,7 @@ namespace OctoAwesome.Client.Components
         {
             Player = player;
             Camera = camera;
+            TitlePrefix = "OctoAwesome";
         }
 
         protected override void LoadContent()

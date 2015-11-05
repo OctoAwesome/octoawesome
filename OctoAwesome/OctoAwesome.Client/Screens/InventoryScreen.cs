@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -48,6 +43,8 @@ namespace OctoAwesome.Client.Screens
             //        ((ScreenManager.ScreenSize.Y - 400) / 2) + 140),
             //};
             //Controls.Add(counter);
+
+            Title = "Inventory";
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)

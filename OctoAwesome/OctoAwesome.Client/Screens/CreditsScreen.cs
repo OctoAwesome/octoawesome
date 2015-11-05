@@ -20,7 +20,7 @@ namespace OctoAwesome.Client.Screens
 
             Padding = new Border(0, 0, 0, 0);
 
-            Title = "OctoAwesome - Credits";
+            Title = "Credits";
 
             Image background = new Image(manager);
             background.Texture = Manager.Content.Load<Texture2D>("Textures/background_notext");

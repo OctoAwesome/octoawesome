@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGameUi;
+﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -57,8 +52,6 @@ namespace OctoAwesome.Client.Screens
             exitButton.Margin = new Border(0, 0, 0, 10);
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
-
-            Title = "OctoAwesome";
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)
