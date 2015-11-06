@@ -15,7 +15,7 @@ namespace OctoAwesome.Client.Screens
             Padding = new Border(0,0,0,0);
 
             Image background = new Image(manager);
-            background.Texture = manager.Content.Load<Texture2D>("Textures/background");
+            background.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background.png", manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
