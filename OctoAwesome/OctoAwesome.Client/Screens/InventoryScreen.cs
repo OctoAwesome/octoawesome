@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -13,13 +8,15 @@ namespace OctoAwesome.Client.Screens
     {
         private PlayerComponent player;
 
+        private ScreenComponent Manager;
+
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
             player = manager.Player;
+            Manager = manager;
             IsOverlay = true;
 
-            //Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
-            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
             Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
 
             HorizontalAlignment = HorizontalAlignment.Center;
@@ -38,7 +35,6 @@ namespace OctoAwesome.Client.Screens
             closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack(); };
             Controls.Add(closeButton);
 
-
             //counter = new LabelControl(ScreenManager)
             //{
             //    Font = ScreenManager.NormalText,
@@ -47,6 +43,14 @@ namespace OctoAwesome.Client.Screens
             //        ((ScreenManager.ScreenSize.Y - 400) / 2) + 140),
             //};
             //Controls.Add(counter);
+
+            Title = "Inventory";
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs args)
+        {
+            Manager.FreeMouse();
+            base.OnNavigatedTo(args);
         }
 
         protected override void OnKeyPress(KeyEventArgs args)

@@ -5,6 +5,9 @@
   - Block-Visibility Berücksichtigen
   - Flackern bei Chunkwechsel
   - Chunk-Render optimierung
+  LocalChunkCache -> 2D-Array vs. 1D-Array
+ILocalChunkCache Interface implementieren
+ResourceManager.Save() verarbeiten (Caches leeren)
 
 ======================================
 Langzeit-TODOs

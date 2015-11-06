@@ -13,6 +13,14 @@ namespace OctoAwesome.Tests
 
         public List<PlanetIndex3> Loaded { get; private set; }
 
+        public int LoadedChunks
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public TestGlobalCache()
         {
             Loaded = new List<PlanetIndex3>();
