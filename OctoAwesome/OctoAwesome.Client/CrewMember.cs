@@ -48,7 +48,7 @@ namespace OctoAwesome.Client
 
 
 
-        public static List<CrewMember> getCrew(ContentManager content)
+        public static List<CrewMember> getCrew(ScreenComponent manager)
         {
             List<CrewMember> crew = new List<CrewMember>();
 
@@ -69,7 +69,7 @@ namespace OctoAwesome.Client
             CrewMember bobstriker = new CrewMember("bobstriker");
             bobstriker.Description = "Das ist der Typ, der meistens vor der Kamera sitzt und versucht das Projekt zusammen zu halten. Ich denke das läuft ganz gut. Als gelernter Programmierer versucht er wohl zu allem ein bisschen was zu wissen und zeigt in OctoAwesome seine Herangehensweise an Software-Probleme.";
             bobstriker.Alias = "Tom";
-            bobstriker.Picture = content.Load<Texture2D>("Textures/Crew/bobstriker");
+            bobstriker.Picture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/Crew/bobstriker.png", manager.GraphicsDevice);
             bobstriker.Urls = new Dictionary<string, string> { { "Test", "www.google.at" } };
             bobstriker.AchievementList = new List<Achievements> { Achievements.Streamer, Achievements.Livegast };
             crew.Add(bobstriker);

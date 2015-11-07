@@ -23,7 +23,7 @@ namespace OctoAwesome.Client.Screens
             Title = "Credits";
 
             Image background = new Image(manager);
-            background.Texture = Manager.Content.Load<Texture2D>("Textures/background_notext");
+            background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
@@ -38,7 +38,7 @@ namespace OctoAwesome.Client.Screens
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
 
-            List<CrewMember> crew = CrewMember.getCrew(manager.Content);
+            List<CrewMember> crew = CrewMember.getCrew(manager);
 
             ScrollContainer crewScroll = new ScrollContainer(manager)
             {
