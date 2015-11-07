@@ -95,31 +95,31 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\dirt.png">
+    <Content Include="Assets\OctoAwesome.Basics\dirt.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\dirt_grass.png">
+    <Content Include="Assets\OctoAwesome.Basics\dirt_grass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\grass_top.png">
+    <Content Include="Assets\OctoAwesome.Basics\grass_top.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\pick_iron.png">
+    <Content Include="Assets\OctoAwesome.Basics\pick_iron.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\sand.png">
+    <Content Include="Assets\OctoAwesome.Basics\sand.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\stone.png">
+    <Content Include="Assets\OctoAwesome.Basics\stone.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\water.png">
+    <Content Include="Assets\OctoAwesome.Basics\water.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\wood_side.png">
+    <Content Include="Assets\OctoAwesome.Basics\wood_side.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\wood_top.png">
+    <Content Include="Assets\OctoAwesome.Basics\wood_top.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

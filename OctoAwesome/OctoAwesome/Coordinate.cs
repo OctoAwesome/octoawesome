@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace OctoAwesome
 {
@@ -37,6 +38,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt den Index des Chunks zurück oder legt diesen fest.
         /// </summary>
+        [XmlIgnore]
         public Index3 ChunkIndex
         {
             get
@@ -66,6 +68,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt den lokalen Index des Blocks (Chunk-Koordinaten) zurück oder legt diesen fest.
         /// </summary>
+        [XmlIgnore]
         public Index3 LocalBlockIndex
         {
             get
@@ -90,6 +93,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt die globale Position (Planet-Koordinaten) als Vektor zurück oder legt diesen fest.
         /// </summary>
+        [XmlIgnore]
         public Vector3 GlobalPosition
         {
             get
@@ -110,6 +114,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt die lokale Position (Chunk-Koordinaten) als Vektor zurück oder legt diese fest.
         /// </summary>
+        [XmlIgnore]
         public Vector3 LocalPosition
         {
             get

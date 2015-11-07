@@ -59,7 +59,7 @@ namespace OctoAwesome.Client.Controls
             Manager = manager;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = manager.Game.Content.Load<Texture2D>("Textures/sun");
+            sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
 
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.GetBlockDefinitions();

@@ -59,6 +59,7 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkCache.cs" />
     <Compile Include="ChunkLoader.cs" />
+    <Compile Include="ContentHelper.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlock.cs" />
