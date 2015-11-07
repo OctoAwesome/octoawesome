@@ -26,7 +26,7 @@ namespace OctoAwesome.Client.Controls
         private Trigger<bool> debugTrigger = new Trigger<bool>();
 
         StackPanel leftView, rightView;
-        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo, flyInfo;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo, flyInfo, chunkIndex;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -72,6 +72,9 @@ namespace OctoAwesome.Client.Controls
 
             rotation = new Label(ScreenManager);
             rightView.Controls.Add(rotation);
+
+            chunkIndex = new Label(ScreenManager);
+            rightView.Controls.Add(chunkIndex);
 
             fps = new Label(ScreenManager);
             rightView.Controls.Add(fps);
@@ -147,6 +150,10 @@ namespace OctoAwesome.Client.Controls
                 (((Player.ActorHost.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
                 ((Player.ActorHost.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
+
+            //Draw Chunk Index
+            string ci = "C-Index: " + Player.ActorHost.Player.Position.ChunkIndex;
+            chunkIndex.Text = ci;
 
             //Draw Fps
             string fpsString = "fps: " + (1f / lastfps).ToString("0.00");
