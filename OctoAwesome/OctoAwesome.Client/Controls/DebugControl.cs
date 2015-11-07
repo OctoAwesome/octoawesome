@@ -58,7 +58,7 @@ namespace OctoAwesome.Client.Controls
 
             //Creating all Labels
             devText = new Label(ScreenManager);
-            devText.Text = "Developement Version";
+            devText.Text = "Development Version";
             leftView.Controls.Add(devText);
 
             loadedChunks = new Label(ScreenManager);
