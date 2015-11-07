@@ -120,7 +120,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Crew/bobstriker.png
 
-#begin Textures/crosscircle.png
+#begin Textures/crossocto.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -129,5 +129,5 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Textures/crosscircle.png
+/build:Textures/crossocto.png
 

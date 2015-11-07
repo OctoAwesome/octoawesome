@@ -22,7 +22,7 @@ namespace OctoAwesome.Client.Controls
         public CrosshairControl(ScreenComponent manager) : base(manager)
         {
             Manager = manager;
-            Texture = manager.Content.Load<Texture2D>("Textures/crosscircle");
+            Texture = manager.Content.Load<Texture2D>("Textures/crossocto");
             Transparency = 0.5f;
             Color = Color.WhiteSmoke;
         }
