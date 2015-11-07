@@ -52,6 +52,13 @@ namespace OctoAwesome.Client.Screens
             minimap.Margin = Border.All(5);
             Controls.Add(minimap);
 
+            CrosshairControl crosshair = new CrosshairControl(manager);
+            crosshair.HorizontalAlignment = HorizontalAlignment.Center;
+            crosshair.VerticalAlignment = VerticalAlignment.Center;
+            crosshair.Width = 8;
+            crosshair.Height = 8;
+            Controls.Add(crosshair);
+
             manager.Player.InputActive = true;
 
             Title = "Game";
