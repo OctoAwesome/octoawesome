@@ -4,18 +4,44 @@ using System.Drawing;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Eine definition eines Block-Typen
+    /// </summary>
     public abstract class BlockDefinition : IBlockDefinition
     {
+        /// <summary>
+        /// Der Name des Block-Typen
+        /// </summary>
         public abstract string Name { get; }
 
+        /// <summary>
+        /// Icon für die Toolbar
+        /// </summary>
         public abstract Bitmap Icon { get; }
 
+        /// <summary>
+        /// Die maximale Stackgrösse
+        /// </summary>
         public virtual int StackLimit { get { return 100; } }
 
+        /// <summary>
+        /// Array, das alle Texturen für alle Seiten des Blocks enthält
+        /// </summary>
         public abstract Bitmap[] Textures { get; }
 
+        /// <summary>
+        /// Zeigt, ob der Block-Typ Metadaten besitzt
+        /// </summary>
         public virtual bool HasMetaData { get { return false; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
         public abstract PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z);
 
         public abstract void Hit(IBlockDefinition block, PhysicalProperties itemProperties);

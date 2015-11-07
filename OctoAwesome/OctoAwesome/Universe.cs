@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Ein Universum von OctoAwesome. Ein Universum beinhaltet verschiedene Planeten und entspricht einem Speicherstand.
+    /// </summary>
     public class Universe : IUniverse
     {
         public Universe(int id, string name)
@@ -13,8 +16,14 @@ namespace OctoAwesome
             Name = name;
         }
 
+        /// <summary>
+        /// ID des Universums
+        /// </summary>
         public int Id { get; private set; }
 
+        /// <summary>
+        /// Der Name des Universums
+        /// </summary>
         public string Name { get; private set; }
     }
 }
