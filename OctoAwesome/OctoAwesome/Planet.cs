@@ -44,7 +44,7 @@ namespace OctoAwesome
             Size = new Index3(
                 (int)Math.Pow(2, size.X), 
                 (int)Math.Pow(2, size.Y),
-                (int)Math.Pow(2, size.Z));
+                (size.Z));
             Seed = seed;
         }
     }
