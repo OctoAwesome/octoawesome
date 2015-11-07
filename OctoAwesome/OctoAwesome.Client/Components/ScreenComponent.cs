@@ -30,20 +30,6 @@ namespace OctoAwesome.Client.Components
             NavigateToScreen(new MainScreen(this));
         }
 
-        public void CaptureMouse()
-        {
-            Player.InputActive = true;
-            Game.IsMouseVisible = false;
-        }
-
-        public void FreeMouse()
-        {
-            Player.InputActive = false;
-            Game.IsMouseVisible = true;
-        }
-
-        
-
         public void Exit()
         {
             Game.Exit();

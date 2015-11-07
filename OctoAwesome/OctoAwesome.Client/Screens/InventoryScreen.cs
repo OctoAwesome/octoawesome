@@ -47,12 +47,6 @@ namespace OctoAwesome.Client.Screens
             Title = "Inventory";
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs args)
-        {
-            Manager.FreeMouse();
-            base.OnNavigatedTo(args);
-        }
-
         protected override void OnKeyPress(KeyEventArgs args)
         {
             if (args.Key == Microsoft.Xna.Framework.Input.Keys.Escape)

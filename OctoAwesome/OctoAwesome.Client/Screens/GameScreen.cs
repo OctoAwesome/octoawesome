@@ -8,7 +8,7 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class GameScreen : Screen
     {
-        private ScreenComponent Manager { get; set; }
+        private new ScreenComponent Manager { get; set; }
 
         DebugControl debug;
         SceneControl scene;
@@ -18,6 +18,8 @@ namespace OctoAwesome.Client.Screens
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
+            DefaultMouseMode = MouseMode.Captured;
+
             Manager = manager;
             Padding = Border.All(0);
 
@@ -52,33 +54,16 @@ namespace OctoAwesome.Client.Screens
             minimap.Margin = Border.All(5);
             Controls.Add(minimap);
 
-            manager.Player.InputActive = true;
-
             Title = "Game";
         }
-
-        protected override void OnNavigatedTo(NavigationEventArgs args)
-        {
-            Manager.CaptureMouse();
-            base.OnNavigatedTo(args);
-        }
-
 
         protected override void OnKeyPress(KeyEventArgs args)
         {
             if (args.Key == Keys.I)
             {
                 args.Handled = true;
-                Manager.FreeMouse();
                 Manager.NavigateToScreen(new InventoryScreen(Manager));
                 
-            }
-
-            if (args.Key == Keys.F12)
-            {
-                if (Manager.Player.InputActive)
-                    Manager.FreeMouse();
-                else Manager.CaptureMouse();
             }
 
             if(args.Key == Keys.F11)

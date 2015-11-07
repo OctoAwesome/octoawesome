@@ -66,7 +66,7 @@ namespace OctoAwesome.Client.Components.Input
             SlotRightTrigger = new Trigger<bool>();
             ToggleFlyMode = new Trigger<bool>();
 
-            SlotTrigger = new Trigger<bool>[InputComponent.SlotTriggerLength];
+            SlotTrigger = new Trigger<bool>[InputSet.SlotTriggerLength];
             for (int i = 0; i < SlotTrigger.Length; i++)
             {
                 SlotTrigger[i] = new Trigger<bool>();

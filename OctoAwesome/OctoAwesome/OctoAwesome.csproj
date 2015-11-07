@@ -82,7 +82,6 @@
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
-    <Compile Include="IScreenInputSet.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />

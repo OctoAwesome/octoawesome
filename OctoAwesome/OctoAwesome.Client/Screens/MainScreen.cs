@@ -53,11 +53,5 @@ namespace OctoAwesome.Client.Screens
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
         }
-
-        protected override void OnNavigatedTo(NavigationEventArgs args)
-        {
-            Manager.FreeMouse();
-            base.OnNavigatedTo(args);
-        }
     }
 }
