@@ -47,10 +47,6 @@
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
-    <Compile Include="Components\Input\GamePadInput.cs" />
-    <Compile Include="Components\Input\InputSet.cs" />
-    <Compile Include="Components\Input\KeyboardInput.cs" />
-    <Compile Include="Components\Input\MouseInput.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
     <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
