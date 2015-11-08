@@ -61,7 +61,7 @@ namespace OctoAwesome.Client
             simulation.UpdateOrder = 3;
             Components.Add(simulation);
 
-            player = new PlayerComponent(this, new InputSet(this), simulation);
+            player = new PlayerComponent(this, simulation);
             player.UpdateOrder = 2;
             Components.Add(player);
 

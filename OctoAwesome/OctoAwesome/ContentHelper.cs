@@ -10,14 +10,19 @@ namespace OctoAwesome
     {
         public static Texture2D LoadTexture2DFromFile(this ContentManager man, string path, GraphicsDevice device)
         {
-            Bitmap bmp = (Bitmap)Bitmap.FromFile(path);
-
-            using (MemoryStream stream = new MemoryStream())
+            using (Stream stream = File.OpenRead(path))
             {
-                bmp.Save(stream, ImageFormat.Bmp);
-                stream.Seek(0, SeekOrigin.Begin);
                 return Texture2D.FromStream(device, stream);
             }
+
+            //Bitmap bmp = (Bitmap)Bitmap.FromFile(path);
+
+            //using (MemoryStream stream = new MemoryStream())
+            //{
+            //    bmp.Save(stream, ImageFormat.Bmp);
+            //    stream.Seek(0, SeekOrigin.Begin);
+            //    return Texture2D.FromStream(device, stream);
+            //}
         }
     }
 }

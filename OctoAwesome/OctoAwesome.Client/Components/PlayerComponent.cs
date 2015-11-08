@@ -9,9 +9,29 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class PlayerComponent : GameComponent
     {
-        private InputSet input;
-
         private SimulationComponent simulation;
+
+        #region External Input
+
+        public Vector2 HeadInput { get; set; }
+
+        public Vector2 MoveInput { get; set; }
+
+        public bool InteractInput { get; set; }
+
+        public bool ApplyInput { get; set; }
+
+        public bool JumpInput { get; set; }
+
+        public bool FlymodeInput { get; set; }
+
+        public bool[] SlotInput { get; private set; } = new bool[10];
+
+        public bool SlotLeftInput { get; set; }
+
+        public bool SlotRightInput { get; set; }
+
+        #endregion
 
         public ActorHost ActorHost { get { return simulation.Player; } }
 
@@ -27,11 +47,10 @@ namespace OctoAwesome.Client.Components
 
         public List<InventorySlot> Tools { get; set; }
 
-        public PlayerComponent(Game game, InputSet input, SimulationComponent simulation)
+        public PlayerComponent(Game game, SimulationComponent simulation)
             : base(game)
         {
             this.simulation = simulation;
-            this.input = input;
         }
 
         public override void Initialize()
@@ -45,33 +64,36 @@ namespace OctoAwesome.Client.Components
             Tools.Clear();
             Tools.AddRange(ActorHost.Player.Inventory);
 
-            input.UpdateInput(gameTime);
+            ActorHost.Head = HeadInput;
+            HeadInput = Vector2.Zero;
 
-            ActorHost.Head = new Vector2(input.HeadX, input.HeadY);
-            ActorHost.Move = new Vector2(input.MoveX, input.MoveY);
+            ActorHost.Move = MoveInput;
+            MoveInput = Vector2.Zero;
 
-            if (input.JumpTrigger)
+            if (JumpInput)
                 ActorHost.Jump();
-            if (input.InteractTrigger && SelectedBox.HasValue)
-            {
-                ActorHost.Interact(SelectedBox.Value);
-            }
-            if (input.ApplyTrigger && SelectedBox.HasValue)
-            {
-                ActorHost.Apply(SelectedBox.Value, SelectedSide);
-            }
-            if (input.ToggleFlyMode)
-            {
-                ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
-            }
+            JumpInput = false;
 
-            if (Tools != null && Tools.Count > 0 && input.SlotTrigger != null)
+            if (InteractInput && SelectedBox.HasValue)
+                ActorHost.Interact(SelectedBox.Value);
+            InteractInput = false;
+
+            if (ApplyInput && SelectedBox.HasValue)
+                ActorHost.Apply(SelectedBox.Value, SelectedSide);
+            ApplyInput = false;
+
+            if (FlymodeInput)
+                ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
+            FlymodeInput = false;
+
+            if (Tools != null && Tools.Count > 0)
             {
                 if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = Tools[0];
-                for (int i = 0; i < Math.Min(Tools.Count, input.SlotTrigger.Length); i++)
+                for (int i = 0; i < Math.Min(Tools.Count, SlotInput.Length); i++)
                 {
-                    if (input.SlotTrigger[i])
+                    if (SlotInput[i])
                         ActorHost.ActiveTool = Tools[i];
+                    SlotInput[i] = false;
                 }
             }
 
@@ -91,11 +113,13 @@ namespace OctoAwesome.Client.Components
 
             if (activeTool > -1)
             {
-                if (input.SlotLeftTrigger)
+                if (SlotLeftInput)
                     activeTool--;
+                SlotLeftInput = false;
 
-                if (input.SlotRightTrigger)
+                if (SlotRightInput)
                     activeTool++;
+                SlotRightInput = false;
 
                 activeTool = (activeTool + Tools.Count) % Tools.Count;
                 ActorHost.ActiveTool = Tools[activeTool];

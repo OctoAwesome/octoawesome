@@ -88,22 +88,22 @@ namespace OctoAwesome.Client.Components.Input
         {
             MouseState state = Mouse.GetState();
 
-            InteractTrigger.Value = state.RightButton == ButtonState.Pressed;
-            ApplyTrigger.Value = state.LeftButton == ButtonState.Pressed;
+            //InteractTrigger.Value = state.RightButton == ButtonState.Pressed;
+            //ApplyTrigger.Value = state.LeftButton == ButtonState.Pressed;
 
-            int centerX = game.GraphicsDevice.Viewport.Width / 2;
-            int centerY = game.GraphicsDevice.Viewport.Height / 2;
-            Mouse.SetPosition(centerX, centerY);
+            //int centerX = game.GraphicsDevice.Viewport.Width / 2;
+            //int centerY = game.GraphicsDevice.Viewport.Height / 2;
+            //Mouse.SetPosition(centerX, centerY);
 
-            if (init)
-            {
-                float deltaX = state.Position.X - centerX;
-                float deltaY = state.Position.Y - centerY;
+            //if (init)
+            //{
+            //    float deltaX = state.Position.X - centerX;
+            //    float deltaY = state.Position.Y - centerY;
 
-                HeadX = deltaX * mouseSpeed;
-                HeadY = -deltaY * mouseSpeed;
-            }
-            init = true;
+            //    HeadX = deltaX * mouseSpeed;
+            //    HeadY = -deltaY * mouseSpeed;
+            //}
+            //init = true;
 
             SlotLeftTrigger.Value = state.ScrollWheelValue < lastWheelState;
             SlotRightTrigger.Value = state.ScrollWheelValue > lastWheelState;
