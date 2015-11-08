@@ -18,6 +18,7 @@ namespace OctoAwesome.Client.Screens
         CompassControl compass;
         ToolbarControl toolbar;
         MinimapControl minimap;
+        CrosshairControl crosshair;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -56,6 +57,13 @@ namespace OctoAwesome.Client.Screens
             minimap.Height = 128;
             minimap.Margin = Border.All(5);
             Controls.Add(minimap);
+
+            crosshair = new CrosshairControl(manager);
+            crosshair.HorizontalAlignment = HorizontalAlignment.Center;
+            crosshair.VerticalAlignment = VerticalAlignment.Center;
+            crosshair.Width = 8;
+            crosshair.Height = 8;
+            Controls.Add(crosshair);
 
             Title = "Game";
         }
@@ -109,8 +117,8 @@ namespace OctoAwesome.Client.Screens
         {
             if (!IsActiveScreen) return;
 
-            Manager.Player.SlotLeftInput = args.Steps < 0;
-            Manager.Player.SlotRightInput = args.Steps > 0;
+            Manager.Player.SlotLeftInput = args.Steps > 0;
+            Manager.Player.SlotRightInput = args.Steps < 0;
             args.Handled = true;
         }
 
@@ -282,6 +290,7 @@ namespace OctoAwesome.Client.Screens
                     compass.Visible = !compass.Visible;
                     toolbar.Visible = !toolbar.Visible;
                     minimap.Visible = !minimap.Visible;
+                    crosshair.Visible = !crosshair.Visible;
                     break;
                 case Keys.F10:
                     debug.Visible = !debug.Visible;
@@ -289,7 +298,6 @@ namespace OctoAwesome.Client.Screens
                 case Keys.Escape:
                     Manager.NavigateToScreen(new MainScreen(Manager));
                     break;
-
             }
         }
 

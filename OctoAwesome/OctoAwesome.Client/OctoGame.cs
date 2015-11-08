@@ -58,7 +58,7 @@ namespace OctoAwesome.Client
             ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
             simulation = new SimulationComponent(this);
-            simulation.UpdateOrder = 3;
+            simulation.UpdateOrder = 4;
             Components.Add(simulation);
 
             player = new PlayerComponent(this, simulation);
@@ -67,12 +67,12 @@ namespace OctoAwesome.Client
 
 
             camera = new CameraComponent(this, player);
-            camera.UpdateOrder = 4;
+            camera.UpdateOrder = 3;
             Components.Add(camera);
 
             screens = new ScreenComponent(this, player, camera);
-            screens.UpdateOrder = 8;
-            screens.DrawOrder = 4;
+            screens.UpdateOrder = 1;
+            screens.DrawOrder = 1;
             Components.Add(screens);
         }
 
