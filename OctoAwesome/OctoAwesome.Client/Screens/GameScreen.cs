@@ -71,7 +71,7 @@ namespace OctoAwesome.Client.Screens
             if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
             if (pressedHeadRight) Manager.Player.HeadInput += new Vector2(1f, 0f);
 
-            // HandleGamePad();
+            HandleGamePad();
 
             base.OnUpdate(gameTime);
         }
@@ -80,34 +80,38 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnLeftMouseDown(MouseEventArgs args)
         {
+            if (!IsActiveScreen) return;
+
             Manager.Player.ApplyInput = true;
             args.Handled = true;
-            base.OnLeftMouseDown(args);
         }
 
         protected override void OnRightMouseDown(MouseEventArgs args)
         {
+            if (!IsActiveScreen) return;
+
             Manager.Player.InteractInput = true;
             args.Handled = true;
-            base.OnRightMouseDown(args);
         }
 
         protected override void OnMouseMove(MouseEventArgs args)
         {
+            if (!IsActiveScreen) return;
+
             if (args.MouseMode == MouseMode.Captured && IsActiveScreen)
             {
                 Manager.Player.HeadInput = args.GlobalPosition.ToVector2() * mouseSpeed * new Vector2(1f, -1f);
                 args.Handled = true;
             }
-            base.OnMouseMove(args);
         }
 
         protected override void OnMouseScroll(MouseScrollEventArgs args)
         {
+            if (!IsActiveScreen) return;
+
             Manager.Player.SlotLeftInput = args.Steps < 0;
             Manager.Player.SlotRightInput = args.Steps > 0;
             args.Handled = true;
-            base.OnMouseScroll(args);
         }
 
         #endregion
@@ -125,6 +129,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
+            if (!IsActiveScreen) return;
+
             switch (args.Key)
             {
                 case Keys.W:
@@ -175,7 +181,6 @@ namespace OctoAwesome.Client.Screens
                     Manager.Player.JumpInput = true;
                     args.Handled = true;
                     break;
-
                 case Keys.D1:
                     Manager.Player.SlotInput[0] = true;
                     args.Handled = true;
@@ -264,29 +269,27 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnKeyPress(KeyEventArgs args)
         {
-            if (args.Key == Keys.I || args.Key == Keys.Tab)
-            {
-                args.Handled = true;
-                Manager.NavigateToScreen(new InventoryScreen(Manager));
-                
-            }
+            if (!IsActiveScreen) return;
 
-            if(args.Key == Keys.F11)
+            switch (args.Key)
             {
-                compass.Visible = !compass.Visible;
-                toolbar.Visible = !toolbar.Visible;
-                minimap.Visible = !minimap.Visible;
-            }
+                case Keys.I:
+                case Keys.Tab:
+                    args.Handled = true;
+                    Manager.NavigateToScreen(new InventoryScreen(Manager));
+                    break;
+                case Keys.F11:
+                    compass.Visible = !compass.Visible;
+                    toolbar.Visible = !toolbar.Visible;
+                    minimap.Visible = !minimap.Visible;
+                    break;
+                case Keys.F10:
+                    debug.Visible = !debug.Visible;
+                    break;
+                case Keys.Escape:
+                    Manager.NavigateToScreen(new MainScreen(Manager));
+                    break;
 
-            //Enable / Disable Debug
-            if(args.Key == Keys.F10)
-            {
-                debug.Visible = !debug.Visible;
-            }
-
-            if(args.Key == Keys.Escape)
-            {
-                Manager.NavigateToScreen(new MainScreen(Manager));
             }
         }
 
@@ -295,9 +298,17 @@ namespace OctoAwesome.Client.Screens
         #region GamePad Input
 
         private bool pressedGamepadInventory = false;
+        private bool pressedGamepadInteract = false;
+        private bool pressedGamepadApply = false;
+        private bool pressedGamepadJump = false;
+        private bool pressedGamepadFlymode = false;
+        private bool pressedGamepadSlotLeft = false;
+        private bool pressedGamepadSlotRight = false;
 
         private void HandleGamePad()
         {
+            if (!IsActiveScreen) return;
+
             bool succeeded = false;
             GamePadState gamePadState = new GamePadState();
             try
@@ -309,14 +320,32 @@ namespace OctoAwesome.Client.Screens
 
             if (succeeded)
             {
-                if (gamePadState.Buttons.X == ButtonState.Pressed) Manager.Player.InteractInput = true;
-                if (gamePadState.Buttons.A == ButtonState.Pressed) Manager.Player.ApplyInput = true;
-                if (gamePadState.Buttons.Y == ButtonState.Pressed) Manager.Player.JumpInput = true;
-                if (gamePadState.Buttons.LeftStick == ButtonState.Pressed) Manager.Player.FlymodeInput = true;
-                if (gamePadState.Buttons.LeftShoulder == ButtonState.Pressed) Manager.Player.SlotLeftInput = true;
-                if (gamePadState.Buttons.RightShoulder == ButtonState.Pressed) Manager.Player.SlotRightInput = true;
                 Manager.Player.MoveInput += gamePadState.ThumbSticks.Left;
                 Manager.Player.HeadInput += gamePadState.ThumbSticks.Right;
+
+                if (gamePadState.Buttons.X == ButtonState.Pressed && !pressedGamepadInteract)
+                    Manager.Player.InteractInput = true;
+                pressedGamepadInteract = gamePadState.Buttons.X == ButtonState.Pressed;
+
+                if (gamePadState.Buttons.A == ButtonState.Pressed && !pressedGamepadApply)
+                    Manager.Player.ApplyInput = true;
+                pressedGamepadApply = gamePadState.Buttons.A == ButtonState.Pressed;
+
+                if (gamePadState.Buttons.Y == ButtonState.Pressed && !pressedGamepadJump)
+                    Manager.Player.JumpInput = true;
+                pressedGamepadJump = gamePadState.Buttons.Y == ButtonState.Pressed;
+
+                if (gamePadState.Buttons.LeftStick == ButtonState.Pressed && !pressedGamepadFlymode)
+                    Manager.Player.FlymodeInput = true;
+                pressedGamepadFlymode = gamePadState.Buttons.LeftStick == ButtonState.Pressed;
+
+                if (gamePadState.Buttons.LeftShoulder == ButtonState.Pressed && !pressedGamepadSlotLeft)
+                    Manager.Player.SlotLeftInput = true;
+                pressedGamepadSlotLeft = gamePadState.Buttons.LeftShoulder == ButtonState.Pressed;
+
+                if (gamePadState.Buttons.RightShoulder == ButtonState.Pressed && !pressedGamepadSlotRight)
+                    Manager.Player.SlotRightInput = true;
+                pressedGamepadSlotRight = gamePadState.Buttons.RightShoulder == ButtonState.Pressed;
 
                 if (gamePadState.Buttons.Back == ButtonState.Pressed && !pressedGamepadInventory)
                     Manager.NavigateToScreen(new InventoryScreen(Manager));
