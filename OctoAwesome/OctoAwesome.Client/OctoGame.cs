@@ -20,7 +20,6 @@ namespace OctoAwesome.Client
         GraphicsDeviceManager graphics;
 
         CameraComponent camera;
-        InputComponent input;
         PlayerComponent player;
         SimulationComponent simulation;
         ScreenComponent screens;
@@ -58,26 +57,22 @@ namespace OctoAwesome.Client
 
             ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
-            input = new InputComponent(this);
-            input.UpdateOrder = 1;
-            Components.Add(input);
-
             simulation = new SimulationComponent(this);
-            simulation.UpdateOrder = 3;
+            simulation.UpdateOrder = 4;
             Components.Add(simulation);
 
-            player = new PlayerComponent(this, input, simulation);
+            player = new PlayerComponent(this, simulation);
             player.UpdateOrder = 2;
             Components.Add(player);
 
 
             camera = new CameraComponent(this, player);
-            camera.UpdateOrder = 4;
+            camera.UpdateOrder = 3;
             Components.Add(camera);
 
             screens = new ScreenComponent(this, player, camera);
-            screens.UpdateOrder = 8;
-            screens.DrawOrder = 4;
+            screens.UpdateOrder = 1;
+            screens.DrawOrder = 1;
             Components.Add(screens);
         }
 

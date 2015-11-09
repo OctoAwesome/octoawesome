@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
@@ -38,7 +40,25 @@ namespace OctoAwesome
             chunks = new IChunk[(mask + 1) * (mask + 1)][];
         }
 
+        private Task _loadingTask;
+        private CancellationTokenSource _cancellationToken;
+
         public void SetCenter(IPlanet planet, Index3 index)
+        {
+            if (_loadingTask != null && !_loadingTask.IsCompleted)
+            {
+                _cancellationToken.Cancel();
+                _cancellationToken = new CancellationTokenSource();
+                _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index));
+            }
+            else
+            {
+                _cancellationToken = new CancellationTokenSource();
+                _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index));
+            }
+        }
+
+        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index)
         {
             // Planet resetten falls notwendig
             if (this.planet != planet)
@@ -46,40 +66,50 @@ namespace OctoAwesome
 
             if (planet == null) return;
 
+            List<Index3> requiredChunks = new List<Index3>();
             for (int x = -range; x <= range; x++)
             {
                 for (int y = -range; y <= range; y++)
                 {
                     for (int z = 0; z < planet.Size.Z; z++)
                     {
-                        Index3 local = new Index3(
-                            index.X + x,
-                            index.Y + y,
-                            z);
-
+                        Index3 local = new Index3(index.X + x, index.Y + y, z);
                         local.NormalizeXY(planet.Size);
-
-                        int localX = local.X & mask;
-                        int localY = local.Y & mask;
-
-                        IChunk chunk = chunks[FlatIndex(localX, localY)][z];
-
-                        // Alten Chunk entfernen, falls notwendig
-                        if (chunk != null && chunk.Index != local)
-                        {
-                            globalCache.Release(new PlanetIndex3(planet.Id, local));
-                            chunks[FlatIndex(localX, localY)][z] = null;
-                            chunk = null;
-                        }
-
-                        // Neuen Chunk laden
-                        if (chunk == null)
-                        {
-                            chunk = globalCache.Subscribe(new PlanetIndex3(planet.Id, local));
-                            chunks[FlatIndex(localX, localY)][z] = chunk;
-                        }
+                        requiredChunks.Add(local);
                     }
                 }
+            }
+
+            // Erste Abbruchmöglichkeit
+            if (token.IsCancellationRequested) return;
+
+            foreach (var chunkIndex in requiredChunks.OrderBy(c => index.ShortestDistanceXYZ(c, planet.Size).LengthSquared()))
+            {
+                int localX = chunkIndex.X & mask;
+                int localY = chunkIndex.Y & mask;
+                int flatIndex = FlatIndex(localX, localY);
+                IChunk chunk = chunks[flatIndex][chunkIndex.Z];
+
+                // Alten Chunk entfernen, falls notwendig
+                if (chunk != null && chunk.Index != chunkIndex)
+                {
+                    globalCache.Release(new PlanetIndex3(planet.Id, chunk.Index));
+                    chunks[flatIndex][chunkIndex.Z] = null;
+                    chunk = null;
+                }
+
+                // Zweite Abbruchmöglichkeit
+                if (token.IsCancellationRequested) return;
+
+                // Neuen Chunk laden
+                if (chunk == null)
+                {
+                    chunk = globalCache.Subscribe(new PlanetIndex3(planet.Id, chunkIndex));
+                    chunks[flatIndex][chunkIndex.Z] = chunk;
+                }
+
+                // Dritte Abbruchmöglichkeit
+                if (token.IsCancellationRequested) return;
             }
         }
 

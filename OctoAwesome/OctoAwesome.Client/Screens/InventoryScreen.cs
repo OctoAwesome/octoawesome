@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Screens
             Manager = manager;
             IsOverlay = true;
 
-            Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
+            Texture2D panelBackground = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
             Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
 
             HorizontalAlignment = HorizontalAlignment.Center;
@@ -32,7 +32,7 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(headLine);
 
             Button closeButton = Button.TextButton(Manager, "Close");
-            closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack();};
+            closeButton.LeftMouseClick += (s, e) => { Manager.NavigateBack(); };
             Controls.Add(closeButton);
 
             //counter = new LabelControl(ScreenManager)

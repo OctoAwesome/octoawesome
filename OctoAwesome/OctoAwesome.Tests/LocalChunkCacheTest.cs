@@ -77,17 +77,41 @@ namespace OctoAwesome.Tests
             LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
             TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
 
-            cache.SetCenter(planet, new Index3(15, 15, 2));
+            //    00    01    10    11
+            // 00 --    --    --    --
+            // 01 --    --    --    --
+            // 10 --    --    --    --
+            // 11 --    --    --    --
+
+            cache.SetCenter(planet, new Index3(15, 15, 2)); // 15 - 1111
             Assert.AreEqual(27, globalCache.LoadCounter);
             Assert.AreEqual(0, globalCache.SaveCounter);
+
+            //    00    01    10    11
+            // 00 16/16 --    14/16 15/16
+            // 01 --    --    --    --
+            // 10 16/14 --    14/14 15/14
+            // 11 16/15 --    14/15 15/15
 
             cache.SetCenter(planet, new Index3(14, 15, 2));
             Assert.AreEqual(36, globalCache.LoadCounter);
             Assert.AreEqual(0, globalCache.SaveCounter);
 
+            //    00    01    10    11
+            // 00 16/16 13/16 14/16 15/16
+            // 01 --    --    --    --
+            // 10 16/14 13/14 14/14 15/14
+            // 11 16/15 13/15 14/15 15/15
+
             cache.SetCenter(planet, new Index3(13, 15, 2));
             Assert.AreEqual(45, globalCache.LoadCounter);
             Assert.AreEqual(9, globalCache.SaveCounter);
+
+            //    00    01    10    11
+            // 00 12/16 13/16 14/16 15/16
+            // 01 --    --    --    --
+            // 10 12/14 13/14 14/14 15/14
+            // 11 12/15 13/15 14/15 15/15
 
             // Chunk im Zentrum
             IChunk chunk = cache.GetChunk(13, 15, 0);

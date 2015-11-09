@@ -23,14 +23,14 @@ namespace OctoAwesome.Client.Screens
             //The Background Image
             Image background = new Image(manager)
             {
-                Texture = manager.Content.Load<Texture2D>("Textures/background_notext"),
+                Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", manager.GraphicsDevice),
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
             Controls.Add(background);
 
             //The Panel
-            Texture2D panelBackground = manager.Content.Load<Texture2D>("Textures/panel");
+            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
             Panel panel = new Panel(manager)
             {
                 MaxWidth = 750,
@@ -68,10 +68,10 @@ namespace OctoAwesome.Client.Screens
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
                         Padding = new Border(0, 0, 10, 0)
-                    };  
-                    if (member.Picture == null)
-                        profileImage.Texture = manager.Content.Load<Texture2D>("Textures/Crew/Base");
-                    else profileImage.Texture = member.Picture;
+                    };
+            if (member.Picture == null)
+                profileImage.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/Crew/base.png", manager.GraphicsDevice);
+            else profileImage.Texture = member.Picture;
                     horizontalStack.Controls.Add(profileImage);
 
 

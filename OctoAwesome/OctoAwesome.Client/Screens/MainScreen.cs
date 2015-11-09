@@ -15,7 +15,7 @@ namespace OctoAwesome.Client.Screens
             Padding = new Border(0,0,0,0);
 
             Image background = new Image(manager);
-            background.Texture = manager.Content.Load<Texture2D>("Textures/background");
+            background.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background.png", manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
@@ -52,12 +52,6 @@ namespace OctoAwesome.Client.Screens
             exitButton.Margin = new Border(0, 0, 0, 10);
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs args)
-        {
-            Manager.FreeMouse();
-            base.OnNavigatedTo(args);
         }
     }
 }

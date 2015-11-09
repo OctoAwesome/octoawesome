@@ -23,6 +23,8 @@ namespace OctoAwesome.Client.Controls
         private CameraComponent camera;
 
         private ChunkRenderer[,] chunkRenderer;
+        private List<ChunkRenderer> orderedChunkRenderer;
+
         private IPlanet planet;
 
         // private List<Index3> distances = new List<Index3>();
@@ -59,7 +61,7 @@ namespace OctoAwesome.Client.Controls
             Manager = manager;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = manager.Game.Content.Load<Texture2D>("Textures/sun");
+            sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
 
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.GetBlockDefinitions();
@@ -90,15 +92,25 @@ namespace OctoAwesome.Client.Controls
             planet = ResourceManager.Instance.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE + 1, 1);
+
+            int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE, range);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
                 planet.Size.Z];
+            orderedChunkRenderer = new List<ChunkRenderer>(
+                (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE) * planet.Size.Z);
 
             for (int i = 0; i < chunkRenderer.GetLength(0); i++)
+            {
                 for (int j = 0; j < chunkRenderer.GetLength(1); j++)
-                    chunkRenderer[i, j] = new ChunkRenderer(simpleShader, manager.GraphicsDevice, camera.Projection, blockTextures);
+                {
+                    ChunkRenderer renderer = new ChunkRenderer(simpleShader, manager.GraphicsDevice, camera.Projection, blockTextures);
+                    chunkRenderer[i, j] = renderer;
+                    orderedChunkRenderer.Add(renderer);
+                }
+            }
 
             // Entfernungsarray erzeugen
             //for (int x = -VIEWRANGE; x <= VIEWRANGE; x++)
@@ -400,12 +412,9 @@ namespace OctoAwesome.Client.Controls
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
-                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
-                    localChunkCache.SetCenter(planet, player.ActorHost.Position.ChunkIndex));
-                t.Start();
+                localChunkCache.SetCenter(planet, player.ActorHost.Position.ChunkIndex);
 
                 int mask = (int)Math.Pow(2, VIEWRANGE) - 1;
-
                 int span = (int)Math.Pow(2, VIEWRANGE);
                 int spanOver2 = span >> 1;
 
@@ -429,41 +438,30 @@ namespace OctoAwesome.Client.Controls
                     }
                 }
 
+                Index3 comparationIndex = new Index3(destinationChunk, 0);
+                orderedChunkRenderer.Sort((x, y) =>
+                {
+                    if (!x.ChunkPosition.HasValue) return 1;
+                    if (!y.ChunkPosition.HasValue) return -1;
+
+                    Index3 distX = comparationIndex.ShortestDistanceXYZ(x.ChunkPosition.Value, planet.Size);
+                    Index3 distY = comparationIndex.ShortestDistanceXYZ(y.ChunkPosition.Value, planet.Size);
+                    return distX.LengthSquared().CompareTo(distY.LengthSquared());
+                });
+
                 currentChunk = destinationChunk;
             }
 
-            #region Chunkrenderer updaten
-
-            //            int shortestDistance = int.MaxValue;
-            //            ChunkRenderer updatableRenderer = null;
-            foreach (var renderer in chunkRenderer)
+            foreach (var renderer in orderedChunkRenderer)
             {
                 if (!renderer.NeedUpdate())
                     continue;
 
                 renderer.RegenerateVertexBuffer();
-
-                //                Index2 absoluteIndex = new Index2(renderer.ChunkPosition.Value);
-                //                Index2 relativeIndex = destinationChunk.ShortestDistanceXY(
-                //                                   absoluteIndex, new Index2(
-                //                                       planet.Size.X,
-                //                                       planet.Size.Y));
-                //
-                //                int distance = relativeIndex.LengthSquared();
-                //                if (distance < shortestDistance)
-                //                {
-                //                    updatableRenderer = renderer;
-                //                    shortestDistance = distance;
-                //                }
+                return true;
             }
 
-            //            if (updatableRenderer != null)
-            //                updatableRenderer.RegenerateVertexBuffer();
-
-            #endregion
-
-            return true;
-            //            return updatableRenderer != null;
+            return false;
         }
 
         private void BackgroundLoop()
