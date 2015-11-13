@@ -26,8 +26,6 @@ namespace OctoAwesome.Runtime
 
         public InventorySlot ActiveTool { get; set; }
 
-        public WorldState State { get; private set; }
-
         public ActorHost(Player player)
         {
             Player = player;
@@ -37,20 +35,11 @@ namespace OctoAwesome.Runtime
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
-            State = WorldState.Loading;
         }
 
         public void Initialize()
         {
-            State = WorldState.Running;
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
-
-            // TODO: Fixen! ;)
-            while(localChunkCache.GetBlock(Player.Position.GlobalBlockIndex) != 0)
-            {
-                Player.Position += new Vector3(0, 0, 5);
-            }
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
+            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) => {  });
         }
 
         public void Update(GameTime frameTime)

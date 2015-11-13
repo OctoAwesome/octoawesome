@@ -14,20 +14,19 @@ namespace OctoAwesome.Runtime
 
         private Stopwatch watch;
         private Thread thread;
+        private World world;
 
         public List<ActorHost> ActorHosts { get; private set; }
 
         public bool Running { get; set; }
 
-        public WorldState State { get; private set; }
-
-        public UpdateDomain(Stopwatch watch)
+        public UpdateDomain(World world, Stopwatch watch)
         {
+            this.world = world;
             this.watch = watch;
             ActorHosts = new List<ActorHost>();
 
             Running = true;
-            State = WorldState.Running;
 
             thread = new Thread(updateLoop);
             thread.IsBackground = true;

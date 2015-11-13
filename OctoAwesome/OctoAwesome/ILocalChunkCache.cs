@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using System;
+
+namespace OctoAwesome
 {
     public interface ILocalChunkCache
     {
@@ -9,7 +11,7 @@
         /// <returns>Instanz des Chunks</returns>
         IChunk GetChunk(Index3 index);
 
-        void SetCenter(IPlanet planet, Index3 index);
+        void SetCenter(IPlanet planet, Index3 index, Action<bool> successCallback = null);
 
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.

@@ -25,20 +25,10 @@ namespace OctoAwesome.Client.Components
             World = new World();
 
             var p = Load();
-            //foreach (var item in ItemDefinitionManager.GetBlockDefinitions())
-            //{
-            //    p.Inventory.Add(new InventorySlot() { Definition = item, Amount = 1 });
-            //}
-
             Player = World.InjectPlayer(p);
             Player.Initialize();
 
             base.Initialize();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            World.Update(gameTime);
         }
 
         internal void Save()

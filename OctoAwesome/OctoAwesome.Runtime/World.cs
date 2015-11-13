@@ -19,14 +19,10 @@ namespace OctoAwesome.Runtime
 
         public World()
         {
+            State = WorldState.Loading;
             watch.Start();
             updateDomains = new UpdateDomain[1];
-            updateDomains[0] = new UpdateDomain(watch);
-            State = WorldState.Running;
-        }
-
-        public void Update(GameTime frameTime)
-        {
+            updateDomains[0] = new UpdateDomain(this, watch);
         }
 
         public void Save()
@@ -37,13 +33,6 @@ namespace OctoAwesome.Runtime
 
         public ActorHost InjectPlayer(Player player)
         {
-            //var cache = ResourceManager.Instance.GetCacheForPlanet(player.Position.Planet);
-            //var loader = new ChunkLoader(cache, 14, new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex));
-
-            //cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex));
-            //cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex + new Index3(0, 0, 1)));
-            //cache.EnsureLoaded(new PlanetIndex3(player.Position.Planet, player.Position.ChunkIndex + new Index3(0, 0, - 1)));
-
             var host = new ActorHost(player);
             updateDomains[0].ActorHosts.Add(host);
             return host;
