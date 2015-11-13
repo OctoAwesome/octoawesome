@@ -9,7 +9,9 @@
         /// <returns>Instanz des Chunks</returns>
         IChunk GetChunk(Index3 index);
 
-        void SetCenter(IPlanet planet, Index3 index);
+        void SetCenter(IPlanet planet, Index3 index, Action<bool> successCallback = null);
+
+        void Flush();
 
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.

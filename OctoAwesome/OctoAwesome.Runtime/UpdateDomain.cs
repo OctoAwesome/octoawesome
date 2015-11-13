@@ -54,6 +54,9 @@ namespace OctoAwesome.Runtime
                 if (diff > TimeSpan.Zero)
                     Thread.Sleep(diff);
             }
+
+            foreach (var actorHost in ActorHosts)
+                actorHost.Unload();
         }
     }
 }

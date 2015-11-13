@@ -22,7 +22,7 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void SimpleLoad()
         {
-            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
+            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
             TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
 
             cache.SetCenter(planet, new Index3(15, 15, 2));
@@ -74,7 +74,7 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void MovingCenter()
         {
-            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
+            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
             TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
 
             //    00    01    10    11

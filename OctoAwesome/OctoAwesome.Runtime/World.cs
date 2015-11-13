@@ -20,7 +20,6 @@ namespace OctoAwesome.Runtime
         public void Save()
         {
             updateDomains[0].Running = false;
-            ResourceManager.Instance.Save();
         }
 
         public ActorHost InjectPlayer(Player player)

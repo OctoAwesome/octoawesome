@@ -295,6 +295,12 @@ namespace OctoAwesome.Client.Screens
                 case Keys.F10:
                     debug.Visible = !debug.Visible;
                     break;
+                case Keys.F12:
+                    if (Manager.MouseMode == MouseMode.Captured)
+                        Manager.FreeMouse();
+                    else
+                        Manager.CaptureMouse();
+                    break;
                 case Keys.Escape:
                     Manager.NavigateToScreen(new MainScreen(Manager));
                     break;

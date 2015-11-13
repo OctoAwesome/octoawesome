@@ -40,7 +40,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, saveCallCounter);
 
             // Chunk laden
-            IChunk x = cache.Subscribe(index);
+            IChunk x = cache.Subscribe(index, true);
             Assert.AreEqual(x, result);
             Assert.AreEqual(x.Planet, index.Planet);
             Assert.AreEqual(x.Index, index.ChunkIndex);
@@ -50,7 +50,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(1, cache.LoadedChunks);
 
             // Chunk unload
-            cache.Release(index);
+            cache.Release(index, true);
 
             Assert.AreEqual(0, cache.LoadedChunks);
             Assert.AreEqual(1, loadCallCounter);
@@ -108,7 +108,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
-            IChunk x1 = cache.Subscribe(index1);
+            IChunk x1 = cache.Subscribe(index1, true);
             Assert.AreEqual(x1, result1);
             Assert.AreEqual(x1.Planet, index1.Planet);
             Assert.AreEqual(x1.Index, index1.ChunkIndex);
@@ -118,7 +118,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, saveCallCounter);
 
             // Load 2
-            IChunk x2 = cache.Subscribe(index2);
+            IChunk x2 = cache.Subscribe(index2, true);
             Assert.AreEqual(x2, result2);
             Assert.AreEqual(x2.Planet, index2.Planet);
             Assert.AreEqual(x2.Index, index2.ChunkIndex);
@@ -128,14 +128,14 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, saveCallCounter);
 
             // Unload 1
-            cache.Release(index1);
+            cache.Release(index1, true);
 
             Assert.AreEqual(1, cache.LoadedChunks);
             Assert.AreEqual(2, loadCallCounter);
             Assert.AreEqual(1, saveCallCounter);
 
             // Unload 2
-            cache.Release(index2);
+            cache.Release(index2, true);
 
             Assert.AreEqual(0, cache.LoadedChunks);
             Assert.AreEqual(2, loadCallCounter);
@@ -169,7 +169,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
-            IChunk x1 = cache.Subscribe(index);
+            IChunk x1 = cache.Subscribe(index, true);
             Assert.AreEqual(x1, result);
             Assert.AreEqual(x1.Planet, index.Planet);
             Assert.AreEqual(x1.Index, index.ChunkIndex);
@@ -179,7 +179,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, saveCallCounter);
 
             // Load 2
-            IChunk x2 = cache.Subscribe(index);
+            IChunk x2 = cache.Subscribe(index, true);
             Assert.AreEqual(x2, result);
             Assert.AreEqual(x2.Planet, index.Planet);
             Assert.AreEqual(x2.Index, index.ChunkIndex);
@@ -190,14 +190,14 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, saveCallCounter);
 
             // Unload 1
-            cache.Release(index);
+            cache.Release(index, true);
 
             Assert.AreEqual(1, cache.LoadedChunks);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Unload 2
-            cache.Release(index);
+            cache.Release(index, true);
 
             Assert.AreEqual(0, cache.LoadedChunks);
             Assert.AreEqual(1, loadCallCounter);
@@ -210,7 +210,7 @@ namespace OctoAwesome.Tests
             var cache = new GlobalChunkCache((i) => null, (i, c) => { });
             try
             {
-                cache.Release(new PlanetIndex3(4, new Index3(2, 2, 2)));
+                cache.Release(new PlanetIndex3(4, new Index3(2, 2, 2)), true);
                 Assert.Fail("Exception expected");
             }
             catch (NotSupportedException) { }
