@@ -21,13 +21,15 @@ namespace OctoAwesome
         private int mask;
         private int range;
 
+        private bool writable;
+
         /// <summary>
         /// Instanziert einen neuen local Chunk Cache.
         /// </summary>
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
         /// <param name="range">Gibt die Range in alle Richtungen an.</param>
-        public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range)
+        public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range, bool writable)
         {
             if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
@@ -101,7 +103,7 @@ namespace OctoAwesome
                 // Alten Chunk entfernen, falls notwendig
                 if (chunk != null && chunk.Index != chunkIndex)
                 {
-                    globalCache.Release(new PlanetIndex3(planet.Id, chunk.Index));
+                    globalCache.Release(new PlanetIndex3(planet.Id, chunk.Index), writable);
                     chunks[flatIndex][chunkIndex.Z] = null;
                     chunk = null;
                 }
@@ -116,7 +118,7 @@ namespace OctoAwesome
                 // Neuen Chunk laden
                 if (chunk == null)
                 {
-                    chunk = globalCache.Subscribe(new PlanetIndex3(planet.Id, chunkIndex));
+                    chunk = globalCache.Subscribe(new PlanetIndex3(planet.Id, chunkIndex), writable);
                     chunks[flatIndex][chunkIndex.Z] = chunk;
                 }
 
@@ -222,7 +224,7 @@ namespace OctoAwesome
                     IChunk chunk = chunks[i][h];
                     if (chunk != null)
                     {
-                        globalCache.Release(new PlanetIndex3(chunk.Planet, chunk.Index));
+                        globalCache.Release(new PlanetIndex3(chunk.Planet, chunk.Index), writable);
                         chunks[i][h] = null;
                     }
                 }

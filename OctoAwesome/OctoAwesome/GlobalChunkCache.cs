@@ -39,8 +39,9 @@ namespace OctoAwesome
         /// Abonniert einen Chunk.
         /// </summary>
         /// <param name="position">Position des Chunks</param>
+        /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugreifen will</param>
         /// <returns></returns>
-        public IChunk Subscribe(PlanetIndex3 position)
+        public IChunk Subscribe(PlanetIndex3 position, bool writeable)
         {
             lock (lockObject)
             {
@@ -57,6 +58,7 @@ namespace OctoAwesome
                     cache.Add(position, cacheItem);
                 }
                 cacheItem.References++;
+                if (writeable) cacheItem.WritableReferences++;
                 return cacheItem.Chunk;
             }
         }
@@ -65,7 +67,8 @@ namespace OctoAwesome
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
         /// <param name="position"></param>
-        public void Release(PlanetIndex3 position)
+        /// <param name="writeable"></param>
+        public void Release(PlanetIndex3 position, bool writeable)
         {
             lock (lockObject)
             {
@@ -76,9 +79,15 @@ namespace OctoAwesome
                 }
 
                 cacheItem.References--;
-                if (cacheItem.References <= 0)
+                if (writeable) cacheItem.WritableReferences--;
+
+                if (cacheItem.WritableReferences <= 0)
                 {
                     saveDelegate(position, cacheItem.Chunk);
+                }
+
+                if (cacheItem.References <= 0)
+                {
                     cacheItem.Chunk = null;
                     cache.Remove(position);
                 }
@@ -90,6 +99,8 @@ namespace OctoAwesome
             public PlanetIndex3 Position { get; set; }
 
             public int References { get; set; }
+
+            public int WritableReferences { get; set; }
 
             public IChunk Chunk { get; set; }
         }

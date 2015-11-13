@@ -33,7 +33,7 @@ namespace OctoAwesome.Runtime
             Player = player;
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1, true);
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
@@ -305,6 +305,11 @@ namespace OctoAwesome.Runtime
             }
 
             #endregion
+        }
+
+        internal void Unload()
+        {
+            localChunkCache.Flush();
         }
 
         public Coordinate Position
