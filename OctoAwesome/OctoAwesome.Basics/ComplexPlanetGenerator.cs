@@ -25,7 +25,7 @@ namespace OctoAwesome.Basics
             IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
             ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
 
-            IBlockDefinition groundDefinition = blockDefinitions.FirstOrDefault(d => typeof(GroundBlockDefinition) == d.GetType());
+            IBlockDefinition groundDefinition = blockDefinitions.FirstOrDefault(d => typeof(SnowBlockDefinition) == d.GetType());
             ushort groundIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), groundDefinition) + 1);
 
             IBlockDefinition stoneDefinition = blockDefinitions.FirstOrDefault(d => typeof(StoneBlockDefinition) == d.GetType());

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Basics
 {
-    class SnowBlockDefinition : BlockDefinition
+    public class SnowBlockDefinition : BlockDefinition
     {
         public override string Name
         {
