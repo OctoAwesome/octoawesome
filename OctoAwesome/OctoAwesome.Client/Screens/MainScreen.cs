@@ -1,6 +1,7 @@
 ﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -46,6 +47,16 @@ namespace OctoAwesome.Client.Screens
                 manager.NavigateToScreen(new CreditsScreen(manager));
             };
             stack.Controls.Add(creditsButton);
+
+            Button webButton = Button.TextButton(manager, "Octoawesome.net");
+            webButton.VerticalAlignment = VerticalAlignment.Bottom;
+            webButton.HorizontalAlignment = HorizontalAlignment.Right;
+            webButton.Margin = new Border(10, 10, 10, 10);
+            webButton.LeftMouseClick += (s, e) =>
+            {
+                Process.Start("http://octoawesome.net/");
+            };
+            Controls.Add(webButton);
 
             Button exitButton = Button.TextButton(manager, "Exit");
             exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
