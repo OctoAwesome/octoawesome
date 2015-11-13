@@ -126,7 +126,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="CompiledContent\Hud.xnb" />
     <None Include="Content\BoldFont.spritefont" />
     <None Include="Content\GameFont.spritefont" />
