@@ -154,6 +154,8 @@ namespace OctoAwesome
             if (planet == null) return null;
             if (z < 0) return null;
             if (z >= planet.Size.Z) return null;
+            x = Index2.NormalizeAxis(x, planet.Size.X);
+            y = Index2.NormalizeAxis(y, planet.Size.Y);
 
             IChunk chunk = chunks[FlatIndex(x, y)][z];
             if (chunk != null && chunk.Index.X == x && chunk.Index.Y == y && chunk.Index.Z == z)

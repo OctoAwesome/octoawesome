@@ -25,7 +25,10 @@ namespace OctoAwesome.Basics
             IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
             ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
 
-            IBlockDefinition groundDefinition = blockDefinitions.FirstOrDefault(d => typeof(SnowBlockDefinition) == d.GetType());
+            IBlockDefinition snowDefinition = blockDefinitions.FirstOrDefault(d => typeof(SnowBlockDefinition) == d.GetType());
+            ushort snowIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), snowDefinition) + 1);
+
+            IBlockDefinition groundDefinition = blockDefinitions.FirstOrDefault(d => typeof(GroundBlockDefinition) == d.GetType());
             ushort groundIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), groundDefinition) + 1);
 
             IBlockDefinition stoneDefinition = blockDefinitions.FirstOrDefault(d => typeof(StoneBlockDefinition) == d.GetType());
@@ -92,6 +95,18 @@ namespace OctoAwesome.Basics
                                         if (surfaceBlock && !ozeanSurface)
                                         {
                                             chunks[i].SetBlock(x, y, z, grassIndex);
+                                            surfaceBlock = false;
+                                        }
+                                        else
+                                        {
+                                            chunks[i].SetBlock(x, y, z, groundIndex);
+                                        }
+                                    }
+                                    else if (temp <= 0)
+                                    {
+                                        if (surfaceBlock && !ozeanSurface)
+                                        {
+                                            chunks[i].SetBlock(x, y, z, snowIndex);
                                             surfaceBlock = false;
                                         }
                                         else
