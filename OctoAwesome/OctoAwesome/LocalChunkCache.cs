@@ -49,16 +49,16 @@ namespace OctoAwesome
             {
                 _cancellationToken.Cancel();
                 _cancellationToken = new CancellationTokenSource();
-                _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index));
+                _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
             else
             {
                 _cancellationToken = new CancellationTokenSource();
-                _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index));
+                _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
         }
 
-        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index, Action<bool> successCallback = null)
+        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index, Action<bool> successCallback)
         {
             // Planet resetten falls notwendig
             if (this.planet != planet)

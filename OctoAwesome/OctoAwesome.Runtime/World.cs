@@ -1,11 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace OctoAwesome.Runtime
 {
@@ -15,11 +8,10 @@ namespace OctoAwesome.Runtime
 
         private UpdateDomain[] updateDomains;
 
-        public WorldState State { get; private set; }
+        public bool Paused { get; set; }
 
         public World()
         {
-            State = WorldState.Loading;
             watch.Start();
             updateDomains = new UpdateDomain[1];
             updateDomains[0] = new UpdateDomain(this, watch);

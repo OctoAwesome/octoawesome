@@ -26,6 +26,8 @@ namespace OctoAwesome.Runtime
 
         public InventorySlot ActiveTool { get; set; }
 
+        public bool ReadyState { get; private set; }
+
         public ActorHost(Player player)
         {
             Player = player;
@@ -35,11 +37,15 @@ namespace OctoAwesome.Runtime
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
+            ReadyState = false;
         }
 
         public void Initialize()
         {
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) => {  });
+            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
+            {
+                ReadyState = success;
+            });
         }
 
         public void Update(GameTime frameTime)
@@ -92,7 +98,7 @@ namespace OctoAwesome.Runtime
                 powerdirection += jumpDirection * Player.JUMPPOWER;
             }
 
-            
+
 
             Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
                 (float)frameTime.ElapsedGameTime.TotalSeconds;
@@ -201,7 +207,7 @@ namespace OctoAwesome.Runtime
                 // Koordinate normalisieren (Rundwelt)
                 Coordinate position = Player.Position;
                 position.NormalizeChunkIndexXY(planet.Size);
-                
+
                 //Beam me up
                 KeyboardState ks = Keyboard.GetState();
                 if (ks.IsKeyDown(Keys.P))
@@ -215,13 +221,17 @@ namespace OctoAwesome.Runtime
             }
             while (collision && loop < 3);
 
-            
+
 
             if (Player.Position.ChunkIndex != _oldIndex)
             {
                 //TODO: Planeten rundung beachten :)
                 _oldIndex = Player.Position.ChunkIndex;
-                localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
+                localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
+                {
+                    ReadyState = success;
+                });
+                ReadyState = false;
             }
 
             #endregion

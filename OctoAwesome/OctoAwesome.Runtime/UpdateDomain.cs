@@ -44,10 +44,11 @@ namespace OctoAwesome.Runtime
                     watch.Elapsed, frameTime); 
                 lastCall = watch.Elapsed;
 
-                // TODO: Chunk Updates
-
-                foreach (var actorHost in ActorHosts)
-                    actorHost.Update(gameTime);
+                if (!world.Paused)
+                {
+                    foreach (var actorHost in ActorHosts.Where(h => h.ReadyState))
+                        actorHost.Update(gameTime);
+                }
 
                 TimeSpan diff = frameTime - (watch.Elapsed - lastCall);
                 if (diff > TimeSpan.Zero)
