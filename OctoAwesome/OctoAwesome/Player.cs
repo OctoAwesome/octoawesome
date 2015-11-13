@@ -56,7 +56,7 @@ namespace OctoAwesome
         public float Tilt { get; set; }
 
         /// <summary>
-        /// Zurzeit nicht benutz
+        /// Zurzeit nicht benutzt
         /// TODO: Ist das Nötig?
         /// </summary>
         public int InventorySlots { get; set; }
@@ -75,16 +75,7 @@ namespace OctoAwesome
 
         public Player()
         {
-<<<<<<< HEAD
-            // Position = new Coordinate(0, new Index3(8038, 73908, 80), Vector3.Zero);
-            // Position = new Coordinate(0, new Index3(1000, 1000, 150), Vector3.Zero);
-
-            //TODO: Startposition vom Generator generieren lassen
-            Position = new Coordinate(0, new Index3(10, 10, 50), Vector3.Zero);
-
-=======
             Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
->>>>>>> upstream/master
             Velocity = new Vector3(0, 0, 0);
             Inventory = new List<InventorySlot>();
             Radius = 0.75f;
