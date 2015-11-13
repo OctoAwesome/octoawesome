@@ -43,28 +43,32 @@ namespace OctoAwesome
         private Task _loadingTask;
         private CancellationTokenSource _cancellationToken;
 
-        public void SetCenter(IPlanet planet, Index3 index)
+        public void SetCenter(IPlanet planet, Index3 index, Action<bool> successCallback = null)
         {
             if (_loadingTask != null && !_loadingTask.IsCompleted)
             {
                 _cancellationToken.Cancel();
                 _cancellationToken = new CancellationTokenSource();
-                _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index));
+                _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
             else
             {
                 _cancellationToken = new CancellationTokenSource();
-                _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index));
+                _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
         }
 
-        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index)
+        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index, Action<bool> successCallback)
         {
             // Planet resetten falls notwendig
             if (this.planet != planet)
                 InitializePlanet(planet);
 
-            if (planet == null) return;
+            if (planet == null)
+            {
+                if (successCallback != null) successCallback(true);
+                return;
+            }
 
             List<Index3> requiredChunks = new List<Index3>();
             for (int x = -range; x <= range; x++)
@@ -81,7 +85,11 @@ namespace OctoAwesome
             }
 
             // Erste Abbruchmöglichkeit
-            if (token.IsCancellationRequested) return;
+            if (token.IsCancellationRequested)
+            {
+                if (successCallback != null) successCallback(false);
+                return;
+            }
 
             foreach (var chunkIndex in requiredChunks.OrderBy(c => index.ShortestDistanceXYZ(c, planet.Size).LengthSquared()))
             {
@@ -99,7 +107,11 @@ namespace OctoAwesome
                 }
 
                 // Zweite Abbruchmöglichkeit
-                if (token.IsCancellationRequested) return;
+                if (token.IsCancellationRequested)
+                {
+                    if (successCallback != null) successCallback(false);
+                    return;
+                }
 
                 // Neuen Chunk laden
                 if (chunk == null)
@@ -109,8 +121,14 @@ namespace OctoAwesome
                 }
 
                 // Dritte Abbruchmöglichkeit
-                if (token.IsCancellationRequested) return;
+                if (token.IsCancellationRequested)
+                {
+                    if (successCallback != null) successCallback(false);
+                    return;
+                }
             }
+
+            if (successCallback != null) successCallback(true);
         }
 
         private void InitializePlanet(IPlanet planet)

@@ -26,7 +26,7 @@ namespace OctoAwesome.Runtime
 
         public InventorySlot ActiveTool { get; set; }
 
-        public WorldState State { get; private set; }
+        public bool ReadyState { get; private set; }
 
         public ActorHost(Player player)
         {
@@ -37,20 +37,15 @@ namespace OctoAwesome.Runtime
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
-            State = WorldState.Loading;
+            ReadyState = false;
         }
 
         public void Initialize()
         {
-            State = WorldState.Running;
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
-
-            // TODO: Fixen! ;)
-            while(localChunkCache.GetBlock(Player.Position.GlobalBlockIndex) != 0)
+            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
             {
-                Player.Position += new Vector3(0, 0, 5);
-            }
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
+                ReadyState = success;
+            });
         }
 
         public void Update(GameTime frameTime)
@@ -103,7 +98,7 @@ namespace OctoAwesome.Runtime
                 powerdirection += jumpDirection * Player.JUMPPOWER;
             }
 
-            
+
 
             Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
                 (float)frameTime.ElapsedGameTime.TotalSeconds;
@@ -212,7 +207,7 @@ namespace OctoAwesome.Runtime
                 // Koordinate normalisieren (Rundwelt)
                 Coordinate position = Player.Position;
                 position.NormalizeChunkIndexXY(planet.Size);
-                
+
                 //Beam me up
                 KeyboardState ks = Keyboard.GetState();
                 if (ks.IsKeyDown(Keys.P))
@@ -226,13 +221,17 @@ namespace OctoAwesome.Runtime
             }
             while (collision && loop < 3);
 
-            
+
 
             if (Player.Position.ChunkIndex != _oldIndex)
             {
                 //TODO: Planeten rundung beachten :)
                 _oldIndex = Player.Position.ChunkIndex;
-                localChunkCache.SetCenter(planet, Player.Position.ChunkIndex);
+                localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
+                {
+                    ReadyState = success;
+                });
+                ReadyState = false;
             }
 
             #endregion

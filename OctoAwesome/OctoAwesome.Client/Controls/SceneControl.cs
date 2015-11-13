@@ -279,8 +279,8 @@ namespace OctoAwesome.Client.Controls
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
-            float playerPosX = ((float)player.ActorHost.Player.Position.GlobalBlockIndex.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
-            float playerPosY = ((float)player.ActorHost.Player.Position.GlobalBlockIndex.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
+            float playerPosX = ((float)player.ActorHost.Player.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
+            float playerPosY = ((float)player.ActorHost.Player.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
 
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
@@ -438,7 +438,7 @@ namespace OctoAwesome.Client.Controls
                     }
                 }
 
-                Index3 comparationIndex = new Index3(destinationChunk, 0);
+                Index3 comparationIndex = player.ActorHost.Position.ChunkIndex;
                 orderedChunkRenderer.Sort((x, y) =>
                 {
                     if (!x.ChunkPosition.HasValue) return 1;
