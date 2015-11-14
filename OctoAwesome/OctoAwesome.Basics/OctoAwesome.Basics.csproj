@@ -57,6 +57,12 @@
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
     <Compile Include="Biomes\SuperBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
+    <Compile Include="Blocks\BlueCottonBlockDefinition.cs" />
+    <Compile Include="Blocks\StoneBrickBlockDefinition.cs" />
+    <Compile Include="Blocks\BrickBlockDefinition.cs" />
+    <Compile Include="Blocks\TanCottonBlockDefinition.cs" />
+    <Compile Include="Blocks\GreenCottonBlockDefinition.cs" />
+    <Compile Include="Blocks\RedCottonBlockDefinition.cs" />
     <Compile Include="Blocks\IceBlockDefinition.cs" />
     <Compile Include="Blocks\OvenBlockDefinition.cs" />
     <Compile Include="Climate\ComplexClimateMap.cs" />
@@ -98,6 +104,24 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\brick_grey.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\brick_red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_blue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_green.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_tan.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
