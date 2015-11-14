@@ -35,6 +35,10 @@ namespace OctoAwesome
 
         int GetBlockMeta(int x, int y, int z);
 
+        int GetBlockMeta(Index3 index, int meta);
+
         void SetBlockMeta(int x, int y, int z, int meta);
+
+        void SetBlockMeta(Index3 index, int meta);
     }
 }
