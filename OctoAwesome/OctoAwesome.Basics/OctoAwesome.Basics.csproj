@@ -57,6 +57,7 @@
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
     <Compile Include="Biomes\SuperBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
+    <Compile Include="Blocks\LeavesBlockDefinition.cs" />
     <Compile Include="Blocks\BlueCottonBlockDefinition.cs" />
     <Compile Include="Blocks\StoneBrickBlockDefinition.cs" />
     <Compile Include="Blocks\BrickBlockDefinition.cs" />
@@ -135,6 +136,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\OctoAwesome.Basics\Blocks\ice.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\leaves.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\OctoAwesome.Basics\Blocks\oven.png">
