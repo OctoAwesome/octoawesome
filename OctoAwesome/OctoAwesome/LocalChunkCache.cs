@@ -235,5 +235,21 @@ namespace OctoAwesome
         {
             return (((y & (mask)) << limit) | ((x & (mask))));
         }
+
+        public int GetBlockMeta(Index3 index, int meta)
+        {
+            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
+            if (chunk != null)
+                return chunk.GetBlockMeta(index.X, index.Y, index.Z);
+
+            return 0;
+        }
+
+        public void SetBlockMeta(Index3 index, int meta)
+        {
+            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
+            if (chunk != null)
+                chunk.SetBlockMeta(index.X, index.Y, index.Z, meta);
+        }
     }
 }

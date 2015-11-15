@@ -370,5 +370,28 @@ namespace OctoAwesome.Runtime
             lastApply = blockIndex;
             lastOrientation = orientation;
         }
+
+        public void AllBlocksDebug()
+        {
+            var blockDefinitions = DefinitionManager.GetBlockDefinitions();
+
+            foreach (var blockDefinition in blockDefinitions)
+            {
+
+                var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+
+                // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+                if (slot == null || slot.Amount >= blockDefinition.StackLimit)
+                {
+                    slot = new InventorySlot()
+                    {
+                        Definition = blockDefinition,
+                        Amount = 0
+                    };
+                    Player.Inventory.Add(slot);
+                }
+                slot.Amount++;
+            }
+        }
     }
 }
