@@ -48,65 +48,22 @@ namespace OctoAwesome.Runtime
             });
         }
 
+        
+
         public void Update(GameTime frameTime)
         {
-            if (!Player.FlyMode)
-            {
-                Player.ExternalForce = new Vector3(0, 0, -20f) * Player.Mass;
-            }
-            else
-            {
-                Player.ExternalForce = Vector3.Zero;
-            }
-
             #region Inputverarbeitung
-
-            Vector3 externalPower = ((Player.ExternalForce * Player.ExternalForce) / (2 * Player.Mass)) * (float)frameTime.ElapsedGameTime.TotalSeconds;
-            externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X), Math.Sign(Player.ExternalForce.Y), Math.Sign(Player.ExternalForce.Z));
 
             // Input verarbeiten
             Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
             Player.Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.Y;
             Player.Tilt = Math.Min(1.5f, Math.Max(-1.5f, Player.Tilt));
 
-            float lookX = (float)Math.Cos(Player.Angle);
-            float lookY = -(float)Math.Sin(Player.Angle);
-            var VelocityDirection = new Vector3(lookX, lookY, 0) * Move.Y;
+            #endregion
 
-            float stafeX = (float)Math.Cos(Player.Angle + MathHelper.PiOver2);
-            float stafeY = -(float)Math.Sin(Player.Angle + MathHelper.PiOver2);
-            VelocityDirection += new Vector3(stafeX, stafeY, 0) * Move.X;
+            #region Physik
 
-            Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
-            Vector3 powerdirection = new Vector3();
-
-            if (Player.FlyMode)
-            {
-                VelocityDirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
-                Friction = Vector3.One * Player.FRICTION;
-            }
-
-            powerdirection += externalPower;
-            powerdirection += (Player.POWER * VelocityDirection);
-            // if (OnGround && input.JumpTrigger)
-            if (lastJump)
-            {
-                lastJump = false;
-                Vector3 jumpDirection = new Vector3(lookX, lookY, 0f) * Move.Y * 0.1f;
-                jumpDirection.Z = 1f;
-                jumpDirection.Normalize();
-                powerdirection += jumpDirection * Player.JUMPPOWER;
-            }
-
-
-
-            Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
-                (float)frameTime.ElapsedGameTime.TotalSeconds;
-
-            Player.Velocity += new Vector3(
-                (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
-                (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
-                (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
+            PhysicalUpdate(frameTime.ElapsedGameTime, !Player.FlyMode);
 
             #endregion
 
@@ -306,6 +263,62 @@ namespace OctoAwesome.Runtime
             }
 
             #endregion
+        }
+
+        public void PhysicalUpdate(TimeSpan elapsedtime,bool gravity)
+        {
+            Vector3 exforce = Player.ExternalForce;
+
+            if (gravity)
+            {
+                exforce += new Vector3(0, 0, -20f) * Player.Mass;
+            }
+
+            
+
+            Vector3 externalPower = ((exforce * exforce) / (2 * Player.Mass)) * (float)elapsedtime.TotalSeconds;
+            externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X), Math.Sign(Player.ExternalForce.Y), Math.Sign(Player.ExternalForce.Z));
+
+
+            float lookX = (float)Math.Cos(Player.Angle);
+            float lookY = -(float)Math.Sin(Player.Angle);
+            var VelocityDirection = new Vector3(lookX, lookY, 0) * Move.Y;
+
+            float stafeX = (float)Math.Cos(Player.Angle + MathHelper.PiOver2);
+            float stafeY = -(float)Math.Sin(Player.Angle + MathHelper.PiOver2);
+            VelocityDirection += new Vector3(stafeX, stafeY, 0) * Move.X;
+
+            Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
+            Vector3 powerdirection = new Vector3();
+
+            if (Player.FlyMode)
+            {
+                VelocityDirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
+                Friction = Vector3.One * Player.FRICTION;
+            }
+
+            powerdirection += externalPower;
+            powerdirection += (Player.POWER * VelocityDirection);
+            // if (OnGround && input.JumpTrigger)
+            if (lastJump)
+            {
+                lastJump = false;
+                Vector3 jumpDirection = new Vector3(lookX, lookY, 0f) * Move.Y * 0.1f;
+                jumpDirection.Z = 1f;
+                jumpDirection.Normalize();
+                powerdirection += jumpDirection * Player.JUMPPOWER;
+            }
+
+
+
+            Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
+                (float)elapsedtime.TotalSeconds;
+
+            Player.Velocity += new Vector3(
+                (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
+                (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
+                (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
+
         }
 
         internal void Unload()
