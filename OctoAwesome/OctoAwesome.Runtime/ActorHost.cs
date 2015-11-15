@@ -63,7 +63,7 @@ namespace OctoAwesome.Runtime
 
             #region Physik
 
-            PhysicalUpdate(frameTime.ElapsedGameTime, !Player.FlyMode);
+            PhysicalUpdate(frameTime.ElapsedGameTime, !Player.FlyMode, Player.FlyMode);
 
             #endregion
 
@@ -189,7 +189,7 @@ namespace OctoAwesome.Runtime
                     //ReadyState wird immer True gesetzt um ein einfrieren zu verhindern
                     ReadyState = true;
                 });
-                ReadyState = false;
+                //ReadyState = false;
             }
 
             #endregion
@@ -265,11 +265,11 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        public void PhysicalUpdate(TimeSpan elapsedtime,bool gravity)
+        public void PhysicalUpdate(TimeSpan elapsedtime,bool gravity,bool flymode)
         {
-            Vector3 exforce = Player.ExternalForce;
+            Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 
-            if (gravity)
+            if (gravity && !flymode)
             {
                 exforce += new Vector3(0, 0, -20f) * Player.Mass;
             }
@@ -291,7 +291,7 @@ namespace OctoAwesome.Runtime
             Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
             Vector3 powerdirection = new Vector3();
 
-            if (Player.FlyMode)
+            if (flymode)
             {
                 VelocityDirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
                 Friction = Vector3.One * Player.FRICTION;
