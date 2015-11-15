@@ -12,12 +12,8 @@ namespace OctoAwesome.Client.Screens
 {
     class CreditsScreen : Screen
     {
-        String selectedItem;
-        ScreenComponent Manager;
-        public CreditsScreen(ScreenComponent manager) :base(manager)
+        public CreditsScreen(ScreenComponent manager) : base(manager)
         {
-            Manager = manager;
-
             Padding = new Border(0, 0, 0, 0);
 
             Title = "Credits";

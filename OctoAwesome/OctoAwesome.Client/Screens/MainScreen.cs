@@ -7,12 +7,8 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class MainScreen : Screen
     {
-        ScreenComponent Manager;
-
         public MainScreen(ScreenComponent manager) : base(manager)
         {
-            Manager = manager;
-
             Padding = new Border(0,0,0,0);
 
             Image background = new Image(manager);
