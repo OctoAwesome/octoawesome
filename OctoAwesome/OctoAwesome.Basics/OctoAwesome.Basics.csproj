@@ -57,6 +57,7 @@
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
     <Compile Include="Biomes\SuperBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
+    <Compile Include="Blocks\IceBlockDefinition.cs" />
     <Compile Include="Blocks\LeavesBlockDefinition.cs" />
     <Compile Include="Blocks\BlueCottonBlockDefinition.cs" />
     <Compile Include="Blocks\StoneBrickBlockDefinition.cs" />
@@ -64,8 +65,6 @@
     <Compile Include="Blocks\TanCottonBlockDefinition.cs" />
     <Compile Include="Blocks\GreenCottonBlockDefinition.cs" />
     <Compile Include="Blocks\RedCottonBlockDefinition.cs" />
-    <Compile Include="Blocks\IceBlockDefinition.cs" />
-    <Compile Include="Blocks\OvenBlockDefinition.cs" />
     <Compile Include="Climate\ComplexClimateMap.cs" />
     <Compile Include="ComplexPlanet.cs" />
     <Compile Include="ComplexPlanetGenerator.cs" />
