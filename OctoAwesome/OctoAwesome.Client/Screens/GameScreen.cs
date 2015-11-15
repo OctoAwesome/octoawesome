@@ -229,6 +229,9 @@ namespace OctoAwesome.Client.Screens
                     Manager.Player.SlotInput[9] = true;
                     args.Handled = true;
                     break;
+                case Keys.Escape:
+                    Manager.NavigateToScreen(new PauseScreen(Manager));
+                    break;
             }
 
             base.OnKeyDown(args);
@@ -300,9 +303,6 @@ namespace OctoAwesome.Client.Screens
                         Manager.FreeMouse();
                     else
                         Manager.CaptureMouse();
-                    break;
-                case Keys.Escape:
-                    Manager.NavigateToScreen(new MainScreen(Manager));
                     break;
             }
         }
