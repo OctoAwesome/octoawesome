@@ -190,14 +190,12 @@ namespace OctoAwesome.Runtime
 
             if (Player.Position.ChunkIndex != _oldIndex)
             {
-                //TODO: Planeten rundung beachten :)
                 _oldIndex = Player.Position.ChunkIndex;
+                ReadyState = false;
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
                 {
-                    //ReadyState wird immer True gesetzt um ein einfrieren zu verhindern
-                    ReadyState = true;
-                });
-                //ReadyState = false;
+                    ReadyState = success;
+                });                
             }
 
             #endregion
