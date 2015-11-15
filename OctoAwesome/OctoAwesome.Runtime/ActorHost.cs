@@ -48,65 +48,30 @@ namespace OctoAwesome.Runtime
             });
         }
 
+        
+
         public void Update(GameTime frameTime)
         {
-            if (!Player.FlyMode)
-            {
-                Player.ExternalForce = new Vector3(0, 0, -20f) * Player.Mass;
-            }
-            else
-            {
-                Player.ExternalForce = Vector3.Zero;
-            }
-
             #region Inputverarbeitung
-
-            Vector3 externalPower = ((Player.ExternalForce * Player.ExternalForce) / (2 * Player.Mass)) * (float)frameTime.ElapsedGameTime.TotalSeconds;
-            externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X), Math.Sign(Player.ExternalForce.Y), Math.Sign(Player.ExternalForce.Z));
 
             // Input verarbeiten
             Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
             Player.Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.Y;
             Player.Tilt = Math.Min(1.5f, Math.Max(-1.5f, Player.Tilt));
 
+            #endregion
+
+            #region Physik
+
             float lookX = (float)Math.Cos(Player.Angle);
             float lookY = -(float)Math.Sin(Player.Angle);
-            var VelocityDirection = new Vector3(lookX, lookY, 0) * Move.Y;
+            var velocitydirection = new Vector3(lookX, lookY, 0) * Move.Y;
 
             float stafeX = (float)Math.Cos(Player.Angle + MathHelper.PiOver2);
             float stafeY = -(float)Math.Sin(Player.Angle + MathHelper.PiOver2);
-            VelocityDirection += new Vector3(stafeX, stafeY, 0) * Move.X;
+            velocitydirection += new Vector3(stafeX, stafeY, 0) * Move.X;
 
-            Vector3 Friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
-            Vector3 powerdirection = new Vector3();
-
-            if (Player.FlyMode)
-            {
-                VelocityDirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
-                Friction = Vector3.One * Player.FRICTION;
-            }
-
-            powerdirection += externalPower;
-            powerdirection += (Player.POWER * VelocityDirection);
-            // if (OnGround && input.JumpTrigger)
-            if (lastJump)
-            {
-                lastJump = false;
-                Vector3 jumpDirection = new Vector3(lookX, lookY, 0f) * Move.Y * 0.1f;
-                jumpDirection.Z = 1f;
-                jumpDirection.Normalize();
-                powerdirection += jumpDirection * Player.JUMPPOWER;
-            }
-
-
-
-            Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
-                (float)frameTime.ElapsedGameTime.TotalSeconds;
-
-            Player.Velocity += new Vector3(
-                (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
-                (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
-                (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
+            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode, Player.FlyMode);
 
             #endregion
 
@@ -229,9 +194,10 @@ namespace OctoAwesome.Runtime
                 _oldIndex = Player.Position.ChunkIndex;
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
                 {
-                    ReadyState = success;
+                    //ReadyState wird immer True gesetzt um ein einfrieren zu verhindern
+                    ReadyState = true;
                 });
-                ReadyState = false;
+                //ReadyState = false;
             }
 
             #endregion
@@ -305,6 +271,49 @@ namespace OctoAwesome.Runtime
             }
 
             #endregion
+        }
+
+        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
+        {
+            Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
+
+            if (gravity && !flymode)
+            {
+                exforce += new Vector3(0, 0, -20f) * Player.Mass;
+            }
+
+            Vector3 externalPower = ((exforce * exforce) / (2 * Player.Mass)) * (float)elapsedtime.TotalSeconds;
+            externalPower *= new Vector3(Math.Sign(exforce.X), Math.Sign(exforce.Y), Math.Sign(exforce.Z));
+
+            Vector3 friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
+            Vector3 powerdirection = new Vector3();
+
+            if (flymode)
+            {
+                velocitydirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
+                friction = Vector3.One * Player.FRICTION;
+            }
+
+            powerdirection += externalPower;
+            powerdirection += (Player.POWER * velocitydirection);
+            if (lastJump && (OnGround || flymode))
+            {
+                Vector3 jumpDirection = new Vector3(0, 0, 1);
+                jumpDirection.Z = 1f;
+                jumpDirection.Normalize();
+                powerdirection += jumpDirection * Player.JUMPPOWER;
+            }
+            lastJump = false;
+
+
+            Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - friction * Player.Velocity)) *
+                (float)elapsedtime.TotalSeconds;
+
+            return new Vector3(
+                (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
+                (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
+                (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
+
         }
 
         internal void Unload()

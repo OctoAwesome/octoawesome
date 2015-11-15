@@ -21,6 +21,7 @@ namespace OctoAwesome
 
         public float Height { get; set; }
 
+        [XmlIgnore]
         public bool OnGround { get; set; }
 
         public float Tilt { get; set; }
