@@ -83,10 +83,5 @@ namespace OctoAwesome.Client.Screens
 
             Controls.Add(crewScroll);
         }
-
-        private void CrewList_LeftMouseClick(Control sender, MouseEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
