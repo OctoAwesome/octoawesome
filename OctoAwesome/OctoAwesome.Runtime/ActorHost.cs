@@ -229,7 +229,8 @@ namespace OctoAwesome.Runtime
                 _oldIndex = Player.Position.ChunkIndex;
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
                 {
-                    ReadyState = success;
+                    //ReadyState wird immer True gesetzt um ein einfrieren zu verhindern
+                    ReadyState = true;
                 });
                 ReadyState = false;
             }
