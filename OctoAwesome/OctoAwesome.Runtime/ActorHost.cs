@@ -277,7 +277,7 @@ namespace OctoAwesome.Runtime
             
 
             Vector3 externalPower = ((exforce * exforce) / (2 * Player.Mass)) * (float)elapsedtime.TotalSeconds;
-            externalPower *= new Vector3(Math.Sign(Player.ExternalForce.X), Math.Sign(Player.ExternalForce.Y), Math.Sign(Player.ExternalForce.Z));
+            externalPower *= new Vector3(Math.Sign(exforce.X), Math.Sign(exforce.Y), Math.Sign(exforce.Z));
 
 
             float lookX = (float)Math.Cos(Player.Angle);
@@ -299,16 +299,14 @@ namespace OctoAwesome.Runtime
 
             powerdirection += externalPower;
             powerdirection += (Player.POWER * VelocityDirection);
-            // if (OnGround && input.JumpTrigger)
-            if (lastJump)
+            if (lastJump && (OnGround || flymode))
             {
-                lastJump = false;
                 Vector3 jumpDirection = new Vector3(lookX, lookY, 0f) * Move.Y * 0.1f;
                 jumpDirection.Z = 1f;
                 jumpDirection.Normalize();
                 powerdirection += jumpDirection * Player.JUMPPOWER;
             }
-
+            lastJump = false;
 
 
             Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - Friction * Player.Velocity)) *
