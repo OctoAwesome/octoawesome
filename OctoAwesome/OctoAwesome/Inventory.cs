@@ -151,7 +151,7 @@ namespace OctoAwesome
             int Count = 0;
             foreach(InventorySlot slot in slots)
             {
-                if(slot.Definition.GetType() == item.GetType())
+                if(slot.Definition != null && slot.Definition.GetType() == item.GetType())
                 {
                     Count += slot.Amount;
                 }
