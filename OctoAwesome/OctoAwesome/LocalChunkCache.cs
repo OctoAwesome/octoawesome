@@ -40,6 +40,8 @@ namespace OctoAwesome
             limit = dimensions;
             mask = (1 << limit) - 1;
             chunks = new IChunk[(mask + 1) * (mask + 1)][];
+
+            this.writable = writable;
         }
 
         private Task _loadingTask;

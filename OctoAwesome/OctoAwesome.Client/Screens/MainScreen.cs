@@ -7,12 +7,8 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class MainScreen : Screen
     {
-        ScreenComponent Manager;
-
         public MainScreen(ScreenComponent manager) : base(manager)
         {
-            Manager = manager;
-
             Padding = new Border(0,0,0,0);
 
             Image background = new Image(manager);
@@ -37,6 +33,10 @@ namespace OctoAwesome.Client.Screens
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             optionButton.Margin = new Border(0, 0, 0, 10);
             optionButton.MinWidth = 300;
+            optionButton.LeftMouseClick += (s, e) =>
+            {
+                manager.NavigateToScreen(new OptionsScreen(manager));
+            };
             stack.Controls.Add(optionButton);
 
             Button creditsButton = Button.TextButton(manager, "Credits / Crew");
