@@ -57,27 +57,35 @@
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
     <Compile Include="Biomes\SuperBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
+    <Compile Include="Blocks\IceBlockDefinition.cs" />
+    <Compile Include="Blocks\LeavesBlockDefinition.cs" />
+    <Compile Include="Blocks\BlueCottonBlockDefinition.cs" />
+    <Compile Include="Blocks\StoneBrickBlockDefinition.cs" />
+    <Compile Include="Blocks\BrickBlockDefinition.cs" />
+    <Compile Include="Blocks\TanCottonBlockDefinition.cs" />
+    <Compile Include="Blocks\GreenCottonBlockDefinition.cs" />
+    <Compile Include="Blocks\RedCottonBlockDefinition.cs" />
     <Compile Include="Climate\ComplexClimateMap.cs" />
     <Compile Include="ComplexPlanet.cs" />
     <Compile Include="ComplexPlanetGenerator.cs" />
     <Compile Include="DebugMapGenerator.cs" />
-    <Compile Include="GrassBlockDefinition.cs" />
-    <Compile Include="GroundBlockDefinition.cs" />
+    <Compile Include="Blocks\GrassBlockDefinition.cs" />
+    <Compile Include="Blocks\GroundBlockDefinition.cs" />
     <Compile Include="IronOre.cs" />
-    <Compile Include="IronOreDefinition.cs" />
-    <Compile Include="Pickaxe.cs" />
-    <Compile Include="PickaxeDefinition.cs" />
+    <Compile Include="Blocks\IronOreDefinition.cs" />
+    <Compile Include="Items\Pickaxe.cs" />
+    <Compile Include="Items\PickaxeDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SandBlockDefinition.cs" />
-    <Compile Include="SnowBlockDefinition.cs" />
-    <Compile Include="StoneBlockDefinition.cs" />
-    <Compile Include="WaterBlockDefinition.cs" />
-    <Compile Include="WoodBlockDefinition.cs" />
+    <Compile Include="Blocks\SandBlockDefinition.cs" />
+    <Compile Include="Blocks\SnowBlockDefinition.cs" />
+    <Compile Include="Blocks\StoneBlockDefinition.cs" />
+    <Compile Include="Blocks\WaterBlockDefinition.cs" />
+    <Compile Include="Blocks\WoodBlockDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
@@ -96,40 +104,68 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\OctoAwesome.Basics\dirt.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\brick_grey.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\dirt_grass.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\brick_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\dirt_snow.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_blue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\grass_top.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_green.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\pick_iron.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\sand.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_tan.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\snow.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\stone.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt_grass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\water.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt_snow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\wood_side.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\grass_top.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\OctoAwesome.Basics\wood_top.png">
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\ice.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\leaves.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\oven.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Items\pick_iron.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\sand.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\snow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\stone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\water.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\wood_side.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\wood_top.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

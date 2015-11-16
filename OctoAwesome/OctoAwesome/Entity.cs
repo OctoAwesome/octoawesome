@@ -14,8 +14,10 @@ namespace OctoAwesome
 
         public float Mass { get; set; }
 
+        [XmlIgnore]
         public Vector3 Velocity { get; set; }
 
+        [XmlIgnore]
         public Vector3 ExternalForce { get; set; }
     }
 }
