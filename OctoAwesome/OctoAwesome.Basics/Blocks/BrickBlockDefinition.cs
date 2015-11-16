@@ -3,16 +3,16 @@ using System.Drawing;
 
 namespace OctoAwesome.Basics
 {
-    public sealed class StoneBlockDefinition : BlockDefinition
+    public sealed class BrickBlockDefinition : BlockDefinition
     {
         public override string Name
         {
-            get { return "Stone"; }
+            get { return "Brick"; }
         }
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/stone.png"); }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/brick_red.png"); }
         }
 
 
@@ -21,7 +21,7 @@ namespace OctoAwesome.Basics
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/stone.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/brick_red.png"),
                 };
             }
         }

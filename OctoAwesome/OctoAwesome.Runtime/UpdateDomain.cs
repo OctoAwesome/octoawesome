@@ -10,8 +10,6 @@ namespace OctoAwesome.Runtime
 {
     internal class UpdateDomain
     {
-        private IUniverse universe;
-
         private Stopwatch watch;
         private Thread thread;
         private World world;

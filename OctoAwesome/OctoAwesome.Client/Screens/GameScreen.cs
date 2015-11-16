@@ -304,9 +304,11 @@ namespace OctoAwesome.Client.Screens
                 case Keys.Escape:
                     Manager.NavigateToScreen(new MainScreen(Manager));
                     break;
+                case Keys.L:
+                    Manager.Player.ActorHost.AllBlocksDebug();
+                    break;
             }
         }
-
         #endregion
 
         #region GamePad Input
