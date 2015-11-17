@@ -7,16 +7,20 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 using System.Text;
+using System.Windows;
 
 namespace OctoAwesome.Client.Screens
 {
     class OptionsScreen : Screen
     {
         private OctoGame game;
-        private Button[] persistenceButtons;
-        private Button exitButton;
+        private Button exitButton, deleteButton;
         private Label rangeTitle, persistenceTitle;
+        private Textbox mapPath;
+
+        private bool deleteState;
 
         Configuration config;
 
@@ -85,7 +89,33 @@ namespace OctoAwesome.Client.Screens
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
             persistenceStack.Controls.Add(disablePersistence);
 
+            //////////////////////Map Path//////////////////////
+            StackPanel mapPathStack = new StackPanel(manager);
+            mapPathStack.Orientation = Orientation.Horizontal;
+            mapPathStack.Margin = new Border(0, 10, 0, 0);
+            mapPathStack.HorizontalAlignment = HorizontalAlignment.Stretch;
+            settingsStack.Controls.Add(mapPathStack);
 
+            mapPath = new Textbox(manager);
+           // mapPath.HorizontalAlignment = HorizontalAlignment.Stretch;
+            mapPath.Text = ConfigurationManager.AppSettings["ChunkRoot"];
+            mapPath.Enabled = false;
+            mapPath.Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray);
+            mapPathStack.Controls.Add(mapPath);
+
+            Button changePath = Button.TextButton(manager, "Change Path");
+            changePath.Height = 31;
+            changePath.LeftMouseClick += (s, e) => ChangePath();
+            mapPathStack.Controls.Add(changePath);
+
+
+            //////////////////////Delete Map//////////////////////
+            deleteButton = Button.TextButton(manager, "Delete Map");
+            deleteButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            deleteButton.Margin = new Border(0, 10, 0, 0);
+            deleteButton.LeftMouseClick += (s, e) => deleteMap();
+            settingsStack.Controls.Add(deleteButton);
+        
 
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
             exitButton = Button.TextButton(manager, "Restart game to apply changes");
@@ -115,6 +145,24 @@ namespace OctoAwesome.Client.Screens
             exitButton.Enabled = true;
         }
 
+        private void ChangePath()
+        {
+            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
+            System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            folderBrowser.SelectedPath = ConfigurationManager.AppSettings["ChunkRoot"];
+
+            if(folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = folderBrowser.SelectedPath;
+                config.AppSettings.Settings["ChunkRoot"].Value = path;
+                config.Save();
+                mapPath.Text = path;
+
+                exitButton.Visible = true;
+                exitButton.Enabled = true;
+            }
+        }
+
         private void SetPersistence(bool state)
         {
             config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -123,6 +171,24 @@ namespace OctoAwesome.Client.Screens
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
+        }
+
+        private void deleteMap()
+        { 
+
+            if(deleteState)
+            {
+                deleteState = false;
+                ((Label)(deleteButton.Content)).Text = "Deleted...";
+                deleteButton.Enabled = false;
+                try { Directory.Delete(@"D:\OctoMap"); }catch(Exception e) { } //TODO: Unlock files to delete Directory
+            }
+            else
+            {
+                ((Label)(deleteButton.Content)).Text = "Really?";
+                deleteButton.InvalidateDimensions();
+                deleteState = true;
+            }
         }
     }
 }
