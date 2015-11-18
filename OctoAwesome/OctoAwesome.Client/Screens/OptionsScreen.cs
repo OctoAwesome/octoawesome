@@ -7,16 +7,22 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 using System.Text;
+using System.Windows;
 
 namespace OctoAwesome.Client.Screens
 {
     class OptionsScreen : Screen
     {
         private OctoGame game;
-        private Button[] rangeButtons;
-        private Button[] persistenceButtons;
-        private Button exitButton;
+        private Button exitButton, deleteButton;
+        private Label rangeTitle, persistenceTitle;
+        private Textbox mapPath;
+
+        private bool deleteState;
+
+        Configuration config;
 
         public OptionsScreen(ScreenComponent manager) : base(manager)
         {
@@ -25,12 +31,14 @@ namespace OctoAwesome.Client.Screens
 
             Title = "Options";
 
+            ////////////////////////////////////////////Background////////////////////////////////////////////
             Image background = new Image(manager);
             background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
+            ////////////////////////////////////////////Back Button////////////////////////////////////////////
             Button backButton = Button.TextButton(manager, "Back");
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
@@ -41,64 +49,75 @@ namespace OctoAwesome.Client.Screens
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
 
+            ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
             StackPanel settingsStack = new StackPanel(manager);
             settingsStack.Orientation = Orientation.Vertical;
             Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
             settingsStack.Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
-            settingsStack.Padding = new Border(15, 15, 15, 15);
+            settingsStack.Padding = new Border(20, 20, 20, 20);
             Controls.Add(settingsStack);
 
-            Label rangeTitle = new Label(manager);
-            rangeTitle.Text = "Viewrange:";
+
+            //////////////////////Viewrange//////////////////////
+            string viewrange = ConfigurationManager.AppSettings["Viewrange"];
+
+            rangeTitle = new Label(manager);
+            rangeTitle.Text = "Viewrange: " + viewrange;
             settingsStack.Controls.Add(rangeTitle);
 
-            StackPanel rangeStack = new StackPanel(manager);
-            rangeStack.Orientation = Orientation.Horizontal;            
-            settingsStack.Controls.Add(rangeStack);
+            Slider viewrangeSlider = new Slider(manager);
+            viewrangeSlider.HorizontalAlignment = HorizontalAlignment.Stretch;
+            viewrangeSlider.Height = 20;
+            viewrangeSlider.Range = 9;
+            viewrangeSlider.Value = int.Parse(viewrange) -1;
+            viewrangeSlider.ValueChanged += (value) => SetViewrange(value + 1);
+            settingsStack.Controls.Add(viewrangeSlider);
 
-            string viewrange = ConfigurationManager.AppSettings["Viewrange"];
-            
-            rangeButtons = new Button[10];
-            for (int i = 1; i < 11; i++)
-            {
-                Button button = Button.TextButton(manager, i.ToString());
-                button.Tag = i.ToString();
-                if (i.ToString() == viewrange)
-                    button.Background = new BorderBrush(Color.Wheat);
-                button.LeftMouseClick += SetViewrange;
-                rangeButtons[i - 1] = button;
-                rangeStack.Controls.Add(button);
-            }
 
-            Label persistenceTitle = new Label(manager);
-            persistenceTitle.Text = "Disable persistence:";
-            persistenceTitle.Margin = new Border(0, 10, 0, 0);
-            settingsStack.Controls.Add(persistenceTitle);
-
+            //////////////////////Persistence//////////////////////
             StackPanel persistenceStack = new StackPanel(manager);
             persistenceStack.Orientation = Orientation.Horizontal;
+            persistenceStack.Margin = new Border(0, 10, 0, 0);
             settingsStack.Controls.Add(persistenceStack);
 
-            string persistence = ConfigurationManager.AppSettings["DisablePersistence"];
+            persistenceTitle = new Label(manager);
+            persistenceTitle.Text = "Disable persistence:";
+            persistenceStack.Controls.Add(persistenceTitle);
 
-            persistenceButtons = new Button[2];
-            Button trueButton = Button.TextButton(manager, true.ToString());
-            trueButton.Tag = true.ToString();
-            if (true.ToString().ToLower() == persistence.ToLower())
-                trueButton.Background = new BorderBrush(Color.Wheat);
-            trueButton.LeftMouseClick += SetPersistence;
-            persistenceButtons[0] = trueButton;
-            persistenceStack.Controls.Add(trueButton);
+            Checkbox disablePersistence = new Checkbox(manager);
+            disablePersistence.Checked = bool.Parse(ConfigurationManager.AppSettings["DisablePersistence"]);
+            disablePersistence.CheckedChanged += (state) => SetPersistence(state);
+            persistenceStack.Controls.Add(disablePersistence);
 
-            Button falseButton = Button.TextButton(manager, false.ToString());
-            falseButton.Tag = false.ToString();
-            if (false.ToString().ToLower() == persistence.ToLower())
-                falseButton.Background = new BorderBrush(Color.Wheat);
-            falseButton.LeftMouseClick += SetPersistence;
-            persistenceButtons[1] = falseButton;
-            persistenceStack.Controls.Add(falseButton);
+            //////////////////////Map Path//////////////////////
+            StackPanel mapPathStack = new StackPanel(manager);
+            mapPathStack.Orientation = Orientation.Horizontal;
+            mapPathStack.Margin = new Border(0, 10, 0, 0);
+            mapPathStack.HorizontalAlignment = HorizontalAlignment.Stretch;
+            settingsStack.Controls.Add(mapPathStack);
+
+            mapPath = new Textbox(manager);
+           // mapPath.HorizontalAlignment = HorizontalAlignment.Stretch;
+            mapPath.Text = ConfigurationManager.AppSettings["ChunkRoot"];
+            mapPath.Enabled = false;
+            mapPath.Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray);
+            mapPathStack.Controls.Add(mapPath);
+
+            Button changePath = Button.TextButton(manager, "Change Path");
+            changePath.Height = 31;
+            changePath.LeftMouseClick += (s, e) => ChangePath();
+            mapPathStack.Controls.Add(changePath);
 
 
+            //////////////////////Delete Map//////////////////////
+            deleteButton = Button.TextButton(manager, "Delete Map");
+            deleteButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            deleteButton.Margin = new Border(0, 10, 0, 0);
+            deleteButton.LeftMouseClick += (s, e) => deleteMap();
+            settingsStack.Controls.Add(deleteButton);
+        
+
+            ////////////////////////////////////////////Restart Button////////////////////////////////////////////
             exitButton = Button.TextButton(manager, "Restart game to apply changes");
             exitButton.VerticalAlignment = VerticalAlignment.Top;
             exitButton.HorizontalAlignment = HorizontalAlignment.Right;
@@ -113,52 +132,63 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(exitButton);
         }
 
-        private void SetViewrange(Control sender, MouseEventArgs args)
+        private void SetViewrange(int newRange)
         {
-            string value = (string)sender.Tag;
+            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
 
-            Configuration config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
+            rangeTitle.Text = "Viewrange: " + newRange;
 
-            config.AppSettings.Settings["Viewrange"].Value = value;
+            config.AppSettings.Settings["Viewrange"].Value = newRange.ToString();
             config.Save(ConfigurationSaveMode.Modified);
-
-            for (int i = 0; i < rangeButtons.Length; i++)
-            {
-                if ((string)rangeButtons[i].Tag != value)
-                {
-                    if (((BorderBrush)rangeButtons[i].Background).BackgroundColor == Color.Wheat)
-                        rangeButtons[i].Background = new BorderBrush(Color.White);
-                }
-                else
-                    rangeButtons[i].Background = new BorderBrush(Color.Wheat);
-            }
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
         }
 
-        private void SetPersistence(Control sender, MouseEventArgs args)
+        private void ChangePath()
         {
-            string value = ((string)sender.Tag).ToLower();
+            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
+            System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            folderBrowser.SelectedPath = ConfigurationManager.AppSettings["ChunkRoot"];
 
-            Configuration config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
+            if(folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = folderBrowser.SelectedPath;
+                config.AppSettings.Settings["ChunkRoot"].Value = path;
+                config.Save();
+                mapPath.Text = path;
 
-            config.AppSettings.Settings["DisablePersistence"].Value = value;
+                exitButton.Visible = true;
+                exitButton.Enabled = true;
+            }
+        }
+
+        private void SetPersistence(bool state)
+        {
+            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
+            config.AppSettings.Settings["DisablePersistence"].Value = state.ToString();
             config.Save(ConfigurationSaveMode.Modified);
-
-            if (bool.Parse(value))
-            {
-                persistenceButtons[0].Background = new BorderBrush(Color.Wheat);
-                persistenceButtons[1].Background = new BorderBrush(Color.White);
-            }
-            else
-            {
-                persistenceButtons[1].Background = new BorderBrush(Color.Wheat);
-                persistenceButtons[0].Background = new BorderBrush(Color.White);
-            }
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
+        }
+
+        private void deleteMap()
+        { 
+
+            if(deleteState)
+            {
+                deleteState = false;
+                ((Label)(deleteButton.Content)).Text = "Deleted...";
+                deleteButton.Enabled = false;
+                try { Directory.Delete(@"D:\OctoMap"); }catch(Exception e) { } //TODO: Unlock files to delete Directory
+            }
+            else
+            {
+                ((Label)(deleteButton.Content)).Text = "Really?";
+                deleteButton.InvalidateDimensions();
+                deleteState = true;
+            }
         }
     }
 }
