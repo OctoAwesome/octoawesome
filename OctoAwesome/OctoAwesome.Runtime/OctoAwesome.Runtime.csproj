@@ -43,6 +43,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,8 +54,11 @@
     <Compile Include="ActorHost.cs" />
     <Compile Include="ChunkDiskPersistence.cs" />
     <Compile Include="ChunkSerializer.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />
+    <Compile Include="IClient.cs" />
+    <Compile Include="IClientCallback.cs" />
     <Compile Include="IPlayerController.cs" />
     <Compile Include="MapGeneratorManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
