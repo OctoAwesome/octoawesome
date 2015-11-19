@@ -17,14 +17,13 @@ namespace OctoAwesome.Runtime
 
         private Index3? lastInteract = null;
         private Index3? lastApply = null;
+        private InventorySlot lastTool = null;
         private OrientationFlags lastOrientation = OrientationFlags.None;
         private Index3 _oldIndex;
 
         private ILocalChunkCache localChunkCache;
 
         public Player Player { get; private set; }
-
-        public InventorySlot ActiveTool { get; set; }
 
         public bool ReadyState { get; private set; }
 
@@ -36,7 +35,6 @@ namespace OctoAwesome.Runtime
             localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1, true);
             _oldIndex = Player.Position.ChunkIndex;
 
-            ActiveTool = null;
             ReadyState = false;
         }
 
@@ -47,8 +45,6 @@ namespace OctoAwesome.Runtime
                 ReadyState = success;
             });
         }
-
-        
 
         public void Update(GameTime frameTime)
         {
@@ -195,7 +191,7 @@ namespace OctoAwesome.Runtime
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
                 {
                     ReadyState = success;
-                });                
+                });
             }
 
             #endregion
@@ -230,7 +226,7 @@ namespace OctoAwesome.Runtime
 
             if (lastApply.HasValue)
             {
-                if (ActiveTool != null)
+                if (lastTool != null)
                 {
                     Index3 add = new Index3();
                     switch (lastOrientation)
@@ -243,16 +239,16 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    if (ActiveTool.Definition is IBlockDefinition)
+                    if (lastTool.Definition is IBlockDefinition)
                     {
-                        IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
+                        IBlockDefinition definition = lastTool.Definition as IBlockDefinition;
                         localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
 
-                        ActiveTool.Amount--;
-                        if (ActiveTool.Amount <= 0)
+                        lastTool.Amount--;
+                        if (lastTool.Amount <= 0)
                         {
-                            Player.Inventory.Remove(ActiveTool);
-                            ActiveTool = null;
+                            Player.Inventory.Remove(lastTool);
+                            lastTool = null;
                         }
                     }
 
@@ -271,7 +267,7 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
+        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode)
         {
             Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 
@@ -344,9 +340,20 @@ namespace OctoAwesome.Runtime
             get { return Player.OnGround; }
         }
 
+        public bool FlyMode
+        {
+            get { return Player.FlyMode; }
+            set { Player.FlyMode = value; }
+        }
+
         public float Tilt
         {
             get { return Player.Tilt; }
+        }
+
+        public IEnumerable<InventorySlot> Inventory
+        {
+            get { return Player.Inventory; }
         }
 
         public Vector2 Move { get; set; }
@@ -363,10 +370,11 @@ namespace OctoAwesome.Runtime
             lastInteract = blockIndex;
         }
 
-        public void Apply(Index3 blockIndex, OrientationFlags orientation)
+        public void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation)
         {
             lastApply = blockIndex;
             lastOrientation = orientation;
+            lastTool = tool;
         }
 
         public void AllBlocksDebug()

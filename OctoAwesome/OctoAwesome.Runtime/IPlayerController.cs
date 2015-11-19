@@ -18,16 +18,20 @@ namespace OctoAwesome.Runtime
 
         bool OnGround { get; }
 
+        bool FlyMode { get; set; }
+
         float Tilt { get; }
 
         Vector2 Move { get; set; }
 
         Vector2 Head { get; set; }
 
+        IEnumerable<InventorySlot> Inventory { get; }
+
         void Jump();
 
         void Interact(Index3 blockIndex);
 
-        void Apply(Index3 blockIndex, OrientationFlags orientation);
+        void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation);
     }
 }

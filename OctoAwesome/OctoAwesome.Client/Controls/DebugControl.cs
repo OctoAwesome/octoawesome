@@ -162,11 +162,11 @@ namespace OctoAwesome.Client.Controls
             //Additional Play Information
 
             //Active Tool
-            if (Player.ActorHost.ActiveTool != null)
-                activeTool.Text = "Active Item/Tool: " + Player.ActorHost.ActiveTool.Definition.Name;
+            if (Player.ActiveTool != null)
+                activeTool.Text = "Active Item/Tool: " + Player.ActiveTool.Definition.Name;
 
                 //Fly Info
-                if (Player.ActorHost.Player.FlyMode) flyInfo.Text = "Flymode enabled";
+                if (Player.ActorHost.FlyMode) flyInfo.Text = "Flymode enabled";
                 else flyInfo.Text = "";
 
             //Draw Box Information

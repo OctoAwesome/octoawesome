@@ -33,7 +33,7 @@ namespace OctoAwesome.Client.Components
 
         #endregion
 
-        public ActorHost ActorHost { get { return simulation.Player; } }
+        public IPlayerController ActorHost { get { return simulation.Player; } }
 
         public Index3? SelectedBox { get; set; }
 
@@ -46,6 +46,8 @@ namespace OctoAwesome.Client.Components
         public OrientationFlags SelectedCorner { get; set; }
 
         public List<InventorySlot> Tools { get; set; }
+
+        public InventorySlot ActiveTool { get; set; }
 
         public PlayerComponent(Game game, SimulationComponent simulation)
             : base(game)
@@ -62,7 +64,7 @@ namespace OctoAwesome.Client.Components
         public override void Update(GameTime gameTime)
         {
             Tools.Clear();
-            Tools.AddRange(ActorHost.Player.Inventory);
+            Tools.AddRange(ActorHost.Inventory);
 
             ActorHost.Head = HeadInput;
             HeadInput = Vector2.Zero;
@@ -79,31 +81,31 @@ namespace OctoAwesome.Client.Components
             InteractInput = false;
 
             if (ApplyInput && SelectedBox.HasValue)
-                ActorHost.Apply(SelectedBox.Value, SelectedSide);
+                ActorHost.Apply(SelectedBox.Value, ActiveTool,  SelectedSide);
             ApplyInput = false;
 
             if (FlymodeInput)
-                ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
+                ActorHost.FlyMode = !ActorHost.FlyMode;
             FlymodeInput = false;
 
             if (Tools != null && Tools.Count > 0)
             {
-                if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = Tools[0];
+                if (ActiveTool == null) ActiveTool = Tools[0];
                 for (int i = 0; i < Math.Min(Tools.Count, SlotInput.Length); i++)
                 {
                     if (SlotInput[i])
-                        ActorHost.ActiveTool = Tools[i];
+                        ActiveTool = Tools[i];
                     SlotInput[i] = false;
                 }
             }
 
             // Index des aktiven Werkzeugs ermitteln
             int activeTool = -1;
-            if (Tools != null && ActorHost.ActiveTool != null)
+            if (Tools != null && ActiveTool != null)
             {
                 for (int i = 0; i < Tools.Count; i++)
                 {
-                    if (Tools[i] == ActorHost.ActiveTool)
+                    if (Tools[i] == ActiveTool)
                     {
                         activeTool = i;
                         break;
@@ -122,7 +124,7 @@ namespace OctoAwesome.Client.Components
                 SlotRightInput = false;
 
                 activeTool = (activeTool + Tools.Count) % Tools.Count;
-                ActorHost.ActiveTool = Tools[activeTool];
+                ActiveTool = Tools[activeTool];
             }
         }
     }
