@@ -115,7 +115,7 @@ namespace OctoAwesome.Client.Screens
             achievementStack.Orientation = Orientation.Horizontal;
             textStack.Controls.Add(achievementStack);
 
-            Label achievementsTitle = new Label(manager) { Text = "Achievements: ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
+            Label achievementsTitle = new Label(manager) { Text = Languages.OctoClient.Achievements + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
 
             Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };
 
@@ -147,7 +147,7 @@ namespace OctoAwesome.Client.Screens
             panel.Width = 700;
 
             //The Back Button
-            Button backButton = Button.TextButton(manager, "Back");
+            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
             backButton.LeftMouseClick += (s, e) =>

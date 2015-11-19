@@ -7,7 +7,7 @@ namespace OctoAwesome.Basics
     {
         public override string Name
         {
-            get { return "Stone"; }
+            get { return Languages.OctoBasics.Stone; }
         }
 
         public override Bitmap Icon

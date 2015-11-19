@@ -29,7 +29,7 @@ namespace OctoAwesome.Client.Screens
             game = (OctoGame)manager.Game;
             Padding = new Border(0, 0, 0, 0);
 
-            Title = "Options";
+            Title = Languages.OctoClient.Options;
 
             ////////////////////////////////////////////Background////////////////////////////////////////////
             Image background = new Image(manager);
@@ -39,7 +39,7 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(background);
 
             ////////////////////////////////////////////Back Button////////////////////////////////////////////
-            Button backButton = Button.TextButton(manager, "Back");
+            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
             backButton.LeftMouseClick += (s, e) =>
@@ -62,14 +62,14 @@ namespace OctoAwesome.Client.Screens
             string viewrange = ConfigurationManager.AppSettings["Viewrange"];
 
             rangeTitle = new Label(manager);
-            rangeTitle.Text = "Viewrange: " + viewrange;
+            rangeTitle.Text = Languages.OctoClient.Viewrange + ": " + viewrange;
             settingsStack.Controls.Add(rangeTitle);
 
             Slider viewrangeSlider = new Slider(manager);
             viewrangeSlider.HorizontalAlignment = HorizontalAlignment.Stretch;
             viewrangeSlider.Height = 20;
             viewrangeSlider.Range = 9;
-            viewrangeSlider.Value = int.Parse(viewrange) -1;
+            viewrangeSlider.Value = int.Parse(viewrange) - 1;
             viewrangeSlider.ValueChanged += (value) => SetViewrange(value + 1);
             settingsStack.Controls.Add(viewrangeSlider);
 
@@ -81,7 +81,7 @@ namespace OctoAwesome.Client.Screens
             settingsStack.Controls.Add(persistenceStack);
 
             persistenceTitle = new Label(manager);
-            persistenceTitle.Text = "Disable persistence:";
+            persistenceTitle.Text = Languages.OctoClient.DisablePersistence + ":";
             persistenceStack.Controls.Add(persistenceTitle);
 
             Checkbox disablePersistence = new Checkbox(manager);
@@ -97,28 +97,28 @@ namespace OctoAwesome.Client.Screens
             settingsStack.Controls.Add(mapPathStack);
 
             mapPath = new Textbox(manager);
-           // mapPath.HorizontalAlignment = HorizontalAlignment.Stretch;
+            // mapPath.HorizontalAlignment = HorizontalAlignment.Stretch;
             mapPath.Text = ConfigurationManager.AppSettings["ChunkRoot"];
             mapPath.Enabled = false;
             mapPath.Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray);
             mapPathStack.Controls.Add(mapPath);
 
-            Button changePath = Button.TextButton(manager, "Change Path");
+            Button changePath = Button.TextButton(manager, Languages.OctoClient.ChangePath);
             changePath.Height = 31;
             changePath.LeftMouseClick += (s, e) => ChangePath();
             mapPathStack.Controls.Add(changePath);
 
 
             //////////////////////Delete Map//////////////////////
-            deleteButton = Button.TextButton(manager, "Delete Map");
+            deleteButton = Button.TextButton(manager, Languages.OctoClient.DeleteMap);
             deleteButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             deleteButton.Margin = new Border(0, 10, 0, 0);
             deleteButton.LeftMouseClick += (s, e) => deleteMap();
             settingsStack.Controls.Add(deleteButton);
-        
+
 
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
-            exitButton = Button.TextButton(manager, "Restart game to apply changes");
+            exitButton = Button.TextButton(manager, Languages.OctoClient.RestartGameToApplyChanges);
             exitButton.VerticalAlignment = VerticalAlignment.Top;
             exitButton.HorizontalAlignment = HorizontalAlignment.Right;
             exitButton.Enabled = false;
@@ -136,7 +136,7 @@ namespace OctoAwesome.Client.Screens
         {
             config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
 
-            rangeTitle.Text = "Viewrange: " + newRange;
+            rangeTitle.Text = Languages.OctoClient.Viewrange + ": " + newRange;
 
             config.AppSettings.Settings["Viewrange"].Value = newRange.ToString();
             config.Save(ConfigurationSaveMode.Modified);
@@ -151,7 +151,7 @@ namespace OctoAwesome.Client.Screens
             System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             folderBrowser.SelectedPath = ConfigurationManager.AppSettings["ChunkRoot"];
 
-            if(folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = folderBrowser.SelectedPath;
                 config.AppSettings.Settings["ChunkRoot"].Value = path;
@@ -174,18 +174,17 @@ namespace OctoAwesome.Client.Screens
         }
 
         private void deleteMap()
-        { 
-
-            if(deleteState)
+        {
+            if (deleteState)
             {
                 deleteState = false;
-                ((Label)(deleteButton.Content)).Text = "Deleted...";
+                ((Label)(deleteButton.Content)).Text = Languages.OctoClient.Deleted;
                 deleteButton.Enabled = false;
-                try { Directory.Delete(@"D:\OctoMap"); }catch(Exception e) { } //TODO: Unlock files to delete Directory
+                try { Directory.Delete(@"D:\OctoMap"); } catch { } //TODO: Unlock files to delete Directory
             }
             else
             {
-                ((Label)(deleteButton.Content)).Text = "Really?";
+                ((Label)(deleteButton.Content)).Text = Languages.OctoClient.Really;
                 deleteButton.InvalidateDimensions();
                 deleteState = true;
             }
