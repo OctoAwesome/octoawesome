@@ -74,6 +74,9 @@ namespace OctoAwesome.Client
             screens.UpdateOrder = 1;
             screens.DrawOrder = 1;
             Components.Add(screens);
+
+            ClientComponent client = new ClientComponent(this);
+            Components.Add(client);
         }
 
         protected override void OnExiting(object sender, EventArgs args)

@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\ClientComponent.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
     <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
@@ -78,6 +79,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>

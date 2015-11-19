@@ -7,19 +7,19 @@ using System.Text;
 namespace OctoAwesome.Runtime
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
-    internal class Client : IClient
+    public class Client : IClient
     {
+        private IClientCallback callback;
+
+        public Client()
+        {
+            callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
+        }
+
         [OperationBehavior]
         public void Connect(string playername)
         {
-            try
-            {
-                // Test
-            }
-            catch (Exception ex)
-            {
-                throw new FaultException(ex.Message);
-            }
+            callback.Relocation(1, 2, 3);
         }
 
         [OperationBehavior]
