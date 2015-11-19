@@ -7,6 +7,9 @@ namespace OctoAwesome
 {
     /// <summary>
     /// Basis Interface für jegliche Eingabemethode.
+    /// 
+    /// Keine Referenzen
+    /// TODO: Löschen?
     /// </summary>
     public interface IInputSet
     {

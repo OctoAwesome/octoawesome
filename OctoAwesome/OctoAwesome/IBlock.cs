@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Keine Referenzen
+    /// TODO: Löschen?
+    /// </summary>
     public interface IBlock
     {
         OrientationFlags Orientation { get; set; }

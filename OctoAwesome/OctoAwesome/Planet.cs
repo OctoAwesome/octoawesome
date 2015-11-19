@@ -17,6 +17,9 @@ namespace OctoAwesome
         /// </summary>
         public int Universe { get; private set; }
 
+        /// <summary>
+        /// Die Klimakarte des Planeten
+        /// </summary>
         public IClimateMap ClimateMap { get; protected set; }
 
         /// <summary>

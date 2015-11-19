@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using System;
+
+namespace OctoAwesome
 {
     public interface ILocalChunkCache
     {
