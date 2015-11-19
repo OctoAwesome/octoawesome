@@ -20,7 +20,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return "Iron Ore";
+                return Languages.OctoBasics.IronOre;
             }
         }
 

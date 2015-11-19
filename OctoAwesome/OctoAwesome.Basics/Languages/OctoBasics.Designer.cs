@@ -61,11 +61,146 @@ namespace OctoAwesome.Basics.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Blue Cotton ähnelt.
+        /// </summary>
+        internal static string BlueCotton {
+            get {
+                return ResourceManager.GetString("BlueCotton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Brick ähnelt.
+        /// </summary>
+        internal static string Brick {
+            get {
+                return ResourceManager.GetString("Brick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Grass ähnelt.
+        /// </summary>
+        internal static string Grass {
+            get {
+                return ResourceManager.GetString("Grass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Green Cotton ähnelt.
+        /// </summary>
+        internal static string GreenCotton {
+            get {
+                return ResourceManager.GetString("GreenCotton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ground ähnelt.
+        /// </summary>
+        internal static string Ground {
+            get {
+                return ResourceManager.GetString("Ground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ice ähnelt.
+        /// </summary>
+        internal static string Ice {
+            get {
+                return ResourceManager.GetString("Ice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Iron Ore ähnelt.
+        /// </summary>
+        internal static string IronOre {
+            get {
+                return ResourceManager.GetString("IronOre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Leaves ähnelt.
+        /// </summary>
+        internal static string Leaves {
+            get {
+                return ResourceManager.GetString("Leaves", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Red Cotton ähnelt.
+        /// </summary>
+        internal static string RedCotton {
+            get {
+                return ResourceManager.GetString("RedCotton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sand ähnelt.
+        /// </summary>
+        internal static string Sand {
+            get {
+                return ResourceManager.GetString("Sand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Snow ähnelt.
+        /// </summary>
+        internal static string Snow {
+            get {
+                return ResourceManager.GetString("Snow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Stone ähnelt.
         /// </summary>
         internal static string Stone {
             get {
                 return ResourceManager.GetString("Stone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Stone Brick ähnelt.
+        /// </summary>
+        internal static string StoneBrick {
+            get {
+                return ResourceManager.GetString("StoneBrick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Tan Cotton ähnelt.
+        /// </summary>
+        internal static string TanCotton {
+            get {
+                return ResourceManager.GetString("TanCotton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Water ähnelt.
+        /// </summary>
+        internal static string Water {
+            get {
+                return ResourceManager.GetString("Water", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wood ähnelt.
+        /// </summary>
+        internal static string Wood {
+            get {
+                return ResourceManager.GetString("Wood", resourceCulture);
             }
         }
     }

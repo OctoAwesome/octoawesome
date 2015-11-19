@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics
     {
         public override string Name
         {
-            get { return "Wood"; }
+            get { return Languages.OctoBasics.Wood; }
         }
 
         public override Bitmap Icon

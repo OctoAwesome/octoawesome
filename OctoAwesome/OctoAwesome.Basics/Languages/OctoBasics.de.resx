@@ -117,7 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BlueCotton" xml:space="preserve">
+    <value>Blauer Stoff</value>
+  </data>
+  <data name="Brick" xml:space="preserve">
+    <value>Ziegelstein</value>
+  </data>
+  <data name="Grass" xml:space="preserve">
+    <value>Gras</value>
+  </data>
+  <data name="GreenCotton" xml:space="preserve">
+    <value>Grüner Stoff</value>
+  </data>
+  <data name="Ground" xml:space="preserve">
+    <value>Erde</value>
+  </data>
+  <data name="Ice" xml:space="preserve">
+    <value>Eis</value>
+  </data>
+  <data name="IronOre" xml:space="preserve">
+    <value>Eisenerz</value>
+  </data>
+  <data name="Leaves" xml:space="preserve">
+    <value>Blätter</value>
+  </data>
+  <data name="RedCotton" xml:space="preserve">
+    <value>Roter Stoff</value>
+  </data>
+  <data name="Sand" xml:space="preserve">
+    <value>Sand</value>
+  </data>
+  <data name="Snow" xml:space="preserve">
+    <value>Schnee</value>
+  </data>
   <data name="Stone" xml:space="preserve">
     <value>Stein</value>
+  </data>
+  <data name="StoneBrick" xml:space="preserve">
+    <value>Steinmauer</value>
+  </data>
+  <data name="TanCotton" xml:space="preserve">
+    <value>Loher Stoff</value>
+  </data>
+  <data name="Water" xml:space="preserve">
+    <value>Wasser</value>
+  </data>
+  <data name="Wood" xml:space="preserve">
+    <value>Holz</value>
   </data>
 </root>

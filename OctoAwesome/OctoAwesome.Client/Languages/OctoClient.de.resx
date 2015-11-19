@@ -180,4 +180,7 @@
   <data name="Viewrange" xml:space="preserve">
     <value>Sichtbereich</value>
   </data>
+  <data name="ActiveItemTool" xml:space="preserve">
+    <value>Aktives Werkzeug</value>
+  </data>
 </root>
