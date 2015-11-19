@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return "Snow";
+                return Languages.OctoBasics.Snow;
             }
         }
 

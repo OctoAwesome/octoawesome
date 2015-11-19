@@ -22,13 +22,13 @@ namespace OctoAwesome.Client.Screens
             Height = 400;
 
             Label headLine = new Label(manager);
-            headLine.Text = "Inventory";
+            headLine.Text = Languages.OctoClient.Inventory;
             headLine.Font = Skin.Current.HeadlineFont;
             headLine.HorizontalAlignment = HorizontalAlignment.Left;
             headLine.VerticalAlignment = VerticalAlignment.Top;
             Controls.Add(headLine);
 
-            Button closeButton = Button.TextButton(manager, "Close");
+            Button closeButton = Button.TextButton(manager, Languages.OctoClient.Close);
             closeButton.LeftMouseClick += (s, e) => { manager.NavigateBack(); };
             Controls.Add(closeButton);
 
@@ -41,7 +41,7 @@ namespace OctoAwesome.Client.Screens
             //};
             //Controls.Add(counter);
 
-            Title = "Inventory";
+            Title = Languages.OctoClient.Inventory;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)

@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Screens
         {
             Padding = new Border(0, 0, 0, 0);
 
-            Title = "Credits";
+            Title = Languages.OctoClient.CreditsCrew;
 
             Image background = new Image(manager);
             background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
@@ -24,7 +24,7 @@ namespace OctoAwesome.Client.Screens
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
-            Button backButton = Button.TextButton(manager, "Back");
+            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
             backButton.LeftMouseClick += (s, e) =>
