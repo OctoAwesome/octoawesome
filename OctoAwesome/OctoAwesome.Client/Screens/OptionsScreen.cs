@@ -181,7 +181,7 @@ namespace OctoAwesome.Client.Screens
                 deleteState = false;
                 ((Label)(deleteButton.Content)).Text = "Deleted...";
                 deleteButton.Enabled = false;
-                try { Directory.Delete(@"D:\OctoMap"); }catch(Exception e) { } //TODO: Unlock files to delete Directory
+                try { Directory.Delete(@"D:\OctoMap"); }catch { } //TODO: Unlock files to delete Directory
             }
             else
             {
