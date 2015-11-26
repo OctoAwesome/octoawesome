@@ -11,21 +11,28 @@ namespace OctoAwesome.Runtime
     {
         private IClientCallback callback;
 
+        public Guid ConnectionId { get; private set; }
+
+        public string Playername { get; private set; }
+
         public Client()
         {
             callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
+            ConnectionId = Guid.NewGuid();
         }
 
         [OperationBehavior]
-        public void Connect(string playername)
+        public Guid Connect(string playername)
         {
-            callback.Relocation(1, 2, 3);
+            Playername = playername;
+            Server.Instance.Register(this);
+            return ConnectionId;
         }
 
         [OperationBehavior]
         public void Disconnect()
         {
-            throw new NotImplementedException();
+            Server.Instance.Deregister(this);
         }
 
         [OperationBehavior]

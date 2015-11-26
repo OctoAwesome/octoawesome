@@ -38,5 +38,10 @@ namespace OctoAwesome.Client.Components
         {
             Console.WriteLine(string.Format("{0}/{1}/{2}", x, y, z));
         }
+
+        public void Disconnect()
+        {
+
+        }
     }
 }

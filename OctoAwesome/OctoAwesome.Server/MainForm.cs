@@ -18,23 +18,19 @@ namespace OctoAwesome.Server
         public MainForm()
         {
             InitializeComponent();
-
-            string server = "localhost";
-            int port = 8888;
-            string name = "Octo";
-
-            string address = string.Format("net.tcp://{0}:{1}/{2}", server, port, name);
-
-            NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
-
-            ServiceHost host = new ServiceHost(typeof(Client), new Uri(address));
-            host.AddServiceEndpoint(typeof(IClient), binding, address);
-            host.Open();
+            Runtime.Server.Instance.Open();
+            timer1.Enabled = true;
         }
 
         private void startButton_Click(object sender, EventArgs e)
         {
             world = new World();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            listBox1.Items.Clear();
+            listBox1.Items.AddRange(Runtime.Server.Instance.Clients.ToArray());
         }
     }
 }
