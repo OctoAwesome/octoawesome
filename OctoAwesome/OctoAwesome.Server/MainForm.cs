@@ -19,22 +19,29 @@ namespace OctoAwesome.Server
         {
             InitializeComponent();
 
-            string server = "localhost";
-            int port = 8888;
-            string name = "Octo";
+            Runtime.Server.Instance.OnRegister += Instance_OnRegister;
+            Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
+            listBox1.DisplayMember = "Playername";
 
-            string address = string.Format("net.tcp://{0}:{1}/{2}", server, port, name);
-
-            NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
-
-            ServiceHost host = new ServiceHost(typeof(Client), new Uri(address));
-            host.AddServiceEndpoint(typeof(IClient), binding, address);
-            host.Open();
+            world = new World();
+            Runtime.Server.Instance.Open();
         }
 
-        private void startButton_Click(object sender, EventArgs e)
+        protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            world = new World();
+            Runtime.Server.Instance.Close();
+
+            base.OnFormClosed(e);
+        }
+
+        private void Instance_OnDeregister(Client client)
+        {
+            listBox1.Items.Remove(client);
+        }
+
+        private void Instance_OnRegister(Client client)
+        {
+            listBox1.Items.Add(client);
         }
     }
 }
