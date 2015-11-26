@@ -15,6 +15,8 @@ namespace OctoAwesome.Runtime
 
         public string Playername { get; private set; }
 
+        public IPlayerController ActorHost { get; set; }
+
         public Client()
         {
             Callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
@@ -38,7 +40,7 @@ namespace OctoAwesome.Runtime
         [OperationBehavior]
         public void Jump()
         {
-            throw new NotImplementedException();
+            ActorHost.Jump();
         }
     }
 }

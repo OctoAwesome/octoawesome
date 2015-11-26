@@ -14,17 +14,10 @@ namespace OctoAwesome.Client.Components
 
         private IClient client;
 
-        public IPlayerController PlayerController { get;  private set; }
+        public ActorProxy PlayerController { get;  private set; }
 
         public ClientComponent(OctoGame game) : base(game)
         {
-            PlayerController = new ActorProxy();
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
             DuplexChannelFactory<IClient> factory = new DuplexChannelFactory<IClient>(this, binding);
@@ -39,6 +32,15 @@ namespace OctoAwesome.Client.Components
             {
 
             }
+
+            PlayerController = new ActorProxy(client);
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            
         }
 
         protected override void Dispose(bool disposing)
@@ -55,9 +57,9 @@ namespace OctoAwesome.Client.Components
             base.Dispose(disposing);
         }
 
-        public void Relocation(int x, int y, int z)
+        public void SetPosition(Index3 globalPosition, Vector3 blockPosition)
         {
-            Console.WriteLine(string.Format("{0}/{1}/{2}", x, y, z));
+            PlayerController.Position = new Coordinate(0, globalPosition, blockPosition);
         }
 
         public void Disconnect()

@@ -13,7 +13,7 @@ namespace OctoAwesome.Server
 {
     public partial class MainForm : Form
     {
-        private World world;
+        
 
         public MainForm()
         {
@@ -23,7 +23,6 @@ namespace OctoAwesome.Server
             Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
             listBox1.DisplayMember = "Playername";
 
-            world = new World();
             Runtime.Server.Instance.Open();
         }
 
@@ -37,8 +36,6 @@ namespace OctoAwesome.Server
         private void Instance_OnDeregister(Client client)
         {
             listBox1.Items.Remove(client);
-
-            ActorHost host = world.InjectPlayer(new Player() { });
         }
 
         private void Instance_OnRegister(Client client)

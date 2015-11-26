@@ -8,6 +8,15 @@ namespace OctoAwesome.Runtime
 {
     public class ActorProxy : IPlayerController
     {
+        private IClient client;
+
+        private List<InventorySlot> inventory = new List<InventorySlot>();
+
+        public ActorProxy(IClient client)
+        {
+            this.client = client;
+        }
+
         public float Angle
         {
             get
@@ -54,7 +63,7 @@ namespace OctoAwesome.Runtime
         {
             get
             {
-                throw new NotImplementedException();
+                return inventory;
             }
         }
 
@@ -79,13 +88,7 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public Coordinate Position
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Coordinate Position { get; set; }
 
         public float Radius
         {
@@ -115,7 +118,14 @@ namespace OctoAwesome.Runtime
 
         public void Jump()
         {
-            throw new NotImplementedException();
+            try
+            {
+                client.Jump();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

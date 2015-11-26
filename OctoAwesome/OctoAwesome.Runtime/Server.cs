@@ -24,7 +24,9 @@ namespace OctoAwesome.Runtime
 
         #endregion
 
-        ServiceHost host;
+        private World world;
+
+        private ServiceHost host;
 
         private List<Client> clients = new List<Client>();
 
@@ -35,6 +37,8 @@ namespace OctoAwesome.Runtime
 
         public void Open()
         {
+            world = new World();
+
             string server = "localhost";
             int port = 8888;
             string name = "Octo";
@@ -80,6 +84,11 @@ namespace OctoAwesome.Runtime
                 clients.Add(client);
                 if (OnRegister != null)
                     OnRegister(client);
+
+                client.ActorHost = world.InjectPlayer(new Player()
+                {
+                    Position = new Coordinate(0, new Index3(100, 100, 300), new Microsoft.Xna.Framework.Vector3()),
+                });
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -12,6 +13,6 @@ namespace OctoAwesome.Runtime
         void Disconnect();
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
-        void Relocation(int x, int y, int z);
+        void SetPosition(Index3 globalPosition, Vector3 blockPosition);
     }
 }
