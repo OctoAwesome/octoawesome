@@ -2,6 +2,7 @@
 using OctoAwesome.Client.Components;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Input;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -20,7 +21,7 @@ namespace OctoAwesome.Client.Screens
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
 
-            Button startButton = Button.TextButton(manager, "Start");
+            Button startButton = Button.TextButton(manager, "Singleplayer");
             startButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
@@ -28,6 +29,23 @@ namespace OctoAwesome.Client.Screens
                 manager.NavigateToScreen(new GameScreen(manager));
             };
             stack.Controls.Add(startButton);
+
+            Button multiplayer = Button.TextButton(manager, "Multiplayer");
+            multiplayer.HorizontalAlignment = HorizontalAlignment.Stretch;
+            multiplayer.Margin = new Border(0, 0, 0, 10);
+            multiplayer.LeftMouseClick += (s, e) =>
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                {
+                    /////////////////////////DIRECT CONNECT HERE
+                    System.Windows.Forms.MessageBox.Show("No DirectConnect configured");
+                }
+                else
+                {
+                    manager.NavigateToScreen(new ConnectScreen(manager));
+                }
+            };
+            stack.Controls.Add(multiplayer);
 
             Button optionButton = Button.TextButton(manager, "Options");
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
