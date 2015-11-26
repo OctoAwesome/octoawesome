@@ -37,6 +37,8 @@ namespace OctoAwesome.Server
         private void Instance_OnDeregister(Client client)
         {
             listBox1.Items.Remove(client);
+
+            ActorHost host = world.InjectPlayer(new Player() { });
         }
 
         private void Instance_OnRegister(Client client)

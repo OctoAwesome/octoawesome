@@ -9,8 +9,6 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class PlayerComponent : GameComponent
     {
-        private SimulationComponent simulation;
-
         #region External Input
 
         public Vector2 HeadInput { get; set; }
@@ -33,7 +31,7 @@ namespace OctoAwesome.Client.Components
 
         #endregion
 
-        public IPlayerController ActorHost { get { return simulation.Player; } }
+        public IPlayerController PlayerController { get; private set; }
 
         public Index3? SelectedBox { get; set; }
 
@@ -49,10 +47,10 @@ namespace OctoAwesome.Client.Components
 
         public InventorySlot ActiveTool { get; set; }
 
-        public PlayerComponent(Game game, SimulationComponent simulation)
+        public PlayerComponent(Game game, IPlayerController playerController)
             : base(game)
         {
-            this.simulation = simulation;
+            PlayerController = playerController;
         }
 
         public override void Initialize()
@@ -64,28 +62,28 @@ namespace OctoAwesome.Client.Components
         public override void Update(GameTime gameTime)
         {
             Tools.Clear();
-            Tools.AddRange(ActorHost.Inventory);
+            Tools.AddRange(PlayerController.Inventory);
 
-            ActorHost.Head = HeadInput;
+            PlayerController.Head = HeadInput;
             HeadInput = Vector2.Zero;
 
-            ActorHost.Move = MoveInput;
+            PlayerController.Move = MoveInput;
             MoveInput = Vector2.Zero;
 
             if (JumpInput)
-                ActorHost.Jump();
+                PlayerController.Jump();
             JumpInput = false;
 
             if (InteractInput && SelectedBox.HasValue)
-                ActorHost.Interact(SelectedBox.Value);
+                PlayerController.Interact(SelectedBox.Value);
             InteractInput = false;
 
             if (ApplyInput && SelectedBox.HasValue)
-                ActorHost.Apply(SelectedBox.Value, ActiveTool,  SelectedSide);
+                PlayerController.Apply(SelectedBox.Value, ActiveTool,  SelectedSide);
             ApplyInput = false;
 
             if (FlymodeInput)
-                ActorHost.FlyMode = !ActorHost.FlyMode;
+                PlayerController.FlyMode = !PlayerController.FlyMode;
             FlymodeInput = false;
 
             if (Tools != null && Tools.Count > 0)

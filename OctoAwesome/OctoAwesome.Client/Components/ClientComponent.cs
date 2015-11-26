@@ -14,8 +14,11 @@ namespace OctoAwesome.Client.Components
 
         private IClient client;
 
+        public IPlayerController PlayerController { get;  private set; }
+
         public ClientComponent(OctoGame game) : base(game)
         {
+            PlayerController = new ActorProxy();
         }
 
         public override void Initialize()

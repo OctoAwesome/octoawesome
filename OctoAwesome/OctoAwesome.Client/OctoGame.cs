@@ -57,14 +57,18 @@ namespace OctoAwesome.Client
 
             ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
-            simulation = new SimulationComponent(this);
-            simulation.UpdateOrder = 4;
-            Components.Add(simulation);
+            // Lokale Spiele (Single Player)
+            //simulation = new SimulationComponent(this);
+            //simulation.UpdateOrder = 4;
+            //Components.Add(simulation);
 
-            player = new PlayerComponent(this, simulation);
+            // Netzwerkspiel (Multiplayer)
+            ClientComponent client = new ClientComponent(this);
+            Components.Add(client);
+
+            player = new PlayerComponent(this, client.PlayerController);
             player.UpdateOrder = 2;
             Components.Add(player);
-
 
             camera = new CameraComponent(this, player);
             camera.UpdateOrder = 3;
@@ -74,9 +78,6 @@ namespace OctoAwesome.Client
             screens.UpdateOrder = 1;
             screens.DrawOrder = 1;
             Components.Add(screens);
-
-            ClientComponent client = new ClientComponent(this);
-            Components.Add(client);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
