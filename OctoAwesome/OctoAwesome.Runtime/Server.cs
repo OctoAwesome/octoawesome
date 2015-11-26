@@ -50,7 +50,25 @@ namespace OctoAwesome.Runtime
 
         public void Close()
         {
+            if (host == null)
+                return;
+
             // TODO: Alle Klienten schließen
+            lock (clients)
+            {
+                foreach (var client in clients)
+                {
+                    try
+                    {
+                        client.Callback.Disconnect();
+                    }
+                    catch (Exception) { }
+
+                    clients.Remove(client);
+                    if (OnDeregister != null)
+                        OnDeregister(client);
+                }
+            }
 
             host.Close();
         }
@@ -60,6 +78,8 @@ namespace OctoAwesome.Runtime
             lock (clients)
             {
                 clients.Add(client);
+                if (OnRegister != null)
+                    OnRegister(client);
             }
         }
 
@@ -67,7 +87,15 @@ namespace OctoAwesome.Runtime
         {
             lock (clients)
             {
+                try
+                {
+                    client.Callback.Disconnect();
+                }
+                catch (Exception) { }
+
                 clients.Remove(client);
+                if (OnDeregister != null)
+                    OnDeregister(client);
             }
         }
 
@@ -81,5 +109,11 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
+
+        public event RegisterDelegate OnRegister;
+
+        public event RegisterDelegate OnDeregister;
+
+        public delegate void RegisterDelegate(Client info);
     }
 }

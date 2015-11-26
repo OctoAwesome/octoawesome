@@ -18,19 +18,30 @@ namespace OctoAwesome.Server
         public MainForm()
         {
             InitializeComponent();
-            Runtime.Server.Instance.Open();
-            timer1.Enabled = true;
-        }
 
-        private void startButton_Click(object sender, EventArgs e)
-        {
+            Runtime.Server.Instance.OnRegister += Instance_OnRegister;
+            Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
+            listBox1.DisplayMember = "Playername";
+
             world = new World();
+            Runtime.Server.Instance.Open();
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            listBox1.Items.Clear();
-            listBox1.Items.AddRange(Runtime.Server.Instance.Clients.ToArray());
+            Runtime.Server.Instance.Close();
+
+            base.OnFormClosed(e);
+        }
+
+        private void Instance_OnDeregister(Client client)
+        {
+            listBox1.Items.Remove(client);
+        }
+
+        private void Instance_OnRegister(Client client)
+        {
+            listBox1.Items.Add(client);
         }
     }
 }
