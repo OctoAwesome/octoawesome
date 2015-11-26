@@ -68,6 +68,7 @@
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\MainScreen.cs" />
     <Compile Include="Screens\OptionsScreen.cs" />
+    <Compile Include="Screens\SinglePlayerScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
