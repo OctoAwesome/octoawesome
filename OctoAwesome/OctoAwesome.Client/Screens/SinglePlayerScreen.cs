@@ -11,6 +11,12 @@ namespace OctoAwesome.Client.Screens
     {
         public SinglePlayerScreen(ScreenComponent manager) : base(manager)
         {
+            Image background = new Image(manager);
+            background.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background.png", manager.GraphicsDevice);
+            background.VerticalAlignment = VerticalAlignment.Stretch;
+            background.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Controls.Add(background);
+
             Button startButton = Button.TextButton(manager, "Start");
             startButton.LeftMouseClick += (s, e) =>
             {
