@@ -57,14 +57,53 @@ namespace OctoAwesome.Client.Components
             base.Dispose(disposing);
         }
 
-        public void SetPosition(Index3 globalPosition, Vector3 blockPosition)
-        {
-            PlayerController.Position = new Coordinate(0, globalPosition, blockPosition);
-        }
-
         public void Disconnect()
         {
 
+        }
+
+        public void SetPosition(int planet, Index3 globalPosition, Vector3 blockPosition)
+        {
+            PlayerController.Position = new Coordinate(planet, globalPosition, blockPosition);
+        }
+
+        public void SetAngle(float value)
+        {
+            PlayerController.Angle = value;
+        }
+
+        public void SetFlyMode(bool value)
+        {
+        }
+
+        public void SetHead(Vector2 value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetHeight(float value)
+        {
+            PlayerController.Height = value;
+        }
+
+        public void SetMove(Vector2 value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetOnGround(bool value)
+        {
+            PlayerController.OnGround = value;
+        }
+
+        public void SetRadius(float value)
+        {
+            PlayerController.Radius = value;
+        }
+
+        public void SetTilt(float value)
+        {
+            PlayerController.Tilt = value;
         }
     }
 }

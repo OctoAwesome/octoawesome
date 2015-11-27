@@ -17,47 +17,55 @@ namespace OctoAwesome.Runtime
             this.client = client;
         }
 
-        public float Angle
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public float Angle { get; set; }
+
+        private bool flyMode = false;
 
         public bool FlyMode
         {
             get
             {
-                throw new NotImplementedException();
+                return flyMode;
             }
 
             set
             {
-                throw new NotImplementedException();
+                if (flyMode != value)
+                {
+                    flyMode = value;
+                    try
+                    {
+                        client.SetFlyMode(value);
+                    }
+                    catch (Exception ex) { }
+                }
             }
         }
+
+        private Vector2 head = Vector2.Zero;
 
         public Vector2 Head
         {
             get
             {
-                throw new NotImplementedException();
+                return head;
             }
 
             set
             {
-                throw new NotImplementedException();
+                if (head != value)
+                {
+                    head = value;
+                    try
+                    {
+                        client.SetHead(value);
+                    }
+                    catch (Exception ex) { }
+                }
             }
         }
 
-        public float Height
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public float Height { get; set; }
 
         public IEnumerable<InventorySlot> Inventory
         {
@@ -67,53 +75,59 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        private Vector2 move = Vector2.Zero;
+
         public Vector2 Move
         {
             get
             {
-                throw new NotImplementedException();
+                return move;
             }
 
             set
             {
-                throw new NotImplementedException();
+                if (move != value)
+                {
+                    move = value;
+                    try
+                    {
+                        client.SetMove(value);
+                    }
+                    catch (Exception ex) { }
+                }
             }
         }
 
-        public bool OnGround
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public bool OnGround { get; set; }
 
         public Coordinate Position { get; set; }
 
-        public float Radius
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public float Radius { get; set; }
 
-        public float Tilt
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public float Tilt { get; set; }
 
         public void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation)
         {
-            throw new NotImplementedException();
+            try
+            {
+                client.Apply(blockIndex, tool, orientation);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public void Interact(Index3 blockIndex)
         {
-            throw new NotImplementedException();
+            try
+            {
+                client.Interact(blockIndex);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public void Jump()

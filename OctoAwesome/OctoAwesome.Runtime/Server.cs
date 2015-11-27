@@ -85,10 +85,12 @@ namespace OctoAwesome.Runtime
                 if (OnRegister != null)
                     OnRegister(client);
 
-                client.ActorHost = world.InjectPlayer(new Player()
+                ActorHost actorHost = world.InjectPlayer(new Player()
                 {
                     Position = new Coordinate(0, new Index3(100, 100, 300), new Microsoft.Xna.Framework.Vector3()),
                 });
+                client.SetActorHost(actorHost);
+                actorHost.Initialize();
             }
         }
 

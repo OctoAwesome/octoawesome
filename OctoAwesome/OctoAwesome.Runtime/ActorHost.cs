@@ -265,6 +265,84 @@ namespace OctoAwesome.Runtime
             }
 
             #endregion
+
+            #region Property Events
+
+            // Position
+            if (Position.Planet != oldPosition.Planet || 
+                Position.GlobalBlockIndex != oldPosition.GlobalBlockIndex || 
+                Position.BlockPosition != oldPosition.BlockPosition)
+            {
+                oldPosition = Position;
+                if (OnPositionChanged != null)
+                    OnPositionChanged(Position);
+            }
+
+            // Radius
+            if (Radius != oldRadius)
+            {
+                oldRadius = Radius;
+                if (OnRadiusChanged != null)
+                    OnRadiusChanged(Radius);
+            }
+
+            // Angle
+            if (Angle != oldAngle)
+            {
+                oldAngle = Angle;
+                if (OnAngleChanged != null)
+                    OnAngleChanged(Angle);
+            }
+
+            // Height
+            if (Height != oldHeight)
+            {
+                oldHeight = Height;
+                if (OnHeightChanged != null)
+                    OnHeightChanged(Height);
+            }
+
+            // On Ground
+            if (OnGround != oldOnGround)
+            {
+                oldOnGround = OnGround;
+                if (OnOnGroundChanged != null)
+                    OnOnGroundChanged(OnGround);
+            }
+
+            // Fly Mode
+            if (FlyMode != oldFlyMode)
+            {
+                oldFlyMode = FlyMode;
+                if (OnFlyModeChanged != null)
+                    OnFlyModeChanged(FlyMode);
+            }
+
+            // Tilt
+            if (Tilt != oldTilt)
+            {
+                oldTilt = Tilt;
+                if (OnTiltChanged != null)
+                    OnTiltChanged(Tilt);
+            }
+
+            // Move
+            if (Move != oldMove)
+            {
+                oldMove = Move;
+                if (OnMoveChanged != null)
+                    OnMoveChanged(Move);
+            }
+
+            // Head
+            if (Head != oldHead)
+            {
+                oldHead = Head;
+                if (OnHeadChanged != null)
+                    OnHeadChanged(Head);
+            }
+
+            #endregion
         }
 
         public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode)
@@ -315,36 +393,50 @@ namespace OctoAwesome.Runtime
             localChunkCache.Flush();
         }
 
+        private Coordinate oldPosition;
+
         public Coordinate Position
         {
             get { return Player.Position; }
         }
+
+        private float oldRadius = 0f;
 
         public float Radius
         {
             get { return Player.Radius; }
         }
 
+        private float oldAngle = 0f;
+
         public float Angle
         {
             get { return Player.Angle; }
         }
+
+        private float oldHeight = 0f;
 
         public float Height
         {
             get { return Player.Height; }
         }
 
+        private bool oldOnGround = false;
+
         public bool OnGround
         {
             get { return Player.OnGround; }
         }
+
+        private bool oldFlyMode = false;
 
         public bool FlyMode
         {
             get { return Player.FlyMode; }
             set { Player.FlyMode = value; }
         }
+
+        private float oldTilt = 0f;
 
         public float Tilt
         {
@@ -356,7 +448,11 @@ namespace OctoAwesome.Runtime
             get { return Player.Inventory; }
         }
 
+        private Vector2 oldMove = Vector2.Zero;
+
         public Vector2 Move { get; set; }
+
+        private Vector2 oldHead = Vector2.Zero;
 
         public Vector2 Head { get; set; }
 
@@ -399,5 +495,25 @@ namespace OctoAwesome.Runtime
                 slot.Amount++;
             }
         }
+
+        public event PropertyChangedDelegate<Coordinate> OnPositionChanged;
+
+        public event PropertyChangedDelegate<float> OnRadiusChanged;
+
+        public event PropertyChangedDelegate<float> OnAngleChanged;
+
+        public event PropertyChangedDelegate<float> OnHeightChanged;
+
+        public event PropertyChangedDelegate<bool> OnOnGroundChanged;
+
+        public event PropertyChangedDelegate<bool> OnFlyModeChanged;
+
+        public event PropertyChangedDelegate<float> OnTiltChanged;
+
+        public event PropertyChangedDelegate<Vector2> OnMoveChanged;
+
+        public event PropertyChangedDelegate<Vector2> OnHeadChanged;
+
+        public delegate void PropertyChangedDelegate<T>(T value);
     }
 }
