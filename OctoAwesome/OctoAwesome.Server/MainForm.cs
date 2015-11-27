@@ -21,7 +21,6 @@ namespace OctoAwesome.Server
 
             Runtime.Server.Instance.OnRegister += Instance_OnRegister;
             Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
-            listBox1.DisplayMember = "Playername";
 
             Runtime.Server.Instance.Open();
         }
@@ -35,12 +34,28 @@ namespace OctoAwesome.Server
 
         private void Instance_OnDeregister(Client client)
         {
-            listBox1.Items.Remove(client);
+            //ListViewItem bestehend aus Playername & Planet
+            listViewPlayers.Items.Remove(new ListViewItem(new String[] { client.Playername, "Default" }));
         }
 
         private void Instance_OnRegister(Client client)
         {
-            listBox1.Items.Add(client);
+            //ListViewItem bestehend aus Playername & Planet
+            listViewPlayers.Items.Add(new ListViewItem(new String[] { client.Playername, "Default" }));
+        }
+
+        private void button_stopServer_Click(object sender, EventArgs e)
+        {
+            if (((Button)sender).Text == "Stop")
+            {
+                Runtime.Server.Instance.Close();
+                ((Button)sender).Text = "Start";
+            }
+            else
+            {
+                Runtime.Server.Instance.Open();
+                ((Button)sender).Text = "Stop";
+            }
         }
     }
 }
