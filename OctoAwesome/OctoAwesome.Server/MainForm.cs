@@ -19,10 +19,13 @@ namespace OctoAwesome.Server
         {
             InitializeComponent();
 
+            ServerConsole.Console = console_textBox;
+            ServerConsole.Log("Initializing...");
             Runtime.Server.Instance.OnRegister += Instance_OnRegister;
             Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
 
             Runtime.Server.Instance.Open();
+            ServerConsole.Log("---Server started---");
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -36,12 +39,14 @@ namespace OctoAwesome.Server
         {
             //ListViewItem bestehend aus Playername & Planet
             listViewPlayers.Items.Remove(new ListViewItem(new String[] { client.Playername, "Default" }));
+            ServerConsole.Log("Player " + client.Playername + " left the game");
         }
 
         private void Instance_OnRegister(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
             listViewPlayers.Items.Add(new ListViewItem(new String[] { client.Playername, "Default" }));
+            ServerConsole.Log("Player " + client.Playername + " joined the game");
         }
 
         private void button_stopServer_Click(object sender, EventArgs e)
@@ -49,11 +54,13 @@ namespace OctoAwesome.Server
             if (((Button)sender).Text == "Stop")
             {
                 Runtime.Server.Instance.Close();
+                ServerConsole.Log("---Server started---");
                 ((Button)sender).Text = "Start";
             }
             else
             {
                 Runtime.Server.Instance.Open();
+                ServerConsole.Log("---Server stopped---");
                 ((Button)sender).Text = "Stop";
             }
         }
