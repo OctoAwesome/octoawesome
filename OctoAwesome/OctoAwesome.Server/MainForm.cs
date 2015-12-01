@@ -38,6 +38,7 @@ namespace OctoAwesome.Server
         private void Instance_OnDeregister(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
+            //TODO - fix item.remove
             listViewPlayers.Items.Remove(new ListViewItem(new String[] { client.Playername, "Default" }));
             ServerConsole.Log("Player " + client.Playername + " left the game");
         }
