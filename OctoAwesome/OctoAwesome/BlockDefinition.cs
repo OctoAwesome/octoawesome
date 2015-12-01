@@ -41,7 +41,7 @@ namespace OctoAwesome
         /// <param name="x">X-Anteil der Koordinate des Blocks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Die physikalischen Parameter/returns>
+        /// <returns>Die physikalischen Parameter</returns>
         public abstract PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z);
 
         /// <summary>

@@ -10,12 +10,24 @@ namespace OctoAwesome
     /// </summary>
     public sealed class GlobalChunkCache : IGlobalChunkCache
     {
+        /// <summary>
+        /// Dictionary, das alle <see cref="CacheItem"/>s hält.
+        /// </summary>
         private Dictionary<PlanetIndex3, CacheItem> cache;
 
+        /// <summary>
+        /// Funktion, die für das Laden der Chunks verwendet wird
+        /// </summary>
         private Func<PlanetIndex3, IChunk> loadDelegate;
 
+        /// <summary>
+        /// Routine, die für das Speichern der Chunks verwendet wird.
+        /// </summary>
         private Action<PlanetIndex3, IChunk> saveDelegate;
 
+        /// <summary>
+        /// Objekt, das für die Locks benutzt wird
+        /// </summary>
         private object lockObject = new object();
 
         /// <summary>
@@ -66,8 +78,8 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="writeable"></param>
+        /// <param name="position">Die Position des Chunks der Freigegeben wird</param>
+        /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugegriffen hat</param>
         public void Release(PlanetIndex3 position, bool writeable)
         {
             lock (lockObject)
@@ -94,14 +106,29 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Element für den Cache
+        /// </summary>
         private class CacheItem
         {
+            /// <summary>
+            /// Die Position des <see cref="CacheItem"/> in der Welt
+            /// </summary>
             public PlanetIndex3 Position { get; set; }
 
+            /// <summary>
+            /// Die Zahl der Subscriber, die das Item Abboniert hat.
+            /// </summary>
             public int References { get; set; }
 
+            /// <summary>
+            /// Die Zahl der Subscriber, die schreibend auf den Chunk zugreifen. Ihre Referenz wird auch in <see cref="References"/> mitgezählt
+            /// </summary>
             public int WritableReferences { get; set; }
 
+            /// <summary>
+            /// Der Chunk, auf den das <see cref="CacheItem"/> referenziert
+            /// </summary>
             public IChunk Chunk { get; set; }
         }
     }
