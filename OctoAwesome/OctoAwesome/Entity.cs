@@ -26,11 +26,13 @@ namespace OctoAwesome
         /// <summary>
         /// Geschwindikeit der Entität als Vektor
         /// </summary>
+        [XmlIgnore]
         public Vector3 Velocity { get; set; }
 
         /// <summary>
         /// Kraft die von aussen auf die Entität wirkt.
         /// </summary>
+        [XmlIgnore]
         public Vector3 ExternalForce { get; set; }
     }
 }

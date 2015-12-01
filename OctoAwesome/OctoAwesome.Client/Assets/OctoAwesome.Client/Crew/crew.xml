@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<ArrayOfCrewMember xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CrewMember>
+    <Username>Andy</Username>
+    <Alias>Andreas</Alias>
+    <Description>Andreas hat mich in den vergangenen 200 Folgen sicher mit den meisten Emails versorgt zum Thema Octo-Theorie. Egal ob es um den Cache oder die Serialisierung ging: Von ihm habe ich nicht nur "du hast da nen Tippfehler gemacht"-Mails bekommen, sondern sehr umfangreiche Verbesserungsvorschläge, teilweise mit Code-Fragmenten, erklärenden Zeichnungen und sonstigen Anregungen.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Anteru</Username>
+    <Alias>Matthäus</Alias>
+    <Description>Matthäus, der Mann fürs grafisch Grobe. Wir haben uns auf dem Game Camp kennen gelernt und haben festgestellt, dass er hier noch einiges beitragen kann. Als AMD Engineer hilft er im echten Leben den wirklich großen Projekten zur besseren Grafik-Performance und hat in diesem Zusammenhang schon etliche tolle Tipps platziert.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+      <Achievements>Livegast</Achievements>
+      <Achievements>Streamer</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>bobstriker</Username>
+    <Alias>Tom</Alias>
+    <Description>Das ist der Typ, der meistens vor der Kamera sitzt und versucht das Projekt zusammen zu halten. Ich denke das läuft ganz gut. Als gelernter Programmierer versucht er wohl zu allem ein bisschen was zu wissen und zeigt in OctoAwesome seine Herangehensweise an Software-Probleme.</Description>
+    <AchievementList>
+      <Achievements>Streamer</Achievements>
+      <Achievements>Livegast</Achievements>
+    </AchievementList>
+    <PictureFilename>./Assets/OctoAwesome.Client/Crew/bobstriker.png</PictureFilename>
+  </CrewMember>
+  <CrewMember>
+    <Username>Christian</Username>
+    <Alias>Christian</Alias>
+    <Description>Christian kenne ich schon seit meiner Zeit bei Microsoft. Er ist zwar erster Software Entwickler, hat seinen Spieltrieb aber wohl nie verloren und hat sogar an einem recht erfolgreichen Bomberman-Remake mitgearbeitet. Von ihm stammt übrigens das großartige "Ich bin kein Tutorial"-Shirt ;)</Description>
+    <AchievementList>
+      <Achievements>Patron</Achievements>
+      <Achievements>HardwareDealer</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Dennis</Username>
+    <Alias>Dennis</Alias>
+    <Description>Nach Folge 250 hat mir Dennis (aka. BlackOrca) doch prompt eine kleine Wer-bin-ich Nachricht geschickt die mich sehr gefreut hat. Viele Jahre verfolgt er bereits Projekte wie MoonTaxi, AntMe! und nun eben OctoAwesome. Ihm steht IoT auf der Flagge - speziell das Verbinden von Hard- und Software im Heimbereich.</Description>
+    <AchievementList>
+      <Achievements>Patron</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>jvbsl</Username>
+    <Alias>Julian</Alias>
+    <Description>Julian (aka jvbsl) studiert die gute alte Informatik hier direkt ums Eck in Garching. Wir haben uns so wirklich bewusst - zumindest für mich - am Game Camp in München getroffen uns seither ein paar coole Sachen zusammen gemacht. Angefangen natürlich bei unserem gemeinsamen Livestream zu MoonTaxi. Außerdem arbeitet er gerade an einem Remake des Jump'n'Run Klassikers Jazz Jackrabbit 2 (zu sehen auch im Livestream). Zusammen mit Patrick ist er für den bisherigen Map-Generator in OctoAwesome verantwortlich. Außerdem geht der OctoBot auf sein Konto ;)</Description>
+    <AchievementList>
+      <Achievements>Livegast</Achievements>
+      <Achievements>Streamer</Achievements>
+      <Achievements>Tools</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Juergen</Username>
+    <Alias>Juergen</Alias>
+    <Description>Jürgen ist ein stiller aber treuer Zuschauer, der aber in die Presche springt, wenn es drauf ankommt. Dank Jürgen wurde Internet in Leipzig möglich.</Description>
+    <AchievementList>
+      <Achievements>Patron</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Kapu</Username>
+    <Alias>Philipp</Alias>
+    <Description>Kapu (aka Philipp) habe ich in meiner vorherigen Arbeit im Gründerzentrum kennen gelernt. Er studiert an der MD.H in München und hat sich spontan bereit erklärt den Titel-Song für Octo zu machen. Das Ergebnis hört ihr im Abspann jeder einzelnen Folge.</Description>
+    <AchievementList>
+      <Achievements>Musik</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Lassi</Username>
+    <Alias>CSharpLassi</Alias>
+    <Description>Lassi war der erste Stargast im Octo-Universum und hat recht früh im Spiel dafür gesorgt, dass die Physik die richtigen Wege geht. Das ganze Trägheits- und Beschleunigungsthema war noch nie so meins. Wie wir alle wissen, hat er zuletzt seinen Elektrotechniker abgeschlossen, studiert aber tapfer weiter. Ich kann nur hoffen, dass es ein Master mit Schwerpunkt Animations-Physik ist.</Description>
+    <AchievementList>
+      <Achievements>Livegast</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>macx</Username>
+    <Alias>Maik</Alias>
+    <Description>macx, eigentlich Maik, kenne ich von diversen Technik-Veranstaltungen im Raum Köln. Von ihm kamen zahlreiche helfende Mails und auch das großzügige Angebot mit uns das Thema Networking auf Basis von WCF anzugehen. Ich werde darauf zurück greifen.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>manuelhu</Username>
+    <Alias>Manuel</Alias>
+    <Description>Von Manuel habe ich anfangs reichlich Feedback per YouTube-Kommentaren bekommen. Später dann per Email, bis er letztendlich durch die Livestreams zur rettenden Fee im Wiki wurde. Ohne ihn hätten wir hier keinen Episoden-Guide und auch mein Octo-Timer stammt aus seinem Compiler.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+      <Achievements>Tools</Achievements>
+      <Achievements>WikiAdmin</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>MarkusK</Username>
+    <Alias>Markus</Alias>
+    <Description>Danke für immer wieder äußerst hilfreiche Mails und natürlich auch die finanzielle Unterstützung.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+      <Achievements>Patron</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Mrsfuckingsunshine</Username>
+    <Alias>Aline</Alias>
+    <Description>Frau Sonnenschein, auch unter Aline bekannt, ist die gute Seele im Stream. Sie bringt mir nicht nur immer wieder guten warmen Tee sondern ist auch mein grafisches Gewissen und meine Inspiration, ebenso der Saubermann im Chat.</Description>
+    <AchievementList>
+      <Achievements>Livegast</Achievements>
+      <Achievements>Grafik</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>patteki</Username>
+    <Alias>Patrick</Alias>
+    <Description>Patrick ist quasi immer verstrickt, wenn es mit Map-Generierung zu tun hat und ist für unseren ambitionierten Masterplan eines irrsinnigen Klima-Modells auf Octo-Planeten verantwortlich. Neben Octo studiert er Mechatronik und streamt gelegentlich auch seine eigenen Sachen. Zumindest wenn er nicht gerade mitten in einem AntMe! Wettkampf steckt.</Description>
+    <AchievementList>
+      <Achievements>Livegast</Achievements>
+      <Achievements>Streamer</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Paul</Username>
+    <Alias>Paul</Alias>
+    <Description>Paul kenne ich noch aus den guten alten Microsoft Student Partner Zeiten. Er ist Software Entwickler im Raum Berlin und hat uns einzig und alleine ins Chaos gestürzt. Ihn hatten wir im Stream zur Performance- und Speicher-Optimierung. Mit großem Erfolg hat er Octo umgekrempelt.</Description>
+    <AchievementList>
+      <Achievements>Livegast</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Ralf</Username>
+    <Alias>Ralf</Alias>
+    <Description>alf teilt sich mit Andy zusammen die Spitze der mit Abstand umfangreichsten und ausgeklügelten Feedback-Mails. Da kommt nicht nur "Das und das ist falsch" sondern meist über Seiten hinweg Lösungsansätze und Referenz-Links. Vielen, vielen Dank dafür!</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Redwork</Username>
+    <Alias>Redwork</Alias>
+    <Description>Von Redwork weiß ich leider auch nicht besonders viel. Außer vielleicht, dass ich tolle Feedback Mails bekommen habe die mich schon über einige hundert Folgen begleiten und mir immer wieder tolle Hinweise geben.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>SomaFM</Username>
+    <Alias>Radio</Alias>
+    <Description>Ich werde ständig gefragt welchen Radio-Sender ich im "Ladescreen" verwende. Es handelt sich dabei um "Secret Agent" von SomaFM, einem wirklich coolen Streamer. Schaut gerne rein, lasst eine Donation da,...</Description>
+    <AchievementList>
+      <Achievements>Tools</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>susch19</Username>
+    <Alias>Susch19</Alias>
+    <Description>Susch war von Beginn an Befürworter das Stream-Formats und ist seither immer sehr hilfreich dabei meine Copy-Paste Probleme aufzudecken und an vielen Stellen gutes Feedback zu schicken.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Ulrich</Username>
+    <Alias>Ulrich</Alias>
+    <Description>Von Ulrich weiß ich leider auch eigentlich überhaupt nichts :( Aber er unterstützt mich bei Patreon und hilft damit ungemein weiter</Description>
+    <AchievementList>
+      <Achievements>Patron</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Vengarioth</Username>
+    <Alias>Andy</Alias>
+    <Description>vengarioth heißt eigentlich Andy und arbeitet als Spieleentwickler hier in München. Nicht nur, dass er weiß wie ein Compiler funktioniert, er weiß auch wie man ein Zeichentablett benutzt. Perfekt also um ihn mal in den Stream zu holen um über Grafik und Style zu sprechen.</Description>
+    <AchievementList>
+      <Achievements>Livegast</Achievements>
+      <Achievements>Patron</Achievements>
+    </AchievementList>
+  </CrewMember>
+</ArrayOfCrewMember>

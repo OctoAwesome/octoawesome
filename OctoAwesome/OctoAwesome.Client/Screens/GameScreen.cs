@@ -134,6 +134,7 @@ namespace OctoAwesome.Client.Screens
         private bool pressedHeadDown = false;
         private bool pressedHeadLeft = false;
         private bool pressedHeadRight = false;
+        private bool pressedShift = false;
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
@@ -141,6 +142,11 @@ namespace OctoAwesome.Client.Screens
 
             switch (args.Key)
             {
+                case Keys.LeftShift:
+                case Keys.RightShift:
+                    pressedShift = true;
+                    args.Handled = true;
+                    break;
                 case Keys.W:
                     pressedMoveUp = true;
                     args.Handled = true;
@@ -190,43 +196,43 @@ namespace OctoAwesome.Client.Screens
                     args.Handled = true;
                     break;
                 case Keys.D1:
-                    Manager.Player.SlotInput[0] = true;
+                    Manager.Player.SlotInput[pressedShift ? 10 : 0] = true;
                     args.Handled = true;
                     break;
                 case Keys.D2:
-                    Manager.Player.SlotInput[1] = true;
+                    Manager.Player.SlotInput[pressedShift ? 11 : 1] = true;
                     args.Handled = true;
                     break;
                 case Keys.D3:
-                    Manager.Player.SlotInput[2] = true;
+                    Manager.Player.SlotInput[pressedShift ? 12 : 2] = true;
                     args.Handled = true;
                     break;
                 case Keys.D4:
-                    Manager.Player.SlotInput[3] = true;
+                    Manager.Player.SlotInput[pressedShift ? 13 : 3] = true;
                     args.Handled = true;
                     break;
                 case Keys.D5:
-                    Manager.Player.SlotInput[4] = true;
+                    Manager.Player.SlotInput[pressedShift ? 14 : 4] = true;
                     args.Handled = true;
                     break;
                 case Keys.D6:
-                    Manager.Player.SlotInput[5] = true;
+                    Manager.Player.SlotInput[pressedShift ? 15 : 5] = true;
                     args.Handled = true;
                     break;
                 case Keys.D7:
-                    Manager.Player.SlotInput[6] = true;
+                    Manager.Player.SlotInput[pressedShift ? 16 : 6] = true;
                     args.Handled = true;
                     break;
                 case Keys.D8:
-                    Manager.Player.SlotInput[7] = true;
+                    Manager.Player.SlotInput[pressedShift ? 17 : 7] = true;
                     args.Handled = true;
                     break;
                 case Keys.D9:
-                    Manager.Player.SlotInput[8] = true;
+                    Manager.Player.SlotInput[pressedShift ? 18 : 8] = true;
                     args.Handled = true;
                     break;
                 case Keys.D0:
-                    Manager.Player.SlotInput[9] = true;
+                    Manager.Player.SlotInput[pressedShift ? 19 : 9] = true;
                     args.Handled = true;
                     break;
             }
@@ -238,6 +244,11 @@ namespace OctoAwesome.Client.Screens
         {
             switch (args.Key)
             {
+                case Keys.LeftShift:
+                case Keys.RightShift:
+                    pressedShift = false;
+                    args.Handled = true;
+                    break;
                 case Keys.W:
                     pressedMoveUp = false;
                     args.Handled = true;
@@ -269,7 +280,7 @@ namespace OctoAwesome.Client.Screens
                 case Keys.Right:
                     pressedHeadRight = false;
                     args.Handled = true;
-                    break;
+                    break;                
             }
 
             base.OnKeyUp(args);
@@ -304,9 +315,11 @@ namespace OctoAwesome.Client.Screens
                 case Keys.Escape:
                     Manager.NavigateToScreen(new MainScreen(Manager));
                     break;
+                case Keys.L:
+                    Manager.Player.ActorHost.AllBlocksDebug();
+                    break;
             }
         }
-
         #endregion
 
         #region GamePad Input

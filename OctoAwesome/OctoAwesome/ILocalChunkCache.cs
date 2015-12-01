@@ -41,6 +41,8 @@ namespace OctoAwesome
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
         int GetBlockMeta(int x, int y, int z);
 
+        int GetBlockMeta(Index3 index, int meta);
+
         /// <summary>
         /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
         /// </summary>
@@ -49,5 +51,7 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="meta">Die neuen Metadaten</param>
         void SetBlockMeta(int x, int y, int z, int meta);
+
+        void SetBlockMeta(Index3 index, int meta);
     }
 }

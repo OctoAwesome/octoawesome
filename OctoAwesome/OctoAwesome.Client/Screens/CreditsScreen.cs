@@ -12,15 +12,11 @@ namespace OctoAwesome.Client.Screens
 {
     class CreditsScreen : Screen
     {
-        String selectedItem;
-        ScreenComponent Manager;
-        public CreditsScreen(ScreenComponent manager) :base(manager)
+        public CreditsScreen(ScreenComponent manager) : base(manager)
         {
-            Manager = manager;
-
             Padding = new Border(0, 0, 0, 0);
 
-            Title = "Credits";
+            Title = Languages.OctoClient.CreditsCrew;
 
             Image background = new Image(manager);
             background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
@@ -28,7 +24,7 @@ namespace OctoAwesome.Client.Screens
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
-            Button backButton = Button.TextButton(manager, "Back");
+            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
             backButton.LeftMouseClick += (s, e) =>
@@ -86,11 +82,6 @@ namespace OctoAwesome.Client.Screens
             
 
             Controls.Add(crewScroll);
-        }
-
-        private void CrewList_LeftMouseClick(Control sender, MouseEventArgs args)
-        {
-            throw new NotImplementedException();
         }
     }
 }

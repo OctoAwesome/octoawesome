@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return "Snow";
+                return Languages.OctoBasics.Snow;
             }
         }
 
@@ -20,7 +20,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/snow.png"); 
+                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"); 
             }
         }
 
@@ -29,9 +29,9 @@ namespace OctoAwesome.Basics
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/snow.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/dirt_snow.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_snow.png"),
                 };
             }
         }

@@ -39,7 +39,7 @@ namespace OctoAwesome.Client.Screens
             };
 
             Controls.Add(panel);
-            
+
             //The Vertical Stack - Split the Panel in half Vertical
             StackPanel verticalStack = new StackPanel(manager)
             {
@@ -47,80 +47,80 @@ namespace OctoAwesome.Client.Screens
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Orientation = Orientation.Vertical,
             };
-           // panel.Controls.Add(verticalStack);
-
-            
-
-                //The Main Stack - Split the Panel in half Horizontal
-                StackPanel horizontalStack = new StackPanel(manager)
-                {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Orientation = Orientation.Horizontal
-                };
-                panel.Controls.Add(horizontalStack);
+            // panel.Controls.Add(verticalStack);
 
 
-                    //The Profile Image
-                    Image profileImage = new Image(manager)
-                    {
-                        Height = 200,
-                        Width = 200,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Padding = new Border(0, 0, 10, 0)
-                    };
-            if (member.Picture == null)
+
+            //The Main Stack - Split the Panel in half Horizontal
+            StackPanel horizontalStack = new StackPanel(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Orientation = Orientation.Horizontal
+            };
+            panel.Controls.Add(horizontalStack);
+
+
+            //The Profile Image
+            Image profileImage = new Image(manager)
+            {
+                Height = 200,
+                Width = 200,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Padding = new Border(0, 0, 10, 0)
+            };
+            if (member.PictureFilename == null)
                 profileImage.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/Crew/base.png", manager.GraphicsDevice);
-            else profileImage.Texture = member.Picture;
-                    horizontalStack.Controls.Add(profileImage);
+            else profileImage.Texture = manager.Content.LoadTexture2DFromFile(member.PictureFilename, manager.GraphicsDevice);
+            horizontalStack.Controls.Add(profileImage);
 
 
 
-                    //The Text Stack
-                    StackPanel textStack = new StackPanel(manager);
-                    textStack.VerticalAlignment = VerticalAlignment.Stretch;
-                    textStack.HorizontalAlignment = HorizontalAlignment.Left;
-                    textStack.Width = 430;
-                    horizontalStack.Controls.Add(textStack);
+            //The Text Stack
+            StackPanel textStack = new StackPanel(manager);
+            textStack.VerticalAlignment = VerticalAlignment.Stretch;
+            textStack.HorizontalAlignment = HorizontalAlignment.Left;
+            textStack.Width = 430;
+            horizontalStack.Controls.Add(textStack);
 
-                        //The Username
-                        Label username = new Label(manager)
-                        {
-                            Text = member.Username,
-                            Font = manager.Content.Load<SpriteFont>("HeadlineFont"),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Top
-                        };
-                        textStack.Controls.Add(username);
+            //The Username
+            Label username = new Label(manager)
+            {
+                Text = member.Username,
+                Font = manager.Content.Load<SpriteFont>("HeadlineFont"),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            textStack.Controls.Add(username);
 
-                        //The Alias
-                        Label alias = new Label(manager)
-                        {
-                            Text = member.Alias,
-                            HorizontalAlignment = HorizontalAlignment.Left
-                        };
-                        textStack.Controls.Add(alias);
+            //The Alias
+            Label alias = new Label(manager)
+            {
+                Text = member.Alias,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            textStack.Controls.Add(alias);
 
-                        //Achievements
-                        string achievementString = "";
+            //Achievements
+            string achievementString = "";
 
-                        foreach(CrewMember.Achievements achievement in member.AchievementList)
-                        {
-                            achievementString += " " + achievement.ToString();
-                            if (member.AchievementList.IndexOf(achievement) != member.AchievementList.Count - 1) achievementString += ", ";
-                        }
-                        StackPanel achievementStack = new StackPanel(manager);
-                        achievementStack.VerticalAlignment = VerticalAlignment.Top;
-                        achievementStack.HorizontalAlignment = HorizontalAlignment.Left;
-                        achievementStack.Orientation = Orientation.Horizontal;
-                        textStack.Controls.Add(achievementStack);
+            foreach (CrewMember.Achievements achievement in member.AchievementList)
+            {
+                achievementString += " " + achievement.ToString();
+                if (member.AchievementList.IndexOf(achievement) != member.AchievementList.Count - 1) achievementString += ", ";
+            }
+            StackPanel achievementStack = new StackPanel(manager);
+            achievementStack.VerticalAlignment = VerticalAlignment.Top;
+            achievementStack.HorizontalAlignment = HorizontalAlignment.Left;
+            achievementStack.Orientation = Orientation.Horizontal;
+            textStack.Controls.Add(achievementStack);
 
-                        Label achievementsTitle = new Label(manager) { Text = "Achievements: ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
+            Label achievementsTitle = new Label(manager) { Text = Languages.OctoClient.Achievements + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
 
-                        Label achievements = new Label(manager) { Text = achievementString , HorizontalAlignment = HorizontalAlignment.Left};
+            Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };
 
-                        achievementStack.Controls.Add(achievementsTitle);
-                        achievementStack.Controls.Add(achievements);
+            achievementStack.Controls.Add(achievementsTitle);
+            achievementStack.Controls.Add(achievements);
 
 
 
@@ -139,7 +139,7 @@ namespace OctoAwesome.Client.Screens
                 HorizontalAlignment = HorizontalAlignment.Left,
                 HorizontalTextAlignment = HorizontalAlignment.Left,
                 VerticalTextAlignment = VerticalAlignment.Top,
-                
+
             };
             Description.InvalidateDimensions();
             DescriptionPanel.Controls.Add(Description);
@@ -147,7 +147,7 @@ namespace OctoAwesome.Client.Screens
             panel.Width = 700;
 
             //The Back Button
-            Button backButton = Button.TextButton(manager, "Back");
+            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
             backButton.LeftMouseClick += (s, e) =>

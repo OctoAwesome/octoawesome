@@ -11,12 +11,12 @@ namespace OctoAwesome.Basics
     {
         public override string Name
         {
-            get { return "Wood"; }
+            get { return Languages.OctoBasics.Wood; }
         }
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/wood_top.png"); }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"); }
         }
 
         public override bool HasMetaData { get { return true; } }
@@ -26,8 +26,8 @@ namespace OctoAwesome.Basics
             get
             {
                 return new[] {
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/wood_top.png"),
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/wood_side.png") };
+                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"),
+                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_side.png") };
             }
         }
 

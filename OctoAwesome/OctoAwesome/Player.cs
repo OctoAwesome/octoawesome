@@ -48,6 +48,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt an, ob der Spieler an Boden ist
         /// </summary>
+        [XmlIgnore]
         public bool OnGround { get; set; }
 
         /// <summary>

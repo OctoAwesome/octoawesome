@@ -3,16 +3,16 @@ using System.Drawing;
 
 namespace OctoAwesome.Basics
 {
-    public sealed class StoneBlockDefinition : BlockDefinition
+    public sealed class IceBlockDefinition : BlockDefinition
     {
         public override string Name
         {
-            get { return "Stone"; }
+            get { return Languages.OctoBasics.Ice; }
         }
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/stone.png"); }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/ice.png"); }
         }
 
 
@@ -21,7 +21,7 @@ namespace OctoAwesome.Basics
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/stone.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/ice.png")
                 };
             }
         }
@@ -30,10 +30,10 @@ namespace OctoAwesome.Basics
         {
             return new PhysicalProperties()
             {
-                Density = 2.5f,
-                FractureToughness = 0.1f,
-                Granularity = 0.1f,
-                Hardness = 0.9f
+                Density = 2f,
+                FractureToughness = 0.3f,
+                Granularity = 0.9f,
+                Hardness = 0.1f
             };
         }
 

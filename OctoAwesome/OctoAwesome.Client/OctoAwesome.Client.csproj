@@ -57,6 +57,11 @@
     <Compile Include="Controls\SceneControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
     <Compile Include="CrewMember.cs" />
+    <Compile Include="Languages\OctoClient.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OctoClient.resx</DependentUpon>
+    </Compile>
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,6 +70,7 @@
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\MainScreen.cs" />
+    <Compile Include="Screens\OptionsScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
@@ -77,9 +83,13 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\OctoAwesome.Client\Crew\crew.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\OctoAwesome.Client\compass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -136,7 +146,13 @@
     <None Include="Content\Hud.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Languages\OctoClient.de.resx" />
+    <EmbeddedResource Include="Languages\OctoClient.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OctoClient.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
