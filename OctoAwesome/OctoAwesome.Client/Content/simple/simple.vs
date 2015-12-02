@@ -1,4 +1,4 @@
-//#version 320
+#version 130
 uniform mat4 WorldViewProj;
 
 in vec4 position;
