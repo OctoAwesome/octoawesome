@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:../../tools/GLSLCompiler.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -18,12 +19,6 @@
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
 /build:Hud.spritefont
-
-#begin simple.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Debug
-/build:simple.fx
 
 #begin GameFont.spritefont
 /importer:FontDescriptionImporter
@@ -42,3 +37,10 @@
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
 /build:BoldFont.spritefont
+
+#begin simple.glsl
+/importer:GLSLImporter
+/processor:GLSLProcessor
+/processorParam:Debug=False
+/build:simple.glsl
+

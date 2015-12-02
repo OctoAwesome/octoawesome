@@ -96,7 +96,7 @@ namespace OctoAwesome.Client.Components
 
                 foreach (var pass in simple.CurrentTechnique.Passes)
                 {
-                    pass.Apply();
+                    pass.ApplyGL();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);
                 }
             }
