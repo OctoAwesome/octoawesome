@@ -189,21 +189,24 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
-  <Target Name="">
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT'">
     <!-- El Capitan Support -->
-    <MonoExe Condition=" '$(OS)' != 'Windows_NT' And Exists ('/Library/Frameworks/Mono.framework/Versions/Current/bin/mono') ">/Library/Frameworks/Mono.framework/Versions/Current/bin/mono</MonoExe>
-    <MonoExe Condition=" '$(OS)' != 'Windows_NT' And Exists ('/usr/local/bin/mono') ">/usr/local/bin/mono</MonoExe>
-    <MonoExe Condition=" '$(OS)' != 'Windows_NT' And Exists ('/usr/bin/mono') ">/usr/bin/mono</MonoExe>
-    <MonoExe Condition=" '$(OS)' != 'Windows_NT' And '$(MonoExe)' == '' ">mono</MonoExe>
-    <PropertyGroup>
-      <PostBuildEvent>$(MonoExe) $(SolutionDir)tools/MGPatcher.exe $(TargetDir)MonoGame.Framework.dll $(TargetDir)MonoGame.Framework.dll</PostBuildEvent>
-    </PropertyGroup>
-  </Target>
+    
+    <MonoExe Condition=" Exists ('/Library/Frameworks/Mono.framework/Versions/Current/bin/mono') ">/Library/Frameworks/Mono.framework/Versions/Current/bin/mono</MonoExe>
+    <MonoExe Condition=" Exists ('/usr/local/bin/mono') ">/usr/local/bin/mono</MonoExe>
+    <MonoExe Condition=" Exists ('/usr/bin/mono') ">/usr/bin/mono</MonoExe>
+    <MonoExe Condition=" '$(MonoExe)' == '' ">mono</MonoExe>
+
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>$(MonoExe) $(SolutionDir)tools/MGPatcher.exe $(TargetDir)MonoGame.Framework.dll $(TargetDir)MonoGame.Framework.dll</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+
   </Target>
   -->
 </Project>
