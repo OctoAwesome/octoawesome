@@ -22,7 +22,6 @@ namespace OctoAwesome.Runtime
         {
             Callback = OperationContext.Current.GetCallbackChannel<IConnectionCallback>();
             ConnectionId = Guid.NewGuid();
-            Callback.SetHead(new Vector2(10, 10));
         }
 
         public void SetActorHost(ActorHost host)

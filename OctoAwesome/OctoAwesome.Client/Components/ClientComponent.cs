@@ -74,11 +74,12 @@ namespace OctoAwesome.Client.Components
 
         public void SetFlyMode(bool value)
         {
+            PlayerController.FlyMode = value;
         }
 
         public void SetHead(Vector2 value)
         {
-            throw new NotImplementedException();
+            PlayerController.Head = value;
         }
 
         public void SetHeight(float value)
@@ -88,7 +89,7 @@ namespace OctoAwesome.Client.Components
 
         public void SetMove(Vector2 value)
         {
-            throw new NotImplementedException();
+            PlayerController.Move = value;
         }
 
         public void SetOnGround(bool value)
