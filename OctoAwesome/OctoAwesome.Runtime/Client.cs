@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 namespace OctoAwesome.Runtime
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
-    public class Client : IClient
+    public class Client : IConnection
     {
-        public IClientCallback Callback { get; private set; }
+        public IConnectionCallback Callback { get; private set; }
 
         public Guid ConnectionId { get; private set; }
 
@@ -20,37 +20,104 @@ namespace OctoAwesome.Runtime
 
         public Client()
         {
-            Callback = OperationContext.Current.GetCallbackChannel<IClientCallback>();
+            Callback = OperationContext.Current.GetCallbackChannel<IConnectionCallback>();
             ConnectionId = Guid.NewGuid();
+            Callback.SetHead(new Vector2(10, 10));
         }
 
         public void SetActorHost(ActorHost host)
         {
             ActorHost = host;
 
-            host.OnPositionChanged += (p) => { Callback.SetPosition(p.Planet, p.GlobalBlockIndex, p.BlockPosition); };
-            host.OnRadiusChanged += (v) => { Callback.SetRadius(v); };
-            host.OnAngleChanged += (v) => { Callback.SetAngle(v); };
-            host.OnHeightChanged += (v) => { Callback.SetHeight(v); };
-            host.OnOnGroundChanged += (v) => { Callback.SetOnGround(v); };
-            host.OnFlyModeChanged += (v) => { Callback.SetFlyMode(v); };
-            host.OnTiltChanged += (v) => { Callback.SetTilt(v); };
-            host.OnMoveChanged += (v) => { Callback.SetMove(v); };
-            host.OnHeadChanged += (v) => { Callback.SetHead(v); };
+            host.OnPositionChanged += (p) =>
+            {
+                try
+                {
+                    Callback.SetPosition(p.Planet, p.GlobalBlockIndex, p.BlockPosition);
+                }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnRadiusChanged += (v) =>
+            {
+                try { Callback.SetRadius(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnAngleChanged += (v) =>
+            {
+                try { Callback.SetAngle(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnHeightChanged += (v) =>
+            {
+                try { Callback.SetHeight(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnOnGroundChanged += (v) =>
+            {
+                try { Callback.SetOnGround(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnFlyModeChanged += (v) =>
+            {
+                try { Callback.SetFlyMode(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnTiltChanged += (v) =>
+            {
+                try { Callback.SetTilt(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnMoveChanged += (v) =>
+            {
+                try { Callback.SetMove(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
+            host.OnHeadChanged += (v) =>
+            {
+                try { Callback.SetHead(v); }
+                catch (Exception ex)
+                {
+                    Disconnect(ex.Message);
+                }
+            };
         }
 
         [OperationBehavior]
         public Guid Connect(string playername)
         {
             Playername = playername;
-            Server.Instance.Register(this);
+            Server.Instance.Join(this);
             return ConnectionId;
         }
 
         [OperationBehavior]
-        public void Disconnect()
+        public void Disconnect(string reason)
         {
-            Server.Instance.Deregister(this);
+            Server.Instance.Leave(this);
         }
 
         [OperationBehavior]

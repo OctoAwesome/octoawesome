@@ -48,7 +48,7 @@ namespace OctoAwesome.Runtime
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
             host = new ServiceHost(typeof(Client), new Uri(address));
-            host.AddServiceEndpoint(typeof(IClient), binding, address);
+            host.AddServiceEndpoint(typeof(IConnection), binding, address);
             host.Open();
         }
 
@@ -64,7 +64,7 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        client.Callback.Disconnect();
+                        client.Callback.Disconnect(string.Empty);
                     }
                     catch (Exception) { }
 
@@ -77,7 +77,7 @@ namespace OctoAwesome.Runtime
             host.Close();
         }
 
-        internal void Register(Client client)
+        internal void Join(Client client)
         {
             lock (clients)
             {
@@ -94,13 +94,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        internal void Deregister(Client client)
+        internal void Leave(Client client)
         {
             lock (clients)
             {
                 try
                 {
-                    client.Callback.Disconnect();
+                    client.Callback.Disconnect(string.Empty);
                 }
                 catch (Exception) { }
 

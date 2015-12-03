@@ -7,14 +7,14 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
-    [ServiceContract(CallbackContract = typeof(IClientCallback), SessionMode = SessionMode.Required)]
-    public interface IClient
+    [ServiceContract(CallbackContract = typeof(IConnectionCallback), SessionMode = SessionMode.Required)]
+    public interface IConnection
     {
         [OperationContract(IsInitiating = true, IsTerminating = false)]
         Guid Connect(string playername);
 
         [OperationContract(IsInitiating = false, IsTerminating = true, IsOneWay = true)]
-        void Disconnect();
+        void Disconnect(string reason);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Jump();

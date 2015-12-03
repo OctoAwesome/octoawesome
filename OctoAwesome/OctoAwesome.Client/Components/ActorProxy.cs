@@ -8,13 +8,26 @@ namespace OctoAwesome.Runtime
 {
     public class ActorProxy : IPlayerController
     {
-        private IClient client;
+        private IConnection client;
+
+        public bool Connected { get; private set; }
 
         private List<InventorySlot> inventory = new List<InventorySlot>();
 
-        public ActorProxy(IClient client)
+        public ActorProxy(IConnection client)
         {
             this.client = client;
+            Connected = true;
+        }
+
+        public void Close(string reason)
+        {
+            try
+            {
+                client.Disconnect(reason);
+            }
+            catch (Exception) { }
+            Connected = false;
         }
 
         public float Angle { get; set; }
@@ -37,7 +50,10 @@ namespace OctoAwesome.Runtime
                     {
                         client.SetFlyMode(value);
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex)
+                    {
+                        Close(ex.Message);
+                    }
                 }
             }
         }
@@ -60,7 +76,10 @@ namespace OctoAwesome.Runtime
                     {
                         client.SetHead(value);
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex)
+                    {
+                        Close(ex.Message);
+                    }
                 }
             }
         }
@@ -93,7 +112,10 @@ namespace OctoAwesome.Runtime
                     {
                         client.SetMove(value);
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex)
+                    {
+                        Close(ex.Message);
+                    }
                 }
             }
         }
@@ -114,7 +136,7 @@ namespace OctoAwesome.Runtime
             }
             catch (Exception ex)
             {
-
+                Close(ex.Message);
             }
         }
 
@@ -126,7 +148,7 @@ namespace OctoAwesome.Runtime
             }
             catch (Exception ex)
             {
-
+                Close(ex.Message);
             }
         }
 
@@ -138,7 +160,7 @@ namespace OctoAwesome.Runtime
             }
             catch (Exception ex)
             {
-
+                Close(ex.Message);
             }
         }
     }

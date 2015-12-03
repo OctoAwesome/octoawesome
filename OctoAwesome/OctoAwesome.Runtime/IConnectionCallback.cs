@@ -7,10 +7,10 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
-    public interface IClientCallback
+    public interface IConnectionCallback
     {
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
-        void Disconnect();
+        void Disconnect(string reason);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetPosition(int planet, Index3 globalPosition, Vector3 blockPosition);
