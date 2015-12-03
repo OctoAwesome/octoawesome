@@ -26,7 +26,9 @@ namespace OctoAwesome.Runtime
 
         private World world;
 
-        private ServiceHost host;
+        private ServiceHost playerHost;
+
+        private ServiceHost chunkHost;
 
         private List<Client> clients = new List<Client>();
 
@@ -41,20 +43,29 @@ namespace OctoAwesome.Runtime
 
             string server = "localhost";
             int port = 8888;
-            string name = "Octo";
+            string playerName = "Octo";
+            string chunkName = "Chunks";
 
-            string address = string.Format("net.tcp://{0}:{1}/{2}", server, port, name);
+            string playerAddress = string.Format("net.tcp://{0}:{1}/{2}", server, port, playerName);
+            string chunkAddress = string.Format("net.tcp://{0}:{1}/{2}", server, port, chunkName);
 
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
-            host = new ServiceHost(typeof(Client), new Uri(address));
-            host.AddServiceEndpoint(typeof(IConnection), binding, address);
-            host.Open();
+            playerHost = new ServiceHost(typeof(Client), new Uri(playerAddress));
+            playerHost.AddServiceEndpoint(typeof(IConnection), binding, playerAddress);
+            playerHost.Open();
+
+            NetTcpBinding chunkBinding = new NetTcpBinding(SecurityMode.None);
+            chunkBinding.TransferMode = TransferMode.Streamed;
+
+            chunkHost = new ServiceHost(typeof(ChunkConnection), new Uri(chunkAddress));
+            chunkHost.AddServiceEndpoint(typeof(IChunkConnection), chunkBinding, chunkAddress);
+            chunkHost.Open();
         }
 
         public void Close()
         {
-            if (host == null)
+            if (playerHost == null)
                 return;
 
             // TODO: Alle Klienten schließen
@@ -74,7 +85,8 @@ namespace OctoAwesome.Runtime
                 }
             }
 
-            host.Close();
+            playerHost.Close();
+            chunkHost.Close();
         }
 
         internal void Join(Client client)

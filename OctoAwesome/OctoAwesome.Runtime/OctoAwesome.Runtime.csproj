@@ -52,11 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorHost.cs" />
+    <Compile Include="ChunkConnection.cs" />
     <Compile Include="ChunkDiskPersistence.cs" />
     <Compile Include="ChunkSerializer.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />
+    <Compile Include="IChunkConnection.cs" />
     <Compile Include="IConnection.cs" />
     <Compile Include="IConnectionCallback.cs" />
     <Compile Include="IPlayerController.cs" />

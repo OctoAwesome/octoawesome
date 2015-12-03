@@ -2,6 +2,7 @@
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -13,6 +14,8 @@ namespace OctoAwesome.Client.Components
         private Guid connectionId;
 
         private IConnection client;
+
+        private IChunkConnection chunkClient;
 
         public ActorProxy PlayerController { get;  private set; }
 
@@ -34,6 +37,19 @@ namespace OctoAwesome.Client.Components
             }
 
             PlayerController = new ActorProxy(client);
+
+            NetTcpBinding chunkBinding = new NetTcpBinding(SecurityMode.None);
+            chunkBinding.TransferMode = TransferMode.Streamed;
+
+            ChannelFactory<IChunkConnection> chunkFactory = new ChannelFactory<IChunkConnection>(chunkBinding);
+            EndpointAddress chunkEndpoint = new EndpointAddress("net.tcp://localhost:8888/Chunks");
+            chunkClient = chunkFactory.CreateChannel(chunkEndpoint);
+
+            using (Stream stream = chunkClient.GetChunk(0, 1, 1, 1))
+            {
+                ChunkSerializer serializer = new ChunkSerializer();
+                IChunk chunk = serializer.Deserialize(stream, new PlanetIndex3(0, 1, 1, 1));
+            }
         }
 
         public override void Initialize()
