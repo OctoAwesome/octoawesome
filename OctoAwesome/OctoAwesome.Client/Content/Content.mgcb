@@ -3,7 +3,7 @@
 
 /outputDir:bin/Windows
 /intermediateDir:obj/Windows
-/platform:Windows
+/platform:WindowsGL
 /config:
 /profile:Reach
 /compress:False

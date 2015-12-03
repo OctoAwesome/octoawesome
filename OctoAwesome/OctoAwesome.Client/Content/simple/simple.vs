@@ -13,5 +13,7 @@ void main()
 	psTexcoord = texCoord;
 	psNormal = normalize(normal);
 	gl_Position = position*WorldViewProj;
+
+
 }
 

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
@@ -17,8 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Client", "OctoA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E2A2D607-9959-4BAD-AE4D-238B9B951BC6}"
 	ProjectSection(SolutionItems) = preProject
-		libs\MonoGameUi.dll = libs\MonoGameUi.dll
+		tools\GLSLCompiler.dll = tools\GLSLCompiler.dll
 		libs\GLSLLibrary.dll = libs\GLSLLibrary.dll
+		tools\MGPatcher.exe = tools\MGPatcher.exe
+		tools\Mono.Cecil.dll = tools\Mono.Cecil.dll
+		libs\MonoGameUi.dll = libs\MonoGameUi.dll
+		tools\OpenTK.dll = tools\OpenTK.dll
 	EndProjectSection
 EndProject
 Global
@@ -27,31 +31,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0468B67C-E076-4B19-833C-382513606A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0468B67C-E076-4B19-833C-382513606A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0468B67C-E076-4B19-833C-382513606A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0468B67C-E076-4B19-833C-382513606A5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Release|Any CPU.Build.0 = Release|Any CPU
-		{739F0779-A605-49C9-A298-FE30DC628C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{739F0779-A605-49C9-A298-FE30DC628C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{739F0779-A605-49C9-A298-FE30DC628C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{739F0779-A605-49C9-A298-FE30DC628C9E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93601DB8-F134-418E-8B35-11E30CFEC31C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93601DB8-F134-418E-8B35-11E30CFEC31C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93601DB8-F134-418E-8B35-11E30CFEC31C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93601DB8-F134-418E-8B35-11E30CFEC31C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{739F0779-A605-49C9-A298-FE30DC628C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{739F0779-A605-49C9-A298-FE30DC628C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{739F0779-A605-49C9-A298-FE30DC628C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{739F0779-A605-49C9-A298-FE30DC628C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31D774C6-E5D9-40B7-8D63-942E28FE1D94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0468B67C-E076-4B19-833C-382513606A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0468B67C-E076-4B19-833C-382513606A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0468B67C-E076-4B19-833C-382513606A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0468B67C-E076-4B19-833C-382513606A5A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBCB341A-ACD0-4511-AD71-006779B90151}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{0468B67C-E076-4B19-833C-382513606A5A} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0468B67C-E076-4B19-833C-382513606A5A} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
 	EndGlobalSection
 EndGlobal
