@@ -110,13 +110,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public IEnumerable<string> Clients
+        public IEnumerable<Client> Clients
         {
             get
             {
                 lock (clients)
                 {
-                    return clients.Select(c => c.Playername);
+                    return clients;
                 }
             }
         }
