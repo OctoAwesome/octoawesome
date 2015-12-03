@@ -55,64 +55,62 @@ namespace OctoAwesome.Runtime
 
         public void Serialize(Stream stream, IChunk chunk)
         {
-            using (BinaryWriter bw = new BinaryWriter(stream))
+            BinaryWriter bw = new BinaryWriter(stream);
+            List<IBlockDefinition> definitions = new List<IBlockDefinition>();
+
+            // Types sammeln
+            for (int i = 0; i < chunk.Blocks.Length; i++)
             {
-                List<IBlockDefinition> definitions = new List<IBlockDefinition>();
-
-                // Types sammeln
-                for (int i = 0; i < chunk.Blocks.Length; i++)
+                if (chunk.Blocks[i] != 0)
                 {
-                    if (chunk.Blocks[i] != 0)
-                    {
-                        IBlockDefinition definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
-                        if (!definitions.Contains(definition))
-                            definitions.Add(definition);
-                    }
+                    IBlockDefinition definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                    if (!definitions.Contains(definition))
+                        definitions.Add(definition);
                 }
+            }
 
-                bool longIndex = definitions.Count > 254;
-                bw.Write((byte)((longIndex) ? 1 : 0));
+            bool longIndex = definitions.Count > 254;
+            bw.Write((byte)((longIndex) ? 1 : 0));
 
-                // Schreibe Phase 1
-                if (longIndex)
-                    bw.Write((ushort)definitions.Count);
-                else
-                    bw.Write((byte)definitions.Count);
+            // Schreibe Phase 1
+            if (longIndex)
+                bw.Write((ushort)definitions.Count);
+            else
+                bw.Write((byte)definitions.Count);
 
-                // Im Falle eines Luft-Chunks...
-                if (definitions.Count == 0)
-                    return;
+            // Im Falle eines Luft-Chunks...
+            if (definitions.Count == 0)
+                return;
 
-                foreach (var definition in definitions)
+            foreach (var definition in definitions)
+            {
+                bw.Write(definition.GetType().FullName);
+            }
+
+            // Schreibe Phase 2
+            for (int i = 0; i < chunk.Blocks.Length; i++)
+            {
+                if (chunk.Blocks[i] == 0)
                 {
-                    bw.Write(definition.GetType().FullName);
-                }
-
-                // Schreibe Phase 2
-                for (int i = 0; i < chunk.Blocks.Length; i++)
-                {
-                    if (chunk.Blocks[i] == 0)
-                    {
-                        // Definition Index (Air)
-                        if (longIndex)
-                            bw.Write((ushort)0);
-                        else
-                            bw.Write((byte)0);
-                    }
+                    // Definition Index (Air)
+                    if (longIndex)
+                        bw.Write((ushort)0);
                     else
-                    {
-                        // Definition Index
-                        IBlockDefinition definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                        bw.Write((byte)0);
+                }
+                else
+                {
+                    // Definition Index
+                    IBlockDefinition definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
 
-                        if (longIndex)
-                            bw.Write((ushort)(definitions.IndexOf(definition) + 1));
-                        else
-                            bw.Write((byte)(definitions.IndexOf(definition) + 1));
+                    if (longIndex)
+                        bw.Write((ushort)(definitions.IndexOf(definition) + 1));
+                    else
+                        bw.Write((byte)(definitions.IndexOf(definition) + 1));
 
-                        // Meta Data
-                        if (definition.HasMetaData)
-                            bw.Write(chunk.MetaData[i]);
-                    }
+                    // Meta Data
+                    if (definition.HasMetaData)
+                        bw.Write(chunk.MetaData[i]);
                 }
             }
         }

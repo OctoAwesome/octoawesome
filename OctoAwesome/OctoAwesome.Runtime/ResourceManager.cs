@@ -17,7 +17,7 @@ namespace OctoAwesome.Runtime
         private IChunkPersistence chunkPersistence = null;
         private IChunkSerializer chunkSerializer = null;
 
-        private GlobalChunkCache globalChunkCache = null;
+        // private GlobalChunkCache globalChunkCache = null;
 
         /// <summary>
         /// Planet Cache.
@@ -49,7 +49,7 @@ namespace OctoAwesome.Runtime
             chunkSerializer = new ChunkSerializer();
             chunkPersistence = new ChunkDiskPersistence(chunkSerializer);
 
-            globalChunkCache = new GlobalChunkCache(
+            GlobalChunkCache = new GlobalChunkCache(
                 (i) => loadChunk(i.Planet, i.ChunkIndex), 
                 (i, c) => saveChunk(i.Planet, c));
 
@@ -61,7 +61,7 @@ namespace OctoAwesome.Runtime
             bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
         }
 
-        public IGlobalChunkCache GlobalChunkCache { get { return globalChunkCache; } }
+        public IGlobalChunkCache GlobalChunkCache { get; set; }
 
         public IUniverse GetUniverse(int id)
         {

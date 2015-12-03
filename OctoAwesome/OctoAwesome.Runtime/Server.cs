@@ -57,6 +57,8 @@ namespace OctoAwesome.Runtime
 
             NetTcpBinding chunkBinding = new NetTcpBinding(SecurityMode.None);
             chunkBinding.TransferMode = TransferMode.Streamed;
+            chunkBinding.MaxReceivedMessageSize = int.MaxValue;
+            chunkBinding.MaxBufferSize = int.MaxValue;
 
             chunkHost = new ServiceHost(typeof(ChunkConnection), new Uri(chunkAddress));
             chunkHost.AddServiceEndpoint(typeof(IChunkConnection), chunkBinding, chunkAddress);

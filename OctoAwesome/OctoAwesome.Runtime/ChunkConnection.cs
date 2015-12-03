@@ -14,6 +14,7 @@ namespace OctoAwesome.Runtime
             ChunkSerializer serializer = new ChunkSerializer();
             MemoryStream stream = new MemoryStream();
             serializer.Serialize(stream, chunk);
+            stream.Seek(0, SeekOrigin.Begin);
             return stream;
         }
     }
