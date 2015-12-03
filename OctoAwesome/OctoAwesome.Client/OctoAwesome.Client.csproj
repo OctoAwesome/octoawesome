@@ -2,16 +2,13 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FBCB341A-ACD0-4511-AD71-006779B90151}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctoAwesome.Client</RootNamespace>
     <AssemblyName>OctoClient</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MonoGamePlatform>Windows</MonoGamePlatform>
     <MonoGameContentBuilderExe>
     </MonoGameContentBuilderExe>
     <SccProjectName>SAK</SccProjectName>
@@ -19,11 +16,34 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
   </PropertyGroup>
+  <Choose>
+    <When Condition="$(DefineConstants.Contains('Windows'))">
+      <PropertyGroup>
+        <MonoGamePlatform>WindowsGL</MonoGamePlatform>
+      </PropertyGroup>
+    </When>
+    <When Condition="$(DefineConstants.Contains('Linux'))">
+      <PropertyGroup>
+        <MonoGamePlatform>Linux</MonoGamePlatform>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <Choose>
+        <When Condition="$(OS) == 'Unix'">
+          <PropertyGroup>
+            <MonoGamePlatform>Linux</MonoGamePlatform>
+          </PropertyGroup>
+        </When>
+        <Otherwise>
+          <PropertyGroup>
+            <MonoGamePlatform>WindowsGL</MonoGamePlatform>
+          </PropertyGroup>
+        </Otherwise>
+      </Choose>
+    </Otherwise>
+  </Choose>
   <PropertyGroup>
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +54,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -43,6 +65,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
@@ -67,19 +90,42 @@
     <Compile Include="Screens\MainScreen.cs" />
     <Compile Include="Screens\OptionsScreen.cs" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(MonoGamePlatform)'=='WindowsGL'">
+      <ItemGroup>
+        <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\MonoGame.Framework.WindowsGL.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="OpenTK">
+          <HintPath>..\packages\MonoGame.Framework.WindowsGL.3.4.0.459\lib\net40\OpenTK.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(MonoGamePlatform)'=='Linux'">
+      <ItemGroup>
+        <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\MonoGame.Framework.Linux.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="OpenTK">
+          <HintPath>..\packages\MonoGame.Framework.Linux.3.4.0.459\lib\net40\OpenTK.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MonoGameUi">
       <HintPath>..\libs\MonoGameUi.dll</HintPath>
     </Reference>
+    <Reference Include="GLSLLibrary">
+      <HintPath>..\libs\GLSLLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\OctoAwesome.Client\Crew\crew.xml">
@@ -120,12 +166,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
-      <Project>{31d774c6-e5d9-40b7-8d63-942e28fe1d94}</Project>
+      <Project>{31D774C6-E5D9-40B7-8D63-942E28FE1D94}</Project>
       <Name>OctoAwesome.Runtime</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
+      <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
       <Name>OctoAwesome</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -139,16 +185,28 @@
     <None Include="Content\GameFont.spritefont" />
     <None Include="Content\HeadlineFont.spritefont" />
     <None Include="Content\Hud.spritefont" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT'">
+    <!-- El Capitan Support -->
+    
+    <MonoExe Condition=" Exists ('/Library/Frameworks/Mono.framework/Versions/Current/bin/mono') ">/Library/Frameworks/Mono.framework/Versions/Current/bin/mono</MonoExe>
+    <MonoExe Condition=" Exists ('/usr/local/bin/mono') ">/usr/local/bin/mono</MonoExe>
+    <MonoExe Condition=" Exists ('/usr/bin/mono') ">/usr/bin/mono</MonoExe>
+    <MonoExe Condition=" '$(MonoExe)' == '' ">mono</MonoExe>
+
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>$(MonoExe) $(SolutionDir)tools/MGPatcher.exe $(TargetDir)MonoGame.Framework.dll $(TargetDir)MonoGame.Framework.dll</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+
   </Target>
   -->
 </Project>
