@@ -43,9 +43,9 @@
             this.button_messageAll = new System.Windows.Forms.Button();
             this.button_stopServer = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.console_textBox = new System.Windows.Forms.RichTextBox();
             this.consoleEnter_textBox = new System.Windows.Forms.TextBox();
+            this.console_textBox = new System.Windows.Forms.RichTextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -83,6 +83,7 @@
             this.button_kickPlayer.TabIndex = 3;
             this.button_kickPlayer.Text = "Kick Player";
             this.button_kickPlayer.UseVisualStyleBackColor = true;
+            this.button_kickPlayer.Click += new System.EventHandler(this.button_kickPlayer_Click);
             // 
             // button_banPlayer
             // 
@@ -155,6 +156,7 @@
             this.button_kickAll.TabIndex = 2;
             this.button_kickAll.Text = "Kick All";
             this.button_kickAll.UseVisualStyleBackColor = true;
+            this.button_kickAll.Click += new System.EventHandler(this.button_kickAll_Click);
             // 
             // button_messageAll
             // 
@@ -186,14 +188,12 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Output / Console";
             // 
-            // groupBox4
+            // consoleEnter_textBox
             // 
-            this.groupBox4.Location = new System.Drawing.Point(181, 12);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(178, 142);
-            this.groupBox4.TabIndex = 10;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Status";
+            this.consoleEnter_textBox.Location = new System.Drawing.Point(7, 137);
+            this.consoleEnter_textBox.Name = "consoleEnter_textBox";
+            this.consoleEnter_textBox.Size = new System.Drawing.Size(334, 20);
+            this.consoleEnter_textBox.TabIndex = 1;
             // 
             // console_textBox
             // 
@@ -204,12 +204,14 @@
             this.console_textBox.TabIndex = 0;
             this.console_textBox.Text = "";
             // 
-            // consoleEnter_textBox
+            // groupBox4
             // 
-            this.consoleEnter_textBox.Location = new System.Drawing.Point(7, 137);
-            this.consoleEnter_textBox.Name = "consoleEnter_textBox";
-            this.consoleEnter_textBox.Size = new System.Drawing.Size(334, 20);
-            this.consoleEnter_textBox.TabIndex = 1;
+            this.groupBox4.Location = new System.Drawing.Point(181, 12);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(178, 142);
+            this.groupBox4.TabIndex = 10;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Status";
             // 
             // MainForm
             // 

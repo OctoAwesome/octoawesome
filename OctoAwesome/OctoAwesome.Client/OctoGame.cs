@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using OctoAwesome;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
+using OctoAwesome.Client.Screens;
 using OctoAwesome.Runtime;
 using System;
 using System.Configuration;
@@ -78,12 +79,15 @@ namespace OctoAwesome.Client
             screens.UpdateOrder = 1;
             screens.DrawOrder = 1;
             Components.Add(screens);
+
+            client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            simulation.Save();
-            simulation.World.Save();
+            //TODO Fix crash -> ONLY call in singleplayer...
+            //simulation.Save();
+            //simulation.World.Save();
 
             base.OnExiting(sender, args);
         }

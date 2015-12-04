@@ -65,6 +65,7 @@
     <Compile Include="Screens\ConnectScreen.cs" />
     <Compile Include="Screens\CreditsScreen.cs" />
     <Compile Include="Screens\CrewMemberScreen.cs" />
+    <Compile Include="Screens\DisconnectScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\MainScreen.cs" />

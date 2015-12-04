@@ -65,6 +65,9 @@ namespace OctoAwesome.Runtime
             chunkHost.Open();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Close()
         {
             if (playerHost == null)
@@ -73,18 +76,32 @@ namespace OctoAwesome.Runtime
             // TODO: Alle Klienten schließen
             lock (clients)
             {
-                foreach (var client in clients)
+                //foreach (var client in clients)
+                //{
+                //    try
+                //    {
+                //        client.Callback.Disconnect(string.Empty);
+                //    }
+                //    catch (Exception) { }
+
+                //    clients.Remove(client);
+                //    if (OnDeregister != null)
+                //        OnDeregister(client);
+                //}
+
+                for(int i = 0; i< clients.Count; i++)
                 {
                     try
                     {
-                        client.Callback.Disconnect(string.Empty);
+                        clients[i].Callback.Disconnect("Server closed");
                     }
-                    catch (Exception) { }
+                    catch(Exception e) { }
 
-                    clients.Remove(client);
                     if (OnDeregister != null)
-                        OnDeregister(client);
+                        OnDeregister(clients[i]);
                 }
+
+                clients.Clear();
             }
 
             playerHost.Close();
