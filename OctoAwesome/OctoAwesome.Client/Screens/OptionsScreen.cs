@@ -16,11 +16,13 @@ namespace OctoAwesome.Client.Screens
     class OptionsScreen : Screen
     {
         private OctoGame game;
-        private Button exitButton, deleteButton;
-        private Label rangeTitle, persistenceTitle;
+        private Button exitButton;
+        private Label rangeTitle;
+        private StackPanel settingsStack;
+        private Slider viewrangeSlider;
         private Textbox mapPath;
-
-        private bool deleteState;
+        private Checkbox disablePersistence;
+        private Textbox playernameBox;
 
         Configuration config;
 
@@ -50,11 +52,12 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(backButton);
 
             ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
-            StackPanel settingsStack = new StackPanel(manager);
+            settingsStack = new StackPanel(manager);
             settingsStack.Orientation = Orientation.Vertical;
             Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
             settingsStack.Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
             settingsStack.Padding = new Border(20, 20, 20, 20);
+            settingsStack.MinWidth = 600;
             Controls.Add(settingsStack);
 
 
@@ -65,57 +68,47 @@ namespace OctoAwesome.Client.Screens
             rangeTitle.Text = "Viewrange: " + viewrange;
             settingsStack.Controls.Add(rangeTitle);
 
-            Slider viewrangeSlider = new Slider(manager);
+            viewrangeSlider = new Slider(manager);
             viewrangeSlider.HorizontalAlignment = HorizontalAlignment.Stretch;
             viewrangeSlider.Height = 20;
             viewrangeSlider.Range = 9;
             viewrangeSlider.Value = int.Parse(viewrange) -1;
-            viewrangeSlider.ValueChanged += (value) => SetViewrange(value + 1);
+            viewrangeSlider.ValueChanged += (value) => rangeTitle.Text = "Viewrange: " + (value + 1);
             settingsStack.Controls.Add(viewrangeSlider);
 
 
             //////////////////////Persistence//////////////////////
-            StackPanel persistenceStack = new StackPanel(manager);
-            persistenceStack.Orientation = Orientation.Horizontal;
-            persistenceStack.Margin = new Border(0, 10, 0, 0);
-            settingsStack.Controls.Add(persistenceStack);
+            StackPanel persistenceStack = addHorizontalStack("Disable persistence:");
 
-            persistenceTitle = new Label(manager);
-            persistenceTitle.Text = "Disable persistence:";
-            persistenceStack.Controls.Add(persistenceTitle);
-
-            Checkbox disablePersistence = new Checkbox(manager);
+            disablePersistence = new Checkbox(manager);
             disablePersistence.Checked = bool.Parse(ConfigurationManager.AppSettings["DisablePersistence"]);
-            disablePersistence.CheckedChanged += (state) => SetPersistence(state);
             persistenceStack.Controls.Add(disablePersistence);
 
+            //////////////////////Playername//////////////////////
+            StackPanel playernameStack = addHorizontalStack("Playername:");
+
+            playernameBox = new Textbox(Manager);
+            playernameStack.Background = Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray);
+            playernameBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+            playernameBox.Text = ConfigurationManager.AppSettings["Playername"];
+            playernameStack.Controls.Add(playernameBox);
+
             //////////////////////Map Path//////////////////////
-            StackPanel mapPathStack = new StackPanel(manager);
-            mapPathStack.Orientation = Orientation.Horizontal;
-            mapPathStack.Margin = new Border(0, 10, 0, 0);
-            mapPathStack.HorizontalAlignment = HorizontalAlignment.Stretch;
-            settingsStack.Controls.Add(mapPathStack);
+            StackPanel mapPathStack = addHorizontalStack();
 
             mapPath = new Textbox(manager);
-           // mapPath.HorizontalAlignment = HorizontalAlignment.Stretch;
             mapPath.Text = ConfigurationManager.AppSettings["ChunkRoot"];
-            mapPath.Enabled = false;
             mapPath.Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray);
+            mapPath.HorizontalAlignment = HorizontalAlignment.Stretch;
+            mapPath.LeftMouseClick += (s, e) => ChangePath();
             mapPathStack.Controls.Add(mapPath);
 
-            Button changePath = Button.TextButton(manager, "Change Path");
-            changePath.Height = 31;
-            changePath.LeftMouseClick += (s, e) => ChangePath();
-            mapPathStack.Controls.Add(changePath);
+            //////////////////////Save//////////////////////
+            Button saveButton = Button.TextButton(Manager, "Save");
+            saveButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            saveButton.LeftMouseClick += (s, e) => Save();
+            settingsStack.Controls.Add(saveButton);
 
-
-            //////////////////////Delete Map//////////////////////
-            deleteButton = Button.TextButton(manager, "Delete Map");
-            deleteButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            deleteButton.Margin = new Border(0, 10, 0, 0);
-            deleteButton.LeftMouseClick += (s, e) => deleteMap();
-            settingsStack.Controls.Add(deleteButton);
-        
 
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
             exitButton = Button.TextButton(manager, "Restart game to apply changes");
@@ -132,19 +125,6 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(exitButton);
         }
 
-        private void SetViewrange(int newRange)
-        {
-            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
-
-            rangeTitle.Text = "Viewrange: " + newRange;
-
-            config.AppSettings.Settings["Viewrange"].Value = newRange.ToString();
-            config.Save(ConfigurationSaveMode.Modified);
-
-            exitButton.Visible = true;
-            exitButton.Enabled = true;
-        }
-
         private void ChangePath()
         {
             config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -154,41 +134,72 @@ namespace OctoAwesome.Client.Screens
             if(folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = folderBrowser.SelectedPath;
-                config.AppSettings.Settings["ChunkRoot"].Value = path;
-                config.Save();
                 mapPath.Text = path;
+            }
+        }
 
+        private void Save()
+        {
+            bool restartNeeded = false;
+
+            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            if (ConfigurationManager.AppSettings["Viewrange"] != viewrangeSlider.Value + 1 + "")
+            {
+                config.AppSettings.Settings["Viewrange"].Value = viewrangeSlider.Value + 1 + "";
+                restartNeeded = true;
+            }
+
+            if (ConfigurationManager.AppSettings["ChunkRoot"] != mapPath.Text)
+            {
+                config.AppSettings.Settings["ChunkRoot"].Value = mapPath.Text;
+                restartNeeded = true;
+            }
+
+            if(ConfigurationManager.AppSettings["DisablePersistence"] !=  disablePersistence.Checked.ToString())
+            {
+                config.AppSettings.Settings["DisablePersistence"].Value = disablePersistence.Checked.ToString();
+                restartNeeded = true;
+            }
+
+            if (ConfigurationManager.AppSettings["Playername"] != playernameBox.Text)
+            {
+                config.AppSettings.Settings["Playername"].Value = playernameBox.Text;
+                restartNeeded = true;
+            }
+
+            config.Save(ConfigurationSaveMode.Modified);
+
+            if (restartNeeded)
+            {
                 exitButton.Visible = true;
                 exitButton.Enabled = true;
             }
         }
 
-        private void SetPersistence(bool state)
+        private StackPanel addHorizontalStack()
         {
-            config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location);
-            config.AppSettings.Settings["DisablePersistence"].Value = state.ToString();
-            config.Save(ConfigurationSaveMode.Modified);
+            StackPanel s = new StackPanel(Manager);
+            s.Orientation = Orientation.Horizontal;
+            s.Margin = new Border(0, 10, 0, 0);
+            s.HorizontalAlignment = HorizontalAlignment.Stretch;
+            settingsStack.Controls.Add(s);
 
-            exitButton.Visible = true;
-            exitButton.Enabled = true;
+            return s;
         }
 
-        private void deleteMap()
-        { 
+        private StackPanel addHorizontalStack(string text)
+        {
+            StackPanel s = addHorizontalStack();
 
-            if(deleteState)
+            Label label = new Label(Manager)
             {
-                deleteState = false;
-                ((Label)(deleteButton.Content)).Text = "Deleted...";
-                deleteButton.Enabled = false;
-                try { Directory.Delete(@"D:\OctoMap"); }catch { } //TODO: Unlock files to delete Directory
-            }
-            else
-            {
-                ((Label)(deleteButton.Content)).Text = "Really?";
-                deleteButton.InvalidateDimensions();
-                deleteState = true;
-            }
+                Text = text,
+
+            };
+            s.Controls.Add(label);
+
+            return s;
         }
     }
 }

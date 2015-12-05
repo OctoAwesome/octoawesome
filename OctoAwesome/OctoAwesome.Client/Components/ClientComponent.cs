@@ -2,6 +2,7 @@
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
@@ -29,7 +30,7 @@ namespace OctoAwesome.Client.Components
 
             try
             {
-                connectionId = client.Connect("test");
+                connectionId = client.Connect(ConfigurationManager.AppSettings["Playername"]);
             }
             catch (Exception ex)
             {
@@ -80,7 +81,8 @@ namespace OctoAwesome.Client.Components
 
         public void Disconnect(string reason)
         {
-
+            if (OnDisconnect != null)
+                OnDisconnect.Invoke(reason);
         }
 
         public void SetPosition(int planet, Index3 globalPosition, Vector3 blockPosition)
@@ -127,5 +129,9 @@ namespace OctoAwesome.Client.Components
         {
             PlayerController.Tilt = value;
         }
+
+        public delegate void DisconnectDelegate(string reason);
+
+        public event DisconnectDelegate OnDisconnect;
     }
 }

@@ -11,8 +11,10 @@ namespace OctoAwesome.Client.Screens
     {
         public SinglePlayerScreen(ScreenComponent manager) : base(manager)
         {
+            Padding = Border.All(0);
+
             Image background = new Image(manager);
-            background.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background.png", manager.GraphicsDevice);
+            background.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
