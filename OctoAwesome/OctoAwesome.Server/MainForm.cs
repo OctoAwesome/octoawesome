@@ -18,8 +18,8 @@ namespace OctoAwesome.Server
         {
             InitializeComponent();
 
-            Runtime.Server.Instance.OnRegister += Instance_OnRegister;
-            Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
+            Runtime.Server.Instance.OnJoin += Instance_OnJoin;
+            Runtime.Server.Instance.OnLeave += Instance_OnLeave;
 
             Runtime.Server.Instance.Open();
         }
@@ -31,7 +31,7 @@ namespace OctoAwesome.Server
             base.OnFormClosed(e);
         }
 
-        private void Instance_OnDeregister(Client client)
+        private void Instance_OnLeave(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
             //TODO - fix item.remove
@@ -39,10 +39,8 @@ namespace OctoAwesome.Server
             listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
         }
 
-        private void Instance_OnRegister(Client client)
+        private void Instance_OnJoin(Client client)
         {
-            MessageBox.Show(client.ConnectionId.ToString());
-
             //ListViewItem bestehend aus Playername & Planet
             ListViewItem playerItem = new ListViewItem();
             playerItem.Tag = client.ConnectionId;
@@ -55,7 +53,7 @@ namespace OctoAwesome.Server
 
         private void button_stopServer_Click(object sender, EventArgs e)
         {
-            if (((Button)sender).Text == "Stop")
+            if(Runtime.Server.Instance.IsRunning)
             {
                 Runtime.Server.Instance.Close();
                 ((Button)sender).Text = "Start";

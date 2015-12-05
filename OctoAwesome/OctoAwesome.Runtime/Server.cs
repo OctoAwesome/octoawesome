@@ -30,6 +30,8 @@ namespace OctoAwesome.Runtime
 
         private ServiceHost chunkHost;
 
+        public bool IsRunning { get; private set; }
+
         private List<Client> clients = new List<Client>();
 
         public Server()
@@ -63,6 +65,8 @@ namespace OctoAwesome.Runtime
             chunkHost = new ServiceHost(typeof(ChunkConnection), new Uri(chunkAddress));
             chunkHost.AddServiceEndpoint(typeof(IChunkConnection), chunkBinding, chunkAddress);
             chunkHost.Open();
+
+            IsRunning = true;
         }
 
         /// <summary>
@@ -85,10 +89,11 @@ namespace OctoAwesome.Runtime
                 //    catch (Exception) { }
 
                 //    clients.Remove(client);
-                //    if (OnDeregister != null)
-                //        OnDeregister(client);
+                //    if (OnLeave != null)
+                //        OnLeave(client);
                 //}
 
+                //Safe Close Clients
                 for(int i = 0; i< clients.Count; i++)
                 {
                     try
@@ -97,8 +102,8 @@ namespace OctoAwesome.Runtime
                     }
                     catch(Exception e) { }
 
-                    if (OnDeregister != null)
-                        OnDeregister(clients[i]);
+                    if (OnLeave != null)
+                        OnLeave(clients[i]);
                 }
 
                 clients.Clear();
@@ -106,6 +111,8 @@ namespace OctoAwesome.Runtime
 
             playerHost.Close();
             chunkHost.Close();
+
+            IsRunning = false;
         }
 
         internal void Join(Client client)
@@ -113,8 +120,8 @@ namespace OctoAwesome.Runtime
             lock (clients)
             {
                 clients.Add(client);
-                if (OnRegister != null)
-                    OnRegister(client);
+                if (OnJoin != null)
+                    OnJoin(client);
 
                 ActorHost actorHost = world.InjectPlayer(new Player()
                 {
@@ -136,8 +143,8 @@ namespace OctoAwesome.Runtime
                 catch (Exception) { }
 
                 clients.Remove(client);
-                if (OnDeregister != null)
-                    OnDeregister(client);
+                if (OnLeave != null)
+                    OnLeave(client);
             }
         }
 
@@ -152,9 +159,9 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public event RegisterDelegate OnRegister;
+        public event RegisterDelegate OnJoin;
 
-        public event RegisterDelegate OnDeregister;
+        public event RegisterDelegate OnLeave;
 
         public delegate void RegisterDelegate(Client info);
     }

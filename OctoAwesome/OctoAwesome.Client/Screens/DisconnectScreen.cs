@@ -17,6 +17,10 @@ namespace OctoAwesome.Client.Screens
                 MaxWidth = Width / 2
             };
             stack.Controls.Add(Description);
+
+            Button backToMenu = Button.TextButton(manager, "Back to Main Menu");
+            backToMenu.LeftMouseClick += (s, e) => manager.NavigateHome();
+            stack.Controls.Add(backToMenu);
             Controls.Add(stack);
         }
     }
