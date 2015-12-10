@@ -106,11 +106,17 @@ namespace OctoAwesome.Runtime
         }
 
         [OperationBehavior]
-        public Guid Connect(string playername)
+        public ConnectResult Connect(string playername)
         {
             Playername = playername;
             Server.Instance.Join(this);
-            return ConnectionId;
+
+            ConnectResult result = new ConnectResult
+            {
+                Id = ConnectionId,
+                OtherClients = Server.Instance.Clients
+            };
+            return result;
         }
 
         [OperationBehavior]

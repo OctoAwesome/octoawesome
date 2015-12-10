@@ -46,9 +46,6 @@ namespace OctoAwesome.Runtime
         #region Player Management
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
-        void SendPlayerList(ICollection<ClientInfo> clients);
-
-        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendPlayerJoin(ClientInfo client);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]

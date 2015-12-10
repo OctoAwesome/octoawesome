@@ -91,7 +91,7 @@ namespace OctoAwesome.Server
 
             try
             {
-                Runtime.Server.Instance.Clients.First(c => c.ConnectionId.ToString() == listViewPlayers.SelectedItems[0].Name).Disconnect("Kicked");
+                Runtime.Server.Instance.Kick((Guid)listViewPlayers.SelectedItems[0].Tag);
             }
             catch (Exception ex)
             {
@@ -101,8 +101,9 @@ namespace OctoAwesome.Server
 
         private void button_kickAll_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Runtime.Server.Instance.Clients.Count(); i++)
-                Runtime.Server.Instance.Clients.ElementAt(i).Disconnect("Kicked");
+            var guids = Runtime.Server.Instance.Clients.Select(c => c.Id);
+            foreach (var guid in guids)
+                Runtime.Server.Instance.Kick(guid);
         }
     }
 }

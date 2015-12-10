@@ -11,7 +11,7 @@ namespace OctoAwesome.Runtime
     public interface IConnection
     {
         [OperationContract(IsInitiating = true, IsTerminating = false)]
-        Guid Connect(string playername);
+        ConnectResult Connect(string playername);
 
         [OperationContract(IsInitiating = false, IsTerminating = true, IsOneWay = true)]
         void Disconnect(string reason);

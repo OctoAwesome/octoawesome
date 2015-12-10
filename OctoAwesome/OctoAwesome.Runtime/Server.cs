@@ -104,6 +104,13 @@ namespace OctoAwesome.Runtime
             IsRunning = false;
         }
 
+        public void Kick(Guid client)
+        {
+            var c = clients.FirstOrDefault(x => x.ConnectionId == client);
+            if (c != null)
+                c.Disconnect("Kicked");
+        }
+
         internal void Join(Client client)
         {
             lock (clients)
@@ -131,7 +138,7 @@ namespace OctoAwesome.Runtime
                 // Vollständige Client-Liste an neuen Client
                 try
                 {
-                    client.Callback.SendPlayerList(clientInfos.Values);
+                    // client.Callback.SendPlayerList(clientInfos.Values);
                 }
                 catch (Exception ex)
                 {
@@ -181,13 +188,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public IEnumerable<Client> Clients
+        public IEnumerable<ClientInfo> Clients
         {
             get
             {
                 lock (clients)
                 {
-                    return clients;
+                    return clientInfos.Values.ToArray();
                 }
             }
         }

@@ -18,6 +18,8 @@ namespace OctoAwesome.Client.Components
 
         private IChunkConnection chunkClient;
 
+        private List<ClientInfo> otherPlayers = new List<ClientInfo>();
+
         public ActorProxy PlayerController { get; private set; }
 
         public ClientComponent(OctoGame game) : base(game)
@@ -30,7 +32,10 @@ namespace OctoAwesome.Client.Components
 
             try
             {
-                connectionId = client.Connect(ConfigurationManager.AppSettings["Playername"]);
+                var result = client.Connect(ConfigurationManager.AppSettings["Playername"]);
+                connectionId = result.Id;
+                otherPlayers.Clear();
+                otherPlayers.AddRange(result.OtherClients);
             }
             catch (Exception ex)
             {
@@ -130,19 +135,16 @@ namespace OctoAwesome.Client.Components
             PlayerController.Tilt = value;
         }
 
-        public void SendPlayerList(ICollection<ClientInfo> clients)
-        {
-            throw new NotImplementedException();
-        }
-
         public void SendPlayerJoin(ClientInfo client)
         {
-            throw new NotImplementedException();
+            otherPlayers.Add(client);
         }
 
         public void SendPlayerLeave(Guid client)
         {
-            throw new NotImplementedException();
+            var c = otherPlayers.FirstOrDefault(p => p.Id == client);
+            if (c != null)
+                otherPlayers.Remove(c);
         }
 
         public delegate void DisconnectDelegate(string reason);

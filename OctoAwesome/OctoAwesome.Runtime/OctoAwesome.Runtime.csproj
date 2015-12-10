@@ -58,6 +58,7 @@
     <Compile Include="ChunkSerializer.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="ClientInfo.cs" />
+    <Compile Include="ConnectResult.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />
     <Compile Include="IChunkConnection.cs" />
