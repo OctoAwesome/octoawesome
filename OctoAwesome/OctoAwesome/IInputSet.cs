@@ -7,6 +7,9 @@ namespace OctoAwesome
 {
     /// <summary>
     /// Basis Interface für jegliche Eingabemethode.
+    /// 
+    /// Keine Referenzen
+    /// TODO: Löschen?
     /// </summary>
     public interface IInputSet
     {
@@ -55,10 +58,19 @@ namespace OctoAwesome
         /// </summary>
         Trigger<bool> JumpTrigger { get; }
 
+        /// <summary>
+        /// Liste der Trigger, um die Inventarslots auszuwählen (z.B. 1 ... 9)
+        /// </summary>
         Trigger<bool>[] SlotTrigger { get; }
 
+        /// <summary>
+        /// Verschiebt den selektierten Slot nach links
+        /// </summary>
         Trigger<bool> SlotLeftTrigger { get; }
 
+        /// <summary>
+        /// Verschiebt den selektierten Slot nach rechts
+        /// </summary>
         Trigger<bool> SlotRightTrigger { get; }
     }
 }
