@@ -10,6 +10,9 @@ namespace OctoAwesome.Client.Screens
     {
         public MainScreen(ScreenComponent manager) : base(manager)
         {
+            Skin.Current = new CustomSkin(manager.Content, manager.GraphicsDevice, manager);
+
+
             Padding = new Border(0,0,0,0);
 
             Image background = new Image(manager);
@@ -21,7 +24,7 @@ namespace OctoAwesome.Client.Screens
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
 
-            Button startButton = Button.TextButton(manager, "Singleplayer");
+            Button startButton = Button.TextButton(manager, "Singleplayer", "button");
             startButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
@@ -30,7 +33,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(startButton);
 
-            Button multiplayer = Button.TextButton(manager, "Multiplayer");
+            Button multiplayer = Button.TextButton(manager, "Multiplayer", "button");
             multiplayer.HorizontalAlignment = HorizontalAlignment.Stretch;
             multiplayer.Margin = new Border(0, 0, 0, 10);
             multiplayer.LeftMouseClick += (s, e) =>
@@ -47,7 +50,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(multiplayer);
 
-            Button optionButton = Button.TextButton(manager, "Options");
+            Button optionButton = Button.TextButton(manager, "Options", "button");
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             optionButton.Margin = new Border(0, 0, 0, 10);
             optionButton.MinWidth = 300;
@@ -57,7 +60,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(optionButton);
 
-            Button creditsButton = Button.TextButton(manager, "Credits / Crew");
+            Button creditsButton = Button.TextButton(manager, "Credits / Crew", "button");
             creditsButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             creditsButton.Margin = new Border(0, 0, 0, 10);
             creditsButton.LeftMouseClick += (s, e) =>
@@ -66,17 +69,19 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(creditsButton);
 
-            Button webButton = Button.TextButton(manager, "Octoawesome.net");
+            Button webButton = Button.TextButton(manager, "Octoawesome.net", "button");
             webButton.VerticalAlignment = VerticalAlignment.Bottom;
             webButton.HorizontalAlignment = HorizontalAlignment.Right;
             webButton.Margin = new Border(10, 10, 10, 10);
+            webButton.Height = 55;
+            webButton.Width = 170;
             webButton.LeftMouseClick += (s, e) =>
             {
                 Process.Start("http://octoawesome.net/");
             };
             Controls.Add(webButton);
 
-            Button exitButton = Button.TextButton(manager, "Exit");
+            Button exitButton = Button.TextButton(manager, "Exit", "button");
             exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             exitButton.Margin = new Border(0, 0, 0, 10);
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };

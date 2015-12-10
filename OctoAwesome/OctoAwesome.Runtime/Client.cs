@@ -117,6 +117,7 @@ namespace OctoAwesome.Runtime
         public void Disconnect(string reason)
         {
             Server.Instance.Leave(this);
+            //Callback.Disconnect(reason);
         }
 
         [OperationBehavior]

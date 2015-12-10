@@ -30,6 +30,8 @@ namespace OctoAwesome.Runtime
 
         private ServiceHost chunkHost;
 
+        public bool IsRunning { get; private set; }
+
         private List<Client> clients = new List<Client>();
 
         public Server()
@@ -63,8 +65,13 @@ namespace OctoAwesome.Runtime
             chunkHost = new ServiceHost(typeof(ChunkConnection), new Uri(chunkAddress));
             chunkHost.AddServiceEndpoint(typeof(IChunkConnection), chunkBinding, chunkAddress);
             chunkHost.Open();
+
+            IsRunning = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Close()
         {
             if (playerHost == null)
@@ -73,22 +80,39 @@ namespace OctoAwesome.Runtime
             // TODO: Alle Klienten schließen
             lock (clients)
             {
-                foreach (var client in clients)
+                //foreach (var client in clients)
+                //{
+                //    try
+                //    {
+                //        client.Callback.Disconnect(string.Empty);
+                //    }
+                //    catch (Exception) { }
+
+                //    clients.Remove(client);
+                //    if (OnLeave != null)
+                //        OnLeave(client);
+                //}
+
+                //Safe Close Clients
+                for(int i = 0; i< clients.Count; i++)
                 {
                     try
                     {
-                        client.Callback.Disconnect(string.Empty);
+                        clients[i].Callback.Disconnect("Server closed");
                     }
-                    catch (Exception) { }
+                    catch(Exception e) { }
 
-                    clients.Remove(client);
-                    if (OnDeregister != null)
-                        OnDeregister(client);
+                    if (OnLeave != null)
+                        OnLeave(clients[i]);
                 }
+
+                clients.Clear();
             }
 
             playerHost.Close();
             chunkHost.Close();
+
+            IsRunning = false;
         }
 
         internal void Join(Client client)
@@ -96,8 +120,8 @@ namespace OctoAwesome.Runtime
             lock (clients)
             {
                 clients.Add(client);
-                if (OnRegister != null)
-                    OnRegister(client);
+                if (OnJoin != null)
+                    OnJoin(client);
 
                 ActorHost actorHost = world.InjectPlayer(new Player()
                 {
@@ -119,8 +143,8 @@ namespace OctoAwesome.Runtime
                 catch (Exception) { }
 
                 clients.Remove(client);
-                if (OnDeregister != null)
-                    OnDeregister(client);
+                if (OnLeave != null)
+                    OnLeave(client);
             }
         }
 
@@ -135,9 +159,9 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public event RegisterDelegate OnRegister;
+        public event RegisterDelegate OnJoin;
 
-        public event RegisterDelegate OnDeregister;
+        public event RegisterDelegate OnLeave;
 
         public delegate void RegisterDelegate(Client info);
     }

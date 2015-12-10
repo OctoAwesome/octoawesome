@@ -13,19 +13,15 @@ namespace OctoAwesome.Server
 {
     public partial class MainForm : Form
     {
-        
-
+       
         public MainForm()
         {
             InitializeComponent();
 
-            ServerConsole.Console = console_textBox;
-            ServerConsole.Log("Initializing...");
-            Runtime.Server.Instance.OnRegister += Instance_OnRegister;
-            Runtime.Server.Instance.OnDeregister += Instance_OnDeregister;
+            Runtime.Server.Instance.OnJoin += Instance_OnJoin;
+            Runtime.Server.Instance.OnLeave += Instance_OnLeave;
 
             Runtime.Server.Instance.Open();
-            ServerConsole.Log("---Server started---");
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -35,35 +31,59 @@ namespace OctoAwesome.Server
             base.OnFormClosed(e);
         }
 
-        private void Instance_OnDeregister(Client client)
+        private void Instance_OnLeave(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
             //TODO - fix item.remove
-            listViewPlayers.Items.Remove(new ListViewItem(new String[] { client.Playername, "Default" }));
-            ServerConsole.Log("Player " + client.Playername + " left the game");
+
+            listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
         }
 
-        private void Instance_OnRegister(Client client)
+        private void Instance_OnJoin(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
-            listViewPlayers.Items.Add(new ListViewItem(new String[] { client.Playername, "Default" }));
-            ServerConsole.Log("Player " + client.Playername + " joined the game");
+            ListViewItem playerItem = new ListViewItem();
+            playerItem.Tag = client.ConnectionId;
+            playerItem.Name = client.ConnectionId.ToString();
+            playerItem.Text = client.Playername;
+            playerItem.SubItems.Add("Default");
+
+            listViewPlayers.Items.Add(playerItem);
         }
 
         private void button_stopServer_Click(object sender, EventArgs e)
         {
-            if (((Button)sender).Text == "Stop")
+            if(Runtime.Server.Instance.IsRunning)
             {
                 Runtime.Server.Instance.Close();
-                ServerConsole.Log("---Server started---");
                 ((Button)sender).Text = "Start";
             }
             else
             {
                 Runtime.Server.Instance.Open();
-                ServerConsole.Log("---Server stopped---");
                 ((Button)sender).Text = "Stop";
             }
+        }
+
+        private void button_kickPlayer_Click(object sender, EventArgs e)
+        {
+            if (listViewPlayers.SelectedItems.Count == 0)
+                return;
+
+            try
+            {
+                Runtime.Server.Instance.Clients.First(c => c.ConnectionId.ToString() == listViewPlayers.SelectedItems[0].Name).Disconnect("Kicked");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Kick Error");
+            }
+        }
+
+        private void button_kickAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Runtime.Server.Instance.Clients.Count(); i++)
+                Runtime.Server.Instance.Clients.ElementAt(i).Disconnect("Kicked");
         }
     }
 }
