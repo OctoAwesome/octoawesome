@@ -52,5 +52,19 @@ namespace OctoAwesome.Runtime
         void SendPlayerLeave(Guid client);
 
         #endregion
+
+        #region Subscription
+
+        void SendBlockRemove();
+
+        void SendBlockInsert();
+
+        void SendEntityInsert();
+
+        void SendEntityRemove();
+
+        void SendEntityUpdate();
+
+        #endregion
     }
 }

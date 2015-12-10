@@ -8,7 +8,7 @@ namespace OctoAwesome.Runtime
 {
     public class ChunkConnection : IChunkConnection
     {
-        public Stream GetChunk(int planet, int x, int y, int z)
+        public Stream SubscribeChunk(int planet, int x, int y, int z)
         {
             IChunk chunk = ResourceManager.Instance.GlobalChunkCache.Subscribe(new PlanetIndex3(planet, x, y, z), false);
             ChunkSerializer serializer = new ChunkSerializer();

@@ -10,11 +10,17 @@ namespace OctoAwesome.Runtime
     [ServiceContract(CallbackContract = typeof(IConnectionCallback), SessionMode = SessionMode.Required)]
     public interface IConnection
     {
+        #region Connection Management
+
         [OperationContract(IsInitiating = true, IsTerminating = false)]
         ConnectResult Connect(string playername);
 
         [OperationContract(IsInitiating = false, IsTerminating = true, IsOneWay = true)]
         void Disconnect(string reason);
+
+        #endregion
+
+        #region Player Controlling
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Jump();
@@ -33,5 +39,13 @@ namespace OctoAwesome.Runtime
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Interact(Index3 blockIndex);
+
+        #endregion
+
+        #region Subscription
+
+        void UnsubscribeChunk(int planet, int x, int y, int z);
+
+        #endregion
     }
 }

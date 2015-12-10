@@ -28,6 +28,11 @@ namespace OctoAwesome
         ushort[][] Resources { get; }
 
         /// <summary>
+        ///  Liste der enthaltenenen Entitäten
+        /// </summary>
+        ICollection<Entity> Entities { get; }
+
+        /// <summary>
         /// Veränderungs-Counter zur Ermittlung von Änderungen.
         /// </summary>
         int ChangeCounter { get; set; }

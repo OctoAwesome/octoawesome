@@ -11,6 +11,6 @@ namespace OctoAwesome.Runtime
     public interface IChunkConnection
     {
         [OperationContract]
-        Stream GetChunk(int planet, int x, int y, int z);
+        Stream SubscribeChunk(int planet, int x, int y, int z);
     }
 }

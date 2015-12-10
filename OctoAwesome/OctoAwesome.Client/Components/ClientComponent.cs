@@ -55,7 +55,7 @@ namespace OctoAwesome.Client.Components
 
             ResourceManager.Instance.GlobalChunkCache = new GlobalChunkCache((position) =>
             {
-                using (Stream stream = chunkClient.GetChunk(position.Planet, position.ChunkIndex.X, position.ChunkIndex.Y, position.ChunkIndex.Z))
+                using (Stream stream = chunkClient.SubscribeChunk(position.Planet, position.ChunkIndex.X, position.ChunkIndex.Y, position.ChunkIndex.Z))
                 {
                     ChunkSerializer serializer = new ChunkSerializer();
                     return serializer.Deserialize(stream, position);

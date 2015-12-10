@@ -42,6 +42,7 @@ namespace OctoAwesome.Runtime
         {
             localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
             {
+                localChunkCache.GetChunk(Player.Position.ChunkIndex).Entities.Add(Player);
                 ReadyState = success;
             });
         }
@@ -186,10 +187,18 @@ namespace OctoAwesome.Runtime
 
             if (Player.Position.ChunkIndex != _oldIndex)
             {
+                // Aus altem Chunk entfernen
+                localChunkCache.GetChunk(_oldIndex).Entities.Remove(Player);
+
                 _oldIndex = Player.Position.ChunkIndex;
                 ReadyState = false;
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
                 {
+                    // Zu neuem Chunk hinzufügen
+                    localChunkCache.GetChunk(Player.Position.ChunkIndex).Entities.Add(Player);
+
+                    // TODO: Move-Event
+
                     ReadyState = success;
                 });
             }

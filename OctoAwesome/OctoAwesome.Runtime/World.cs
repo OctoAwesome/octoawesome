@@ -28,5 +28,10 @@ namespace OctoAwesome.Runtime
             updateDomains[0].ActorHosts.Add(host);
             return host;
         }
+
+        public void RemovePlayer(ActorHost host)
+        {
+            updateDomains[0].ActorHosts.Remove(host);
+        }
     }
 }

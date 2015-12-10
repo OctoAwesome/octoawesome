@@ -39,6 +39,8 @@ namespace OctoAwesome
 
         public ushort[][] Resources { get; private set; }
 
+        public List<Entity> Entities { get; private set; }
+
 
         /// <summary>
         /// Chunk Index innerhalb des Planeten.
@@ -62,6 +64,8 @@ namespace OctoAwesome
             Index = pos;
             Planet = planet;
             ChangeCounter = 0;
+
+            Entities = new List<Entity>();
         }
 
         /// <summary>
