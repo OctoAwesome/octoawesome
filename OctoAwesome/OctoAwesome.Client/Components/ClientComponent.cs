@@ -130,6 +130,21 @@ namespace OctoAwesome.Client.Components
             PlayerController.Tilt = value;
         }
 
+        public void SendPlayerList(ICollection<ClientInfo> clients)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendPlayerJoin(ClientInfo client)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendPlayerLeave(Guid client)
+        {
+            throw new NotImplementedException();
+        }
+
         public delegate void DisconnectDelegate(string reason);
 
         public event DisconnectDelegate OnDisconnect;

@@ -34,6 +34,8 @@ namespace OctoAwesome.Runtime
 
         private List<Client> clients = new List<Client>();
 
+        private Dictionary<Client, ClientInfo> clientInfos = new Dictionary<Client, ClientInfo>();
+
         public Server()
         {
 
@@ -80,27 +82,14 @@ namespace OctoAwesome.Runtime
             // TODO: Alle Klienten schließen
             lock (clients)
             {
-                //foreach (var client in clients)
-                //{
-                //    try
-                //    {
-                //        client.Callback.Disconnect(string.Empty);
-                //    }
-                //    catch (Exception) { }
-
-                //    clients.Remove(client);
-                //    if (OnLeave != null)
-                //        OnLeave(client);
-                //}
-
                 //Safe Close Clients
-                for(int i = 0; i< clients.Count; i++)
+                for (int i = 0; i < clients.Count; i++)
                 {
                     try
                     {
                         clients[i].Callback.Disconnect("Server closed");
                     }
-                    catch(Exception e) { }
+                    catch (Exception) { }
 
                     if (OnLeave != null)
                         OnLeave(clients[i]);
@@ -119,6 +108,36 @@ namespace OctoAwesome.Runtime
         {
             lock (clients)
             {
+                ClientInfo info = new ClientInfo()
+                {
+                    Id = client.ConnectionId,
+                    Name = client.Playername
+                };
+                clientInfos.Add(client, info);
+
+                // Alle anderen Clients informieren
+                foreach (var c in clients)
+                {
+                    try
+                    {
+                        c.Callback.SendPlayerJoin(info);
+                    }
+                    catch (Exception ex)
+                    {
+                        // TODO: Disconnect
+                    }
+                }
+
+                // Vollständige Client-Liste an neuen Client
+                try
+                {
+                    client.Callback.SendPlayerList(clientInfos.Values);
+                }
+                catch (Exception ex)
+                {
+                    return;
+                }
+
                 clients.Add(client);
                 if (OnJoin != null)
                     OnJoin(client);
@@ -143,8 +162,22 @@ namespace OctoAwesome.Runtime
                 catch (Exception) { }
 
                 clients.Remove(client);
+                clientInfos.Remove(client);
                 if (OnLeave != null)
                     OnLeave(client);
+
+                // Alle anderen Clients informieren
+                foreach (var c in clients)
+                {
+                    try
+                    {
+                        c.Callback.SendPlayerLeave(client.ConnectionId);
+                    }
+                    catch (Exception ex)
+                    {
+                        // TODO: Disconnect
+                    }
+                }
             }
         }
 

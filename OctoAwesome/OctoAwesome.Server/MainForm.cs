@@ -13,7 +13,7 @@ namespace OctoAwesome.Server
 {
     public partial class MainForm : Form
     {
-       
+
         public MainForm()
         {
             InitializeComponent();
@@ -35,8 +35,17 @@ namespace OctoAwesome.Server
         {
             //ListViewItem bestehend aus Playername & Planet
             //TODO - fix item.remove
-
-            listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() =>
+                {
+                    listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
+                }));
+            }
+            else
+            {
+                listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
+            }
         }
 
         private void Instance_OnJoin(Client client)
@@ -48,12 +57,22 @@ namespace OctoAwesome.Server
             playerItem.Text = client.Playername;
             playerItem.SubItems.Add("Default");
 
-            listViewPlayers.Items.Add(playerItem);
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() =>
+                {
+                    listViewPlayers.Items.Add(playerItem);
+                }));
+            }
+            else
+            {
+                listViewPlayers.Items.Add(playerItem);
+            }
         }
 
         private void button_stopServer_Click(object sender, EventArgs e)
         {
-            if(Runtime.Server.Instance.IsRunning)
+            if (Runtime.Server.Instance.IsRunning)
             {
                 Runtime.Server.Instance.Close();
                 ((Button)sender).Text = "Start";
@@ -74,7 +93,7 @@ namespace OctoAwesome.Server
             {
                 Runtime.Server.Instance.Clients.First(c => c.ConnectionId.ToString() == listViewPlayers.SelectedItems[0].Name).Disconnect("Kicked");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Kick Error");
             }

@@ -9,6 +9,8 @@ namespace OctoAwesome.Runtime
 {
     public interface IConnectionCallback
     {
+        #region Player Controlling
+
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Disconnect(string reason);
 
@@ -38,5 +40,20 @@ namespace OctoAwesome.Runtime
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetTilt(float value);
+
+        #endregion
+
+        #region Player Management
+
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SendPlayerList(ICollection<ClientInfo> clients);
+
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SendPlayerJoin(ClientInfo client);
+
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SendPlayerLeave(Guid client);
+
+        #endregion
     }
 }

@@ -43,6 +43,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -56,6 +57,7 @@
     <Compile Include="ChunkDiskPersistence.cs" />
     <Compile Include="ChunkSerializer.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="ClientInfo.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />
     <Compile Include="IChunkConnection.cs" />
