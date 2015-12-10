@@ -44,7 +44,7 @@ namespace OctoAwesome.Runtime
 
         #region Subscription
 
-        void UnsubscribeChunk(int planet, int x, int y, int z);
+        void UnsubscribeChunk(PlanetIndex3 index);
 
         #endregion
     }

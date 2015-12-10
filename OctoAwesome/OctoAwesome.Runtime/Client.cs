@@ -18,10 +18,13 @@ namespace OctoAwesome.Runtime
 
         public ActorHost ActorHost { get; private set; }
 
+        public List<PlanetIndex3> SubscripedChunks { get; private set; }
+
         public Client()
         {
             Callback = OperationContext.Current.GetCallbackChannel<IConnectionCallback>();
             ConnectionId = Guid.NewGuid();
+            SubscripedChunks = new List<PlanetIndex3>();
         }
 
         public void SetActorHost(ActorHost host)
@@ -163,9 +166,9 @@ namespace OctoAwesome.Runtime
         }
 
         [OperationBehavior]
-        public void UnsubscribeChunk(int planet, int x, int y, int z)
+        public void UnsubscribeChunk(PlanetIndex3 index)
         {
-            throw new NotImplementedException();
+            Server.Instance.UnsubscribeChunk(ConnectionId, index);
         }
     }
 }

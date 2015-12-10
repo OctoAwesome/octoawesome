@@ -34,6 +34,8 @@ namespace OctoAwesome.Runtime
 
         private List<Client> clients = new List<Client>();
 
+        private Dictionary<PlanetIndex3, List<Client>> subscriptions = new Dictionary<PlanetIndex3, List<Client>>();
+
         private Dictionary<Client, ClientInfo> clientInfos = new Dictionary<Client, ClientInfo>();
 
         public Server()
@@ -168,6 +170,11 @@ namespace OctoAwesome.Runtime
                 }
                 catch (Exception) { }
 
+                // Alle Chunks deabonieren
+                foreach (var chunk in client.SubscripedChunks)
+                    UnsubscribeChunk(client.ConnectionId, chunk);
+                client.SubscripedChunks.Clear();
+
                 clients.Remove(client);
                 clientInfos.Remove(client);
                 if (OnLeave != null)
@@ -187,6 +194,35 @@ namespace OctoAwesome.Runtime
                     {
                         // TODO: Disconnect
                     }
+                }
+            }
+        }
+
+        internal void SubscibeChunk(Guid clientId, PlanetIndex3 chunkIndex)
+        {
+            lock (subscriptions)
+            {
+                var client = clients.SingleOrDefault(c => c.ConnectionId == clientId);
+                if (client == null) return;
+
+                if (!subscriptions.ContainsKey(chunkIndex))
+                    subscriptions.Add(chunkIndex, new List<Client>());
+                subscriptions[chunkIndex].Add(client);
+            }
+        }
+
+        internal void UnsubscribeChunk(Guid clientId, PlanetIndex3 chunkIndex)
+        {
+            lock (subscriptions)
+            {
+                var client = clients.SingleOrDefault(c => c.ConnectionId == clientId);
+                if (client == null) return;
+
+                if (subscriptions.ContainsKey(chunkIndex))
+                {
+                    subscriptions[chunkIndex].Remove(client);
+                    if (subscriptions[chunkIndex].Count == 0)
+                        subscriptions.Remove(chunkIndex);
                 }
             }
         }

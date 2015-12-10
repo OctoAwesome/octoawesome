@@ -42,14 +42,18 @@ namespace OctoAwesome.Runtime
         {
             localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
             {
-                localChunkCache.GetChunk(Player.Position.ChunkIndex).Entities.Add(Player);
+                IChunk chunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
+                if (chunk != null)
+                    chunk.Entities.Add(Player);
                 ReadyState = success;
             });
         }
 
         public void Uninitialize()
         {
-            localChunkCache.GetChunk(Player.Position.ChunkIndex).Entities.Remove(Player);
+            IChunk chunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
+            if (chunk != null)
+                chunk.Entities.Remove(Player);
         }
 
         public void Update(GameTime frameTime)
@@ -193,14 +197,18 @@ namespace OctoAwesome.Runtime
             if (Player.Position.ChunkIndex != _oldIndex)
             {
                 // Aus altem Chunk entfernen
-                localChunkCache.GetChunk(_oldIndex).Entities.Remove(Player);
+                IChunk oldChunk = localChunkCache.GetChunk(_oldIndex);
+                if (oldChunk != null)
+                    oldChunk.Entities.Remove(Player);
 
                 _oldIndex = Player.Position.ChunkIndex;
                 ReadyState = false;
                 localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
                 {
                     // Zu neuem Chunk hinzufügen
-                    localChunkCache.GetChunk(Player.Position.ChunkIndex).Entities.Add(Player);
+                    IChunk newChunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
+                    if (newChunk != null)
+                       newChunk.Entities.Add(Player);
 
                     // TODO: Move-Event
 
@@ -283,8 +291,8 @@ namespace OctoAwesome.Runtime
             #region Property Events
 
             // Position
-            if (Position.Planet != oldPosition.Planet || 
-                Position.GlobalBlockIndex != oldPosition.GlobalBlockIndex || 
+            if (Position.Planet != oldPosition.Planet ||
+                Position.GlobalBlockIndex != oldPosition.GlobalBlockIndex ||
                 Position.BlockPosition != oldPosition.BlockPosition)
             {
                 oldPosition = Position;

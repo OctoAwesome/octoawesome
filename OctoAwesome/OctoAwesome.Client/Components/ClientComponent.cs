@@ -55,14 +55,14 @@ namespace OctoAwesome.Client.Components
 
             ResourceManager.Instance.GlobalChunkCache = new GlobalChunkCache((position) =>
             {
-                using (Stream stream = chunkClient.SubscribeChunk(position.Planet, position.ChunkIndex.X, position.ChunkIndex.Y, position.ChunkIndex.Z))
+                using (Stream stream = chunkClient.SubscribeChunk(connectionId, position))
                 {
                     ChunkSerializer serializer = new ChunkSerializer();
                     return serializer.Deserialize(stream, position);
                 }
             }, (position, chunk) =>
             {
-                client.UnsubscribeChunk(position.Planet, position.ChunkIndex.X, position.ChunkIndex.Y, position.ChunkIndex.Z);
+                client.UnsubscribeChunk(position);
             });
         }
 
