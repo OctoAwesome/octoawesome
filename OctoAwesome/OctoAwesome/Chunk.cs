@@ -39,7 +39,7 @@ namespace OctoAwesome
 
         public ushort[][] Resources { get; private set; }
 
-        public List<Entity> Entities { get; private set; }
+        public ICollection<Entity> Entities { get; private set; }
 
 
         /// <summary>

@@ -60,7 +60,10 @@ namespace OctoAwesome.Client.Components
                     ChunkSerializer serializer = new ChunkSerializer();
                     return serializer.Deserialize(stream, position);
                 }
-            }, (position, chunk) => { } );
+            }, (position, chunk) =>
+            {
+                client.UnsubscribeChunk(position.Planet, position.ChunkIndex.X, position.ChunkIndex.Y, position.ChunkIndex.Z);
+            });
         }
 
         public override void Initialize()
@@ -145,6 +148,36 @@ namespace OctoAwesome.Client.Components
             var c = otherPlayers.FirstOrDefault(p => p.Id == client);
             if (c != null)
                 otherPlayers.Remove(c);
+        }
+
+        public void SendBlockRemove(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendBlockInsert(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ, string fullName, int metaData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEntityInsert(int planet, int chunkX, int chunkY, int chunkZ, Guid id, string fullName, byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEntityRemove(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEntityMove(Guid id, int planet, int chunkX, int chunkY, int chunkZ)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEntityUpdate(Guid id, byte[] data)
+        {
+            throw new NotImplementedException();
         }
 
         public delegate void DisconnectDelegate(string reason);

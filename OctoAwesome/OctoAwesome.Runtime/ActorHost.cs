@@ -47,6 +47,11 @@ namespace OctoAwesome.Runtime
             });
         }
 
+        public void Uninitialize()
+        {
+            localChunkCache.GetChunk(Player.Position.ChunkIndex).Entities.Remove(Player);
+        }
+
         public void Update(GameTime frameTime)
         {
             #region Inputverarbeitung

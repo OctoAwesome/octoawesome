@@ -173,6 +173,9 @@ namespace OctoAwesome.Runtime
                 if (OnLeave != null)
                     OnLeave(client);
 
+                // ActorHost entfernen
+                world.RemovePlayer(client.ActorHost);
+
                 // Alle anderen Clients informieren
                 foreach (var c in clients)
                 {

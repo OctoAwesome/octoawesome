@@ -69,6 +69,14 @@ namespace OctoAwesome.Tests
             }
         }
 
+        public ICollection<Entity> Entities
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public ushort GetBlock(Index3 index)
         {
             throw new NotImplementedException();

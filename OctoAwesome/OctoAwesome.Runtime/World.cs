@@ -31,6 +31,7 @@ namespace OctoAwesome.Runtime
 
         public void RemovePlayer(ActorHost host)
         {
+            host.Uninitialize();
             updateDomains[0].ActorHosts.Remove(host);
         }
     }

@@ -16,7 +16,7 @@ namespace OctoAwesome.Runtime
 
         public string Playername { get; private set; }
 
-        public IPlayerController ActorHost { get; private set; }
+        public ActorHost ActorHost { get; private set; }
 
         public Client()
         {
@@ -160,6 +160,12 @@ namespace OctoAwesome.Runtime
         public void Interact(Index3 blockIndex)
         {
             ActorHost.Interact(blockIndex);
+        }
+
+        [OperationBehavior]
+        public void UnsubscribeChunk(int planet, int x, int y, int z)
+        {
+            throw new NotImplementedException();
         }
     }
 }

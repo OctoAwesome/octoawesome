@@ -19,5 +19,9 @@ namespace OctoAwesome
 
         [XmlIgnore]
         public Vector3 ExternalForce { get; set; }
+
+        public abstract void SetData(byte[] data);
+
+        public abstract byte[] GetData();
     }
 }

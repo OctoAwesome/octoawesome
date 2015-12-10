@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using System;
 
 namespace OctoAwesome
 {
@@ -43,6 +44,16 @@ namespace OctoAwesome
             Height = 3.5f;
             Mass = 100;
             FlyMode = false;
+        }
+
+        public override void SetData(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override byte[] GetData()
+        {
+            throw new NotImplementedException();
         }
     }
 }
