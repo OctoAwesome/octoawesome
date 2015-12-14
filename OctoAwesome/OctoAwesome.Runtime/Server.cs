@@ -48,12 +48,13 @@ namespace OctoAwesome.Runtime
             world = new World();
 
             string server = "localhost";
-            int port = 8888;
+            int port1 = 8888;
+            int port2 = 8889;
             string playerName = "Octo";
             string chunkName = "Chunks";
 
-            string playerAddress = string.Format("net.tcp://{0}:{1}/{2}", server, port, playerName);
-            string chunkAddress = string.Format("net.tcp://{0}:{1}/{2}", server, port, chunkName);
+            string playerAddress = string.Format("net.tcp://{0}:{1}/{2}", server, port1, playerName);
+            string chunkAddress = string.Format("net.tcp://{0}:{1}/{2}", server, port2, chunkName);
 
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
@@ -208,6 +209,12 @@ namespace OctoAwesome.Runtime
                 if (!subscriptions.ContainsKey(chunkIndex))
                     subscriptions.Add(chunkIndex, new List<Client>());
                 subscriptions[chunkIndex].Add(client);
+
+                IChunk chunk = ResourceManager.Instance.GlobalChunkCache.Subscribe(chunkIndex, false);
+                foreach (var entity in chunk.Entities.ToArray())
+                {
+                    client.Callback.SendEntityInsert(chunkIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, entity.GetData());
+                }
             }
         }
 
@@ -223,6 +230,95 @@ namespace OctoAwesome.Runtime
                     subscriptions[chunkIndex].Remove(client);
                     if (subscriptions[chunkIndex].Count == 0)
                         subscriptions.Remove(chunkIndex);
+                }
+            }
+        }
+
+        internal void InsertEntity(Entity entity, IChunk destination)
+        {
+            if (destination == null)
+                return;
+
+            PlanetIndex3 index = new PlanetIndex3(destination.Planet, destination.Index);
+            lock (subscriptions)
+            {
+                List<Client> clients;
+                if (subscriptions.TryGetValue(index, out clients))
+                {
+                    byte[] data = entity.GetData();
+                    foreach (var client in clients)
+                    {
+                        client.Callback.SendEntityInsert(index, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                    }
+                }
+            }
+        }
+
+        internal void RemoveEntity(Entity entity, IChunk departure)
+        {
+            if (departure == null)
+                return;
+
+            PlanetIndex3 index = new PlanetIndex3(departure.Planet, departure.Index);
+            lock (subscriptions)
+            {
+                List<Client> clients;
+                if (subscriptions.TryGetValue(index, out clients))
+                {
+                    foreach (var client in clients)
+                    {
+                        client.Callback.SendEntityRemove(entity.Id);
+                    }
+                }
+            }
+        }
+
+        internal void MoveEntity(Entity entity, IChunk departure, IChunk destination)
+        {
+            if (departure == null && destination == null)
+                return;
+
+            if (departure == null)
+            {
+                InsertEntity(entity, destination);
+                return;
+            }
+
+            if (destination == null)
+            {
+                RemoveEntity(entity, departure);
+                return;
+            }
+
+            PlanetIndex3 destinationIndex = new PlanetIndex3(destination.Planet, destination.Index);
+            PlanetIndex3 departureIndex = new PlanetIndex3(departure.Planet, departure.Index);
+
+            lock (subscriptions)
+            {
+                List<Client> departureList;
+                if (!subscriptions.TryGetValue(departureIndex, out departureList))
+                    departureList = new List<Client>();
+
+                List<Client> destinationList;
+                if (!subscriptions.TryGetValue(destinationIndex, out destinationList))
+                    destinationList = new List<Client>();
+
+                var clients = departureList.Union(destinationList);
+                byte[] data = entity.GetData();
+                foreach (var client in clients)
+                {
+                    if (!departureList.Contains(client))
+                    {
+                        client.Callback.SendEntityInsert(destinationIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                    }
+                    else if (!destinationList.Contains(client))
+                    {
+                        client.Callback.SendEntityRemove(entity.Id);
+                    }
+                    else
+                    {
+                        client.Callback.SendEntityMove(entity.Id, destinationIndex);
+                    }
                 }
             }
         }

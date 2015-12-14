@@ -92,7 +92,7 @@ namespace OctoAwesome.Runtime
             };
             host.OnMoveChanged += (v) =>
             {
-                try { Callback.SetMove(v); }
+                try  { Callback.SetMove(v); }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);

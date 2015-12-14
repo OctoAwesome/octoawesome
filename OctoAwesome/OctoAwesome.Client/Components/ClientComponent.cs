@@ -20,6 +20,8 @@ namespace OctoAwesome.Client.Components
 
         private List<ClientInfo> otherPlayers = new List<ClientInfo>();
 
+        private Dictionary<Guid, PlanetIndex3> entityChunks = new Dictionary<Guid, PlanetIndex3>();
+
         public ActorProxy PlayerController { get; private set; }
 
         public ClientComponent(OctoGame game) : base(game)
@@ -50,7 +52,7 @@ namespace OctoAwesome.Client.Components
             chunkBinding.MaxBufferSize = int.MaxValue;
 
             ChannelFactory<IChunkConnection> chunkFactory = new ChannelFactory<IChunkConnection>(chunkBinding);
-            EndpointAddress chunkEndpoint = new EndpointAddress("net.tcp://localhost:8888/Chunks");
+            EndpointAddress chunkEndpoint = new EndpointAddress("net.tcp://localhost:8889/Chunks");
             chunkClient = chunkFactory.CreateChannel(chunkEndpoint);
 
             ResourceManager.Instance.GlobalChunkCache = new GlobalChunkCache((position) =>
@@ -160,19 +162,70 @@ namespace OctoAwesome.Client.Components
             throw new NotImplementedException();
         }
 
-        public void SendEntityInsert(int planet, int chunkX, int chunkY, int chunkZ, Guid id, string fullName, byte[] data)
+        public void SendEntityInsert(PlanetIndex3 index, Guid id, string assemblyName, string fullName, byte[] data)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(string.Format("Entity Insert: {0} - {1}", id, index));
+
+            var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(index);
+            if (chunk == null)
+                throw new Exception("Chunk noch nicht geladen. Das sollte nicht passieren.");
+
+            // TODO: Mehr Checks!
+            Entity entity = (Entity)Activator.CreateInstance(assemblyName, fullName).Unwrap();
+            entity.Id = id;
+            entity.SetData(data);
+            chunk.Entities.Add(entity);
+
+            entityChunks.Add(id, index);
         }
 
         public void SendEntityRemove(Guid id)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(string.Format("Entity Remove: {0}", id));
+
+            PlanetIndex3 chunkIndex;
+            if (!entityChunks.TryGetValue(id, out chunkIndex))
+                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+
+            var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
+            if (chunk == null)
+                throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+
+            Entity entity = chunk.Entities.SingleOrDefault(e => e.Id == id);
+            if (entity == null)
+                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+
+            chunk.Entities.Remove(entity);
+            entityChunks.Remove(id);
         }
 
-        public void SendEntityMove(Guid id, int planet, int chunkX, int chunkY, int chunkZ)
+        public void SendEntityMove(Guid id, PlanetIndex3 index)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(string.Format("Entity Move: {0} - {1}", id, index));
+
+            // Entity identifizieren
+            PlanetIndex3 chunkIndex;
+            Entity entity = null;
+            if (!entityChunks.TryGetValue(id, out chunkIndex))
+                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+
+            var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
+            if (chunk == null)
+                throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+
+            entity = chunk.Entities.SingleOrDefault(e => e.Id == id);
+            if (entity == null)
+                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+
+            chunk.Entities.Remove(entity);
+            entityChunks.Remove(id);
+
+            IChunk destinationChunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(index);
+            if (destinationChunk == null)
+                throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+
+            destinationChunk.Entities.Add(entity);
+            entityChunks.Add(id, index);
         }
 
         public void SendEntityUpdate(Guid id, byte[] data)

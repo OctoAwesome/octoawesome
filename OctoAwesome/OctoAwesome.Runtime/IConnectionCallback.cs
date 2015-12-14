@@ -65,6 +65,7 @@ namespace OctoAwesome.Runtime
         /// <param name="blockX"></param>
         /// <param name="blockY"></param>
         /// <param name="blockZ"></param>
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendBlockRemove(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ);
 
         /// <summary>
@@ -79,6 +80,7 @@ namespace OctoAwesome.Runtime
         /// <param name="blockZ"></param>
         /// <param name="fullName"></param>
         /// <param name="metaData"></param>
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendBlockInsert(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ, string fullName, int metaData);
 
         /// <summary>
@@ -91,12 +93,14 @@ namespace OctoAwesome.Runtime
         /// <param name="id"></param>
         /// <param name="fullName"></param>
         /// <param name="data"></param>
-        void SendEntityInsert(int planet, int chunkX, int chunkY, int chunkZ, Guid id, string fullName, byte[] data);
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SendEntityInsert(PlanetIndex3 index, Guid id, string assemblyName, string fullName, byte[] data);
 
         /// <summary>
         /// Informiert den Player über das entfernen einer Entität
         /// </summary>
         /// <param name="id"></param>
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendEntityRemove(Guid id);
 
         /// <summary>
@@ -107,13 +111,15 @@ namespace OctoAwesome.Runtime
         /// <param name="chunkX"></param>
         /// <param name="chunkY"></param>
         /// <param name="chunkZ"></param>
-        void SendEntityMove(Guid id, int planet, int chunkX, int chunkY, int chunkZ);
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SendEntityMove(Guid id, PlanetIndex3 index);
 
         /// <summary>
         /// Informiert den Player über veränderte Entitäten-Daten
         /// </summary>
         /// <param name="id"></param>
         /// <param name="data"></param>
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendEntityUpdate(Guid id, byte[] data);
 
         #endregion

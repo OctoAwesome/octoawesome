@@ -64,6 +64,22 @@ namespace OctoAwesome
         }
 
         /// <summary>
+        /// Liefert den Chunk, sofern geladen.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
+        public IChunk GetChunk(PlanetIndex3 position)
+        {
+            lock (lockObject)
+            {
+                CacheItem cacheItem = null;
+                if (cache.TryGetValue(position, out cacheItem))
+                    return cacheItem.Chunk;
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
         /// <param name="position"></param>

@@ -44,6 +44,7 @@ namespace OctoAwesome.Runtime
 
         #region Subscription
 
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void UnsubscribeChunk(PlanetIndex3 index);
 
         #endregion

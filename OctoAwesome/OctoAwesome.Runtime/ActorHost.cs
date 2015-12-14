@@ -44,7 +44,10 @@ namespace OctoAwesome.Runtime
             {
                 IChunk chunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
                 if (chunk != null)
+                {
                     chunk.Entities.Add(Player);
+                    Server.Instance.InsertEntity(Player, chunk);
+                }
                 ReadyState = success;
             });
         }
@@ -53,7 +56,10 @@ namespace OctoAwesome.Runtime
         {
             IChunk chunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
             if (chunk != null)
+            {
                 chunk.Entities.Remove(Player);
+                Server.Instance.RemoveEntity(Player, chunk);
+            }
         }
 
         public void Update(GameTime frameTime)
@@ -210,7 +216,8 @@ namespace OctoAwesome.Runtime
                     if (newChunk != null)
                        newChunk.Entities.Add(Player);
 
-                    // TODO: Move-Event
+                    // Move-Event
+                    Server.Instance.MoveEntity(Player, oldChunk, newChunk);
 
                     ReadyState = success;
                 });
