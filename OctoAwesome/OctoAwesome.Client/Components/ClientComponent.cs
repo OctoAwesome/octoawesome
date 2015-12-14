@@ -152,14 +152,26 @@ namespace OctoAwesome.Client.Components
                 otherPlayers.Remove(c);
         }
 
-        public void SendBlockRemove(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ)
+        public void SendBlockRemove(PlanetIndex3 chunkIndex, Index3 blockIndex)
         {
-            throw new NotImplementedException();
+            var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
+            if (chunk == null)
+                return;
+
+            chunk.SetBlock(blockIndex, 0);
         }
 
-        public void SendBlockInsert(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ, string fullName, int metaData)
+        public void SendBlockInsert(PlanetIndex3 chunkIndex, Index3 blockIndex, string fullName, int metaData)
         {
-            throw new NotImplementedException();
+            var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
+            if (chunk == null)
+                return;
+
+            var definition = DefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetType().FullName.Equals(fullName));
+            if (definition == null)
+                return;
+
+            chunk.SetBlock(blockIndex, DefinitionManager.GetBlockDefinitionIndex(definition), metaData);
         }
 
         public void SendEntityInsert(PlanetIndex3 index, Guid id, string assemblyName, string fullName, byte[] data)
@@ -168,7 +180,8 @@ namespace OctoAwesome.Client.Components
 
             var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(index);
             if (chunk == null)
-                throw new Exception("Chunk noch nicht geladen. Das sollte nicht passieren.");
+                return;
+                // throw new Exception("Chunk noch nicht geladen. Das sollte nicht passieren.");
 
             // TODO: Mehr Checks!
             Entity entity = (Entity)Activator.CreateInstance(assemblyName, fullName).Unwrap();
@@ -185,15 +198,18 @@ namespace OctoAwesome.Client.Components
 
             PlanetIndex3 chunkIndex;
             if (!entityChunks.TryGetValue(id, out chunkIndex))
-                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+                return;
+                // throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
 
             var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
             if (chunk == null)
-                throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+                return;
+                // throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
 
             Entity entity = chunk.Entities.SingleOrDefault(e => e.Id == id);
             if (entity == null)
-                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+                return;
+                // throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
 
             chunk.Entities.Remove(entity);
             entityChunks.Remove(id);
@@ -207,22 +223,26 @@ namespace OctoAwesome.Client.Components
             PlanetIndex3 chunkIndex;
             Entity entity = null;
             if (!entityChunks.TryGetValue(id, out chunkIndex))
-                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+                return;
+                // throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
 
             var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
             if (chunk == null)
-                throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+                return;
+                // throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
 
             entity = chunk.Entities.SingleOrDefault(e => e.Id == id);
             if (entity == null)
-                throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+                return;
+                // throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
 
             chunk.Entities.Remove(entity);
             entityChunks.Remove(id);
 
             IChunk destinationChunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(index);
             if (destinationChunk == null)
-                throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+                return;
+                // throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
 
             destinationChunk.Entities.Add(entity);
             entityChunks.Add(id, index);
@@ -230,7 +250,22 @@ namespace OctoAwesome.Client.Components
 
         public void SendEntityUpdate(Guid id, byte[] data)
         {
-            throw new NotImplementedException();
+            PlanetIndex3 chunkIndex;
+            if (!entityChunks.TryGetValue(id, out chunkIndex))
+                return;
+                // throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+
+            var chunk = ResourceManager.Instance.GlobalChunkCache.GetChunk(chunkIndex);
+            if (chunk == null)
+                return;
+                // throw new Exception("Chunk nicht gefunden. Auch das sollte nicht passieren");
+
+            Entity entity = chunk.Entities.SingleOrDefault(e => e.Id == id);
+            if (entity == null)
+                return;
+                // throw new Exception("Entity nicht gefunden. Das sollte nicht passieren.");
+
+            entity.SetData(data);
         }
 
         public delegate void DisconnectDelegate(string reason);

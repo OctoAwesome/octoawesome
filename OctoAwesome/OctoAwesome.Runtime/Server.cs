@@ -134,7 +134,7 @@ namespace OctoAwesome.Runtime
                     }
                     catch (Exception ex)
                     {
-                        // TODO: Disconnect
+                        HandleException(ex, c);
                     }
                 }
 
@@ -193,7 +193,7 @@ namespace OctoAwesome.Runtime
                     }
                     catch (Exception ex)
                     {
-                        // TODO: Disconnect
+                        HandleException(ex, c);
                     }
                 }
             }
@@ -213,7 +213,14 @@ namespace OctoAwesome.Runtime
                 IChunk chunk = ResourceManager.Instance.GlobalChunkCache.Subscribe(chunkIndex, false);
                 foreach (var entity in chunk.Entities.ToArray())
                 {
-                    client.Callback.SendEntityInsert(chunkIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, entity.GetData());
+                    try
+                    {
+                        client.Callback.SendEntityInsert(chunkIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, entity.GetData());
+                    }
+                    catch (Exception ex)
+                    {
+                        HandleException(ex, client);
+                    }
                 }
             }
         }
@@ -248,7 +255,14 @@ namespace OctoAwesome.Runtime
                     byte[] data = entity.GetData();
                     foreach (var client in clients)
                     {
-                        client.Callback.SendEntityInsert(index, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                        try
+                        {
+                            client.Callback.SendEntityInsert(index, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
                     }
                 }
             }
@@ -267,7 +281,14 @@ namespace OctoAwesome.Runtime
                 {
                     foreach (var client in clients)
                     {
-                        client.Callback.SendEntityRemove(entity.Id);
+                        try
+                        {
+                            client.Callback.SendEntityRemove(entity.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
                     }
                 }
             }
@@ -309,18 +330,118 @@ namespace OctoAwesome.Runtime
                 {
                     if (!departureList.Contains(client))
                     {
-                        client.Callback.SendEntityInsert(destinationIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                        try
+                        {
+                            client.Callback.SendEntityInsert(destinationIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
                     }
                     else if (!destinationList.Contains(client))
                     {
-                        client.Callback.SendEntityRemove(entity.Id);
+                        try
+                        {
+                            client.Callback.SendEntityRemove(entity.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
                     }
                     else
                     {
-                        client.Callback.SendEntityMove(entity.Id, destinationIndex);
+                        try
+                        {
+                            client.Callback.SendEntityMove(entity.Id, destinationIndex);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
                     }
                 }
             }
+        }
+
+        internal void UpdateEntity(Entity entity)
+        {
+            PlanetIndex3 chunkIndex = new PlanetIndex3(entity.Position.Planet, entity.Position.ChunkIndex);
+            lock (subscriptions)
+            {
+                List<Client> clients;
+                if (subscriptions.TryGetValue(chunkIndex, out clients))
+                {
+                    byte[] data = entity.GetData();
+                    foreach (var client in clients)
+                    {
+                        try
+                        {
+                            client.Callback.SendEntityUpdate(entity.Id, data);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void RemoveBlock(int planet, Index3 index)
+        {
+            PlanetIndex3 chunkIndex = new PlanetIndex3(planet, new Index3(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ));
+            Index3 blockIndex = new Index3(index.X & ((1 << Chunk.LimitX) - 1), index.Y & ((1 << Chunk.LimitY) - 1), index.Z & ((1 << Chunk.LimitZ) - 1));
+
+            lock (subscriptions)
+            {
+                List<Client> clients;
+                if (subscriptions.TryGetValue(chunkIndex, out clients))
+                {
+                    foreach (var client in clients)
+                    {
+                        try
+                        {
+                            client.Callback.SendBlockRemove(chunkIndex, blockIndex);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void AddBlock(int planet, Index3 index, IBlockDefinition blockDefinition, int meta)
+        {
+            PlanetIndex3 chunkIndex = new PlanetIndex3(planet, new Index3(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ));
+            Index3 blockIndex = new Index3(index.X & ((1 << Chunk.LimitX) - 1), index.Y & ((1 << Chunk.LimitY) - 1), index.Z & ((1 << Chunk.LimitZ) - 1));
+
+            lock (subscriptions)
+            {
+                List<Client> clients;
+                if (subscriptions.TryGetValue(chunkIndex, out clients))
+                {
+                    foreach (var client in clients)
+                    {
+                        try
+                        {
+                            client.Callback.SendBlockInsert(chunkIndex, blockIndex, blockDefinition.GetType().FullName, meta);
+                        }
+                        catch (Exception ex)
+                        {
+                            HandleException(ex, client);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void HandleException(Exception ex, Client client)
+        {
+            // TODO: Handle Exception!
         }
 
         public IEnumerable<ClientInfo> Clients

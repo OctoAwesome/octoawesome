@@ -35,7 +35,7 @@ namespace OctoAwesome.Runtime
         void SetMove(Vector2 value);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
-        void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation);
+        void Apply(Index3 blockIndex, string definitionName, OrientationFlags orientation);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Interact(Index3 blockIndex);

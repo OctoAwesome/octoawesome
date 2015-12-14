@@ -27,6 +27,9 @@ namespace OctoAwesome.Client.Components
         private int indexCount;
         private int lastReset;
         private ILocalChunkCache _manager;
+        private VertexPositionColor[] playerModel;
+        private short[] playerIndeces;
+        private BasicEffect playerEffect;
 
         /// <summary>
         /// Adresse des aktuellen Chunks
@@ -39,7 +42,31 @@ namespace OctoAwesome.Client.Components
             this.textures = textures;
             this.lastReset = -1;
 
+            playerModel = new[]
+            {
+                new VertexPositionColor(new Vector3(-0.75f, +0.75f, +2.00f), Microsoft.Xna.Framework.Color.Beige),
+                new VertexPositionColor(new Vector3(+0.75f, +0.75f, +2.00f), Microsoft.Xna.Framework.Color.Brown),
+                new VertexPositionColor(new Vector3(-0.75f, -0.75f, +2.00f), Microsoft.Xna.Framework.Color.Beige),
+                new VertexPositionColor(new Vector3(+0.75f, -0.75f, +2.00f), Microsoft.Xna.Framework.Color.Brown),
+                new VertexPositionColor(new Vector3(-0.75f, +0.75f, -0.00f), Microsoft.Xna.Framework.Color.Beige),
+                new VertexPositionColor(new Vector3(+0.75f, +0.75f, -0.00f), Microsoft.Xna.Framework.Color.Beige),
+                new VertexPositionColor(new Vector3(-0.75f, -0.75f, -0.00f), Microsoft.Xna.Framework.Color.Beige),
+                new VertexPositionColor(new Vector3(+0.75f, -0.75f, -0.00f), Microsoft.Xna.Framework.Color.Beige),
+            };
+
+            playerIndeces = new short[]
+            {
+                0, 1, 2, 1, 3, 2, //oben
+                3, 1, 7, 1, 5, 7, //rechts
+                2, 3, 6, 3, 7, 6, // vorne
+                1, 0, 5, 0, 4, 5, // hinten
+                0, 2, 4, 2, 6, 4, // links
+                6, 7, 4, 7, 5, 4
+            };
+
             simple = simpleShader;
+            playerEffect = new BasicEffect(graphicsDevice);
+            playerEffect.VertexColorEnabled = true;
         }
 
         public void SetChunk(ILocalChunkCache manager, int x, int y, int z)
@@ -100,6 +127,29 @@ namespace OctoAwesome.Client.Components
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);
                 }
             }
+
+            // Draw Other player
+            foreach (Player player in chunk.Entities.ToArray())
+            {
+                // Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
+                //Index3 offset = camera.CameraChunk * Chunk.CHUNKSIZE;
+                //Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
+                //Index3 relativePosition = new Index3(
+                //    Index2.ShortestDistanceOnAxis(offset.X, player.Position.GlobalBlockIndex.X, planetSize.X),
+                //    Index2.ShortestDistanceOnAxis(offset.Y, player.Position.GlobalBlockIndex.Y, planetSize.Y),
+                //    player.Position.GlobalBlockIndex.Z - offset.Z);
+
+                Vector3 x = new Vector3(shift.X * Chunk.CHUNKSIZE_X, shift.Y * Chunk.CHUNKSIZE_Y, shift.Z * Chunk.CHUNKSIZE_Z);
+
+                playerEffect.World = Matrix.CreateRotationZ(MathHelper.TwoPi - player.Angle) * Matrix.CreateTranslation(x + player.Position.LocalPosition);
+                playerEffect.View = view;
+                playerEffect.Projection = projection;
+                foreach (var pass in playerEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, playerModel, 0, 8, playerIndeces, 0, 12);
+                }
+            }
         }
 
         public void RegenerateVertexBuffer()
@@ -123,7 +173,7 @@ namespace OctoAwesome.Client.Components
             float textureWidth = 1f / textureColumns;
             float texelSize = 1f / SceneControl.TEXTURESIZE;
             float textureSizeGap = texelSize;
-            float textureGap = texelSize/2;
+            float textureGap = texelSize / 2;
             // BlockTypes sammlen
             Dictionary<IBlockDefinition, int> textureOffsets = new Dictionary<IBlockDefinition, int>();
             // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();

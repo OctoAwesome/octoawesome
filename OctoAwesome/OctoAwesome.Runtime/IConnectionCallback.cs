@@ -58,30 +58,14 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Informiert den Client über das Entfernen eines einzelnen Blocks
         /// </summary>
-        /// <param name="planet"></param>
-        /// <param name="chunkX"></param>
-        /// <param name="chunkY"></param>
-        /// <param name="chunkZ"></param>
-        /// <param name="blockX"></param>
-        /// <param name="blockY"></param>
-        /// <param name="blockZ"></param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
-        void SendBlockRemove(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ);
+        void SendBlockRemove(PlanetIndex3 chunkIndex, Index3 blockIndex);
 
         /// <summary>
         /// Informiert den Client über das Einfügen eines Blocks
         /// </summary>
-        /// <param name="planet"></param>
-        /// <param name="chunkX"></param>
-        /// <param name="chunkY"></param>
-        /// <param name="chunkZ"></param>
-        /// <param name="blockX"></param>
-        /// <param name="blockY"></param>
-        /// <param name="blockZ"></param>
-        /// <param name="fullName"></param>
-        /// <param name="metaData"></param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
-        void SendBlockInsert(int planet, int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ, string fullName, int metaData);
+        void SendBlockInsert(PlanetIndex3 chunkIndex, Index3 blockIndex, string fullName, int metaData);
 
         /// <summary>
         /// Informiert den Player über das einfügen einer Entität (Items, player,...)

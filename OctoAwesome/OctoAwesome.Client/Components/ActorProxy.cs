@@ -18,6 +18,11 @@ namespace OctoAwesome.Runtime
         {
             this.client = client;
             Connected = true;
+
+            foreach (var definition in DefinitionManager.GetBlockDefinitions())
+            {
+                inventory.Add(new InventorySlot() { Definition = definition, Amount = int.MaxValue });
+            }
         }
 
         public void Close(string reason)
@@ -132,7 +137,7 @@ namespace OctoAwesome.Runtime
         {
             try
             {
-                client.Apply(blockIndex, tool, orientation);
+                client.Apply(blockIndex, tool.Definition.GetType().FullName, orientation);
             }
             catch (Exception ex)
             {

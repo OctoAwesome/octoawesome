@@ -13,6 +13,8 @@ namespace OctoAwesome.Runtime
         private Stopwatch watch;
         private Thread thread;
         private World world;
+        private long frame = 0;
+        private int keyframe = 60;
 
         public List<ActorHost> ActorHosts { get; private set; }
 
@@ -44,13 +46,19 @@ namespace OctoAwesome.Runtime
 
                 if (!world.Paused)
                 {
-                    foreach (var actorHost in ActorHosts.Where(h => h.ReadyState))
+                    foreach (var actorHost in ActorHosts.Where(h => h.ReadyState).ToArray())
+                    {
                         actorHost.Update(gameTime);
+                        if (frame % keyframe == 0)
+                            Server.Instance.UpdateEntity(actorHost.Player);
+                    }
                 }
 
                 TimeSpan diff = frameTime - (watch.Elapsed - lastCall);
                 if (diff > TimeSpan.Zero)
                     Thread.Sleep(diff);
+
+                frame++;
             }
 
             foreach (var actorHost in ActorHosts)

@@ -231,6 +231,7 @@ namespace OctoAwesome.Runtime
             {
                 ushort lastBlock = localChunkCache.GetBlock(lastInteract.Value);
                 localChunkCache.SetBlock(lastInteract.Value, 0);
+                Server.Instance.RemoveBlock(Player.Position.Planet, lastInteract.Value);
 
                 if (lastBlock != 0)
                 {
@@ -272,6 +273,7 @@ namespace OctoAwesome.Runtime
                     {
                         IBlockDefinition definition = lastTool.Definition as IBlockDefinition;
                         localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
+                        Server.Instance.AddBlock(Player.Position.Planet, lastApply.Value + add, definition, 0);
 
                         lastTool.Amount--;
                         if (lastTool.Amount <= 0)
