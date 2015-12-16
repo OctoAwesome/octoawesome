@@ -19,6 +19,7 @@ namespace OctoAwesome.Client.Screens
         ToolbarControl toolbar;
         MinimapControl minimap;
         CrosshairControl crosshair;
+        ConsoleControl console;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -65,7 +66,17 @@ namespace OctoAwesome.Client.Screens
             crosshair.Height = 8;
             Controls.Add(crosshair);
 
+            console = new ConsoleControl(manager);
+            console.HorizontalAlignment = HorizontalAlignment.Left;
+            console.VerticalAlignment = VerticalAlignment.Bottom;
+            console.MinWidth = 400;
+            console.Background = new BorderBrush(Color.Gray * 0.4f);
+            console.Visible = false;
+            Controls.Add(console);
+
             Title = "Game";
+
+            ConsoleControl.WriteLine("Game init...");
         }
 
         protected override void OnUpdate(GameTime gameTime)
@@ -301,8 +312,13 @@ namespace OctoAwesome.Client.Screens
                     else
                         Manager.CaptureMouse();
                     break;
+                case Keys.T:
+                case Keys.Enter:
+                    if (!console.Visible) console.Visible = true;
+                    break;
                 case Keys.Escape:
-                    Manager.NavigateToScreen(new MainScreen(Manager));
+                    if (console.Visible) console.Visible = false;
+                    else Manager.NavigateToScreen(new MainScreen(Manager));
                     break;
                 case Keys.L:
                     // Manager.Player.ActorHost.AllBlocksDebug();

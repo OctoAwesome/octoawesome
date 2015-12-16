@@ -30,6 +30,9 @@ namespace OctoAwesome.Server
 
         private static void WriteToConsole(string Message)
         {
+            if (consoleTextBox == null)
+                return;
+
             MethodInvoker myDelegate = delegate() {
                 consoleTextBox.AppendText(Message);
                 consoleTextBox.SelectionStart = consoleTextBox.Text.Length;

@@ -40,7 +40,6 @@ namespace OctoAwesome.Server
         private void Instance_OnLeave(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
-            //TODO - fix item.remove
             if (InvokeRequired)
             {
                 Invoke(new MethodInvoker(() =>

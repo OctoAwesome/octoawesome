@@ -87,10 +87,11 @@ namespace OctoAwesome.Client.Controls
 
             //This Label gets added to the root and is set to Bottom Left
             box = new Label(ScreenManager);
-            box.VerticalAlignment = VerticalAlignment.Bottom;
-            box.HorizontalAlignment = HorizontalAlignment.Left;
+            box.WordWrap = true;
+            //box.VerticalAlignment = VerticalAlignment.Bottom;
+            //box.HorizontalAlignment = HorizontalAlignment.Center;
             box.TextColor = Color.White;
-            Controls.Add(box);
+            leftView.Controls.Add(box);
 
             //Add the left & right side to the root
             Controls.Add(leftView);
@@ -173,11 +174,11 @@ namespace OctoAwesome.Client.Controls
             if (Player.SelectedBox.HasValue)
             {
                 string selection = "box: " +
-                    Player.SelectedBox.Value.ToString() + " on " +
+                    Player.SelectedBox.Value.ToString() + "\non " +
                     Player.SelectedSide.ToString() + " (" +
                     Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
-                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +
-                    Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
+                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") \n-> " +
+                    Player.SelectedEdge.ToString() + " \n-> " + Player.SelectedCorner.ToString();
                 box.Text = selection;
             }
             else

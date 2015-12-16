@@ -53,6 +53,7 @@
     <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
     <Compile Include="Controls\CompassControl.cs" />
+    <Compile Include="Controls\ConsoleControl.cs" />
     <Compile Include="Controls\CrosshairControl.cs" />
     <Compile Include="Controls\DebugControl.cs" />
     <Compile Include="Controls\MinimapControl.cs" />
