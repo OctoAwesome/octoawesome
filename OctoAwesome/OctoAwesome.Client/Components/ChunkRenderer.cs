@@ -171,7 +171,7 @@ namespace OctoAwesome.Client.Components
             List<int> index = new List<int>();
             int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
             float textureWidth = 1f / textureColumns;
-            float texelSize = 1f / SceneControl.TEXTURESIZE;
+            float texelSize = 1f / textures.Width;
             float textureSizeGap = texelSize;
             float textureGap = texelSize / 2;
             // BlockTypes sammlen
