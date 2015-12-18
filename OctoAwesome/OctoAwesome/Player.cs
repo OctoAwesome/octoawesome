@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System;
+using System.IO;
 
 namespace OctoAwesome
 {
@@ -48,12 +49,41 @@ namespace OctoAwesome
 
         public override void SetData(byte[] data)
         {
-            throw new NotImplementedException();
+            using (MemoryStream stream = new MemoryStream(data))
+            {
+                BinaryReader br = new BinaryReader(stream);
+                Position = new Coordinate(
+                    br.ReadInt32(), 
+                    new Index3(br.ReadInt32(), br.ReadInt32(), br.ReadInt32()), 
+                    new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()));
+                Radius = br.ReadSingle();
+                Angle = br.ReadSingle();
+                Height = br.ReadSingle();
+            }
         }
 
         public override byte[] GetData()
         {
-            throw new NotImplementedException();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                BinaryWriter bw = new BinaryWriter(stream);
+                bw.Write(Position.Planet);
+                bw.Write(Position.GlobalBlockIndex.X);
+                bw.Write(Position.GlobalBlockIndex.Y);
+                bw.Write(Position.GlobalBlockIndex.Z);
+                bw.Write(Position.BlockPosition.X);
+                bw.Write(Position.BlockPosition.Y);
+                bw.Write(Position.BlockPosition.Z);
+                bw.Write(Radius);
+                bw.Write(Angle);
+                bw.Write(Height);
+
+                byte[] buffer = new byte[stream.Length];
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.Read(buffer, 0, buffer.Length);
+
+                return buffer;
+            }
         }
     }
 }

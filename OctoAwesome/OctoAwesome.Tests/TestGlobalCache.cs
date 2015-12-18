@@ -43,5 +43,10 @@ namespace OctoAwesome.Tests
             LoadCounter++;
             return new TestChunk(position);
         }
+
+        public IChunk GetChunk(PlanetIndex3 position)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

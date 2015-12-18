@@ -9,6 +9,13 @@
         /// <returns></returns>
         IChunk Subscribe(PlanetIndex3 position, bool writable);
 
+        /// <summary>
+        /// Liefert den Chunk, sofern geladen.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
+        IChunk GetChunk(PlanetIndex3 position);
+
         int LoadedChunks { get; }
 
         /// <summary>

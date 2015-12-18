@@ -92,7 +92,7 @@ namespace OctoAwesome.Runtime
             };
             host.OnMoveChanged += (v) =>
             {
-                try { Callback.SetMove(v); }
+                try  { Callback.SetMove(v); }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -154,9 +154,14 @@ namespace OctoAwesome.Runtime
         }
 
         [OperationBehavior]
-        public void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation)
+        public void Apply(Index3 blockIndex, string definitionName, OrientationFlags orientation)
         {
-            ActorHost.Apply(blockIndex, tool, orientation);
+            var definition = DefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetType().FullName.Equals(definitionName));
+            if (definition == null) return;
+
+            InventorySlot slot = new InventorySlot() { Amount = 2, Definition = definition };
+
+            ActorHost.Apply(blockIndex, slot, orientation);
         }
 
         [OperationBehavior]

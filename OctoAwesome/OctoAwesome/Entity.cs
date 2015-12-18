@@ -10,6 +10,8 @@ namespace OctoAwesome
 {
     public abstract class Entity
     {
+        public Guid Id { get; set; }
+
         public Coordinate Position { get; set; }
 
         public float Mass { get; set; }
@@ -23,5 +25,10 @@ namespace OctoAwesome
         public abstract void SetData(byte[] data);
 
         public abstract byte[] GetData();
+
+        public Entity()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 }
