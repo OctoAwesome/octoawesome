@@ -18,10 +18,16 @@ namespace OctoAwesome.Server
         {
             InitializeComponent();
 
+            ServerConsole.ConsoleTextbox = console_textBox;
+
             Runtime.Server.Instance.OnJoin += Instance_OnJoin;
             Runtime.Server.Instance.OnLeave += Instance_OnLeave;
 
+            ServerConsole.Log("Starting...");
+
             Runtime.Server.Instance.Open();
+
+            ServerConsole.Log("Started!");
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -34,7 +40,6 @@ namespace OctoAwesome.Server
         private void Instance_OnLeave(Client client)
         {
             //ListViewItem bestehend aus Playername & Planet
-            //TODO - fix item.remove
             if (InvokeRequired)
             {
                 Invoke(new MethodInvoker(() =>
@@ -46,6 +51,8 @@ namespace OctoAwesome.Server
             {
                 listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
             }
+
+            ServerConsole.Log($"Player {client.Playername} left the game");
         }
 
         private void Instance_OnJoin(Client client)
@@ -68,6 +75,8 @@ namespace OctoAwesome.Server
             {
                 listViewPlayers.Items.Add(playerItem);
             }
+
+            ServerConsole.Log($"Player {client.Playername} joined the game");
         }
 
         private void button_stopServer_Click(object sender, EventArgs e)
