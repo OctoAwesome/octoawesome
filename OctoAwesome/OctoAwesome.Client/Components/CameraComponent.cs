@@ -34,14 +34,14 @@ namespace OctoAwesome.Client.Components
                 player.PlayerController.Position.LocalPosition.Z + 3.2f);
             CameraUpVector = new Vector3(0, 0, 1f);
 
-            float height = (float)Math.Sin(player.PlayerController.Tilt);
-            float distance = (float)Math.Cos(player.PlayerController.Tilt);
+            float height = (float) Math.Sin(player.PlayerController.Tilt);
+            float distance = (float) Math.Cos(player.PlayerController.Tilt);
 
-            float lookX = (float)Math.Cos(player.PlayerController.Angle) * distance;
-            float lookY = -(float)Math.Sin(player.PlayerController.Angle) * distance;
+            float lookX = (float) Math.Cos(player.PlayerController.Angle)*distance;
+            float lookY = -(float) Math.Sin(player.PlayerController.Angle)*distance;
 
-            float strafeX = (float)Math.Cos(player.PlayerController.Angle + MathHelper.PiOver2);
-            float strafeY = -(float)Math.Sin(player.PlayerController.Angle + MathHelper.PiOver2);
+            float strafeX = (float) Math.Cos(player.PlayerController.Angle + MathHelper.PiOver2);
+            float strafeY = -(float) Math.Sin(player.PlayerController.Angle + MathHelper.PiOver2);
 
             CameraUpVector = Vector3.Cross(new Vector3(strafeX, strafeY, 0), new Vector3(lookX, lookY, height));
 
@@ -60,18 +60,20 @@ namespace OctoAwesome.Client.Components
                     player.PlayerController.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(player.PlayerController.Angle), 
-                    (float)Math.Sin(-player.PlayerController.Angle), 0f));
+                    (float) Math.Cos(player.PlayerController.Angle),
+                    (float) Math.Sin(-player.PlayerController.Angle), 0f));
 
-            float centerX = GraphicsDevice.Viewport.Width / 2;
-            float centerY = GraphicsDevice.Viewport.Height / 2;
+            float centerX = GraphicsDevice.Viewport.Width/2;
+            float centerY = GraphicsDevice.Viewport.Height/2;
 
-            Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
-            Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View, Matrix.Identity);
+            Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View,
+                Matrix.Identity);
+            Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View,
+                Matrix.Identity);
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);
-            Frustum = new BoundingFrustum(View * Projection);
+            Frustum = new BoundingFrustum(View*Projection);
         }
 
         public Index3 CameraChunk { get; private set; }

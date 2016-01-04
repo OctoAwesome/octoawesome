@@ -8,7 +8,6 @@ namespace OctoAwesome.Basics.Biomes
 {
     public class OceanBiomeGenerator : IBiome
     {
-
         public OceanBiomeGenerator(IPlanet planet, float minVal, float maxVal, float valueRangeOffset, float valueRange)
         {
             this.Planet = planet;
@@ -34,13 +33,13 @@ namespace OctoAwesome.Basics.Biomes
 
         public float[,] GetHeightmap(Index2 chunkIndex)
         {
-            float[,] values = new float[Chunk.CHUNKSIZE_X , Chunk.CHUNKSIZE_Y ];
+            float[,] values = new float[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
 
-            chunkIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X , chunkIndex.Y * Chunk.CHUNKSIZE_Y );
+            chunkIndex = new Index2(chunkIndex.X*Chunk.CHUNKSIZE_X, chunkIndex.Y*Chunk.CHUNKSIZE_Y);
 
-            for (int x = 0; x < Chunk.CHUNKSIZE_X ; x++)
+            for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
             {
-                for (int y = 0; y < Chunk.CHUNKSIZE_Y ; y++)
+                for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
                 {
                     values[x, y] = 0f;
                 }

@@ -19,7 +19,7 @@ namespace OctoAwesome
         /// Größe eines Chunks in Blocks in X-Richtung.
         /// </summary>
         public const int CHUNKSIZE_X = 1 << LimitX;
-        
+
         /// <summary>
         /// Größe eines Chunks in Blocks in Y-Richtung.
         /// </summary>
@@ -57,9 +57,9 @@ namespace OctoAwesome
 
         public Chunk(Index3 pos, int planet)
         {
-            Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            MetaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            Resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
+            Blocks = new ushort[CHUNKSIZE_X*CHUNKSIZE_Y*CHUNKSIZE_Z];
+            MetaData = new int[CHUNKSIZE_X*CHUNKSIZE_Y*CHUNKSIZE_Z];
+            Resources = new ushort[CHUNKSIZE_X*CHUNKSIZE_Y*CHUNKSIZE_Z][];
 
             Index = pos;
             Planet = planet;

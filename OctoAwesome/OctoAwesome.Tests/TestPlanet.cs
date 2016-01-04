@@ -16,20 +16,14 @@ namespace OctoAwesome.Tests
 
         public IClimateMap ClimateMap
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public int Id { get; private set; }
 
         public int Seed
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public Index3 Size { get; private set; }

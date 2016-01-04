@@ -32,7 +32,7 @@ namespace OctoAwesome.Runtime
                     var blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                     types.Add(blockDefinition);
 
-                    map.Add((ushort)types.Count, (ushort)(Array.IndexOf(definitions, blockDefinition) + 1));
+                    map.Add((ushort) types.Count, (ushort) (Array.IndexOf(definitions, blockDefinition) + 1));
                 }
 
                 for (int i = 0; i < chunk.Blocks.Length; i++)
@@ -70,13 +70,13 @@ namespace OctoAwesome.Runtime
             }
 
             bool longIndex = definitions.Count > 254;
-            bw.Write((byte)((longIndex) ? 1 : 0));
+            bw.Write((byte) ((longIndex) ? 1 : 0));
 
             // Schreibe Phase 1
             if (longIndex)
-                bw.Write((ushort)definitions.Count);
+                bw.Write((ushort) definitions.Count);
             else
-                bw.Write((byte)definitions.Count);
+                bw.Write((byte) definitions.Count);
 
             // Im Falle eines Luft-Chunks...
             if (definitions.Count == 0)
@@ -94,9 +94,9 @@ namespace OctoAwesome.Runtime
                 {
                     // Definition Index (Air)
                     if (longIndex)
-                        bw.Write((ushort)0);
+                        bw.Write((ushort) 0);
                     else
-                        bw.Write((byte)0);
+                        bw.Write((byte) 0);
                 }
                 else
                 {
@@ -104,9 +104,9 @@ namespace OctoAwesome.Runtime
                     IBlockDefinition definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
 
                     if (longIndex)
-                        bw.Write((ushort)(definitions.IndexOf(definition) + 1));
+                        bw.Write((ushort) (definitions.IndexOf(definition) + 1));
                     else
-                        bw.Write((byte)(definitions.IndexOf(definition) + 1));
+                        bw.Write((byte) (definitions.IndexOf(definition) + 1));
 
                     // Meta Data
                     if (definition.HasMetaData)

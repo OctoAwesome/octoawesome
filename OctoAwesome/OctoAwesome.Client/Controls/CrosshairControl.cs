@@ -17,14 +17,15 @@ namespace OctoAwesome.Client.Controls
 
         public CrosshairControl(ScreenComponent manager) : base(manager)
         {
-            Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/octocross.png", manager.GraphicsDevice);
+            Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/octocross.png",
+                manager.GraphicsDevice);
             Transparency = 0.5f;
             Color = Color.White;
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            batch.Draw(Texture, contentArea, Color * Transparency);
+            batch.Draw(Texture, contentArea, Color*Transparency);
         }
     }
 }

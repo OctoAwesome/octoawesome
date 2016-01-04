@@ -41,7 +41,7 @@ namespace OctoAwesome.Runtime
             while (Running)
             {
                 GameTime gameTime = new GameTime(
-                    watch.Elapsed, frameTime); 
+                    watch.Elapsed, frameTime);
                 lastCall = watch.Elapsed;
 
                 if (!world.Paused)
@@ -49,7 +49,7 @@ namespace OctoAwesome.Runtime
                     foreach (var actorHost in ActorHosts.Where(h => h.ReadyState).ToArray())
                     {
                         actorHost.Update(gameTime);
-                        if (frame % keyframe == 0)
+                        if (frame%keyframe == 0)
                             Server.Instance.UpdateEntity(actorHost.Player);
                     }
                 }

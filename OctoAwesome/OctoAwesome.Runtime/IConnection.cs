@@ -7,7 +7,7 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
-    [ServiceContract(CallbackContract = typeof(IConnectionCallback), SessionMode = SessionMode.Required)]
+    [ServiceContract(CallbackContract = typeof (IConnectionCallback), SessionMode = SessionMode.Required)]
     public interface IConnection
     {
         #region Connection Management

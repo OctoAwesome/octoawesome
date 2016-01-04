@@ -21,10 +21,13 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            batch.Draw(Skin.Pix, new Rectangle(contentArea.X - 2, contentArea.Y - 2, contentArea.Width + 4, contentArea.Height + 4), Color.Black);
-            batch.Draw(Scene.MiniMapTexture, new Rectangle(contentArea.X, contentArea.Y, contentArea.Width, contentArea.Height), Color.White);
+            batch.Draw(Skin.Pix,
+                new Rectangle(contentArea.X - 2, contentArea.Y - 2, contentArea.Width + 4, contentArea.Height + 4),
+                Color.Black);
+            batch.Draw(Scene.MiniMapTexture,
+                new Rectangle(contentArea.X, contentArea.Y, contentArea.Width, contentArea.Height), Color.White);
 
-            Index2 center = new Index2((contentArea.Width / 2) + contentArea.X, (contentArea.Height / 2) + contentArea.Y);
+            Index2 center = new Index2((contentArea.Width/2) + contentArea.X, (contentArea.Height/2) + contentArea.Y);
 
             batch.Draw(Skin.Pix, new Rectangle(center.X - 1, center.Y - 1, 2, 2), Color.White);
         }

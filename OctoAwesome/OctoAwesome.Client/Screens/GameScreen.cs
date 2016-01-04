@@ -70,7 +70,7 @@ namespace OctoAwesome.Client.Screens
             console.HorizontalAlignment = HorizontalAlignment.Left;
             console.VerticalAlignment = VerticalAlignment.Bottom;
             console.MinWidth = 400;
-            console.Background = new BorderBrush(Color.Gray * 0.4f);
+            console.Background = new BorderBrush(Color.Gray*0.4f);
             console.Visible = false;
             Controls.Add(console);
 
@@ -119,7 +119,7 @@ namespace OctoAwesome.Client.Screens
 
             if (args.MouseMode == MouseMode.Captured && IsActiveScreen)
             {
-                Manager.Player.HeadInput = args.GlobalPosition.ToVector2() * mouseSpeed * new Vector2(1f, -1f);
+                Manager.Player.HeadInput = args.GlobalPosition.ToVector2()*mouseSpeed*new Vector2(1f, -1f);
                 args.Handled = true;
             }
         }
@@ -325,6 +325,7 @@ namespace OctoAwesome.Client.Screens
                     break;
             }
         }
+
         #endregion
 
         #region GamePad Input
@@ -348,7 +349,9 @@ namespace OctoAwesome.Client.Screens
                 gamePadState = GamePad.GetState(PlayerIndex.One);
                 succeeded = true;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
 
             if (succeeded)
             {

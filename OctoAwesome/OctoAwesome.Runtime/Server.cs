@@ -40,7 +40,6 @@ namespace OctoAwesome.Runtime
 
         public Server()
         {
-
         }
 
         public void Open()
@@ -58,8 +57,8 @@ namespace OctoAwesome.Runtime
 
             NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
 
-            playerHost = new ServiceHost(typeof(Client), new Uri(playerAddress));
-            playerHost.AddServiceEndpoint(typeof(IConnection), binding, playerAddress);
+            playerHost = new ServiceHost(typeof (Client), new Uri(playerAddress));
+            playerHost.AddServiceEndpoint(typeof (IConnection), binding, playerAddress);
             playerHost.Open();
 
             NetTcpBinding chunkBinding = new NetTcpBinding(SecurityMode.None);
@@ -67,8 +66,8 @@ namespace OctoAwesome.Runtime
             chunkBinding.MaxReceivedMessageSize = int.MaxValue;
             chunkBinding.MaxBufferSize = int.MaxValue;
 
-            chunkHost = new ServiceHost(typeof(ChunkConnection), new Uri(chunkAddress));
-            chunkHost.AddServiceEndpoint(typeof(IChunkConnection), chunkBinding, chunkAddress);
+            chunkHost = new ServiceHost(typeof (ChunkConnection), new Uri(chunkAddress));
+            chunkHost.AddServiceEndpoint(typeof (IChunkConnection), chunkBinding, chunkAddress);
             chunkHost.Open();
 
             IsRunning = true;
@@ -92,7 +91,9 @@ namespace OctoAwesome.Runtime
                     {
                         clients[i].Callback.Disconnect("Server closed");
                     }
-                    catch (Exception) { }
+                    catch (Exception)
+                    {
+                    }
 
                     if (OnLeave != null)
                         OnLeave(clients[i]);
@@ -169,7 +170,9 @@ namespace OctoAwesome.Runtime
                 {
                     client.Callback.Disconnect(string.Empty);
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                }
 
                 // Alle Chunks deabonieren
                 foreach (var chunk in client.SubscripedChunks)
@@ -215,7 +218,8 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        client.Callback.SendEntityInsert(chunkIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, entity.GetData());
+                        client.Callback.SendEntityInsert(chunkIndex, entity.Id, entity.GetType().Assembly.GetName().Name,
+                            entity.GetType().FullName, entity.GetData());
                     }
                     catch (Exception ex)
                     {
@@ -257,7 +261,8 @@ namespace OctoAwesome.Runtime
                     {
                         try
                         {
-                            client.Callback.SendEntityInsert(index, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                            client.Callback.SendEntityInsert(index, entity.Id, entity.GetType().Assembly.GetName().Name,
+                                entity.GetType().FullName, data);
                         }
                         catch (Exception ex)
                         {
@@ -332,7 +337,8 @@ namespace OctoAwesome.Runtime
                     {
                         try
                         {
-                            client.Callback.SendEntityInsert(destinationIndex, entity.Id, entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
+                            client.Callback.SendEntityInsert(destinationIndex, entity.Id,
+                                entity.GetType().Assembly.GetName().Name, entity.GetType().FullName, data);
                         }
                         catch (Exception ex)
                         {
@@ -391,8 +397,10 @@ namespace OctoAwesome.Runtime
 
         internal void RemoveBlock(int planet, Index3 index)
         {
-            PlanetIndex3 chunkIndex = new PlanetIndex3(planet, new Index3(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ));
-            Index3 blockIndex = new Index3(index.X & ((1 << Chunk.LimitX) - 1), index.Y & ((1 << Chunk.LimitY) - 1), index.Z & ((1 << Chunk.LimitZ) - 1));
+            PlanetIndex3 chunkIndex = new PlanetIndex3(planet,
+                new Index3(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ));
+            Index3 blockIndex = new Index3(index.X & ((1 << Chunk.LimitX) - 1), index.Y & ((1 << Chunk.LimitY) - 1),
+                index.Z & ((1 << Chunk.LimitZ) - 1));
 
             lock (subscriptions)
             {
@@ -416,8 +424,10 @@ namespace OctoAwesome.Runtime
 
         internal void AddBlock(int planet, Index3 index, IBlockDefinition blockDefinition, int meta)
         {
-            PlanetIndex3 chunkIndex = new PlanetIndex3(planet, new Index3(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ));
-            Index3 blockIndex = new Index3(index.X & ((1 << Chunk.LimitX) - 1), index.Y & ((1 << Chunk.LimitY) - 1), index.Z & ((1 << Chunk.LimitZ) - 1));
+            PlanetIndex3 chunkIndex = new PlanetIndex3(planet,
+                new Index3(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ));
+            Index3 blockIndex = new Index3(index.X & ((1 << Chunk.LimitX) - 1), index.Y & ((1 << Chunk.LimitY) - 1),
+                index.Z & ((1 << Chunk.LimitZ) - 1));
 
             lock (subscriptions)
             {
@@ -428,7 +438,8 @@ namespace OctoAwesome.Runtime
                     {
                         try
                         {
-                            client.Callback.SendBlockInsert(chunkIndex, blockIndex, blockDefinition.GetType().FullName, meta);
+                            client.Callback.SendBlockInsert(chunkIndex, blockIndex, blockDefinition.GetType().FullName,
+                                meta);
                         }
                         catch (Exception ex)
                         {

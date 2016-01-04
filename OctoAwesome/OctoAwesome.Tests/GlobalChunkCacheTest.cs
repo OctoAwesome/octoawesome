@@ -213,9 +213,9 @@ namespace OctoAwesome.Tests
                 cache.Release(new PlanetIndex3(4, new Index3(2, 2, 2)), true);
                 Assert.Fail("Exception expected");
             }
-            catch (NotSupportedException) { }
+            catch (NotSupportedException)
+            {
+            }
         }
     }
-
-    
 }

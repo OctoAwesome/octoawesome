@@ -44,7 +44,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnRadiusChanged += (v) =>
             {
-                try { Callback.SetRadius(v); }
+                try
+                {
+                    Callback.SetRadius(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -52,7 +55,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnAngleChanged += (v) =>
             {
-                try { Callback.SetAngle(v); }
+                try
+                {
+                    Callback.SetAngle(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -60,7 +66,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnHeightChanged += (v) =>
             {
-                try { Callback.SetHeight(v); }
+                try
+                {
+                    Callback.SetHeight(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -68,7 +77,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnOnGroundChanged += (v) =>
             {
-                try { Callback.SetOnGround(v); }
+                try
+                {
+                    Callback.SetOnGround(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -76,7 +88,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnFlyModeChanged += (v) =>
             {
-                try { Callback.SetFlyMode(v); }
+                try
+                {
+                    Callback.SetFlyMode(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -84,7 +99,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnTiltChanged += (v) =>
             {
-                try { Callback.SetTilt(v); }
+                try
+                {
+                    Callback.SetTilt(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -92,7 +110,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnMoveChanged += (v) =>
             {
-                try  { Callback.SetMove(v); }
+                try
+                {
+                    Callback.SetMove(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -100,7 +121,10 @@ namespace OctoAwesome.Runtime
             };
             host.OnHeadChanged += (v) =>
             {
-                try { Callback.SetHead(v); }
+                try
+                {
+                    Callback.SetHead(v);
+                }
                 catch (Exception ex)
                 {
                     Disconnect(ex.Message);
@@ -156,10 +180,12 @@ namespace OctoAwesome.Runtime
         [OperationBehavior]
         public void Apply(Index3 blockIndex, string definitionName, OrientationFlags orientation)
         {
-            var definition = DefinitionManager.GetBlockDefinitions().SingleOrDefault(d => d.GetType().FullName.Equals(definitionName));
+            var definition =
+                DefinitionManager.GetBlockDefinitions()
+                    .SingleOrDefault(d => d.GetType().FullName.Equals(definitionName));
             if (definition == null) return;
 
-            InventorySlot slot = new InventorySlot() { Amount = 2, Definition = definition };
+            InventorySlot slot = new InventorySlot() {Amount = 2, Definition = definition};
 
             ActorHost.Apply(blockIndex, slot, orientation);
         }

@@ -81,7 +81,7 @@ namespace OctoAwesome.Runtime
         public static ushort GetBlockDefinitionIndex(IBlockDefinition definition)
         {
             EnsureLoaded();
-            return (ushort)(Array.IndexOf(blockDefinitions, definition) + 1);
+            return (ushort) (Array.IndexOf(blockDefinitions, definition) + 1);
         }
     }
 }

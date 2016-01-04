@@ -79,7 +79,7 @@ namespace OctoAwesome.Client.Components
             InteractInput = false;
 
             if (ApplyInput && SelectedBox.HasValue)
-                PlayerController.Apply(SelectedBox.Value, ActiveTool,  SelectedSide);
+                PlayerController.Apply(SelectedBox.Value, ActiveTool, SelectedSide);
             ApplyInput = false;
 
             if (FlymodeInput)
@@ -121,7 +121,7 @@ namespace OctoAwesome.Client.Components
                     activeTool++;
                 SlotRightInput = false;
 
-                activeTool = (activeTool + Tools.Count) % Tools.Count;
+                activeTool = (activeTool + Tools.Count)%Tools.Count;
                 ActiveTool = Tools[activeTool];
             }
         }

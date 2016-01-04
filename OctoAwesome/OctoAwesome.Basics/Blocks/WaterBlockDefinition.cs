@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/water.png"); }
+            get { return (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/water.png"); }
         }
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
@@ -36,8 +36,9 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/water.png")
+                return new[]
+                {
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/water.png")
                 };
             }
         }
