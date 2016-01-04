@@ -10,28 +10,23 @@ namespace OctoAwesome.Basics
     {
         public override string Name
         {
-            get
-            {
-                return "Snow";
-            }
+            get { return "Snow"; }
         }
 
         public override Bitmap Icon
         {
-            get
-            {
-                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"); 
-            }
+            get { return (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"); }
         }
 
         public override Bitmap[] Textures
         {
             get
             {
-                return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_snow.png"),
+                return new[]
+                {
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"),
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_snow.png"),
                 };
             }
         }

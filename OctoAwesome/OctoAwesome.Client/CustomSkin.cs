@@ -15,9 +15,12 @@ namespace OctoAwesome.Client
     {
         public CustomSkin(ContentManager content, GraphicsDevice device, ScreenComponent manager) : base(content)
         {
-            Texture2D button_texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/button.png", device);
-            Texture2D buttonHovered_texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/button_hovered.png", device);
-            Texture2D buttonPressed_texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/button_pressed.png", device);
+            Texture2D button_texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/button.png",
+                device);
+            Texture2D buttonHovered_texture =
+                manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/button_hovered.png", device);
+            Texture2D buttonPressed_texture =
+                manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/button_pressed.png", device);
 
             NineTileBrush button_brush = NineTileBrush.FromSingleTexture(button_texture, 10, 10);
             NineTileBrush buttonHovered_brush = NineTileBrush.FromSingleTexture(buttonHovered_texture, 10, 10);
@@ -42,7 +45,5 @@ namespace OctoAwesome.Client
                 }
             });
         }
-
-
     }
 }

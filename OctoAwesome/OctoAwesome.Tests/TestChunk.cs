@@ -18,63 +18,39 @@ namespace OctoAwesome.Tests
 
         public ushort[] Blocks
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public int ChangeCounter
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
 
-            set
-            {
-                throw new NotImplementedException();
-            }
+            set { throw new NotImplementedException(); }
         }
 
         public Index3 Index
         {
-            get
-            {
-                return index;
-            }
+            get { return index; }
         }
 
         public int[] MetaData
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public int Planet
         {
-            get
-            {
-                return planet;
-            }
+            get { return planet; }
         }
 
         public ushort[][] Resources
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public ICollection<Entity> Entities
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public ushort GetBlock(Index3 index)

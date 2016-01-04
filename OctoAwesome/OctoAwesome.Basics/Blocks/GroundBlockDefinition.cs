@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"); }
+            get { return (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"); }
         }
 
 
@@ -20,8 +20,9 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png")
+                return new[]
+                {
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png")
                 };
             }
         }

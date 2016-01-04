@@ -38,7 +38,7 @@ namespace OctoAwesome.Client.Controls
             resMan = ResourceManager.Instance;
 
             //Brush for Debug Background
-            BorderBrush bg = new BorderBrush(Color.Black * 0.2f);
+            BorderBrush bg = new BorderBrush(Color.Black*0.2f);
 
             //The left side of the Screen 
             leftView = new StackPanel(ScreenManager)
@@ -103,7 +103,7 @@ namespace OctoAwesome.Client.Controls
                 control.HorizontalAlignment = HorizontalAlignment.Left;
                 if (control is Label)
                 {
-                    ((Label)control).TextColor = Color.White;
+                    ((Label) control).TextColor = Color.White;
                 }
             }
             foreach (Control control in rightView.Controls)
@@ -111,8 +111,7 @@ namespace OctoAwesome.Client.Controls
                 control.HorizontalAlignment = HorizontalAlignment.Right;
                 if (control is Label)
                 {
-                    ((Label)control).TextColor = Color.White;
-                    
+                    ((Label) control).TextColor = Color.White;
                 }
             }
         }
@@ -127,12 +126,12 @@ namespace OctoAwesome.Client.Controls
             seconds += gameTime.ElapsedGameTime.TotalSeconds;
             if (framecount == 10)
             {
-                lastfps = seconds / framecount;
+                lastfps = seconds/framecount;
                 framecount = 0;
                 seconds = 0;
             }
 
-            framebuffer[bufferindex++] = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            framebuffer[bufferindex++] = (float) gameTime.ElapsedGameTime.TotalSeconds;
             bufferindex %= buffersize;
 
             //Draw Control Info
@@ -143,22 +142,23 @@ namespace OctoAwesome.Client.Controls
             position.Text = pos;
 
             //Draw Rotation
-            float grad = (Player.PlayerController.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.PlayerController.Angle/MathHelper.TwoPi)*360;
             string rot = "rot: " +
-                (((Player.PlayerController.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.PlayerController.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                         (((Player.PlayerController.Angle/MathHelper.TwoPi)*360)%360).ToString("0.00") + " / " +
+                         ((Player.PlayerController.Tilt/MathHelper.TwoPi)*360).ToString("0.00");
             rotation.Text = rot;
 
             //Draw Fps
-            string fpsString = "fps: " + (1f / lastfps).ToString("0.00");
+            string fpsString = "fps: " + (1f/lastfps).ToString("0.00");
             fps.Text = fpsString;
 
             //Draw Loaded Chunks
             loadedChunks.Text = "Loaded Chunks: " + resMan.GlobalChunkCache.LoadedChunks;
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " Items - " +
-                (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
+            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count +
+                              " Items - " +
+                              (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
 
             //Additional Play Information
 
@@ -166,24 +166,23 @@ namespace OctoAwesome.Client.Controls
             if (Player.ActiveTool != null)
                 activeTool.Text = "Active Item/Tool: " + Player.ActiveTool.Definition.Name;
 
-                //Fly Info
-                if (Player.PlayerController.FlyMode) flyInfo.Text = "Flymode enabled";
-                else flyInfo.Text = "";
+            //Fly Info
+            if (Player.PlayerController.FlyMode) flyInfo.Text = "Flymode enabled";
+            else flyInfo.Text = "";
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)
             {
                 string selection = "box: " +
-                    Player.SelectedBox.Value.ToString() + "\non " +
-                    Player.SelectedSide.ToString() + " (" +
-                    Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
-                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") \n-> " +
-                    Player.SelectedEdge.ToString() + " \n-> " + Player.SelectedCorner.ToString();
+                                   Player.SelectedBox.Value.ToString() + "\non " +
+                                   Player.SelectedSide.ToString() + " (" +
+                                   Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
+                                   Player.SelectedPoint.Value.Y.ToString("0.00") + ") \n-> " +
+                                   Player.SelectedEdge.ToString() + " \n-> " + Player.SelectedCorner.ToString();
                 box.Text = selection;
             }
             else
                 box.Text = "";
-
         }
     }
 }

@@ -155,7 +155,8 @@ namespace OctoAwesome.Model.Tests
             Assert.AreEqual(i3.Y, i1.ShortestDistanceY(i2.Y, size.Y));
             Assert.AreEqual(i3.Z, i1.ShortestDistanceZ(i2.Z, size.Z));
 
-            Assert.AreEqual(new Index2(i3.X, i3.Y), i1.ShortestDistanceXY(new Index2(i2.X, i2.Y), new Index2(size.X, size.Y)));
+            Assert.AreEqual(new Index2(i3.X, i3.Y),
+                i1.ShortestDistanceXY(new Index2(i2.X, i2.Y), new Index2(size.X, size.Y)));
             Assert.AreEqual(new Index3(i3.X, i3.Y, i2.Z - i1.Z), i1.ShortestDistanceXY(i2, new Index2(size.X, size.Y)));
 
             Assert.AreEqual(i3, i1.ShortestDistanceXYZ(i2, size));
@@ -164,16 +165,16 @@ namespace OctoAwesome.Model.Tests
         [TestMethod]
         public void Index3AdditionTest()
         {
-            Index3 i1 = new Index3(20, 15, 17);     // Startwert
+            Index3 i1 = new Index3(20, 15, 17); // Startwert
             Index2 in2 = new Index2(-100, -130); // Negativ Addition (2D)
             Index3 in3 = new Index3(-100, -130, -33); // Negativ Addition (3D)
-            Index3 in2r = new Index3(-80, -115, 17);  // Ergebnis i1 + in2
-            Index3 in3r = new Index3(-80, -115, -16);  // Ergebnis i1 + in3
+            Index3 in2r = new Index3(-80, -115, 17); // Ergebnis i1 + in2
+            Index3 in3r = new Index3(-80, -115, -16); // Ergebnis i1 + in3
 
             Index2 ip2 = new Index2(77, 44); // positive Addition (2D)
             Index3 ip3 = new Index3(77, 44, 54); // positive Addition (3D)
-            Index3 ip2r = new Index3(97, 59, 17);  // Ergebnis i1 + ip2
-            Index3 ip3r = new Index3(97, 59, 71);  // Ergebnis i1 + ip3
+            Index3 ip2r = new Index3(97, 59, 17); // Ergebnis i1 + ip2
+            Index3 ip3r = new Index3(97, 59, 71); // Ergebnis i1 + ip3
 
             // Addition
             Assert.AreEqual(in2r, i1 + in2);

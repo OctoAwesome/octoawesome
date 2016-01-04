@@ -6,18 +6,14 @@ using System.Windows.Forms;
 
 namespace OctoAwesome.Server
 {
-   public static class ServerConsole
+    public static class ServerConsole
     {
         private static RichTextBox consoleTextBox;
 
-        public static RichTextBox ConsoleTextbox { get
-            {
-                return consoleTextBox;
-            }
-            set
-            {
-                consoleTextBox = value;
-            }
+        public static RichTextBox ConsoleTextbox
+        {
+            get { return consoleTextBox; }
+            set { consoleTextBox = value; }
         }
 
         public static void Log(string Message)
@@ -33,11 +29,12 @@ namespace OctoAwesome.Server
             if (consoleTextBox == null)
                 return;
 
-            MethodInvoker myDelegate = delegate() {
+            MethodInvoker myDelegate = delegate()
+            {
                 consoleTextBox.AppendText(Message);
                 consoleTextBox.SelectionStart = consoleTextBox.Text.Length;
                 consoleTextBox.ScrollToCaret();
-             };
+            };
 
             if (consoleTextBox.InvokeRequired)
             {

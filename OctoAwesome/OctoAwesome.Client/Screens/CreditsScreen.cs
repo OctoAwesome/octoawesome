@@ -19,7 +19,9 @@ namespace OctoAwesome.Client.Screens
             Title = "Credits";
 
             Image background = new Image(manager);
-            background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
+            background.Texture =
+                Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png",
+                    Manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
@@ -27,10 +29,7 @@ namespace OctoAwesome.Client.Screens
             Button backButton = Button.TextButton(manager, "Back");
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
+            backButton.LeftMouseClick += (s, e) => { manager.NavigateBack(); };
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
 
@@ -43,14 +42,15 @@ namespace OctoAwesome.Client.Screens
                 CanFocus = false
             };
 
-            StackPanel crewList = new StackPanel(manager) {
+            StackPanel crewList = new StackPanel(manager)
+            {
                 MinWidth = 700,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Orientation = Orientation.Vertical,
             };
             crewScroll.Content = crewList;
 
-            foreach(CrewMember member in crew)
+            foreach (CrewMember member in crew)
             {
                 Panel memberPanel = new Panel(manager)
                 {
@@ -59,13 +59,10 @@ namespace OctoAwesome.Client.Screens
                     Background = new BorderBrush(Color.White),
                     Margin = new Border(5, 5, 5, 5),
                     HoveredBackground = new BorderBrush(Color.LightGray)
-
                 };
 
-                memberPanel.LeftMouseClick += (s, e) =>
-                {
-                    manager.NavigateToScreen(new CrewMemberScreen(manager, member));
-                };
+                memberPanel.LeftMouseClick +=
+                    (s, e) => { manager.NavigateToScreen(new CrewMemberScreen(manager, member)); };
 
                 Label name = new Label(manager)
                 {
@@ -77,9 +74,8 @@ namespace OctoAwesome.Client.Screens
 
                 memberPanel.Controls.Add(name);
                 crewList.Controls.Add(memberPanel);
-
             }
-            
+
 
             Controls.Add(crewScroll);
         }

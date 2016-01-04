@@ -17,7 +17,6 @@ namespace OctoAwesome.Client
     /// </summary>
     public class OctoGame : Game
     {
-
         GraphicsDeviceManager graphics;
 
         CameraComponent camera;
@@ -31,7 +30,7 @@ namespace OctoAwesome.Client
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             Window.Title = "OctoAwesome";
-            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferWidth = 1080;
             graphics.PreferredBackBufferHeight = 720;
             IsMouseVisible = true;
             Window.AllowUserResizing = false;
@@ -56,7 +55,7 @@ namespace OctoAwesome.Client
             //    SceneComponent.VIEWHEIGHT = viewheight;
             //}
 
-            ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
+            ResourceManager.CacheSize = ((viewrange*2) + 1)*((viewrange*2) + 1)*5*2;
 
             // Lokale Spiele (Single Player)
             //simulation = new SimulationComponent(this);

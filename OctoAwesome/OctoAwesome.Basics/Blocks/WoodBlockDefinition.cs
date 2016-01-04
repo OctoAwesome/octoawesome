@@ -16,18 +16,23 @@ namespace OctoAwesome.Basics
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"); }
+            get { return (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"); }
         }
 
-        public override bool HasMetaData { get { return true; } }
+        public override bool HasMetaData
+        {
+            get { return true; }
+        }
 
         public override Bitmap[] Textures
         {
             get
             {
-                return new[] {
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"),
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_side.png") };
+                return new[]
+                {
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"),
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_side.png")
+                };
             }
         }
 
@@ -49,7 +54,7 @@ namespace OctoAwesome.Basics
 
         public override int GetTopTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -67,7 +72,7 @@ namespace OctoAwesome.Basics
 
         public override int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -85,7 +90,7 @@ namespace OctoAwesome.Basics
 
         public override int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -103,7 +108,7 @@ namespace OctoAwesome.Basics
 
         public override int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -117,12 +122,11 @@ namespace OctoAwesome.Basics
                 default:
                     return 1;
             }
-
         }
 
         public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -136,12 +140,11 @@ namespace OctoAwesome.Basics
                 default:
                     return 1;
             }
-
         }
 
         public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -159,7 +162,7 @@ namespace OctoAwesome.Basics
 
         public override int GetTopTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -177,7 +180,7 @@ namespace OctoAwesome.Basics
 
         public override int GetBottomTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -195,7 +198,7 @@ namespace OctoAwesome.Basics
 
         public override int GetEastTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -213,7 +216,7 @@ namespace OctoAwesome.Basics
 
         public override int GetWestTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -231,7 +234,7 @@ namespace OctoAwesome.Basics
 
         public override int GetNorthTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {
@@ -249,7 +252,7 @@ namespace OctoAwesome.Basics
 
         public override int GetSouthTextureRotation(ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
 
             switch (orientation)
             {

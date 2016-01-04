@@ -15,10 +15,7 @@ namespace OctoAwesome.Tests
 
         public int LoadedChunks
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public TestGlobalCache()

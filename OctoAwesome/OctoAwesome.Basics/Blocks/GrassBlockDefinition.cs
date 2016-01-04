@@ -12,19 +12,18 @@ namespace OctoAwesome.Basics
 
         public override Bitmap Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"); }
+            get { return (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"); }
         }
 
         public override Bitmap[] Textures
         {
             get
             {
-                
-
-                return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_grass.png"),
+                return new[]
+                {
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"),
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
+                    (Bitmap) Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_grass.png"),
                 };
             }
         }
@@ -69,7 +68,5 @@ namespace OctoAwesome.Basics
         {
             return 2;
         }
-
-        
     }
 }

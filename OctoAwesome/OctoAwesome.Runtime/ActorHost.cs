@@ -67,29 +67,30 @@ namespace OctoAwesome.Runtime
             #region Inputverarbeitung
 
             // Input verarbeiten
-            Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
-            Player.Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.Y;
+            Player.Angle += (float) frameTime.ElapsedGameTime.TotalSeconds*Head.X;
+            Player.Tilt += (float) frameTime.ElapsedGameTime.TotalSeconds*Head.Y;
             Player.Tilt = Math.Min(1.5f, Math.Max(-1.5f, Player.Tilt));
 
             #endregion
 
             #region Physik
 
-            float lookX = (float)Math.Cos(Player.Angle);
-            float lookY = -(float)Math.Sin(Player.Angle);
-            var velocitydirection = new Vector3(lookX, lookY, 0) * Move.Y;
+            float lookX = (float) Math.Cos(Player.Angle);
+            float lookY = -(float) Math.Sin(Player.Angle);
+            var velocitydirection = new Vector3(lookX, lookY, 0)*Move.Y;
 
-            float stafeX = (float)Math.Cos(Player.Angle + MathHelper.PiOver2);
-            float stafeY = -(float)Math.Sin(Player.Angle + MathHelper.PiOver2);
-            velocitydirection += new Vector3(stafeX, stafeY, 0) * Move.X;
+            float stafeX = (float) Math.Cos(Player.Angle + MathHelper.PiOver2);
+            float stafeY = -(float) Math.Sin(Player.Angle + MathHelper.PiOver2);
+            velocitydirection += new Vector3(stafeX, stafeY, 0)*Move.X;
 
-            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode, Player.FlyMode);
+            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode,
+                Player.FlyMode);
 
             #endregion
 
             #region Playerbewegung
 
-            Vector3 move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
+            Vector3 move = Player.Velocity*(float) frameTime.ElapsedGameTime.TotalSeconds;
 
             Player.OnGround = false;
             bool collision = false;
@@ -97,22 +98,22 @@ namespace OctoAwesome.Runtime
 
             do
             {
-                int minx = (int)Math.Floor(Math.Min(
+                int minx = (int) Math.Floor(Math.Min(
                     Player.Position.BlockPosition.X - Player.Radius,
                     Player.Position.BlockPosition.X - Player.Radius + move.X));
-                int maxx = (int)Math.Floor(Math.Max(
+                int maxx = (int) Math.Floor(Math.Max(
                     Player.Position.BlockPosition.X + Player.Radius,
                     Player.Position.BlockPosition.X + Player.Radius + move.X));
-                int miny = (int)Math.Floor(Math.Min(
+                int miny = (int) Math.Floor(Math.Min(
                     Player.Position.BlockPosition.Y - Player.Radius,
                     Player.Position.BlockPosition.Y - Player.Radius + move.Y));
-                int maxy = (int)Math.Floor(Math.Max(
+                int maxy = (int) Math.Floor(Math.Max(
                     Player.Position.BlockPosition.Y + Player.Radius,
                     Player.Position.BlockPosition.Y + Player.Radius + move.Y));
-                int minz = (int)Math.Floor(Math.Min(
+                int minz = (int) Math.Floor(Math.Min(
                     Player.Position.BlockPosition.Z,
                     Player.Position.BlockPosition.Z + move.Z));
-                int maxz = (int)Math.Floor(Math.Max(
+                int maxz = (int) Math.Floor(Math.Max(
                     Player.Position.BlockPosition.Z + Player.Height,
                     Player.Position.BlockPosition.Z + Player.Height + move.Z));
 
@@ -159,7 +160,7 @@ namespace OctoAwesome.Runtime
                     }
                 }
 
-                Player.Position += (move * min);
+                Player.Position += (move*min);
                 move *= (1f - min);
                 switch (minAxis)
                 {
@@ -195,9 +196,7 @@ namespace OctoAwesome.Runtime
                 Player.Position = position;
 
                 loop++;
-            }
-            while (collision && loop < 3);
-
+            } while (collision && loop < 3);
 
 
             if (Player.Position.ChunkIndex != _oldIndex)
@@ -214,7 +213,7 @@ namespace OctoAwesome.Runtime
                     // Zu neuem Chunk hinzufügen
                     IChunk newChunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
                     if (newChunk != null)
-                       newChunk.Entities.Add(Player);
+                        newChunk.Entities.Add(Player);
 
                     // Move-Event
                     Server.Instance.MoveEntity(Player, oldChunk, newChunk);
@@ -237,7 +236,10 @@ namespace OctoAwesome.Runtime
                 {
                     var blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(lastBlock);
 
-                    var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+                    var slot =
+                        Player.Inventory.Where(
+                            s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit)
+                            .FirstOrDefault();
 
                     // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
                     if (slot == null || slot.Amount >= blockDefinition.StackLimit)
@@ -261,18 +263,31 @@ namespace OctoAwesome.Runtime
                     Index3 add = new Index3();
                     switch (lastOrientation)
                     {
-                        case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
-                        case OrientationFlags.SideEast: add = new Index3(1, 0, 0); break;
-                        case OrientationFlags.SideSouth: add = new Index3(0, -1, 0); break;
-                        case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
-                        case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
-                        case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
+                        case OrientationFlags.SideWest:
+                            add = new Index3(-1, 0, 0);
+                            break;
+                        case OrientationFlags.SideEast:
+                            add = new Index3(1, 0, 0);
+                            break;
+                        case OrientationFlags.SideSouth:
+                            add = new Index3(0, -1, 0);
+                            break;
+                        case OrientationFlags.SideNorth:
+                            add = new Index3(0, 1, 0);
+                            break;
+                        case OrientationFlags.SideBottom:
+                            add = new Index3(0, 0, -1);
+                            break;
+                        case OrientationFlags.SideTop:
+                            add = new Index3(0, 0, 1);
+                            break;
                     }
 
                     if (lastTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = lastTool.Definition as IBlockDefinition;
-                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
+                        localChunkCache.SetBlock(lastApply.Value + add,
+                            DefinitionManager.GetBlockDefinitionIndex(definition));
                         Server.Instance.AddBlock(Player.Position.Planet, lastApply.Value + add, definition, 0);
 
                         lastTool.Amount--;
@@ -382,41 +397,40 @@ namespace OctoAwesome.Runtime
 
             if (gravity && !flymode)
             {
-                exforce += new Vector3(0, 0, -20f) * Player.Mass;
+                exforce += new Vector3(0, 0, -20f)*Player.Mass;
             }
 
-            Vector3 externalPower = ((exforce * exforce) / (2 * Player.Mass)) * (float)elapsedtime.TotalSeconds;
+            Vector3 externalPower = ((exforce*exforce)/(2*Player.Mass))*(float) elapsedtime.TotalSeconds;
             externalPower *= new Vector3(Math.Sign(exforce.X), Math.Sign(exforce.Y), Math.Sign(exforce.Z));
 
-            Vector3 friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
+            Vector3 friction = new Vector3(1, 1, 0.1f)*Player.FRICTION;
             Vector3 powerdirection = new Vector3();
 
             if (flymode)
             {
-                velocitydirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
-                friction = Vector3.One * Player.FRICTION;
+                velocitydirection += new Vector3(0, 0, (float) Math.Sin(Player.Tilt)*Move.Y);
+                friction = Vector3.One*Player.FRICTION;
             }
 
             powerdirection += externalPower;
-            powerdirection += (Player.POWER * velocitydirection);
+            powerdirection += (Player.POWER*velocitydirection);
             if (lastJump && (OnGround || flymode))
             {
                 Vector3 jumpDirection = new Vector3(0, 0, 1);
                 jumpDirection.Z = 1f;
                 jumpDirection.Normalize();
-                powerdirection += jumpDirection * Player.JUMPPOWER;
+                powerdirection += jumpDirection*Player.JUMPPOWER;
             }
             lastJump = false;
 
 
-            Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - friction * Player.Velocity)) *
-                (float)elapsedtime.TotalSeconds;
+            Vector3 VelocityChange = (2.0f/Player.Mass*(powerdirection - friction*Player.Velocity))*
+                                     (float) elapsedtime.TotalSeconds;
 
             return new Vector3(
-                (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
-                (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
-                (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
-
+                (float) (VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
+                (float) (VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
+                (float) (VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
         }
 
         internal void Unload()
@@ -510,8 +524,9 @@ namespace OctoAwesome.Runtime
 
             foreach (var blockDefinition in blockDefinitions)
             {
-
-                var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+                var slot =
+                    Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit)
+                        .FirstOrDefault();
 
                 // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
                 if (slot == null || slot.Amount >= blockDefinition.StackLimit)

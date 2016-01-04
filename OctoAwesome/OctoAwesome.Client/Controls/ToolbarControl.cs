@@ -47,16 +47,20 @@ namespace OctoAwesome.Client.Controls
 
             if (Player.Tools != null && Player.Tools.Count > 0)
             {
-                int width = Player.Tools.Count * 32 + (Player.Tools.Count - 1) * 10;
-                int offset = (contentArea.Width - width) / 2;
+                int width = Player.Tools.Count*32 + (Player.Tools.Count - 1)*10;
+                int offset = (contentArea.Width - width)/2;
                 int index = 0;
 
                 foreach (var tool in Player.Tools)
                 {
-                    batch.Draw(Skin.Pix, new Rectangle(offset + (index * 42) - 2 + contentArea.X, contentArea.Height - 60 - 2 + contentArea.Y, 36, 36),
+                    batch.Draw(Skin.Pix,
+                        new Rectangle(offset + (index*42) - 2 + contentArea.X,
+                            contentArea.Height - 60 - 2 + contentArea.Y, 36, 36),
                         Player.ActiveTool == tool ? Color.Gold : new Color(Color.White, 0.8f));
-                    batch.Draw(toolTextures[tool.Definition.GetType().FullName], new Rectangle(offset + (index * 42) + contentArea.X, contentArea.Height - 60 + contentArea.Y, 32, 32),
-                       Player.ActiveTool == tool ? Color.White : new Color(Color.White, 0.8f));
+                    batch.Draw(toolTextures[tool.Definition.GetType().FullName],
+                        new Rectangle(offset + (index*42) + contentArea.X, contentArea.Height - 60 + contentArea.Y, 32,
+                            32),
+                        Player.ActiveTool == tool ? Color.White : new Color(Color.White, 0.8f));
 
                     index++;
                 }

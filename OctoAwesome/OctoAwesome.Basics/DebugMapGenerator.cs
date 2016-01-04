@@ -20,30 +20,31 @@ namespace OctoAwesome.Basics
 
         public IChunk[] GenerateChunk(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
         {
-            IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
-            ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
+            IBlockDefinition sandDefinition =
+                blockDefinitions.FirstOrDefault(d => typeof (SandBlockDefinition) == d.GetType());
+            ushort sandIndex = (ushort) (Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
                 result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet.Id);
 
-            int part = (planet.Size.Z * Chunk.CHUNKSIZE_Z) / 4;
+            int part = (planet.Size.Z*Chunk.CHUNKSIZE_Z)/4;
 
             for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
             {
-                float heightY = (float)Math.Sin((float)(y * Math.PI) / 15f);
+                float heightY = (float) Math.Sin((float) (y*Math.PI)/15f);
                 for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                 {
-                    float heightX = (float)Math.Sin((float)(x * Math.PI) / 18f);
+                    float heightX = (float) Math.Sin((float) (x*Math.PI)/18f);
 
-                    float height = ((heightX + heightY + 2) / 4) * (2 * part);
-                    for (int z = 0; z < planet.Size.Z * Chunk.CHUNKSIZE_Z; z++)
+                    float height = ((heightX + heightY + 2)/4)*(2*part);
+                    for (int z = 0; z < planet.Size.Z*Chunk.CHUNKSIZE_Z; z++)
                     {
-                        if (z < (int)(height + part))
+                        if (z < (int) (height + part))
                         {
-                            int block = z % (Chunk.CHUNKSIZE_Z);
-                            int layer = (int)(z / Chunk.CHUNKSIZE_Z);
+                            int block = z%(Chunk.CHUNKSIZE_Z);
+                            int layer = (int) (z/Chunk.CHUNKSIZE_Z);
                             result[layer].SetBlock(x, y, block, sandIndex);
                         }
                     }

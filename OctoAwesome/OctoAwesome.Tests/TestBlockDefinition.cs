@@ -10,26 +10,17 @@ namespace OctoAwesome.Tests
     {
         public override Bitmap Icon
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public override string Name
         {
-            get
-            {
-                return "Testblock";
-            }
+            get { return "Testblock"; }
         }
 
         public override Bitmap[] Textures
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)

@@ -25,7 +25,6 @@ namespace OctoAwesome.Tests
         [TestCleanup]
         public void Cleanup()
         {
-
         }
 
         [TestMethod]
@@ -38,14 +37,14 @@ namespace OctoAwesome.Tests
             blocks.Add(new Index3(7, 9, 10));
             blocks.Add(new Index3(7, 10, 10));
             blocks.Add(new Index3(7, 11, 10));
-            
+
             // boden y-1
             blocks.Add(new Index3(7, 9, 9));
             blocks.Add(new Index3(8, 9, 9));
             blocks.Add(new Index3(9, 9, 9));
             blocks.Add(new Index3(10, 9, 9));
             blocks.Add(new Index3(11, 9, 9));
-            
+
             // Boden mitte
             blocks.Add(new Index3(7, 10, 9));
             blocks.Add(new Index3(8, 10, 9));
@@ -59,7 +58,6 @@ namespace OctoAwesome.Tests
             blocks.Add(new Index3(9, 11, 9));
             blocks.Add(new Index3(10, 11, 9));
             blocks.Add(new Index3(11, 11, 9));
-
 
 
             move = new Vector3(-1, 0, -0.1f);
@@ -116,7 +114,6 @@ namespace OctoAwesome.Tests
             blocks.Add(new Index3(max + 9, max + 11, max + 9));
             blocks.Add(new Index3(max + 10, max + 11, max + 9));
             blocks.Add(new Index3(max + 11, max + 11, max + 9));
-
 
 
             move = new Vector3(-1, 0, -0.1f);
@@ -217,7 +214,8 @@ namespace OctoAwesome.Tests
                 foreach (var pos in blocks)
                 {
                     Axis? localAxis;
-                    float? moveFactor = Block.Intersect(blockDefinition.GetCollisionBoxes(null, pos.X, pos.Y, pos.Z), pos, playerBox, move, out localAxis);
+                    float? moveFactor = Block.Intersect(blockDefinition.GetCollisionBoxes(null, pos.X, pos.Y, pos.Z),
+                        pos, playerBox, move, out localAxis);
 
                     if (moveFactor.HasValue && moveFactor.Value < min)
                     {
@@ -227,7 +225,7 @@ namespace OctoAwesome.Tests
                     }
                 }
 
-                player += (move * min);
+                player += (move*min);
                 move *= (1f - min);
                 switch (minAxis)
                 {
@@ -249,8 +247,7 @@ namespace OctoAwesome.Tests
                 // player.NormalizeChunkIndexXY(planet.Size);
 
                 loop++;
-            }
-            while (collision && loop < 3);
+            } while (collision && loop < 3);
         }
     }
 }
