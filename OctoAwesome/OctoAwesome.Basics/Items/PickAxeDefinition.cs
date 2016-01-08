@@ -11,26 +11,17 @@ namespace OctoAwesome.Basics
     {
         public Bitmap Icon
         {
-            get
-            {
-                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Items/pick_iron.png");
-            }
+            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Items/pick_iron.png"); }
         }
 
         public string Name
         {
-            get
-            {
-                return "Pickaxe";
-            }
+            get { return "Pickaxe"; }
         }
 
         public int StackLimit
         {
-            get
-            {
-                return 1;
-            }
+            get { return 1; }
         }
 
         public PhysicalProperties GetProperties(IItem item)

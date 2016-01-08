@@ -20,7 +20,8 @@ namespace OctoAwesome.Basics
 
         public IChunk[] GenerateChunk(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
         {
-            IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
+            IBlockDefinition sandDefinition =
+                blockDefinitions.FirstOrDefault(d => typeof (SandBlockDefinition) == d.GetType());
             ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];

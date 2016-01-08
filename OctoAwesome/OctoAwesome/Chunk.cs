@@ -19,7 +19,7 @@ namespace OctoAwesome
         /// Größe eines Chunks in Blocks in X-Richtung.
         /// </summary>
         public const int CHUNKSIZE_X = 1 << LimitX;
-        
+
         /// <summary>
         /// Größe eines Chunks in Blocks in Y-Richtung.
         /// </summary>

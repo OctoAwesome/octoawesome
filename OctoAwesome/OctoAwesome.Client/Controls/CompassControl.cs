@@ -16,7 +16,8 @@ namespace OctoAwesome.Client.Controls
         {
             Player = screenManager.Player;
 
-            compassTexture = ScreenManager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/compass.png", ScreenManager.GraphicsDevice);
+            compassTexture = ScreenManager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/compass.png",
+                ScreenManager.GraphicsDevice);
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -30,7 +31,8 @@ namespace OctoAwesome.Client.Controls
             offset -= contentArea.Width / 2;
             int offsetY = (-compassTexture.Height - contentArea.Height) / 2;
 
-            batch.Draw(compassTexture, contentArea, new Rectangle(offset, offsetY, contentArea.Width, contentArea.Height), Color.White);
+            batch.Draw(compassTexture, contentArea,
+                new Rectangle(offset, offsetY, contentArea.Width, contentArea.Height), Color.White);
         }
     }
 }

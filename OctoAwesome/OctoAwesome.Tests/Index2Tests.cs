@@ -39,7 +39,9 @@ namespace OctoAwesome.Model.Tests
                 Index2.NormalizeAxis(10, 0);
                 Assert.Fail();
             }
-            catch (ArgumentException) { }
+            catch (ArgumentException)
+            {
+            }
 
             // Size negativ
             try
@@ -47,7 +49,9 @@ namespace OctoAwesome.Model.Tests
                 Index2.NormalizeAxis(10, -1);
                 Assert.Fail();
             }
-            catch (ArgumentException) { }
+            catch (ArgumentException)
+            {
+            }
 
             // Size positiv
             Assert.AreEqual(0, Index2.NormalizeAxis(10, 1));
@@ -220,11 +224,11 @@ namespace OctoAwesome.Model.Tests
         [TestMethod]
         public void Index2AdditionTest()
         {
-            Index2 i1 = new Index2(20, 15);     // Startwert
+            Index2 i1 = new Index2(20, 15); // Startwert
             Index2 i2 = new Index2(-100, -130); // Negativ Addition
-            Index2 i3 = new Index2(-80, -115);  // Ergebnis i1 + i2
+            Index2 i3 = new Index2(-80, -115); // Ergebnis i1 + i2
             Index2 i4 = new Index2(77, 44); // positive Addition
-            Index2 i5 = new Index2(97, 59);  // Ergebnis i1 + i4
+            Index2 i5 = new Index2(97, 59); // Ergebnis i1 + i4
 
             // Addition
             Assert.AreEqual(i3, i1 + i2);
@@ -234,11 +238,11 @@ namespace OctoAwesome.Model.Tests
         [TestMethod]
         public void Index2SubtraktionTest()
         {
-            Index2 i1 = new Index2(20, 15);     // Startwert
+            Index2 i1 = new Index2(20, 15); // Startwert
             Index2 i2 = new Index2(-100, -130); // Negativ Addition
-            Index2 i3 = new Index2(120, 145);  // Ergebnis i1 - i2
+            Index2 i3 = new Index2(120, 145); // Ergebnis i1 - i2
             Index2 i4 = new Index2(77, 44); // positive Addition
-            Index2 i5 = new Index2(-57, -29);  // Ergebnis i1 - i4
+            Index2 i5 = new Index2(-57, -29); // Ergebnis i1 - i4
 
             // Addition
             Assert.AreEqual(i3, i1 - i2);

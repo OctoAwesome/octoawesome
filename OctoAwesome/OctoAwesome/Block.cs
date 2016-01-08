@@ -8,7 +8,8 @@ namespace OctoAwesome
 {
     public static class Block
     {
-        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
+        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, Ray ray,
+            out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
             float raylength = Player.SELECTIONRANGE * 2;
@@ -28,9 +29,9 @@ namespace OctoAwesome
                 }
 
                 Vector3 boxCorner = new Vector3(
-                        ray.Direction.X > 0 ? box.Min.X : box.Max.X,
-                        ray.Direction.Y > 0 ? box.Min.Y : box.Max.Y,
-                        ray.Direction.Z > 0 ? box.Min.Z : box.Max.Z);
+                    ray.Direction.X > 0 ? box.Min.X : box.Max.X,
+                    ray.Direction.Y > 0 ? box.Min.Y : box.Max.Y,
+                    ray.Direction.Z > 0 ? box.Min.Z : box.Max.Z);
 
                 Vector3 n = (boxCorner - ray.Position) / (ray.Direction * raylength);
                 min = new Vector3(Math.Min(min.X, n.X), Math.Min(min.Y, n.Y), Math.Min(min.Z, n.Z));
@@ -75,12 +76,13 @@ namespace OctoAwesome
             }
         }
 
-        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
+        public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, BoundingBox player,
+            Vector3 move, out Axis? collisionAxis)
         {
             Vector3 playerCorner = new Vector3(
-                        (move.X > 0 ? player.Max.X : player.Min.X),
-                        (move.Y > 0 ? player.Max.Y : player.Min.Y),
-                        (move.Z > 0 ? player.Max.Z : player.Min.Z));
+                (move.X > 0 ? player.Max.X : player.Min.X),
+                (move.Y > 0 ? player.Max.Y : player.Min.Y),
+                (move.Z > 0 ? player.Max.Z : player.Min.Z));
 
             Vector3 targetPosition = playerCorner + move;
 
@@ -103,9 +105,9 @@ namespace OctoAwesome
                 if (!collide) continue;
 
                 Vector3 boxCorner = new Vector3(
-                        move.X > 0 ? boxMin.X : boxMax.X,
-                        move.Y > 0 ? boxMin.Y : boxMax.Y,
-                        move.Z > 0 ? boxMin.Z : boxMax.Z);
+                    move.X > 0 ? boxMin.X : boxMax.X,
+                    move.Y > 0 ? boxMin.Y : boxMax.Y,
+                    move.Z > 0 ? boxMin.Z : boxMax.Z);
 
                 Vector3 n = (boxCorner - playerCorner) / move;
                 min = new Vector3(Math.Min(min.X, n.X), Math.Min(min.Y, n.Y), Math.Min(min.Z, n.Z));

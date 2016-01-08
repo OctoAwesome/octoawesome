@@ -30,23 +30,26 @@ namespace OctoAwesome.Client
 
         public string PictureFilename { get; set; }
 
-        public CrewMember() { }
+        public CrewMember()
+        {
+        }
 
         public static List<CrewMember> getCrew(IScreenManager manager)
         {
-            using (Stream stream = File.Open("./Assets/OctoAwesome.Client/Crew/crew.xml", FileMode.Open, FileAccess.Read))
+            using (
+                Stream stream = File.Open("./Assets/OctoAwesome.Client/Crew/crew.xml", FileMode.Open, FileAccess.Read))
             {
                 try
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<CrewMember>));
+                    XmlSerializer serializer = new XmlSerializer(typeof (List<CrewMember>));
                     return (List<CrewMember>)serializer.Deserialize(stream);
                 }
-                catch { }
+                catch
+                {
+                }
 
-                return new List<CrewMember>();                
+                return new List<CrewMember>();
             }
         }
     }
 }
-
-    

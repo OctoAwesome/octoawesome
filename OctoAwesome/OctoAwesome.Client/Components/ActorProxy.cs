@@ -21,7 +21,7 @@ namespace OctoAwesome.Runtime
 
             foreach (var definition in DefinitionManager.GetBlockDefinitions())
             {
-                inventory.Add(new InventorySlot() { Definition = definition, Amount = int.MaxValue });
+                inventory.Add(new InventorySlot() {Definition = definition, Amount = int.MaxValue});
             }
         }
 
@@ -31,7 +31,9 @@ namespace OctoAwesome.Runtime
             {
                 client.Disconnect(reason);
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
             Connected = false;
         }
 
@@ -41,10 +43,7 @@ namespace OctoAwesome.Runtime
 
         public bool FlyMode
         {
-            get
-            {
-                return flyMode;
-            }
+            get { return flyMode; }
 
             set
             {
@@ -67,10 +66,7 @@ namespace OctoAwesome.Runtime
 
         public Vector2 Head
         {
-            get
-            {
-                return head;
-            }
+            get { return head; }
 
             set
             {
@@ -93,20 +89,14 @@ namespace OctoAwesome.Runtime
 
         public IEnumerable<InventorySlot> Inventory
         {
-            get
-            {
-                return inventory;
-            }
+            get { return inventory; }
         }
 
         private Vector2 move = Vector2.Zero;
 
         public Vector2 Move
         {
-            get
-            {
-                return move;
-            }
+            get { return move; }
 
             set
             {

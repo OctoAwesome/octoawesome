@@ -12,7 +12,9 @@
             ChunkIndex = chunkIndex;
         }
 
-        public PlanetIndex3(int planet, int x, int y, int z) : this(planet, new Index3(x, y, z)) { }
+        public PlanetIndex3(int planet, int x, int y, int z) : this(planet, new Index3(x, y, z))
+        {
+        }
 
         public static bool operator ==(PlanetIndex3 i1, PlanetIndex3 i2)
         {
@@ -23,6 +25,7 @@
         {
             return !i1.Equals(i2);
         }
+
         public override bool Equals(object obj)
         {
             if (!(obj is PlanetIndex3))
@@ -40,9 +43,9 @@
         {
             return
                 (Planet << 24) +
-               (ChunkIndex.X << 16) +
-               (ChunkIndex.Y << 8) +
-               ChunkIndex.Z;
+                (ChunkIndex.X << 16) +
+                (ChunkIndex.Y << 8) +
+                ChunkIndex.Z;
         }
     }
 }

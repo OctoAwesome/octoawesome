@@ -325,6 +325,7 @@ namespace OctoAwesome.Client.Screens
                     break;
             }
         }
+
         #endregion
 
         #region GamePad Input
@@ -348,7 +349,9 @@ namespace OctoAwesome.Client.Screens
                 gamePadState = GamePad.GetState(PlayerIndex.One);
                 succeeded = true;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
 
             if (succeeded)
             {

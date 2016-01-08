@@ -9,11 +9,25 @@ namespace OctoAwesome.Noise
 {
     public class SimplexNoiseGenerator : INoise
     {
-
         #region Props & Fields
 
         private byte[] permutations;
-        private static byte[] range = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255 };
+
+        private static byte[] range =
+        {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+            23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+            50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76,
+            77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102,
+            103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124,
+            125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146,
+            147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168,
+            169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+            191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,
+            213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+            235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255
+        };
+
         private int octaves;
         private float persistance;
 
@@ -28,10 +42,7 @@ namespace OctoAwesome.Noise
 
         public int Octaves
         {
-            get
-            {
-                return octaves;
-            }
+            get { return octaves; }
             set
             {
                 octaves = value;
@@ -41,10 +52,7 @@ namespace OctoAwesome.Noise
 
         public float Persistance
         {
-            get
-            {
-                return persistance;
-            }
+            get { return persistance; }
             set
             {
                 persistance = value;
@@ -57,10 +65,10 @@ namespace OctoAwesome.Noise
             Random rnd = new Random(Seed);
             byte[] temp = range.OrderBy(a => rnd.Next()).ToArray();
             permutations = temp.Concat(temp).ToArray();
-
         }
 
         public float MaxValue { get; private set; }
+
         private void RecalcMax()
         {
             MaxValue = 0f;
@@ -70,10 +78,10 @@ namespace OctoAwesome.Noise
             }
         }
 
-
         #endregion
 
-        public SimplexNoiseGenerator(int seed,float frequencyX=1f,float frequencyY=1f,float frequencyZ=1f,float frequencyW=1f)
+        public SimplexNoiseGenerator(int seed, float frequencyX = 1f, float frequencyY = 1f, float frequencyZ = 1f,
+            float frequencyW = 1f)
         {
             this.Seed = seed;
             this.Octaves = 5;
@@ -84,7 +92,6 @@ namespace OctoAwesome.Noise
             this.FrequencyW = frequencyW;
             this.Factor = 1;
             CreatePermutations();
-
         }
 
         #region NoiseMaps
@@ -177,7 +184,8 @@ namespace OctoAwesome.Noise
 
                     for (int i = 0; i < Octaves; i++)
                     {
-                        noise[x, y] += Noise4D(nx * frequencyX, ny * frequencyY, nz * frequencyX, nw * frequencyY) * amplitude;
+                        noise[x, y] += Noise4D(nx * frequencyX, ny * frequencyY, nz * frequencyX, nw * frequencyY) *
+                                       amplitude;
 
                         amplitude *= Persistance;
                         frequencyX *= 2f;
@@ -199,13 +207,13 @@ namespace OctoAwesome.Noise
         /// <param name="height">Höhe der Noise-Map</param>
         /// <param name="depth">Tiefe der Noise-Map</param>
         /// <returns>Gibt ein 3D-float-Array einer 3D-Noise zurück</returns>
-        public float[, ,] GetNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth)
+        public float[,,] GetNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth)
         {
-            float[, ,] noise = new float[width, height, depth];
+            float[,,] noise = new float[width, height, depth];
 
 
             Parallel.For(0, width, x =>
-            //for (int x = 0; x < width; x++)
+                //for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
@@ -217,13 +225,13 @@ namespace OctoAwesome.Noise
                         float amplitude = 1f;
                         for (int i = 0; i < Octaves; i++)
                         {
-
-                            noise[x, y, z] += Noise3D((x + startX) * frequencyX, (y + startY) * frequencyY, (z + startZ) * frequencyZ) * amplitude;
+                            noise[x, y, z] +=
+                                Noise3D((x + startX) * frequencyX, (y + startY) * frequencyY, (z + startZ) * frequencyZ) *
+                                amplitude;
                             amplitude *= Persistance;
                             frequencyX *= 2;
                             frequencyY *= 2;
                             frequencyZ *= 2;
-
                         }
                         noise[x, y, z] = noise[x, y, z] * Factor / MaxValue;
                     }
@@ -244,18 +252,18 @@ namespace OctoAwesome.Noise
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <returns>Gibt ein 3D-float-Array einer 3D-Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
-        public float[, ,] GetTileableNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth, int tileSizeX, int tileSizeY)
+        public float[,,] GetTileableNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth,
+            int tileSizeX, int tileSizeY)
         {
-            float[, ,] noise = new float[width, height, depth];
+            float[,,] noise = new float[width, height, depth];
 
             Parallel.For(0, width, x =>
-            //for (int x = 0; x < width; x++)
+                //for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     for (int z = 0; z < depth; z++)
                     {
-
                         float frequencyX = FrequencyX;
                         float frequencyY = FrequencyY;
                         float frequencyZ = FrequencyZ;
@@ -271,13 +279,14 @@ namespace OctoAwesome.Noise
 
                         for (int i = 0; i < Octaves; i++)
                         {
-                            noise[x, y, z] += Noise5D(nx * frequencyX, ny * frequencyY, z * frequencyZ, nw * frequencyX, nv * frequencyY) * amplitude;
+                            noise[x, y, z] +=
+                                Noise5D(nx * frequencyX, ny * frequencyY, z * frequencyZ, nw * frequencyX,
+                                    nv * frequencyY) * amplitude;
 
                             amplitude *= Persistance;
                             frequencyX *= 2f;
                             frequencyY *= 2f;
                             frequencyZ *= 2f;
-
                         }
                         noise[x, y, z] = noise[x, y, z] * Factor / MaxValue;
                     }
@@ -299,12 +308,13 @@ namespace OctoAwesome.Noise
         /// <param name="depth">Tiefe der Noise-Map</param>
         /// <param name="thickness">Dicke(Tiefe 2.Grades) der Noise-Map</param>
         /// <returns>Gibt ein 4D-float-Array einer 4D-Noise zurück</returns>
-        public float[, , ,] GetNoiseMap4D(int startX, int startY, int startZ, int startW, int width, int height, int depth, int wDepth)
+        public float[,,,] GetNoiseMap4D(int startX, int startY, int startZ, int startW, int width, int height, int depth,
+            int wDepth)
         {
-            float[, , ,] noise = new float[width, height, depth, wDepth];
+            float[,,,] noise = new float[width, height, depth, wDepth];
 
             Parallel.For(0, width, x =>
-            //for (int x = 0; x < width; x++)
+                //for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
@@ -319,7 +329,9 @@ namespace OctoAwesome.Noise
                             float amplitude = 1f;
                             for (int i = 0; i < Octaves; i++)
                             {
-                                noise[x, y, z, w] += Noise4D((x + startX) * frequencyX, (y + startY) * frequencyY, (z + startZ) * frequencyZ, (w + startW) * frequencyW) * amplitude;
+                                noise[x, y, z, w] +=
+                                    Noise4D((x + startX) * frequencyX, (y + startY) * frequencyY,
+                                        (z + startZ) * frequencyZ, (w + startW) * frequencyW) * amplitude;
                                 amplitude *= Persistance;
                                 frequencyX *= 2;
                                 frequencyY *= 2;
@@ -353,7 +365,6 @@ namespace OctoAwesome.Noise
                 noise += Noise(x * frequencyX) * amplitude;
                 amplitude *= Persistance;
                 frequencyX *= 2;
-
             }
             return noise * Factor / MaxValue;
         }
@@ -376,10 +387,10 @@ namespace OctoAwesome.Noise
                 amplitude *= Persistance;
                 frequencyX *= 2;
                 frequencyY *= 2;
-
             }
             return noise * Factor / MaxValue;
         }
+
         /// <summary>
         /// Gibt ein float-Wert einer 2D-Noise an gegebener Position zurück, welche kachelbar ist
         /// </summary>
@@ -410,7 +421,6 @@ namespace OctoAwesome.Noise
                 amplitude *= Persistance;
                 frequencyX *= 2f;
                 frequencyY *= 2f;
-
             }
             return noise * Factor / MaxValue;
         }
@@ -441,6 +451,7 @@ namespace OctoAwesome.Noise
             }
             return noise * Factor / MaxValue;
         }
+
         /// <summary>
         /// Gibt ein float-Wert einer 3D-Noise an gegebener Position zurück, welche in X und Y Richtung kachelbar ist
         /// </summary>
@@ -469,13 +480,13 @@ namespace OctoAwesome.Noise
 
             for (int i = 0; i < Octaves; i++)
             {
-                noise += Noise5D(nx * frequencyX, ny * frequencyY, z * frequencyZ, nw * frequencyX, nv * frequencyY) * amplitude;
+                noise += Noise5D(nx * frequencyX, ny * frequencyY, z * frequencyZ, nw * frequencyX, nv * frequencyY) *
+                         amplitude;
 
                 amplitude *= Persistance;
                 frequencyX *= 2f;
                 frequencyY *= 2f;
                 frequencyZ *= 2f;
-
             }
             return noise * Factor / MaxValue;
         }
@@ -514,26 +525,58 @@ namespace OctoAwesome.Noise
 
         #region Noise Implementation
 
-        private static int[] grad3 = new int[] { 1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0, 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 0, 1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1 };
-        private static int[] grad4 = new int[] { 0, 1, 1, 1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, -1, -1, 0, -1, 1, 1, 0, -1, 1, -1, 0, -1, -1, 1, 0, -1, -1, -1, 1, 0, 1, 1, 1, 0, 1, -1, 1, 0, -1, 1, 1, 0, -1, -1, -1, 0, 1, 1, -1, 0, 1, -1, -1, 0, -1, 1, -1, 0, -1, -1, 1, 1, 0, 1, 1, 1, 0, -1, 1, -1, 0, 1, 1, -1, 0, -1, -1, 1, 0, 1, -1, 1, 0, -1, -1, -1, 0, 1, -1, -1, 0, -1, 1, 1, 1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, -1, -1, 0, -1, 1, 1, 0, -1, 1, -1, 0, -1, -1, 1, 0, -1, -1, -1, 0 };
-        private static int[] grad5 = new int[] { 0, -1, -1, -1, -1, 0, -1, -1, -1, 1, 0, -1, -1, 1, -1, 0, -1, -1, 1, 1, 0, -1, 1, -1, -1, 0, -1, 1, -1, 1, 0, -1, 1, 1, -1, 0, -1, 1, 1, 1, 0, 1, -1, -1, -1, 0, 1, -1, -1, 1, 0, 1, -1, 1, -1, 0, 1, -1, 1, 1, 0, 1, 1, -1, -1, 0, 1, 1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 1, 1, 1, -1, 0, -1, -1, -1, -1, 0, -1, -1, 1, -1, 0, -1, 1, -1, -1, 0, -1, 1, 1, -1, 0, 1, -1, -1, -1, 0, 1, -1, 1, -1, 0, 1, 1, -1, -1, 0, 1, 1, 1, 1, 0, -1, -1, -1, 1, 0, -1, -1, 1, 1, 0, -1, 1, -1, 1, 0, -1, 1, 1, 1, 0, 1, -1, -1, 1, 0, 1, -1, 1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, -1, -1, 0, -1, -1, -1, -1, 0, -1, 1, -1, -1, 0, 1, -1, -1, -1, 0, 1, 1, -1, 1, 0, -1, -1, -1, 1, 0, -1, 1, -1, 1, 0, 1, -1, -1, 1, 0, 1, 1, 1, -1, 0, -1, -1, 1, -1, 0, -1, 1, 1, -1, 0, 1, -1, 1, -1, 0, 1, 1, 1, 1, 0, -1, -1, 1, 1, 0, -1, 1, 1, 1, 0, 1, -1, 1, 1, 0, 1, 1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 1, -1, -1, 1, 0, -1, -1, -1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 1, -1, 0, 1, -1, 1, 1, 0, -1, -1, 1, 1, 0, 1, 1, -1, -1, 0, -1, 1, -1, -1, 0, 1, 1, -1, 1, 0, -1, 1, -1, 1, 0, 1, 1, 1, -1, 0, -1, 1, 1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 1, 1, 0, 1, -1, -1, -1, -1, 0, -1, -1, -1, 1, 0, -1, -1, 1, -1, 0, -1, -1, 1, 1, 0, -1, 1, -1, -1, 0, -1, 1, -1, 1, 0, -1, 1, 1, -1, 0, -1, 1, 1, 1, 0, 1, -1, -1, -1, 0, 1, -1, -1, 1, 0, 1, -1, 1, -1, 0, 1, -1, 1, 1, 0, 1, 1, -1, -1, 0, 1, 1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 1, 1, 1, 0 };
+        private static int[] grad3 = new int[]
+        {
+            1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0, 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 0, 1, 1, 0, -1, 1, 0, 1, -1, 0,
+            -1, -1
+        };
+
+        private static int[] grad4 = new int[]
+        {
+            0, 1, 1, 1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, -1, -1, 0, -1, 1, 1, 0, -1, 1, -1, 0, -1, -1, 1, 0, -1, -1, -1, 1,
+            0, 1, 1, 1, 0, 1, -1, 1, 0, -1, 1, 1, 0, -1, -1, -1, 0, 1, 1, -1, 0, 1, -1, -1, 0, -1, 1, -1, 0, -1, -1, 1,
+            1, 0, 1, 1, 1, 0, -1, 1, -1, 0, 1, 1, -1, 0, -1, -1, 1, 0, 1, -1, 1, 0, -1, -1, -1, 0, 1, -1, -1, 0, -1, 1,
+            1, 1, 0, 1, 1, -1, 0, 1, -1, 1, 0, 1, -1, -1, 0, -1, 1, 1, 0, -1, 1, -1, 0, -1, -1, 1, 0, -1, -1, -1, 0
+        };
+
+        private static int[] grad5 = new int[]
+        {
+            0, -1, -1, -1, -1, 0, -1, -1, -1, 1, 0, -1, -1, 1, -1, 0, -1, -1, 1, 1, 0, -1, 1, -1, -1, 0, -1, 1, -1, 1, 0,
+            -1, 1, 1, -1, 0, -1, 1, 1, 1, 0, 1, -1, -1, -1, 0, 1, -1, -1, 1, 0, 1, -1, 1, -1, 0, 1, -1, 1, 1, 0, 1, 1,
+            -1, -1, 0, 1, 1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 1, 1, 1, -1, 0, -1, -1, -1, -1, 0, -1, -1, 1, -1, 0, -1, 1, -1,
+            -1, 0, -1, 1, 1, -1, 0, 1, -1, -1, -1, 0, 1, -1, 1, -1, 0, 1, 1, -1, -1, 0, 1, 1, 1, 1, 0, -1, -1, -1, 1, 0,
+            -1, -1, 1, 1, 0, -1, 1, -1, 1, 0, -1, 1, 1, 1, 0, 1, -1, -1, 1, 0, 1, -1, 1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1,
+            -1, -1, 0, -1, -1, -1, -1, 0, -1, 1, -1, -1, 0, 1, -1, -1, -1, 0, 1, 1, -1, 1, 0, -1, -1, -1, 1, 0, -1, 1,
+            -1, 1, 0, 1, -1, -1, 1, 0, 1, 1, 1, -1, 0, -1, -1, 1, -1, 0, -1, 1, 1, -1, 0, 1, -1, 1, -1, 0, 1, 1, 1, 1, 0,
+            -1, -1, 1, 1, 0, -1, 1, 1, 1, 0, 1, -1, 1, 1, 0, 1, 1, -1, -1, -1, 0, -1, -1, -1, -1, 0, 1, -1, -1, 1, 0, -1,
+            -1, -1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 1, -1, 0, 1, -1, 1, 1, 0, -1, -1, 1, 1, 0, 1, 1, -1, -1, 0, -1, 1, -1,
+            -1, 0, 1, 1, -1, 1, 0, -1, 1, -1, 1, 0, 1, 1, 1, -1, 0, -1, 1, 1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 1, 1, 0, 1,
+            -1, -1, -1, -1, 0, -1, -1, -1, 1, 0, -1, -1, 1, -1, 0, -1, -1, 1, 1, 0, -1, 1, -1, -1, 0, -1, 1, -1, 1, 0,
+            -1, 1, 1, -1, 0, -1, 1, 1, 1, 0, 1, -1, -1, -1, 0, 1, -1, -1, 1, 0, 1, -1, 1, -1, 0, 1, -1, 1, 1, 0, 1, 1,
+            -1, -1, 0, 1, 1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 1, 1, 1, 0
+        };
 
         private static float dotproduct(int dIndex, float x, float y)
         {
             return grad3[dIndex] * x + grad3[dIndex + 1] * y;
         }
+
         private static float dotproduct(int dIndex, float x, float y, float z)
         {
             return grad3[dIndex] * x + grad3[dIndex + 1] * y + grad3[dIndex + 2] * z;
         }
+
         private static float dotproduct(int dIndex, float x, float y, float z, float w)
         {
             return grad4[dIndex] * x + grad4[dIndex + 1] * y + grad4[dIndex + 2] * z + grad4[dIndex + 3] * w;
         }
+
         private static float dotproduct(int dIndex, float x, float y, float z, float w, float v)
         {
-            return grad5[dIndex] * x + grad5[dIndex + 1] * y + grad5[dIndex + 2] * z + grad5[dIndex + 3] * w + grad5[dIndex + 4] * v;
+            return grad5[dIndex] * x + grad5[dIndex + 1] * y + grad5[dIndex + 2] * z + grad5[dIndex + 3] * w +
+                   grad5[dIndex + 4] * v;
         }
+
         private static float F2 = (float)(0.5f * (Math.Sqrt(3.0f) - 1.0f));
         private static float G2 = (float)(3.0f - Math.Sqrt(3.0f)) / 6.0f;
         private static float F3 = 1.0f / 3.0f;
@@ -563,13 +606,14 @@ namespace OctoAwesome.Noise
                 return (float)(1.0 - n / 1073741824.0);
             }
         }
+
         private float LinearInterpolation(float a, float b, float x)
         {
             return a + (b - a) * x;
         }
+
         private float Noise(float x)
         {
-
             int integer_X = (int)x;
             float fractional_X = x - integer_X;
 
@@ -599,9 +643,17 @@ namespace OctoAwesome.Noise
 
             int i1, j1;
 
-            if (x0 > y0) { i1 = 1; j1 = 0; }
+            if (x0 > y0)
+            {
+                i1 = 1;
+                j1 = 0;
+            }
 
-            else { i1 = 0; j1 = 1; }
+            else
+            {
+                i1 = 0;
+                j1 = 1;
+            }
 
             float x1 = x0 - i1 + G2;
 
@@ -660,15 +712,62 @@ namespace OctoAwesome.Noise
             if (x0 >= y0)
             {
                 if (y0 >= z0)
-                { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
-                else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
-                else { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
+                {
+                    i1 = 1;
+                    j1 = 0;
+                    k1 = 0;
+                    i2 = 1;
+                    j2 = 1;
+                    k2 = 0;
+                }
+                else if (x0 >= z0)
+                {
+                    i1 = 1;
+                    j1 = 0;
+                    k1 = 0;
+                    i2 = 1;
+                    j2 = 0;
+                    k2 = 1;
+                }
+                else
+                {
+                    i1 = 0;
+                    j1 = 0;
+                    k1 = 1;
+                    i2 = 1;
+                    j2 = 0;
+                    k2 = 1;
+                }
             }
             else
             {
-                if (y0 < z0) { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
-                else if (x0 < z0) { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
-                else { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+                if (y0 < z0)
+                {
+                    i1 = 0;
+                    j1 = 0;
+                    k1 = 1;
+                    i2 = 0;
+                    j2 = 1;
+                    k2 = 1;
+                }
+                else if (x0 < z0)
+                {
+                    i1 = 0;
+                    j1 = 1;
+                    k1 = 0;
+                    i2 = 0;
+                    j2 = 1;
+                    k2 = 1;
+                }
+                else
+                {
+                    i1 = 0;
+                    j1 = 1;
+                    k1 = 0;
+                    i2 = 1;
+                    j2 = 1;
+                    k2 = 0;
+                }
             }
 
             float x1 = x0 - i1 + G3;
@@ -724,7 +823,6 @@ namespace OctoAwesome.Noise
 
         private float Noise4D(float x, float y, float z, float w)
         {
-
             float n0, n1, n2, n3, n4;
 
             float s = (x + y + z + w) * F4;
@@ -746,12 +844,18 @@ namespace OctoAwesome.Noise
             int ranky = 0;
             int rankz = 0;
             int rankw = 0;
-            if (x0 > y0) rankx++; else ranky++;
-            if (x0 > z0) rankx++; else rankz++;
-            if (x0 > w0) rankx++; else rankw++;
-            if (y0 > z0) ranky++; else rankz++;
-            if (y0 > w0) ranky++; else rankw++;
-            if (z0 > w0) rankz++; else rankw++;
+            if (x0 > y0) rankx++;
+            else ranky++;
+            if (x0 > z0) rankx++;
+            else rankz++;
+            if (x0 > w0) rankx++;
+            else rankw++;
+            if (y0 > z0) ranky++;
+            else rankz++;
+            if (y0 > w0) ranky++;
+            else rankw++;
+            if (z0 > w0) rankz++;
+            else rankw++;
             int i1, j1, k1, l1;
             int i2, j2, k2, l2;
             int i3, j3, k3, l3;
@@ -864,17 +968,26 @@ namespace OctoAwesome.Noise
             int rankz = 0;
             int rankw = 0;
             int rankv = 0;
-            if (x0 > y0) rankx++; else ranky++;
-            if (x0 > z0) rankx++; else rankz++;
-            if (x0 > w0) rankx++; else rankw++;
-            if (x0 > v0) rankx++; else rankv++;
+            if (x0 > y0) rankx++;
+            else ranky++;
+            if (x0 > z0) rankx++;
+            else rankz++;
+            if (x0 > w0) rankx++;
+            else rankw++;
+            if (x0 > v0) rankx++;
+            else rankv++;
 
-            if (y0 > z0) ranky++; else rankz++;
-            if (y0 > w0) ranky++; else rankw++;
-            if (y0 > v0) ranky++; else rankv++;
+            if (y0 > z0) ranky++;
+            else rankz++;
+            if (y0 > w0) ranky++;
+            else rankw++;
+            if (y0 > v0) ranky++;
+            else rankv++;
 
-            if (z0 > w0) rankz++; else rankw++;
-            if (z0 > v0) rankz++; else rankv++;
+            if (z0 > w0) rankz++;
+            else rankw++;
+            if (z0 > v0) rankz++;
+            else rankv++;
 
             int i1, j1, k1, l1, m1;
             int i2, j2, k2, l2, m2;
@@ -941,11 +1054,26 @@ namespace OctoAwesome.Noise
             int ll = l & 255;
             int mm = m & 255;
             int gi0 = permutations[ii + permutations[jj + permutations[kk + permutations[ll + permutations[mm]]]]] % 80;
-            int gi1 = permutations[ii + i1 + permutations[jj + j1 + permutations[kk + k1 + permutations[ll + l1 + permutations[mm + m1]]]]] % 80;
-            int gi2 = permutations[ii + i2 + permutations[jj + j2 + permutations[kk + k2 + permutations[ll + l2 + permutations[mm + m2]]]]] % 80;
-            int gi3 = permutations[ii + i3 + permutations[jj + j3 + permutations[kk + k3 + permutations[ll + l3 + permutations[mm + m3]]]]] % 80;
-            int gi4 = permutations[ii + i4 + permutations[jj + j4 + permutations[kk + k4 + permutations[ll + l4 + permutations[mm + m4]]]]] % 80;
-            int gi5 = permutations[ii + 1 + permutations[jj + 1 + permutations[kk + 1 + permutations[ll + 1 + permutations[mm + 1]]]]] % 80;
+            int gi1 =
+                permutations[
+                    ii + i1 +
+                    permutations[jj + j1 + permutations[kk + k1 + permutations[ll + l1 + permutations[mm + m1]]]]] % 80;
+            int gi2 =
+                permutations[
+                    ii + i2 +
+                    permutations[jj + j2 + permutations[kk + k2 + permutations[ll + l2 + permutations[mm + m2]]]]] % 80;
+            int gi3 =
+                permutations[
+                    ii + i3 +
+                    permutations[jj + j3 + permutations[kk + k3 + permutations[ll + l3 + permutations[mm + m3]]]]] % 80;
+            int gi4 =
+                permutations[
+                    ii + i4 +
+                    permutations[jj + j4 + permutations[kk + k4 + permutations[ll + l4 + permutations[mm + m4]]]]] % 80;
+            int gi5 =
+                permutations[
+                    ii + 1 + permutations[jj + 1 + permutations[kk + 1 + permutations[ll + 1 + permutations[mm + 1]]]]] %
+                80;
 
             float t0 = 0.6f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0 - v0 * v0;
             if (t0 < 0) n0 = 0.0f;
@@ -990,7 +1118,6 @@ namespace OctoAwesome.Noise
                 n5 = t5 * t5 * dotproduct(gi5 * 5, x5, y5, z5, w5, v5);
             }
             return 18.0f * (n0 + n1 + n2 + n3 + n4 + n5);
-
         }
 
         #endregion
@@ -1076,7 +1203,5 @@ namespace OctoAwesome.Noise
         //    max = 1f / max;
 
         #endregion
-
-
     }
 }

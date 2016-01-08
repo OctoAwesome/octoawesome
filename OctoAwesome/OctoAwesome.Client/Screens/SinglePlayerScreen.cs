@@ -14,16 +14,15 @@ namespace OctoAwesome.Client.Screens
             Padding = Border.All(0);
 
             Image background = new Image(manager);
-            background.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", manager.GraphicsDevice);
+            background.Texture =
+                manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png",
+                    manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
             Button startButton = Button.TextButton(manager, "Start");
-            startButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateToScreen(new GameScreen(manager));
-            };
+            startButton.LeftMouseClick += (s, e) => { manager.NavigateToScreen(new GameScreen(manager)); };
             Controls.Add(startButton);
         }
     }

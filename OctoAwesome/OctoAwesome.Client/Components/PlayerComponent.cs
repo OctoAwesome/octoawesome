@@ -79,7 +79,7 @@ namespace OctoAwesome.Client.Components
             InteractInput = false;
 
             if (ApplyInput && SelectedBox.HasValue)
-                PlayerController.Apply(SelectedBox.Value, ActiveTool,  SelectedSide);
+                PlayerController.Apply(SelectedBox.Value, ActiveTool, SelectedSide);
             ApplyInput = false;
 
             if (FlymodeInput)

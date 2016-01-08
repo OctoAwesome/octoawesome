@@ -61,7 +61,8 @@ namespace OctoAwesome.Client.Controls
             Manager = manager;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
+            sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png",
+                manager.GraphicsDevice);
 
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.GetBlockDefinitions();
@@ -77,7 +78,8 @@ namespace OctoAwesome.Client.Controls
                 {
                     int x = counter % size;
                     int y = (int)(counter / size);
-                    g.DrawImage(bitmap, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
+                    g.DrawImage(bitmap,
+                        new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
                     counter++;
                 }
             }
@@ -106,7 +108,8 @@ namespace OctoAwesome.Client.Controls
             {
                 for (int j = 0; j < chunkRenderer.GetLength(1); j++)
                 {
-                    ChunkRenderer renderer = new ChunkRenderer(simpleShader, manager.GraphicsDevice, camera.Projection, blockTextures);
+                    ChunkRenderer renderer = new ChunkRenderer(simpleShader, manager.GraphicsDevice, camera.Projection,
+                        blockTextures);
                     chunkRenderer[i, j] = renderer;
                     orderedChunkRenderer.Add(renderer);
                 }
@@ -126,14 +129,22 @@ namespace OctoAwesome.Client.Controls
 
             selectionLines = new[]
             {
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f),
+                    Microsoft.Xna.Framework.Color.Black * 0.5f),
             };
 
             billboardVertices = new[]
@@ -159,11 +170,14 @@ namespace OctoAwesome.Client.Controls
             selectionEffect = new BasicEffect(manager.GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
-            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
+            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, false, SurfaceFormat.Color,
+                DepthFormat.Depth24Stencil8);
+                // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
         }
 
-        protected override void OnDrawContent(SpriteBatch batch, Microsoft.Xna.Framework.Rectangle contentArea, GameTime gameTime, float alpha)
+        protected override void OnDrawContent(SpriteBatch batch, Microsoft.Xna.Framework.Rectangle contentArea,
+            GameTime gameTime, float alpha)
         {
             batch.Draw(ControlTexture, contentArea, Microsoft.Xna.Framework.Color.White * alpha);
         }
@@ -194,7 +208,9 @@ namespace OctoAwesome.Client.Controls
                         IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
 
                         Axis? collisionAxis;
-                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
+                        float? distance =
+                            Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z),
+                                pos - renderOffset, camera.PickRay, out collisionAxis);
 
                         if (distance.HasValue && distance.Value < bestDistance)
                         {
@@ -202,7 +218,8 @@ namespace OctoAwesome.Client.Controls
                             selected = pos;
                             selectedAxis = collisionAxis;
                             bestDistance = distance.Value;
-                            selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
+                            selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) -
+                                             (selected - renderOffset);
                         }
                     }
                 }
@@ -213,9 +230,21 @@ namespace OctoAwesome.Client.Controls
                 player.SelectedBox = selected;
                 switch (selectedAxis)
                 {
-                    case Axis.X: player.SelectedSide = (camera.PickRay.Direction.X > 0 ? OrientationFlags.SideWest : OrientationFlags.SideEast); break;
-                    case Axis.Y: player.SelectedSide = (camera.PickRay.Direction.Y > 0 ? OrientationFlags.SideSouth : OrientationFlags.SideNorth); break;
-                    case Axis.Z: player.SelectedSide = (camera.PickRay.Direction.Z > 0 ? OrientationFlags.SideBottom : OrientationFlags.SideTop); break;
+                    case Axis.X:
+                        player.SelectedSide = (camera.PickRay.Direction.X > 0
+                            ? OrientationFlags.SideWest
+                            : OrientationFlags.SideEast);
+                        break;
+                    case Axis.Y:
+                        player.SelectedSide = (camera.PickRay.Direction.Y > 0
+                            ? OrientationFlags.SideSouth
+                            : OrientationFlags.SideNorth);
+                        break;
+                    case Axis.Z:
+                        player.SelectedSide = (camera.PickRay.Direction.Z > 0
+                            ? OrientationFlags.SideBottom
+                            : OrientationFlags.SideTop);
+                        break;
                 }
 
                 player.SelectedPoint = new Vector2();
@@ -223,33 +252,50 @@ namespace OctoAwesome.Client.Controls
                 {
                     case OrientationFlags.SideWest:
                         player.SelectedPoint = new Vector2(1f - selectionPoint.Value.Y, 1f - selectionPoint.Value.Z);
-                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner011, OrientationFlags.Corner001, OrientationFlags.Corner010, OrientationFlags.Corner000);
-                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeWestTop, OrientationFlags.EdgeWestBottom, OrientationFlags.EdgeNorthWest, OrientationFlags.EdgeSouthWest);
+                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner011,
+                            OrientationFlags.Corner001, OrientationFlags.Corner010, OrientationFlags.Corner000);
+                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeWestTop,
+                            OrientationFlags.EdgeWestBottom, OrientationFlags.EdgeNorthWest,
+                            OrientationFlags.EdgeSouthWest);
                         break;
                     case OrientationFlags.SideEast:
                         player.SelectedPoint = new Vector2(selectionPoint.Value.Y, 1f - selectionPoint.Value.Z);
-                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner101, OrientationFlags.Corner111, OrientationFlags.Corner100, OrientationFlags.Corner110);
-                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeEastTop, OrientationFlags.EdgeEastBottom, OrientationFlags.EdgeSouthEast, OrientationFlags.EdgeNorthEast);
+                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner101,
+                            OrientationFlags.Corner111, OrientationFlags.Corner100, OrientationFlags.Corner110);
+                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeEastTop,
+                            OrientationFlags.EdgeEastBottom, OrientationFlags.EdgeSouthEast,
+                            OrientationFlags.EdgeNorthEast);
                         break;
                     case OrientationFlags.SideTop:
                         player.SelectedPoint = new Vector2(selectionPoint.Value.X, 1f - selectionPoint.Value.Y);
-                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner011, OrientationFlags.Corner111, OrientationFlags.Corner001, OrientationFlags.Corner101);
-                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeNorthTop, OrientationFlags.EdgeSouthTop, OrientationFlags.EdgeWestTop, OrientationFlags.EdgeEastTop);
+                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner011,
+                            OrientationFlags.Corner111, OrientationFlags.Corner001, OrientationFlags.Corner101);
+                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeNorthTop,
+                            OrientationFlags.EdgeSouthTop, OrientationFlags.EdgeWestTop, OrientationFlags.EdgeEastTop);
                         break;
                     case OrientationFlags.SideBottom:
                         player.SelectedPoint = new Vector2(selectionPoint.Value.X, selectionPoint.Value.Y);
-                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner000, OrientationFlags.Corner100, OrientationFlags.Corner010, OrientationFlags.Corner110);
-                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeSouthBottom, OrientationFlags.EdgeNorthBottom, OrientationFlags.EdgeWestBottom, OrientationFlags.EdgeEastBottom);
+                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner000,
+                            OrientationFlags.Corner100, OrientationFlags.Corner010, OrientationFlags.Corner110);
+                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeSouthBottom,
+                            OrientationFlags.EdgeNorthBottom, OrientationFlags.EdgeWestBottom,
+                            OrientationFlags.EdgeEastBottom);
                         break;
                     case OrientationFlags.SideNorth:
                         player.SelectedPoint = new Vector2(1f - selectionPoint.Value.X, 1f - selectionPoint.Value.Z);
-                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner111, OrientationFlags.Corner011, OrientationFlags.Corner110, OrientationFlags.Corner010);
-                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeNorthTop, OrientationFlags.EdgeNorthBottom, OrientationFlags.EdgeNorthEast, OrientationFlags.EdgeNorthWest);
+                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner111,
+                            OrientationFlags.Corner011, OrientationFlags.Corner110, OrientationFlags.Corner010);
+                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeNorthTop,
+                            OrientationFlags.EdgeNorthBottom, OrientationFlags.EdgeNorthEast,
+                            OrientationFlags.EdgeNorthWest);
                         break;
                     case OrientationFlags.SideSouth:
                         player.SelectedPoint = new Vector2(selectionPoint.Value.X, 1f - selectionPoint.Value.Z);
-                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner001, OrientationFlags.Corner101, OrientationFlags.Corner000, OrientationFlags.Corner100);
-                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeSouthTop, OrientationFlags.EdgeSouthBottom, OrientationFlags.EdgeSouthWest, OrientationFlags.EdgeSouthEast);
+                        player.SelectedCorner = FindCorner(player.SelectedPoint.Value, OrientationFlags.Corner001,
+                            OrientationFlags.Corner101, OrientationFlags.Corner000, OrientationFlags.Corner100);
+                        player.SelectedEdge = FindEdge(player.SelectedPoint.Value, OrientationFlags.EdgeSouthTop,
+                            OrientationFlags.EdgeSouthBottom, OrientationFlags.EdgeSouthWest,
+                            OrientationFlags.EdgeSouthEast);
                         break;
                 }
 
@@ -273,14 +319,17 @@ namespace OctoAwesome.Client.Controls
         {
             if (ControlTexture == null)
             {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width,
+                    ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             }
 
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
-            float playerPosX = (player.PlayerController.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
-            float playerPosY = (player.PlayerController.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
+            float playerPosX = (player.PlayerController.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) *
+                               MathHelper.TwoPi;
+            float playerPosY = (player.PlayerController.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) *
+                               MathHelper.TwoPi;
 
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
@@ -289,11 +338,15 @@ namespace OctoAwesome.Client.Controls
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) *
                 //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
-                Matrix.CreateRotationY((float)(MathHelper.TwoPi - ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) % MathHelper.TwoPi)));
+                Matrix.CreateRotationY(
+                    (float)
+                        (MathHelper.TwoPi -
+                         ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) % MathHelper.TwoPi)));
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
-            simpleShader.Parameters["DiffuseColor"].SetValue(new Microsoft.Xna.Framework.Color(190, 190, 190).ToVector4());
+            simpleShader.Parameters["DiffuseColor"].SetValue(
+                new Microsoft.Xna.Framework.Color(190, 190, 190).ToVector4());
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
@@ -319,14 +372,14 @@ namespace OctoAwesome.Client.Controls
                         planet.Size.Y));
 
                 BoundingBox chunkBox = new BoundingBox(
-                new Vector3(
-                    shift.X * Chunk.CHUNKSIZE_X,
-                    shift.Y * Chunk.CHUNKSIZE_Y,
-                    shift.Z * Chunk.CHUNKSIZE_Z),
-                new Vector3(
-                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
+                    new Vector3(
+                        shift.X * Chunk.CHUNKSIZE_X,
+                        shift.Y * Chunk.CHUNKSIZE_Y,
+                        shift.Z * Chunk.CHUNKSIZE_Z),
+                    new Vector3(
+                        (shift.X + 1) * Chunk.CHUNKSIZE_X,
+                        (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
+                        (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 int range = 3;
                 if (shift.X >= -range && shift.X <= range &&
@@ -364,14 +417,14 @@ namespace OctoAwesome.Client.Controls
                         planet.Size.Y));
 
                 BoundingBox chunkBox = new BoundingBox(
-                new Vector3(
-                    shift.X * Chunk.CHUNKSIZE_X,
-                    shift.Y * Chunk.CHUNKSIZE_Y,
-                    shift.Z * Chunk.CHUNKSIZE_Z),
-                new Vector3(
-                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
+                    new Vector3(
+                        shift.X * Chunk.CHUNKSIZE_X,
+                        shift.Y * Chunk.CHUNKSIZE_Y,
+                        shift.Z * Chunk.CHUNKSIZE_Z),
+                    new Vector3(
+                        (shift.X + 1) * Chunk.CHUNKSIZE_X,
+                        (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
+                        (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 if (camera.Frustum.Intersects(chunkBox))
                     renderer.Draw(camera.View, camera.Projection, shift);
@@ -398,7 +451,8 @@ namespace OctoAwesome.Client.Controls
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, selectionLines, 0, 8,
+                        selectionIndeces, 0, 12);
                 }
             }
 
@@ -429,7 +483,7 @@ namespace OctoAwesome.Client.Controls
                         int virtualY = local.Y & mask;
 
                         int rendererIndex = virtualX +
-                            (virtualY << VIEWRANGE);
+                                            (virtualY << VIEWRANGE);
 
                         for (int z = 0; z < planet.Size.Z; z++)
                         {
@@ -475,7 +529,8 @@ namespace OctoAwesome.Client.Controls
 
         #region Converter
 
-        private static OrientationFlags FindEdge(Vector2 point, OrientationFlags upper, OrientationFlags lower, OrientationFlags left, OrientationFlags right)
+        private static OrientationFlags FindEdge(Vector2 point, OrientationFlags upper, OrientationFlags lower,
+            OrientationFlags left, OrientationFlags right)
         {
             if (point.X > point.Y)
             {
@@ -489,7 +544,8 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private static OrientationFlags FindCorner(Vector2 point, OrientationFlags upperLeftCorner, OrientationFlags upperRightCorner, OrientationFlags lowerLeftCorner, OrientationFlags lowerRightCorner)
+        private static OrientationFlags FindCorner(Vector2 point, OrientationFlags upperLeftCorner,
+            OrientationFlags upperRightCorner, OrientationFlags lowerLeftCorner, OrientationFlags lowerRightCorner)
         {
             if (point.X < 0.5f)
             {

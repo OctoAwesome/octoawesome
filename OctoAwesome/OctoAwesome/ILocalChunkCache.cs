@@ -21,6 +21,7 @@ namespace OctoAwesome
         /// <param name="index">Block Index</param>
         /// <returns>Block oder null, falls dort kein Block existiert</returns>
         ushort GetBlock(Index3 index);
+
         ushort GetBlock(int x, int y, int z);
 
 

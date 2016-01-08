@@ -17,7 +17,8 @@ namespace OctoAwesome.Client.Controls
 
         public CrosshairControl(ScreenComponent manager) : base(manager)
         {
-            Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/octocross.png", manager.GraphicsDevice);
+            Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/octocross.png",
+                manager.GraphicsDevice);
             Transparency = 0.5f;
             Color = Color.White;
         }

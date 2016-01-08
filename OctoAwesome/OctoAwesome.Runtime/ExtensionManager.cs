@@ -18,7 +18,7 @@ namespace OctoAwesome.Runtime
                 assemblies = new List<Assembly>();
                 Errors = new List<Exception>();
                 DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-                
+
                 foreach (var file in dir.GetFiles("*.dll"))
                 {
                     try
@@ -56,12 +56,11 @@ namespace OctoAwesome.Runtime
                 foreach (var type in assembly.GetTypes())
                 {
                     if (!type.IsPublic) continue;
-                    if (type == typeof(T)) continue;
+                    if (type == typeof (T)) continue;
 
-                    if (typeof(T).IsAssignableFrom(type))
+                    if (typeof (T).IsAssignableFrom(type))
                         result.Add(type);
                 }
-
             }
             return result;
         }

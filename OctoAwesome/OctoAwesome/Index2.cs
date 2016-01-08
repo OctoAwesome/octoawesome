@@ -36,13 +36,17 @@ namespace OctoAwesome
         /// Initialisierung
         /// </summary>
         /// <param name="value">Initialwerte</param>
-        public Index2(Index2 value) : this(value.X, value.Y) {}
+        public Index2(Index2 value) : this(value.X, value.Y)
+        {
+        }
 
         /// <summary>
         /// Initialisierung
         /// </summary>
         /// <param name="value">Initialwerte (X und Y Anteil wird übernommen)</param>
-        public Index2(Index3 value) : this(value.X, value.Y) {}
+        public Index2(Index3 value) : this(value.X, value.Y)
+        {
+        }
 
         /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
@@ -158,7 +162,7 @@ namespace OctoAwesome
         public Index2 ShortestDistanceXY(Index2 destination, Index2 size)
         {
             return new Index2(
-                ShortestDistanceX(destination.X, size.X), 
+                ShortestDistanceX(destination.X, size.X),
                 ShortestDistanceY(destination.Y, size.Y));
         }
 
@@ -169,7 +173,6 @@ namespace OctoAwesome
         public double Length()
         {
             return Math.Sqrt(LengthSquared());
-
         }
 
         /// <summary>
@@ -272,29 +275,41 @@ namespace OctoAwesome
 
         public override int GetHashCode()
         {
-            return 
-                (X << 16) + 
+            return
+                (X << 16) +
                 Y;
         }
 
         /// <summary>
         /// Null-Index
         /// </summary>
-        public static Index2 Zero { get { return new Index2(0, 0); } }
+        public static Index2 Zero
+        {
+            get { return new Index2(0, 0); }
+        }
 
         /// <summary>
         /// Index(1,1)
         /// </summary>
-        public static Index2 One { get { return new Index2(1, 1); } }
+        public static Index2 One
+        {
+            get { return new Index2(1, 1); }
+        }
 
         /// <summary>
         /// Einheitsindex für X
         /// </summary>
-        public static Index2 UnitX { get { return new Index2(1, 0); } }
+        public static Index2 UnitX
+        {
+            get { return new Index2(1, 0); }
+        }
 
         /// <summary>
         /// Einheitsindex für Y
         /// </summary>
-        public static Index2 UnitY { get { return new Index2(0, 1); } }
+        public static Index2 UnitY
+        {
+            get { return new Index2(0, 1); }
+        }
     }
 }

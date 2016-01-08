@@ -13,7 +13,6 @@ namespace OctoAwesome.Server
 {
     public partial class MainForm : Form
     {
-
         public MainForm()
         {
             InitializeComponent();
@@ -42,10 +41,7 @@ namespace OctoAwesome.Server
             //ListViewItem bestehend aus Playername & Planet
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() =>
-                {
-                    listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString());
-                }));
+                Invoke(new MethodInvoker(() => { listViewPlayers.Items.RemoveByKey(client.ConnectionId.ToString()); }));
             }
             else
             {
@@ -66,10 +62,7 @@ namespace OctoAwesome.Server
 
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() =>
-                {
-                    listViewPlayers.Items.Add(playerItem);
-                }));
+                Invoke(new MethodInvoker(() => { listViewPlayers.Items.Add(playerItem); }));
             }
             else
             {

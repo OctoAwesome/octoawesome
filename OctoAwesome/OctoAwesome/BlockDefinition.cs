@@ -10,11 +10,17 @@ namespace OctoAwesome
 
         public abstract Bitmap Icon { get; }
 
-        public virtual int StackLimit { get { return 100; } }
+        public virtual int StackLimit
+        {
+            get { return 100; }
+        }
 
         public abstract Bitmap[] Textures { get; }
 
-        public virtual bool HasMetaData { get { return false; } }
+        public virtual bool HasMetaData
+        {
+            get { return false; }
+        }
 
         public abstract PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z);
 
@@ -22,7 +28,7 @@ namespace OctoAwesome
 
         public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
         {
-            return new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+            return new[] {new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))};
         }
 
         public virtual int GetTopTextureIndex(ILocalChunkCache manager, int x, int y, int z)

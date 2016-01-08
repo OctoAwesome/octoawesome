@@ -21,9 +21,11 @@ namespace OctoAwesome.Client.Controls
 
         private int maxConsoleHeight;
 
-        public int MaxConsoleHeight {
+        public int MaxConsoleHeight
+        {
             get { return maxConsoleHeight; }
-            set {
+            set
+            {
                 maxConsoleHeight = value;
                 this.MaxHeight = maxConsoleHeight + 30;
                 consoleTextScroll.MaxHeight = maxConsoleHeight;
@@ -60,7 +62,7 @@ namespace OctoAwesome.Client.Controls
         protected override void OnVisibleChanged(PropertyEventArgs<bool> args)
         {
             base.OnVisibleChanged(args);
-            if(args.NewValue == true)
+            if (args.NewValue == true)
             {
                 consoleInput.Focus();
             }
@@ -73,7 +75,8 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            if (consoleInput.Focused == TreeState.Active) { 
+            if (consoleInput.Focused == TreeState.Active)
+            {
                 if (args.Key == Microsoft.Xna.Framework.Input.Keys.Escape)
                 {
                     Visible = false;
@@ -99,6 +102,5 @@ namespace OctoAwesome.Client.Controls
             if (Instance == null) return;
             Instance.consoleText.Text += message + "\n";
         }
-
     }
 }

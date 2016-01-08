@@ -83,7 +83,8 @@ namespace OctoAwesome.Runtime
             float stafeY = -(float)Math.Sin(Player.Angle + MathHelper.PiOver2);
             velocitydirection += new Vector3(stafeX, stafeY, 0) * Move.X;
 
-            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode, Player.FlyMode);
+            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode,
+                Player.FlyMode);
 
             #endregion
 
@@ -195,9 +196,7 @@ namespace OctoAwesome.Runtime
                 Player.Position = position;
 
                 loop++;
-            }
-            while (collision && loop < 3);
-
+            } while (collision && loop < 3);
 
 
             if (Player.Position.ChunkIndex != _oldIndex)
@@ -214,7 +213,7 @@ namespace OctoAwesome.Runtime
                     // Zu neuem Chunk hinzufügen
                     IChunk newChunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
                     if (newChunk != null)
-                       newChunk.Entities.Add(Player);
+                        newChunk.Entities.Add(Player);
 
                     // Move-Event
                     Server.Instance.MoveEntity(Player, oldChunk, newChunk);
@@ -237,7 +236,10 @@ namespace OctoAwesome.Runtime
                 {
                     var blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(lastBlock);
 
-                    var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+                    var slot =
+                        Player.Inventory.Where(
+                            s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit)
+                            .FirstOrDefault();
 
                     // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
                     if (slot == null || slot.Amount >= blockDefinition.StackLimit)
@@ -261,18 +263,31 @@ namespace OctoAwesome.Runtime
                     Index3 add = new Index3();
                     switch (lastOrientation)
                     {
-                        case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
-                        case OrientationFlags.SideEast: add = new Index3(1, 0, 0); break;
-                        case OrientationFlags.SideSouth: add = new Index3(0, -1, 0); break;
-                        case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
-                        case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
-                        case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
+                        case OrientationFlags.SideWest:
+                            add = new Index3(-1, 0, 0);
+                            break;
+                        case OrientationFlags.SideEast:
+                            add = new Index3(1, 0, 0);
+                            break;
+                        case OrientationFlags.SideSouth:
+                            add = new Index3(0, -1, 0);
+                            break;
+                        case OrientationFlags.SideNorth:
+                            add = new Index3(0, 1, 0);
+                            break;
+                        case OrientationFlags.SideBottom:
+                            add = new Index3(0, 0, -1);
+                            break;
+                        case OrientationFlags.SideTop:
+                            add = new Index3(0, 0, 1);
+                            break;
                     }
 
                     if (lastTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = lastTool.Definition as IBlockDefinition;
-                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
+                        localChunkCache.SetBlock(lastApply.Value + add,
+                            DefinitionManager.GetBlockDefinitionIndex(definition));
                         Server.Instance.AddBlock(Player.Position.Planet, lastApply.Value + add, definition, 0);
 
                         lastTool.Amount--;
@@ -410,13 +425,12 @@ namespace OctoAwesome.Runtime
 
 
             Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - friction * Player.Velocity)) *
-                (float)elapsedtime.TotalSeconds;
+                                     (float)elapsedtime.TotalSeconds;
 
             return new Vector3(
                 (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
                 (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
                 (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
-
         }
 
         internal void Unload()
@@ -510,8 +524,9 @@ namespace OctoAwesome.Runtime
 
             foreach (var blockDefinition in blockDefinitions)
             {
-
-                var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+                var slot =
+                    Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit)
+                        .FirstOrDefault();
 
                 // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
                 if (slot == null || slot.Amount >= blockDefinition.StackLimit)

@@ -112,7 +112,6 @@ namespace OctoAwesome.Client.Controls
                 if (control is Label)
                 {
                     ((Label)control).TextColor = Color.White;
-                    
                 }
             }
         }
@@ -145,8 +144,8 @@ namespace OctoAwesome.Client.Controls
             //Draw Rotation
             float grad = (Player.PlayerController.Angle / MathHelper.TwoPi) * 360;
             string rot = "rot: " +
-                (((Player.PlayerController.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.PlayerController.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                         (((Player.PlayerController.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                         ((Player.PlayerController.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
 
             //Draw Fps
@@ -157,8 +156,9 @@ namespace OctoAwesome.Client.Controls
             loadedChunks.Text = "Loaded Chunks: " + resMan.GlobalChunkCache.LoadedChunks;
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " Items - " +
-                (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
+            loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count +
+                              " Items - " +
+                              (DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " Blocks";
 
             //Additional Play Information
 
@@ -166,24 +166,23 @@ namespace OctoAwesome.Client.Controls
             if (Player.ActiveTool != null)
                 activeTool.Text = "Active Item/Tool: " + Player.ActiveTool.Definition.Name;
 
-                //Fly Info
-                if (Player.PlayerController.FlyMode) flyInfo.Text = "Flymode enabled";
-                else flyInfo.Text = "";
+            //Fly Info
+            if (Player.PlayerController.FlyMode) flyInfo.Text = "Flymode enabled";
+            else flyInfo.Text = "";
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)
             {
                 string selection = "box: " +
-                    Player.SelectedBox.Value.ToString() + "\non " +
-                    Player.SelectedSide.ToString() + " (" +
-                    Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
-                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") \n-> " +
-                    Player.SelectedEdge.ToString() + " \n-> " + Player.SelectedCorner.ToString();
+                                   Player.SelectedBox.Value.ToString() + "\non " +
+                                   Player.SelectedSide.ToString() + " (" +
+                                   Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
+                                   Player.SelectedPoint.Value.Y.ToString("0.00") + ") \n-> " +
+                                   Player.SelectedEdge.ToString() + " \n-> " + Player.SelectedCorner.ToString();
                 box.Text = selection;
             }
             else
                 box.Text = "";
-
         }
     }
 }
