@@ -21,9 +21,12 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
         /// </summary>
-        public int LoadedChunks { get { return cache.Count; } }
+        public int LoadedChunks
+        {
+            get { return cache.Count; }
+        }
 
-        public GlobalChunkCache(Func<PlanetIndex3, IChunk> loadDelegate, 
+        public GlobalChunkCache(Func<PlanetIndex3, IChunk> loadDelegate,
             Action<PlanetIndex3, IChunk> saveDelegate)
         {
             if (loadDelegate == null) throw new ArgumentNullException("loadDelegate");

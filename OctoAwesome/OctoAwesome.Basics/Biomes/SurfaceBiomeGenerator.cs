@@ -8,17 +8,18 @@ namespace OctoAwesome.Basics.Biomes
 {
     public class SurfaceBiomeGenerator : SuperBiomeBase
     {
-        public int SeaLevel
-        {
-            get;
-            private set;
-        }
+        public int SeaLevel { get; private set; }
 
         public SurfaceBiomeGenerator(IPlanet planet, int seaLevel)
             : base(planet, 0f, 1f)
         {
             this.SeaLevel = seaLevel;
-            BiomeNoiseGenerator = new SimplexNoiseGenerator(planet.Seed) { FrequencyX = 1f / 10000, FrequencyY = 1f / 10000, Factor = 1f };
+            BiomeNoiseGenerator = new SimplexNoiseGenerator(planet.Seed)
+            {
+                FrequencyX = 1f / 10000,
+                FrequencyY = 1f / 10000,
+                Factor = 1f
+            };
 
             float offset = (float)seaLevel / (Planet.Size.Z * Chunk.CHUNKSIZE_Z);
 
@@ -44,10 +45,11 @@ namespace OctoAwesome.Basics.Biomes
         public override float[,] GetHeightmap(Index2 chunkIndex)
         {
             float[,] values = new float[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
-            
+
             Index2 blockIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);
 
-            float[,] regions = BiomeNoiseGenerator.GetTileableNoiseMap2D(blockIndex.X, blockIndex.Y, Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y);
+            float[,] regions = BiomeNoiseGenerator.GetTileableNoiseMap2D(blockIndex.X, blockIndex.Y, Chunk.CHUNKSIZE_X,
+                Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y);
 
             float[][,] biomeValues = new float[SubBiomes.Count][,];
 
@@ -67,11 +69,11 @@ namespace OctoAwesome.Basics.Biomes
                     if (biome2 != -1)
                     {
                         interpolationValue = CalculateInterpolationValue(region, SubBiomes[biome1], SubBiomes[biome2]);
-                        values[x, y] = (biomeValues[biome2][x, y] * interpolationValue) + (biomeValues[biome1][x, y] * (1 - interpolationValue));
+                        values[x, y] = (biomeValues[biome2][x, y] * interpolationValue) +
+                                       (biomeValues[biome1][x, y] * (1 - interpolationValue));
                     }
                     else
                         values[x, y] = biomeValues[biome1][x, y];
-
                 }
             }
             return values;

@@ -3,7 +3,7 @@
     public interface IChunkCache
     {
         IChunk Get(Index3 idx);
-        
+
         IChunk Get(int x, int y, int z);
 
         void EnsureLoaded(PlanetIndex3 idx);

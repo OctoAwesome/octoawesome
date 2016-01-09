@@ -10,9 +10,10 @@ namespace OctoAwesome.Client.Screens
         public DisconnectScreen(ScreenComponent manager, string message) : base(manager)
         {
             StackPanel stack = new StackPanel(manager);
-            Label disconnectLabel = new Label(manager) { Text = "Disconnected" };
+            Label disconnectLabel = new Label(manager) {Text = "Disconnected"};
             stack.Controls.Add(disconnectLabel);
-            Label Description = new Label(manager) {
+            Label Description = new Label(manager)
+            {
                 Text = message,
                 MaxWidth = Width / 2
             };

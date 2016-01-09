@@ -10,6 +10,7 @@ namespace OctoAwesome
     {
         // TODO: Irgendwie muss die Texturkoordinate noch in den Renderer - aber wie?!
         VertexPositionNormalTexture[] GenerateMesh(ILocalChunkCache manager, int x, int y, int z,
-            bool blockedTop, bool blockedBottom, bool blockedNorth, bool blockedSouth, bool blockedWest, bool blockedEast);
+            bool blockedTop, bool blockedBottom, bool blockedNorth, bool blockedSouth, bool blockedWest,
+            bool blockedEast);
     }
 }

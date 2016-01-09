@@ -35,7 +35,9 @@ namespace OctoAwesome.Client.Screens
 
             ////////////////////////////////////////////Background////////////////////////////////////////////
             Image background = new Image(manager);
-            background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
+            background.Texture =
+                Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png",
+                    Manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
@@ -44,17 +46,15 @@ namespace OctoAwesome.Client.Screens
             Button backButton = Button.TextButton(manager, "Back");
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
+            backButton.LeftMouseClick += (s, e) => { manager.NavigateBack(); };
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
 
             ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
             settingsStack = new StackPanel(manager);
             settingsStack.Orientation = Orientation.Vertical;
-            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png",
+                manager.GraphicsDevice);
             settingsStack.Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
             settingsStack.Padding = new Border(20, 20, 20, 20);
             settingsStack.MinWidth = 600;
@@ -72,7 +72,7 @@ namespace OctoAwesome.Client.Screens
             viewrangeSlider.HorizontalAlignment = HorizontalAlignment.Stretch;
             viewrangeSlider.Height = 20;
             viewrangeSlider.Range = 9;
-            viewrangeSlider.Value = int.Parse(viewrange) -1;
+            viewrangeSlider.Value = int.Parse(viewrange) - 1;
             viewrangeSlider.ValueChanged += (value) => rangeTitle.Text = "Viewrange: " + (value + 1);
             settingsStack.Controls.Add(viewrangeSlider);
 
@@ -131,7 +131,7 @@ namespace OctoAwesome.Client.Screens
             System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             folderBrowser.SelectedPath = ConfigurationManager.AppSettings["ChunkRoot"];
 
-            if(folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = folderBrowser.SelectedPath;
                 mapPath.Text = path;
@@ -156,7 +156,7 @@ namespace OctoAwesome.Client.Screens
                 restartNeeded = true;
             }
 
-            if(ConfigurationManager.AppSettings["DisablePersistence"] !=  disablePersistence.Checked.ToString())
+            if (ConfigurationManager.AppSettings["DisablePersistence"] != disablePersistence.Checked.ToString())
             {
                 config.AppSettings.Settings["DisablePersistence"].Value = disablePersistence.Checked.ToString();
                 restartNeeded = true;
@@ -195,7 +195,6 @@ namespace OctoAwesome.Client.Screens
             Label label = new Label(Manager)
             {
                 Text = text,
-
             };
             s.Controls.Add(label);
 

@@ -10,26 +10,17 @@ namespace OctoAwesome.Basics
     {
         public Bitmap Icon
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         public string Name
         {
-            get
-            {
-                return "Iron Ore";
-            }
+            get { return "Iron Ore"; }
         }
 
         public int StackLimit
         {
-            get
-            {
-                return 50;
-            }
+            get { return 50; }
         }
 
         public IResource GetInstance()

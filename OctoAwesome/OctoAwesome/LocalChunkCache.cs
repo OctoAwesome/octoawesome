@@ -53,16 +53,21 @@ namespace OctoAwesome
             {
                 _cancellationToken.Cancel();
                 _cancellationToken = new CancellationTokenSource();
-                _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
+                _loadingTask =
+                    _loadingTask.ContinueWith(
+                        _ => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
             else
             {
                 _cancellationToken = new CancellationTokenSource();
-                _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
+                _loadingTask =
+                    Task.Factory.StartNew(
+                        () => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
         }
 
-        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index, Action<bool> successCallback)
+        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index,
+            Action<bool> successCallback)
         {
             // Planet resetten falls notwendig
             if (this.planet != planet)
@@ -95,7 +100,9 @@ namespace OctoAwesome
                 return;
             }
 
-            foreach (var chunkIndex in requiredChunks.OrderBy(c => index.ShortestDistanceXYZ(c, planet.Size).LengthSquared()))
+            foreach (
+                var chunkIndex in requiredChunks.OrderBy(c => index.ShortestDistanceXYZ(c, planet.Size).LengthSquared())
+                )
             {
                 int localX = chunkIndex.X & mask;
                 int localY = chunkIndex.Y & mask;

@@ -8,7 +8,6 @@ namespace OctoAwesome.Basics.Biomes
 {
     public abstract class SuperBiomeBase : IBiome
     {
-
         public IPlanet Planet { get; private set; }
 
         public List<IBiome> SubBiomes { get; private set; }
@@ -45,7 +44,6 @@ namespace OctoAwesome.Basics.Biomes
 
         protected IBiome ChooseBiome(float value, out IBiome secondBiome)
         {
-
             secondBiome = null;
             bool betweenPossible = false;
             for (int i = 0; i < SubBiomes.Count; i++)

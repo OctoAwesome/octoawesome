@@ -20,7 +20,8 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return new[] {
+                return new[]
+                {
                     (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/cotton_blue.png")
                 };
             }

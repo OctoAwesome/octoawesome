@@ -53,8 +53,8 @@ namespace OctoAwesome
             {
                 BinaryReader br = new BinaryReader(stream);
                 Position = new Coordinate(
-                    br.ReadInt32(), 
-                    new Index3(br.ReadInt32(), br.ReadInt32(), br.ReadInt32()), 
+                    br.ReadInt32(),
+                    new Index3(br.ReadInt32(), br.ReadInt32(), br.ReadInt32()),
                     new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle()));
                 Radius = br.ReadSingle();
                 Angle = br.ReadSingle();

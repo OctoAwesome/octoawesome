@@ -18,9 +18,14 @@ namespace OctoAwesome.Client.Components
 
         public World World { get; private set; }
 
-        public IPlayerController Player { get { return host; } }
-        
-        public SimulationComponent(Game game) : base(game) { }
+        public IPlayerController Player
+        {
+            get { return host; }
+        }
+
+        public SimulationComponent(Game game) : base(game)
+        {
+        }
 
         public override void Initialize()
         {
@@ -43,9 +48,11 @@ namespace OctoAwesome.Client.Components
             var root = GetRoot();
 
             string filename = "player.info";
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create, FileAccess.Write))
+            using (
+                Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create,
+                    FileAccess.Write))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Player));
+                XmlSerializer serializer = new XmlSerializer(typeof (Player));
                 serializer.Serialize(stream, player);
             }
         }
@@ -58,14 +65,18 @@ namespace OctoAwesome.Client.Components
             if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
                 return new Player();
 
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
+            using (
+                Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open,
+                    FileAccess.Read))
             {
                 try
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Player));
+                    XmlSerializer serializer = new XmlSerializer(typeof (Player));
                     return (Player)serializer.Deserialize(stream);
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                }
 
                 return new Player();
             }

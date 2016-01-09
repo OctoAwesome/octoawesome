@@ -19,15 +19,20 @@ namespace OctoAwesome.Basics
             get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"); }
         }
 
-        public override bool HasMetaData { get { return true; } }
+        public override bool HasMetaData
+        {
+            get { return true; }
+        }
 
         public override Bitmap[] Textures
         {
             get
             {
-                return new[] {
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"),
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_side.png") };
+                return new[]
+                {
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_top.png"),
+                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/wood_side.png")
+                };
             }
         }
 
@@ -117,7 +122,6 @@ namespace OctoAwesome.Basics
                 default:
                     return 1;
             }
-
         }
 
         public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
@@ -136,7 +140,6 @@ namespace OctoAwesome.Basics
                 default:
                     return 1;
             }
-
         }
 
         public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)

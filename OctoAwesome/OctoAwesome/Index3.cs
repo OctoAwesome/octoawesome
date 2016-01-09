@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome
 {
-/// <summary>
+    /// <summary>
     /// Struktur zur Definierung einer dreidimensionalen Index-Position.
     /// </summary>
     public struct Index3
@@ -44,13 +44,17 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">2D-Basis</param>
         /// <param name="z">Z-Anteil</param>
-        public Index3(Index2 index, int z) : this(index.X, index.Y, z) { }
+        public Index3(Index2 index, int z) : this(index.X, index.Y, z)
+        {
+        }
 
         /// <summary>
         /// Initialisierung
         /// </summary>
         /// <param name="index">3D-Basis</param>
-        public Index3(Index3 index) : this(index.X, index.Y, index.Z) { }
+        public Index3(Index3 index) : this(index.X, index.Y, index.Z)
+        {
+        }
 
         /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
@@ -280,7 +284,6 @@ namespace OctoAwesome
         public double Length()
         {
             return Math.Sqrt(LengthSquared());
-            
         }
 
         /// <summary>
@@ -354,42 +357,57 @@ namespace OctoAwesome
 
             Index3 other = (Index3)obj;
             return (
-                other.X == this.X && 
-                other.Y == this.Y && 
+                other.X == this.X &&
+                other.Y == this.Y &&
                 other.Z == this.Z);
         }
 
         public override int GetHashCode()
         {
-            return 
-                (X << 20) + 
-                (Y << 10) + 
+            return
+                (X << 20) +
+                (Y << 10) +
                 Z;
         }
 
         /// <summary>
         /// Null-Index
         /// </summary>
-        public static Index3 Zero { get { return new Index3(0, 0, 0); } }
+        public static Index3 Zero
+        {
+            get { return new Index3(0, 0, 0); }
+        }
 
         /// <summary>
         /// Gibts Index(1,1,1) zurück
         /// </summary>
-        public static Index3 One { get { return new Index3(1, 1, 1); } }
+        public static Index3 One
+        {
+            get { return new Index3(1, 1, 1); }
+        }
 
         /// <summary>
         /// Einheitsindex für X
         /// </summary>
-        public static Index3 UnitX { get { return new Index3(1, 0, 0); } }
+        public static Index3 UnitX
+        {
+            get { return new Index3(1, 0, 0); }
+        }
 
         /// <summary>
         /// Einheitsindex für Y
         /// </summary>
-        public static Index3 UnitY { get { return new Index3(0, 1, 0); } }
+        public static Index3 UnitY
+        {
+            get { return new Index3(0, 1, 0); }
+        }
 
         /// <summary>
         /// Einheitsindex für Z
         /// </summary>
-        public static Index3 UnitZ { get { return new Index3(0, 0, 1); } }
+        public static Index3 UnitZ
+        {
+            get { return new Index3(0, 0, 1); }
+        }
     }
 }

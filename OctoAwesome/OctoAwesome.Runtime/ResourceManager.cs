@@ -23,7 +23,6 @@ namespace OctoAwesome.Runtime
         /// Planet Cache.
         /// </summary>
         // private Cache<int, IPlanet> planetCache;
-
         private IPlanet[] _planets;
 
         private IUniverse universeCache;
@@ -31,6 +30,7 @@ namespace OctoAwesome.Runtime
         #region Singleton
 
         private static ResourceManager instance = null;
+
         public static ResourceManager Instance
         {
             get
@@ -50,7 +50,7 @@ namespace OctoAwesome.Runtime
             chunkPersistence = new ChunkDiskPersistence(chunkSerializer);
 
             GlobalChunkCache = new GlobalChunkCache(
-                (i) => loadChunk(i.Planet, i.ChunkIndex), 
+                (i) => loadChunk(i.Planet, i.ChunkIndex),
                 (i, c) => saveChunk(i.Planet, c));
 
             _planets = new[] {loadPlanet(0)};
@@ -58,7 +58,7 @@ namespace OctoAwesome.Runtime
             //planetCache = new Cache<int, IPlanet>(1, loadPlanet, savePlanet);
             //chunkCache = new Cache<PlanetIndex3, IChunk>(CacheSize, loadChunk, saveChunk);
 
-            bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence); 
+            bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence);
         }
 
         public IGlobalChunkCache GlobalChunkCache { get; set; }
@@ -97,7 +97,8 @@ namespace OctoAwesome.Runtime
             if (first != null)
                 return first;
 
-            IChunk[] result = mapGenerator.GenerateChunk(DefinitionManager.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
+            IChunk[] result = mapGenerator.GenerateChunk(DefinitionManager.GetBlockDefinitions(), planet,
+                new Index2(index.X, index.Y));
             if (result != null && result.Length > index.Z && index.Z >= 0)
             {
                 result[index.Z].ChangeCounter = 0;

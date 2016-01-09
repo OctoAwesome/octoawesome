@@ -12,6 +12,7 @@ namespace OctoAwesome.Runtime
     public class ChunkDiskPersistence : IChunkPersistence
     {
         private IChunkSerializer serializer;
+
         public ChunkDiskPersistence(IChunkSerializer serializer)
         {
             this.serializer = serializer;
@@ -20,9 +21,12 @@ namespace OctoAwesome.Runtime
         public void Save(int universe, int planet, IChunk chunk)
         {
             var root = GetRoot();
-            
-            string filename = planet.ToString() + "_" + chunk.Index.X + "_" + chunk.Index.Y + "_" + chunk.Index.Z + ".chunk";
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create, FileAccess.Write))
+
+            string filename = planet.ToString() + "_" + chunk.Index.X + "_" + chunk.Index.Y + "_" + chunk.Index.Z +
+                              ".chunk";
+            using (
+                Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create,
+                    FileAccess.Write))
             {
                 serializer.Serialize(stream, chunk);
             }
@@ -36,7 +40,9 @@ namespace OctoAwesome.Runtime
             if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
                 return null;
 
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
+            using (
+                Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open,
+                    FileAccess.Read))
             {
                 return serializer.Deserialize(stream, new PlanetIndex3(planet, index));
             }

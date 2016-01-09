@@ -41,7 +41,7 @@ namespace OctoAwesome.Runtime
             while (Running)
             {
                 GameTime gameTime = new GameTime(
-                    watch.Elapsed, frameTime); 
+                    watch.Elapsed, frameTime);
                 lastCall = watch.Elapsed;
 
                 if (!world.Paused)

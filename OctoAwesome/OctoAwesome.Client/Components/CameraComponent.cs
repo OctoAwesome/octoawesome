@@ -60,14 +60,16 @@ namespace OctoAwesome.Client.Components
                     player.PlayerController.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(player.PlayerController.Angle), 
+                    (float)Math.Cos(player.PlayerController.Angle),
                     (float)Math.Sin(-player.PlayerController.Angle), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;
 
-            Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
-            Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View, Matrix.Identity);
+            Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View,
+                Matrix.Identity);
+            Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View,
+                Matrix.Identity);
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);

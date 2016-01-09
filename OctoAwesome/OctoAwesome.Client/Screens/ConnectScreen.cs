@@ -18,7 +18,9 @@ namespace OctoAwesome.Client.Screens
             Padding = Border.All(0);
 
             Image background = new Image(manager);
-            background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
+            background.Texture =
+                Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png",
+                    Manager.GraphicsDevice);
             background.VerticalAlignment = VerticalAlignment.Stretch;
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
@@ -27,14 +29,12 @@ namespace OctoAwesome.Client.Screens
             Button backButton = Button.TextButton(manager, "Back");
             backButton.VerticalAlignment = VerticalAlignment.Top;
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
+            backButton.LeftMouseClick += (s, e) => { manager.NavigateBack(); };
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
 
-            Texture2D panelTexture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelTexture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png",
+                manager.GraphicsDevice);
 
             StackPanel stack = new StackPanel(manager);
             stack.Background = NineTileBrush.FromSingleTexture(panelTexture, 30, 30);
@@ -44,7 +44,7 @@ namespace OctoAwesome.Client.Screens
             StackPanel namePanel = new StackPanel(manager);
             namePanel.Orientation = Orientation.Horizontal;
             namePanel.Margin = new Border(0, 0, 0, 10);
-            namePanel.Controls.Add(new Label(manager) { Text = "Username: " });
+            namePanel.Controls.Add(new Label(manager) {Text = "Username: "});
 
             nameBox = new Textbox(manager);
             nameBox.MinWidth = 500;
@@ -58,7 +58,7 @@ namespace OctoAwesome.Client.Screens
             ipPanel.Orientation = Orientation.Horizontal;
             ipPanel.HorizontalAlignment = HorizontalAlignment.Right;
             ipPanel.Margin = new Border(0, 0, 0, 10);
-            ipPanel.Controls.Add(new Label(manager) { Text = "IP: "});
+            ipPanel.Controls.Add(new Label(manager) {Text = "IP: "});
 
             ///Die IP Box
             ipBox = new Textbox(manager);
@@ -73,8 +73,6 @@ namespace OctoAwesome.Client.Screens
             connect.HorizontalAlignment = HorizontalAlignment.Stretch;
             connect.LeftMouseClick += Connect_LeftMouseClick;
             stack.Controls.Add(connect);
-                
-                
         }
 
         /// <summary>
