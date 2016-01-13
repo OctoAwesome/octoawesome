@@ -20,7 +20,7 @@ namespace OctoAwesome.Client.Screens
             Padding = new Border(0,0,0,0);
 
             StackPanel stack = new StackPanel(manager);
-            Label disconnectLabel = new Label(manager) {Text = "Disconnected"};
+            Label disconnectLabel = new Label(manager) {Text = "Disconnected", TextColor = Color.White};
             stack.Controls.Add(disconnectLabel);
             Label description = new Label(manager)
             {
