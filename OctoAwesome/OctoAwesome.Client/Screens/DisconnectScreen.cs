@@ -20,6 +20,7 @@ namespace OctoAwesome.Client.Screens
             stack.Controls.Add(Description);
 
             Button backToMenu = Button.TextButton(manager, "Back to Main Menu");
+            backToMenu.Enabled = false;
             backToMenu.LeftMouseClick += (s, e) => manager.NavigateHome();
             stack.Controls.Add(backToMenu);
             Controls.Add(stack);
