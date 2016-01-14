@@ -35,6 +35,12 @@ namespace OctoAwesome.Runtime
         void SetMove(Vector2 value);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SetSprint(bool value);
+
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
+        void SetCrouch(bool value);
+
+        [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Apply(Index3 blockIndex, string definitionName, OrientationFlags orientation);
 
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]

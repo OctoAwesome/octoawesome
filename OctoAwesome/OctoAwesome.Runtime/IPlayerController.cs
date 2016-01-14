@@ -22,6 +22,10 @@ namespace OctoAwesome.Runtime
 
         float Tilt { get; }
 
+        bool Crouch { get; set; }
+
+        bool Sprint { get; set; }
+
         Vector2 Move { get; set; }
 
         Vector2 Head { get; set; }

@@ -84,7 +84,7 @@ namespace OctoAwesome.Runtime
             velocitydirection += new Vector3(stafeX, stafeY, 0) * Move.X;
 
             Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode,
-                Player.FlyMode);
+                Player.FlyMode, Player.Sprint);
 
             #endregion
 
@@ -391,7 +391,7 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode)
+        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode, bool sprint)
         {
             Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 
@@ -413,7 +413,7 @@ namespace OctoAwesome.Runtime
             }
 
             powerdirection += externalPower;
-            powerdirection += (Player.POWER * velocitydirection);
+            powerdirection += (Player.POWER * (sprint ? 2 : 1) * velocitydirection);
             if (lastJump && (OnGround || flymode))
             {
                 Vector3 jumpDirection = new Vector3(0, 0, 1);
@@ -479,6 +479,18 @@ namespace OctoAwesome.Runtime
         {
             get { return Player.FlyMode; }
             set { Player.FlyMode = value; }
+        }
+
+        public bool Sprint
+        {
+            get { return Player.Sprint; }
+            set { Player.Sprint = value; }
+        }
+
+        public bool Crouch
+        {
+            get { return Player.Crouch; }
+            set { Player.Crouch = value; }
         }
 
         private float oldTilt = 0f;

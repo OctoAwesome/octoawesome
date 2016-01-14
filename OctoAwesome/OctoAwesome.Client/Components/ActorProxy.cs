@@ -21,7 +21,7 @@ namespace OctoAwesome.Runtime
 
             foreach (var definition in DefinitionManager.GetBlockDefinitions())
             {
-                inventory.Add(new InventorySlot() {Definition = definition, Amount = int.MaxValue});
+                inventory.Add(new InventorySlot() { Definition = definition, Amount = int.MaxValue });
             }
         }
 
@@ -122,6 +122,54 @@ namespace OctoAwesome.Runtime
         public float Radius { get; set; }
 
         public float Tilt { get; set; }
+
+        private bool crouch = false;
+
+        public bool Crouch
+        {
+            get
+            {
+                return crouch;
+            }
+
+            set
+            {
+                if (crouch != value)
+                {
+                    crouch = value;
+                    try
+                    {
+                        client.SetCrouch(value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Close(ex.Message);
+                    }
+                }
+            }
+        }
+
+        private bool sprint = false;
+
+        public bool Sprint
+        {
+            get { return sprint; }
+            set
+            {
+                if (sprint != value)
+                {
+                    sprint = value;
+                    try
+                    {
+                        client.SetSprint(value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Close(ex.Message);
+                    }
+                }
+            }
+        }
 
         public void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation)
         {

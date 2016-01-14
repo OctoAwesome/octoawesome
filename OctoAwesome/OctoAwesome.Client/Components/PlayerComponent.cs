@@ -29,6 +29,10 @@ namespace OctoAwesome.Client.Components
 
         public bool SlotRightInput { get; set; }
 
+        public bool SprintInput { get; set; }
+
+        public bool CrouchInput { get; set; }
+
         #endregion
 
         public IPlayerController PlayerController { get; private set; }
@@ -85,6 +89,9 @@ namespace OctoAwesome.Client.Components
             if (FlymodeInput)
                 PlayerController.FlyMode = !PlayerController.FlyMode;
             FlymodeInput = false;
+
+            PlayerController.Sprint = SprintInput;
+            PlayerController.Crouch = CrouchInput;
 
             if (Tools != null && Tools.Count > 0)
             {

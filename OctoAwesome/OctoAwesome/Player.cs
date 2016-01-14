@@ -26,6 +26,10 @@ namespace OctoAwesome
         [XmlIgnore]
         public bool OnGround { get; set; }
 
+        public bool Sprint { get; set; }
+
+        public bool Crouch { get; set; }
+
         public float Tilt { get; set; }
 
         public int InventorySlots { get; set; }

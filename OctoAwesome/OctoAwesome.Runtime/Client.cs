@@ -178,6 +178,18 @@ namespace OctoAwesome.Runtime
         }
 
         [OperationBehavior]
+        public void SetSprint(bool value)
+        {
+            ActorHost.Sprint = value;
+        }
+
+        [OperationBehavior]
+        public void SetCrouch(bool value)
+        {
+            ActorHost.Crouch = value;
+        }
+
+        [OperationBehavior]
         public void Apply(Index3 blockIndex, string definitionName, OrientationFlags orientation)
         {
             var definition =

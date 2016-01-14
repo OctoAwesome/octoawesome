@@ -90,6 +90,9 @@ namespace OctoAwesome.Client.Screens
             if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
             if (pressedHeadRight) Manager.Player.HeadInput += new Vector2(1f, 0f);
 
+            Manager.Player.CrouchInput = pressedCrouch;
+            Manager.Player.SprintInput = pressedSprint;
+
             HandleGamePad();
 
             base.OnUpdate(gameTime);
@@ -145,6 +148,8 @@ namespace OctoAwesome.Client.Screens
         private bool pressedHeadDown = false;
         private bool pressedHeadLeft = false;
         private bool pressedHeadRight = false;
+        private bool pressedCrouch = false;
+        private bool pressedSprint = false;
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
@@ -240,6 +245,14 @@ namespace OctoAwesome.Client.Screens
                     Manager.Player.SlotInput[9] = true;
                     args.Handled = true;
                     break;
+                case Keys.LeftControl:
+                    pressedCrouch = true;
+                    args.Handled = true;
+                    break;
+                case Keys.LeftShift:
+                    pressedSprint = true;
+                    args.Handled = true;
+                    break;
             }
 
             base.OnKeyDown(args);
@@ -279,6 +292,14 @@ namespace OctoAwesome.Client.Screens
                     break;
                 case Keys.Right:
                     pressedHeadRight = false;
+                    args.Handled = true;
+                    break;
+                case Keys.LeftControl:
+                    pressedCrouch = false;
+                    args.Handled = true;
+                    break;
+                case Keys.LeftShift:
+                    pressedSprint = false;
                     args.Handled = true;
                     break;
             }
