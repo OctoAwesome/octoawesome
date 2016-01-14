@@ -1,8 +1,8 @@
 #TODO
 
 * [ ] Network
-** [ ] One
-** [x] Two
+..* [ ] One
+..* [x] Two
 
 * [ ] Inventar
 ** [ ] Was auch immer
