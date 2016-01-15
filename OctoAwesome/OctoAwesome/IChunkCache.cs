@@ -1,5 +1,9 @@
 ﻿namespace OctoAwesome
 {
+    /// <summary>
+    /// Keine Referenzen
+    /// TODO: Löschen?
+    /// </summary>
     public interface IChunkCache
     {
         IChunk Get(Index3 idx);

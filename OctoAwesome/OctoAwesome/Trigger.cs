@@ -7,9 +7,19 @@ namespace OctoAwesome
 {
     public class Trigger<T>
     {
+        /// <summary>
+        /// Den jetzigen Zustand des Triggers
+        /// </summary>
         private T state;
+        /// <summary>
+        /// Der Zustand beim letzten Setzen des Triggers
+        /// </summary>
         private T lastState;
 
+        /// <summary>
+        /// Der Wert des Triggers. Wird bei einem Aufruf auf den Standartwert gesetzt. Wird nur gesetzt, falls beim letzten setzen
+        /// einen anderen Wert gesetzt wurde
+        /// </summary>
         public T Value
         {
             get

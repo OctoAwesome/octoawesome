@@ -8,6 +8,12 @@ using System.Threading;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Keine Referenzen
+    /// TODO: Löschen?
+    /// </summary>
+    /// <typeparam name="I"></typeparam>
+    /// <typeparam name="V"></typeparam>
     public sealed class Cache<I, V>
     {
         private int size;

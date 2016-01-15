@@ -6,6 +6,10 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Keine Referenzen
+    /// TODO: Löschen?
+    /// </summary>
     public interface IBlockRenderer
     {
         // TODO: Irgendwie muss die Texturkoordinate noch in den Renderer - aber wie?!
