@@ -81,6 +81,8 @@ namespace OctoAwesome.Client
             Components.Add(screens);
 
             client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));
+
+            PluginManager.LoadPlugins();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
