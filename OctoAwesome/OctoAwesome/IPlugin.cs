@@ -7,6 +7,6 @@ namespace OctoAwesome
 {
     public interface IPlugin
     {
-        void OnLoaded();
+        void OnLoaded(ActionManager manager);
     }
 }

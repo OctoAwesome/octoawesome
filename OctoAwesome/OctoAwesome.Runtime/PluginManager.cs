@@ -9,15 +9,20 @@ namespace OctoAwesome.Runtime
     {
         private static List<IPlugin> plugins;
 
+        public static ActionManager ActionManager;
+
         public static IEnumerable<IPlugin> LoadPlugins()
         {
+            if (ActionManager == null)
+                ActionManager = new ActionManager();
+
             if (plugins == null)
             {
                 plugins = new List<IPlugin>();
                 plugins.AddRange(ExtensionManager.GetInstances<IPlugin>());
 
                 foreach (var plugin in plugins)
-                    plugin.OnLoaded();
+                    plugin.OnLoaded(ActionManager);
             }
 
             return plugins;

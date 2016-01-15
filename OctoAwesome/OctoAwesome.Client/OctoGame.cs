@@ -63,6 +63,8 @@ namespace OctoAwesome.Client
             //simulation.UpdateOrder = 4;
             //Components.Add(simulation);
 
+            PluginManager.LoadPlugins();
+
             // Netzwerkspiel (Multiplayer)
             ClientComponent client = new ClientComponent(this);
             Components.Add(client);
@@ -75,14 +77,12 @@ namespace OctoAwesome.Client
             camera.UpdateOrder = 3;
             Components.Add(camera);
 
-            screens = new ScreenComponent(this, player, camera);
+            screens = new ScreenComponent(this, player, camera, PluginManager.ActionManager);
             screens.UpdateOrder = 1;
             screens.DrawOrder = 1;
             Components.Add(screens);
 
-            client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));
-
-            PluginManager.LoadPlugins();
+            client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));            
         }
 
         protected override void OnExiting(object sender, EventArgs args)

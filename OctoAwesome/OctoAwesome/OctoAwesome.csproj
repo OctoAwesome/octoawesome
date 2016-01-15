@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionManager.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="BlockDefinition.cs" />

@@ -11,10 +11,13 @@ namespace OctoAwesome.Client.Components
 
         public CameraComponent Camera { get; private set; }
 
-        public ScreenComponent(Game game, PlayerComponent player, CameraComponent camera) : base(game)
+        public ActionManager ActionManager { get; private set; }
+
+        public ScreenComponent(Game game, PlayerComponent player, CameraComponent camera, ActionManager am) : base(game)
         {
             Player = player;
             Camera = camera;
+            ActionManager = am;
             TitlePrefix = "OctoAwesome";
         }
 
