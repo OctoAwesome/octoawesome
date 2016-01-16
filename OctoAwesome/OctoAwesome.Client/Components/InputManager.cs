@@ -63,7 +63,8 @@ namespace OctoAwesome.Client.Components
             KeyboardState state = Keyboard.GetState();
             foreach (Keys key in state.GetPressedKeys())
             {
-                bindings.FirstOrDefault(b => b.Value.key == key).Value.action();
+                if(bindings.Any(b => b.Value.key == key))
+                    bindings.FirstOrDefault(b => b.Value.key == key).Value.action();
             }
         }
     }
