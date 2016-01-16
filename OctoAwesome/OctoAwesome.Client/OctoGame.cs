@@ -81,6 +81,14 @@ namespace OctoAwesome.Client
             Components.Add(screens);
 
             client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));
+
+            InputManager.Instance.AddBinding("toggleFullscreen", Keys.F11, new Action(graphics.ToggleFullScreen));
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            InputManager.Instance.UpdateInput();
+            base.Update(gameTime);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
