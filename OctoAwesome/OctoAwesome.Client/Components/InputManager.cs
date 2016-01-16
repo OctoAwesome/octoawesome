@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using MonoGameUi;
+using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client.Components
 {
@@ -44,6 +45,50 @@ namespace OctoAwesome.Client.Components
         private InputManager()
         {
             bindings = new Dictionary<string, KeyBinding>();
+
+            //Set the ConsoleCommand up
+            #region ConsoleCommand
+            CommandManager.RegisterCommand("bindings", (string[] args) =>
+            {
+                
+                if (args.Length == 1)
+                {
+                    if (args[0] == "list")
+                    {
+                        ConsoleControl.WriteLine("===============[Keybindings]===============");
+                        foreach (KeyValuePair<string, KeyBinding> binding in bindings)
+                        {
+                            ConsoleControl.WriteLine(binding.Key + " - " + binding.Value.Key.ToString());
+                        }
+                        ConsoleControl.WriteLine("=========================================");
+                    }
+                    else if (args[0] == "help")
+                    {
+                        ConsoleControl.WriteLine("===============[Binding Help]===============");
+                        ConsoleControl.WriteLine("- /bindings list - list bindings");
+                        ConsoleControl.WriteLine("- /bindings set <name> <key> - set key");
+                    }
+                }
+                else if (args.Length == 3)
+                {
+                    if (args[0] == "set")
+                    {
+                        Keys key;
+                        if (!Keys.TryParse(args[2], true, out key))
+                            ConsoleControl.WriteLine("Invalid Key: " + args[2]);
+
+                        try
+                        {
+                            SetKey(args[1],key);
+                            ConsoleControl.WriteLine(args[1] + " set to " + args[2]);
+                        }
+                        catch (Exception e) { ConsoleControl.WriteLine(e.Message);}
+                    }
+                }
+                else
+                    ConsoleControl.WriteLine("Invalid. Use /bindings help to get help.");
+            });
+            #endregion
         }
 
         /// <summary>

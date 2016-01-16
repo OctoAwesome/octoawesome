@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -68,8 +69,8 @@ namespace OctoAwesome.Client.Controls
             }
             else
             {
+                ClearInput();
                 consoleInput.Unfocus();
-                //consoleInput.Text = "";
             }
         }
 
@@ -85,9 +86,9 @@ namespace OctoAwesome.Client.Controls
 
                 if (args.Key == Microsoft.Xna.Framework.Input.Keys.Enter)
                 {
+                    HandleInput(consoleInput.Text);
                     args.Handled = true;
-                    consoleText.Text += consoleInput.Text + "\n";
-                    consoleTextScroll.VerticalScrollDown();
+
                 }
                 base.OnKeyPress(args);
 
@@ -95,12 +96,46 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
+        private void HandleInput(string input)
+        {
+            //Command
+            if (input[0] == '/')
+            {
+                input = input.Substring(1);
+                var parts = Regex.Matches(input, @"[\""].+?[\""]|[^ ]+")
+                .Cast<Match>()
+                .Select(m => m.Value)
+                .ToList();
+                
+                CommandManager.ExecuteCommand(parts[0], parts.Skip(1).ToArray());
+            }
+            //Kein Command
+            else
+            {
+                //Kein Command, tu was auch immer...
+                WriteMessage(input);
+            }
+            ClearInput();
+        }
 
-        //////////////////STATIC METHODS//////////////////
-        public static void WriteLine(string message)
+        private void ClearInput()
+        {
+            consoleInput.SelectionStart = 0;
+            consoleInput.CursorPosition = 0;
+            consoleInput.Text = "";
+        }
+
+
+        public void WriteMessage(string message)
         {
             if (Instance == null) return;
-            Instance.consoleText.Text += message + "\n";
+            consoleText.Text += message + "\n";
+            consoleTextScroll.VerticalScrollDown();
+        }
+
+        public static void WriteLine(string message)
+        {
+            Instance?.WriteMessage(message);
         }
     }
 }
