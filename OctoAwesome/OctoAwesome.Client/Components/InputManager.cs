@@ -51,13 +51,14 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         /// <param name="name">interner name (id)</param>
         /// <param name="displayName">anzuzeigender name</param>
+        /// <param name="type">event typ</param>
         /// <param name="key">taste</param>
-        public void RegisterBinding(string name, string displayName, Keys key)
+        public void RegisterBinding(string name, string displayName, Keys key, KeyEventType type)
         {
             if(bindings.ContainsKey(name))
                 throw new Exception("Binding already exists");
 
-            KeyBinding newBinding = new KeyBinding(displayName, key, null);
+            KeyBinding newBinding = new KeyBinding(displayName, key, type, null);
             bindings.Add(name, newBinding);
         }
 
@@ -67,13 +68,14 @@ namespace OctoAwesome.Client.Components
         /// <param name="name">interner name (id)</param>
         /// <param name="displayName">anzuzeigender name</param>
         /// <param name="key">taste</param>
+        /// <param name="type">event typ</param>
         /// <param name="action">aktion</param>
-        public void RegisterBinding(string name, string displayName, Keys key, Action action)
+        public void RegisterBinding(string name, string displayName, Keys key, KeyEventType type, Action action)
         {
             if (bindings.ContainsKey(name))
                 throw new Exception("Binding already exists");
 
-            KeyBinding newBinding = new KeyBinding(displayName, key, action);
+            KeyBinding newBinding = new KeyBinding(displayName, key, type, action);
             bindings.Add(name, newBinding);
         }
 
@@ -117,19 +119,46 @@ namespace OctoAwesome.Client.Components
         }
 
         /// <summary>
-        /// Wird aufgerufen wenn eine Taste gedrückt und nicht vom UI Framework verarbeitet wurde
+        /// Wird aufgerufen wenn eine Taste gedrückt wird und nicht vom UI Framework verarbeitet wurde
         /// </summary>
         /// <param name="args">Argumente</param>
         public void OnKeyDown(KeyEventArgs args)
         {
             if (Disabled) return;
 
-            Keys key = args.Key;
+            var matches = bindings.Where(b => b.Value.Key == args.Key && b.Value.Type == KeyEventType.Down);
 
-            if (!bindings.Any(b => b.Value.Key == key))
-                return;
+            foreach (KeyValuePair<string, KeyBinding> match in matches)
+            {
+                match.Value.Action?.Invoke();
+            }
+        }
 
-            var matches = bindings.Where(b => b.Value.Key == key);
+        /// <summary>
+        /// Wird aufgerufen wenn eine Taste gedrückt bleibt und nicht vom UI Framework verarbeitet wurde
+        /// </summary>
+        /// <param name="args">Argumente</param>
+        public void OnKeyPress(KeyEventArgs args)
+        {
+            if (Disabled) return;
+
+            var matches = bindings.Where(b => b.Value.Key == args.Key && b.Value.Type == KeyEventType.Press);
+
+            foreach (KeyValuePair<string, KeyBinding> match in matches)
+            {
+                match.Value.Action?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Wird aufgerufen wenn eine Taste losgelassen wird und nicht vom UI Framework verarbeitet wurde
+        /// </summary>
+        /// <param name="args">Argumente</param>
+        public void OnKeyUp(KeyEventArgs args)
+        {
+            if (Disabled) return;
+
+            var matches = bindings.Where(b => b.Value.Key == args.Key && b.Value.Type == KeyEventType.Up);
 
             foreach (KeyValuePair<string, KeyBinding> match in matches)
             {
@@ -143,12 +172,21 @@ namespace OctoAwesome.Client.Components
         public string DisplayName { get; set; }
         public Keys Key { get; set; }
         public Action Action { get; set; }
+        public KeyEventType Type { get; set; }
 
-        internal KeyBinding(string displayName, Keys key, Action action)
+        internal KeyBinding(string displayName, Keys key, KeyEventType type, Action action)
         {
             DisplayName = displayName;
             Key = key;
+            Type = type;
             Action = action;
         }
+    }
+
+    public enum KeyEventType
+    {
+        Down,
+        Press,
+        Up
     }
 }

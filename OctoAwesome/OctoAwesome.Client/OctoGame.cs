@@ -83,11 +83,13 @@ namespace OctoAwesome.Client
             //Leitet den Tastendruck an den InputManager weiter,
             //wenn er nicht vom User Interface verarbeitet wurde
             screens.KeyDown += InputManager.Instance.OnKeyDown;
+            screens.KeyPress += InputManager.Instance.OnKeyPress;
+            screens.KeyUp += InputManager.Instance.OnKeyUp;
 
             //Beispiel für Fullscreen
             //1. Registrieren des Bindings
             //2. Setzen der Aktion
-            InputManager.Instance.RegisterBinding("toggleFullscreen", "Toggle Fullscreen", Keys.F11);
+            InputManager.Instance.RegisterBinding("toggleFullscreen", "Toggle Fullscreen", Keys.F11, KeyEventType.Up);
             InputManager.Instance.SetAction("toggleFullscreen", () => graphics.ToggleFullScreen());
             //Alternativ kann die Aktion auch direkt angegeben werden, dies ist aber nicht immer möglich
 
