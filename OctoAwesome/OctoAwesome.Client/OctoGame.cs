@@ -91,6 +91,12 @@ namespace OctoAwesome.Client
             InputManager.Instance.SetAction("toggleFullscreen", () => graphics.ToggleFullScreen());
             //Alternativ kann die Aktion auch direkt angegeben werden, dies ist aber nicht immer möglich
 
+            //Beispiel für Close Command
+            CommandManager.RegisterCommand("exit", (args) =>
+            {
+                this.Exit();
+            });
+
             client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));
         }
 

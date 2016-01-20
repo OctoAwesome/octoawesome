@@ -11,10 +11,7 @@ namespace OctoAwesome.Client.Components
     {
         private static Dictionary<string, CommandDelegate> commands = new Dictionary<string, CommandDelegate>();
 
-        public static Dictionary<string, CommandDelegate> Commands
-        {
-            get { return commands; }
-        }
+        public static Dictionary<string, CommandDelegate> Commands => commands;
 
         public static void RegisterCommand(string command, CommandDelegate action)
         {
