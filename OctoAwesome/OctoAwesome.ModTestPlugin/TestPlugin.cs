@@ -1,25 +1,18 @@
 ﻿using MonoGameUi;
-using System;
+using OctoAwesome.Client;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Basics
 {
-    public class TestPlugin : IPlugin
+    public class TestPlugin : IUiPlugin
     {
-        public void OnLoaded(ActionManager manager)
+        public void MainMenuAdd(IScreenManager screenManager, ICollection<Control> controls)
         {
-            manager.Add("MainMenuAdd", (p) => 
-            {
-                var controls = (IControlCollection)p[1];
-                var screenmanager = (IScreenManager)p[0];
-                var button = Button.TextButton(screenmanager, "UIMods work!", "button");
-                button.HorizontalAlignment = HorizontalAlignment.Stretch;
-                button.Margin = new Border(0, 0, 0, 10);
-                button.LeftMouseClick += (s, e) => { screenmanager.NavigateToScreen(new TestScreen(screenmanager)); };
-                controls.Add(button);
-            }, new[] { typeof(IScreenManager), typeof(IControlCollection) });
+            var button = Button.TextButton(screenManager, "UIMods work!", "button");
+            button.HorizontalAlignment = HorizontalAlignment.Stretch;
+            button.Margin = new Border(0, 0, 0, 10);
+            button.LeftMouseClick += (s, e) => { screenManager.NavigateToScreen(new TestScreen(screenManager)); };
+            controls.Add(button);
         }
     }
 

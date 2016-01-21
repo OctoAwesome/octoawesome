@@ -61,6 +61,7 @@
     <Compile Include="Controls\ToolbarControl.cs" />
     <Compile Include="CrewMember.cs" />
     <Compile Include="CustomSkin.cs" />
+    <Compile Include="IUiPlugin.cs" />
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

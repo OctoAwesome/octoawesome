@@ -7,6 +7,7 @@ using OctoAwesome.Client.Controls;
 using OctoAwesome.Client.Screens;
 using OctoAwesome.Runtime;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 
@@ -63,8 +64,6 @@ namespace OctoAwesome.Client
             //simulation.UpdateOrder = 4;
             //Components.Add(simulation);
 
-            PluginManager.LoadPlugins();
-
             // Netzwerkspiel (Multiplayer)
             ClientComponent client = new ClientComponent(this);
             Components.Add(client);
@@ -77,7 +76,8 @@ namespace OctoAwesome.Client
             camera.UpdateOrder = 3;
             Components.Add(camera);
 
-            screens = new ScreenComponent(this, player, camera, PluginManager.ActionManager);
+            IEnumerable<IUiPlugin> plugins = ExtensionManager.GetInstances<IUiPlugin>();
+            screens = new ScreenComponent(this, player, camera, plugins);
             screens.UpdateOrder = 1;
             screens.DrawOrder = 1;
             Components.Add(screens);

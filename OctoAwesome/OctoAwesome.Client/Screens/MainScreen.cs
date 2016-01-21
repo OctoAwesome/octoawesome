@@ -76,7 +76,10 @@ namespace OctoAwesome.Client.Screens
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
 
-            manager.ActionManager.Do("MainMenuAdd", new object[] { manager, stack.Controls });
+            foreach (var plugin in manager.Plugins)
+            {
+                plugin.MainMenuAdd(manager, stack.Controls);
+            }
         }
     }
 }

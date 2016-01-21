@@ -2,6 +2,7 @@
 using MonoGameUi;
 using OctoAwesome.Client.Screens;
 using System;
+using System.Collections.Generic;
 
 namespace OctoAwesome.Client.Components
 {
@@ -11,13 +12,14 @@ namespace OctoAwesome.Client.Components
 
         public CameraComponent Camera { get; private set; }
 
-        public ActionManager ActionManager { get; private set; }
+        public IEnumerable<IUiPlugin> Plugins { get; private set; }
 
-        public ScreenComponent(Game game, PlayerComponent player, CameraComponent camera, ActionManager am) : base(game)
+        public ScreenComponent(Game game, PlayerComponent player, CameraComponent camera, IEnumerable<IUiPlugin> plugins) : base(game)
         {
+
             Player = player;
             Camera = camera;
-            ActionManager = am;
+            Plugins = plugins;
             TitlePrefix = "OctoAwesome";
         }
 

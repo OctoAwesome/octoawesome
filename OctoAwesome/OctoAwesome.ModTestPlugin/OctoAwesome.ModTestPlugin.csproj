@@ -48,6 +48,10 @@
     <Compile Include="TestPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Client\OctoAwesome.Client.csproj">
+      <Project>{fbcb341a-acd0-4511-ad71-006779b90151}</Project>
+      <Name>OctoAwesome.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
       <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
       <Name>OctoAwesome</Name>
