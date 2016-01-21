@@ -75,6 +75,8 @@ namespace OctoAwesome.Client.Screens
             exitButton.Margin = new Border(0, 0, 0, 10);
             exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
             stack.Controls.Add(exitButton);
+
+            manager.ActionManager.Do("MainMenuAdd", new object[] { manager, stack.Controls });
         }
     }
 }

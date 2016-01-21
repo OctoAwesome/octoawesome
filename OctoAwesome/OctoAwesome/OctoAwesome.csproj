@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionManager.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="BlockDefinition.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="InventorySlot.cs" />
     <Compile Include="IPlanet.cs" />
     <Compile Include="ILocalChunkCache.cs" />
+    <Compile Include="IPlugin.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
