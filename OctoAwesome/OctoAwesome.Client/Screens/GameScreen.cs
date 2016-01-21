@@ -23,6 +23,16 @@ namespace OctoAwesome.Client.Screens
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
+            KeyMapper mapper = ((OctoGame)manager.Game).KeyMapper;
+            mapper.AddAction("OctoAwesome.HeadLeft", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedHeadLeft = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.HeadRight", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedHeadRight = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.HeadUp", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedHeadUp = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.HeadDown", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedHeadDown = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.MoveUp", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedMoveUp = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.MoveLeft", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedMoveLeft = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.MoveDown", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedMoveDown = type == KeyMapper.KeyType.Down; });
+            mapper.AddAction("OctoAwesome.MoveRight", (KeyMapper.KeyType type) => { if (type != KeyMapper.KeyType.Pressed) pressedMoveRight = type == KeyMapper.KeyType.Down; });
+
             DefaultMouseMode = MouseMode.Captured;
 
             Manager = manager;
@@ -157,38 +167,38 @@ namespace OctoAwesome.Client.Screens
 
             switch (args.Key)
             {
-                case Keys.W:
-                    pressedMoveUp = true;
-                    args.Handled = true;
-                    break;
-                case Keys.A:
-                    pressedMoveLeft = true;
-                    args.Handled = true;
-                    break;
-                case Keys.S:
-                    pressedMoveDown = true;
-                    args.Handled = true;
-                    break;
-                case Keys.D:
-                    pressedMoveRight = true;
-                    args.Handled = true;
-                    break;
-                case Keys.Up:
-                    pressedHeadUp = true;
-                    args.Handled = true;
-                    break;
-                case Keys.Down:
-                    pressedHeadDown = true;
-                    args.Handled = true;
-                    break;
-                case Keys.Left:
-                    pressedHeadLeft = true;
-                    args.Handled = true;
-                    break;
-                case Keys.Right:
-                    pressedHeadRight = true;
-                    args.Handled = true;
-                    break;
+                //case Keys.W:
+                //    pressedMoveUp = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.A:
+                //    pressedMoveLeft = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.S:
+                //    pressedMoveDown = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.D:
+                //    pressedMoveRight = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Up:
+                //    pressedHeadUp = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Down:
+                //    pressedHeadDown = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Left:
+                //    pressedHeadLeft = true;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Right:
+                //    pressedHeadRight = true;
+                //    args.Handled = true;
+                //    break;
                 case Keys.E:
                     Manager.Player.InteractInput = true;
                     args.Handled = true;
@@ -262,38 +272,38 @@ namespace OctoAwesome.Client.Screens
         {
             switch (args.Key)
             {
-                case Keys.W:
-                    pressedMoveUp = false;
-                    args.Handled = true;
-                    break;
-                case Keys.A:
-                    pressedMoveLeft = false;
-                    args.Handled = true;
-                    break;
-                case Keys.S:
-                    pressedMoveDown = false;
-                    args.Handled = true;
-                    break;
-                case Keys.D:
-                    pressedMoveRight = false;
-                    args.Handled = true;
-                    break;
-                case Keys.Up:
-                    pressedHeadUp = false;
-                    args.Handled = true;
-                    break;
-                case Keys.Down:
-                    pressedHeadDown = false;
-                    args.Handled = true;
-                    break;
-                case Keys.Left:
-                    pressedHeadLeft = false;
-                    args.Handled = true;
-                    break;
-                case Keys.Right:
-                    pressedHeadRight = false;
-                    args.Handled = true;
-                    break;
+                //case Keys.W:
+                //    pressedMoveUp = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.A:
+                //    pressedMoveLeft = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.S:
+                //    pressedMoveDown = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.D:
+                //    pressedMoveRight = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Up:
+                //    pressedHeadUp = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Down:
+                //    pressedHeadDown = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Left:
+                //    pressedHeadLeft = false;
+                //    args.Handled = true;
+                //    break;
+                //case Keys.Right:
+                //    pressedHeadRight = false;
+                //    args.Handled = true;
+                //    break;
                 case Keys.LeftControl:
                     pressedCrouch = false;
                     args.Handled = true;

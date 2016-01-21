@@ -16,7 +16,7 @@ namespace OctoAwesome.Client
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class OctoGame : Game
+    internal class OctoGame : Game
     {
 
         GraphicsDeviceManager graphics;
@@ -25,6 +25,8 @@ namespace OctoAwesome.Client
         PlayerComponent player;
         SimulationComponent simulation;
         ScreenComponent screens;
+
+        public KeyMapper KeyMapper { get; private set; }
 
         public OctoGame()
             : base()
@@ -81,6 +83,30 @@ namespace OctoAwesome.Client
             screens.UpdateOrder = 1;
             screens.DrawOrder = 1;
             Components.Add(screens);
+
+            KeyMapper = new KeyMapper(screens);
+
+            foreach (string key in ConfigurationManager.AppSettings.Keys)
+            {
+                if (key.StartsWith("Key:"))
+                {
+                    string value = ConfigurationManager.AppSettings[key];
+                    Keys keyName;
+                    if (Enum.TryParse(value, out keyName))
+                    {
+                        KeyMapper.RegisterKey(key.Substring(4), keyName);
+                    }
+                }
+            }
+
+            //KeyMapper.RegisterKey("OctoAwesome.HeadLeft", Keys.Left);
+            //KeyMapper.RegisterKey("OctoAwesome.HeadRight", Keys.Right);
+            //KeyMapper.RegisterKey("OctoAwesome.HeadUp", Keys.Up);
+            //KeyMapper.RegisterKey("OctoAwesome.HeadDown", Keys.Down);
+            //KeyMapper.RegisterKey("OctoAwesome.MoveUp", Keys.W);
+            //KeyMapper.RegisterKey("OctoAwesome.MoveLeft", Keys.A);
+            //KeyMapper.RegisterKey("OctoAwesome.MoveDown", Keys.S);
+            //KeyMapper.RegisterKey("OctoAwesome.MoveRight", Keys.D);
 
             client.OnDisconnect += (message) => screens.NavigateToScreen(new DisconnectScreen(screens, message));            
         }
