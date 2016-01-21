@@ -10,11 +10,11 @@ namespace OctoAwesome
     /// </summary>
     public class ActionManager
     {
-        private Dictionary<string, Action<object[]>> actions;
+        private Dictionary<string, ActionInfo> actions;
         
         public ActionManager()
         {
-            actions = new Dictionary<string, Action<object[]>>();
+            actions = new Dictionary<string, ActionInfo>();
         }
 
         /// <summary>
@@ -25,7 +25,22 @@ namespace OctoAwesome
         public void Do(string actionName, object[] parameters)
         {
             foreach (var action in actions.Where(a => a.Key == actionName))
-                action.Value(parameters);
+            {
+                if (action.Value.Types.Length == parameters.Length)
+                {
+                    bool exit = false;
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+                        if (!action.Value.Types[i].IsInstanceOfType(parameters[i]))
+                        {
+                            exit = true;
+                            break;
+                        }
+                    }
+                    if (!exit)
+                        action.Value.Action(parameters);
+                }
+            }                
         }
 
         /// <summary>
@@ -33,9 +48,23 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="actioName">Name der Aktion</param>
         /// <param name="action">Wird ausgeführt, wenn die Aktion ausgeführt wird</param>
-        public void Add(string actioName, Action<object[]> action)
+        /// <param name="types">Erwartete Typen der Parameter. Die Aktion wird nur ausgeführt, wenn diese Typen mit den Typen der Parameter übereinstimmen</param>
+        public void Add(string actioName, Action<object[]> action, Type[] types)
         {
-            actions.Add(actioName, action);
+            actions.Add(actioName, new ActionInfo(action, types));
         }
+    }
+
+    internal class ActionInfo
+    {
+        public ActionInfo(Action<object[]> action, Type[] types)
+        {
+            Action = action;
+            Types = types;
+        }
+
+        public Action<object[]> Action { get; set; }
+
+        public Type[] Types { get; set; }
     }
 }

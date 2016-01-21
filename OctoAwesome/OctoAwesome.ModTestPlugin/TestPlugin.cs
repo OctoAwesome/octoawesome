@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics
                 button.Margin = new Border(0, 0, 0, 10);
                 button.LeftMouseClick += (s, e) => { screenmanager.NavigateToScreen(new TestScreen(screenmanager)); };
                 controls.Add(button);
-            });
+            }, new[] { typeof(IScreenManager), typeof(IControlCollection) });
         }
     }
 
