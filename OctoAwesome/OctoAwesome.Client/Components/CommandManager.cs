@@ -7,18 +7,34 @@ using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client.Components
 {
-    static class CommandManager
+    public class CommandManager
     {
-        private static Dictionary<string, CommandDelegate> commands = new Dictionary<string, CommandDelegate>();
 
-        public static Dictionary<string, CommandDelegate> Commands => commands;
+        #region Singleton
 
-        public static void RegisterCommand(string command, CommandDelegate action)
+        private static CommandManager _instance;
+
+        public static CommandManager Instance
+        {
+            get
+            {
+                if(_instance == null)
+                    _instance = new CommandManager();
+                return _instance;
+            }
+        }
+        #endregion
+
+        private Dictionary<string, CommandDelegate> commands = new Dictionary<string, CommandDelegate>();
+
+        public Dictionary<string, CommandDelegate> Commands => commands;
+
+        public void RegisterCommand(string command, CommandDelegate action)
         {
             commands.Add(command, action);
         }
 
-        public static void ExecuteCommand(string command, string[] args)
+        public void ExecuteCommand(string command, string[] args)
         {
             if(!commands.ContainsKey(command))
                 ConsoleControl.WriteLine("Command not found.");

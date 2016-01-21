@@ -92,7 +92,7 @@ namespace OctoAwesome.Client
             //Alternativ kann die Aktion auch direkt angegeben werden, dies ist aber nicht immer möglich
 
             //Beispiel für Close Command
-            CommandManager.RegisterCommand("exit", (args) =>
+            CommandManager.Instance.RegisterCommand("exit", (args) =>
             {
                 this.Exit();
             });

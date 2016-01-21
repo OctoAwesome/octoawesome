@@ -48,7 +48,7 @@ namespace OctoAwesome.Client.Components
 
             //Set the ConsoleCommand up
             #region ConsoleCommand
-            CommandManager.RegisterCommand("bindings", (string[] args) =>
+            CommandManager.Instance.RegisterCommand("bindings", (string[] args) =>
             {
                 
                 if (args.Length == 1)

@@ -107,7 +107,7 @@ namespace OctoAwesome.Client.Controls
                 .Select(m => m.Value)
                 .ToList();
                 
-                CommandManager.ExecuteCommand(parts[0], parts.Skip(1).ToArray());
+                CommandManager.Instance.ExecuteCommand(parts[0], parts.Skip(1).ToArray());
             }
             //Kein Command
             else
