@@ -1,9 +1,18 @@
 ﻿namespace OctoAwesome
 {
+    /// <summary>
+    /// Datenstruktur zur genauen bestimmung eines Chunks und seinen Planeten
+    /// </summary>
     public struct PlanetIndex3
     {
+        /// <summary>
+        /// Die Planeten-ID
+        /// </summary>
         public int Planet;
 
+        /// <summary>
+        /// Die Position des Chunks
+        /// </summary>
         public Index3 ChunkIndex;
 
         public PlanetIndex3(int planet, Index3 chunkIndex)

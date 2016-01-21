@@ -16,6 +16,9 @@
         /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
         IChunk GetChunk(PlanetIndex3 position);
 
+        /// <summary>
+        /// Die Zahl der geladenen Chunks zurück
+        /// </summary>
         int LoadedChunks { get; }
 
         /// <summary>

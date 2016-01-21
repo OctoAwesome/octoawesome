@@ -12,15 +12,37 @@ namespace OctoAwesome
     /// </summary>
     public sealed class LocalChunkCache : ILocalChunkCache
     {
+        /// <summary>
+        /// Referenz auf den Globalen Cache
+        /// </summary>
         private IGlobalChunkCache globalCache;
 
+        /// <summary>
+        /// Die im lokalen Cache gespeicherten Chunks
+        /// </summary>
         private readonly IChunk[][] chunks;
 
+        /// <summary>
+        /// Der Planet, aus dem die Chunks im Cache sind
+        /// </summary>
         private IPlanet planet;
+        /// <summary>
+        /// Größe des Caches in Zweierpotenzen
+        /// </summary>
         private int limit;
+        /// <summary>
+        /// Maske, die die Grösse des Caches markiert
+        /// </summary>
         private int mask;
+        /// <summary>
+        /// Gibt die Range in alle Richtungen an
+        /// TODO: gehts genauer?
+        /// </summary>
         private int range;
 
+        /// <summary>
+        /// Gibt an, ob Zugriffe auf den Cache schreibend sein können
+        /// </summary>
         private bool writable;
 
         /// <summary>
@@ -29,6 +51,7 @@ namespace OctoAwesome
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
         /// <param name="range">Gibt die Range in alle Richtungen an.</param>
+        /// <param name="writable">Ob zugriffe auf den Cache schreibend sein können</param>
         public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range, bool writable)
         {
             if (1 << dimensions < (range * 2) + 1)
@@ -44,9 +67,21 @@ namespace OctoAwesome
             this.writable = writable;
         }
 
+        /// <summary>
+        /// Task, der bei einem Wechsel des Zentralen Chunks neue nachlädt falls nötig
+        /// </summary>
         private Task _loadingTask;
+        /// <summary>
+        /// Token, das angibt, ob der Chûnk-nachlade-Task abgebrochen werden soll
+        /// </summary>
         private CancellationTokenSource _cancellationToken;
 
+        /// <summary>
+        /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
+        /// </summary>
+        /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
+        /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
+        /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         public void SetCenter(IPlanet planet, Index3 index, Action<bool> successCallback = null)
         {
             if (_loadingTask != null && !_loadingTask.IsCompleted)
@@ -66,6 +101,13 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Interne Methode, in der der zentrale Chunk gesetzt wird. Die Chunks um den Zentrumschunk werden auch nachgeladen falls nötig
+        /// </summary>
+        /// <param name="token">Token, um zu prüfen, ob die aktualisierung abgeborchen werden soll</param>
+        /// <param name="planet">Der Planet, auf dem die Chunks aktualisiert werden sollen</param>
+        /// <param name="index">Der ins Zentrum zu setzende Chunk</param>
+        /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index,
             Action<bool> successCallback)
         {
@@ -142,6 +184,10 @@ namespace OctoAwesome
             if (successCallback != null) successCallback(true);
         }
 
+        /// <summary>
+        /// Initialisiert einen neuen Planeten. Sollte vorher schon ein Planet geladen worden sein, wird der Cache geleert
+        /// </summary>
+        /// <param name="planet">Der Planet, der initialisiert werden soll</param>
         private void InitializePlanet(IPlanet planet)
         {
             if (this.planet != null)
@@ -154,12 +200,24 @@ namespace OctoAwesome
                 chunks[i] = new IChunk[height];
         }
 
+        /// <summary>
+        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Chunk Index</param>
+        /// <returns>Instanz des Chunks</returns>
         [Obsolete]
         public IChunk GetChunk(Index3 index)
         {
             return GetChunk(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// TODO: Ist nicht im <see cref="ILocalChunkCache"/> vorhanden, dort einfügen?
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
         public IChunk GetChunk(int x, int y, int z)
         {
             if (planet == null) return null;
@@ -174,12 +232,24 @@ namespace OctoAwesome
             return null;
         }
 
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="index">Block Index</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         [Obsolete]
         public ushort GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         public ushort GetBlock(int x, int y, int z)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -193,13 +263,19 @@ namespace OctoAwesome
         /// Überschreibt den Block an der angegebenen Koordinate.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
-        /// <param name="block">Neuer Block oder null, falls der alte Bock gelöscht werden soll.</param>
+        /// <param name="block">Die neue Block-ID.</param>
         [Obsolete]
         public void SetBlock(Index3 index, ushort block)
         {
             SetBlock(index.X, index.Y, index.Z, block);
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         public void SetBlock(int x, int y, int z, ushort block)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -207,6 +283,13 @@ namespace OctoAwesome
                 chunk.SetBlock(x, y, z, block);
         }
 
+        /// <summary>
+        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <returns>Die Metadaten des angegebenen Blocks</returns>
         public int GetBlockMeta(int x, int y, int z)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -216,6 +299,27 @@ namespace OctoAwesome
             return 0;
         }
 
+        /// <summary>
+        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Block-Koordinate</param>
+        /// <returns>Die Metadaten des angegebenen Blocks</returns>
+        public int GetBlockMeta(Index3 index, int meta)
+        {
+            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
+            if (chunk != null)
+                return chunk.GetBlockMeta(index.X, index.Y, index.Z);
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="meta">Die neuen Metadaten</param>
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -223,6 +327,21 @@ namespace OctoAwesome
                 chunk.SetBlockMeta(x, y, z, meta);
         }
 
+        /// <summary>
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// </summary>
+        /// <param name="index">Block-Koordinate</param>
+        /// <param name="meta">Die neuen Metadaten</param>
+        public void SetBlockMeta(Index3 index, int meta)
+        {
+            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
+            if (chunk != null)
+                chunk.SetBlockMeta(index.X, index.Y, index.Z, meta);
+        }
+
+        /// <summary>
+        /// Leert den Cache und gibt sie beim GlobalChunkCache wieder frei
+        /// </summary>
         public void Flush()
         {
             for (int i = 0; i < chunks.Length; i++)
@@ -240,25 +359,15 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Gibt einen falchen Index um auf das Array <see cref="chunks"/> zu zu greiffen
+        /// </summary>
+        /// <param name="x">Die X-Koordinate</param>
+        /// <param name="y">Die Y-Koordinate</param>
+        /// <returns>Der Abgeflachte index</returns>
         private int FlatIndex(int x, int y)
         {
             return (((y & (mask)) << limit) | ((x & (mask))));
-        }
-
-        public int GetBlockMeta(Index3 index, int meta)
-        {
-            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
-            if (chunk != null)
-                return chunk.GetBlockMeta(index.X, index.Y, index.Z);
-
-            return 0;
-        }
-
-        public void SetBlockMeta(Index3 index, int meta)
-        {
-            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
-            if (chunk != null)
-                chunk.SetBlockMeta(index.X, index.Y, index.Z, meta);
         }
     }
 }

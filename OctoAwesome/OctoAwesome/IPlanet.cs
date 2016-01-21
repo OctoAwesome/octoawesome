@@ -30,6 +30,9 @@ namespace OctoAwesome
         /// </summary>
         Index3 Size { get; }
 
+        /// <summary>
+        /// Die Klimakarte des Planeten
+        /// </summary>
         IClimateMap ClimateMap { get; }
     }
 }
