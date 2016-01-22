@@ -56,9 +56,10 @@
       <Name>OctoAwesome</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Assets\" />
-    <Folder Include="Blocks\" />
+    <None Include="Assets\OctoAwesome.Community\.gitkeep" />
+    <None Include="Blocks\.gitkeep" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
