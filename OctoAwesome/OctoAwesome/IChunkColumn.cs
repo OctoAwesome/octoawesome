@@ -7,7 +7,7 @@ namespace OctoAwesome
 {
     public interface IChunkColumn
     {
-        bool Populated { get; }
+        bool Populated { get; set; }
 
         int Planet { get; }
         Index2 Index { get; }

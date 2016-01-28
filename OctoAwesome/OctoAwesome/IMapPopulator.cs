@@ -7,6 +7,6 @@ namespace OctoAwesome
 {
     public interface IMapPopulator
     {
-        //void Populate(IChunkColumn chunkColumn1,);
+        void Populate(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11);
     }
 }

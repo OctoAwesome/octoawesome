@@ -73,6 +73,15 @@ namespace OctoAwesome
                 return cacheItem.ChunkColumn;
             }
         }
+        public IChunkColumn Peek(int planet, Index2 position)
+        {
+            CacheItem cacheItem = null;
+            if (cache.TryGetValue(new Index3(position, planet),out cacheItem))
+            {
+                return cacheItem.ChunkColumn;
+            }
+            return null;
+        }
 
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.

@@ -23,7 +23,7 @@ namespace OctoAwesome
         public bool Populated
         {
             get;
-            private set;
+            set;
         }
         public int Planet
         {

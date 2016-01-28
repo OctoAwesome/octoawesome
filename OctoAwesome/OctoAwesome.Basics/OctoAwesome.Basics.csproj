@@ -91,6 +91,7 @@
     <Compile Include="Blocks\StoneBlockDefinition.cs" />
     <Compile Include="Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Blocks\WoodBlockDefinition.cs" />
+    <Compile Include="TreePopulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">

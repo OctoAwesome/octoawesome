@@ -9,6 +9,8 @@
         /// <returns>Den abonnierten Chunk</returns>
         IChunkColumn Subscribe(int planet,Index2 position, bool writable);
 
+        IChunkColumn Peek(int planet, Index2 position);
+
         /// <summary>
         /// Die Zahl der geladenen Chunks zurück
         /// </summary>
