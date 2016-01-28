@@ -40,7 +40,7 @@ namespace OctoAwesome.Tests
             Assert.AreEqual(0, saveCallCounter);
 
             // Chunk laden
-            IChunk x = cache.Subscribe(index, true);
+            IChunkColumn x = cache.Subscribe(index, true);
             Assert.AreEqual(x, result);
             Assert.AreEqual(x.Planet, index.Planet);
             Assert.AreEqual(x.Index, index.ChunkIndex);

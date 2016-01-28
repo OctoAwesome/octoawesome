@@ -13,17 +13,17 @@ namespace OctoAwesome
         /// <summary>
         /// Dictionary, das alle <see cref="CacheItem"/>s hält.
         /// </summary>
-        private Dictionary<PlanetIndex3, CacheItem> cache;
+        private Dictionary<Index3, CacheItem> cache;
 
         /// <summary>
         /// Funktion, die für das Laden der Chunks verwendet wird
         /// </summary>
-        private Func<PlanetIndex3, IChunk> loadDelegate;
+        private Func<int, Index2, IChunkColumn> loadDelegate;
 
         /// <summary>
         /// Routine, die für das Speichern der Chunks verwendet wird.
         /// </summary>
-        private Action<PlanetIndex3, IChunk> saveDelegate;
+        private Action<int,Index2, IChunkColumn> saveDelegate;
 
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
@@ -33,10 +33,10 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
         /// </summary>
-        public int LoadedChunks { get { return cache.Count; } }
+        public int LoadedChunkColumns { get { return cache.Count; } }
 
-        public GlobalChunkCache(Func<PlanetIndex3, IChunk> loadDelegate, 
-            Action<PlanetIndex3, IChunk> saveDelegate)
+        public GlobalChunkCache(Func<int, Index2, IChunkColumn> loadDelegate, 
+            Action<int, Index2, IChunkColumn> saveDelegate)
         {
             if (loadDelegate == null) throw new ArgumentNullException("loadDelegate");
             if (saveDelegate == null) throw new ArgumentNullException("saveDelegate");
@@ -44,7 +44,7 @@ namespace OctoAwesome
             this.loadDelegate = loadDelegate;
             this.saveDelegate = saveDelegate;
 
-            cache = new Dictionary<PlanetIndex3, CacheItem>();
+            cache = new Dictionary<Index3, CacheItem>();
         }
 
         /// <summary>
@@ -53,25 +53,24 @@ namespace OctoAwesome
         /// <param name="position">Position des Chunks</param>
         /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugreifen will</param>
         /// <returns></returns>
-        public IChunk Subscribe(PlanetIndex3 position, bool writeable)
+        public IChunkColumn Subscribe(int planet,Index2 position, bool writeable)
         {
             lock (lockObject)
             {
                 CacheItem cacheItem = null;
-                if (!cache.TryGetValue(position, out cacheItem))
+                if (!cache.TryGetValue(new Index3(position, planet), out cacheItem))
                 {
                     cacheItem = new CacheItem()
                     {
-                        Position = position,
                         References = 0,
-                        Chunk = loadDelegate(position),
+                        ChunkColumn = loadDelegate(planet,position),
                     };
-
-                    cache.Add(position, cacheItem);
+                    
+                    cache.Add(new Index3(position, planet), cacheItem);
                 }
                 cacheItem.References++;
                 if (writeable) cacheItem.WritableReferences++;
-                return cacheItem.Chunk;
+                return cacheItem.ChunkColumn;
             }
         }
 
@@ -80,12 +79,12 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="position">Die Position des Chunks der Freigegeben wird</param>
         /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugegriffen hat</param>
-        public void Release(PlanetIndex3 position, bool writeable)
+        public void Release(int planet,Index2 position, bool writeable)
         {
             lock (lockObject)
             {
                 CacheItem cacheItem = null;
-                if (!cache.TryGetValue(position, out cacheItem))
+                if (!cache.TryGetValue(new Index3(position,planet), out cacheItem))
                 {
                     throw new NotSupportedException("Kein Chunk für Position in Cache");
                 }
@@ -95,13 +94,13 @@ namespace OctoAwesome
 
                 if (cacheItem.WritableReferences <= 0)
                 {
-                    saveDelegate(position, cacheItem.Chunk);
+                    saveDelegate(planet,position, cacheItem.ChunkColumn);
                 }
 
                 if (cacheItem.References <= 0)
                 {
-                    cacheItem.Chunk = null;
-                    cache.Remove(position);
+                    cacheItem.ChunkColumn = null;
+                    cache.Remove(new Index3(position,planet));
                 }
             }
         }
@@ -111,11 +110,7 @@ namespace OctoAwesome
         /// </summary>
         private class CacheItem
         {
-            /// <summary>
-            /// Die Position des <see cref="CacheItem"/> in der Welt
-            /// </summary>
-            public PlanetIndex3 Position { get; set; }
-
+            
             /// <summary>
             /// Die Zahl der Subscriber, die das Item Abboniert hat.
             /// </summary>
@@ -129,7 +124,7 @@ namespace OctoAwesome
             /// <summary>
             /// Der Chunk, auf den das <see cref="CacheItem"/> referenziert
             /// </summary>
-            public IChunk Chunk { get; set; }
+            public IChunkColumn ChunkColumn { get; set; }
         }
     }
 }

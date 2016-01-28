@@ -17,7 +17,7 @@ namespace OctoAwesome
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        void SetCenter(IPlanet planet, Index3 index, Action<bool> successCallback = null);
+        void SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null);
 
         /// <summary>
         /// Leert den Cache und gibt sie beim GlobalChunkCache wieder frei

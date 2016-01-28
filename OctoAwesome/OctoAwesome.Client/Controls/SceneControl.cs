@@ -412,7 +412,7 @@ namespace OctoAwesome.Client.Controls
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
-                localChunkCache.SetCenter(planet, player.ActorHost.Position.ChunkIndex);
+                localChunkCache.SetCenter(planet, new Index2(player.ActorHost.Position.ChunkIndex));
 
                 int mask = (int)Math.Pow(2, VIEWRANGE) - 1;
                 int span = (int)Math.Pow(2, VIEWRANGE);

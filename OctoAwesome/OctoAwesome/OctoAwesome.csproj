@@ -57,6 +57,7 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="Chunk.cs" />
+    <Compile Include="ChunkColumn.cs" />
     <Compile Include="ContentHelper.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="GlobalChunkCache.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="IBlockRenderer.cs" />
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkCache.cs" />
+    <Compile Include="IChunkColumn.cs" />
     <Compile Include="IChunkPersistence.cs" />
     <Compile Include="IChunkSerializer.cs" />
     <Compile Include="IClimateMap.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="IItem.cs" />
     <Compile Include="IItemDefinition.cs" />
     <Compile Include="IMapGenerator.cs" />
+    <Compile Include="IMapPopulator.cs" />
     <Compile Include="Index2.cs" />
     <Compile Include="Index3.cs" />
     <Compile Include="InventorySlot.cs" />

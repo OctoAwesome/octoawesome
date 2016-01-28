@@ -153,7 +153,7 @@ namespace OctoAwesome.Client.Controls
             fps.Text = fpsString;
 
             //Draw Loaded Chunks
-            loadedChunks.Text = Languages.OctoClient.LoadedChunks + ": " + resMan.GlobalChunkCache.LoadedChunks;
+            loadedChunks.Text = Languages.OctoClient.LoadedChunks + ": " + resMan.GlobalChunkCache.LoadedChunkColumns;//TODO: Übersetzung anpassen
 
             //Get Number of Loaded Items/Blocks
             loadedInfo.Text = "" + (DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Items + " - " +

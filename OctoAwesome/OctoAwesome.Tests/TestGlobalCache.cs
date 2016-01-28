@@ -13,7 +13,7 @@ namespace OctoAwesome.Tests
 
         public List<PlanetIndex3> Loaded { get; private set; }
 
-        public int LoadedChunks
+        public int LoadedChunkColumns
         {
             get
             {
@@ -33,15 +33,15 @@ namespace OctoAwesome.Tests
             Loaded.Clear();
         }
 
-        public void Release(PlanetIndex3 position, bool writable = true)
+        public void Release(int planet,Index2 position, bool writable = true)
         {
             SaveCounter++;
         }
 
-        public IChunk Subscribe(PlanetIndex3 position, bool writable = true)
+        public IChunkColumn Subscribe(int planet, Index2 position, bool writable = true)
         {
             LoadCounter++;
-            return new TestChunk(position);
+            return new ChunkColumn(new IChunk[] { new TestChunk(new PlanetIndex3(planet,new Index3(position,0))) },planet, position);
         }
     }
 }

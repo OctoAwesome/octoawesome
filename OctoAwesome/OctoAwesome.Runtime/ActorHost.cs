@@ -42,7 +42,7 @@ namespace OctoAwesome.Runtime
 
         public void Initialize()
         {
-            localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
+            localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
             {
                 ReadyState = success;
             });
@@ -192,7 +192,7 @@ namespace OctoAwesome.Runtime
             {
                 _oldIndex = Player.Position.ChunkIndex;
                 ReadyState = false;
-                localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
+                localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
                 {
                     ReadyState = success;
                 });                

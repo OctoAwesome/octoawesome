@@ -20,7 +20,7 @@ namespace OctoAwesome
         /// <summary>
         /// Die im lokalen Cache gespeicherten Chunks
         /// </summary>
-        private readonly IChunk[][] chunks;
+        private readonly IChunkColumn[] chunkColumns;
 
         /// <summary>
         /// Der Planet, aus dem die Chunks im Cache sind
@@ -62,7 +62,7 @@ namespace OctoAwesome
 
             limit = dimensions;
             mask = (1 << limit) - 1;
-            chunks = new IChunk[(mask + 1) * (mask + 1)][];
+            chunkColumns = new IChunkColumn[(mask + 1) * (mask + 1)];
 
             this.writable = writable;
         }
@@ -82,7 +82,7 @@ namespace OctoAwesome
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        public void SetCenter(IPlanet planet, Index3 index, Action<bool> successCallback = null)
+        public void SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null)
         {
             if (_loadingTask != null && !_loadingTask.IsCompleted)
             {
@@ -104,7 +104,7 @@ namespace OctoAwesome
         /// <param name="planet">Der Planet, auf dem die Chunks aktualisiert werden sollen</param>
         /// <param name="index">Der ins Zentrum zu setzende Chunk</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index3 index, Action<bool> successCallback)
+        private void InternalSetCenter(CancellationToken token, IPlanet planet, Index2 index, Action<bool> successCallback)
         {
             // Planet resetten falls notwendig
             if (this.planet != planet)
@@ -116,17 +116,14 @@ namespace OctoAwesome
                 return;
             }
 
-            List<Index3> requiredChunks = new List<Index3>();
+            List<Index2> requiredChunkColumns = new List<Index2>();
             for (int x = -range; x <= range; x++)
             {
                 for (int y = -range; y <= range; y++)
                 {
-                    for (int z = 0; z < planet.Size.Z; z++)
-                    {
-                        Index3 local = new Index3(index.X + x, index.Y + y, z);
-                        local.NormalizeXY(planet.Size);
-                        requiredChunks.Add(local);
-                    }
+                    Index2 local = new Index2(index.X + x, index.Y + y);
+                    local.NormalizeXY(planet.Size);
+                    requiredChunkColumns.Add(local);
                 }
             }
 
@@ -137,19 +134,19 @@ namespace OctoAwesome
                 return;
             }
 
-            foreach (var chunkIndex in requiredChunks.OrderBy(c => index.ShortestDistanceXYZ(c, planet.Size).LengthSquared()))
+            foreach (var chunkColumnIndex in requiredChunkColumns.OrderBy(c => index.ShortestDistanceXY(c, new Index2(planet.Size)).LengthSquared()))
             {
-                int localX = chunkIndex.X & mask;
-                int localY = chunkIndex.Y & mask;
+                int localX = chunkColumnIndex.X & mask;
+                int localY = chunkColumnIndex.Y & mask;
                 int flatIndex = FlatIndex(localX, localY);
-                IChunk chunk = chunks[flatIndex][chunkIndex.Z];
+                IChunkColumn chunkColumn = chunkColumns[flatIndex];
 
                 // Alten Chunk entfernen, falls notwendig
-                if (chunk != null && chunk.Index != chunkIndex)
+                if (chunkColumn != null && chunkColumn.Index != chunkColumnIndex)
                 {
-                    globalCache.Release(new PlanetIndex3(planet.Id, chunk.Index), writable);
-                    chunks[flatIndex][chunkIndex.Z] = null;
-                    chunk = null;
+                    globalCache.Release(planet.Id, chunkColumn.Index, writable);
+                    chunkColumns[flatIndex] = null;
+                    chunkColumn = null;
                 }
 
                 // Zweite Abbruchmöglichkeit
@@ -160,10 +157,10 @@ namespace OctoAwesome
                 }
 
                 // Neuen Chunk laden
-                if (chunk == null)
+                if (chunkColumn == null)
                 {
-                    chunk = globalCache.Subscribe(new PlanetIndex3(planet.Id, chunkIndex), writable);
-                    chunks[flatIndex][chunkIndex.Z] = chunk;
+                    chunkColumn = globalCache.Subscribe(planet.Id, new Index2(chunkColumnIndex), writable);
+                    chunkColumns[flatIndex] = chunkColumn;
                 }
 
                 // Dritte Abbruchmöglichkeit
@@ -189,8 +186,6 @@ namespace OctoAwesome
             this.planet = planet;
             int height = planet.Size.Z;
 
-            for (int i = 0; i < chunks.Length; i++)
-                chunks[i] = new IChunk[height];
         }
 
         /// <summary>
@@ -219,9 +214,9 @@ namespace OctoAwesome
             x = Index2.NormalizeAxis(x, planet.Size.X);
             y = Index2.NormalizeAxis(y, planet.Size.Y);
 
-            IChunk chunk = chunks[FlatIndex(x, y)][z];
-            if (chunk != null && chunk.Index.X == x && chunk.Index.Y == y && chunk.Index.Z == z)
-                return chunk;
+            IChunkColumn chunkColumn = chunkColumns[FlatIndex(x, y)];
+            if (chunkColumn != null && chunkColumn.Index.X == x && chunkColumn.Index.Y == y)
+                return chunkColumn.Chunks[z];
             return null;
         }
 
@@ -314,23 +309,20 @@ namespace OctoAwesome
         /// </summary>
         public void Flush()
         {
-            for (int i = 0; i < chunks.Length; i++)
+            for (int i = 0; i < chunkColumns.Length; i++)
             {
-                if (chunks[i] == null) continue;
-                for (int h = 0; h < chunks[i].Length; h++)
-                {
-                    IChunk chunk = chunks[i][h];
-                    if (chunk != null)
-                    {
-                        globalCache.Release(new PlanetIndex3(chunk.Planet, chunk.Index), writable);
-                        chunks[i][h] = null;
-                    }
-                }
+                if (chunkColumns[i] == null) continue;
+
+                IChunkColumn chunkColumn = chunkColumns[i];
+
+                globalCache.Release(chunkColumn.Planet, chunkColumn.Index, writable);
+                chunkColumns[i] = null;
+
             }
         }
 
         /// <summary>
-        /// Gibt einen falchen Index um auf das Array <see cref="chunks"/> zu zu greiffen
+        /// Gibt einen falchen Index um auf das Array <see cref="chunkColumns"/> zu zu greiffen
         /// </summary>
         /// <param name="x">Die X-Koordinate</param>
         /// <param name="y">Die Y-Koordinate</param>
