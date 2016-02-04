@@ -113,52 +113,52 @@ namespace OctoAwesome.Runtime
                 }
             }
 
-            IChunkColumn column0 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, -1),planet.Size));
-            IChunkColumn column1 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, -1), planet.Size));
-            IChunkColumn column2 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, -1), planet.Size));
+            IChunkColumn column00 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, -1),planet.Size));
+            IChunkColumn column10 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, -1), planet.Size));
+            IChunkColumn column20 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, -1), planet.Size));
 
-            IChunkColumn column3 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 0), planet.Size));
-            IChunkColumn column5 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 0), planet.Size));
+            IChunkColumn column01 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 0), planet.Size));
+            IChunkColumn column21 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 0), planet.Size));
 
-            IChunkColumn column6 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 1), planet.Size));
-            IChunkColumn column7 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, 1), planet.Size));
-            IChunkColumn column8 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 1), planet.Size));
+            IChunkColumn column02 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 1), planet.Size));
+            IChunkColumn column12 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, 1), planet.Size));
+            IChunkColumn column22 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 1), planet.Size));
 
-            IChunkColumn column4 = new ChunkColumn(chunks, planet.Id, index);
+            IChunkColumn column11 = new ChunkColumn(chunks, planet.Id, index);
 
             IMapPopulator pop = ExtensionManager.GetInstances<IMapPopulator>().First();
 
             var definitions = DefinitionManager.GetBlockDefinitions();
 
             // Zentrum
-            if (!column4.Populated && column5 != null && column7 != null && column8 != null)
+            if (!column11.Populated && column21 != null && column12 != null && column22 != null)
             {
-                pop.Populate(definitions, planet, column4, column5, column7, column8);
-                column4.Populated = true;
+                pop.Populate(definitions, planet, column11, column21, column12, column22);
+                column11.Populated = true;
             }
 
             // Links oben
-            if (column0 != null && !column0.Populated && column1 != null && column3 != null)
+            if (column00 != null && !column00.Populated && column10 != null && column01 != null)
             {
-                pop.Populate(definitions, planet, column0, column1, column3, column4);
-                column0.Populated = true;
+                pop.Populate(definitions, planet, column00, column10, column01, column11);
+                column00.Populated = true;
             }
 
             // Oben
-            if (column1 != null && !column1.Populated && column2 != null && column5 != null)
+            if (column10 != null && !column10.Populated && column20 != null && column21 != null)
             {
-                pop.Populate(definitions, planet, column1, column2, column4, column5);
-                column1.Populated = true;
+                pop.Populate(definitions, planet, column10, column20, column11, column21);
+                column10.Populated = true;
             }
 
             // Links
-            if (column3 != null && !column3.Populated && column6 != null && column7 != null)
+            if (column01 != null && !column01.Populated && column02 != null && column12 != null)
             {
-                pop.Populate(definitions, planet, column3, column4, column6, column7);
-                column3.Populated = true;
+                pop.Populate(definitions, planet, column01, column11, column02, column12);
+                column01.Populated = true;
             }
 
-            return column4;
+            return column11;
         }
 
         private void saveChunkColumn(int planetId, Index2 index, IChunkColumn value)

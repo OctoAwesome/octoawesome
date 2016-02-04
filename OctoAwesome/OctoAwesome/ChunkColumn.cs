@@ -12,7 +12,33 @@ namespace OctoAwesome
             Planet = planet;
             Chunks = chunks;
             Index = columnIndex;
+
+            Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
+            for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
+            {
+                for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
+                {
+                    Heights[x, y] = getTopBlockHeight(x, y);
+                }
+            }
+
+
         }
+
+        private int getTopBlockHeight(int x, int y)
+        {
+            for (int z = Chunks.Length * Chunk.CHUNKSIZE_Z - 1; z >= 0; z--)
+            {
+
+                if (GetBlock(x, y, z) != 0)
+                {
+                    return z;
+                }
+            }
+            return -1;
+        }
+
+        public int[,] Heights { get; private set; }
 
         public IChunk[] Chunks
         {

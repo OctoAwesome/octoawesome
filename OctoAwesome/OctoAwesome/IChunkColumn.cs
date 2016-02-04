@@ -12,6 +12,8 @@ namespace OctoAwesome
         int Planet { get; }
         Index2 Index { get; }
 
+        int[,] Heights { get; }
+
         IChunk[] Chunks { get; }
 
         /// <summary>
