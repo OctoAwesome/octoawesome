@@ -98,6 +98,8 @@ namespace OctoAwesome
             NormalizeY(size.Y);
         }
 
+
+
         /// <summary>
         /// Normalisiert den Wert von X und Y auf den angegebenen Grenzbereich.
         /// </summary>
@@ -125,6 +127,12 @@ namespace OctoAwesome
         public void NormalizeXY(Index3 size)
         {
             NormalizeXY(size.X, size.Y);
+        }
+
+        public static Index2 NormalizeXY(Index2 index,Index3 size)
+        {
+            index.NormalizeXY(size);
+            return index;
         }
 
         /// <summary>

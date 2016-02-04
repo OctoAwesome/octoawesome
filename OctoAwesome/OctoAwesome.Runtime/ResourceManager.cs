@@ -113,16 +113,16 @@ namespace OctoAwesome.Runtime
                 }
             }
 
-            IChunkColumn column0 = GlobalChunkCache.Peek(planet.Id, index + new Index2(-1, -1));
-            IChunkColumn column1 = GlobalChunkCache.Peek(planet.Id, index + new Index2(0, -1));
-            IChunkColumn column2 = GlobalChunkCache.Peek(planet.Id, index + new Index2(1, -1));
+            IChunkColumn column0 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, -1),planet.Size));
+            IChunkColumn column1 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, -1), planet.Size));
+            IChunkColumn column2 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, -1), planet.Size));
 
-            IChunkColumn column3 = GlobalChunkCache.Peek(planet.Id, index + new Index2(-1, 0));
-            IChunkColumn column5 = GlobalChunkCache.Peek(planet.Id, index + new Index2(1, 0));
+            IChunkColumn column3 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 0), planet.Size));
+            IChunkColumn column5 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 0), planet.Size));
 
-            IChunkColumn column6 = GlobalChunkCache.Peek(planet.Id, index + new Index2(-1, 1));
-            IChunkColumn column7 = GlobalChunkCache.Peek(planet.Id, index + new Index2(0, 1));
-            IChunkColumn column8 = GlobalChunkCache.Peek(planet.Id, index + new Index2(1, 1));
+            IChunkColumn column6 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 1), planet.Size));
+            IChunkColumn column7 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, 1), planet.Size));
+            IChunkColumn column8 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 1), planet.Size));
 
             IChunkColumn column4 = new ChunkColumn(chunks, planet.Id, index);
 

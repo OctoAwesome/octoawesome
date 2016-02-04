@@ -35,11 +35,11 @@ namespace OctoAwesome.Basics
         {
             IBlockDefinition woodDefinition = blockDefinitions.FirstOrDefault(d => typeof(WoodBlockDefinition) == d.GetType());
             ushort woodIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), woodDefinition) + 1);
-            int treeCount = random.Next(0, 8);
+            int treeCount = 1;//random.Next(0, 8);
             for (int i = 0; i < treeCount; i++)
             {
-                int x = random.Next(Chunk.CHUNKSIZE_X / 2, Chunk.CHUNKSIZE_X * 3 / 2);
-                int y = random.Next(Chunk.CHUNKSIZE_Y / 2, Chunk.CHUNKSIZE_Y * 3 / 2);
+                int x = Chunk.CHUNKSIZE_X / 2;//random.Next(Chunk.CHUNKSIZE_X / 2, Chunk.CHUNKSIZE_X * 3 / 2);
+                int y = Chunk.CHUNKSIZE_Y / 2;//random.Next(Chunk.CHUNKSIZE_Y / 2, Chunk.CHUNKSIZE_Y * 3 / 2);
 
                 IChunkColumn curColumn = getColumn(column00, column01, column10, column11,x,y);
                 int z = getTopBlockHeight(curColumn, x, y);
