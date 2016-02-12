@@ -12,8 +12,11 @@ namespace OctoAwesome
             Planet = planet;
             Chunks = chunks;
             Index = columnIndex;
-
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
+        }
+
+        public void CalculateHeights()
+        {
             for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
             {
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
@@ -21,8 +24,6 @@ namespace OctoAwesome
                     Heights[x, y] = getTopBlockHeight(x, y);
                 }
             }
-
-
         }
 
         private int getTopBlockHeight(int x, int y)

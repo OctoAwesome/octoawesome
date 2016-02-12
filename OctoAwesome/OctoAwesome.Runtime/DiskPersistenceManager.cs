@@ -49,8 +49,10 @@ namespace OctoAwesome.Runtime
 
         public void SaveUniverse(IUniverse universe)
         {
-            string file = Path.Combine(GetRoot(), universe.Id.ToString(), "universe.info");
+            string path = Path.Combine(GetRoot(), universe.Id.ToString());
+            Directory.CreateDirectory(path);
 
+            string file = Path.Combine(path, "universe.info");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
                 universeSerializer.Serialize(stream, universe);
@@ -59,8 +61,10 @@ namespace OctoAwesome.Runtime
 
         public void SavePlanet(Guid universeGuid, IPlanet planet)
         {
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString(), "planet.dat");
+            string path = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString());
+            Directory.CreateDirectory(path);
 
+            string file = Path.Combine(path, "planet.dat");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
                 planetSerializer.Serialize(stream, planet);
@@ -124,7 +128,7 @@ namespace OctoAwesome.Runtime
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                return columnSerializer.Deserialize(stream);
+                return columnSerializer.Deserialize(stream, planetId, columnIndex);
             }
 
         }

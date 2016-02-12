@@ -10,6 +10,6 @@ namespace OctoAwesome
     {
         void Serialize(Stream stream, IChunkColumn column);
 
-        IChunkColumn Deserialize(Stream stream);
+        IChunkColumn Deserialize(Stream stream, int planetId, Index2 columnIndex);
     }
 }
