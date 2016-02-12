@@ -67,7 +67,8 @@
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkCache.cs" />
     <Compile Include="IChunkColumn.cs" />
-    <Compile Include="IChunkPersistence.cs" />
+    <Compile Include="IColumnSerializer.cs" />
+    <Compile Include="IPersistenceManager.cs" />
     <Compile Include="IChunkSerializer.cs" />
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IDefinitionManager.cs" />
@@ -82,12 +83,14 @@
     <Compile Include="InventorySlot.cs" />
     <Compile Include="IPlanet.cs" />
     <Compile Include="ILocalChunkCache.cs" />
+    <Compile Include="IPlanetSerializer.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="IUniverseSerializer.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />
     <Compile Include="Noise\INoise.cs" />

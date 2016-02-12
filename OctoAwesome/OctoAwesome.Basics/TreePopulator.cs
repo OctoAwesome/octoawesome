@@ -81,9 +81,10 @@ namespace OctoAwesome.Basics
                 helper.SetBlock(x, y, z + i, woodIndex);
             }
         }
+
         public override void Populate(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
         {
-            int salt = (column00.Index.X & 0xffff) + ((column00.Index.Y & 0xffff) << 8);
+            int salt = (column00.Index.X & 0xffff) + ((column00.Index.Y & 0xffff) << 16);
             Random random = new Random(planet.Seed + salt);
 
             IBlockDefinition woodDefinition = blockDefinitions.FirstOrDefault(d => typeof(WoodBlockDefinition) == d.GetType());

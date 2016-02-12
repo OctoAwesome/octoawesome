@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorHost.cs" />
-    <Compile Include="ChunkDiskPersistence.cs" />
+    <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="ChunkSerializer.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />
