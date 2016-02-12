@@ -19,5 +19,7 @@ namespace OctoAwesome
         /// Der Name des Universums
         /// </summary>
         string Name { get; }
+
+        int Seed { get; }
     }
 }

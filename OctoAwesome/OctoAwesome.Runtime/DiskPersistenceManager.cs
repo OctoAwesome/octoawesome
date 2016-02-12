@@ -69,8 +69,10 @@ namespace OctoAwesome.Runtime
 
         public void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column)
         {
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), string.Format("column_{0}_{1}.dat", column.Index.X, column.Index.Y));
+            string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
+            Directory.CreateDirectory(path);
 
+            string file = path = Path.Combine(path, string.Format("column_{0}_{1}.dat", column.Index.X, column.Index.Y));
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
                 columnSerializer.Serialize(stream, column);

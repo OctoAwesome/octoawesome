@@ -7,19 +7,22 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        void LoadUniverse(Guid universeId);
+
+        void UnloadUniverse();
+
         /// <summary>
         /// Gibt das Universum für die angegebene ID zurück
         /// </summary>
-        /// <param name="id">Die ID des Universums</param>
         /// <returns>Das gewünschte Universum, falls es existiert</returns>
-        IUniverse GetUniverse(Guid id);
+        IUniverse GetUniverse();
         
         /// <summary>
         /// Gibt den Planeten mit der angegebenen ID zurück
         /// </summary>
-        /// <param name="id">Die Planteten-ID des gewünschten Planeten</param>
+        /// <param name="planetId">Die Planteten-ID des gewünschten Planeten</param>
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
-        IPlanet GetPlanet(int id);
+        IPlanet GetPlanet(int planetId);
 
         /// <summary>
         /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.

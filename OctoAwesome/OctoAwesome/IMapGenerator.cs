@@ -10,17 +10,17 @@ namespace OctoAwesome
         /// <summary>
         /// Generiert ein neues Universum mit der angegebenen ID
         /// </summary>
-        /// <param name="id">Die Id für das neue Universum</param>
+        /// <param name="universeGuid">Die Id für das neue Universum</param>
         /// <returns>Das neue Univerusm</returns>
-        IUniverse GenerateUniverse(Guid id);
+        IUniverse GenerateUniverse(Guid universeGuid);
 
         /// <summary>
         /// Generiert einen neuen Planeten
         /// </summary>
-        /// <param name="universe">Die Universums-ID, dem der Planet angehört</param>
+        /// <param name="universeGuid">Die Universums-ID, dem der Planet angehört</param>
         /// <param name="seed">Der Zuffalsseed, der für den Weltengenerator verwendet wird</param>
         /// <returns>Den generierten Planeten</returns>
-        IPlanet GeneratePlanet(Guid universe, int seed);
+        IPlanet GeneratePlanet(Guid universeGuid, int planetId, int seed);
 
         /// <summary>
         /// Generiert eine Säule von Chunks in der höhe des Planeten.

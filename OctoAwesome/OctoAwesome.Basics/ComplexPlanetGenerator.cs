@@ -9,13 +9,13 @@ namespace OctoAwesome.Basics
 
         public IUniverse GenerateUniverse(Guid id)
         {
-            return new Universe(id, "Milchstrasse");
+            return new Universe(id, "Milchstrasse", 12341234);
         }
 
-        public IPlanet GeneratePlanet(Guid universe, int seed)
+        public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
             Index3 size = new Index3(12, 12, 3);
-            ComplexPlanet planet = new ComplexPlanet(0, universe, size, this, seed);
+            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed);
 
             return planet;
         }

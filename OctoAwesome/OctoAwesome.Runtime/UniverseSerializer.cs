@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace OctoAwesome.Runtime
 {
@@ -10,12 +11,14 @@ namespace OctoAwesome.Runtime
     {
         public IUniverse Deserialize(Stream stream)
         {
-            throw new NotImplementedException();
+            XmlSerializer serializer = new XmlSerializer(typeof(Universe));
+            return serializer.Deserialize(stream) as IUniverse;
         }
 
         public void Serialize(Stream stream, IUniverse universe)
         {
-            throw new NotImplementedException();
+            XmlSerializer serializer = new XmlSerializer(typeof(Universe));
+            serializer.Serialize(stream, universe);
         }
     }
 }
