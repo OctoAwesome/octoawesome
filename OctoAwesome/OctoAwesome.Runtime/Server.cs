@@ -73,9 +73,6 @@ namespace OctoAwesome.Runtime
             IsRunning = true;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void Close()
         {
             if (playerHost == null)
@@ -144,7 +141,7 @@ namespace OctoAwesome.Runtime
                 {
                     // client.Callback.SendPlayerList(clientInfos.Values);
                 }
-                catch (Exception ex)
+                catch
                 {
                     return;
                 }

@@ -10,6 +10,11 @@ namespace OctoAwesome
     /// </summary>
     public class Universe : IUniverse
     {
+        /// <summary>
+        /// Erzeugt eine neue Instanz eines Universums
+        /// </summary>
+        /// <param name="id">Die Id-Nummer des Universums</param>
+        /// <param name="name">Der Name des Universums</param>
         public Universe(int id, string name)
         {
             Id = id;

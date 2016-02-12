@@ -81,6 +81,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="IUpdateable.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Noise\PerlinNoiseGenerator.cs" />
@@ -91,7 +92,6 @@
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Trigger.cs" />
     <Compile Include="Universe.cs" />
   </ItemGroup>
   <ItemGroup>

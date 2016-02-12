@@ -157,8 +157,8 @@ namespace OctoAwesome.Noise
         /// </summary>
         /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
         /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
+        /// <param name="sizeX">Breite der Noise-Map</param>
+        /// <param name="sizeY">Höhe der Noise-Map</param>
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
@@ -306,7 +306,7 @@ namespace OctoAwesome.Noise
         /// <param name="width">Breite der Noise-Map</param>
         /// <param name="height">Höhe der Noise-Map</param>
         /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <param name="thickness">Dicke(Tiefe 2.Grades) der Noise-Map</param>
+        /// <param name="wDepth">Dicke(Tiefe 2.Grades) der Noise-Map</param>
         /// <returns>Gibt ein 4D-float-Array einer 4D-Noise zurück</returns>
         public float[,,,] GetNoiseMap4D(int startX, int startY, int startZ, int startW, int width, int height, int depth,
             int wDepth)
@@ -460,7 +460,6 @@ namespace OctoAwesome.Noise
         /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <param name="tileSizeZ">Tiefe der Kachel</param>
         /// <returns>Gibt ein float-Wert einer 3D Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
         public float GetTileableNoise3D(int x, int y, int z, int tileSizeX, int tileSizeY)
         {

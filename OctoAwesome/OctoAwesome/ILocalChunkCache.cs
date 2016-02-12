@@ -70,8 +70,10 @@ namespace OctoAwesome
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
+        /// <param name="meta">[Bitte ergänzen - Parameter wird in der Implementierung nicht verwendet]</param>
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
         int GetBlockMeta(Index3 index, int meta);
+        //TODO: Meta Parameter entfernen?
 
         /// <summary>
         /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 

@@ -32,15 +32,15 @@ namespace OctoAwesome
         /// <returns>Ein Array von Kollisionsboxen</returns>
         BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z);
 
-        /// <summary>
+        /*/// <summary>
         /// Liefert die Physikalischen Paramerter, wie härte, dichte und bruchzähigkeit
         /// </summary>
         /// <param name="manager"></param>
         /// <param name="x">X-Anteil der Koordinate des Blocks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Die physikalischen Parameter/returns>
-        // PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);
+        /// <returns>Die physikalischen Parameter</returns>
+        PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);*/
 
         /// <summary>
         /// Texturindex für das Array <see cref="Textures"/> für die Oberseite (Positiv Z) des Blocks

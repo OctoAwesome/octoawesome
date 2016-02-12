@@ -303,13 +303,5 @@ namespace OctoAwesome
         {
             return true;
         }
-    }
-
-    /// <summary>
-    /// Interface für Blöcke die Geupdatet werden müssen. Hat Paul für seine Bäume eingeführt.
-    /// </summary>
-    public interface IUpdateable
-    {
-        void Tick(ILocalChunkCache manager, int x, int y, int z);
-    }
+    }    
 }

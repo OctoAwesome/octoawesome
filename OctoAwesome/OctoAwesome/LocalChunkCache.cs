@@ -211,8 +211,9 @@ namespace OctoAwesome
             return GetChunk(index.X, index.Y, index.Z);
         }
 
+        //TODO: siehe Dokukommentar
         /// <summary>
-        /// TODO: Ist nicht im <see cref="ILocalChunkCache"/> vorhanden, dort einfügen?
+        /// TODO: Ist nicht im <see cref="ILocalChunkCache"/> vorhanden, dort einfügen? - Vermutlich interne Methode, nur hier und im test verwendet
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -263,7 +264,7 @@ namespace OctoAwesome
         /// Überschreibt den Block an der angegebenen Koordinate.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
-        /// <param name="block">Die neue Block-ID.</param>
+        /// <param name="block">Die neue Block-ID</param>
         [Obsolete]
         public void SetBlock(Index3 index, ushort block)
         {
@@ -276,6 +277,7 @@ namespace OctoAwesome
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="block">Die neue Block-ID</param>
         public void SetBlock(int x, int y, int z, ushort block)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -303,6 +305,7 @@ namespace OctoAwesome
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
+        /// <param name="meta">nicht verwendet, siehe interface</param>
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
         public int GetBlockMeta(Index3 index, int meta)
         {

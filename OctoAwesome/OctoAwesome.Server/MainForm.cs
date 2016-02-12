@@ -95,7 +95,7 @@ namespace OctoAwesome.Server
             {
                 Runtime.Server.Instance.Kick((Guid)listViewPlayers.SelectedItems[0].Tag);
             }
-            catch (Exception ex)
+            catch
             {
                 MessageBox.Show("Kick Error");
             }

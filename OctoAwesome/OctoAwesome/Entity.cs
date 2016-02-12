@@ -52,6 +52,9 @@ namespace OctoAwesome
         /// <returns></returns>
         public abstract byte[] GetData();
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse Entity mit einer neuen Guid
+        /// </summary>
         public Entity()
         {
             Id = Guid.NewGuid();
