@@ -8,8 +8,8 @@ namespace OctoAwesome
 {
     public interface IColumnSerializer
     {
-        void Serialize(Stream stream, Guid universeId, int planetId, IChunkColumn column);
+        void Serialize(Stream stream, IChunkColumn column);
 
-        IChunkColumn Deserialize(Stream stream, Guid universeId, int planetId, Index2 columnIndex);
+        IChunkColumn Deserialize(Stream stream);
     }
 }

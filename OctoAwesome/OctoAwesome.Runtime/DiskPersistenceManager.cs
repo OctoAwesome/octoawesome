@@ -14,96 +14,117 @@ namespace OctoAwesome.Runtime
         private IUniverseSerializer universeSerializer;
         private IPlanetSerializer planetSerializer;
         private IColumnSerializer columnSerializer;
-        private IChunkSerializer serializer;
 
         public DiskPersistenceManager(IUniverseSerializer universeSerializer, 
             IPlanetSerializer planetSerializer, 
-            IColumnSerializer columnSerializer, IChunkSerializer serializer)
+            IColumnSerializer columnSerializer)
         {
-            this.serializer = serializer;
-        }
-
-        public void Save(int universe, int planet, IChunk chunk)
-        {
-            var root = GetRoot();
-            
-            string filename = planet.ToString() + "_" + chunk.Index.X + "_" + chunk.Index.Y + "_" + chunk.Index.Z + ".chunk";
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create, FileAccess.Write))
-            {
-                serializer.Serialize(stream, chunk);
-            }
-        }
-
-        public void SaveUniverse(IUniverse universe)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SavePlanet(int universe, IPlanet planet)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SaveColumn(int universe, int planet, IChunkColumn column)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IChunk Load(int universe, int planet, Index3 index)
-        {
-            var root = GetRoot();
-            string filename = planet.ToString() + "_" + index.X + "_" + index.Y + "_" + index.Z + ".chunk";
-
-            if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
-                return null;
-
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
-            {
-                return serializer.Deserialize(stream, new PlanetIndex3(planet, index));
-            }
-        }
-
-        public IUniverse[] ListUniverses()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUniverse LoadUniverse(int universe)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IPlanet LoadPlanet(int universe, int planet)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IChunkColumn LoadColumn(int universe, int planet, Index2 index)
-        {
-            throw new NotImplementedException();
+            this.universeSerializer = universeSerializer;
+            this.planetSerializer = planetSerializer;
+            this.columnSerializer = columnSerializer;
         }
 
         private DirectoryInfo root;
 
-        private DirectoryInfo GetRoot()
+        private string GetRoot()
         {
             if (root != null)
-                return root;
+                return root.FullName;
 
             string appconfig = ConfigurationManager.AppSettings["ChunkRoot"];
             if (!string.IsNullOrEmpty(appconfig))
             {
                 root = new DirectoryInfo(appconfig);
                 if (!root.Exists) root.Create();
-                return root;
+                return root.FullName;
             }
             else
             {
                 var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
                 if (!root.Exists) root.Create();
-                return root;
+                return root.FullName;
             }
+        }
+
+        public void SaveUniverse(IUniverse universe)
+        {
+            string file = Path.Combine(GetRoot(), universe.Id.ToString(), "universe.info");
+
+            using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
+            {
+                universeSerializer.Serialize(stream, universe);
+            }
+        }
+
+        public void SavePlanet(Guid universeGuid, IPlanet planet)
+        {
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString(), "planet.dat");
+
+            using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
+            {
+                planetSerializer.Serialize(stream, planet);
+            }
+        }
+
+        public void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column)
+        {
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), string.Format("column_{0}_{1}.dat", column.Index.X, column.Index.Y));
+
+            using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
+            {
+                columnSerializer.Serialize(stream, column);
+            }
+        }
+
+        public IUniverse[] ListUniverses()
+        {
+            //string path = Path.Combine(GetRoot(), universe.ToString(), planet.ToString());
+
+            //using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
+            //{
+            //    return serializer.Deserialize(stream, new PlanetIndex3(planet, index));
+            //}
+
+            throw new NotImplementedException();
+        }
+
+        public IUniverse LoadUniverse(Guid universeGuid)
+        {
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), "universe.dat");
+            if (!File.Exists(file))
+                return null;
+
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            {
+                return universeSerializer.Deserialize(stream);
+            }
+        }
+
+        public IPlanet LoadPlanet(Guid universeGuid, int planetId)
+        {
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), "planet.dat");
+            if (!File.Exists(file))
+                return null;
+
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            {
+                return planetSerializer.Deserialize(stream);
+            }
+
+        }
+
+        public IChunkColumn LoadColumn(Guid universeGuid, int planetId, Index2 columnIndex)
+        {
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), string.Format("column_{0}_{1}.dat", columnIndex.X, columnIndex.Y));
+            if (!File.Exists(file))
+                return null;
+
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            {
+                return columnSerializer.Deserialize(stream);
+            }
+
         }
     }
 }

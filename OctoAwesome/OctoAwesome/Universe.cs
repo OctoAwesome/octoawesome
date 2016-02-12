@@ -10,7 +10,7 @@ namespace OctoAwesome
     /// </summary>
     public class Universe : IUniverse
     {
-        public Universe(int id, string name)
+        public Universe(Guid id, string name)
         {
             Id = id;
             Name = name;
@@ -19,7 +19,7 @@ namespace OctoAwesome
         /// <summary>
         /// ID des Universums
         /// </summary>
-        public int Id { get; private set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Der Name des Universums

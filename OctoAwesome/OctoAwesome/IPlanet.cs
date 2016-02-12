@@ -18,7 +18,7 @@ namespace OctoAwesome
         /// <summary>
         /// Id des Parent Universe
         /// </summary>
-        int Universe { get; }
+        Guid Universe { get; }
 
         /// <summary>
         /// Seed des Zufallsgenerators dieses Planeten.

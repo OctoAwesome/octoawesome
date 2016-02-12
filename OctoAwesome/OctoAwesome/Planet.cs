@@ -15,7 +15,7 @@ namespace OctoAwesome
         /// <summary>
         /// Referenz auf das Parent Universe
         /// </summary>
-        public int Universe { get; private set; }
+        public Guid Universe { get; private set; }
 
         /// <summary>
         /// Die Klimakarte des Planeten
@@ -40,7 +40,7 @@ namespace OctoAwesome
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
         /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
-        public Planet(int id, int universe, Index3 size, int seed)
+        public Planet(int id, Guid universe, Index3 size, int seed)
         {
             Id = id;
             Universe = universe;

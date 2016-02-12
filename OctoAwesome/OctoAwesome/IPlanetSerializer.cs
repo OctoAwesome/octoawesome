@@ -8,8 +8,8 @@ namespace OctoAwesome
 {
     public interface IPlanetSerializer
     {
-        void Serialize(Stream stream, Guid universeId, IPlanet universe);
+        void Serialize(Stream stream, IPlanet universe);
 
-        IPlanet Deserialize(Stream stream, Guid universeId, int planetId);
+        IPlanet Deserialize(Stream stream);
     }
 }

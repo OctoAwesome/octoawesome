@@ -7,12 +7,12 @@ namespace OctoAwesome.Basics
     public class ComplexPlanetGenerator : IMapGenerator
     {
 
-        public IUniverse GenerateUniverse(int id)
+        public IUniverse GenerateUniverse(Guid id)
         {
             return new Universe(id, "Milchstrasse");
         }
 
-        public IPlanet GeneratePlanet(int universe, int seed)
+        public IPlanet GeneratePlanet(Guid universe, int seed)
         {
             Index3 size = new Index3(12, 12, 3);
             ComplexPlanet planet = new ComplexPlanet(0, universe, size, this, seed);

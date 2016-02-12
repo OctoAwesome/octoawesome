@@ -1,3 +1,5 @@
+using System;
+
 namespace OctoAwesome
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="id">Die ID des Universums</param>
         /// <returns>Das gewünschte Universum, falls es existiert</returns>
-        IUniverse GetUniverse(int id);
+        IUniverse GetUniverse(Guid id);
         
         /// <summary>
         /// Gibt den Planeten mit der angegebenen ID zurück

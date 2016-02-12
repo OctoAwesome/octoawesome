@@ -13,7 +13,7 @@ namespace OctoAwesome
         /// <summary>
         /// ID des Universums
         /// </summary>
-        int Id { get; }
+        Guid Id { get; }
 
         /// <summary>
         /// Der Name des Universums
