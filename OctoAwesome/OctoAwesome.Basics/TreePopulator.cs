@@ -5,8 +5,13 @@ using System.Text;
 
 namespace OctoAwesome.Basics
 {
-    public class TreePopulator : IMapPopulator
+    public class TreePopulator : MapPopulator
     {
+        public TreePopulator()
+        {
+            Order = 10;
+        }
+
         class PopulationHelper
         {
             private int originX, originY, originZ;
@@ -67,8 +72,6 @@ namespace OctoAwesome.Basics
             }
         }
 
-        private Random random = new Random();
-
         private void PlantTree(PopulationHelper helper, int x, int y, int z, int height, int radius, ushort woodIndex, ushort leaveIndex)
         {
             helper.FillSphere(x, y, z + height, radius, leaveIndex);
@@ -78,8 +81,11 @@ namespace OctoAwesome.Basics
                 helper.SetBlock(x, y, z + i, woodIndex);
             }
         }
-        public void Populate(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
+        public override void Populate(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
         {
+            int salt = (column00.Index.X & 0xffff) + ((column00.Index.Y & 0xffff) << 8);
+            Random random = new Random(planet.Seed + salt);
+
             IBlockDefinition woodDefinition = blockDefinitions.FirstOrDefault(d => typeof(WoodBlockDefinition) == d.GetType());
             ushort woodIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), woodDefinition) + 1);
             IBlockDefinition leaveDefinition = blockDefinitions.FirstOrDefault(d => typeof(LeavesBlockDefinition) == d.GetType());
