@@ -88,6 +88,11 @@ namespace OctoAwesome
         /// </summary>
         public int ChangeCounter { get; set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse Chunk
+        /// </summary>
+        /// <param name="pos">Position des Chunks</param>
+        /// <param name="planet">Index des Planeten</param>
         public Chunk(Index3 pos, int planet)
         {
             Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
@@ -142,6 +147,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Die neue Block-ID</param>
+        /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
             int index = GetFlatIndex(x, y, z);

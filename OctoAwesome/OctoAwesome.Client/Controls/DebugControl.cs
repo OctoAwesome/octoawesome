@@ -23,8 +23,6 @@ namespace OctoAwesome.Client.Controls
 
         public PlayerComponent Player { get; set; }
 
-        private Trigger<bool> debugTrigger = new Trigger<bool>();
-
         StackPanel leftView, rightView;
         Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo, flyInfo;
 

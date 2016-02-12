@@ -25,10 +25,10 @@ namespace OctoAwesome
             Condition = 99;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Das was passiert wenn das Item zuschlägt.
         /// </summary>
         /// <param name="item">Das interagierende Item</param>
-        public abstract void Hit(IItem item);
+        public abstract void Hit(IItem item);*/
     }
 }

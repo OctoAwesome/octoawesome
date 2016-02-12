@@ -2,8 +2,8 @@
 {
     public class Pickaxe : Item
     {
-        public override void Hit(IItem item)
+        /*public override void Hit(IItem item)
         {
-        }
+        }*/
     }
 }

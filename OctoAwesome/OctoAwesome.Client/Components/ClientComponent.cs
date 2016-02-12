@@ -39,7 +39,7 @@ namespace OctoAwesome.Client.Components
                 otherPlayers.Clear();
                 otherPlayers.AddRange(result.OtherClients);
             }
-            catch (Exception ex)
+            catch
             {
                 return;
             }

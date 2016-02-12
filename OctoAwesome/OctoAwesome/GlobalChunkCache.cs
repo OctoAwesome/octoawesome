@@ -55,7 +55,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="position">Position des Chunks</param>
         /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugreifen will</param>
-        /// <returns></returns>
+        /// <returns>Den neu abonnierten Chunk</returns>
         public IChunk Subscribe(PlanetIndex3 position, bool writeable)
         {
             lock (lockObject)
@@ -81,7 +81,7 @@ namespace OctoAwesome
         /// <summary>
         /// Liefert den Chunk, sofern geladen.
         /// </summary>
-        /// <param name="position"></param>
+        /// <param name="position">Die Position des zurückzugebenden Chunks</param>
         /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
         public IChunk GetChunk(PlanetIndex3 position)
         {
@@ -97,8 +97,8 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="writeable"></param>
+        /// <param name="position">Die Position des freizugebenden Chunks</param>
+        /// <param name="writeable">Ist der Chunk schreibbar abonniert worden?</param>
         public void Release(PlanetIndex3 position, bool writeable)
         {
             lock (lockObject)

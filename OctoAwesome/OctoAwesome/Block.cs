@@ -6,6 +6,9 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Helferklasse für die Kollisionserkennung mit Blöcken.
+    /// </summary>
     public static class Block
     {
         /// <summary>
