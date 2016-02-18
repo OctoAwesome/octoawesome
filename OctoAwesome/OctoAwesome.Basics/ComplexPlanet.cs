@@ -29,5 +29,10 @@ namespace OctoAwesome.Basics
             this.Heightmap = null;  
             ClimateMap = new Climate.ComplexClimateMap(this);
         }
+
+        public ComplexPlanet() : base()
+        {
+
+        }
     }
 }

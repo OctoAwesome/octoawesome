@@ -15,7 +15,7 @@ namespace OctoAwesome.Runtime
 
         private bool disablePersistence = false;
 
-        private IMapGenerator mapGenerator = null;
+        // private IMapGenerator mapGenerator = null;
 
         private IPersistenceManager persistenceManager = null;
 
@@ -49,11 +49,8 @@ namespace OctoAwesome.Runtime
 
         private ResourceManager()
         {
-            mapGenerator = MapGeneratorManager.GetMapGenerators().First();
-            persistenceManager = new DiskPersistenceManager(
-                new UniverseSerializer(),
-                new PlanetSerializer(),
-                new ColumnSerializer());
+            // mapGenerator = MapGeneratorManager.GetMapGenerators().First();
+            persistenceManager = new DiskPersistenceManager();
 
             globalChunkCache = new GlobalChunkCache(
                 (p, i) => loadChunkColumn(p, i),
@@ -104,7 +101,12 @@ namespace OctoAwesome.Runtime
             IPlanet planet;
             if (!planets.TryGetValue(id, out planet))
             {
-                planet = mapGenerator.GeneratePlanet(universe.Id, id, universe.Seed + id);
+                Random rand = new Random(universe.Seed + id);
+                var generators = MapGeneratorManager.GetMapGenerators().ToArray();
+                int index = rand.Next(generators.Length - 1);
+                IMapGenerator generator = generators[index];
+
+                planet = generator.GeneratePlanet(universe.Id, id, universe.Seed + id);
                 planets.Add(id, planet);
 
                 // TODO: Serializer überarbeiten
@@ -127,9 +129,7 @@ namespace OctoAwesome.Runtime
             IChunkColumn column11 = persistenceManager.LoadColumn(universe.Id, planetId, index);
             if (column11 == null)
             {
-                IChunk[] generated = mapGenerator.GenerateChunk(DefinitionManager.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
-                ChunkColumn column = new ChunkColumn(generated, planetId, index);
-                column.CalculateHeights();
+                IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager.Instance.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
                 column11 = column;
             }
 
@@ -149,7 +149,7 @@ namespace OctoAwesome.Runtime
                 populators = ExtensionManager.GetInstances<IMapPopulator>().OrderBy(p => p.Order).ToList();
 
 
-            var definitions = DefinitionManager.GetBlockDefinitions();
+            var definitions = DefinitionManager.Instance.GetBlockDefinitions();
 
             // Zentrum
             if (!column11.Populated && column21 != null && column12 != null && column22 != null)

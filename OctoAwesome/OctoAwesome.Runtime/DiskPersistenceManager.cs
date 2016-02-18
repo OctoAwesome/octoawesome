@@ -11,17 +11,14 @@ namespace OctoAwesome.Runtime
 {
     public class DiskPersistenceManager : IPersistenceManager
     {
-        private IUniverseSerializer universeSerializer;
-        private IPlanetSerializer planetSerializer;
-        private IColumnSerializer columnSerializer;
+        private const string UniverseFilename = "universe.info";
 
-        public DiskPersistenceManager(IUniverseSerializer universeSerializer, 
-            IPlanetSerializer planetSerializer, 
-            IColumnSerializer columnSerializer)
+        private const string PlanetFilename = "planet.info";
+
+        private const string ColumnFilename = "column_{0}_{1}.dat";
+
+        public DiskPersistenceManager()
         {
-            this.universeSerializer = universeSerializer;
-            this.planetSerializer = planetSerializer;
-            this.columnSerializer = columnSerializer;
         }
 
         private DirectoryInfo root;
@@ -52,10 +49,10 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universe.Id.ToString());
             Directory.CreateDirectory(path);
 
-            string file = Path.Combine(path, "universe.info");
+            string file = Path.Combine(path, UniverseFilename);
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                universeSerializer.Serialize(stream, universe);
+                universe.Serialize(stream);
             }
         }
 
@@ -64,10 +61,10 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString());
             Directory.CreateDirectory(path);
 
-            string file = Path.Combine(path, "planet.dat");
+            string file = Path.Combine(path, PlanetFilename);
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                planetSerializer.Serialize(stream, planet);
+                planet.Serialize(stream);
             }
         }
 
@@ -76,10 +73,10 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
             Directory.CreateDirectory(path);
 
-            string file = path = Path.Combine(path, string.Format("column_{0}_{1}.dat", column.Index.X, column.Index.Y));
+            string file = path = Path.Combine(path, string.Format(ColumnFilename, column.Index.X, column.Index.Y));
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                columnSerializer.Serialize(stream, column);
+                column.Serialize(stream, DefinitionManager.Instance);
             }
         }
 
@@ -97,38 +94,45 @@ namespace OctoAwesome.Runtime
 
         public IUniverse LoadUniverse(Guid universeGuid)
         {
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), "universe.dat");
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), UniverseFilename);
             if (!File.Exists(file))
                 return null;
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                return universeSerializer.Deserialize(stream);
+                IUniverse universe = new Universe();
+                universe.Deserialize(stream);
+                return universe;
             }
         }
 
         public IPlanet LoadPlanet(Guid universeGuid, int planetId)
         {
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), "planet.dat");
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetFilename);
             if (!File.Exists(file))
                 return null;
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                return planetSerializer.Deserialize(stream);
+                // TODO: Complex Planet ermitteln
+                IPlanet planet = new Planet();
+                planet.Deserialize(stream);
+                return planet;
             }
 
         }
 
         public IChunkColumn LoadColumn(Guid universeGuid, int planetId, Index2 columnIndex)
         {
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), string.Format("column_{0}_{1}.dat", columnIndex.X, columnIndex.Y));
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), string.Format(ColumnFilename, columnIndex.X, columnIndex.Y));
             if (!File.Exists(file))
                 return null;
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                return columnSerializer.Deserialize(stream, planetId, columnIndex);
+                IChunkColumn column = new ChunkColumn();
+                column.Deserialize(stream, DefinitionManager.Instance, planetId, columnIndex);
+                return column;
             }
 
         }

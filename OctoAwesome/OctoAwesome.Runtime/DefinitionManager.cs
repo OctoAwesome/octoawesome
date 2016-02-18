@@ -4,15 +4,36 @@ using System.Linq;
 
 namespace OctoAwesome.Runtime
 {
-    public static class DefinitionManager
+    public class DefinitionManager : IDefinitionManager
     {
-        private static List<IItemDefinition> itemDefinitions;
+        #region Singleton
 
-        private static List<IResourceDefinition> resourceDefinitions;
+        private static DefinitionManager instance;
 
-        private static IBlockDefinition[] blockDefinitions;
+        public static IDefinitionManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new DefinitionManager();
+                return instance;
+            }
+        }
 
-        private static void EnsureLoaded()
+        private DefinitionManager()
+        {
+
+        }
+
+        #endregion
+
+        private List<IItemDefinition> itemDefinitions;
+
+        private List<IResourceDefinition> resourceDefinitions;
+
+        private IBlockDefinition[] blockDefinitions;
+
+        private void EnsureLoaded()
         {
             if (itemDefinitions == null)
             {
@@ -33,7 +54,7 @@ namespace OctoAwesome.Runtime
         /// Liefert eine Liste aller bekannten Item Definitions (inkl. Blocks, Resources, Tools)
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<IItemDefinition> GetItemDefinitions()
+        public IEnumerable<IItemDefinition> GetItemDefinitions()
         {
             EnsureLoaded();
             return itemDefinitions;
@@ -43,7 +64,7 @@ namespace OctoAwesome.Runtime
         /// Liefert eine Liste der bekannten Ressourcen.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<IResourceDefinition> GetResourceDefinitions()
+        public IEnumerable<IResourceDefinition> GetResourceDefinitions()
         {
             EnsureLoaded();
             return resourceDefinitions;
@@ -53,7 +74,7 @@ namespace OctoAwesome.Runtime
         /// Liefert eine Liste der bekannten Blocktypen.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<IBlockDefinition> GetBlockDefinitions()
+        public IEnumerable<IBlockDefinition> GetBlockDefinitions()
         {
             EnsureLoaded();
             return blockDefinitions;
@@ -64,7 +85,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="index">Index der BlockDefinition</param>
         /// <returns>BlockDefinition</returns>
-        public static IBlockDefinition GetBlockDefinitionByIndex(ushort index)
+        public IBlockDefinition GetBlockDefinitionByIndex(ushort index)
         {
             if (index == 0)
                 return null;
@@ -78,7 +99,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="definition">BlockDefinition</param>
         /// <returns>Index of Block Definition</returns>
-        public static ushort GetBlockDefinitionIndex(IBlockDefinition definition)
+        public ushort GetBlockDefinitionIndex(IBlockDefinition definition)
         {
             EnsureLoaded();
             return (ushort)(Array.IndexOf(blockDefinitions, definition) + 1);

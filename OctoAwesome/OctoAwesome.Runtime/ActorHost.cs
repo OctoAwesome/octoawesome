@@ -132,7 +132,7 @@ namespace OctoAwesome.Runtime
                                 continue;
 
                             Axis? localAxis;
-                            IBlockDefinition blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(block);
+                            IBlockDefinition blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(block);
                             float? moveFactor = Block.Intersect(
                                 blockDefinition.GetCollisionBoxes(localChunkCache, blockPos.X, blockPos.Y, blockPos.Z),
                                 pos, playerBox, move, out localAxis);
@@ -209,7 +209,7 @@ namespace OctoAwesome.Runtime
 
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = DefinitionManager.GetBlockDefinitionByIndex(lastBlock);
+                    var blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(lastBlock);
 
                     var slot = Player.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
 
@@ -246,7 +246,7 @@ namespace OctoAwesome.Runtime
                     if (ActiveTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
-                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.GetBlockDefinitionIndex(definition));
+                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.Instance.GetBlockDefinitionIndex(definition));
 
                         ActiveTool.Amount--;
                         if (ActiveTool.Amount <= 0)
@@ -371,7 +371,7 @@ namespace OctoAwesome.Runtime
 
         public void AllBlocksDebug()
         {
-            var blockDefinitions = DefinitionManager.GetBlockDefinitions();
+            var blockDefinitions = DefinitionManager.Instance.GetBlockDefinitions();
 
             foreach (var blockDefinition in blockDefinitions)
             {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace OctoAwesome
 {
@@ -36,5 +38,23 @@ namespace OctoAwesome
         /// Universe Seed
         /// </summary>
         public int Seed { get; set; }
+
+        public void Deserialize(Stream stream)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Universe));
+            IUniverse restored = serializer.Deserialize(stream) as IUniverse;
+            if (restored == null)
+                throw new Exception();
+
+            Id = restored.Id;
+            Name = restored.Name;
+            Seed = restored.Seed;
+        }
+
+        public void Serialize(Stream stream)
+        {
+            XmlSerializer serializer = new XmlSerializer(GetType());
+            serializer.Serialize(stream, this);
+        }
     }
 }

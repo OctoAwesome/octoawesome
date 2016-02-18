@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace OctoAwesome.Basics
 {
@@ -15,15 +16,20 @@ namespace OctoAwesome.Basics
 
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
-            return new Planet(id, universe, new Index3(4, 4, 3), seed);
+            Planet planet = new Planet(id, universe, new Index3(4, 4, 3), seed);
+            planet.Generator = this;
+            return planet;
         }
 
-        public IChunk[] GenerateChunk(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
+        public IChunkColumn GenerateColumn(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
         {
             IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
             ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];
+
+            ChunkColumn column = new ChunkColumn(result, planet.Id, index);
+
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
                 result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet.Id);
@@ -50,7 +56,24 @@ namespace OctoAwesome.Basics
                 }
             }
 
-            return result;
+            column.CalculateHeights();
+            return column;
+        }
+
+        public IPlanet GeneratePlanet(Stream stream)
+        {
+            IPlanet planet = new Planet();
+            planet.Deserialize(stream);
+            return planet;
+        }
+
+        
+
+        public IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index)
+        {
+            IChunkColumn column = new ChunkColumn();
+            column.Deserialize(stream, definitionManager, planetId, index);
+            return column;
         }
     }
 }

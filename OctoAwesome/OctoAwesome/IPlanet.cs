@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -31,5 +32,11 @@ namespace OctoAwesome
         Index3 Size { get; }
 
         IClimateMap ClimateMap { get; }
+
+        IMapGenerator Generator { get; }
+
+        void Serialize(Stream stream);
+
+        void Deserialize(Stream stream);
     }
 }

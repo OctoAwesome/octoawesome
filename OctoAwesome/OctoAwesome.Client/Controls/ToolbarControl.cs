@@ -27,7 +27,7 @@ namespace OctoAwesome.Client.Controls
 
             // toolTextures = new Texture2D[Player.Tools.Length];
             // int index = 0;
-            foreach (var item in DefinitionManager.GetItemDefinitions())
+            foreach (var item in DefinitionManager.Instance.GetItemDefinitions())
             {
                 using (MemoryStream stream = new MemoryStream())
                 {

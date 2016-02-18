@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace OctoAwesome
 {
@@ -32,6 +33,8 @@ namespace OctoAwesome
         /// </summary>
         public Index3 Size { get; private set; }
 
+        public IMapGenerator Generator { get; set; }
+
         /// <summary>
         /// Initialisierung des Planeten
         /// </summary>
@@ -49,6 +52,21 @@ namespace OctoAwesome
                 (int)Math.Pow(2, size.Y),
                 (int)Math.Pow(2, size.Z));
             Seed = seed;
+        }
+
+        public Planet()
+        {
+
+        }
+
+        public virtual void Serialize(Stream stream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void Deserialize(Stream stream)
+        {
+            throw new NotImplementedException();
         }
     }
 }
