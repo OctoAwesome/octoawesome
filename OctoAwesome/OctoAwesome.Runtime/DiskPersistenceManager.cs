@@ -13,6 +13,8 @@ namespace OctoAwesome.Runtime
     {
         private const string UniverseFilename = "universe.info";
 
+        private const string PlanetGeneratorInfo = "generator.info";
+
         private const string PlanetFilename = "planet.info";
 
         private const string ColumnFilename = "column_{0}_{1}.dat";
@@ -61,6 +63,15 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString());
             Directory.CreateDirectory(path);
 
+            string generatorInfo = Path.Combine(path, PlanetGeneratorInfo);
+            using (Stream stream = File.Open(generatorInfo, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter bw = new BinaryWriter(stream))
+                {
+                    bw.Write(planet.Generator.GetType().FullName);
+                }
+            }
+
             string file = Path.Combine(path, PlanetFilename);
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
@@ -82,14 +93,12 @@ namespace OctoAwesome.Runtime
 
         public IUniverse[] ListUniverses()
         {
-            //string path = Path.Combine(GetRoot(), universe.ToString(), planet.ToString());
+            throw new Exception();
 
-            //using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
-            //{
-            //    return serializer.Deserialize(stream, new PlanetIndex3(planet, index));
-            //}
-
-            throw new NotImplementedException();
+            string root = GetRoot();
+            foreach (var folder in Directory.GetDirectories(root))
+            {
+            }
         }
 
         public IUniverse LoadUniverse(Guid universeGuid)
@@ -109,32 +118,40 @@ namespace OctoAwesome.Runtime
         public IPlanet LoadPlanet(Guid universeGuid, int planetId)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetFilename);
-            if (!File.Exists(file))
+            string generatorInfo = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetGeneratorInfo);
+            if (!File.Exists(generatorInfo) || !File.Exists(file))
                 return null;
+
+            IMapGenerator generator = null;
+            using (Stream stream = File.Open(generatorInfo, FileMode.Create, FileAccess.Read))
+            {
+                using (BinaryReader bw = new BinaryReader(stream))
+                {
+                    string generatorName = bw.ReadString();
+                    generator = MapGeneratorManager.GetMapGenerators().FirstOrDefault(g => g.GetType().FullName.Equals(generatorName));
+                }
+            }
+
+            if (generator == null)
+                throw new Exception("Unknown Generator");
+
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                // TODO: Complex Planet ermitteln
-                IPlanet planet = new Planet();
-                planet.Deserialize(stream);
-                return planet;
+                return generator.GeneratePlanet(stream);
             }
-
         }
 
-        public IChunkColumn LoadColumn(Guid universeGuid, int planetId, Index2 columnIndex)
+        public IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), string.Format(ColumnFilename, columnIndex.X, columnIndex.Y));
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString(), string.Format(ColumnFilename, columnIndex.X, columnIndex.Y));
             if (!File.Exists(file))
                 return null;
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                IChunkColumn column = new ChunkColumn();
-                column.Deserialize(stream, DefinitionManager.Instance, planetId, columnIndex);
-                return column;
+                return planet.Generator.GenerateColumn(stream, DefinitionManager.Instance, planet.Id, columnIndex);
             }
-
         }
     }
 }

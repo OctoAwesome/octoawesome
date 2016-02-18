@@ -9,13 +9,6 @@ namespace OctoAwesome
     public interface IMapGenerator
     {
         /// <summary>
-        /// Generiert ein neues Universum mit der angegebenen ID
-        /// </summary>
-        /// <param name="universeGuid">Die Id für das neue Universum</param>
-        /// <returns>Das neue Univerusm</returns>
-        IUniverse GenerateUniverse(Guid universeGuid);
-
-        /// <summary>
         /// Generiert einen neuen Planeten
         /// </summary>
         /// <param name="universeGuid">Die Universums-ID, dem der Planet angehört</param>

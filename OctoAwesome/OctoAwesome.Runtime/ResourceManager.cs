@@ -69,6 +69,12 @@ namespace OctoAwesome.Runtime
 
         public IGlobalChunkCache GlobalChunkCache { get { return globalChunkCache; } }
 
+        public void NewUniverse(string name, int seed)
+        {
+            universe = new Universe(Guid.NewGuid(), name, seed);
+            persistenceManager.SaveUniverse(universe);
+        }
+
         public void LoadUniverse(Guid universeId)
         {
             // Alte Daten entfernen
@@ -78,10 +84,7 @@ namespace OctoAwesome.Runtime
             // Neuen Daten loaden/generieren
             universe = persistenceManager.LoadUniverse(universeId);
             if (universe == null)
-            {
-                universe = mapGenerator.GenerateUniverse(universeId);
-                persistenceManager.SaveUniverse(universe);
-            }
+                throw new Exception();
         }
 
         public void UnloadUniverse()
@@ -126,7 +129,7 @@ namespace OctoAwesome.Runtime
             IPlanet planet = GetPlanet(planetId);
 
             // Load from disk
-            IChunkColumn column11 = persistenceManager.LoadColumn(universe.Id, planetId, index);
+            IChunkColumn column11 = persistenceManager.LoadColumn(universe.Id, planet, index);
             if (column11 == null)
             {
                 IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager.Instance.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));

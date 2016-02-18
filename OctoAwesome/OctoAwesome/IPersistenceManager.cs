@@ -35,6 +35,6 @@ namespace OctoAwesome
         /// <param name="planetId"></param>
         /// <param name="columnIndex"></param>
         /// <returns></returns>
-        IChunkColumn LoadColumn(Guid universeGuid, int planetId, Index2 columnIndex);
+        IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex);
     }
 }
