@@ -93,12 +93,17 @@ namespace OctoAwesome.Runtime
 
         public IUniverse[] ListUniverses()
         {
-            throw new Exception();
-
             string root = GetRoot();
+            List<IUniverse> universes = new List<IUniverse>();
             foreach (var folder in Directory.GetDirectories(root))
             {
+                string id = folder.Replace(root, "");
+                Guid guid;
+                if (Guid.TryParse(id, out guid))
+                    universes.Add(LoadUniverse(guid));
             }
+
+            return universes.ToArray();
         }
 
         public IUniverse LoadUniverse(Guid universeGuid)

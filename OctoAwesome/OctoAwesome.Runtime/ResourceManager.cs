@@ -11,8 +11,6 @@ namespace OctoAwesome.Runtime
     {
         public static int CacheSize = 10000;
 
-        private Guid DEFAULT_UNIVERSE = Guid.Parse("{9EAC0932-113A-403D-8E36-404EC30114A0}");
-
         private bool disablePersistence = false;
 
         // private IMapGenerator mapGenerator = null;
@@ -62,9 +60,6 @@ namespace OctoAwesome.Runtime
             //chunkCache = new Cache<PlanetIndex3, IChunk>(CacheSize, loadChunk, saveChunk);
 
             bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence);
-
-            // TODO: Woanders hin
-            LoadUniverse(DEFAULT_UNIVERSE);
         }
 
         public IGlobalChunkCache GlobalChunkCache { get { return globalChunkCache; } }
@@ -73,6 +68,11 @@ namespace OctoAwesome.Runtime
         {
             universe = new Universe(Guid.NewGuid(), name, seed);
             persistenceManager.SaveUniverse(universe);
+        }
+
+        public IUniverse[] ListUniverses()
+        {
+            return persistenceManager.ListUniverses();
         }
 
         public void LoadUniverse(Guid universeId)
