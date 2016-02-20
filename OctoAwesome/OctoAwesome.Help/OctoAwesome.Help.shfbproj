@@ -92,7 +92,7 @@
     <Folder Include="images" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="IconHelper.exe" />
     <None Include="IconHelper.cs" />
+    <None Include="IconHelper.exe" />
   </ItemGroup>
 </Project>

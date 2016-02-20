@@ -22,6 +22,15 @@ namespace IconHelper
                 File.WriteAllText(file, content);
             }
 
+            var cssFiles = Directory.GetFiles(Path.Combine(outputDir, "styles"));
+
+            foreach (var file in cssFiles)
+            {
+                var content = File.ReadAllText(file);
+                content = content.Replace("icons/", "images/");
+                File.WriteAllText(file, content);
+            }
+
             var imgFiles = Directory.GetFiles(Path.Combine(outputDir, "icons"));
 
             foreach (var file in imgFiles)
