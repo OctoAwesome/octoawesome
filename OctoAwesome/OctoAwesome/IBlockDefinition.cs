@@ -3,6 +3,9 @@ using System.Drawing;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisinterface für eine Blockdefinition
+    /// </summary>
     public interface IBlockDefinition : IItemDefinition
     {
         /// <summary>

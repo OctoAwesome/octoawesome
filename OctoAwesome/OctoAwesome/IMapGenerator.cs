@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisinterface für einen OctoAwesome-MapGenerator
+    /// </summary>
     public interface IMapGenerator
     {
         /// <summary>

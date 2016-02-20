@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Repräsentiert die physikalischen Eigenschaften eines Blocks/Items/...
+    /// </summary>
     public class PhysicalProperties
     {
         /// <summary>
@@ -13,7 +16,7 @@ namespace OctoAwesome
         public float Hardness { get; set; }
 
         /// <summary>
-        /// Dichte in kg/dm^3
+        /// Dichte in kg/dm<sup>3</sup>
         /// </summary>
         public float Density { get; set; }
 

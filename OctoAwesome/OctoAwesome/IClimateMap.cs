@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisinterface für eine Klimakarte eines Planeten
+    /// </summary>
     public interface IClimateMap
     {
         /// <summary>
