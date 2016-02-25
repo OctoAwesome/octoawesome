@@ -9,6 +9,8 @@ namespace OctoAwesome.Runtime
 {
     public class ResourceManager : IResourceManager
     {
+        private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
+
         public static int CacheSize = 10000;
 
         private bool disablePersistence = false;
@@ -66,7 +68,9 @@ namespace OctoAwesome.Runtime
 
         public void NewUniverse(string name, int seed)
         {
-            universe = new Universe(Guid.NewGuid(), name, seed);
+            
+            // universe = new Universe(Guid.NewGuid(), name, seed);
+            universe = new Universe(DEFAULT_UNIVERSE, name, seed);
             persistenceManager.SaveUniverse(universe);
         }
 
@@ -104,12 +108,19 @@ namespace OctoAwesome.Runtime
             IPlanet planet;
             if (!planets.TryGetValue(id, out planet))
             {
-                Random rand = new Random(universe.Seed + id);
-                var generators = MapGeneratorManager.GetMapGenerators().ToArray();
-                int index = rand.Next(generators.Length - 1);
-                IMapGenerator generator = generators[index];
+                // Versuch vorhandenen Planeten zu laden
+                planet = persistenceManager.LoadPlanet(universe.Id, id);
+                if (planet == null)
+                {
+                    // Keiner da -> neu erzeugen
+                    Random rand = new Random(universe.Seed + id);
+                    var generators = MapGeneratorManager.GetMapGenerators().ToArray();
+                    int index = rand.Next(generators.Length - 1);
+                    IMapGenerator generator = generators[index];
+                    planet = generator.GeneratePlanet(universe.Id, id, universe.Seed + id);
+                    // persistenceManager.SavePlanet(universe.Id, planet);
+                }
 
-                planet = generator.GeneratePlanet(universe.Id, id, universe.Seed + id);
                 planets.Add(id, planet);
 
                 // TODO: Serializer überarbeiten

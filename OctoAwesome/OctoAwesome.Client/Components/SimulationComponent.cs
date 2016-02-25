@@ -22,6 +22,8 @@ namespace OctoAwesome.Client.Components
 
         public override void Initialize()
         {
+            ResourceManager.Instance.NewUniverse("Test", 12345);
+
             World = new World();
 
             var p = Load();
