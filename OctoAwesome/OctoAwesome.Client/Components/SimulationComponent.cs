@@ -52,6 +52,7 @@ namespace OctoAwesome.Client.Components
 
         public Player Load()
         {
+            // TODO: Unbedingt in IPersistenceManager umziehen
             var root = GetRoot();
             string filename = "player.info";
 
