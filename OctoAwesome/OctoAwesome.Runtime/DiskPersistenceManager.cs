@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -54,7 +55,10 @@ namespace OctoAwesome.Runtime
             string file = Path.Combine(path, UniverseFilename);
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                universe.Serialize(stream);
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
+                {
+                    universe.Serialize(zip);
+                }
             }
         }
 
@@ -75,7 +79,10 @@ namespace OctoAwesome.Runtime
             string file = Path.Combine(path, PlanetFilename);
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                planet.Serialize(stream);
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
+                {
+                    planet.Serialize(zip);
+                }
             }
         }
 
@@ -87,7 +94,10 @@ namespace OctoAwesome.Runtime
             string file = path = Path.Combine(path, string.Format(ColumnFilename, column.Index.X, column.Index.Y));
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                column.Serialize(stream, DefinitionManager.Instance);
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
+                {
+                    column.Serialize(zip, DefinitionManager.Instance);
+                }
             }
         }
 
@@ -114,9 +124,12 @@ namespace OctoAwesome.Runtime
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                IUniverse universe = new Universe();
-                universe.Deserialize(stream);
-                return universe;
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+                {
+                    IUniverse universe = new Universe();
+                    universe.Deserialize(zip);
+                    return universe;
+                }
             }
         }
 
@@ -143,7 +156,10 @@ namespace OctoAwesome.Runtime
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                return generator.GeneratePlanet(stream);
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+                {
+                    return generator.GeneratePlanet(zip);
+                }
             }
         }
 
@@ -155,7 +171,10 @@ namespace OctoAwesome.Runtime
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                return planet.Generator.GenerateColumn(stream, DefinitionManager.Instance, planet.Id, columnIndex);
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+                {
+                    return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
+                }
             }
         }
     }

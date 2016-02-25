@@ -197,6 +197,8 @@ namespace OctoAwesome
         {
             using (BinaryReader br = new BinaryReader(stream))
             {
+                bool longIndex = br.ReadByte() > 0;
+
                 // Phase 1 (Column Meta: Heightmap, populated, chunkcount)
                 Chunks = new Chunk[br.ReadByte()];
                 Planet = planetId;
@@ -210,8 +212,6 @@ namespace OctoAwesome
                 // Phase 2 (Block Definitionen)
                 List<IBlockDefinition> types = new List<IBlockDefinition>();
                 Dictionary<ushort, ushort> map = new Dictionary<ushort, ushort>();
-
-                bool longIndex = br.ReadByte() > 0;
 
                 int typecount = longIndex ? br.ReadUInt16() : br.ReadByte();
                 for (int i = 0; i < typecount; i++)
