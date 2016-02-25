@@ -38,6 +38,11 @@ namespace OctoAwesome
             get { return cache.Count; }
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instaz der Klasse GlobalChunkCache
+        /// </summary>
+        /// <param name="loadDelegate">Delegat, der nicht geladene Chubks nachläd.</param>
+        /// <param name="saveDelegate">Delegat, der nicht mehr benötigte Chunks abspeichert.</param>
         public GlobalChunkCache(Func<PlanetIndex3, IChunk> loadDelegate,
             Action<PlanetIndex3, IChunk> saveDelegate)
         {

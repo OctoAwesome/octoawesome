@@ -295,61 +295,131 @@ namespace OctoAwesome
             return (X * X) + (Y * Y) + (Z * Z);
         }
 
+        /// <summary>
+        /// Addiert zwei Indices3
+        /// </summary>
+        /// <param name="i1">1. Summand</param>
+        /// <param name="i2">2. Summand</param>
+        /// <returns></returns>
         public static Index3 operator +(Index3 i1, Index3 i2)
         {
             return new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z + i2.Z);
         }
 
+        /// <summary>
+        /// Addiert einen Index3 und einen <see cref="Index2"/>
+        /// </summary>
+        /// <remarks>Der Z-Anteil des Index3 wird unverändert übernommen.</remarks>
+        /// <param name="i1">1. Summand</param>
+        /// <param name="i2">2. Summand (ohne Z-Anteil)</param>
+        /// <returns></returns>
         public static Index3 operator +(Index3 i1, Index2 i2)
         {
             return new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z);
         }
 
+        /// <summary>
+        /// Subtrahiert zwei Indices3
+        /// </summary>
+        /// <param name="i1">Minuend</param>
+        /// <param name="i2">Subtrahend</param>
+        /// <returns></returns>
         public static Index3 operator -(Index3 i1, Index3 i2)
         {
             return new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z - i2.Z);
         }
 
+        /// <summary>
+        /// Subtrahiert einen Index2 von einem Index3
+        /// </summary>
+        /// <remarks>Der Z-Anteil des Index3 wird unverändert übernommen.</remarks>
+        /// <param name="i1">Minuend</param>
+        /// <param name="i2">Subtrahend</param>
+        /// <returns></returns>
         public static Index3 operator -(Index3 i1, Index2 i2)
         {
             return new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z);
         }
 
+        /// <summary>
+        /// Skaliert einen Index3 mit einem Integer.
+        /// </summary>
+        /// <param name="i1">Der zu skalierende Index3</param>
+        /// <param name="scale">Der Skalierungsfaktor</param>
+        /// <returns></returns>
         public static Index3 operator *(Index3 i1, int scale)
         {
             return new Index3(i1.X * scale, i1.Y * scale, i1.Z * scale);
         }
 
+        /// <summary>
+        /// Multiplieziert wei Indices3 miteinander.
+        /// </summary>
+        /// <param name="i1">1. Faktor</param>
+        /// <param name="i2">2. Faktor</param>
+        /// <returns></returns>
         public static Index3 operator *(Index3 i1, Index3 i2)
         {
             return new Index3(i1.X * i2.X, i1.Y * i2.Y, i1.Z * i2.Z);
         }
 
+        /// <summary>
+        /// Dividiert einen Index3 durch einen Skalierungsfaktor.
+        /// </summary>
+        /// <param name="i1">Der Index3</param>
+        /// <param name="scale">Der Skalierungsfaktor</param>
+        /// <returns></returns>
         public static Index3 operator /(Index3 i1, int scale)
         {
             return new Index3(i1.X / scale, i1.Y / scale, i1.Z / scale);
         }
 
+        /// <summary>
+        /// Überprüft, ob beide gegebenen Indices3 den gleichen Wert aufweisen.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <returns></returns>
         public static bool operator ==(Index3 i1, Index3 i2)
         {
             return i1.Equals(i2);
         }
 
+        /// <summary>
+        /// Überprüft, ob beide gegebenen Indices3 nicht den gleichen Wert aufweisen.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <returns></returns>
         public static bool operator !=(Index3 i1, Index3 i2)
         {
             return !i1.Equals(i2);
         }
 
+        /// <summary>
+        /// Implizite Umwandlung des aktuellen Index3 in einen Vector3.
+        /// </summary>
+        /// <remarks>Bei der Konvertierung von int zu float können Rundungsfehler auftreten!</remarks>
+        /// <param name="index"></param>
         public static implicit operator Vector3(Index3 index)
         {
             return new Vector3(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// Gibt einen string zurück, der den akteullen Index3 darstellt.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "(" + X.ToString() + "/" + Y.ToString() + "/" + Z.ToString() + ")";
         }
 
+        /// <summary>
+        /// Überprüft, ob der gegebene Index3 den gleichen Wert aufweist, wie der aktuelle Index3.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (!(obj is Index3))
@@ -362,6 +432,10 @@ namespace OctoAwesome
                 other.Z == this.Z);
         }
 
+        /// <summary>
+        /// Gibt einen möglichst eindeutigen Hashwert für den aktuellen Index3 zurück.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return

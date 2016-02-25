@@ -2,6 +2,9 @@
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisinterface für einen lokalen Chunkcache
+    /// </summary>
     public interface ILocalChunkCache
     {
         /// <summary>

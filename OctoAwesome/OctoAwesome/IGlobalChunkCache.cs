@@ -1,5 +1,8 @@
 ﻿namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisinterface für einen Globalen Chunkcache
+    /// </summary>
     public interface IGlobalChunkCache
     {
         /// <summary>
