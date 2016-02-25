@@ -26,6 +26,12 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
+            if (!Enabled)
+                return;
+
+            if (player == null || player.ActorHost == null)
+                return;
+
             CameraChunk = player.ActorHost.Position.ChunkIndex;
 
             CameraPosition = new Vector3(

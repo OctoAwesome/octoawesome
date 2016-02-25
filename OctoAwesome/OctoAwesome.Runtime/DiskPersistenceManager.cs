@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace OctoAwesome.Runtime
 {
@@ -175,6 +176,42 @@ namespace OctoAwesome.Runtime
                 {
                     return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
                 }
+            }
+        }
+
+        public Player LoadPlayer(Guid universeGuid, string playername)
+        {
+            // TODO: Später durch Playername ersetzen
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), "player.info");
+            if (!File.Exists(file))
+                return null;
+
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            {
+                try {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Player));
+                    return (Player)serializer.Deserialize(stream);
+                }
+                catch (Exception)
+                {
+                    File.Delete(file);
+                }
+            }
+
+            return null;
+        }
+
+        public void SavePlayer(Guid universeGuid, Player player)
+        {
+            string path = Path.Combine(GetRoot(), universeGuid.ToString());
+            Directory.CreateDirectory(path);
+
+            // TODO: Player Name berücksichtigen
+            string file = Path.Combine(path, "player.info");
+            using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Player));
+                serializer.Serialize(stream, player);
             }
         }
     }

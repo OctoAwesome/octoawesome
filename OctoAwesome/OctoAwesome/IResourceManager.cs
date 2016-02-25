@@ -11,6 +11,12 @@ namespace OctoAwesome
 
         void UnloadUniverse();
 
+        void SaveUniverse();
+
+        Player LoadPlayer(string playername);
+
+        void SavePlayer(Player player);
+
         /// <summary>
         /// Gibt das Universum für die angegebene ID zurück
         /// </summary>

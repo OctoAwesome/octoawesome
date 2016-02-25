@@ -36,5 +36,7 @@ namespace OctoAwesome
         /// <param name="columnIndex"></param>
         /// <returns></returns>
         IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex);
+        Player LoadPlayer(Guid universeGuid, string playername);
+        void SavePlayer(Guid universeGuid, Player player);
     }
 }

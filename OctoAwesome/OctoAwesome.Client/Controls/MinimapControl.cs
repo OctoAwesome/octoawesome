@@ -21,6 +21,9 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
+            if (Scene == null || Scene.MiniMapTexture == null)
+                return;
+
             batch.Draw(Skin.Pix, new Rectangle(contentArea.X - 2, contentArea.Y - 2, contentArea.Width + 4, contentArea.Height + 4), Color.Black);
             batch.Draw(Scene.MiniMapTexture, new Rectangle(contentArea.X, contentArea.Y, contentArea.Width, contentArea.Height), Color.White);
 

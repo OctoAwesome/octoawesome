@@ -69,6 +69,7 @@
     <Compile Include="Screens\CrewMemberScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
+    <Compile Include="Screens\LoadScreen.cs" />
     <Compile Include="Screens\MainScreen.cs" />
     <Compile Include="Screens\OptionsScreen.cs" />
   </ItemGroup>

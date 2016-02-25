@@ -58,8 +58,8 @@
     <Compile Include="MapGeneratorManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManager.cs" />
-    <Compile Include="UpdateDomain.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="Simulation.cs" />
+    <Compile Include="SimulationState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">

@@ -121,6 +121,9 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled)
                 return;
 
+            if (Player == null || Player.ActorHost == null)
+                return;
+
             //Calculate FPS
             framecount++;
             seconds += gameTime.ElapsedGameTime.TotalSeconds;

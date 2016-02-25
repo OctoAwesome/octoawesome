@@ -96,6 +96,12 @@ namespace OctoAwesome.Runtime
 
         public void UnloadUniverse()
         {
+            // TODO: Save und Unload
+        }
+
+        public void SaveUniverse()
+        {
+            // TODO: Save ;)
         }
 
         public IUniverse GetUniverse()
@@ -136,6 +142,25 @@ namespace OctoAwesome.Runtime
             }
 
             return planet;
+        }
+
+        public Player LoadPlayer(string playername)
+        {
+            if (universe == null)
+                throw new Exception("No Universe loaded");
+
+            Player player = persistenceManager.LoadPlayer(universe.Id, playername);
+            if (player == null)
+                player = new Player();
+            return player;
+        }
+
+        public void SavePlayer(Player player)
+        {
+            if (universe == null)
+                throw new Exception("No Universe loaded");
+
+            persistenceManager.SavePlayer(universe.Id, player);
         }
 
         private IChunkColumn loadChunkColumn(int planetId, Index2 index)

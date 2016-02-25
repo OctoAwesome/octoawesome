@@ -14,15 +14,22 @@ namespace OctoAwesome.Client
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class OctoGame : Game
+    internal class OctoGame : Game
     {
-
         GraphicsDeviceManager graphics;
 
-        CameraComponent camera;
-        PlayerComponent player;
-        SimulationComponent simulation;
-        ScreenComponent screens;
+        public CameraComponent Camera { get; private set; }
+
+        public PlayerComponent Player { get; private set; }
+
+        public SimulationComponent Simulation { get; private set; }
+
+        public ScreenComponent Screen { get; private set; }
+
+        //CameraComponent camera;
+        //PlayerComponent player;
+        //SimulationComponent simulation;
+        //ScreenComponent screens;
 
         public OctoGame()
             : base()
@@ -57,29 +64,28 @@ namespace OctoAwesome.Client
 
             ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
-            simulation = new SimulationComponent(this);
-            simulation.UpdateOrder = 4;
-            Components.Add(simulation);
+            Simulation = new SimulationComponent(this);
+            Simulation.UpdateOrder = 4;
+            Components.Add(Simulation);
 
-            player = new PlayerComponent(this, simulation);
-            player.UpdateOrder = 2;
-            Components.Add(player);
+            Player = new PlayerComponent(this, Simulation);
+            Player.UpdateOrder = 2;
+            Components.Add(Player);
 
 
-            camera = new CameraComponent(this, player);
-            camera.UpdateOrder = 3;
-            Components.Add(camera);
+            Camera = new CameraComponent(this, Player);
+            Camera.UpdateOrder = 3;
+            Components.Add(Camera);
 
-            screens = new ScreenComponent(this, player, camera);
-            screens.UpdateOrder = 1;
-            screens.DrawOrder = 1;
-            Components.Add(screens);
+            Screen = new ScreenComponent(this, Player, Camera);
+            Screen.UpdateOrder = 1;
+            Screen.DrawOrder = 1;
+            Components.Add(Screen);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            simulation.Save();
-            simulation.World.Save();
+            Simulation.ExitGame();
 
             base.OnExiting(sender, args);
         }

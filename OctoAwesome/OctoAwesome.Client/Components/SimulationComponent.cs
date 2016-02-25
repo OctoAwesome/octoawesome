@@ -8,92 +8,78 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Xml.Serialization;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class SimulationComponent : GameComponent
     {
-        public World World { get; private set; }
+        private Simulation Simulation { get; set; }
 
-        public ActorHost Player { get; private set; }
-        
         public SimulationComponent(Game game) : base(game) { }
 
-        public override void Initialize()
+        public void NewGame()
         {
-            ResourceManager.Instance.NewUniverse("Test", 12345);
+            if (Simulation != null)
+            {
+                Simulation.ExitGame();
+                Simulation = null;
+            }
 
-            World = new World();
-
-            var p = Load();
-            Player = World.InjectPlayer(p);
-            Player.Initialize();
-
-            base.Initialize();
+            Simulation = new Simulation();
+            Simulation.NewGame();
         }
 
-        internal void Save()
+        public void LoadGame(Guid guid)
         {
-            Save(Player.Player);
+            if (Simulation != null)
+            {
+                Simulation.ExitGame();
+                Simulation = null;
+            }
+
+            Simulation = new Simulation();
+            Simulation.LoadGame(guid);
         }
 
-        public void Save(Player player)
+        public void SaveGame()
         {
-            var root = GetRoot();
+            if (Simulation == null)
+                return;
 
-            string filename = "player.info";
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Create, FileAccess.Write))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(Player));
-                serializer.Serialize(stream, player);
-            }
+            Simulation.SaveGame();
         }
 
-        public Player Load()
+        public void ExitGame()
         {
-            // TODO: Unbedingt in IPersistenceManager umziehen
-            var root = GetRoot();
-            string filename = "player.info";
+            if (Simulation == null)
+                return;
 
-            if (!File.Exists(root.FullName + Path.DirectorySeparatorChar + filename))
-                return new Player();
-
-            using (Stream stream = File.Open(root.FullName + Path.DirectorySeparatorChar + filename, FileMode.Open, FileAccess.Read))
-            {
-                try
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Player));
-                    return (Player)serializer.Deserialize(stream);
-                }
-                catch (Exception) { }
-
-                return new Player();
-            }
+            Simulation.ExitGame();
+            Simulation = null;
         }
 
-
-        private DirectoryInfo root;
-
-        private DirectoryInfo GetRoot()
+        public ActorHost InsertPlayer(Player player)
         {
-            if (root != null)
-                return root;
+            if (Simulation == null)
+                throw new NotSupportedException();
 
-            string appconfig = ConfigurationManager.AppSettings["ChunkRoot"];
-            if (!string.IsNullOrEmpty(appconfig))
-            {
-                root = new DirectoryInfo(appconfig);
-                if (!root.Exists) root.Create();
-                return root;
-            }
-            else
-            {
-                var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
-                if (!root.Exists) root.Create();
-                return root;
-            }
+            if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
+                throw new NotSupportedException();
+
+            return Simulation.InsertPlayer(player);
+        }
+
+        public void RemovePlayer(ActorHost host)
+        {
+            if (Simulation == null)
+                throw new NotSupportedException();
+
+            if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
+                throw new NotSupportedException();
+
+            Simulation.RemovePlayer(host);
         }
     }
 }

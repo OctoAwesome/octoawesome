@@ -33,7 +33,7 @@ namespace OctoAwesome.Client.Components
 
         #endregion
 
-        public ActorHost ActorHost { get { return simulation.Player; } }
+        public ActorHost ActorHost { get; private set; }
 
         public Index3? SelectedBox { get; set; }
 
@@ -59,8 +59,29 @@ namespace OctoAwesome.Client.Components
             Tools = new List<InventorySlot>();
         }
 
+        public void InsertPlayer()
+        {
+            Player player = ResourceManager.Instance.LoadPlayer("Adam");
+            ActorHost = simulation.InsertPlayer(player);
+        }
+
+        public void RemovePlayer()
+        {
+            if (ActorHost == null)
+                return;
+
+            simulation.RemovePlayer(ActorHost);
+            ActorHost = null;
+        }
+
         public override void Update(GameTime gameTime)
         {
+            if (!Enabled)
+                return;
+
+            if (ActorHost == null)
+                return;
+
             Tools.Clear();
             Tools.AddRange(ActorHost.Player.Inventory);
 
