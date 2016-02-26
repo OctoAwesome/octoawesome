@@ -7,6 +7,9 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Kapselung eines Spielers.
+    /// </summary>
     public class ActorHost : IPlayerController
     {
         private readonly float Gap = 0.001f;
@@ -22,12 +25,25 @@ namespace OctoAwesome.Runtime
 
         private ILocalChunkCache localChunkCache;
 
+        /// <summary>
+        /// Der Spieler dieses ActorHosts.
+        /// </summary>
         public Player Player { get; private set; }
 
+        /// <summary>
+        /// Das zur Zeit aktive Werkzeug.
+        /// </summary>
         public InventorySlot ActiveTool { get; set; }
 
+        /// <summary>
+        /// Gibt an, ob der Spieler bereit ist.
+        /// </summary>
         public bool ReadyState { get; private set; }
 
+        /// <summary>
+        /// Erzeugt einen neuen ActorHost.
+        /// </summary>
+        /// <param name="player">Der Player</param>
         public ActorHost(Player player)
         {
             Player = player;
@@ -40,6 +56,9 @@ namespace OctoAwesome.Runtime
             ReadyState = false;
         }
 
+        /// <summary>
+        /// Initialisiert den ActorHost und lädtc die Chunks rund um den Spieler.
+        /// </summary>
         public void Initialize()
         {
             localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
@@ -49,7 +68,10 @@ namespace OctoAwesome.Runtime
         }
 
         
-
+        /// <summary>
+        /// Aktualisiert den Spieler (Bewegung, Interaktion)
+        /// </summary>
+        /// <param name="frameTime">Die aktuelle Zeit.</param>
         public void Update(GameTime frameTime)
         {
             #region Inputverarbeitung
@@ -271,7 +293,7 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
+        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
         {
             Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 
@@ -319,56 +341,95 @@ namespace OctoAwesome.Runtime
             localChunkCache.Flush();
         }
 
+        /// <summary>
+        /// Position des Spielers.
+        /// </summary>
         public Coordinate Position
         {
             get { return Player.Position; }
         }
 
+        /// <summary>
+        /// Radius des Spielers.
+        /// </summary>
         public float Radius
         {
             get { return Player.Radius; }
         }
 
+        /// <summary>
+        /// Windel des Spielers (Standposition).
+        /// </summary>
         public float Angle
         {
             get { return Player.Angle; }
         }
 
+        /// <summary>
+        /// Höhe des Spielers.
+        /// </summary>
         public float Height
         {
             get { return Player.Height; }
         }
 
+        /// <summary>
+        /// Gibt an, ob der Spieler auf dem Boden steht.
+        /// </summary>
         public bool OnGround
         {
             get { return Player.OnGround; }
         }
 
+        /// <summary>
+        /// Winkel der Kopfstellung.
+        /// </summary>
         public float Tilt
         {
             get { return Player.Tilt; }
         }
 
+        /// <summary>
+        /// Bewegungsvektor des Spielers.
+        /// </summary>
         public Vector2 Move { get; set; }
 
+        /// <summary>
+        /// Kopfbewegeungsvektor des Spielers.
+        /// </summary>
         public Vector2 Head { get; set; }
 
+        /// <summary>
+        /// Den Spieler hüpfen lassen.
+        /// </summary>
         public void Jump()
         {
             lastJump = true;
         }
 
+        /// <summary>
+        /// Lässt den Spieler einen Block entfernen.
+        /// </summary>
+        /// <param name="blockIndex"></param>
         public void Interact(Index3 blockIndex)
         {
             lastInteract = blockIndex;
         }
 
+        /// <summary>
+        /// Setzt einen neuen Block.
+        /// </summary>
+        /// <param name="blockIndex"></param>
+        /// <param name="orientation"></param>
         public void Apply(Index3 blockIndex, OrientationFlags orientation)
         {
             lastApply = blockIndex;
             lastOrientation = orientation;
         }
 
+        /// <summary>
+        /// DEBUG METHODE: NICHT FÜR VERWENDUNG IM SPIEL!
+        /// </summary>
         public void AllBlocksDebug()
         {
             var blockDefinitions = DefinitionManager.Instance.GetBlockDefinitions();

@@ -31,12 +31,26 @@ namespace OctoAwesome
         /// </summary>
         Index3 Size { get; }
 
+        /// <summary>
+        /// Die Klimakarte des Planeten
+        /// </summary>
         IClimateMap ClimateMap { get; }
 
+        /// <summary>
+        /// Der Generator des Planeten
+        /// </summary>
         IMapGenerator Generator { get; }
 
+        /// <summary>
+        /// Serialisiert den Chunk in den angegebenen Stream
+        /// </summary>
+        /// <param name="stream">Zielstream</param>
         void Serialize(Stream stream);
 
+        /// <summary>
+        /// Deserialisiert den Chunk aus dem angegebenen Stream
+        /// </summary>
+        /// <param name="stream">Quellstream</param>
         void Deserialize(Stream stream);
     }
 }

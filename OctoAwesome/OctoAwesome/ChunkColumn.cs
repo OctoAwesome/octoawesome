@@ -6,20 +6,35 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Welt-Modell einer Säule aus <see cref="IChunk"/>s.
+    /// </summary>
     public class ChunkColumn : IChunkColumn
     {
-        public ChunkColumn(IChunk[] chunks,int planet,Index2 columnIndex) : this()
+        /// <summary>
+        /// Erzeugt eine neue Instanz einer ChunkColumn.
+        /// </summary>
+        /// <param name="chunks">Die Chunks für die Säule</param>
+        /// <param name="planet">Der Index des Planeten</param>
+        /// <param name="columnIndex">Die Position der Säule</param>
+        public ChunkColumn(IChunk[] chunks, int planet, Index2 columnIndex) : this()
         {
             Planet = planet;
             Chunks = chunks;
             Index = columnIndex;
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz einer ChunkColumn.
+        /// </summary>
         public ChunkColumn()
         {
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
         }
 
+        /// <summary>
+        /// Errechnet die obersten Blöcke der Säule.
+        /// </summary>
         public void CalculateHeights()
         {
             for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
@@ -44,36 +59,64 @@ namespace OctoAwesome
             return -1;
         }
 
+        /// <summary>
+        /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
+        /// </summary>
         public int[,] Heights { get; private set; }
 
+        /// <summary>
+        /// Die Chunks der Säule.
+        /// </summary>
         public IChunk[] Chunks
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gibt an, ob die ChunkColumn schon von einem <see cref="IMapPopulator"/> bearbeitet wurde.
+        /// </summary>
         public bool Populated
         {
             get;
             set;
         }
+
+        /// <summary>
+        /// Der Index des Planeten.
+        /// </summary>
         public int Planet
         {
             get;
             private set;
         }
+
+        /// <summary>
+        /// Die Position der Säule.
+        /// </summary>
         public Index2 Index
         {
             get;
             private set;
         }
-        
 
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         public ushort GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <returns>Block-ID der angegebenen Koordinate</returns>
         public ushort GetBlock(int x, int y, int z)
         {
             int index = z / Chunk.CHUNKSIZE_Z;
@@ -81,6 +124,13 @@ namespace OctoAwesome
             return Chunks[index].GetBlock(x, y, z);
         }
 
+        /// <summary>
+        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <returns>Die Metadaten des angegebenen Blocks</returns>
         public int GetBlockMeta(int x, int y, int z)
         {
             int index = z / Chunk.CHUNKSIZE_Z;
@@ -88,6 +138,13 @@ namespace OctoAwesome
             return Chunks[index].GetBlockMeta(x, y, z);
         }
 
+        /// <summary>
+        /// Liefert alle Ressourcen im Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <returns>Ein Array aller Ressourcen des Blocks</returns>
         public ushort[] GetBlockResources(int x, int y, int z)
         {
             int index = z / Chunk.CHUNKSIZE_Z;
@@ -95,11 +152,25 @@ namespace OctoAwesome
             return Chunks[index].GetBlockResources(x, y, z);
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Position.
+        /// </summary>
+        /// <param name="index">Koordinate des Zielblocks innerhalb des Chunks.</param>
+        /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
+        /// <param name="meta">(Optional) Metainformationen für den Block</param>
         public void SetBlock(Index3 index, ushort block, int meta = 0)
         {
             SetBlock(index.X, index.Y, index.Z, block, meta);
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="meta">(Optional) Metainformationen für den Block</param>
+        /// <param name="block">Die neue Block-ID</param>
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
             int index = z / Chunk.CHUNKSIZE_Z;
@@ -107,6 +178,13 @@ namespace OctoAwesome
             Chunks[index].SetBlock(x, y, z,block,meta);
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="meta">(Optional) Metainformationen für den Block</param>
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
             int index = z / Chunk.CHUNKSIZE_Z;
@@ -114,6 +192,13 @@ namespace OctoAwesome
             Chunks[index].SetBlockMeta(x, y, z,  meta);
         }
 
+        /// <summary>
+        /// Ändert die Ressourcen des Blocks an der angegebenen Koordinate
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
             int index = z / Chunk.CHUNKSIZE_Z;
@@ -121,6 +206,11 @@ namespace OctoAwesome
             Chunks[index].SetBlockResources(x, y, z, resources);
         }
 
+        /// <summary>
+        /// Serialisiert die Chunksäule in den angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Zielstream</param>
+        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
         public void Serialize(Stream stream, IDefinitionManager definitionManager)
         {
             using (BinaryWriter bw = new BinaryWriter(stream))
@@ -193,6 +283,13 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Deserialisiert die Chunksäule aus dem angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Quellstream</param>
+        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
+        /// <param name="columnIndex">Die Position der Säule</param>
+        /// <param name="planetId">Der Index des Planeten</param>
         public void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex)
         {
             using (BinaryReader br = new BinaryReader(stream))

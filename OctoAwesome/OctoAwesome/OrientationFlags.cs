@@ -11,6 +11,9 @@ namespace OctoAwesome
     [Flags]
     public enum OrientationFlags : byte
     {
+        /// <summary>
+        /// Null-Wert (keine Orientierung)
+        /// </summary>
         None,
 
         #region Corner

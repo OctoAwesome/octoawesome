@@ -6,35 +6,59 @@ using System.Text;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Interface für das Persistieren eines Chunks
+    /// Interface für das Persistieren der Welt
     /// </summary>
     public interface IPersistenceManager
     {
-        void SaveUniverse(IUniverse universe);
-
-        void SavePlanet(Guid universeGuid, IPlanet planet);
-
         /// <summary>
-        /// 
+        /// Gibt alle Universen zurück, die geladen werden können.
         /// </summary>
-        /// <param name="universeGuid"></param>
-        /// <param name="planetId"></param>
-        /// <param name="column"></param>
-        void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column);
-
+        /// <returns>Die Liste der Universen.</returns>
         IUniverse[] ListUniverses();
 
+        /// <summary>
+        /// Lädt das Universum mit der angegebenen Guid.
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <returns>Das geladene Universum.</returns>
         IUniverse LoadUniverse(Guid universeGuid);
 
+        /// <summary>
+        /// Speichert das Universum.
+        /// </summary>
+        /// <param name="universe">Das zu speichernde Universum</param>
+        void SaveUniverse(IUniverse universe);
+
+        /// <summary>
+        /// Lädt einen Planeten.
+        /// </summary>
+        /// <param name="universeGuid">Guid des Universums</param>
+        /// <param name="planetId">Index des Planeten</param>
+        /// <returns></returns>
         IPlanet LoadPlanet(Guid universeGuid, int planetId);
 
         /// <summary>
-        /// 
+        /// Speichert einen Planeten.
         /// </summary>
-        /// <param name="universeGuid"></param>
-        /// <param name="planetId"></param>
-        /// <param name="columnIndex"></param>
-        /// <returns></returns>
+        /// <param name="universeGuid">Guid des Universums</param>
+        /// <param name="planet">Zu speichernder Planet</param>
+        void SavePlanet(Guid universeGuid, IPlanet planet);
+
+        /// <summary>
+        /// Lädt eine <see cref="IChunkColumn"/>.
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planet">Index des Planeten.</param>
+        /// <param name="columnIndex">Zu serialisierende ChunkColumn.</param>
+        /// <returns>Die neu geladene ChunkColumn.</returns>
         IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex);
+
+        /// <summary>
+        /// Speichert eine <see cref="IChunkColumn"/>.
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="column">Zu serialisierende ChunkColumn.</param>
+        void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column);
     }
 }

@@ -33,6 +33,9 @@ namespace OctoAwesome
         /// </summary>
         public Index3 Size { get; private set; }
 
+        /// <summary>
+        /// Der Generator des Planeten.
+        /// </summary>
         public IMapGenerator Generator { get; set; }
 
         /// <summary>
@@ -41,7 +44,6 @@ namespace OctoAwesome
         /// <param name="id">ID des Planeten</param>
         /// <param name="universe">ID des Universums</param>
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
-        /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
         public Planet(int id, Guid universe, Index3 size, int seed)
         {
@@ -54,16 +56,27 @@ namespace OctoAwesome
             Seed = seed;
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz eines Planeten.
+        /// </summary>
         public Planet()
         {
 
         }
 
+        /// <summary>
+        /// Serialisiert den Planeten in den angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Zielstream</param>
         public virtual void Serialize(Stream stream)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Deserialisiert den Planeten aus dem angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Quellstream</param>
         public virtual void Deserialize(Stream stream)
         {
             throw new NotImplementedException();

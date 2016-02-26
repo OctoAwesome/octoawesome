@@ -53,7 +53,10 @@
     <Compile Include="Biomes\HighMountainBiome.cs" />
     <Compile Include="Biomes\HillsBiome.cs" />
     <Compile Include="Biomes\IBiome.cs" />
+    <Compile Include="Noise\INoise.cs" />
     <Compile Include="Biomes\LandBiomeGenerator.cs" />
+    <Compile Include="Noise\PerlinNoiseGenerator.cs" />
+    <Compile Include="Noise\SimplexNoiseGenerator.cs" />
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
     <Compile Include="Biomes\SuperBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
@@ -176,7 +179,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Biomes\Noise\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
