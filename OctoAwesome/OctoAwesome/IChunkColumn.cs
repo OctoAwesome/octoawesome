@@ -6,15 +6,34 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisinterface für Eine Chunksäule
+    /// </summary>
     public interface IChunkColumn
     {
+        /// <summary>
+        /// Gibt an, ob die IChunkColumn schon von einem <see cref="IMapPopulator"/> bearbeitet wurde.
+        /// </summary>
         bool Populated { get; set; }
 
+        /// <summary>
+        /// Der Index des Planeten.
+        /// </summary>
         int Planet { get; }
+
+        /// <summary>
+        /// Die Position der Säule.
+        /// </summary>
         Index2 Index { get; }
 
+        /// <summary>
+        /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
+        /// </summary>
         int[,] Heights { get; }
 
+        /// <summary>
+        /// Die Chunks der Säule.
+        /// </summary>
         IChunk[] Chunks { get; }
 
         /// <summary>
@@ -38,6 +57,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Koordinate des Zielblocks innerhalb des Chunks.</param>
         /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
+        /// <param name="meta">(Optional) Metainformationen für den Block</param>
         void SetBlock(Index3 index, ushort block, int meta = 0);
 
         /// <summary>
@@ -46,6 +66,7 @@ namespace OctoAwesome
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="meta">(Optional) Metainformationen für den Block</param>
         /// <param name="block">Die neue Block-ID</param>
         void SetBlock(int x, int y, int z, ushort block, int meta = 0);
 
@@ -61,8 +82,9 @@ namespace OctoAwesome
         /// <summary>
         /// Überschreibt den Block an der angegebenen Koordinate.
         /// </summary>
-        /// <param name="index">Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="block">Die neue Block-ID.</param>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="meta">(Optional) Metainformationen für den Block</param>
         void SetBlockMeta(int x, int y, int z, int meta);
 
@@ -84,8 +106,20 @@ namespace OctoAwesome
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
 
+        /// <summary>
+        /// Serialisiert die Chunksäule in den angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Zielstream</param>
+        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
         void Serialize(Stream stream, IDefinitionManager definitionManager);
 
+        /// <summary>
+        /// Deserialisiert die Chunksäule aus dem angegebenen Stream.
+        /// </summary>
+        /// <param name="stream">Quellstream</param>
+        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
+        /// <param name="columnIndex">Die Position der Säule</param>
+        /// <param name="planetId">Der Index des Planeten</param>
         void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);
     }
 }
