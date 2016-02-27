@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Definition Manager, der Typen aus Erweiterungen nachlädt.
+    /// </summary>
     public static class DefinitionManager
     {
         private static List<IItemDefinition> itemDefinitions;

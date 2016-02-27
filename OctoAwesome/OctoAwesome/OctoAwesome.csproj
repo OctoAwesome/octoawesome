@@ -27,7 +27,8 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <DocumentationFile>..\bin\Debug\OctoAwesome.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -83,9 +84,6 @@
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="LocalChunkCache.cs" />
-    <Compile Include="Noise\INoise.cs" />
-    <Compile Include="Noise\PerlinNoiseGenerator.cs" />
-    <Compile Include="Noise\SimplexNoiseGenerator.cs" />
     <Compile Include="OrientationFlags.cs" />
     <Compile Include="PhysicalProperties.cs" />
     <Compile Include="Planet.cs" />

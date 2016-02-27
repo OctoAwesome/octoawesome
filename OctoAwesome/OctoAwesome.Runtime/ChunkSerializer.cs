@@ -6,8 +6,17 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Serialisierer für Chunks.
+    /// </summary>
     public class ChunkSerializer : IChunkSerializer
     {
+        /// <summary>
+        /// Deserialisiert einen Chunk.
+        /// </summary>
+        /// <param name="stream">Der Stream mit Chunk-Daten.</param>
+        /// <param name="position">Die Position des Chunks.</param>
+        /// <returns>Der deserialisierte Chunk.</returns>
         public IChunk Deserialize(Stream stream, PlanetIndex3 position)
         {
             Chunk chunk = new Chunk(position.ChunkIndex, position.Planet);
@@ -53,6 +62,11 @@ namespace OctoAwesome.Runtime
             return chunk;
         }
 
+        /// <summary>
+        /// Serialisiert einen Chunk.
+        /// </summary>
+        /// <param name="stream">Der Stream, in den die Chunk-Daten geschrieben werden sollen (wird nach dem Schreiben geschlossen).</param>
+        /// <param name="chunk">Der zu serialisierende Chunk.</param>
         public void Serialize(Stream stream, IChunk chunk)
         {
             BinaryWriter bw = new BinaryWriter(stream);

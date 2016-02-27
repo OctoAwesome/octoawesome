@@ -7,6 +7,9 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Kapselung eines Spielers.
+    /// </summary>
     public class ActorHost : IPlayerController
     {
         private readonly float Gap = 0.001f;
@@ -23,10 +26,20 @@ namespace OctoAwesome.Runtime
 
         private ILocalChunkCache localChunkCache;
 
+        /// <summary>
+        /// Der Spieler dieses ActorHosts.
+        /// </summary>
         public Player Player { get; private set; }
 
+        /// <summary>
+        /// Gibt an, ob der Spieler bereit ist.
+        /// </summary>
         public bool ReadyState { get; private set; }
 
+        /// <summary>
+        /// Erzeugt einen neuen ActorHost.
+        /// </summary>
+        /// <param name="player">Der Player</param>
         public ActorHost(Player player)
         {
             Player = player;
@@ -38,6 +51,9 @@ namespace OctoAwesome.Runtime
             ReadyState = false;
         }
 
+        /// <summary>
+        /// Initialisiert den ActorHost und lädt die Chunks rund um den Spieler.
+        /// </summary>
         public void Initialize()
         {
             localChunkCache.SetCenter(planet, Player.Position.ChunkIndex, (success) =>
@@ -52,6 +68,9 @@ namespace OctoAwesome.Runtime
             });
         }
 
+        /// <summary>
+        /// Deinitialisiert den ActorHost und gibt die verwendeten Chunks frei.
+        /// </summary>
         public void Uninitialize()
         {
             IChunk chunk = localChunkCache.GetChunk(Player.Position.ChunkIndex);
@@ -62,6 +81,10 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Aktualisiert den Spieler (Bewegung, Interaktion)
+        /// </summary>
+        /// <param name="frameTime">Die aktuelle Zeit.</param>
         public void Update(GameTime frameTime)
         {
             #region Inputverarbeitung
@@ -391,7 +414,7 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        public Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode, bool sprint)
+        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode, bool sprint)
         {
             Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 
@@ -440,6 +463,9 @@ namespace OctoAwesome.Runtime
 
         private Coordinate oldPosition;
 
+        /// <summary>
+        /// Position des Spielers.
+        /// </summary>
         public Coordinate Position
         {
             get { return Player.Position; }
@@ -447,6 +473,9 @@ namespace OctoAwesome.Runtime
 
         private float oldRadius = 0f;
 
+        /// <summary>
+        /// Radius des Spielers.
+        /// </summary>
         public float Radius
         {
             get { return Player.Radius; }
@@ -454,6 +483,9 @@ namespace OctoAwesome.Runtime
 
         private float oldAngle = 0f;
 
+        /// <summary>
+        /// Winkel des Spielers (Standposition).
+        /// </summary>
         public float Angle
         {
             get { return Player.Angle; }
@@ -461,6 +493,9 @@ namespace OctoAwesome.Runtime
 
         private float oldHeight = 0f;
 
+        /// <summary>
+        /// Höhe des Spielers.
+        /// </summary>
         public float Height
         {
             get { return Player.Height; }
@@ -468,6 +503,9 @@ namespace OctoAwesome.Runtime
 
         private bool oldOnGround = false;
 
+        /// <summary>
+        /// Gibt an, ob der Spieler auf dem Boden steht.
+        /// </summary>
         public bool OnGround
         {
             get { return Player.OnGround; }
@@ -475,18 +513,27 @@ namespace OctoAwesome.Runtime
 
         private bool oldFlyMode = false;
 
+        /// <summary>
+        /// Gibt an, ob der Flugmodus aktiviert ist.
+        /// </summary>
         public bool FlyMode
         {
             get { return Player.FlyMode; }
             set { Player.FlyMode = value; }
         }
 
+        /// <summary>
+        /// Gibt an, ob der Spieler sprintet.
+        /// </summary>
         public bool Sprint
         {
             get { return Player.Sprint; }
             set { Player.Sprint = value; }
         }
 
+        /// <summary>
+        /// Gibt an, ob der Spieler ?.
+        /// </summary>
         public bool Crouch
         {
             get { return Player.Crouch; }
@@ -495,11 +542,17 @@ namespace OctoAwesome.Runtime
 
         private float oldTilt = 0f;
 
+        /// <summary>
+        /// Winkel der Kopfstellung.
+        /// </summary>
         public float Tilt
         {
             get { return Player.Tilt; }
         }
 
+        /// <summary>
+        /// Das Inventar des Spielers.
+        /// </summary>
         public IEnumerable<InventorySlot> Inventory
         {
             get { return Player.Inventory; }
@@ -507,22 +560,41 @@ namespace OctoAwesome.Runtime
 
         private Vector2 oldMove = Vector2.Zero;
 
+        /// <summary>
+        /// Bewegungsvektor des Spielers.
+        /// </summary>
         public Vector2 Move { get; set; }
 
         private Vector2 oldHead = Vector2.Zero;
 
+        /// <summary>
+        /// Kopfbewegeungsvektor des Spielers.
+        /// </summary>
         public Vector2 Head { get; set; }
 
+        /// <summary>
+        /// Den Spieler hüpfen lassen.
+        /// </summary>
         public void Jump()
         {
             lastJump = true;
         }
 
+        /// <summary>
+        /// Lässt den Spieler mit einem Block Interagieren. (zur Zeit Block löschen)
+        /// </summary>
+        /// <param name="blockIndex">Die Position des Blocks.</param>
         public void Interact(Index3 blockIndex)
         {
             lastInteract = blockIndex;
         }
 
+        /// <summary>
+        /// Lässt den Spieler ein Werkzeug auf einen Block anwenden. (zur Zeit Block setzen)
+        /// </summary>
+        /// <param name="blockIndex"></param>
+        /// <param name="tool">Das anzuwendende Wekzeug.</param>
+        /// <param name="orientation"></param>
         public void Apply(Index3 blockIndex, InventorySlot tool, OrientationFlags orientation)
         {
             lastApply = blockIndex;
@@ -530,6 +602,9 @@ namespace OctoAwesome.Runtime
             lastTool = tool;
         }
 
+        /// <summary>
+        /// Debug-Methode. Nicht zur Benutzung im Spiel.
+        /// </summary>
         public void AllBlocksDebug()
         {
             var blockDefinitions = DefinitionManager.GetBlockDefinitions();
@@ -554,24 +629,56 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Position"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<Coordinate> OnPositionChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Radius"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<float> OnRadiusChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Angle"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<float> OnAngleChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Height"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<float> OnHeightChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="OnGround"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<bool> OnOnGroundChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="FlyMode"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<bool> OnFlyModeChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Tilt"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<float> OnTiltChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Move"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<Vector2> OnMoveChanged;
 
+        /// <summary>
+        /// Event, das eintritt, wenn <see cref="Head"/> geändert wird.
+        /// </summary>
         public event PropertyChangedDelegate<Vector2> OnHeadChanged;
 
+        /// <summary>
+        /// Delegat zur Änderung eines Attributs.
+        /// </summary>
+        /// <typeparam name="T">Typ des Attributs.</typeparam>
+        /// <param name="value">Neuer Wert des Attributs.</param>
         public delegate void PropertyChangedDelegate<T>(T value);
     }
 }

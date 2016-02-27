@@ -7,37 +7,82 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Servicevertrag zur Übertragung von Spieldaten zwischen Server und Client.
+    /// </summary>
     public interface IConnectionCallback
     {
         #region Player Controlling
 
+        /// <summary>
+        /// Informiert den Client darüber, dass er vom Server getrennt wurde.
+        /// </summary>
+        /// <param name="reason">Der Grund dafür.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void Disconnect(string reason);
 
+        /// <summary>
+        /// Informiert den Client darüber, dass seine Position verändert wurde.
+        /// </summary>
+        /// <param name="planet">Die Id des Planeten.</param>
+        /// <param name="globalPosition">Die Position des Blocks.</param>
+        /// <param name="blockPosition">Die Position innerhalb des Blocks.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetPosition(int planet, Index3 globalPosition, Vector3 blockPosition);
 
+        /// <summary>
+        /// Informiert den Client darüber, dass sein Winkel verändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetAngle(float value);
 
+        /// <summary>
+        /// Informiert den Client, dass der Status des Flugmodus verändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetFlyMode(bool value);
 
+        /// <summary>
+        /// Informiert den Client, dass sein Kopfbewegungsvektor verändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetHead(Vector2 value);
 
+        /// <summary>
+        /// Informiert den Client, dass seine Höhe geändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetHeight(float value);
 
+        /// <summary>
+        /// Informiert den Client, dass sein Bewegungsvektor geändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetMove(Vector2 value);
 
+        /// <summary>
+        /// Informiert den Client, dass sein Stand auf dem Boden geändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetOnGround(bool value);
 
+        /// <summary>
+        /// Informiert den Client, dass sein Radius verändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetRadius(float value);
 
+        /// <summary>
+        /// Informiert den Client, dass seine Kopfposition verändert wurde.
+        /// </summary>
+        /// <param name="value">Der neue Wert.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SetTilt(float value);
 
@@ -45,9 +90,17 @@ namespace OctoAwesome.Runtime
 
         #region Player Management
 
+        /// <summary>
+        /// Informiert den Client über einen neuen Spieler.
+        /// </summary>
+        /// <param name="client">Informationen zum neuen Spieler.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendPlayerJoin(ClientInfo client);
 
+        /// <summary>
+        /// Informiert den Client über das Verlassen eines Spielers.
+        /// </summary>
+        /// <param name="client">Die Guid des alten Spielers.</param>
         [OperationContract(IsInitiating = false, IsTerminating = false, IsOneWay = true)]
         void SendPlayerLeave(Guid client);
 

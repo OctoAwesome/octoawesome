@@ -6,12 +6,18 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Server des Spiels.
+    /// </summary>
     public sealed class Server
     {
         #region Singleton
 
         private static Server instance;
 
+        /// <summary>
+        /// Die Singleton-Instanz des Servers.
+        /// </summary>
         public static Server Instance
         {
             get
@@ -30,6 +36,9 @@ namespace OctoAwesome.Runtime
 
         private ServiceHost chunkHost;
 
+        /// <summary>
+        /// Gibt an, ob der Server läuft.
+        /// </summary>
         public bool IsRunning { get; private set; }
 
         private List<Client> clients = new List<Client>();
@@ -38,10 +47,9 @@ namespace OctoAwesome.Runtime
 
         private Dictionary<Client, ClientInfo> clientInfos = new Dictionary<Client, ClientInfo>();
 
-        public Server()
-        {
-        }
-
+        /// <summary>
+        /// Startet den Server auf  localhost:8888/Octo (Spieldaten) und localhost:8889/Chunks (Chunk-Übertragung)
+        /// </summary>
         public void Open()
         {
             world = new World();
@@ -73,6 +81,9 @@ namespace OctoAwesome.Runtime
             IsRunning = true;
         }
 
+        /// <summary>
+        /// Beendet den Server.
+        /// </summary>
         public void Close()
         {
             if (playerHost == null)
@@ -105,6 +116,10 @@ namespace OctoAwesome.Runtime
             IsRunning = false;
         }
 
+        /// <summary>
+        /// Beendet einen Client.
+        /// </summary>
+        /// <param name="client">Die Guid des Clients.</param>
         public void Kick(Guid client)
         {
             var c = clients.FirstOrDefault(x => x.ConnectionId == client);
@@ -452,6 +467,9 @@ namespace OctoAwesome.Runtime
             // TODO: Handle Exception!
         }
 
+        /// <summary>
+        /// Die Liste aller angemeldeter Clients.
+        /// </summary>
         public IEnumerable<ClientInfo> Clients
         {
             get
@@ -463,10 +481,20 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Event, das aufgerufen wird, wenn ein neuer Client angemeldet wird.
+        /// </summary>
         public event RegisterDelegate OnJoin;
 
+        /// <summary>
+        /// Event, das aufgerufen wird, wenn ein Client das Spiel verlässt.
+        /// </summary>
         public event RegisterDelegate OnLeave;
 
+        /// <summary>
+        /// Delegat zur Übergabe von Client-Informationen bei Beitritt oder Verlassen des Servers.
+        /// </summary>
+        /// <param name="info"></param>
         public delegate void RegisterDelegate(Client info);
     }
 }

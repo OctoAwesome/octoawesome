@@ -5,12 +5,23 @@ using System.Reflection;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Lädt Erweiterungen nach und stellt deren Typen bereit.
+    /// </summary>
     public static class ExtensionManager
     {
         private static List<Assembly> assemblies;
 
+        /// <summary>
+        /// Fehler, die beim Laden aufgetreten sind.
+        /// </summary>
         public static List<Exception> Errors { get; private set; }
 
+        /// <summary>
+        /// Gibt alle Types zurück, die vom angegebenen Type erben.
+        /// </summary>
+        /// <typeparam name="T">Der zu suchende Type.</typeparam>
+        /// <returns></returns>
         public static IEnumerable<Type> GetTypes<T>()
         {
             if (assemblies == null)
@@ -65,6 +76,11 @@ namespace OctoAwesome.Runtime
             return result;
         }
 
+        /// <summary>
+        /// Gibt Instanzen des angegebenen Typs zurück.
+        /// </summary>
+        /// <typeparam name="T">Der zu suchende Type.</typeparam>
+        /// <returns></returns>
         public static IEnumerable<T> GetInstances<T>()
         {
             List<T> result = new List<T>();
