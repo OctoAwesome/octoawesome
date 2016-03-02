@@ -7,9 +7,12 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Manager für die Weltelemente im Spiel.
+    /// </summary>
     public class ResourceManager : IResourceManager
     {
-        public static int CacheSize = 10000;
+        //public static int CacheSize = 10000;
 
         private bool disablePersistence = false;
 
@@ -31,6 +34,9 @@ namespace OctoAwesome.Runtime
 
         private static ResourceManager instance = null;
 
+        /// <summary>
+        /// Die Instanz des ResourceManagers.
+        /// </summary>
         public static ResourceManager Instance
         {
             get
@@ -61,8 +67,16 @@ namespace OctoAwesome.Runtime
             bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence);
         }
 
+        /// <summary>
+        /// Der <see cref="IGlobalChunkCache"/>, der im Spiel verwendet werden soll.
+        /// </summary>
         public IGlobalChunkCache GlobalChunkCache { get; set; }
 
+        /// <summary>
+        /// Gibt das Universum mit der angegebenen Id zurück.
+        /// </summary>
+        /// <param name="id">Die Id des Universums.</param>
+        /// <returns></returns>
         public IUniverse GetUniverse(int id)
         {
             if (universeCache == null)
@@ -71,6 +85,11 @@ namespace OctoAwesome.Runtime
             return universeCache;
         }
 
+        /// <summary>
+        /// Gibt den Planeten mit der angegebenen ID zurück
+        /// </summary>
+        /// <param name="id">Die Planteten-ID des gewünschten Planeten</param>
+        /// <returns>Der gewünschte Planet, falls er existiert</returns>
         public IPlanet GetPlanet(int id)
         {
             return _planets[id];

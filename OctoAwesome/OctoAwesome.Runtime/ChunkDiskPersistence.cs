@@ -9,15 +9,28 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Persistiert Chunks auf die Festplatte.
+    /// </summary>
     public class ChunkDiskPersistence : IChunkPersistence
     {
         private IChunkSerializer serializer;
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse ChunkDiskPersistence.
+        /// </summary>
+        /// <param name="serializer">ChunkSerializer zum Serialisieren.</param>
         public ChunkDiskPersistence(IChunkSerializer serializer)
         {
             this.serializer = serializer;
         }
 
+        /// <summary>
+        /// Speichert einen Chunk.
+        /// </summary>
+        /// <param name="universe">Id des Universums.</param>
+        /// <param name="planet">Id des Planeten.</param>
+        /// <param name="chunk">Zu speichernder Chunk.</param>
         public void Save(int universe, int planet, IChunk chunk)
         {
             var root = GetRoot();
@@ -32,6 +45,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Lädt einen Chunk.
+        /// </summary>
+        /// <param name="universe">Id des Universums.</param>
+        /// <param name="planet">Id des Planeten.</param>
+        /// <param name="index">Position des Chunks.</param>
+        /// <returns></returns>
         public IChunk Load(int universe, int planet, Index3 index)
         {
             var root = GetRoot();
