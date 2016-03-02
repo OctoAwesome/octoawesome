@@ -4,12 +4,18 @@ using System.Linq;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Definition Manager, der Typen aus Erweiterungen nachlädt.
+    /// </summary>
     public class DefinitionManager : IDefinitionManager
     {
         #region Singleton
 
         private static DefinitionManager instance;
 
+        /// <summary>
+        /// Die Instanz des DefinitionManagers.
+        /// </summary>
         public static IDefinitionManager Instance
         {
             get
@@ -98,7 +104,7 @@ namespace OctoAwesome.Runtime
         /// Liefert den Index der angegebenen BlockDefinition.
         /// </summary>
         /// <param name="definition">BlockDefinition</param>
-        /// <returns>Index of Block Definition</returns>
+        /// <returns>Index der Block Definition</returns>
         public ushort GetBlockDefinitionIndex(IBlockDefinition definition)
         {
             EnsureLoaded();

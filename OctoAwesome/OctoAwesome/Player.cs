@@ -74,6 +74,9 @@ namespace OctoAwesome
         [XmlIgnore]
         public List<InventorySlot> Inventory { get; set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Player-Instanz an der Default-Position.
+        /// </summary>
         public Player()
         {
             Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);

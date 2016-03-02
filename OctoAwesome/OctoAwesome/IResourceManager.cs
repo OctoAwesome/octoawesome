@@ -7,16 +7,17 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        /// <summary>
+        /// Lädt das Universum für die angegebene GUID.
+        /// </summary>
+        /// <param name="universeId"></param>
         void LoadUniverse(Guid universeId);
 
+        /// <summary>
+        /// Entlädt das aktuelle Universum
+        /// </summary>
         void UnloadUniverse();
 
-        /// <summary>
-        /// Gibt das Universum für die angegebene ID zurück
-        /// </summary>
-        /// <returns>Das gewünschte Universum, falls es existiert</returns>
-        IUniverse GetUniverse();
-        
         /// <summary>
         /// Gibt den Planeten mit der angegebenen ID zurück
         /// </summary>

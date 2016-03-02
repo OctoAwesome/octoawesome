@@ -13,10 +13,19 @@ namespace OctoAwesome
     [Serializable]
     public class Universe : IUniverse
     {
+        /// <summary>
+        /// Erzeugt eine neue Instanz eines Universums
+        /// </summary>
         public Universe()
         {
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz eines Universums
+        /// </summary>
+        /// <param name="id">Die GUID des Universums</param>
+        /// <param name="name">Der Name des Universums</param>
+        /// <param name="seed">Der Generierungsseed des Universums</param>
         public Universe(Guid id, string name, int seed)
         {
             Id = id;
@@ -39,6 +48,10 @@ namespace OctoAwesome
         /// </summary>
         public int Seed { get; set; }
 
+        /// <summary>
+        /// Deserialisiert ein Universum aus dem angegebenen Stream
+        /// </summary>
+        /// <param name="stream"></param>
         public void Deserialize(Stream stream)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Universe));
@@ -51,6 +64,10 @@ namespace OctoAwesome
             Seed = restored.Seed;
         }
 
+        /// <summary>
+        /// Serialisiert das Universum in den angegebenen Stream
+        /// </summary>
+        /// <param name="stream"></param>
         public void Serialize(Stream stream)
         {
             XmlSerializer serializer = new XmlSerializer(GetType());

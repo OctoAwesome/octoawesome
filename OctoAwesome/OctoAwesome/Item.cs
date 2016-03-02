@@ -2,6 +2,9 @@
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Basisklasse für alle nicht-lebendigen Spielelemente (für lebendige Spielelemente siehe <see cref="Entity"/>
+    /// </summary>
     public abstract class Item : IItem
     {
         /// <summary>
@@ -19,6 +22,9 @@ namespace OctoAwesome
         /// </summary>
         public List<IResource> Resources { get; private set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse Item.
+        /// </summary>
         public Item()
         {
             Resources = new List<IResource>();

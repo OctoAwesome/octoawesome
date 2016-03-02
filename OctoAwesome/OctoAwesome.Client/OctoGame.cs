@@ -55,7 +55,7 @@ namespace OctoAwesome.Client
             //    SceneComponent.VIEWHEIGHT = viewheight;
             //}
 
-            ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
+            //ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
 
             simulation = new SimulationComponent(this);
             simulation.UpdateOrder = 4;

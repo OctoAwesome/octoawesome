@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Repräsentiert die physikalischen Eigenschaften eines Blocks/Items/...
+    /// </summary>
     public class PhysicalProperties
     {
         /// <summary>

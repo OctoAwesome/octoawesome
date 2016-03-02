@@ -231,6 +231,13 @@ namespace OctoAwesome
             return GetBlock(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         public ushort GetBlock(int x, int y, int z)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -251,6 +258,13 @@ namespace OctoAwesome
             SetBlock(index.X, index.Y, index.Z, block);
         }
 
+        /// <summary>
+        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="block">Die neue Block-ID</param>
         public void SetBlock(int x, int y, int z, ushort block)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
@@ -274,6 +288,12 @@ namespace OctoAwesome
             return 0;
         }
 
+        /// <summary>
+        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Block-Koordinate</param>
+        /// <param name="meta">nicht verwendet, siehe interface</param>
+        /// <returns>Die Metadaten des angegebenen Blocks</returns>
         public int GetBlockMeta(Index3 index, int meta)
         {
             IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
@@ -297,6 +317,11 @@ namespace OctoAwesome
                 chunk.SetBlockMeta(x, y, z, meta);
         }
 
+        /// <summary>
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// </summary>
+        /// <param name="index">Block-Koordinate</param>
+        /// <param name="meta">Die neuen Metadaten</param>
         public void SetBlockMeta(Index3 index, int meta)
         {
             IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
