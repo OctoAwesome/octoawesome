@@ -21,5 +21,7 @@
         /// </summary>
         /// <param name="position">Position des Chunks</param>       
         void Release(int planet,Index2 position, bool writable);
+
+        void Clear();
     }
 }

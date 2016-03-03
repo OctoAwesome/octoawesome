@@ -83,6 +83,24 @@ namespace OctoAwesome
             return null;
         }
 
+        public void Clear()
+        {
+            lock (lockObject)
+            {
+                foreach (var item in cache.Values)
+                {
+                    saveDelegate(
+                        item.ChunkColumn.Planet, 
+                        item.ChunkColumn.Index, 
+                        item.ChunkColumn);
+
+                    item.ChunkColumn = null;
+                }
+
+                cache.Clear();
+            }
+        }
+
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>

@@ -170,12 +170,23 @@ namespace OctoAwesome.Runtime
             if (!File.Exists(file))
                 return null;
 
-            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
-            {
-                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+            try {
+                using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
                 {
-                    return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
+                    using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+                    {
+                        return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
+                    }
                 }
+            }
+            catch (IOException)
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (IOException) { }
+                return null;
             }
         }
 
