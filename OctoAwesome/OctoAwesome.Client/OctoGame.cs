@@ -35,10 +35,11 @@ namespace OctoAwesome.Client
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1080;
+            graphics.PreferredBackBufferHeight = 720;
+
             Content.RootDirectory = "Content";
             Window.Title = "OctoAwesome";
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
             IsMouseVisible = true;
             Window.AllowUserResizing = false;
 

@@ -78,6 +78,7 @@ namespace OctoAwesome.Client.Screens
             //Buttons
             StackPanel buttonStack = new StackPanel(manager);
             buttonStack.VerticalAlignment = VerticalAlignment.Bottom;
+            buttonStack.HorizontalAlignment = HorizontalAlignment.Stretch;
             sidebar.Controls.Add(buttonStack);
 
             renameButton = getButton("Rename");
@@ -87,6 +88,7 @@ namespace OctoAwesome.Client.Screens
             buttonStack.Controls.Add(deleteButton);
 
             createButton = getButton("Create");
+            createButton.LeftMouseClick += (s, e) => manager.NavigateToScreen(new CreateUniverseScreen(manager));
             buttonStack.Controls.Add(createButton);
 
             playButton = getButton("Play");
