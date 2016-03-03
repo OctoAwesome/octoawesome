@@ -68,13 +68,13 @@ namespace OctoAwesome.Runtime
 
         public void NewUniverse(string name, int seed)
         {
-            universe = persistenceManager.LoadUniverse(DEFAULT_UNIVERSE);
-            if (universe == null)
-            {
-                // universe = new Universe(Guid.NewGuid(), name, seed);
-                universe = new Universe(DEFAULT_UNIVERSE, name, seed);
+            // universe = persistenceManager.LoadUniverse(DEFAULT_UNIVERSE);
+            //if (universe == null)
+            //{
+                universe = new Universe(Guid.NewGuid(), name, seed);
+                // universe = new Universe(DEFAULT_UNIVERSE, name, seed);
                 persistenceManager.SaveUniverse(universe);
-            }
+            // }
         }
 
         public IUniverse[] ListUniverses()

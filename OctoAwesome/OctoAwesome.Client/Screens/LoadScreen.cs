@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,11 +95,16 @@ namespace OctoAwesome.Client.Screens
             playButton = getButton("Play");
             playButton.LeftMouseClick += (s, e) =>
             {
-                manager.Game.Simulation.NewGame();
+                manager.Game.Simulation.NewGame("Test", 12345);
                 manager.Game.Player.InsertPlayer();
                 manager.NavigateToScreen(new GameScreen(manager));
             };
             buttonStack.Controls.Add(playButton);
+
+            foreach (var universe in ResourceManager.Instance.ListUniverses())
+            {
+                levelList.Items.Add(new Label(Manager) { Text = universe.Name });
+            } 
         }
 
         private Button getButton(string title)

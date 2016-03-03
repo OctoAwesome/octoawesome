@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGameUi;
+using OctoAwesome.Client.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace OctoAwesome.Client.Screens
 {
     class CreateUniverseScreen : Screen
     {
-        IScreenManager Manager;
+        ScreenComponent Manager;
 
         Textbox nameInput, seedInput;
 
-        public CreateUniverseScreen(IScreenManager manager) : base(manager)
+        public CreateUniverseScreen(ScreenComponent manager) : base(manager)
         {
             Manager = manager;
 
@@ -61,6 +62,20 @@ namespace OctoAwesome.Client.Screens
             Button createButton = Button.TextButton(manager, "Create");
             createButton.HorizontalAlignment = HorizontalAlignment.Right;
             createButton.VerticalAlignment = VerticalAlignment.Bottom;
+            createButton.LeftMouseClick += (s, e) =>
+            {
+                if (string.IsNullOrEmpty(nameInput.Text))
+                    return;
+
+                int? seed = null;
+                int textseed;
+                if (int.TryParse(seedInput.Text, out textseed))
+                    seed = textseed;
+
+                Manager.Game.Simulation.NewGame(nameInput.Text, seed);
+                manager.Game.Player.InsertPlayer();
+                manager.NavigateToScreen(new GameScreen(manager));
+            };
             panel.Controls.Add(createButton);
 
         }

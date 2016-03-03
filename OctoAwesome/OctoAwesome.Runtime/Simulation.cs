@@ -21,9 +21,15 @@ namespace OctoAwesome.Runtime
             State = SimulationState.Ready;
         }
 
-        public void NewGame()
+        public void NewGame(string name, int? seed = null)
         {
-            ResourceManager.Instance.NewUniverse("Test", 12345);
+            if (seed == null)
+            {
+                Random rand = new Random();
+                seed = rand.Next(int.MaxValue);
+            }
+
+            ResourceManager.Instance.NewUniverse(name, seed.Value);
             Start();
         }
 
