@@ -11,6 +11,9 @@ using System.Xml.Serialization;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Persistiert Chunks auf die Festplatte.
+    /// </summary>
     public class DiskPersistenceManager : IPersistenceManager
     {
         private const string UniverseFilename = "universe.info";
@@ -20,10 +23,6 @@ namespace OctoAwesome.Runtime
         private const string PlanetFilename = "planet.info";
 
         private const string ColumnFilename = "column_{0}_{1}.dat";
-
-        public DiskPersistenceManager()
-        {
-        }
 
         private DirectoryInfo root;
 
@@ -48,6 +47,10 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Speichert das Universum.
+        /// </summary>
+        /// <param name="universe">Das zu speichernde Universum</param>
         public void SaveUniverse(IUniverse universe)
         {
             string path = Path.Combine(GetRoot(), universe.Id.ToString());
@@ -69,6 +72,11 @@ namespace OctoAwesome.Runtime
             Directory.Delete(path, true);
         }
 
+        /// <summary>
+        /// Speichert einen Planeten.
+        /// </summary>
+        /// <param name="universeGuid">Guid des Universums</param>
+        /// <param name="planet">Zu speichernder Planet</param>
         public void SavePlanet(Guid universeGuid, IPlanet planet)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString());
@@ -93,6 +101,12 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Speichert eine <see cref="IChunkColumn"/>.
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="column">Zu serialisierende ChunkColumn.</param>
         public void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
@@ -108,6 +122,10 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Gibt alle Universen zurück, die geladen werden können.
+        /// </summary>
+        /// <returns>Die Liste der Universen.</returns>
         public IUniverse[] ListUniverses()
         {
             string root = GetRoot();
@@ -123,6 +141,11 @@ namespace OctoAwesome.Runtime
             return universes.ToArray();
         }
 
+        /// <summary>
+        /// Lädt das Universum mit der angegebenen Guid.
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <returns>Das geladene Universum.</returns>
         public IUniverse LoadUniverse(Guid universeGuid)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), UniverseFilename);
@@ -140,6 +163,12 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Lädt einen Planeten.
+        /// </summary>
+        /// <param name="universeGuid">Guid des Universums</param>
+        /// <param name="planetId">Index des Planeten</param>
+        /// <returns></returns>
         public IPlanet LoadPlanet(Guid universeGuid, int planetId)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetFilename);
@@ -170,6 +199,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Lädt eine <see cref="IChunkColumn"/>.
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planet">Index des Planeten.</param>
+        /// <param name="columnIndex">Zu serialisierende ChunkColumn.</param>
+        /// <returns>Die neu geladene ChunkColumn.</returns>
         public IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString(), string.Format(ColumnFilename, columnIndex.X, columnIndex.Y));
@@ -177,12 +213,12 @@ namespace OctoAwesome.Runtime
                 return null;
 
             try {
-                using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            {
+                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
                 {
-                    using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
-                    {
-                        return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
-                    }
+                    return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
+                }
                 }
             }
             catch (IOException)

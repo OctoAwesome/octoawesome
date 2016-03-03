@@ -129,6 +129,11 @@ namespace OctoAwesome
             NormalizeXY(size.X, size.Y);
         }
 
+        /// <summary>
+        /// Normalisiert den Wert von X und Y auf den angegebenen Grenzbereich.
+        /// </summary>
+        /// <param name="index">Der zu normalisierende Index2</param>
+        /// <param name="size">3D Size</param>
         public static Index2 NormalizeXY(Index2 index,Index3 size)
         {
             index.NormalizeXY(size);
@@ -189,36 +194,76 @@ namespace OctoAwesome
             return (X * X) + (Y * Y);
         }
 
+        /// <summary>
+        /// Addition von zwei Indices2
+        /// </summary>
+        /// <param name="i1">1. Summand</param>
+        /// <param name="i2">2. Summand</param>
+        /// <returns></returns>
         public static Index2 operator +(Index2 i1, Index2 i2)
         {
             return new Index2(i1.X + i2.X, i1.Y + i2.Y);
         }
 
+        /// <summary>
+        /// Subtraktion von zwei Indices2
+        /// </summary>
+        /// <param name="i1">Minuend</param>
+        /// <param name="i2">Subtrahend</param>
+        /// <returns></returns>
         public static Index2 operator -(Index2 i1, Index2 i2)
         {
             return new Index2(i1.X - i2.X, i1.Y - i2.Y);
         }
 
+        /// <summary>
+        /// Multiplikation eines Index2 mit einem Skalierungsfaktor
+        /// </summary>
+        /// <param name="i1">Index</param>
+        /// <param name="scale">Skalierungsfaktor</param>
+        /// <returns></returns>
         public static Index2 operator *(Index2 i1, int scale)
         {
             return new Index2(i1.X * scale, i1.Y * scale);
         }
 
+        /// <summary>
+        /// Division eines Index2 durch einen Skalierungsfaktor
+        /// </summary>
+        /// <param name="i1">Index</param>
+        /// <param name="scale">Skalierungsfaktor</param>
+        /// <returns></returns>
         public static Index2 operator /(Index2 i1, int scale)
         {
             return new Index2(i1.X / scale, i1.Y / scale);
         }
 
+        /// <summary>
+        /// Überprüft, ob beide gegebenen Indices gleich sind.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <returns></returns>
         public static bool operator ==(Index2 i1, Index2 i2)
         {
             return i1.Equals(i2);
         }
 
+        /// <summary>
+        /// Überprüft, ob beide gegebenen Indices nicht gleich sind.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <returns></returns>
         public static bool operator !=(Index2 i1, Index2 i2)
         {
             return !i1.Equals(i2);
         }
 
+        /// <summary>
+        /// Implizite Umwandlung eines Index2 in einen Vector2. Möglicherweise entstehen dadurch Rundungsfehler.
+        /// </summary>
+        /// <param name="index"></param>
         public static implicit operator Vector2(Index2 index)
         {
             return new Vector2(index.X, index.Y);
@@ -262,11 +307,20 @@ namespace OctoAwesome
             return distance;
         }
 
+        /// <summary>
+        /// Gibt einen string zurück, der den akteullen Index2 darstellt.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "(" + X.ToString() + "/" + Y.ToString() + ")";
         }
 
+        /// <summary>
+        /// Überprüft, ob das gegebene Objekt (falls ein <see cref="Index2"/> gleich der aktuellen Instanz ist.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (!(obj is Index2))
@@ -278,6 +332,10 @@ namespace OctoAwesome
                 other.Y == this.Y);
         }
 
+        /// <summary>
+        /// Gibt einen möglichst eindeutigen Hashwert für den aktuellen Index2 zurück.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return 

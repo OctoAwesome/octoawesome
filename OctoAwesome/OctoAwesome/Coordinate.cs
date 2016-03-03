@@ -27,6 +27,12 @@ namespace OctoAwesome
         /// </summary>
         private Vector3 position;
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Coordinate-Struktur.
+        /// </summary>
+        /// <param name="planet">Index des Planeten</param>
+        /// <param name="block">Blockindex innerhalb des Planeten</param>
+        /// <param name="position">Position innerhalb des Blockes</param>
         public Coordinate(int planet, Index3 block, Vector3 position)
         {
             Planet = planet;
@@ -175,6 +181,13 @@ namespace OctoAwesome
             ChunkIndex = index;
         }
 
+        /// <summary>
+        /// Addiert die zwei gegebenen <see cref="Coordinate"/>s.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <exception cref="NotSupportedException">Wenn die beiden Coordinates nicht auf den selben Planeten verweisen</exception>
+        /// <returns>Das Ergebnis der Addition</returns>
         public static Coordinate operator +(Coordinate i1, Coordinate i2)
         {
             if (i1.Planet != i2.Planet)
@@ -183,11 +196,21 @@ namespace OctoAwesome
             return new Coordinate(i1.Planet, i1.block + i2.block, i1.position + i2.position);
         }
 
+        /// <summary>
+        /// Addiert den gegebenen Vector3 auf die <see cref="BlockPosition"/> der Coordinate.
+        /// </summary>
+        /// <param name="i1"></param>
+        /// <param name="i2"></param>
+        /// <returns>Das Ergebnis der Addition</returns>
         public static Coordinate operator +(Coordinate i1, Vector3 i2)
         {
             return new Coordinate(i1.Planet, i1.block, i1.position + i2);
         }
 
+        /// <summary>
+        /// Stellt die Coordinate-Instanz als string dar.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return

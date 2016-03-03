@@ -35,6 +35,11 @@ namespace OctoAwesome
         /// </summary>
         public int LoadedChunkColumns { get { return cache.Count; } }
 
+        /// <summary>
+        /// Erzeugt eine neue Instaz der Klasse GlobalChunkCache
+        /// </summary>
+        /// <param name="loadDelegate">Delegat, der nicht geladene ChunkColumns nachläd.</param>
+        /// <param name="saveDelegate">Delegat, der nicht mehr benötigte ChunkColumns abspeichert.</param>
         public GlobalChunkCache(Func<int, Index2, IChunkColumn> loadDelegate, 
             Action<int, Index2, IChunkColumn> saveDelegate)
         {
@@ -50,6 +55,7 @@ namespace OctoAwesome
         /// <summary>
         /// Abonniert einen Chunk.
         /// </summary>
+        /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugreifen will</param>
         /// <returns></returns>
@@ -73,6 +79,13 @@ namespace OctoAwesome
                 return cacheItem.ChunkColumn;
             }
         }
+
+        /// <summary>
+        /// Liefert den Chunk, sofern geladen.
+        /// </summary>
+        /// <param name="planet">Die Id des Planeten</param>
+        /// <param name="position">Die Position des zurückzugebenden Chunks</param>
+        /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
         public IChunkColumn Peek(int planet, Index2 position)
         {
             CacheItem cacheItem = null;
@@ -104,8 +117,9 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
-        /// <param name="position">Die Position des Chunks der Freigegeben wird</param>
-        /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugegriffen hat</param>
+        /// <param name="planet">Die Id des Planeten</param>
+        /// <param name="position">Die Position des freizugebenden Chunks</param>
+        /// <param name="writeable">Ist der Chunk schreibbar abonniert worden?</param>
         public void Release(int planet,Index2 position, bool writeable)
         {
             lock (lockObject)
@@ -136,8 +150,7 @@ namespace OctoAwesome
         /// Element für den Cache
         /// </summary>
         private class CacheItem
-        {
-            
+        {            
             /// <summary>
             /// Die Zahl der Subscriber, die das Item Abboniert hat.
             /// </summary>

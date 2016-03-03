@@ -11,8 +11,6 @@ namespace OctoAwesome
     /// </summary>
     public interface IChunk
     {
-
-
         /// <summary>
         /// Referenz auf den Planeten.
         /// </summary>
@@ -67,6 +65,7 @@ namespace OctoAwesome
         /// Überschreibt den Block an der angegebenen Position.
         /// </summary>
         /// <param name="index">Koordinate des Zielblocks innerhalb des Chunks.</param>
+        /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
         void SetBlock(Index3 index, ushort block, int meta = 0);
 
@@ -76,6 +75,7 @@ namespace OctoAwesome
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         /// <param name="block">Die neue Block-ID</param>
         void SetBlock(int x, int y, int z, ushort block, int meta = 0);
 
@@ -91,9 +91,10 @@ namespace OctoAwesome
         /// <summary>
         /// Überschreibt den Block an der angegebenen Koordinate.
         /// </summary>
-        /// <param name="index">Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="block">Die neue Block-ID.</param>
         /// <param name="meta">(Optional) Metainformationen für den Block</param>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         void SetBlockMeta(int x, int y, int z, int meta);
 
         /// <summary>

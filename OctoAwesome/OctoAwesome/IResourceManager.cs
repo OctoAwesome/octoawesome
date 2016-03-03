@@ -7,6 +7,10 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        /// <summary>
+        /// Lädt das Universum für die angegebene GUID.
+        /// </summary>
+        /// <param name="universeId"></param>
         void LoadUniverse(Guid universeId);
 
         void UnloadUniverse();
@@ -18,7 +22,7 @@ namespace OctoAwesome
         void SavePlayer(Player player);
 
         /// <summary>
-        /// Gibt das Universum für die angegebene ID zurück
+        /// Entlädt das aktuelle Universum
         /// </summary>
         /// <returns>Das gewünschte Universum, falls es existiert</returns>
         IUniverse GetUniverse();
