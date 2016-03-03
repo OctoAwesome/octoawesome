@@ -407,6 +407,9 @@ namespace OctoAwesome.Client.Controls
 
         private bool FillChunkRenderer()
         {
+            if (player.ActorHost == null)
+                return false;
+
             Index2 destinationChunk = new Index2(player.ActorHost.Position.ChunkIndex);
 
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat

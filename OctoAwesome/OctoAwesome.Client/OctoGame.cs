@@ -86,6 +86,7 @@ namespace OctoAwesome.Client
 
         protected override void OnExiting(object sender, EventArgs args)
         {
+            Player.RemovePlayer();
             Simulation.ExitGame();
 
             base.OnExiting(sender, args);

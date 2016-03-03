@@ -72,6 +72,7 @@ namespace OctoAwesome.Client.Screens
                 if (int.TryParse(seedInput.Text, out textseed))
                     seed = textseed;
 
+                manager.Player.RemovePlayer();
                 Manager.Game.Simulation.NewGame(nameInput.Text, seed);
                 manager.Game.Player.InsertPlayer();
                 manager.NavigateToScreen(new GameScreen(manager));

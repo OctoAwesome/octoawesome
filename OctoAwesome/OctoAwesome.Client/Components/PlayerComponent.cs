@@ -70,6 +70,7 @@ namespace OctoAwesome.Client.Components
             if (ActorHost == null)
                 return;
 
+            ResourceManager.Instance.SavePlayer(ActorHost.Player);
             simulation.RemovePlayer(ActorHost);
             ActorHost = null;
         }

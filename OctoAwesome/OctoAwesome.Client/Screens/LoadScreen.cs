@@ -52,11 +52,25 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(mainStack);
 
             //Level Stack
-            Listbox<Label> levelList = new Listbox<Label>(manager);
+            Listbox<IUniverse> levelList = new Listbox<IUniverse>(manager);
             levelList.Background = new BorderBrush(Color.White * 0.5f);
             levelList.VerticalAlignment = VerticalAlignment.Stretch;
             levelList.HorizontalAlignment = HorizontalAlignment.Stretch;
             levelList.Margin = Border.All(10);
+            levelList.TemplateGenerator += (x) =>
+            {
+                return new Label(manager)
+                {
+                    Text = string.Format("{0} ({1})", x.Name, x.Seed),
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Padding = Border.All(10),
+                };
+            };
+            levelList.SelectedItemChanged += (s, e) =>
+            {
+                playButton.Enabled = e.NewItem != null;
+                deleteButton.Enabled = e.NewItem != null;
+            };
             mainStack.AddControl(levelList, 0, 0);
 
 
@@ -82,8 +96,8 @@ namespace OctoAwesome.Client.Screens
             buttonStack.HorizontalAlignment = HorizontalAlignment.Stretch;
             sidebar.Controls.Add(buttonStack);
 
-            renameButton = getButton("Rename");
-            buttonStack.Controls.Add(renameButton);
+            //renameButton = getButton("Rename");
+            //buttonStack.Controls.Add(renameButton);
 
             deleteButton = getButton("Delete");
             buttonStack.Controls.Add(deleteButton);
@@ -95,16 +109,18 @@ namespace OctoAwesome.Client.Screens
             playButton = getButton("Play");
             playButton.LeftMouseClick += (s, e) =>
             {
-                manager.Game.Simulation.NewGame("Test", 12345);
+                if (levelList.SelectedItem == null)
+                    return;
+
+                manager.Player.RemovePlayer();
+                manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
                 manager.Game.Player.InsertPlayer();
                 manager.NavigateToScreen(new GameScreen(manager));
             };
             buttonStack.Controls.Add(playButton);
 
             foreach (var universe in ResourceManager.Instance.ListUniverses())
-            {
-                levelList.Items.Add(new Label(Manager) { Text = universe.Name });
-            } 
+                levelList.Items.Add(universe);
         }
 
         private Button getButton(string title)
