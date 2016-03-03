@@ -101,6 +101,21 @@ namespace OctoAwesome.Client.Screens
 
             deleteButton = getButton("Delete");
             buttonStack.Controls.Add(deleteButton);
+            deleteButton.LeftMouseClick += (s, e) =>
+            {
+                if (levelList.SelectedItem == null)
+                    return;
+
+                // Sicherstellen, dass universe nicht geladen ist
+                if (ResourceManager.Instance.CurrentUniverse != null && 
+                    ResourceManager.Instance.CurrentUniverse.Id == levelList.SelectedItem.Id)
+                    return;
+
+                ResourceManager.Instance.DeleteUniverse(levelList.SelectedItem.Id);
+                levelList.Items.Remove(levelList.SelectedItem);
+                levelList.SelectedItem = null;
+                levelList.InvalidateDimensions();
+            };
 
             createButton = getButton("Create");
             createButton.LeftMouseClick += (s, e) => manager.NavigateToScreen(new CreateUniverseScreen(manager));

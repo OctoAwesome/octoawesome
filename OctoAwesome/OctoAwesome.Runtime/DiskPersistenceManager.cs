@@ -63,6 +63,12 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        public void DeleteUniverse(Guid universeGuid)
+        {
+            string path = Path.Combine(GetRoot(), universeGuid.ToString());
+            Directory.Delete(path, true);
+        }
+
         public void SavePlanet(Guid universeGuid, IPlanet planet)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString());

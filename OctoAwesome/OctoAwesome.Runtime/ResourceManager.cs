@@ -32,6 +32,8 @@ namespace OctoAwesome.Runtime
 
         private Dictionary<int, IPlanet> planets;
 
+        public IUniverse CurrentUniverse { get { return universe; } }
+
         #region Singleton
 
         private static ResourceManager instance = null;
@@ -98,14 +100,17 @@ namespace OctoAwesome.Runtime
             // TODO: Unload Universe;
         }
 
-        public void SaveUniverse()
-        {
-            // TODO: Save ;)
-        }
-
         public IUniverse GetUniverse()
         {
             return universe;
+        }
+
+        public void DeleteUniverse(Guid id)
+        {
+            if (universe != null && universe.Id == id)
+                throw new Exception("Universe ist bereits geladen");
+
+            persistenceManager.DeleteUniverse(id);
         }
 
         public IPlanet GetPlanet(int id)

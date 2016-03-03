@@ -11,7 +11,7 @@ namespace OctoAwesome
 
         void UnloadUniverse();
 
-        void SaveUniverse();
+        void DeleteUniverse(Guid id);
 
         Player LoadPlayer(string playername);
 

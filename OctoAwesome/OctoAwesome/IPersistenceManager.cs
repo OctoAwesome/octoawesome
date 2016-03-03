@@ -26,6 +26,8 @@ namespace OctoAwesome
 
         IUniverse LoadUniverse(Guid universeGuid);
 
+        void DeleteUniverse(Guid universeGuid);
+
         IPlanet LoadPlanet(Guid universeGuid, int planetId);
 
         /// <summary>

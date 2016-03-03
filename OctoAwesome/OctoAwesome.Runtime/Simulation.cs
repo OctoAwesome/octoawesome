@@ -16,9 +16,12 @@ namespace OctoAwesome.Runtime
 
         public SimulationState State { get; private set; }
 
+        public Guid UniverseId { get; private set; }
+
         public Simulation()
         {
             State = SimulationState.Ready;
+            UniverseId = Guid.Empty;
         }
 
         public void NewGame(string name, int? seed = null)
