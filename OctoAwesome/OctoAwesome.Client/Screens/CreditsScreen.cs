@@ -7,10 +7,11 @@ using System.Text;
 using Microsoft.Xna.Framework.Storage;
 using OctoAwesome.Client.Components;
 using MonoGameUi;
+using Microsoft.Xna.Framework.Input;
 
 namespace OctoAwesome.Client.Screens
 {
-    class CreditsScreen : Screen
+    class CreditsScreen : BaseScreen
     {
         public CreditsScreen(ScreenComponent manager) : base(manager)
         {

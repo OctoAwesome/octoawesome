@@ -9,15 +9,13 @@ namespace OctoAwesome.Client.Components
     {
         public new OctoGame Game { get; private set; }
 
-        public PlayerComponent Player { get; private set; }
+        public PlayerComponent Player { get { return Game.Player; } }
 
-        public CameraComponent Camera { get; private set; }
+        public CameraComponent Camera { get { return Game.Camera; } }
 
-        public ScreenComponent(OctoGame game, PlayerComponent player, CameraComponent camera) : base(game)
+        public ScreenComponent(OctoGame game) : base(game)
         {
             Game = game;
-            Player = player;
-            Camera = camera;
             TitlePrefix = "OctoAwesome";
         }
 

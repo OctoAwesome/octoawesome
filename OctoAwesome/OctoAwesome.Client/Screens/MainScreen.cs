@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class MainScreen : Screen
+    internal sealed class MainScreen : BaseScreen
     {
         public MainScreen(ScreenComponent manager) : base(manager)
         {

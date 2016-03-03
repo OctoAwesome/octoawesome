@@ -8,11 +8,12 @@ using System.Text;
 
 namespace OctoAwesome.Client.Screens
 {
-    class CreateUniverseScreen : Screen
+    class CreateUniverseScreen : BaseScreen
     {
         ScreenComponent Manager;
 
         Textbox nameInput, seedInput;
+        Button createButton;
 
         public CreateUniverseScreen(ScreenComponent manager) : base(manager)
         {
@@ -54,14 +55,18 @@ namespace OctoAwesome.Client.Screens
             grid.Columns.Add(new ColumnDefinition() { Width = 1,ResizeMode = ResizeMode.Parts });
 
             nameInput = GetTextbox();
+            nameInput.TextChanged += (s, e) => {
+                createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
+            };
             AddLabeledControl(grid, "Name: ", nameInput);
 
             seedInput = GetTextbox();
             AddLabeledControl(grid, "Seed: ", seedInput);
 
-            Button createButton = Button.TextButton(manager, "Create");
+            createButton = Button.TextButton(manager, "Create");
             createButton.HorizontalAlignment = HorizontalAlignment.Right;
             createButton.VerticalAlignment = VerticalAlignment.Bottom;
+            createButton.Visible = false;
             createButton.LeftMouseClick += (s, e) =>
             {
                 if (string.IsNullOrEmpty(nameInput.Text))

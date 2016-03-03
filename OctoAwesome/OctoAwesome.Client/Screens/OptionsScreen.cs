@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace OctoAwesome.Client.Screens
 {
-    class OptionsScreen : Screen
+    class OptionsScreen : BaseScreen
     {
         private OctoGame game;
         private Button exitButton, deleteButton;

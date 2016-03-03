@@ -10,10 +10,10 @@ namespace OctoAwesome.Client.Components
     {
         private PlayerComponent player;
 
-        public CameraComponent(Game game, PlayerComponent player)
+        public CameraComponent(OctoGame game)
             : base(game)
         {
-            this.player = player;
+            player = game.Player;
         }
 
         public override void Initialize()

@@ -9,7 +9,7 @@ using OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Screens
 {
-    class CrewMemberScreen : Screen
+    class CrewMemberScreen : BaseScreen
     {
         public CrewMemberScreen(ScreenComponent manager, CrewMember member) : base(manager)
         {

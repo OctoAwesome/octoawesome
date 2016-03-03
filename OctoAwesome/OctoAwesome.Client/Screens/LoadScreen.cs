@@ -9,7 +9,7 @@ using System.Text;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal class LoadScreen : Screen
+    internal class LoadScreen : BaseScreen
     {
         private new ScreenComponent Manager;
 

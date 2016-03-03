@@ -26,11 +26,6 @@ namespace OctoAwesome.Client
 
         public ScreenComponent Screen { get; private set; }
 
-        //CameraComponent camera;
-        //PlayerComponent player;
-        //SimulationComponent simulation;
-        //ScreenComponent screens;
-
         public OctoGame()
             : base()
         {
@@ -54,31 +49,19 @@ namespace OctoAwesome.Client
                 SceneControl.VIEWRANGE = viewrange;
             }
 
-            //int viewheight;
-            //if (int.TryParse(ConfigurationManager.AppSettings["Viewheight"], out viewheight))
-            //{
-            //    if (viewheight < 1)
-            //        throw new NotSupportedException("Viewheight in app.config darf nicht kleiner 1 sein");
-
-            //    SceneComponent.VIEWHEIGHT = viewheight;
-            //}
-
-            //ResourceManager.CacheSize = ((viewrange * 2) + 1) * ((viewrange * 2) + 1) * 5 * 2;
-
             Simulation = new SimulationComponent(this);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 
-            Player = new PlayerComponent(this, Simulation);
+            Player = new PlayerComponent(this);
             Player.UpdateOrder = 2;
             Components.Add(Player);
 
-
-            Camera = new CameraComponent(this, Player);
+            Camera = new CameraComponent(this);
             Camera.UpdateOrder = 3;
             Components.Add(Camera);
 
-            Screen = new ScreenComponent(this, Player, Camera);
+            Screen = new ScreenComponent(this);
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
             Components.Add(Screen);

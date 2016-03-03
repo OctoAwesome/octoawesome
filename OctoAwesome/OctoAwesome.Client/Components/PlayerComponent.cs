@@ -9,7 +9,7 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class PlayerComponent : GameComponent
     {
-        private SimulationComponent simulation;
+        private new OctoGame Game;
 
         #region External Input
 
@@ -47,10 +47,10 @@ namespace OctoAwesome.Client.Components
 
         public List<InventorySlot> Tools { get; set; }
 
-        public PlayerComponent(Game game, SimulationComponent simulation)
+        public PlayerComponent(OctoGame game)
             : base(game)
         {
-            this.simulation = simulation;
+            Game = game;
         }
 
         public override void Initialize()
@@ -62,7 +62,7 @@ namespace OctoAwesome.Client.Components
         public void InsertPlayer()
         {
             Player player = ResourceManager.Instance.LoadPlayer("Adam");
-            ActorHost = simulation.InsertPlayer(player);
+            ActorHost = Game.Simulation.InsertPlayer(player);
         }
 
         public void RemovePlayer()
@@ -71,7 +71,7 @@ namespace OctoAwesome.Client.Components
                 return;
 
             ResourceManager.Instance.SavePlayer(ActorHost.Player);
-            simulation.RemovePlayer(ActorHost);
+            Game.Simulation.RemovePlayer(ActorHost);
             ActorHost = null;
         }
 

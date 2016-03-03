@@ -4,7 +4,7 @@ using OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class InventoryScreen : Screen
+    internal sealed class InventoryScreen : BaseScreen
     {
         private PlayerComponent player;
 
@@ -48,15 +48,6 @@ namespace OctoAwesome.Client.Screens
         {
             Manager.FreeMouse();
             base.OnNavigatedTo(args);
-        }
-
-        protected override void OnKeyPress(KeyEventArgs args)
-        {
-            if (args.Key == Microsoft.Xna.Framework.Input.Keys.Escape)
-            {
-                args.Handled = true;
-                Manager.NavigateBack();
-            }
         }
     }
 }
