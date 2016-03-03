@@ -35,10 +35,11 @@ namespace OctoAwesome.Client
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1080;
+            graphics.PreferredBackBufferHeight = 720;
+
             Content.RootDirectory = "Content";
             Window.Title = "OctoAwesome";
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
             IsMouseVisible = true;
             Window.AllowUserResizing = false;
 
@@ -88,6 +89,22 @@ namespace OctoAwesome.Client
             Simulation.ExitGame();
 
             base.OnExiting(sender, args);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            KeyboardState state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.F11))
+            {
+                graphics.ToggleFullScreen();
+            }
+            if (state.IsKeyDown(Keys.F12))
+            {
+                graphics.PreferredBackBufferWidth = 1920;
+                graphics.PreferredBackBufferHeight = 1080;
+                graphics.ApplyChanges();
+            }
         }
     }
 }
