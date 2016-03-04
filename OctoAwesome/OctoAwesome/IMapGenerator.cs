@@ -12,6 +12,11 @@ namespace OctoAwesome
     public interface IMapGenerator
     {
         /// <summary>
+        /// Gibt den Namen des Generators zurück
+        /// </summary>
+        String GetName();
+
+        /// <summary>
         /// Generiert einen neuen Planeten
         /// </summary>
         /// <param name="universeGuid">Die Universums-ID, dem der Planet angehört</param>

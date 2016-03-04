@@ -15,6 +15,8 @@ namespace OctoAwesome.Client.Screens
         Textbox nameInput, seedInput;
         Button createButton;
 
+        Combobox<IMapGenerator> generatorSelector;
+
         public CreateUniverseScreen(ScreenComponent manager) : base(manager)
         {
             Manager = manager;
@@ -28,15 +30,7 @@ namespace OctoAwesome.Client.Screens
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
-            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
-            backButton.VerticalAlignment = VerticalAlignment.Top;
-            backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
-            backButton.Margin = new Border(10, 10, 10, 10);
-            Controls.Add(backButton);
+            EnableBackButton();
 
             Panel panel = new Panel(manager);
             panel.VerticalAlignment = VerticalAlignment.Stretch;
@@ -63,6 +57,28 @@ namespace OctoAwesome.Client.Screens
             seedInput = GetTextbox();
             AddLabeledControl(grid, "Seed: ", seedInput);
 
+            generatorSelector = new Combobox<IMapGenerator>(manager);
+            generatorSelector.HorizontalAlignment = HorizontalAlignment.Stretch;
+            generatorSelector.VerticalAlignment = VerticalAlignment.Stretch;
+            generatorSelector.Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black);
+            generatorSelector.Selector.Background = new BorderBrush(Color.SlateGray, LineType.Solid, Color.Gray);
+            generatorSelector.TemplateGenerator += (item) =>
+                {
+                    String name = item.GetName();
+                    return new Label(manager)
+                    {
+                        Text = name,
+                        HorizontalAlignment = HorizontalAlignment.Stretch
+                    };
+            };
+
+            foreach (IMapGenerator generator in OctoAwesome.Runtime.ExtensionManager.GetInstances<IMapGenerator>())
+                generatorSelector.Items.Add(generator);
+
+            AddLabeledControl(grid, "Map Generator: ", generatorSelector);
+
+            generatorSelector.SelectFirst();
+
             createButton = Button.TextButton(manager, "Create");
             createButton.HorizontalAlignment = HorizontalAlignment.Right;
             createButton.VerticalAlignment = VerticalAlignment.Bottom;
@@ -83,6 +99,8 @@ namespace OctoAwesome.Client.Screens
                 manager.NavigateToScreen(new GameScreen(manager));
             };
             panel.Controls.Add(createButton);
+
+           
 
         }
 

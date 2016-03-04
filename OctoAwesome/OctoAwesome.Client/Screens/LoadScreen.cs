@@ -16,6 +16,7 @@ namespace OctoAwesome.Client.Screens
         Button renameButton, deleteButton, createButton, playButton;
         StackPanel buttonStack;
         Grid mainStack;
+        Label nameLabel, seedLabel, lastPlayedLabel, planetsLabel, sizeLabel;
 
         public LoadScreen(ScreenComponent manager) : base(manager)
         {
@@ -30,15 +31,7 @@ namespace OctoAwesome.Client.Screens
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
-            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
-            backButton.VerticalAlignment = VerticalAlignment.Top;
-            backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
-            backButton.Margin = new Border(10, 10, 10, 10);
-            Controls.Add(backButton);
+            EnableBackButton();
 
             //Main Panel
             mainStack = new Grid(manager);
@@ -57,14 +50,28 @@ namespace OctoAwesome.Client.Screens
             levelList.VerticalAlignment = VerticalAlignment.Stretch;
             levelList.HorizontalAlignment = HorizontalAlignment.Stretch;
             levelList.Margin = Border.All(10);
+            levelList.SelectedItemBrush = new BorderBrush(Color.White);
             levelList.TemplateGenerator += (x) =>
             {
-                return new Label(manager)
-                {
-                    Text = string.Format("{0} ({1})", x.Name, x.Seed),
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    Padding = Border.All(10),
-                };
+                StackPanel stack = new StackPanel(manager);
+                stack.Padding = Border.All(10);
+                stack.HorizontalAlignment = HorizontalAlignment.Stretch;
+                stack.Controls.Add(
+                    new Label(manager)
+                    {
+                        Text = x.Name,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Padding = Border.All(5),
+                    });
+                stack.Controls.Add(
+                    new Label(manager)
+                    {
+                        Text = "Last played: " + "00.00.0000",
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Padding = Border.All(5),
+                    });
+
+                return stack;
             };
             levelList.SelectedItemChanged += (s, e) =>
             {
@@ -84,11 +91,24 @@ namespace OctoAwesome.Client.Screens
             mainStack.AddControl(sidebar, 1, 0);
 
             //Universe Info
-            Label l = new Label(manager);
-            l.Text = " Placeholder ";
-            l.VerticalAlignment = VerticalAlignment.Top;
-            l.HorizontalAlignment = HorizontalAlignment.Left;
-            sidebar.Controls.Add(l);
+            Grid infoGrid = new Grid(manager);
+            infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            infoGrid.VerticalAlignment = VerticalAlignment.Top;
+            infoGrid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Auto });
+            infoGrid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Auto });
+            sidebar.Controls.Add(infoGrid);
+
+            nameLabel = new Label(manager);
+            seedLabel = new Label(manager);
+            lastPlayedLabel = new Label(manager);
+            planetsLabel = new Label(manager);
+            sizeLabel = new Label(manager);
+
+            AddInfoToGrid(infoGrid, Languages.OctoClient.Name + ": ", nameLabel);
+            AddInfoToGrid(infoGrid, Languages.OctoClient.Seed + ": ", seedLabel);
+            AddInfoToGrid(infoGrid, Languages.OctoClient.LastPlayed + ": ", lastPlayedLabel);
+            AddInfoToGrid(infoGrid, Languages.OctoClient.Planets + ": ", planetsLabel);
+            AddInfoToGrid(infoGrid, Languages.OctoClient.Size + ": ", sizeLabel);
 
             //Buttons
             StackPanel buttonStack = new StackPanel(manager);
@@ -99,7 +119,7 @@ namespace OctoAwesome.Client.Screens
             //renameButton = getButton("Rename");
             //buttonStack.Controls.Add(renameButton);
 
-            deleteButton = getButton("Delete");
+            deleteButton = getButton(Languages.OctoClient.Delete);
             buttonStack.Controls.Add(deleteButton);
             deleteButton.LeftMouseClick += (s, e) =>
             {
@@ -117,11 +137,11 @@ namespace OctoAwesome.Client.Screens
                 levelList.InvalidateDimensions();
             };
 
-            createButton = getButton("Create");
+            createButton = getButton(Languages.OctoClient.Create);
             createButton.LeftMouseClick += (s, e) => manager.NavigateToScreen(new CreateUniverseScreen(manager));
             buttonStack.Controls.Add(createButton);
 
-            playButton = getButton("Play");
+            playButton = getButton(Languages.OctoClient.Play);
             playButton.LeftMouseClick += (s, e) =>
             {
                 if (levelList.SelectedItem == null)
@@ -138,11 +158,21 @@ namespace OctoAwesome.Client.Screens
                 levelList.Items.Add(universe);
         }
 
+
+
         private Button getButton(string title)
         {
             Button button = Button.TextButton(Manager, title);
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
             return button;
+        }
+
+        private void AddInfoToGrid(Grid grid, String title, Control control)
+        {
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto });
+            grid.AddControl(new Label(Manager) { Text = title , HorizontalAlignment = HorizontalAlignment.Left}, 0, grid.Rows.Count - 1);
+            grid.AddControl(control, 1, grid.Rows.Count - 1);
+            grid.Rows.Add(new RowDefinition() { Height = 10, ResizeMode = ResizeMode.Fixed });              
         }
     }
 }

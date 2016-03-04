@@ -9,6 +9,11 @@ namespace OctoAwesome.Basics
 {
     public class DebugMapGenerator : IMapGenerator
     {
+        public String GetName()
+        {
+            return "Debug Generator";
+        }
+
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
             Planet planet = new Planet(id, universe, new Index3(4, 4, 3), seed);

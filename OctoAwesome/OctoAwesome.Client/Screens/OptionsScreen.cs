@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Screens
     class OptionsScreen : BaseScreen
     {
         private OctoGame game;
-        private Button exitButton, deleteButton;
+        private Button exitButton;
         private Label rangeTitle, persistenceTitle;
         private Textbox mapPath;
 
@@ -38,16 +38,7 @@ namespace OctoAwesome.Client.Screens
             background.HorizontalAlignment = HorizontalAlignment.Stretch;
             Controls.Add(background);
 
-            ////////////////////////////////////////////Back Button////////////////////////////////////////////
-            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
-            backButton.VerticalAlignment = VerticalAlignment.Top;
-            backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
-            backButton.Margin = new Border(10, 10, 10, 10);
-            Controls.Add(backButton);
+            EnableBackButton();
 
             ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
             StackPanel settingsStack = new StackPanel(manager);
@@ -104,17 +95,10 @@ namespace OctoAwesome.Client.Screens
             mapPathStack.Controls.Add(mapPath);
 
             Button changePath = Button.TextButton(manager, Languages.OctoClient.ChangePath);
-            changePath.Height = 31;
+            changePath.VerticalAlignment = VerticalAlignment.Stretch;
             changePath.LeftMouseClick += (s, e) => ChangePath();
+
             mapPathStack.Controls.Add(changePath);
-
-
-            //////////////////////Delete Map//////////////////////
-            deleteButton = Button.TextButton(manager, Languages.OctoClient.DeleteMap);
-            deleteButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            deleteButton.Margin = new Border(0, 10, 0, 0);
-            deleteButton.LeftMouseClick += (s, e) => deleteMap();
-            settingsStack.Controls.Add(deleteButton);
 
 
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
@@ -173,21 +157,5 @@ namespace OctoAwesome.Client.Screens
             exitButton.Enabled = true;
         }
 
-        private void deleteMap()
-        {
-            if (deleteState)
-            {
-                deleteState = false;
-                ((Label)(deleteButton.Content)).Text = Languages.OctoClient.Deleted;
-                deleteButton.Enabled = false;
-                try { Directory.Delete(@"D:\OctoMap"); } catch { } //TODO: Unlock files to delete Directory
-            }
-            else
-            {
-                ((Label)(deleteButton.Content)).Text = Languages.OctoClient.Really;
-                deleteButton.InvalidateDimensions();
-                deleteState = true;
-            }
-        }
     }
 }

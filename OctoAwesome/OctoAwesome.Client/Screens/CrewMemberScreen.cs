@@ -16,6 +16,8 @@ namespace OctoAwesome.Client.Screens
             VerticalAlignment = VerticalAlignment.Center;
             HorizontalAlignment = HorizontalAlignment.Center;
 
+            EnableBackButton();
+
             SpriteFont boldFont = manager.Content.Load<SpriteFont>("BoldFont");
 
             Padding = new Border(0, 0, 0, 0);
@@ -145,17 +147,6 @@ namespace OctoAwesome.Client.Screens
             DescriptionPanel.Controls.Add(Description);
 
             panel.Width = 700;
-
-            //The Back Button
-            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
-            backButton.VerticalAlignment = VerticalAlignment.Top;
-            backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
-            backButton.Margin = new Border(10, 10, 10, 10);
-            Controls.Add(backButton);
 
             Title = member.Alias;
         }
