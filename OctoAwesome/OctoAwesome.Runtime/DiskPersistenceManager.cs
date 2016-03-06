@@ -24,7 +24,7 @@ namespace OctoAwesome.Runtime
 
         private const string ColumnFilename = "column_{0}_{1}.dat";
 
-        private DirectoryInfo root;
+        private DirectoryInfo root;        
 
         private string GetRoot()
         {
