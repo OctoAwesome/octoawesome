@@ -38,6 +38,14 @@
     </AchievementList>
   </CrewMember>
   <CrewMember>
+    <Username>hendifw</Username>
+    <Alias>Hendrik</Alias>
+    <Description>Der Mann für die Registrierungs Webseite, ist seit der 20 Folge mit dabei und Streamt in Zukunft die Coolen ASP.NET OctoAwesome Sachen.</Description>
+    <AchievementList>
+      <Achievements>Streamer</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
     <Username>Dennis</Username>
     <Alias>Dennis</Alias>
     <Description>Nach Folge 250 hat mir Dennis (aka. BlackOrca) doch prompt eine kleine Wer-bin-ich Nachricht geschickt die mich sehr gefreut hat. Viele Jahre verfolgt er bereits Projekte wie MoonTaxi, AntMe! und nun eben OctoAwesome. Ihm steht IoT auf der Flagge - speziell das Verbinden von Hard- und Software im Heimbereich.</Description>
@@ -98,6 +106,15 @@
     </AchievementList>
   </CrewMember>
   <CrewMember>
+    <Username>Marcus_Aurelius</Username>
+    <Alias>Maximilian</Alias>
+    <Description>Marcus arbeitet auch hier in unserem Wiki mit.</Description>
+    <AchievementList>
+      <Achievements>WikiAdmin</Achievements>
+      <Achievements>Streamer</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
     <Username>MarkusK</Username>
     <Alias>Markus</Alias>
     <Description>Danke für immer wieder äußerst hilfreiche Mails und natürlich auch die finanzielle Unterstützung.</Description>
@@ -109,7 +126,7 @@
   <CrewMember>
     <Username>Mrsfuckingsunshine</Username>
     <Alias>Aline</Alias>
-    <Description>Frau Sonnenschein, auch unter Aline bekannt, ist die gute Seele im Stream. Sie bringt mir nicht nur immer wieder guten warmen Tee sondern ist auch mein grafisches Gewissen und meine Inspiration, ebenso der Saubermann im Chat.</Description>
+    <Description>Frau Sonnenschein, auch unter Aline bekannt, ist die gute Seele im Stream. Sie bringt mir nicht nur immer wieder guten warmen Tee, sondern ist auch mein grafisches Gewissen und meine Inspiration, ebenso der Saubermann im Chat.</Description>
     <AchievementList>
       <Achievements>Livegast</Achievements>
       <Achievements>Grafik</Achievements>
@@ -162,6 +179,7 @@
     <Description>Susch war von Beginn an Befürworter das Stream-Formats und ist seither immer sehr hilfreich dabei meine Copy-Paste Probleme aufzudecken und an vielen Stellen gutes Feedback zu schicken.</Description>
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
+      <Achievements>Streamer</Achievements>
     </AchievementList>
   </CrewMember>
   <CrewMember>
