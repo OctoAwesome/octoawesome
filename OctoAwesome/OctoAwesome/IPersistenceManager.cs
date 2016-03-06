@@ -23,10 +23,24 @@ namespace OctoAwesome
         /// <returns>Das geladene Universum.</returns>
         IUniverse LoadUniverse(Guid universeGuid);
 
+        /// <summary>
+        /// Speichert das Universum.
+        /// </summary>
+        /// <param name="universe">Das zu speichernde Universum</param>
         void SaveUniverse(IUniverse universe);
 
+        /// <summary>
+        /// Löscht ein Universum.
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
         void DeleteUniverse(Guid universeGuid);
 
+        /// <summary>
+        /// Lädt einen Planeten.
+        /// </summary>
+        /// <param name="universeGuid">Guid des Universums</param>
+        /// <param name="planetId">Index des Planeten</param>
+        /// <returns></returns>
         IPlanet LoadPlanet(Guid universeGuid, int planetId);
 
         /// <summary>
@@ -45,9 +59,27 @@ namespace OctoAwesome
         /// <returns>Die neu geladene ChunkColumn.</returns>
         IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex);
 
+        /// <summary>
+        /// Speichert eine <see cref="IChunkColumn"/>.
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="column">Zu serialisierende ChunkColumn.</param>
         void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column);
 
+        /// <summary>
+        /// Lädt einen Player.
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <param name="playername">Der Name des Spielers.</param>
+        /// <returns></returns>
         Player LoadPlayer(Guid universeGuid, string playername);
+
+        /// <summary>
+        /// Speichert einen Player
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <param name="player">Der Player.</param>
         void SavePlayer(Guid universeGuid, Player player);
     }
 }

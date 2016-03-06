@@ -8,22 +8,39 @@ using System.Threading;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Schnittstelle zwischen Applikation und Welt-Modell.
+    /// </summary>
     public sealed class Simulation
     {
         private List<ActorHost> actorHosts = new List<ActorHost>();
         private Stopwatch watch = new Stopwatch();
         private Thread thread;
 
+        /// <summary>
+        /// Der aktuelle Status der Simulation.
+        /// </summary>
         public SimulationState State { get; private set; }
 
+        /// <summary>
+        /// Die Guid des aktuell geladenen Universums.
+        /// </summary>
         public Guid UniverseId { get; private set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Instaz der Klasse Simulation.
+        /// </summary>
         public Simulation()
         {
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
         }
 
+        /// <summary>
+        /// Erzeugt ein neues Spiel (= Universum)
+        /// </summary>
+        /// <param name="name">Name des Universums.</param>
+        /// <param name="seed">Seed für den Weltgenerator.</param>
         public void NewGame(string name, int? seed = null)
         {
             if (seed == null)
@@ -36,6 +53,10 @@ namespace OctoAwesome.Runtime
             Start();
         }
 
+        /// <summary>
+        /// Lädt ein Spiel (= Universum).
+        /// </summary>
+        /// <param name="guid">Die Guid des Universums.</param>
         public void LoadGame(Guid guid)
         {
             ResourceManager.Instance.LoadUniverse(guid);
@@ -82,11 +103,17 @@ namespace OctoAwesome.Runtime
                 actorHost.Unload();
         }
 
+        /// <summary>
+        /// Speichert das aktuelle Spiel.
+        /// </summary>
         public void SaveGame()
         {
             // TODO: Ressource Manager braucht SaveUniverse()
         }
 
+        /// <summary>
+        /// Beendet das aktuelle Spiel (nicht die Applikation)
+        /// </summary>
         public void ExitGame()
         {
             if (State != SimulationState.Running && State != SimulationState.Paused)
@@ -98,6 +125,11 @@ namespace OctoAwesome.Runtime
             ResourceManager.Instance.UnloadUniverse();
         }
 
+        /// <summary>
+        /// Fügt einen neuen Spieler hinzu.
+        /// </summary>
+        /// <param name="player">Der Player.</param>
+        /// <returns>Der neue ActorHost zur Steuerung des Spielers.</returns>
         public ActorHost InsertPlayer(Player player)
         {
             var host = new ActorHost(player);
@@ -106,6 +138,10 @@ namespace OctoAwesome.Runtime
             return host;
         }
 
+        /// <summary>
+        /// Entfernt einen Spieler aus dem Spiel.
+        /// </summary>
+        /// <param name="host">Der ActorHost des Spielers.</param>
         public void RemovePlayer(ActorHost host)
         {
 

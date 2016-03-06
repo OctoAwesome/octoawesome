@@ -66,6 +66,10 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Löscht ein Universum.
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
         public void DeleteUniverse(Guid universeGuid)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
@@ -232,6 +236,12 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <summary>
+        /// Lädt einen Player.
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <param name="playername">Der Name des Spielers.</param>
+        /// <returns></returns>
         public Player LoadPlayer(Guid universeGuid, string playername)
         {
             // TODO: Später durch Playername ersetzen
@@ -254,6 +264,11 @@ namespace OctoAwesome.Runtime
             return null;
         }
 
+        /// <summary>
+        /// Speichert einen Player
+        /// </summary>
+        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <param name="player">Der Player.</param>
         public void SavePlayer(Guid universeGuid, Player player)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
