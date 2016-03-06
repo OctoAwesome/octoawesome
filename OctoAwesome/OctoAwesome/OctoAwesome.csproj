@@ -92,6 +92,7 @@
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsManager.cs" />
     <Compile Include="Universe.cs" />
   </ItemGroup>
   <ItemGroup>

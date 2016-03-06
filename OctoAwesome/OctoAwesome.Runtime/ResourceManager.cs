@@ -69,7 +69,7 @@ namespace OctoAwesome.Runtime
             //planetCache = new Cache<int, IPlanet>(1, loadPlanet, savePlanet);
             //chunkCache = new Cache<PlanetIndex3, IChunk>(CacheSize, loadChunk, saveChunk);
 
-            bool.TryParse(ConfigurationManager.AppSettings["DisablePersistence"], out disablePersistence);
+            bool.TryParse(SettingsManager.Get("DisablePersistence"), out disablePersistence);
         }
 
         /// <summary>
