@@ -10,7 +10,7 @@ namespace OctoAwesome.Client.Screens
 {
     class CreateUniverseScreen : BaseScreen
     {
-        ScreenComponent Manager;
+        new ScreenComponent Manager;
 
         Textbox nameInput, seedInput;
         Button createButton;

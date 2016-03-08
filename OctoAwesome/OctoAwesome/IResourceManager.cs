@@ -10,15 +10,31 @@ namespace OctoAwesome
         /// <summary>
         /// Lädt das Universum für die angegebene GUID.
         /// </summary>
-        /// <param name="universeId"></param>
+        /// <param name="universeId">Die Guid des Universums.</param>
         void LoadUniverse(Guid universeId);
 
+        /// <summary>
+        /// Entlädt das aktuelle Universum.
+        /// </summary>
         void UnloadUniverse();
 
+        /// <summary>
+        /// Löscht ein Universum.
+        /// </summary>
+        /// <param name="id">Die Guid des Universums.</param>
         void DeleteUniverse(Guid id);
 
+        /// <summary>
+        /// Lädt einen Player.
+        /// </summary>
+        /// <param name="playername">Der Name des Players.</param>
+        /// <returns></returns>
         Player LoadPlayer(string playername);
 
+        /// <summary>
+        /// Speichert einen Player.
+        /// </summary>
+        /// <param name="player">Der Player.</param>
         void SavePlayer(Player player);
 
         /// <summary>

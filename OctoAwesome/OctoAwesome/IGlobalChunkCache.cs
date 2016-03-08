@@ -34,6 +34,9 @@
         /// <param name="writable">Ist der Chunk schreibbar abonniert worden?</param>
         void Release(int planet,Index2 position, bool writable);
 
+        /// <summary>
+        /// Löscht den gesamten Inhalt des Caches.
+        /// </summary>
         void Clear();
     }
 }

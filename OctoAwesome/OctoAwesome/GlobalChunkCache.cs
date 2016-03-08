@@ -96,6 +96,9 @@ namespace OctoAwesome
             return null;
         }
 
+        /// <summary>
+        /// Löscht den gesamten Inhalt des Caches.
+        /// </summary>
         public void Clear()
         {
             lock (lockObject)
