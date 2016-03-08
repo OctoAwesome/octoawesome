@@ -36,7 +36,7 @@ namespace OctoAwesome.Client
             Content.RootDirectory = "Content";
             Window.Title = "OctoAwesome";
             IsMouseVisible = true;
-            Window.AllowUserResizing = false;
+            Window.AllowUserResizing = true;
 
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
@@ -65,6 +65,17 @@ namespace OctoAwesome.Client
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
             Components.Add(Screen);
+
+            Window.ClientSizeChanged += (s, e) =>
+            {
+                if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
+                   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
+                    return;
+
+                graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                graphics.ApplyChanges();
+            };
         }
 
         protected override void OnExiting(object sender, EventArgs args)
