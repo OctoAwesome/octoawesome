@@ -13,8 +13,7 @@ namespace OctoAwesome.Client.Screens
     {
         private new ScreenComponent Manager;
 
-        Button renameButton, deleteButton, createButton, playButton;
-        StackPanel buttonStack;
+        Button deleteButton, createButton, playButton;
         Grid mainStack;
 
         public LoadScreen(ScreenComponent manager) : base(manager)

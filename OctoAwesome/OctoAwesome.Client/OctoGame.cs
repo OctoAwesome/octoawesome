@@ -41,7 +41,7 @@ namespace OctoAwesome.Client
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int viewrange;
-            if (int.TryParse(ConfigurationManager.AppSettings["Viewrange"], out viewrange))
+            if (int.TryParse(SettingsManager.Get("Viewrange"), out viewrange))
             {
                 if (viewrange < 1)
                     throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");

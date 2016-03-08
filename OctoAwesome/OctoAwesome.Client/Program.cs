@@ -12,13 +12,21 @@ namespace OctoAwesome.Client
     /// </summary>
     public static class Program
     {
+        static OctoGame game;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            using (var game = new OctoGame())
+            using (game = new OctoGame())
+                game.Run();
+        }
+
+        public static void Restart()
+        {
+            game.Exit();
+            using (game = new OctoGame())
                 game.Run();
         }
     }

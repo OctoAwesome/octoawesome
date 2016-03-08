@@ -24,14 +24,14 @@ namespace OctoAwesome.Runtime
 
         private const string ColumnFilename = "column_{0}_{1}.dat";
 
-        private DirectoryInfo root;
+        private DirectoryInfo root;        
 
         private string GetRoot()
         {
             if (root != null)
                 return root.FullName;
 
-            string appconfig = ConfigurationManager.AppSettings["ChunkRoot"];
+            string appconfig = SettingsManager.Get("ChunkRoot");
             if (!string.IsNullOrEmpty(appconfig))
             {
                 root = new DirectoryInfo(appconfig);
