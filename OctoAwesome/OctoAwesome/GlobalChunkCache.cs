@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace OctoAwesome
 {
@@ -61,23 +62,33 @@ namespace OctoAwesome
         /// <returns></returns>
         public IChunkColumn Subscribe(int planet,Index2 position, bool writeable)
         {
+            CacheItem cacheItem = null;
+
             lock (lockObject)
             {
-                CacheItem cacheItem = null;
                 if (!cache.TryGetValue(new Index3(position, planet), out cacheItem))
                 {
                     cacheItem = new CacheItem()
                     {
                         References = 0,
-                        ChunkColumn = loadDelegate(planet,position),
+                        WritableReferences = 0,
+                        ChunkColumn = null,
                     };
                     
                     cache.Add(new Index3(position, planet), cacheItem);
                 }
+
                 cacheItem.References++;
                 if (writeable) cacheItem.WritableReferences++;
-                return cacheItem.ChunkColumn;
             }
+            
+            lock (cacheItem)
+            {
+                if (cacheItem.ChunkColumn == null)
+                    cacheItem.ChunkColumn = loadDelegate(planet, position);
+            }
+
+            return cacheItem.ChunkColumn;
         }
 
         /// <summary>
@@ -125,9 +136,9 @@ namespace OctoAwesome
         /// <param name="writeable">Ist der Chunk schreibbar abonniert worden?</param>
         public void Release(int planet,Index2 position, bool writeable)
         {
+            CacheItem cacheItem = null;
             lock (lockObject)
             {
-                CacheItem cacheItem = null;
                 if (!cache.TryGetValue(new Index3(position,planet), out cacheItem))
                 {
                     throw new NotSupportedException("Kein Chunk für Position in Cache");
@@ -135,16 +146,22 @@ namespace OctoAwesome
 
                 cacheItem.References--;
                 if (writeable) cacheItem.WritableReferences--;
+            }
 
-                if (cacheItem.WritableReferences <= 0)
+            lock (cacheItem)
+            {
+                if (cacheItem.WritableReferences <= 0 && writeable && cacheItem.ChunkColumn != null)
                 {
-                    saveDelegate(planet,position, cacheItem.ChunkColumn);
+                    saveDelegate(planet, position, cacheItem.ChunkColumn);
                 }
+            }
 
+            lock (lockObject)
+            {
                 if (cacheItem.References <= 0)
                 {
                     cacheItem.ChunkColumn = null;
-                    cache.Remove(new Index3(position,planet));
+                    cache.Remove(new Index3(position, planet));
                 }
             }
         }
