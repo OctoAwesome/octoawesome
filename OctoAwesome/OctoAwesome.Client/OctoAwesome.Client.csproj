@@ -142,7 +142,11 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="CompiledContent\BoldFont.xnb" />
+    <None Include="CompiledContent\GameFont.xnb" />
+    <None Include="CompiledContent\HeadlineFont.xnb" />
     <None Include="CompiledContent\Hud.xnb" />
+    <None Include="CompiledContent\simple.xnb" />
     <None Include="Content\BoldFont.spritefont" />
     <None Include="Content\GameFont.spritefont" />
     <None Include="Content\HeadlineFont.spritefont" />
