@@ -150,7 +150,7 @@ namespace OctoAwesome
 
             lock (cacheItem)
             {
-                if (cacheItem.WritableReferences <= 0 && writeable && cacheItem.ChunkColumn != null)
+                if (cacheItem.References <= 0 && cacheItem.ChunkColumn != null)
                 {
                     saveDelegate(planet, position, cacheItem.ChunkColumn);
                 }
