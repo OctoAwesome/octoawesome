@@ -88,7 +88,7 @@ namespace OctoAwesome.Tests
             // 11 --    --    --    --
 
             cache.SetCenter(planet, new Index2(15, 15)); // 15 - 1111
-            Assert.AreEqual(27, globalCache.LoadCounter);
+            Assert.AreEqual(9, globalCache.LoadCounter);
             Assert.AreEqual(0, globalCache.SaveCounter);
 
             //    00    01    10    11
