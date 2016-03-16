@@ -41,7 +41,17 @@ namespace OctoAwesome.Tests
         public IChunkColumn Subscribe(int planet, Index2 position, bool writable = true)
         {
             LoadCounter++;
-            return new ChunkColumn(new IChunk[] { new TestChunk(new PlanetIndex3(planet,new Index3(position,0))) },planet, position);
+            return new ChunkColumn(new IChunk[] { },planet, position);
+        }
+
+        public IChunkColumn Peek(int planet, Index2 position)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
         }
     }
 }

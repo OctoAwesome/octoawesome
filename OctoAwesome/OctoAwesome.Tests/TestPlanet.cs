@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace OctoAwesome.Tests
 {
     class TestPlanet : IPlanet
     {
-        public TestPlanet(int universe, int id, Index3 size)
+        public TestPlanet(Guid universe, int id, Index3 size)
         {
             Universe = universe;
             Id = id;
@@ -15,6 +16,14 @@ namespace OctoAwesome.Tests
         }
 
         public IClimateMap ClimateMap
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IMapGenerator Generator
         {
             get
             {
@@ -34,6 +43,16 @@ namespace OctoAwesome.Tests
 
         public Index3 Size { get; private set; }
 
-        public int Universe { get; private set; }
+        public Guid Universe { get; private set; }
+
+        public void Deserialize(Stream stream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Serialize(Stream stream)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

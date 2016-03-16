@@ -22,10 +22,12 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void SimpleLoad()
         {
-            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
-            TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
+            Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
 
-            cache.SetCenter(planet, new Index3(15, 15, 2));
+            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
+            TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
+
+            cache.SetCenter(planet, new Index2(15, 15));
 
             Assert.AreEqual(27, globalCache.LoadCounter);
             Assert.AreEqual(0, globalCache.SaveCounter);
@@ -74,8 +76,10 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void MovingCenter()
         {
+            Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
+
             LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
-            TestPlanet planet = new TestPlanet(2, 12, new Index3(30, 30, 3));
+            TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
 
             //    00    01    10    11
             // 00 --    --    --    --
@@ -83,7 +87,7 @@ namespace OctoAwesome.Tests
             // 10 --    --    --    --
             // 11 --    --    --    --
 
-            cache.SetCenter(planet, new Index3(15, 15, 2)); // 15 - 1111
+            cache.SetCenter(planet, new Index2(15, 15)); // 15 - 1111
             Assert.AreEqual(27, globalCache.LoadCounter);
             Assert.AreEqual(0, globalCache.SaveCounter);
 
@@ -93,7 +97,7 @@ namespace OctoAwesome.Tests
             // 10 16/14 --    14/14 15/14
             // 11 16/15 --    14/15 15/15
 
-            cache.SetCenter(planet, new Index3(14, 15, 2));
+            cache.SetCenter(planet, new Index2(14, 15));
             Assert.AreEqual(36, globalCache.LoadCounter);
             Assert.AreEqual(0, globalCache.SaveCounter);
 
@@ -103,7 +107,7 @@ namespace OctoAwesome.Tests
             // 10 16/14 13/14 14/14 15/14
             // 11 16/15 13/15 14/15 15/15
 
-            cache.SetCenter(planet, new Index3(13, 15, 2));
+            cache.SetCenter(planet, new Index2(13, 15));
             Assert.AreEqual(45, globalCache.LoadCounter);
             Assert.AreEqual(9, globalCache.SaveCounter);
 

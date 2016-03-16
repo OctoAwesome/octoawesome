@@ -16,43 +16,45 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void LoadChunkTest()
         {
-            PlanetIndex3 index = new PlanetIndex3(4, new Index3(5, 6, 7));
-            IChunk result = null;
+            int planet = 2;
+            Index2 index = new Index2(6, 7);
+            IChunkColumn result = null;
             int loadCallCounter = 0;
             int saveCallCounter = 0;
 
             GlobalChunkCache cache = new GlobalChunkCache(
-                (i) =>
+                (p, i) =>
                 {
                     Assert.AreEqual(i, index);
                     loadCallCounter++;
-                    return result = new TestChunk(index);
+                    return result = new TestChunkColumn(planet, index);
                 },
-                (i, c) =>
+                (p, i, c) =>
                 {
+                    Assert.AreEqual(p, planet);
                     Assert.AreEqual(i, index);
                     Assert.AreEqual(c, result);
                     saveCallCounter++;
                 });
 
-            Assert.AreEqual(0, cache.LoadedChunks);
+            Assert.AreEqual(0, cache.LoadedChunkColumns);
             Assert.AreEqual(0, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Chunk laden
-            IChunkColumn x = cache.Subscribe(index, true);
+            IChunkColumn x = cache.Subscribe(planet, index, true);
             Assert.AreEqual(x, result);
-            Assert.AreEqual(x.Planet, index.Planet);
-            Assert.AreEqual(x.Index, index.ChunkIndex);
+            Assert.AreEqual(x.Planet, planet);
+            Assert.AreEqual(x.Index, index);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
-            Assert.AreEqual(1, cache.LoadedChunks);
+            Assert.AreEqual(1, cache.LoadedChunkColumns);
 
             // Chunk unload
-            cache.Release(index, true);
+            cache.Release(planet, index, true);
 
-            Assert.AreEqual(0, cache.LoadedChunks);
+            Assert.AreEqual(0, cache.LoadedChunkColumns);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(1, saveCallCounter);
         }
@@ -60,40 +62,42 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void LoadMultipleChunksTest()
         {
-            PlanetIndex3 index1 = new PlanetIndex3(4, new Index3(5, 6, 7));
-            PlanetIndex3 index2 = new PlanetIndex3(12, new Index3(15, 16, 17));
-            IChunk result1 = null;
-            IChunk result2 = null;
+            int planet1 = 4;
+            int planet2 = 12;
+            Index2 index1 = new Index2(5, 6);
+            Index2 index2 = new Index2(15, 16);
+            IChunkColumn result1 = null;
+            IChunkColumn result2 = null;
             int loadCallCounter = 0;
             int saveCallCounter = 0;
 
             GlobalChunkCache cache = new GlobalChunkCache(
-                (i) =>
+                (p, i) =>
                 {
                     loadCallCounter++;
-                    if (i.Planet == 4)
+                    if (p == planet1)
                     {
                         Assert.AreEqual(i, index1);
-                        return result1 = new TestChunk(index1);
+                        return result1 = new TestChunkColumn(p, index1);
                     }
-                    else if (i.Planet == 12)
+                    else if (p == planet2)
                     {
                         Assert.AreEqual(i, index2);
-                        return result2 = new TestChunk(index2);
+                        return result2 = new TestChunkColumn(p, index2);
                     }
 
                     throw new NotSupportedException();
                 },
-                (i, c) =>
+                (p, i, c) =>
                 {
                     saveCallCounter++;
-                    if (i.Planet == 4)
+                    if (p == planet1)
                     {
                         Assert.AreEqual(i, index1);
                         Assert.AreEqual(c, result1);
                         return;
                     }
-                    else if (i.Planet == 12)
+                    else if (p == planet2)
                     {
                         Assert.AreEqual(i, index2);
                         Assert.AreEqual(c, result2);
@@ -104,40 +108,40 @@ namespace OctoAwesome.Tests
                 });
 
             // Load 1
-            Assert.AreEqual(0, cache.LoadedChunks);
+            Assert.AreEqual(0, cache.LoadedChunkColumns);
             Assert.AreEqual(0, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
-            IChunk x1 = cache.Subscribe(index1, true);
+            IChunkColumn x1 = cache.Subscribe(planet1, index1, true);
             Assert.AreEqual(x1, result1);
-            Assert.AreEqual(x1.Planet, index1.Planet);
-            Assert.AreEqual(x1.Index, index1.ChunkIndex);
+            Assert.AreEqual(x1.Planet, planet1);
+            Assert.AreEqual(x1.Index, index1);
 
-            Assert.AreEqual(1, cache.LoadedChunks);
+            Assert.AreEqual(1, cache.LoadedChunkColumns);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Load 2
-            IChunk x2 = cache.Subscribe(index2, true);
+            IChunkColumn x2 = cache.Subscribe(planet2, index2, true);
             Assert.AreEqual(x2, result2);
-            Assert.AreEqual(x2.Planet, index2.Planet);
-            Assert.AreEqual(x2.Index, index2.ChunkIndex);
+            Assert.AreEqual(x2.Planet, planet2);
+            Assert.AreEqual(x2.Index, index2);
 
-            Assert.AreEqual(2, cache.LoadedChunks);
+            Assert.AreEqual(2, cache.LoadedChunkColumns);
             Assert.AreEqual(2, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Unload 1
-            cache.Release(index1, true);
+            cache.Release(planet1, index1, true);
 
-            Assert.AreEqual(1, cache.LoadedChunks);
+            Assert.AreEqual(1, cache.LoadedChunkColumns);
             Assert.AreEqual(2, loadCallCounter);
             Assert.AreEqual(1, saveCallCounter);
 
             // Unload 2
-            cache.Release(index2, true);
+            cache.Release(planet2, index2, true);
 
-            Assert.AreEqual(0, cache.LoadedChunks);
+            Assert.AreEqual(0, cache.LoadedChunkColumns);
             Assert.AreEqual(2, loadCallCounter);
             Assert.AreEqual(2, saveCallCounter);
         }
@@ -145,19 +149,20 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void LoadChunkWithMultipleReferencesTest()
         {
-            PlanetIndex3 index = new PlanetIndex3(4, new Index3(5, 6, 7));
-            IChunk result = null;
+            int planet = 4;
+            Index2 index = new Index2(5, 6);
+            IChunkColumn result = null;
             int loadCallCounter = 0;
             int saveCallCounter = 0;
 
             GlobalChunkCache cache = new GlobalChunkCache(
-                (i) =>
+                (p, i) =>
                 {
                     loadCallCounter++;
                     Assert.AreEqual(i, index);
-                    return result = new TestChunk(index);
+                    return result = new TestChunkColumn(planet, index);
                 },
-                (i, c) =>
+                (p, i, c) =>
                 {
                     saveCallCounter++;
                     Assert.AreEqual(i, index);
@@ -165,41 +170,41 @@ namespace OctoAwesome.Tests
                 });
 
             // Load 1
-            Assert.AreEqual(0, cache.LoadedChunks);
+            Assert.AreEqual(0, cache.LoadedChunkColumns);
             Assert.AreEqual(0, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
-            IChunk x1 = cache.Subscribe(index, true);
+            IChunkColumn x1 = cache.Subscribe(planet, index, true);
             Assert.AreEqual(x1, result);
-            Assert.AreEqual(x1.Planet, index.Planet);
-            Assert.AreEqual(x1.Index, index.ChunkIndex);
+            Assert.AreEqual(x1.Planet, planet);
+            Assert.AreEqual(x1.Index, index);
 
-            Assert.AreEqual(1, cache.LoadedChunks);
+            Assert.AreEqual(1, cache.LoadedChunkColumns);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Load 2
-            IChunk x2 = cache.Subscribe(index, true);
+            IChunkColumn x2 = cache.Subscribe(planet, index, true);
             Assert.AreEqual(x2, result);
-            Assert.AreEqual(x2.Planet, index.Planet);
-            Assert.AreEqual(x2.Index, index.ChunkIndex);
+            Assert.AreEqual(x2.Planet, planet);
+            Assert.AreEqual(x2.Index, index);
             Assert.AreEqual(x1, x2);
 
-            Assert.AreEqual(1, cache.LoadedChunks);
+            Assert.AreEqual(1, cache.LoadedChunkColumns);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Unload 1
-            cache.Release(index, true);
+            cache.Release(planet, index, true);
 
-            Assert.AreEqual(1, cache.LoadedChunks);
+            Assert.AreEqual(1, cache.LoadedChunkColumns);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(0, saveCallCounter);
 
             // Unload 2
-            cache.Release(index, true);
+            cache.Release(planet, index, true);
 
-            Assert.AreEqual(0, cache.LoadedChunks);
+            Assert.AreEqual(0, cache.LoadedChunkColumns);
             Assert.AreEqual(1, loadCallCounter);
             Assert.AreEqual(1, saveCallCounter);
         }
@@ -207,10 +212,10 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void UnloadNonexistingChunkTest()
         {
-            var cache = new GlobalChunkCache((i) => null, (i, c) => { });
+            var cache = new GlobalChunkCache((p, i) => null, (p, i, c) => { });
             try
             {
-                cache.Release(new PlanetIndex3(4, new Index3(2, 2, 2)), true);
+                cache.Release(4, new Index2(2, 2), true);
                 Assert.Fail("Exception expected");
             }
             catch (NotSupportedException) { }

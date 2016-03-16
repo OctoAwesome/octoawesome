@@ -74,7 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoordinateTests.cs" />
     <Compile Include="TestBlockDefinition.cs" />
-    <Compile Include="TestChunk.cs" />
+    <Compile Include="TestChunkColumn.cs" />
     <Compile Include="TestGlobalCache.cs" />
     <Compile Include="TestPlanet.cs" />
   </ItemGroup>
