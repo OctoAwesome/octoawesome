@@ -290,8 +290,8 @@ namespace OctoAwesome.Runtime
             if (!disablePersistence && value.Chunks.Any(c => c.ChangeCounter > 0))
             {
                 persistenceManager.SaveColumn(universe.Id, planetId, value);
-                foreach (var chunk in value.Chunks)
-                    chunk.ChangeCounter = 0;
+                //foreach (var chunk in value.Chunks)
+                //    chunk.ChangeCounter = 0;
             }
         }
     }

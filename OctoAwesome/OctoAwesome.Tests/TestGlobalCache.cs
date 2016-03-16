@@ -21,6 +21,14 @@ namespace OctoAwesome.Tests
             }
         }
 
+        public int DirtyChunkColumn
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public TestGlobalCache()
         {
             Loaded = new List<PlanetIndex3>();

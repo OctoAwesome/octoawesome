@@ -109,7 +109,7 @@ namespace OctoAwesome.Client.Controls
                 if (control is Label)
                 {
                     ((Label)control).TextColor = Color.White;
-                    
+
                 }
             }
         }
@@ -154,7 +154,10 @@ namespace OctoAwesome.Client.Controls
             fps.Text = fpsString;
 
             //Draw Loaded Chunks
-            loadedChunks.Text = Languages.OctoClient.LoadedChunks + ": " + resMan.GlobalChunkCache.LoadedChunkColumns;//TODO: Übersetzung anpassen
+            loadedChunks.Text = string.Format("{0}: {1}/{2}", 
+                Languages.OctoClient.LoadedChunks, 
+                resMan.GlobalChunkCache.DirtyChunkColumn, 
+                resMan.GlobalChunkCache.LoadedChunkColumns);
 
             //Get Number of Loaded Items/Blocks
             loadedInfo.Text = "" + (DefinitionManager.Instance.GetItemDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Items + " - " +
@@ -166,9 +169,9 @@ namespace OctoAwesome.Client.Controls
             if (Player.ActorHost.ActiveTool != null)
                 activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name;
 
-                //Fly Info
-                if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
-                else flyInfo.Text = "";
+            //Fly Info
+            if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
+            else flyInfo.Text = "";
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)

@@ -166,7 +166,7 @@
     <value>Items</value>
   </data>
   <data name="LoadedChunks" xml:space="preserve">
-    <value>Loaded Chunks</value>
+    <value>Dirty/Loaded ChunkColumn</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>Options</value>

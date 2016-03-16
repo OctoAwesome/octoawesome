@@ -26,6 +26,12 @@
         /// Die Zahl der geladenen Chunks zurück
         /// </summary>
         int LoadedChunkColumns { get; }
+
+        /// <summary>
+        /// Anzahl der noch nicht gespeicherten ChunkColumns.
+        /// </summary>
+        int DirtyChunkColumn { get; }
+
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>

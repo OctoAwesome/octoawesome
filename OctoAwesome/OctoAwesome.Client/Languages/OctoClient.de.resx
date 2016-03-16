@@ -163,7 +163,7 @@
     <value>Dinge</value>
   </data>
   <data name="LoadedChunks" xml:space="preserve">
-    <value>Geladene Chunks</value>
+    <value>Ungesicherte/Geladene ChunkColumns</value>
   </data>
   <data name="Options" xml:space="preserve">
     <value>Optionen</value>
