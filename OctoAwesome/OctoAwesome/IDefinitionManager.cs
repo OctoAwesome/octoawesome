@@ -38,5 +38,19 @@ namespace OctoAwesome
         /// <param name="definition">BlockDefinition</param>
         /// <returns>Index der Block Definition</returns>
         ushort GetBlockDefinitionIndex(IBlockDefinition definition);
+
+        /// <summary>
+        /// Liefert den Index der angegebenen BlockDefinition.
+        /// </summary>
+        /// <typeparam name="T">BlockDefinition Type</typeparam>
+        /// <returns>Index der Block Definition</returns>
+        ushort GetBlockDefinitionIndex<T>() where T : IBlockDefinition;
+
+        /// <summary>
+        /// Gibt die Liste von Instanzen des angegebenen Definition Interfaces zurück.
+        /// </summary>
+        /// <typeparam name="T">Typ der Definition</typeparam>
+        /// <returns>Auflistung von Instanzen</returns>
+        IEnumerable<T> GetDefinitions<T>();
     }
 }

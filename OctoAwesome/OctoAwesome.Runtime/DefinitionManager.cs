@@ -110,5 +110,27 @@ namespace OctoAwesome.Runtime
             EnsureLoaded();
             return (ushort)(Array.IndexOf(blockDefinitions, definition) + 1);
         }
+
+        /// <summary>
+        /// Liefert den Index der angegebenen BlockDefinition.
+        /// </summary>
+        /// <typeparam name="T">BlockDefinition Type</typeparam>
+        /// <returns>Index der Block Definition</returns>
+        public ushort GetBlockDefinitionIndex<T>() where T : IBlockDefinition
+        {
+            IBlockDefinition definition = blockDefinitions.SingleOrDefault(d => d.GetType() == typeof(T));
+            return GetBlockDefinitionIndex(definition);
+        }
+
+        /// <summary>
+        /// Gibt die Liste von Instanzen des angegebenen Definition Interfaces zurück.
+        /// </summary>
+        /// <typeparam name="T">Typ der Definition</typeparam>
+        /// <returns>Auflistung von Instanzen</returns>
+        public IEnumerable<T> GetDefinitions<T>()
+        {
+            // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary)
+            return ExtensionManager.GetInstances<T>();
+        }
     }
 }

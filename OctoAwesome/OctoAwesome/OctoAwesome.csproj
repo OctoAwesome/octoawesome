@@ -84,6 +84,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />
     <Compile Include="OrientationFlags.cs" />
