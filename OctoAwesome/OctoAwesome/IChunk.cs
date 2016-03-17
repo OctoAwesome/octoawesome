@@ -41,7 +41,6 @@ namespace OctoAwesome
 
         /// <summary>
         /// Veränderungs-Counter zur Ermittlung von Änderungen.<para/>
-        /// TODO: ChangeCounter überdenken, eventuell eine bool
         /// </summary>
         int ChangeCounter { get; set; }
 

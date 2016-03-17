@@ -15,6 +15,15 @@ namespace OctoAwesome
         IChunk GetChunk(Index3 index);
 
         /// <summary>
+        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X Koordinate</param>
+        /// <param name="y">Y Koordinate</param>
+        /// <param name="z">Z Koordinate</param>
+        /// <returns>Instanz des Chunks</returns>
+        IChunk GetChunk(int x, int y, int z);
+
+        /// <summary>
         /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
         /// </summary>
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
@@ -73,10 +82,8 @@ namespace OctoAwesome
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
-        /// <param name="meta">[Bitte ergänzen - Parameter wird in der Implementierung nicht verwendet]</param>
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
-        int GetBlockMeta(Index3 index, int meta);
-        //TODO: Meta Parameter entfernen?
+        int GetBlockMeta(Index3 index);
 
         /// <summary>
         /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 

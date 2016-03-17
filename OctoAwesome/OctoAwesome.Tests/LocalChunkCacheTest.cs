@@ -24,7 +24,7 @@ namespace OctoAwesome.Tests
         {
             Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
 
-            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
+            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
             TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
 
             cache.SetCenter(planet, new Index2(15, 15));
@@ -78,7 +78,7 @@ namespace OctoAwesome.Tests
         {
             Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
 
-            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1, true);
+            LocalChunkCache cache = new LocalChunkCache(globalCache, 2, 1);
             TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
 
             //    00    01    10    11

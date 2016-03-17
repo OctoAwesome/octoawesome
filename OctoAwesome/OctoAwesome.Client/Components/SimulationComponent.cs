@@ -43,14 +43,6 @@ namespace OctoAwesome.Client.Components
             Simulation.LoadGame(guid);
         }
 
-        public void SaveGame()
-        {
-            if (Simulation == null)
-                return;
-
-            Simulation.SaveGame();
-        }
-
         public void ExitGame()
         {
             if (Simulation == null)

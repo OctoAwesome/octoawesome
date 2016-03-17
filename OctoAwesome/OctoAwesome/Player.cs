@@ -34,11 +34,16 @@ namespace OctoAwesome
         /// </summary>
         public float Radius { get; set; }
 
+        private float angle = 0f;
+
         /// <summary>
         /// Blickwinkel in der horizontalen Achse
-        /// TODO: Angle immer hübsch kürzen
         /// </summary>
-        public float Angle { get; set; }
+        public float Angle
+        {
+            get { return angle; }
+            set { angle = MathHelper.WrapAngle(value); }
+        }
 
         /// <summary>
         /// Die Körperhöhe des Spielers in Blocks

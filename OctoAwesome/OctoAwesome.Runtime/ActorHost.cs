@@ -49,7 +49,7 @@ namespace OctoAwesome.Runtime
             Player = player;
             planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1, true);
+            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
@@ -78,6 +78,7 @@ namespace OctoAwesome.Runtime
 
             // Input verarbeiten
             Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
+            Player.Angle = MathHelper.WrapAngle(Player.Angle);
             Player.Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.Y;
             Player.Tilt = Math.Min(1.5f, Math.Max(-1.5f, Player.Tilt));
 

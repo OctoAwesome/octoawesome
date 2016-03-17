@@ -80,9 +80,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
-        /// <param name="writeable">Gibt an, ob der Subscriber schreibend zugreifen will</param>
         /// <returns></returns>
-        public IChunkColumn Subscribe(int planet, Index2 position, bool writeable)
+        public IChunkColumn Subscribe(int planet, Index2 position)
         {
             CacheItem cacheItem = null;
 
@@ -151,8 +150,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        /// <param name="writeable">Ist der Chunk schreibbar abonniert worden?</param>
-        public void Release(int planet, Index2 position, bool writeable)
+        public void Release(int planet, Index2 position)
         {
             CacheItem cacheItem = null;
             lock (lockObject)

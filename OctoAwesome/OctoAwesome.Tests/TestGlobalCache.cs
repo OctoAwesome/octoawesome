@@ -41,12 +41,12 @@ namespace OctoAwesome.Tests
             Loaded.Clear();
         }
 
-        public void Release(int planet,Index2 position, bool writable = true)
+        public void Release(int planet,Index2 position)
         {
             SaveCounter++;
         }
 
-        public IChunkColumn Subscribe(int planet, Index2 position, bool writable = true)
+        public IChunkColumn Subscribe(int planet, Index2 position)
         {
             LoadCounter++;
             return new ChunkColumn(new IChunk[] { },planet, position);

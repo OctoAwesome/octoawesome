@@ -79,7 +79,6 @@ namespace OctoAwesome
         /// <summary>
         /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
         /// dazu verwendet werden herauszufinden, ob es Änderungen gab.<para/>
-        /// TODO: ChangeCounter überdenken, eventuell eine bool
         /// </summary>
         public int ChangeCounter { get; set; }
 
@@ -145,8 +144,6 @@ namespace OctoAwesome
             int index = GetFlatIndex(x, y, z);
             Blocks[index] = block;
             MetaData[index] = meta;
-
-            //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
         }
 
@@ -172,8 +169,6 @@ namespace OctoAwesome
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
             MetaData[GetFlatIndex(x, y, z)] = meta;
-
-            //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
         }
 
@@ -199,8 +194,6 @@ namespace OctoAwesome
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
             Resources[GetFlatIndex(x, y, z)] = resources;
-
-            //TODO: ChangeCounter überdenken, eventuell eine bool
             ChangeCounter++;
         }
 

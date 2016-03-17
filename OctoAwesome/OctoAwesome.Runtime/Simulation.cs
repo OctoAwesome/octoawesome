@@ -104,14 +104,6 @@ namespace OctoAwesome.Runtime
         }
 
         /// <summary>
-        /// Speichert das aktuelle Spiel.
-        /// </summary>
-        public void SaveGame()
-        {
-            // TODO: Ressource Manager braucht SaveUniverse()
-        }
-
-        /// <summary>
         /// Beendet das aktuelle Spiel (nicht die Applikation)
         /// </summary>
         public void ExitGame()

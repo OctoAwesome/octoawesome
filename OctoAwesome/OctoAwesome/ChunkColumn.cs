@@ -240,6 +240,9 @@ namespace OctoAwesome
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         bw.Write((ushort)Heights[x, y]);
+                for (int i = 0; i < Chunks.Length; i++) // Change Counter
+                    bw.Write(Chunks[i].ChangeCounter);
+                
 
                 // Schreibe Phase 2 (Block Definitionen)
                 if (longIndex)
@@ -297,14 +300,16 @@ namespace OctoAwesome
                 bool longIndex = br.ReadByte() > 0;
 
                 // Phase 1 (Column Meta: Heightmap, populated, chunkcount)
-                Chunks = new Chunk[br.ReadByte()];
+                Chunks = new Chunk[br.ReadByte()]; // Chunk Count
                 Planet = planetId;
                 Index = columnIndex;
 
-                Populated = br.ReadBoolean();
-                for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
+                Populated = br.ReadBoolean(); // Populated
+                for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         Heights[x, y] = br.ReadUInt16();
+                for (int i = 0; i < Chunks.Length; i++) // ChangeCounter
+                    Chunks[i].ChangeCounter = br.ReadInt32();
 
                 // Phase 2 (Block Definitionen)
                 List<IBlockDefinition> types = new List<IBlockDefinition>();
