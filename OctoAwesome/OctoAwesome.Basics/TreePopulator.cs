@@ -35,7 +35,7 @@ namespace OctoAwesome.Basics
             // Tree Definitions initialisieren
             if (treeDefinitions == null)
             {
-                treeDefinitions = definitionManager.GetDefinitions<ITreeDefinition>();
+                treeDefinitions = definitionManager.GetDefinitions<ITreeDefinition>().OrderBy(d => d.Order).ToArray();
                 foreach (var treeDefinition in treeDefinitions)
                     treeDefinition.Init(definitionManager);
             }
@@ -53,13 +53,9 @@ namespace OctoAwesome.Basics
                 {
                     int x = random.Next(Chunk.CHUNKSIZE_X / 2, Chunk.CHUNKSIZE_X * 3 / 2);
                     int y = random.Next(Chunk.CHUNKSIZE_Y / 2, Chunk.CHUNKSIZE_Y * 3 / 2);
-
-                    IChunkColumn curColumn = getColumn(column00, column10, column01, column11, x, y);
-                    int z = curColumn.Heights[x % Chunk.CHUNKSIZE_X, y % Chunk.CHUNKSIZE_Y];
-                    if (z == -1)
-                        continue;
+                    int z = LocalBuilder.GetSurfaceHeight(column00, column10, column01, column11, x, y);
+                    
                     LocalBuilder builder = new LocalBuilder(x, y, z + 1, column00, column10, column01, column11);
-
                     treeDefinition.PlantTree(definitionManager, planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
                 }
             }

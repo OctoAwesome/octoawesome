@@ -97,6 +97,7 @@
     <Compile Include="Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Blocks\WoodBlockDefinition.cs" />
     <Compile Include="SpruceTreeDefinition.cs" />
+    <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
   </ItemGroup>
   <ItemGroup>

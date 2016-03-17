@@ -21,7 +21,7 @@ namespace OctoAwesome
             this.column11 = column11;
         }
 
-        private static IChunkColumn getColumn(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
+        public static IChunkColumn GetColumn(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
         {
             IChunkColumn column;
             if (x >= Chunk.CHUNKSIZE_X && y >= Chunk.CHUNKSIZE_Y)
@@ -36,12 +36,18 @@ namespace OctoAwesome
             return column;
         }
 
+        public static int GetSurfaceHeight(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
+        {
+            IChunkColumn curColumn = GetColumn(column00, column10, column01, column11, x, y);
+            return curColumn.Heights[x % Chunk.CHUNKSIZE_X, y % Chunk.CHUNKSIZE_Y];
+        }
+
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
             x += originX;
             y += originY;
             z += originZ;
-            IChunkColumn column = getColumn(column00, column10, column01, column11, x, y);
+            IChunkColumn column = GetColumn(column00, column10, column01, column11, x, y);
             x %= Chunk.CHUNKSIZE_X;
             y %= Chunk.CHUNKSIZE_Y;
             column.SetBlock(x, y, z, block, meta);
@@ -62,7 +68,13 @@ namespace OctoAwesome
         }
         public ushort GetBlock(int x, int y, int z)
         {
-            return 0;//TODO: implement
+            x += originX;
+            y += originY;
+            z += originZ;
+            IChunkColumn column = GetColumn(column00, column10, column01, column11, x, y);
+            x %= Chunk.CHUNKSIZE_X;
+            y %= Chunk.CHUNKSIZE_Y;
+            return column.GetBlock(x, y, z);
         }
     }
 }
