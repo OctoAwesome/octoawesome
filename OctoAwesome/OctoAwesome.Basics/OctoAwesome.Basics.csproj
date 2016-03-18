@@ -53,6 +53,9 @@
     <Compile Include="Biomes\HighMountainBiome.cs" />
     <Compile Include="Biomes\HillsBiome.cs" />
     <Compile Include="Biomes\IBiome.cs" />
+    <Compile Include="Definitions\Blocks\BirchWoodBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\OrangeLeavesBlockDefinition.cs" />
+    <Compile Include="Definitions\Trees\BirchTreeDefinition.cs" />
     <Compile Include="ITreeDefinition.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Biomes\LandBiomeGenerator.cs" />
@@ -61,42 +64,42 @@
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
     <Compile Include="Biomes\SuperBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
-    <Compile Include="Blocks\IceBlockDefinition.cs" />
-    <Compile Include="Blocks\LeavesBlockDefinition.cs" />
-    <Compile Include="Blocks\BlueCottonBlockDefinition.cs" />
-    <Compile Include="Blocks\StoneBrickBlockDefinition.cs" />
-    <Compile Include="Blocks\BrickBlockDefinition.cs" />
-    <Compile Include="Blocks\TanCottonBlockDefinition.cs" />
-    <Compile Include="Blocks\GreenCottonBlockDefinition.cs" />
-    <Compile Include="Blocks\RedCottonBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\IceBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\LeavesBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\BlueCottonBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\StoneBrickBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\BrickBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\TanCottonBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\GreenCottonBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\RedCottonBlockDefinition.cs" />
     <Compile Include="Climate\ComplexClimateMap.cs" />
     <Compile Include="ComplexPlanet.cs" />
     <Compile Include="ComplexPlanetGenerator.cs" />
     <Compile Include="DebugMapGenerator.cs" />
-    <Compile Include="Blocks\GrassBlockDefinition.cs" />
-    <Compile Include="Blocks\GroundBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\GrassBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\GroundBlockDefinition.cs" />
     <Compile Include="IronOre.cs" />
-    <Compile Include="Blocks\IronOreDefinition.cs" />
-    <Compile Include="Items\Pickaxe.cs" />
-    <Compile Include="Items\PickaxeDefinition.cs" />
+    <Compile Include="Definitions\Blocks\IronOreDefinition.cs" />
+    <Compile Include="Definitions\Items\Pickaxe.cs" />
+    <Compile Include="Definitions\Items\PickaxeDefinition.cs" />
     <Compile Include="Languages\OctoBasics.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OctoBasics.resx</DependentUpon>
     </Compile>
-    <Compile Include="OakTreeDefinition.cs" />
+    <Compile Include="Definitions\Trees\OakTreeDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Blocks\SandBlockDefinition.cs" />
-    <Compile Include="Blocks\SnowBlockDefinition.cs" />
-    <Compile Include="Blocks\StoneBlockDefinition.cs" />
-    <Compile Include="Blocks\WaterBlockDefinition.cs" />
-    <Compile Include="Blocks\WoodBlockDefinition.cs" />
-    <Compile Include="SpruceTreeDefinition.cs" />
+    <Compile Include="Definitions\Blocks\SandBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\SnowBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\StoneBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
+    <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
+    <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
   </ItemGroup>
@@ -158,7 +161,16 @@
     <Content Include="Assets\OctoAwesome.Basics\Blocks\leaves.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\leaves_orange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\OctoAwesome.Basics\Blocks\oven.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\birch_wood_side.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Blocks\birch_wood_top.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\OctoAwesome.Basics\Items\pick_iron.png">
