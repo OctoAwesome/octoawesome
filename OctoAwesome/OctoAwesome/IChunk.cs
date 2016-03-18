@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace OctoAwesome
+﻿namespace OctoAwesome
 {
     /// <summary>
     /// Basis-Schnittstelle für alle Implementierungen eines Chunks.

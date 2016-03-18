@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Statische Klasse die das Laden von Bilder erleichtert
+    /// TODO: In den Client umziehen?
     /// </summary>
     public static class ContentHelper
     {
@@ -24,15 +23,6 @@ namespace OctoAwesome
             {
                 return Texture2D.FromStream(device, stream);
             }
-
-            //Bitmap bmp = (Bitmap)Bitmap.FromFile(path);
-
-            //using (MemoryStream stream = new MemoryStream())
-            //{
-            //    bmp.Save(stream, ImageFormat.Bmp);
-            //    stream.Seek(0, SeekOrigin.Begin);
-            //    return Texture2D.FromStream(device, stream);
-            //}
         }
     }
 }

@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Runtime
 {
@@ -78,7 +76,6 @@ namespace OctoAwesome.Runtime
 
             // Input verarbeiten
             Player.Angle += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.X;
-            Player.Angle = MathHelper.WrapAngle(Player.Angle);
             Player.Tilt += (float)frameTime.ElapsedGameTime.TotalSeconds * Head.Y;
             Player.Tilt = Math.Min(1.5f, Math.Max(-1.5f, Player.Tilt));
 

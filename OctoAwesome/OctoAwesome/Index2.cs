@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome
 {
@@ -50,7 +47,7 @@ namespace OctoAwesome
         /// <param name="size">Maximalwert für X</param>
         public void NormalizeX(int size)
         {
-            X = Index2.NormalizeAxis(X, size);
+            X = NormalizeAxis(X, size);
         }
 
         /// <summary>
@@ -77,7 +74,7 @@ namespace OctoAwesome
         /// <param name="size">Maximalwert für Y</param>
         public void NormalizeY(int size)
         {
-            Y = Index2.NormalizeAxis(Y, size);
+            Y = NormalizeAxis(Y, size);
         }
 
         /// <summary>
@@ -148,7 +145,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceX(int x, int size)
         {
-            return Index2.ShortestDistanceOnAxis(X, x, size);
+            return ShortestDistanceOnAxis(X, x, size);
         }
 
         /// <summary>
@@ -159,7 +156,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceY(int y, int size)
         {
-            return Index2.ShortestDistanceOnAxis(Y, y, size);
+            return ShortestDistanceOnAxis(Y, y, size);
         }
 
         /// <summary>
@@ -328,8 +325,8 @@ namespace OctoAwesome
 
             Index2 other = (Index2)obj;
             return (
-                other.X == this.X &&
-                other.Y == this.Y);
+                other.X == X &&
+                other.Y == Y);
         }
 
         /// <summary>

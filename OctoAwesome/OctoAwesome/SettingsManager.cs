@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Verwaltet die Anwendungseinstellungen.
+    /// TODO: In den Client verschieben
     /// </summary>
     public static class SettingsManager
     {

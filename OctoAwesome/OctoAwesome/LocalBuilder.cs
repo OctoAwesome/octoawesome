@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace OctoAwesome
+﻿namespace OctoAwesome
 {
+    /// <summary>
+    /// Erzeugt ein lokales Koordinatensystem.
+    /// </summary>
     public class LocalBuilder
     {
         private int originX, originY, originZ;

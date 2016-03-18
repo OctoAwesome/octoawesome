@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Runtime
 {
@@ -14,11 +11,7 @@ namespace OctoAwesome.Runtime
     {
         private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
 
-        //public static int CacheSize = 10000;
-
         private bool disablePersistence = false;
-
-        // private IMapGenerator mapGenerator = null;
 
         private IPersistenceManager persistenceManager = null;
 
@@ -27,11 +20,6 @@ namespace OctoAwesome.Runtime
         private List<IMapPopulator> populators = null;
 
         private IUniverse universe;
-
-        /*/// <summary>
-        /// Planet Cache.
-        /// </summary>
-        private Cache<int, IPlanet> planetCache;*/
 
         private Dictionary<int, IPlanet> planets;
 
@@ -60,7 +48,6 @@ namespace OctoAwesome.Runtime
 
         private ResourceManager()
         {
-            // mapGenerator = MapGeneratorManager.GetMapGenerators().First();
             persistenceManager = new DiskPersistenceManager();
 
             globalChunkCache = new GlobalChunkCache(
@@ -68,9 +55,6 @@ namespace OctoAwesome.Runtime
                 (p, i, c) => saveChunkColumn(p, i, c));
 
             planets = new Dictionary<int, IPlanet>();
-
-            //planetCache = new Cache<int, IPlanet>(1, loadPlanet, savePlanet);
-            //chunkCache = new Cache<PlanetIndex3, IChunk>(CacheSize, loadChunk, saveChunk);
 
             bool.TryParse(SettingsManager.Get("DisablePersistence"), out disablePersistence);
         }

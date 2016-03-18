@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,14 +25,17 @@ namespace OctoAwesome
         /// Der Planet, aus dem die Chunks im Cache sind
         /// </summary>
         private IPlanet planet;
+        
         /// <summary>
         /// Größe des Caches in Zweierpotenzen
         /// </summary>
         private int limit;
+        
         /// <summary>
         /// Maske, die die Grösse des Caches markiert
         /// </summary>
         private int mask;
+
         /// <summary>
         /// Gibt die Range in Chunks in alle Richtungen an (bsp. Range = 1 bedeutet centraler Block + links uns rechts jeweils 1 = 3)
         /// </summary>
@@ -62,6 +64,7 @@ namespace OctoAwesome
         /// Task, der bei einem Wechsel des Zentralen Chunks neue nachlädt falls nötig
         /// </summary>
         private Task _loadingTask;
+
         /// <summary>
         /// Token, das angibt, ob der Chûnk-nachlade-Task abgebrochen werden soll
         /// </summary>
