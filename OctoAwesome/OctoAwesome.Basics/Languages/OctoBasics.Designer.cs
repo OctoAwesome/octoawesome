@@ -61,6 +61,15 @@ namespace OctoAwesome.Basics.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Birch Wood ähnelt.
+        /// </summary>
+        internal static string BirchWood {
+            get {
+                return ResourceManager.GetString("BirchWood", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Blue Cotton ähnelt.
         /// </summary>
         internal static string BlueCotton {
@@ -129,6 +138,15 @@ namespace OctoAwesome.Basics.Languages {
         internal static string Leaves {
             get {
                 return ResourceManager.GetString("Leaves", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Orange Leaves ähnelt.
+        /// </summary>
+        internal static string OrangeLeaves {
+            get {
+                return ResourceManager.GetString("OrangeLeaves", resourceCulture);
             }
         }
         
