@@ -129,8 +129,14 @@
   <data name="Grass" xml:space="preserve">
     <value>Grass</value>
   </data>
+  <data name="Gravel" xml:space="preserve">
+    <value>Gravel</value>
+  </data>
   <data name="GreenCotton" xml:space="preserve">
     <value>Green Cotton</value>
+  </data>
+  <data name="Greystone" xml:space="preserve">
+    <value>Greystone</value>
   </data>
   <data name="Ground" xml:space="preserve">
     <value>Ground</value>
@@ -147,8 +153,20 @@
   <data name="OrangeLeaves" xml:space="preserve">
     <value>Orange Leaves</value>
   </data>
+  <data name="Oven" xml:space="preserve">
+    <value>Oven</value>
+  </data>
+  <data name="Plank" xml:space="preserve">
+    <value>Plank</value>
+  </data>
   <data name="RedCotton" xml:space="preserve">
     <value>Red Cotton</value>
+  </data>
+  <data name="RedPlank" xml:space="preserve">
+    <value>Red Plank</value>
+  </data>
+  <data name="Redstone" xml:space="preserve">
+    <value>Redstone</value>
   </data>
   <data name="Sand" xml:space="preserve">
     <value>Sand</value>
@@ -161,6 +179,9 @@
   </data>
   <data name="StoneBrick" xml:space="preserve">
     <value>Stone Brick</value>
+  </data>
+  <data name="Table" xml:space="preserve">
+    <value>Table</value>
   </data>
   <data name="TanCotton" xml:space="preserve">
     <value>Tan Cotton</value>
