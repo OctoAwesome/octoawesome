@@ -8,6 +8,8 @@ using OctoAwesome.Runtime;
 using System;
 using System.Configuration;
 using System.Linq;
+using MonoGameUi;
+using EventArgs = System.EventArgs;
 
 namespace OctoAwesome.Client
 {

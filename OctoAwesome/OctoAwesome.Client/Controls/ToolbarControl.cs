@@ -11,7 +11,7 @@ using System.Text;
 
 namespace OctoAwesome.Client.Controls
 {
-    internal class ToolbarControl : Control
+    internal class ToolbarControl : Panel
     {
         // private Texture2D[] toolTextures;
         // private Dictionary<IItemDefinition, Texture2D> toolTextures;
@@ -19,11 +19,21 @@ namespace OctoAwesome.Client.Controls
 
         public PlayerComponent Player { get; set; }
 
+        public Label activeToolLabel;
+
         public ToolbarControl(ScreenComponent screenManager)
             : base(screenManager)
         {
             Player = screenManager.Player;
             toolTextures = new Dictionary<string, Texture2D>();
+
+            activeToolLabel = new Label(screenManager);
+            activeToolLabel.VerticalAlignment = VerticalAlignment.Top;
+            activeToolLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            activeToolLabel.Background = new BorderBrush(Color.Black * 0.3f);
+            activeToolLabel.TextColor = Color.White;
+            activeToolLabel.Visible = false;
+            Controls.Add(activeToolLabel);
 
             // toolTextures = new Texture2D[Player.Tools.Length];
             // int index = 0;
@@ -50,6 +60,15 @@ namespace OctoAwesome.Client.Controls
                 int width = Player.Tools.Count * 32 + (Player.Tools.Count - 1) * 10;
                 int offset = (contentArea.Width - width) / 2;
                 int index = 0;
+
+                if (Player.ActorHost.ActiveTool != null && Player.Tools.Count > 0) // > 0 Check erforderlich da durch einen Bug ActiveTool auch gesetzt bleibt wenn kein Tool mehr vorhanden ist
+                {
+                    activeToolLabel.Visible = true;
+                    activeToolLabel.Text = Player.ActorHost.ActiveTool.Definition.Name;
+                }
+                else { 
+                    activeToolLabel.Visible = false;
+                }
 
                 foreach (var tool in Player.Tools)
                 {
