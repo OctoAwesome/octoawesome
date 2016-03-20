@@ -9,7 +9,41 @@ namespace OctoAwesome.Client.Screens
 {
     public abstract class BaseScreen : Screen
     {
-        public BaseScreen(IScreenManager manager) : base(manager) { }
+        private IScreenManager Manager;
+
+        protected Button BackButton;
+
+        public BaseScreen(IScreenManager manager) : base(manager)
+        {
+            Manager = manager;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs args)
+        {
+            if (Manager.CanGoBack)
+            {
+                BackButton = Button.TextButton(Manager, Languages.OctoClient.Back);
+                BackButton.VerticalAlignment = VerticalAlignment.Top;
+                BackButton.HorizontalAlignment = HorizontalAlignment.Left;
+                BackButton.LeftMouseClick += (s, e) =>
+                {
+                    Manager.NavigateBack();
+                };
+                BackButton.Margin = new Border(10, 10, 10, 10);
+                Controls.Add(BackButton);
+            }
+
+        }
+
+        protected TextureBrush GetDefaultBackground()
+        {
+            return new TextureBrush(Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_new.png", Manager.GraphicsDevice), TextureBrushMode.Stretch);
+        }
+
+        protected void SetDefaultBackground()
+        {
+            Background = GetDefaultBackground();
+        }
 
         protected override void OnKeyPress(KeyEventArgs args)
         {

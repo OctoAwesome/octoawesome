@@ -24,7 +24,7 @@ namespace OctoAwesome.Client.Controls
         public PlayerComponent Player { get; set; }
 
         StackPanel leftView, rightView;
-        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, loadedInfo, flyInfo, temperatureInfo, precipitationInfo;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -76,18 +76,21 @@ namespace OctoAwesome.Client.Controls
 
             controlInfo = new Label(ScreenManager);
             leftView.Controls.Add(controlInfo);
+          
+            temperatureInfo = new Label(ScreenManager);
+            rightView.Controls.Add(temperatureInfo);
+
+            precipitationInfo = new Label(ScreenManager);
+            rightView.Controls.Add(precipitationInfo);
 
             activeTool = new Label(ScreenManager);
             rightView.Controls.Add(activeTool);
 
+            toolCount = new Label(ScreenManager);
+            rightView.Controls.Add(toolCount);
+
             flyInfo = new Label(ScreenManager);
             rightView.Controls.Add(flyInfo);
-
-            temperatureInfo = new Label(ScreenManager);
-            leftView.Controls.Add(temperatureInfo);
-
-            precipitationInfo = new Label(ScreenManager);
-            leftView.Controls.Add(precipitationInfo);
 
             //This Label gets added to the root and is set to Bottom Left
             box = new Label(ScreenManager);
@@ -173,7 +176,9 @@ namespace OctoAwesome.Client.Controls
 
             //Active Tool
             if (Player.ActorHost.ActiveTool != null)
-                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name;
+                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Player.Tools.FindIndex(i => i.Definition == Player.ActorHost.ActiveTool.Definition);
+
+            toolCount.Text = "Tool Count: " + Player.Tools.Count;
 
             //Fly Info
             if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;

@@ -27,23 +27,7 @@ namespace OctoAwesome.Client.Screens
 
             Title = Languages.OctoClient.Options;
 
-            ////////////////////////////////////////////Background////////////////////////////////////////////
-            Image background = new Image(manager);
-            background.Texture = Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_notext.png", Manager.GraphicsDevice);
-            background.VerticalAlignment = VerticalAlignment.Stretch;
-            background.HorizontalAlignment = HorizontalAlignment.Stretch;
-            Controls.Add(background);
-
-            ////////////////////////////////////////////Back Button////////////////////////////////////////////
-            Button backButton = Button.TextButton(manager, Languages.OctoClient.Back);
-            backButton.VerticalAlignment = VerticalAlignment.Top;
-            backButton.HorizontalAlignment = HorizontalAlignment.Left;
-            backButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
-            backButton.Margin = new Border(10, 10, 10, 10);
-            Controls.Add(backButton);
+            SetDefaultBackground();
 
             ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
             StackPanel settingsStack = new StackPanel(manager);
