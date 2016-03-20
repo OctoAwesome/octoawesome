@@ -307,8 +307,10 @@ namespace OctoAwesome
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         Heights[x, y] = br.ReadUInt16();
+
+                int[] counter = new int[Chunks.Length];
                 for (int i = 0; i < Chunks.Length; i++) // ChangeCounter
-                    Chunks[i].ChangeCounter = br.ReadInt32();
+                    counter[i] = br.ReadInt32();
 
                 // Phase 2 (Block Definitionen)
                 List<IBlockDefinition> types = new List<IBlockDefinition>();
@@ -342,6 +344,7 @@ namespace OctoAwesome
                                 chunk.MetaData[i] = br.ReadInt32();
                         }
                     }
+                    chunk.ChangeCounter = counter[c];
                 }
             }
         }
