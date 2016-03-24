@@ -15,7 +15,7 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class SimulationComponent : GameComponent
     {
-        private Simulation Simulation { get; set; }
+        public Simulation Simulation { get; private set; }
 
         public SimulationComponent(Game game) : base(game) { }
 

@@ -61,6 +61,7 @@
     <Compile Include="ChunkColumn.cs" />
     <Compile Include="ContentHelper.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="Entities\Dog.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />

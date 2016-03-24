@@ -29,11 +29,6 @@ namespace OctoAwesome
         /// </summary>
         public const float FRICTION = 60f;
 
-        /// <summary>
-        /// Der Radius des Spielers in Blocks.
-        /// </summary>
-        public float Radius { get; set; }
-
         private float angle = 0f;
 
         /// <summary>
@@ -44,17 +39,6 @@ namespace OctoAwesome
             get { return angle; }
             set { angle = MathHelper.WrapAngle(value); }
         }
-
-        /// <summary>
-        /// Die Körperhöhe des Spielers in Blocks
-        /// </summary>
-        public float Height { get; set; }
-
-        /// <summary>
-        /// Gibt an, ob der Spieler an Boden ist
-        /// </summary>
-        [XmlIgnore]
-        public bool OnGround { get; set; }
 
         /// <summary>
         /// Blickwinkel in der vertikalen Achse

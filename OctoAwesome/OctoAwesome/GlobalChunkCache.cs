@@ -233,8 +233,15 @@ namespace OctoAwesome
 
                 for (int i = 0; i < ChunkColumn.Chunks.Length; i++)
                 {
-                    if (ChunkColumn.Chunks[i].ChangeCounter != SavedChangeCounter[i])
-                        return true;
+                    try
+                    {
+                        if (ChunkColumn.Chunks[i].ChangeCounter != SavedChangeCounter[i])
+                            return true;
+                    }
+                    catch (NullReferenceException) {
+                        // Brrrr!!!!
+                        Console.WriteLine("Null Reference in Global Chunk Cache (Line 243)");
+                    }
                 }
 
                 return false;

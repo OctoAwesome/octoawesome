@@ -9,6 +9,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using OctoAwesome.Runtime;
 using System.Drawing;
+using System.Linq;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -35,8 +36,10 @@ namespace OctoAwesome.Client.Controls
         private Texture2D sunTexture;
 
         private VertexPositionColor[] selectionLines;
+        private VertexPositionColor[] entityBlock;
         private VertexPositionTexture[] billboardVertices;
         private short[] selectionIndeces;
+        private short[] entityBlockIndeces;
         private Index2 currentChunk = new Index2(-1, -1);
 
         private Thread backgroundThread;
@@ -137,11 +140,34 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
             };
 
+            entityBlock = new[]
+            {
+                new VertexPositionColor(new Vector3(-0.5f, +0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(+0.5f, +0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(-0.5f, -0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(+0.5f, -0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(-0.5f, +0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(+0.5f, +0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(-0.5f, -0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                new VertexPositionColor(new Vector3(+0.5f, -0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
+            };
+
             selectionIndeces = new short[]
             {
                 0, 1, 0, 2, 1, 3, 2, 3,
                 4, 5, 4, 6, 5, 7, 6, 7,
                 0, 4, 1, 5, 2, 6, 3, 7
+            };
+
+            entityBlockIndeces = new short[]
+            {
+                0, 1, 2, 1, 3, 2, // oben 
+                1, 0, 5, 0, 4, 5, // hinten 
+                3, 1, 7, 1, 5, 7, // rechts 
+                2, 3, 6, 3, 7, 6, // vorne 
+                0, 2, 4, 2, 6, 4, // links 
+                7, 5, 6, 6, 5, 4 // unten
+                
             };
 
             sunEffect = new BasicEffect(manager.GraphicsDevice);
@@ -368,11 +394,32 @@ namespace OctoAwesome.Client.Controls
                     renderer.Draw(camera.View, camera.Projection, shift);
             }
 
+            Index3 offset = camera.CameraChunk * Chunk.CHUNKSIZE;
+            Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
+
+            foreach (var item in Manager.Game.Simulation.Simulation.Entities.ToArray())
+            {
+                if (item == player.ActorHost.Player)
+                    continue;
+
+                Vector3 relativePosition = new Index3(
+                    Index2.ShortestDistanceOnAxis(offset.X, item.Position.GlobalBlockIndex.X, planetSize.X),
+                    Index2.ShortestDistanceOnAxis(offset.Y, item.Position.GlobalBlockIndex.Y, planetSize.Y),
+                    item.Position.GlobalBlockIndex.Z - offset.Z) + item.Position.BlockPosition;
+
+                selectionEffect.World = Matrix.CreateScale(item.Radius, item.Radius, item.Height) * Matrix.CreateTranslation(relativePosition);
+                selectionEffect.View = camera.View;
+                selectionEffect.Projection = camera.Projection;
+                foreach (var pass in selectionEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, entityBlock, 0, 8, entityBlockIndeces, 0, 12);
+                }
+            }
+
             if (player.SelectedBox.HasValue)
             {
                 // Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
-                Index3 offset = camera.CameraChunk * Chunk.CHUNKSIZE;
-                Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
                 Index3 relativePosition = new Index3(
                     Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBox.Value.X, planetSize.X),
                     Index2.ShortestDistanceOnAxis(offset.Y, player.SelectedBox.Value.Y, planetSize.Y),

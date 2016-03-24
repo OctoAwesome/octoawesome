@@ -57,6 +57,7 @@
     <Compile Include="ActorHost.cs" />
     <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="DefinitionManager.cs" />
+    <Compile Include="EntityHost.cs" />
     <Compile Include="ExtensionManager.cs" />
     <Compile Include="IPlayerController.cs" />
     <Compile Include="MapGeneratorManager.cs" />

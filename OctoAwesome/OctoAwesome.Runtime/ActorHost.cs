@@ -8,20 +8,13 @@ namespace OctoAwesome.Runtime
     /// <summary>
     /// Kapselung eines Spielers.
     /// </summary>
-    public class ActorHost : IPlayerController
+    public class ActorHost : EntityHost, IPlayerController
     {
-        private readonly float Gap = 0.001f;
-
-        private IPlanet planet;
-
         private bool lastJump = false;
 
         private Index3? lastInteract = null;
         private Index3? lastApply = null;
         private OrientationFlags lastOrientation = OrientationFlags.None;
-        private Index3 _oldIndex;
-
-        private ILocalChunkCache localChunkCache;
 
         /// <summary>
         /// Der Spieler dieses ActorHosts.
@@ -34,43 +27,20 @@ namespace OctoAwesome.Runtime
         public InventorySlot ActiveTool { get; set; }
 
         /// <summary>
-        /// Gibt an, ob der Spieler bereit ist.
-        /// </summary>
-        public bool ReadyState { get; private set; }
-
-        /// <summary>
         /// Erzeugt einen neuen ActorHost.
         /// </summary>
         /// <param name="player">Der Player</param>
-        public ActorHost(Player player)
+        public ActorHost(Player player) : base(player)
         {
             Player = player;
-            planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
-
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
-            _oldIndex = Player.Position.ChunkIndex;
-
             ActiveTool = null;
-            ReadyState = false;
         }
-
-        /// <summary>
-        /// Initialisiert den ActorHost und lädtc die Chunks rund um den Spieler.
-        /// </summary>
-        public void Initialize()
-        {
-            localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
-            {
-                ReadyState = success;
-            });
-        }
-
         
         /// <summary>
         /// Aktualisiert den Spieler (Bewegung, Interaktion)
         /// </summary>
         /// <param name="frameTime">Die aktuelle Zeit.</param>
-        public void Update(GameTime frameTime)
+        protected override void BeforeUpdate(GameTime frameTime)
         {
             #region Inputverarbeitung
 
@@ -91,132 +61,14 @@ namespace OctoAwesome.Runtime
             float stafeY = -(float)Math.Sin(Player.Angle + MathHelper.PiOver2);
             velocitydirection += new Vector3(stafeX, stafeY, 0) * Move.X;
 
-            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode, Player.FlyMode);
-
-            #endregion
-
-            #region Playerbewegung
-
-            Vector3 move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
-
-            Player.OnGround = false;
-            bool collision = false;
-            int loop = 0;
-
-            do
+            if (Player.FlyMode)
             {
-                int minx = (int)Math.Floor(Math.Min(
-                    Player.Position.BlockPosition.X - Player.Radius,
-                    Player.Position.BlockPosition.X - Player.Radius + move.X));
-                int maxx = (int)Math.Floor(Math.Max(
-                    Player.Position.BlockPosition.X + Player.Radius,
-                    Player.Position.BlockPosition.X + Player.Radius + move.X));
-                int miny = (int)Math.Floor(Math.Min(
-                    Player.Position.BlockPosition.Y - Player.Radius,
-                    Player.Position.BlockPosition.Y - Player.Radius + move.Y));
-                int maxy = (int)Math.Floor(Math.Max(
-                    Player.Position.BlockPosition.Y + Player.Radius,
-                    Player.Position.BlockPosition.Y + Player.Radius + move.Y));
-                int minz = (int)Math.Floor(Math.Min(
-                    Player.Position.BlockPosition.Z,
-                    Player.Position.BlockPosition.Z + move.Z));
-                int maxz = (int)Math.Floor(Math.Max(
-                    Player.Position.BlockPosition.Z + Player.Height,
-                    Player.Position.BlockPosition.Z + Player.Height + move.Z));
-
-                // Relative PlayerBox
-                BoundingBox playerBox = new BoundingBox(
-                    new Vector3(
-                        Player.Position.BlockPosition.X - Player.Radius,
-                        Player.Position.BlockPosition.Y - Player.Radius,
-                        Player.Position.BlockPosition.Z),
-                    new Vector3(
-                        Player.Position.BlockPosition.X + Player.Radius,
-                        Player.Position.BlockPosition.Y + Player.Radius,
-                        Player.Position.BlockPosition.Z + Player.Height));
-
-                collision = false;
-                float min = 1f;
-                Axis minAxis = Axis.None;
-
-                for (int z = minz; z <= maxz; z++)
-                {
-                    for (int y = miny; y <= maxy; y++)
-                    {
-                        for (int x = minx; x <= maxx; x++)
-                        {
-                            Index3 pos = new Index3(x, y, z);
-                            Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
-                            ushort block = localChunkCache.GetBlock(blockPos);
-                            if (block == 0)
-                                continue;
-
-                            Axis? localAxis;
-                            IBlockDefinition blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(block);
-                            float? moveFactor = Block.Intersect(
-                                blockDefinition.GetCollisionBoxes(localChunkCache, blockPos.X, blockPos.Y, blockPos.Z),
-                                pos, playerBox, move, out localAxis);
-
-                            if (moveFactor.HasValue && moveFactor.Value < min)
-                            {
-                                collision = true;
-                                min = moveFactor.Value;
-                                minAxis = localAxis.Value;
-                            }
-                        }
-                    }
-                }
-
-                Player.Position += (move * min);
-                move *= (1f - min);
-                switch (minAxis)
-                {
-                    case Axis.X:
-                        Player.Velocity *= new Vector3(0, 1, 1);
-                        Player.Position += new Vector3(move.X > 0 ? -Gap : Gap, 0, 0);
-                        move.X = 0f;
-                        break;
-                    case Axis.Y:
-                        Player.Velocity *= new Vector3(1, 0, 1);
-                        Player.Position += new Vector3(0, move.Y > 0 ? -Gap : Gap, 0);
-                        move.Y = 0f;
-                        break;
-                    case Axis.Z:
-                        Player.OnGround = true;
-                        Player.Velocity *= new Vector3(1, 1, 0);
-                        Player.Position += new Vector3(0, 0, move.Z > 0 ? -Gap : Gap);
-                        move.Z = 0f;
-                        break;
-                }
-
-                // Koordinate normalisieren (Rundwelt)
-                Coordinate position = Player.Position;
-                position.NormalizeChunkIndexXY(planet.Size);
-
-                //Beam me up
-                KeyboardState ks = Keyboard.GetState();
-                if (ks.IsKeyDown(Keys.P))
-                {
-                    position = position + new Vector3(0, 0, 10);
-                }
-
-                Player.Position = position;
-
-                loop++;
+                velocitydirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
+                // friction = Vector3.One * Player.FRICTION;
             }
-            while (collision && loop < 3);
 
-
-
-            if (Player.Position.ChunkIndex != _oldIndex)
-            {
-                _oldIndex = Player.Position.ChunkIndex;
-                ReadyState = false;
-                localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
-                {
-                    ReadyState = success;
-                });                
-            }
+            Player.Velocity += PhysicalUpdate(velocitydirection, frameTime.ElapsedGameTime, !Player.FlyMode, lastJump);
+            lastJump = false;
 
             #endregion
 
@@ -289,54 +141,6 @@ namespace OctoAwesome.Runtime
             }
 
             #endregion
-        }
-
-        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
-        {
-            Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
-
-            if (gravity && !flymode)
-            {
-                exforce += new Vector3(0, 0, -20f) * Player.Mass;
-            }
-
-            Vector3 externalPower = ((exforce * exforce) / (2 * Player.Mass)) * (float)elapsedtime.TotalSeconds;
-            externalPower *= new Vector3(Math.Sign(exforce.X), Math.Sign(exforce.Y), Math.Sign(exforce.Z));
-
-            Vector3 friction = new Vector3(1, 1, 0.1f) * Player.FRICTION;
-            Vector3 powerdirection = new Vector3();
-
-            if (flymode)
-            {
-                velocitydirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
-                friction = Vector3.One * Player.FRICTION;
-            }
-
-            powerdirection += externalPower;
-            powerdirection += (Player.POWER * velocitydirection);
-            if (lastJump && (OnGround || flymode))
-            {
-                Vector3 jumpDirection = new Vector3(0, 0, 1);
-                jumpDirection.Z = 1f;
-                jumpDirection.Normalize();
-                powerdirection += jumpDirection * Player.JUMPPOWER;
-            }
-            lastJump = false;
-
-
-            Vector3 VelocityChange = (2.0f / Player.Mass * (powerdirection - friction * Player.Velocity)) *
-                (float)elapsedtime.TotalSeconds;
-
-            return new Vector3(
-                (float)(VelocityChange.X < 0 ? -Math.Sqrt(-VelocityChange.X) : Math.Sqrt(VelocityChange.X)),
-                (float)(VelocityChange.Y < 0 ? -Math.Sqrt(-VelocityChange.Y) : Math.Sqrt(VelocityChange.Y)),
-                (float)(VelocityChange.Z < 0 ? -Math.Sqrt(-VelocityChange.Z) : Math.Sqrt(VelocityChange.Z)));
-
-        }
-
-        internal void Unload()
-        {
-            localChunkCache.Flush();
         }
 
         /// <summary>

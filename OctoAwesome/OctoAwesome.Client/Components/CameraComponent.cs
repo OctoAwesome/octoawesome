@@ -20,8 +20,8 @@ namespace OctoAwesome.Client.Components
         {
             base.Initialize();
 
-            Projection = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
+            //Projection = Matrix.CreatePerspectiveFieldOfView(
+            //    MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
         }
 
         public override void Update(GameTime gameTime)
@@ -50,6 +50,9 @@ namespace OctoAwesome.Client.Components
             float strafeY = -(float)Math.Sin(player.ActorHost.Angle + MathHelper.PiOver2);
 
             CameraUpVector = Vector3.Cross(new Vector3(strafeX, strafeY, 0), new Vector3(lookX, lookY, height));
+
+            Projection = Matrix.CreatePerspectiveFieldOfView(
+                MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
 
             View = Matrix.CreateLookAt(
                 CameraPosition,
