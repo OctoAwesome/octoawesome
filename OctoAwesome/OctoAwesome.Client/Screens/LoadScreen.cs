@@ -41,6 +41,7 @@ namespace OctoAwesome.Client.Screens
             levelList.VerticalAlignment = VerticalAlignment.Stretch;
             levelList.HorizontalAlignment = HorizontalAlignment.Stretch;
             levelList.Margin = Border.All(10);
+            levelList.SelectedItemBrush = new BorderBrush(Color.SaddleBrown * 0.7f);
             levelList.TemplateGenerator += (x) =>
             {
                 return new Label(manager)
@@ -56,7 +57,6 @@ namespace OctoAwesome.Client.Screens
                 deleteButton.Enabled = e.NewItem != null;
             };
             mainStack.AddControl(levelList, 0, 0);
-
 
             //Sidebar
             Panel sidebar = new Panel(manager);
@@ -96,9 +96,8 @@ namespace OctoAwesome.Client.Screens
                     return;
 
                 ResourceManager.Instance.DeleteUniverse(levelList.SelectedItem.Id);
-                levelList.Items.Remove(levelList.SelectedItem);
-                levelList.SelectedItem = null;
                 levelList.InvalidateDimensions();
+                SettingsManager.Set("LastUniverse", "");
             };
 
             createButton = getButton("Create");
@@ -113,6 +112,7 @@ namespace OctoAwesome.Client.Screens
 
                 manager.Player.RemovePlayer();
                 manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
+                SettingsManager.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
                 manager.Game.Player.InsertPlayer();
                 manager.NavigateToScreen(new GameScreen(manager));
             };
@@ -120,6 +120,16 @@ namespace OctoAwesome.Client.Screens
 
             foreach (var universe in ResourceManager.Instance.ListUniverses())
                 levelList.Items.Add(universe);
+
+            // Erstes Element auswählen, oder falls vorhanden das letzte gespielte Universum
+            if (levelList.Items.Count >= 1)
+                levelList.SelectedItem = levelList.Items[0];
+
+            if (SettingsManager.KeyExists("LastUniverse") && SettingsManager.Get("LastUniverse") != null
+                && SettingsManager.Get("LastUniverse") != "")
+            {
+                levelList.SelectedItem = levelList.Items.First(u => u.Id == Guid.Parse(SettingsManager.Get("LastUniverse")));
+            }
         }
 
         private Button getButton(string title)

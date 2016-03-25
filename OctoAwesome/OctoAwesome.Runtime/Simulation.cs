@@ -41,7 +41,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="name">Name des Universums.</param>
         /// <param name="seed">Seed für den Weltgenerator.</param>
-        public void NewGame(string name, int? seed = null)
+        public Guid NewGame(string name, int? seed = null)
         {
             if (seed == null)
             {
@@ -49,8 +49,9 @@ namespace OctoAwesome.Runtime
                 seed = rand.Next(int.MaxValue);
             }
 
-            ResourceManager.Instance.NewUniverse(name, seed.Value);
+            Guid guid = ResourceManager.Instance.NewUniverse(name, seed.Value);
             Start();
+            return guid;
         }
 
         /// <summary>
