@@ -69,6 +69,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="name">Name des neuen Universums.</param>
         /// <param name="seed">Weltgenerator-Seed für das neue Universum.</param>
+        /// <returns>Die Guid des neuen Universums.</returns>
         public Guid NewUniverse(string name, int seed)
         {
             Guid guid = Guid.NewGuid();
