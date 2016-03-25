@@ -96,6 +96,8 @@ namespace OctoAwesome.Client.Screens
                     return;
 
                 ResourceManager.Instance.DeleteUniverse(levelList.SelectedItem.Id);
+                levelList.Items.Remove(levelList.SelectedItem);
+                levelList.SelectedItem = null;
                 levelList.InvalidateDimensions();
                 SettingsManager.Set("LastUniverse", "");
             };
