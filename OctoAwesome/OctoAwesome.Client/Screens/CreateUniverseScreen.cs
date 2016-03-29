@@ -63,7 +63,8 @@ namespace OctoAwesome.Client.Screens
                     seed = textseed;
 
                 manager.Player.RemovePlayer();
-                Manager.Game.Simulation.NewGame(nameInput.Text, seed);
+                Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seed);
+                SettingsManager.Set("LastUniverse", guid.ToString());
                 manager.Game.Player.InsertPlayer();
                 manager.NavigateToScreen(new GameScreen(manager));
             };
