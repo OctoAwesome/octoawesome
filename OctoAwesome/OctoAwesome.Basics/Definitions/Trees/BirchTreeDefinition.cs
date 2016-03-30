@@ -36,6 +36,16 @@ namespace OctoAwesome.Basics
             ushort ground = builder.GetBlock(0, 0, -1);
             if (ground == water) return;
 
+            if (planet is ComplexPlanet)
+            {                
+                var temp = ((ComplexPlanet)planet).ClimateMap.GetTemperature(new Index3(
+                    builder.GlobalChunkIndex.X * Chunk.CHUNKSIZE_X,
+                    builder.GlobalChunkIndex.Y * Chunk.CHUNKSIZE_Y,
+                    index.Z));
+                if (temp > 30)
+                    return;
+            }            
+
             Random rand = new Random(seed);
             int height = rand.Next(3, 7);
             int radius = rand.Next(3, height);
