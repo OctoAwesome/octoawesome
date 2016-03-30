@@ -9,6 +9,8 @@
 
         private IChunkColumn column00, column01, column10, column11;
 
+        public Index2 GlobalChunkIndex { get; private set; }
+
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse LocalBuilder
         /// </summary>
@@ -29,6 +31,8 @@
             this.column01 = column01;
             this.column10 = column10;
             this.column11 = column11;
+
+            this.GlobalChunkIndex = column00.Index;
         }
 
         /// <summary>
