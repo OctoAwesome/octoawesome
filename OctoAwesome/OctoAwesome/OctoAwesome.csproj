@@ -64,6 +64,7 @@
     <Compile Include="Entities\CollidableEntity.cs" />
     <Compile Include="Entities\ControllableEntity.cs" />
     <Compile Include="Entities\Dog.cs" />
+    <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\IBody.cs" />
     <Compile Include="Entities\ICollidable.cs" />
     <Compile Include="Entities\IControllable.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
-    <Compile Include="Entities\Entity.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="LocalBuilder.cs" />
