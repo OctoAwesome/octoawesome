@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace OctoAwesome.Basics.Entities
     /// Dog Entity
     /// TODO: Move to OctoAwesome.Basics
     /// </summary>
-    public class Dog : Entity
+    public class Dog : ControllableEntity
     {
         public Dog(Coordinate coordinate)
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using OctoAwesome.Entities;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
@@ -7,7 +8,7 @@ namespace OctoAwesome
     /// <summary>
     /// Entität, die der menschliche Spieler mittels Eingabegeräte steuern kann.
     /// </summary>
-    public sealed class Player : Entity
+    public sealed class Player : PermanentEntity
     {
         /// <summary>
         /// Die Reichweite des Spielers, in der er mit Spielelementen wie <see cref="Block"/> und <see cref="Entity"/> interagieren kann
@@ -28,22 +29,6 @@ namespace OctoAwesome
         /// Die Reibung die der Spieler mit der Umwelt hat
         /// </summary>
         public const float FRICTION = 60f;
-
-        private float angle = 0f;
-
-        /// <summary>
-        /// Blickwinkel in der horizontalen Achse
-        /// </summary>
-        public float Angle
-        {
-            get { return angle; }
-            set { angle = MathHelper.WrapAngle(value); }
-        }
-
-        /// <summary>
-        /// Blickwinkel in der vertikalen Achse
-        /// </summary>
-        public float Tilt { get; set; }
 
         /// <summary>
         /// Zurzeit nicht benutzt

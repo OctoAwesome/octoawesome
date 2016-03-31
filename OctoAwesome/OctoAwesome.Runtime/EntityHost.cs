@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using OctoAwesome.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,9 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public bool ReadyState { get; private set; }
 
-        public Entity Entity { get; private set; }
+        public ControllableEntity Entity { get; private set; }
 
-        public EntityHost(Entity entity)
+        public EntityHost(ControllableEntity entity)
         {
             Entity = entity;
             _oldIndex = Entity.Position.ChunkIndex;

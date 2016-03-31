@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using OctoAwesome.Basics.Entities;
+using OctoAwesome.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +29,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public Guid UniverseId { get; private set; }
 
-        public IEnumerable<Entity> Entities { get { return entityHosts.Select(e => e.Entity); } }
+        public IEnumerable<ControllableEntity> Entities { get { return entityHosts.Select(e => e.Entity); } }
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
