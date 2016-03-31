@@ -196,7 +196,7 @@ namespace OctoAwesome.Runtime
 
             if (gravity)
             {
-                exforce += new Vector3(0, 0, -20f) * Entity.Mass;
+                exforce += ResourceManager.Instance.GetPlanet(Entity.Position.Planet).Gravity * Entity.Mass;
             }
 
             Vector3 externalPower = ((exforce * exforce) / (2 * Entity.Mass)) * (float)elapsedtime.TotalSeconds;
