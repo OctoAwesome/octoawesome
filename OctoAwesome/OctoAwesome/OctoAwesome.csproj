@@ -73,6 +73,7 @@
     <Compile Include="Entities\IRotatable.cs" />
     <Compile Include="Entities\MovingEntity.cs" />
     <Compile Include="Entities\PermanentEntity.cs" />
+    <Compile Include="EntityCache.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />

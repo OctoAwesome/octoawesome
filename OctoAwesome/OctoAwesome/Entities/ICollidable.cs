@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
-    interface ICollidable : IBody
+    public interface ICollidable : IBody
     {
         /// <summary>
         /// Die Masse der Entität. 

@@ -3,7 +3,7 @@
 
 namespace OctoAwesome.Entities
 {
-    interface IMoving
+    public interface IMoving
     {
         /// <summary>
         /// Geschwindikeit der Entität als Vektor

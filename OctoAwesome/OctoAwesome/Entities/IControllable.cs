@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
-    interface IControllable
+    public interface IControllable
     {
 
     }

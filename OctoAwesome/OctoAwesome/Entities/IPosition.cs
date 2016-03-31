@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
-    interface IPosition
+    public interface IPosition
     {
         /// <summary>
         /// Die Position der Entität

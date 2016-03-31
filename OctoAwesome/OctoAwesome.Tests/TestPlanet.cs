@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace OctoAwesome.Tests
 {
@@ -24,6 +25,14 @@ namespace OctoAwesome.Tests
         }
 
         public IMapGenerator Generator
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public Vector3 Gravity
         {
             get
             {

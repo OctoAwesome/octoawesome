@@ -56,6 +56,14 @@ namespace OctoAwesome.Tests
             }
         }
 
+        public IList<Entity> Entities
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public TestChunkColumn(int planet, Index2 index)
         {
             this.planet = planet;

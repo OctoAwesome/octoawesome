@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
-    interface IBody
+    public interface IBody
     {
         /// <summary>
         /// Der Radius der Entity in Blocks.

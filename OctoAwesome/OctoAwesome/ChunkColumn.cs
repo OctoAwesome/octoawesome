@@ -29,6 +29,7 @@ namespace OctoAwesome
         public ChunkColumn()
         {
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
+            Entities = new List<Entity>();
         }
 
         /// <summary>
@@ -71,6 +72,11 @@ namespace OctoAwesome
             get;
             private set;
         }
+
+        /// <summary>
+        /// Auflistung aller sich in dieser Column befindenden Entitäten.
+        /// </summary>
+        public IList<Entity> Entities { get; private set; }
 
         /// <summary>
         /// Gibt an, ob die ChunkColumn schon von einem <see cref="IMapPopulator"/> bearbeitet wurde.

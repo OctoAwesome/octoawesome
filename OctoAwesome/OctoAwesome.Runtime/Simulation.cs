@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using OctoAwesome.Basics.Entities;
 using OctoAwesome.Entities;
 using System;
 using System.Collections.Generic;

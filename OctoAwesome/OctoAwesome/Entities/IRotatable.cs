@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
-    interface IRotatable
+    public interface IRotatable
     {
         float Angle { get; set; }
 
