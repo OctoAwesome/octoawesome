@@ -407,7 +407,7 @@ namespace OctoAwesome.Client.Controls
                     Index2.ShortestDistanceOnAxis(offset.Y, item.Position.GlobalBlockIndex.Y, planetSize.Y),
                     item.Position.GlobalBlockIndex.Z - offset.Z) + item.Position.BlockPosition;
 
-                selectionEffect.World = Matrix.CreateScale(item.Radius, item.Radius, item.Height) * Matrix.CreateTranslation(relativePosition);
+                selectionEffect.World = Matrix.CreateScale(2 * item.Radius, 2 * item.Radius, item.Height) * Matrix.CreateTranslation(relativePosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
