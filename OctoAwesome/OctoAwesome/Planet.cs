@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 
 namespace OctoAwesome
@@ -39,6 +40,11 @@ namespace OctoAwesome
         public IMapGenerator Generator { get; set; }
 
         /// <summary>
+        /// Die Gravitation auf dem Planeten
+        /// </summary>
+        public Vector3 Gravity { get; private set; }
+
+        /// <summary>
         /// Initialisierung des Planeten
         /// </summary>
         /// <param name="id">ID des Planeten</param>
@@ -53,6 +59,7 @@ namespace OctoAwesome
                 (int)Math.Pow(2, size.X), 
                 (int)Math.Pow(2, size.Y),
                 (int)Math.Pow(2, size.Z));
+            Gravity = new Vector3(0, 0, -20f);
             Seed = seed;
         }
 
