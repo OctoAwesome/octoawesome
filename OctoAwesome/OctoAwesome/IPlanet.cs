@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 
 namespace OctoAwesome
@@ -37,6 +38,11 @@ namespace OctoAwesome
         /// Der Generator des Planeten
         /// </summary>
         IMapGenerator Generator { get; }
+
+        /// <summary>
+        /// Die Gravitation des Planeten
+        /// </summary>
+        Vector3 Gravity { get; }
 
         /// <summary>
         /// Serialisiert den Chunk in den angegebenen Stream
