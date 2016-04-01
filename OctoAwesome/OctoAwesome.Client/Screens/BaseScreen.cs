@@ -9,13 +9,10 @@ namespace OctoAwesome.Client.Screens
 {
     public abstract class BaseScreen : Screen
     {
-        private IScreenManager Manager;
-
         protected Button BackButton;
 
         public BaseScreen(IScreenManager manager) : base(manager)
         {
-            Manager = manager;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)

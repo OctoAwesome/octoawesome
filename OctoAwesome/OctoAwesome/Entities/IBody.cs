@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
+    /// <summary>
+    /// Schnittstelle für Entitäten mit Körpermaßen.
+    /// </summary>
     public interface IBody
     {
         /// <summary>

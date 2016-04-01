@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 
-
 namespace OctoAwesome.Entities
 {
+    /// <summary>
+    /// Schnittstelle für alle sich bewegenden Entitäten.
+    /// </summary>
     public interface IMoving
     {
         /// <summary>
