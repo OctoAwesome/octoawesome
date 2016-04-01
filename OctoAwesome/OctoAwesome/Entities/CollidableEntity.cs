@@ -3,6 +3,9 @@ using System.Xml.Serialization;
 
 namespace OctoAwesome.Entities
 {
+    /// <summary>
+    /// Basisklasse für Entitäten, die mit anderen Entitäten und Blöcken kollidieren können.
+    /// </summary>
     public class CollidableEntity : Entity, ICollidable
     {
         /// <summary>

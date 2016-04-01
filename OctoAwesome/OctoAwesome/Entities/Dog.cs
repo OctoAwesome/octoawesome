@@ -12,6 +12,10 @@ namespace OctoAwesome.Entities
     /// </summary>
     public class Dog : ControllableEntity
     {
+        /// <summary>
+        /// Erzeugt eine neue Instanz eines Hundes.
+        /// </summary>
+        /// <param name="coordinate">Die Position des Hundes.</param>
         public Dog(Coordinate coordinate)
         {
             Position = coordinate;

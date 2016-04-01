@@ -7,23 +7,39 @@ using System.Text;
 
 namespace OctoAwesome.Runtime
 {
+    /// <summary>
+    /// Host für Entitäten.
+    /// </summary>
     public class EntityHost
     {
         private readonly float Gap = 0.001f;
 
+        /// <summary>
+        /// Der Planet, auf dem sich die Entität befindet.
+        /// </summary>
         protected IPlanet planet;
 
+        /// <summary>
+        /// Der lokale Chunk Cache für die Entität.
+        /// </summary>
         protected ILocalChunkCache localChunkCache;
 
         private Index3 _oldIndex;
 
         /// <summary>
-        /// Gibt an, ob der Spieler bereit ist.
+        /// Gibt an, ob die Entität bereit ist.
         /// </summary>
         public bool ReadyState { get; private set; }
 
+        /// <summary>
+        /// Die gehostete Entität.
+        /// </summary>
         public ControllableEntity Entity { get; private set; }
 
+        /// <summary>
+        /// Erzeugt einen neuen Host für Entitäten.
+        /// </summary>
+        /// <param name="entity">Die zu hostende Entität.</param>
         public EntityHost(ControllableEntity entity)
         {
             Entity = entity;
@@ -33,6 +49,9 @@ namespace OctoAwesome.Runtime
             ReadyState = false;
         }
 
+        /// <summary>
+        /// Initialisiert den lokalen Chunk Cache der Entität.
+        /// </summary>
         public virtual void Initialize()
         {
             localChunkCache.SetCenter(planet, new Index2(Entity.Position.ChunkIndex), (success) =>
@@ -43,6 +62,10 @@ namespace OctoAwesome.Runtime
 
         int lastJump = 0;
 
+        /// <summary>
+        /// Wird von Update aufgerufen.
+        /// </summary>
+        /// <param name="frameTime"></param>
         protected virtual void BeforeUpdate(GameTime frameTime)
         {
             bool jump = false;
@@ -55,6 +78,10 @@ namespace OctoAwesome.Runtime
             Entity.Velocity += PhysicalUpdate(Vector3.Zero, frameTime.ElapsedGameTime, true, jump);
         }
 
+        /// <summary>
+        /// Führt Berechnungen der Bewegung usw. aus.
+        /// </summary>
+        /// <param name="frameTime">Die aktuelle GameTime.</param>
         public virtual void Update(GameTime frameTime)
         {
             BeforeUpdate(frameTime);
@@ -190,6 +217,15 @@ namespace OctoAwesome.Runtime
             localChunkCache.Flush();
         }
 
+        /// <summary>
+        /// Führt die physikalischen Berechnungen für die Entität durch.
+        /// TODO: Hier werden noch konstanten aus dem Player verwendet!
+        /// </summary>
+        /// <param name="velocitydirection">Die Bewegungsrichtung.</param>
+        /// <param name="elapsedtime">Die Zeitspanne seit dem letzten PhysicalUpdate.</param>
+        /// <param name="gravity">Gibt an, ob Schwerkraft wirken soll.</param>
+        /// <param name="jump">Gibt an, ob ein Sprung durchgeführt werden soll.</param>
+        /// <returns></returns>
         protected Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool jump)
         {
             Vector3 exforce = gravity ? Entity.ExternalForce : Vector3.Zero;

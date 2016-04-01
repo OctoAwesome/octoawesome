@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
+    /// <summary>
+    /// Schnittstelle für steuerbare Entitäten.
+    /// </summary>
     public interface IControllable
     {
 

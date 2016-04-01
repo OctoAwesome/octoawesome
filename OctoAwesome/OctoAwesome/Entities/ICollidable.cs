@@ -6,6 +6,9 @@ using System.Text;
 
 namespace OctoAwesome.Entities
 {
+    /// <summary>
+    /// Schnittstelle für Entitäten, die mit anderen Entitäten und Blöcken kollidieren können.
+    /// </summary>
     public interface ICollidable : IBody
     {
         /// <summary>

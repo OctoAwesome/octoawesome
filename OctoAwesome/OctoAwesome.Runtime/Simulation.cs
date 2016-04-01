@@ -28,6 +28,9 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public Guid UniverseId { get; private set; }
 
+        /// <summary>
+        /// Die in der Simulation vorhandenen steuerbaren Entitäten.
+        /// </summary>
         public IEnumerable<ControllableEntity> Entities { get { return entityHosts.Select(e => e.Entity); } }
 
         /// <summary>

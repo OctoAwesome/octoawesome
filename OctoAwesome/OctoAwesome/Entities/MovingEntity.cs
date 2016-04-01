@@ -3,6 +3,9 @@ using System.Xml.Serialization;
 
 namespace OctoAwesome.Entities
 {
+    /// <summary>
+    /// Basisklasse für sich bewegende Entitäten.
+    /// </summary>
     public class MovingEntity : CollidableEntity, IMoving
     {
         /// <summary>
