@@ -19,6 +19,22 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public override float MaxTemperature
+        {
+            get
+            {
+                return 30;
+            }
+        }
+
+        public override float MinTemperature
+        {
+            get
+            {
+                return -5;
+            }
+        }
+
         public override int GetDensity(IPlanet planet, Index3 index)
         {
             return 4;

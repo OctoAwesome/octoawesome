@@ -9,6 +9,10 @@ namespace OctoAwesome.Basics
     {
         public abstract int Order { get; }
 
+        public abstract float MaxTemperature { get; }
+
+        public abstract float MinTemperature { get; }
+
         public abstract int GetDensity(IPlanet planet, Index3 index);
 
         public abstract void Init(IDefinitionManager definitionManager);
