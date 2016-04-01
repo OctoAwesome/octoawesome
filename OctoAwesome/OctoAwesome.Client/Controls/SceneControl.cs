@@ -30,13 +30,15 @@ namespace OctoAwesome.Client.Controls
 
         private BasicEffect sunEffect;
         private BasicEffect selectionEffect;
+        private BasicEffect entityEffect;
         private Matrix miniMapProjectionMatrix;
 
         private Texture2D blockTextures;
         private Texture2D sunTexture;
+        private Texture2D entityTexture;
 
         private VertexPositionColor[] selectionLines;
-        private VertexPositionColor[] entityBlock;
+        private VertexPositionTexture[] entityBlock;
         private VertexPositionTexture[] billboardVertices;
         private short[] selectionIndeces;
         private short[] entityBlockIndeces;
@@ -63,6 +65,7 @@ namespace OctoAwesome.Client.Controls
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
+            entityTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Basics/Entities/dog.png", manager.GraphicsDevice);
 
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.Instance.GetBlockDefinitions();
@@ -142,14 +145,51 @@ namespace OctoAwesome.Client.Controls
 
             entityBlock = new[]
             {
-                new VertexPositionColor(new Vector3(-0.5f, +0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(+0.5f, +0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(-0.5f, -0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(+0.5f, -0.5f, +1f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(-0.5f, +0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(+0.5f, +0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(-0.5f, -0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
-                new VertexPositionColor(new Vector3(+0.5f, -0.5f, -0f), Microsoft.Xna.Framework.Color.DarkKhaki),
+                // Oberseite
+                new VertexPositionTexture(new Vector3(-0.5f, +0.5f, +1f), new Vector2(0, 1)),
+                new VertexPositionTexture(new Vector3(+0.5f, +0.5f, +1f), new Vector2(1, 1)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, +1f), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(+0.5f, -0.5f, +1f), new Vector2(1, 0)),
+
+                // Hinterseite
+                new VertexPositionTexture(new Vector3(-0.5f, +0.5f, +1f), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(+0.5f, +0.5f, +1f), new Vector2(1, 0)),
+                new VertexPositionTexture(new Vector3(-0.5f, +0.5f, -0f), new Vector2(0, 1)),
+                new VertexPositionTexture(new Vector3(+0.5f, +0.5f, -0f), new Vector2(1, 1)),
+
+                // Rechts
+                new VertexPositionTexture(new Vector3(+0.5f, -0.5f, +1f), new Vector2(1, 0)),
+                new VertexPositionTexture(new Vector3(+0.5f, +0.5f, +1f), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(+0.5f, +0.5f, -0f), new Vector2(0, 1)),
+                new VertexPositionTexture(new Vector3(+0.5f, -0.5f, -0f), new Vector2(1, 1)),
+
+                // Vorne
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, +1f), new Vector2(1, 0)),
+                new VertexPositionTexture(new Vector3(+0.5f, -0.5f, +1f), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, -0f), new Vector2(1, 1)),
+                new VertexPositionTexture(new Vector3(+0.5f, -0.5f, -0f), new Vector2(0, 1)),
+
+                // Links
+                new VertexPositionTexture(new Vector3(-0.5f, +0.5f, +1f), new Vector2(1, 0)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, +1f), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(-0.5f, +0.5f, -0f), new Vector2(1, 1)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, -0f), new Vector2(0, 1)),
+
+                // Unten
+                new VertexPositionTexture(new Vector3(-0.5f, +0.5f, -0f), new Vector2(0, 1)),
+                new VertexPositionTexture(new Vector3(+0.5f, +0.5f, -0f), new Vector2(1, 1)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, -0f), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(+0.5f, -0.5f, -0f), new Vector2(1, 0)),
+            };
+
+            entityBlockIndeces = new short[]
+            {
+                0, 1, 2, 1, 3, 2, // oben
+                6, 5, 4, 6, 7, 5, // hinten
+                8, 9, 10, 10, 11, 8, //rechts
+                12, 13, 14, 13, 15, 14, // vorne
+                16, 17, 18, 17, 19, 18, // links
+                20, 22, 21, 22, 23, 21, // unten
             };
 
             selectionIndeces = new short[]
@@ -159,22 +199,14 @@ namespace OctoAwesome.Client.Controls
                 0, 4, 1, 5, 2, 6, 3, 7
             };
 
-            entityBlockIndeces = new short[]
-            {
-                0, 1, 2, 1, 3, 2, // oben 
-                1, 0, 5, 0, 4, 5, // hinten 
-                3, 1, 7, 1, 5, 7, // rechts 
-                2, 3, 6, 3, 7, 6, // vorne 
-                0, 2, 4, 2, 6, 4, // links 
-                7, 5, 6, 6, 5, 4 // unten
-                
-            };
-
             sunEffect = new BasicEffect(manager.GraphicsDevice);
             sunEffect.TextureEnabled = true;
 
             selectionEffect = new BasicEffect(manager.GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
+
+            entityEffect = new BasicEffect(manager.GraphicsDevice);
+            entityEffect.TextureEnabled = true;
 
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
@@ -407,13 +439,15 @@ namespace OctoAwesome.Client.Controls
                     Index2.ShortestDistanceOnAxis(offset.Y, item.Position.GlobalBlockIndex.Y, planetSize.Y),
                     item.Position.GlobalBlockIndex.Z - offset.Z) + item.Position.BlockPosition;
 
-                selectionEffect.World = Matrix.CreateScale(2 * item.Radius, 2 * item.Radius, item.Height) * Matrix.CreateTranslation(relativePosition);
-                selectionEffect.View = camera.View;
-                selectionEffect.Projection = camera.Projection;
-                foreach (var pass in selectionEffect.CurrentTechnique.Passes)
+                entityEffect.World = Matrix.CreateScale(2 * item.Radius, 2 * item.Radius, item.Height) * Matrix.CreateTranslation(relativePosition);
+                entityEffect.View = camera.View;
+                entityEffect.Projection = camera.Projection;
+                entityEffect.Texture = entityTexture;
+                entityEffect.TextureEnabled = true;
+                foreach (var pass in entityEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, entityBlock, 0, 8, entityBlockIndeces, 0, 12);
+                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, entityBlock, 0, entityBlock.Length, entityBlockIndeces, 0, entityBlockIndeces.Length / 3);
                 }
             }
 
