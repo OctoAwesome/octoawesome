@@ -19,6 +19,22 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public override float MaxTemperature
+        {
+            get
+            {
+                return 27; 
+            }
+        }
+
+        public override float MinTemperature
+        {
+            get
+            {
+                return -5;
+            }
+        }
+
         public override void Init(IDefinitionManager definitionManager)
         {
             wood = definitionManager.GetBlockDefinitionIndex<WoodBlockDefinition>();
