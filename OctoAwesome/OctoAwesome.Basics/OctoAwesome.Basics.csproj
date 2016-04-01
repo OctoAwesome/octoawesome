@@ -190,6 +190,9 @@
     <Content Include="Assets\OctoAwesome.Basics\Blocks\redstone.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\OctoAwesome.Basics\Entities\dog.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\OctoAwesome.Basics\Items\pick_iron.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
