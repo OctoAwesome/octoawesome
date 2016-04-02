@@ -126,6 +126,9 @@
   <data name="Brick" xml:space="preserve">
     <value>Brick</value>
   </data>
+  <data name="Cactus" xml:space="preserve">
+    <value>Cactus</value>
+  </data>
   <data name="Grass" xml:space="preserve">
     <value>Grass</value>
   </data>
