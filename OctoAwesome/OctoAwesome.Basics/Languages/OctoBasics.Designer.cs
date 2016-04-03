@@ -88,6 +88,15 @@ namespace OctoAwesome.Basics.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cactus ähnelt.
+        /// </summary>
+        internal static string Cactus {
+            get {
+                return ResourceManager.GetString("Cactus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Grass ähnelt.
         /// </summary>
         internal static string Grass {
