@@ -17,6 +17,8 @@ namespace OctoAwesome.Runtime
 
         private GlobalChunkCache globalChunkCache = null;
 
+        private EntityCache entityCache = null;
+
         private List<IMapPopulator> populators = null;
 
         private IUniverse universe;
@@ -56,6 +58,8 @@ namespace OctoAwesome.Runtime
 
             planets = new Dictionary<int, IPlanet>();
 
+            entityCache = new EntityCache();
+
             bool.TryParse(SettingsManager.Get("DisablePersistence"), out disablePersistence);
         }
 
@@ -65,6 +69,11 @@ namespace OctoAwesome.Runtime
         public IGlobalChunkCache GlobalChunkCache { get { return globalChunkCache; } }
 
         /// <summary>
+        /// Der globale Entity Cache
+        /// </summary>
+        public EntityCache EntityCache { get { return entityCache; } }
+
+        /// <summary>
         /// Erzuegt ein neues Universum.
         /// </summary>
         /// <param name="name">Name des neuen Universums.</param>
@@ -72,8 +81,8 @@ namespace OctoAwesome.Runtime
         public void NewUniverse(string name, int seed)
         {
             universe = new Universe(Guid.NewGuid(), name, seed);
-                persistenceManager.SaveUniverse(universe);
-            }
+            persistenceManager.SaveUniverse(universe);
+        }
 
         /// <summary>
         /// Gibt alle Universen zurück, die geladen werden können.
@@ -110,7 +119,7 @@ namespace OctoAwesome.Runtime
 
             // Unload Chunks
             globalChunkCache.Clear();
-            
+
             // TODO: Unload Planets
             // TODO: Unload Universe;
         }

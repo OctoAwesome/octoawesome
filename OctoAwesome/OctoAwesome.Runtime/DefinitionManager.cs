@@ -33,6 +33,8 @@ namespace OctoAwesome.Runtime
 
         #endregion
 
+        private object lockObject = new object();
+
         private List<IItemDefinition> itemDefinitions;
 
         private List<IResourceDefinition> resourceDefinitions;
@@ -41,18 +43,21 @@ namespace OctoAwesome.Runtime
 
         private void EnsureLoaded()
         {
-            if (itemDefinitions == null)
+            lock (lockObject)
             {
-                // Items sammeln
-                itemDefinitions = new List<IItemDefinition>();
-                itemDefinitions.AddRange(ExtensionManager.GetInstances<IItemDefinition>());
+                if (itemDefinitions == null)
+                {
+                    // Items sammeln
+                    itemDefinitions = new List<IItemDefinition>();
+                    itemDefinitions.AddRange(ExtensionManager.GetInstances<IItemDefinition>());
 
-                // Ressourcen sammeln
-                resourceDefinitions = new List<IResourceDefinition>();
-                resourceDefinitions.AddRange(itemDefinitions.OfType<IResourceDefinition>());
+                    // Ressourcen sammeln
+                    resourceDefinitions = new List<IResourceDefinition>();
+                    resourceDefinitions.AddRange(itemDefinitions.OfType<IResourceDefinition>());
 
-                // Blöcke sammeln
-                blockDefinitions = itemDefinitions.OfType<IBlockDefinition>().ToArray();
+                    // Blöcke sammeln
+                    blockDefinitions = itemDefinitions.OfType<IBlockDefinition>().ToArray();
+                }
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -20,6 +22,8 @@ namespace OctoAwesome.Runtime
         private const string PlanetFilename = "planet.info";
 
         private const string ColumnFilename = "column_{0}_{1}.dat";
+
+        private const string EntitiesFilename = "entities_{0}_{1}.dat";
 
         private DirectoryInfo root;        
 
@@ -124,6 +128,75 @@ namespace OctoAwesome.Runtime
         }
 
         /// <summary>
+        /// Loaden von Entitäten
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="columnIndex">Column-Adresse</param>
+        /// <returns>Liste der Entitäten</returns>
+        public Entity[] LoadEntities(Guid universeGuid, int planetId, Index2 columnIndex)
+        {
+            string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
+            Directory.CreateDirectory(path);
+
+            string file = path = Path.Combine(path, string.Format(EntitiesFilename, columnIndex.X, columnIndex.Y));
+
+            if (!File.Exists(file)) {
+                Dog dog = new Dog(new Coordinate(planetId, 
+                    new Index3(
+                        (int)((columnIndex.X + 0.5f) * Chunk.CHUNKSIZE_X), 
+                        (int)((columnIndex.Y + 0.5f) * Chunk.CHUNKSIZE_Y), 1000), Vector3.Zero));
+                return new Entity[] { dog };
+            }
+
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    int count = reader.ReadInt32();
+                    Entity[] result = new Entity[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        Type type = Type.GetType(reader.ReadString());
+                        Entity entity = (Entity)Activator.CreateInstance(type);
+                        entity.Deserialize(reader);
+                        result[i] = entity;
+                    }
+
+                    return result;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Speichern von Entitäten
+        /// </summary>
+        /// <param name="universeGuid">GUID des Universums.</param>
+        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="columnIndex">Column-Adresse</param>
+        /// <param name="entites">Liste der Entitäten</param>
+        public void SaveEntities(Guid universeGuid, int planetId, Index2 columnIndex, Entity[] entites)
+        {
+            string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
+            Directory.CreateDirectory(path);
+
+            string file = path = Path.Combine(path, string.Format(EntitiesFilename, columnIndex.X, columnIndex.Y));
+            using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter writer = new BinaryWriter(stream))
+                {
+                    // TODO: Sicherheitsssystem (seperate Memory Streams)
+                    writer.Write(entites.Length);
+                    foreach (var entity in entites)
+                    {
+                        writer.Write(entity.GetType().FullName);
+                        entity.Serialize(writer);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Gibt alle Universen zurück, die geladen werden können.
         /// </summary>
         /// <returns>Die Liste der Universen.</returns>
@@ -178,7 +251,7 @@ namespace OctoAwesome.Runtime
                 return null;
 
             IMapGenerator generator = null;
-            using (Stream stream = File.Open(generatorInfo, FileMode.Create, FileAccess.Read))
+            using (Stream stream = File.Open(generatorInfo, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader bw = new BinaryReader(stream))
                 {

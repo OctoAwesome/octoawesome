@@ -102,6 +102,7 @@
     <Compile Include="OrientationFlags.cs" />
     <Compile Include="PhysicalProperties.cs" />
     <Compile Include="Planet.cs" />
+    <Compile Include="PlanetIndex2.cs" />
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

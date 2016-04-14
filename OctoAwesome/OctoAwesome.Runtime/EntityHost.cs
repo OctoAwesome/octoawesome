@@ -58,6 +58,12 @@ namespace OctoAwesome.Runtime
             {
                 ReadyState = success;
             });
+
+            if (Entity is PermanentEntity)
+            {
+                ResourceManager.Instance.EntityCache.Subscribe(planet, new Index2(Entity.Position.ChunkIndex), 
+                    (Entity as PermanentEntity).ActivationRange);
+            }
         }
 
         int lastJump = 0;
@@ -191,6 +197,21 @@ namespace OctoAwesome.Runtime
                 //    position = position + new Vector3(0, 0, 10);
                 //}
 
+                // Chunkwechsel signalisieren
+                if (Entity is PermanentEntity)
+                {
+                    // TODO: Prüfung auf PermanentEntity noch notwendig?
+                    if (Entity.Position.ChunkIndex.X != position.ChunkIndex.X ||
+                        Entity.Position.ChunkIndex.Y != position.ChunkIndex.Y)
+                    {
+                        ResourceManager.Instance.EntityCache.Unsubscribe(planet, new Index2(Entity.Position.ChunkIndex),
+                            (Entity as PermanentEntity).ActivationRange);
+                        ResourceManager.Instance.EntityCache.Subscribe(planet, new Index2(position.ChunkIndex),
+                            (Entity as PermanentEntity).ActivationRange);
+                    }
+                }
+
+                // Neue Position setzen
                 Entity.Position = position;
 
                 loop++;
@@ -214,6 +235,12 @@ namespace OctoAwesome.Runtime
 
         internal void Unload()
         {
+            if (Entity is PermanentEntity)
+            {
+                ResourceManager.Instance.EntityCache.Unsubscribe(planet, new Index2(Entity.Position.ChunkIndex),
+                    (Entity as PermanentEntity).ActivationRange);
+            }
+
             localChunkCache.Flush();
         }
 
