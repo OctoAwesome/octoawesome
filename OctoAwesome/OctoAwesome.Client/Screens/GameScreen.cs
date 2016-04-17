@@ -4,6 +4,7 @@ using OctoAwesome.Client.Components;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System;
+using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -66,6 +67,13 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(crosshair);
 
             Title = "Game";
+
+            //Register Action
+            manager.Game.KeyMapper.AddAction("octoawesome:forward", type =>
+            {
+                if (type == KeyMapper.KeyType.Down) pressedMoveUp = true;
+                else if (type == KeyMapper.KeyType.Up) pressedMoveUp = false;
+            });
         }
 
         protected override void OnUpdate(GameTime gameTime)
@@ -147,10 +155,10 @@ namespace OctoAwesome.Client.Screens
                     pressedShift = true;
                     args.Handled = true;
                     break;
-                case Keys.W:
-                    pressedMoveUp = true;
-                    args.Handled = true;
-                    break;
+                //case Keys.W:
+                //    pressedMoveUp = true;
+                //    args.Handled = true;
+                //    break;
                 case Keys.A:
                     pressedMoveLeft = true;
                     args.Handled = true;
@@ -249,9 +257,9 @@ namespace OctoAwesome.Client.Screens
                     pressedShift = false;
                     args.Handled = true;
                     break;
-                case Keys.W:
-                    pressedMoveUp = false;
-                    args.Handled = true;
+                ///case Keys.W:
+                //    pressedMoveUp = false;
+                //    args.Handled = true;
                     break;
                 case Keys.A:
                     pressedMoveLeft = false;
