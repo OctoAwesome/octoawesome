@@ -113,7 +113,7 @@ namespace OctoAwesome.Client.Screens
 
                 manager.Player.RemovePlayer();
                 manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
-                manager.Game.Player.InsertPlayer();
+                manager.Game.Player.InsertPlayer(false);
                 manager.NavigateToScreen(new GameScreen(manager));
             };
             buttonStack.Controls.Add(playButton);

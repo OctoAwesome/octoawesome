@@ -230,6 +230,20 @@ namespace OctoAwesome.Runtime
         }
 
         /// <summary>
+        /// Hebt den Spieler auf Bodenniveau.
+        /// </summary>
+        public void BeamUp()
+        {
+            IChunkColumn column = localChunkCache.GetChunkColumn(Player.Position.ChunkIndex.X, Player.Position.ChunkIndex.Y);
+            int newHeight = column.Heights[Player.Position.LocalBlockIndex.X, Player.Position.LocalBlockIndex.Y] + 1;
+            Coordinate newPosition = Player.Position;            
+            newPosition.GlobalBlockIndex = new Index3(newPosition.GlobalBlockIndex.X,
+                newPosition.GlobalBlockIndex.Y, 
+                newHeight);
+            Player.Position = newPosition;
+        }
+
+        /// <summary>
         /// DEBUG METHODE: NICHT FÜR VERWENDUNG IM SPIEL!
         /// </summary>
         public void AllBlocksDebug()

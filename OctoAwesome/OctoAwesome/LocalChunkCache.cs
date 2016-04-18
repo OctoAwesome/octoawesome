@@ -215,6 +215,21 @@ namespace OctoAwesome
         }
 
         /// <summary>
+        /// Liefert die ChunkColumn an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X Koordinate</param>
+        /// <param name="y">Y Koordinate</param>
+        /// <returns>Instanz der ChunkColumn</returns>
+        public IChunkColumn GetChunkColumn(int x, int y)
+        {
+            if (planet == null) return null;
+            x = Index2.NormalizeAxis(x, planet.Size.X);
+            y = Index2.NormalizeAxis(y, planet.Size.Y);
+
+            return chunkColumns[FlatIndex(x, y)];
+        }
+
+        /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
         /// </summary>
         /// <param name="index">Block Index</param>

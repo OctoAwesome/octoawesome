@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Components
             Simulation = null;
         }
 
-        public ActorHost InsertPlayer(Player player)
+        public ActorHost InsertPlayer(Player player, bool firstTime)
         {
             if (Simulation == null)
                 throw new NotSupportedException();
@@ -60,7 +60,7 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            return Simulation.InsertPlayer(player);
+            return Simulation.InsertPlayer(player, firstTime);
         }
 
         public void RemovePlayer(ActorHost host)

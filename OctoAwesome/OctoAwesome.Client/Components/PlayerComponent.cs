@@ -59,10 +59,10 @@ namespace OctoAwesome.Client.Components
             Tools = new List<InventorySlot>();
         }
 
-        public void InsertPlayer()
+        public void InsertPlayer(bool firstTime)
         {
             Player player = ResourceManager.Instance.LoadPlayer("Adam");
-            ActorHost = Game.Simulation.InsertPlayer(player);
+            ActorHost = Game.Simulation.InsertPlayer(player, firstTime);
         }
 
         public void RemovePlayer()

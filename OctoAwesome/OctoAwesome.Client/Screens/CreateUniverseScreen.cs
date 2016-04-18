@@ -64,14 +64,14 @@ namespace OctoAwesome.Client.Screens
 
                 manager.Player.RemovePlayer();
                 Manager.Game.Simulation.NewGame(nameInput.Text, seed);
-                manager.Game.Player.InsertPlayer();
+                manager.Game.Player.InsertPlayer(true);
                 manager.NavigateToScreen(new GameScreen(manager));
             };
             panel.Controls.Add(createButton);
 
         }
 
-        private void AddLabeledControl(Grid grid, String name, Control c)
+        private void AddLabeledControl(Grid grid, string name, Control c)
         {
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto });
             grid.AddControl(new Label(Manager) { Text = name }, 0, grid.Rows.Count -1);

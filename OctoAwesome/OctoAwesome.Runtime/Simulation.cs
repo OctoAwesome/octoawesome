@@ -127,19 +127,24 @@ namespace OctoAwesome.Runtime
         /// Fügt einen neuen Spieler hinzu.
         /// </summary>
         /// <param name="player">Der Player.</param>
+        /// <param name="firstTime">Gibt an, ob der Spieler zum ersten Mal in dieser Welt geladen wird. Wenn true, wird der Spieler auf Bodenniveau gesetzt.</param>
         /// <returns>Der neue ActorHost zur Steuerung des Spielers.</returns>
-        public ActorHost InsertPlayer(Player player)
+        public ActorHost InsertPlayer(Player player, bool firstTime)
         {
-            var host = new ActorHost(player);
+            var host = new ActorHost(player);            
             entityHosts.Add(host);
-            host.Initialize();
+            host.Initialize(() => 
+            {
+                if (firstTime)
+                    host.BeamUp();
+            });
 
             // TODO: Insert Pet
             Coordinate dogCoordinate = host.Position + new Index3(5, 0, 2);
             Dog wauzi = new Dog(dogCoordinate);
             var dogHost = new EntityHost(wauzi);
             entityHosts.Add(dogHost);
-            dogHost.Initialize();
+            dogHost.Initialize(null);
 
             return host;
         }

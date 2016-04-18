@@ -52,11 +52,14 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Initialisiert den lokalen Chunk Cache der Entität.
         /// </summary>
-        public virtual void Initialize()
+        /// <param name="successCallback">Callback, das ausgeführt wird, wenn der <see cref="LocalChunkCache.SetCenter(IPlanet, Index2, Action{bool})"/>-Aufruf abgeschlossen ist.</param>
+        public virtual void Initialize(Action successCallback)
         {
             localChunkCache.SetCenter(planet, new Index2(Entity.Position.ChunkIndex), (success) =>
             {
                 ReadyState = success;
+                if (successCallback != null)
+                    successCallback();
             });
 
             if (Entity is PermanentEntity)

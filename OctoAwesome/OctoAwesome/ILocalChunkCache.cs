@@ -24,6 +24,14 @@ namespace OctoAwesome
         IChunk GetChunk(int x, int y, int z);
 
         /// <summary>
+        /// Liefert die ChunkColumn an der angegebenen Koordinate.
+        /// </summary>
+        /// <param name="x">X Koordinate</param>
+        /// <param name="y">Y Koordinate</param>
+        /// <returns>Instanz der ChunkColumn</returns>
+        IChunkColumn GetChunkColumn(int x, int y);
+
+        /// <summary>
         /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
         /// </summary>
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
