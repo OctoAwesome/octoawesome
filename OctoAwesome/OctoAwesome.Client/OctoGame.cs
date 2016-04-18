@@ -9,6 +9,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 using MonoGameUi;
+using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 using EventArgs = System.EventArgs;
 
 namespace OctoAwesome.Client
@@ -27,6 +28,8 @@ namespace OctoAwesome.Client
         public SimulationComponent Simulation { get; private set; }
 
         public ScreenComponent Screen { get; private set; }
+
+        public KeyMapper KeyMapper { get; private set; }
 
         public OctoGame()
             : base()
@@ -68,6 +71,8 @@ namespace OctoAwesome.Client
             Screen.DrawOrder = 1;
             Components.Add(Screen);
 
+            KeyMapper = new KeyMapper(Screen);
+
             Window.ClientSizeChanged += (s, e) =>
             {
                 if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
@@ -78,6 +83,13 @@ namespace OctoAwesome.Client
                 graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
                 graphics.ApplyChanges();
             };
+
+            KeyMapper.RegisterBinding("octoawesome:debugBinding","Debug");
+            KeyMapper.AddKey("octoawesome:debugBinding", Keys.F);
+            KeyMapper.AddAction("octoawesome:debugBinding", type => {Console.WriteLine(type);});
+
+            KeyMapper.RegisterBinding("octoawesome:forward", "Forward");
+            KeyMapper.AddKey("octoawesome:forward", Keys.W);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
