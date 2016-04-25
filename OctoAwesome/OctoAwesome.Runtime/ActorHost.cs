@@ -66,8 +66,6 @@ namespace OctoAwesome.Runtime
             });
         }
 
-        Stopwatch _watch = new Stopwatch();
-
         /// <summary>
         /// Aktualisiert den Spieler (Bewegung, Interaktion)
         /// </summary>
@@ -97,9 +95,7 @@ namespace OctoAwesome.Runtime
 
             #endregion
 
-            #region Playerbewegung
-
-            _watch.Restart();
+            #region Playerbewegung /Kollision
 
             Vector3 move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
 
@@ -109,40 +105,47 @@ namespace OctoAwesome.Runtime
             int minx = (int)Math.Floor(Math.Min(
                    Player.Position.BlockPosition.X - Player.Radius,
                    Player.Position.BlockPosition.X - Player.Radius + move.X));
-            int maxx = (int)Math.Floor(Math.Max(
+            int maxx = (int)Math.Ceiling(Math.Max(
                 Player.Position.BlockPosition.X + Player.Radius,
                 Player.Position.BlockPosition.X + Player.Radius + move.X));
             int miny = (int)Math.Floor(Math.Min(
                 Player.Position.BlockPosition.Y - Player.Radius,
                 Player.Position.BlockPosition.Y - Player.Radius + move.Y));
-            int maxy = (int)Math.Floor(Math.Max(
+            int maxy = (int)Math.Ceiling(Math.Max(
                 Player.Position.BlockPosition.Y + Player.Radius,
                 Player.Position.BlockPosition.Y + Player.Radius + move.Y));
             int minz = (int)Math.Floor(Math.Min(
                 Player.Position.BlockPosition.Z,
                 Player.Position.BlockPosition.Z + move.Z));
-            int maxz = (int)Math.Floor(Math.Max(
+            int maxz = (int)Math.Ceiling(Math.Max(
                 Player.Position.BlockPosition.Z + Player.Height,
                 Player.Position.BlockPosition.Z + Player.Height + move.Z));
 
+            //Beteiligte Flächen des Spielers
             var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(Player).ToList();
 
-            for (int z = minz; z <= maxz; z++)
+            bool abort = false;
+
+            for (int z = minz; z <= maxz && !abort; z++)
             {
-                for (int y = miny; y <= maxy; y++)
+                for (int y = miny; y <= maxy && !abort; y++)
                 {
-                    for (int x = minx; x <= maxx; x++)
+                    for (int x = minx; x <= maxx && !abort; x++)
                     {
+                        move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;                    
+
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
                         ushort block = localChunkCache.GetBlock(blockPos);
                         if (block == 0)
                             continue;
 
-                        move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
+                        
+
+                        var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, Player.Velocity).ToList();
 
                         var planes = from pp in playerplanes
-                                     from bp in CollisionPlane.GetBlockCollisionPlanes(pos, Player.Velocity)
+                                     from bp in blockplane
                                      where CollisionPlane.Intersect(bp, pp)
                                      let distance = CollisionPlane.GetDistance(bp, pp)
                                      where CollisionPlane.CheckDistance(distance,move)
@@ -150,41 +153,36 @@ namespace OctoAwesome.Runtime
 
                         foreach (var plane in  planes )
                         {
+
                             var subvelocity = (plane.Distance / (float)frameTime.ElapsedGameTime.TotalSeconds);
                             var diff = Player.Velocity - subvelocity;
 
                             float vx;
                             float vy;
                             float vz;
+
                             if (plane.BlockPlane.normal.X != 0 && (Player.Velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 || Player.Velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
-                            {
                                 vx = subvelocity.X;
-                            }
                             else
-                            {
                                 vx = Player.Velocity.X;
-                            }
 
                             if (plane.BlockPlane.normal.Y != 0 && (Player.Velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 || Player.Velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
-                            {
                                 vy = subvelocity.Y;
-                            }
                             else
-                            {
                                 vy = Player.Velocity.Y;
-                            }
 
                             if (plane.BlockPlane.normal.Z != 0 && (Player.Velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 || Player.Velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
-                            {
                                 vz = subvelocity.Z;
-                            }
                             else
-                            {
                                 vz = Player.Velocity.Z;
-                            }
 
                             Player.Velocity = new Vector3(vx, vy, vz);
 
+                            if (vx == 0 && vy == 0 && vz == 0)
+                            {
+                                abort = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -196,96 +194,6 @@ namespace OctoAwesome.Runtime
             position.NormalizeChunkIndexXY(planet.Size);
             Player.Position = position;
 
-
-
-
-            /*
-            do
-            {
-
-
-                // Relative PlayerBox
-                BoundingBox playerBox = new BoundingBox(
-                    new Vector3(
-                        Player.Position.BlockPosition.X - Player.Radius,
-                        Player.Position.BlockPosition.Y - Player.Radius,
-                        Player.Position.BlockPosition.Z),
-                    new Vector3(
-                        Player.Position.BlockPosition.X + Player.Radius,
-                        Player.Position.BlockPosition.Y + Player.Radius,
-                        Player.Position.BlockPosition.Z + Player.Height));
-
-                collision = false;
-                float min = 1f;
-                Axis minAxis = Axis.None;
-
-                for (int z = minz; z <= maxz; z++)
-                {
-                    for (int y = miny; y <= maxy; y++)
-                    {
-                        for (int x = minx; x <= maxx; x++)
-                        {
-                            Index3 pos = new Index3(x, y, z);
-                            Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
-                            ushort block = localChunkCache.GetBlock(blockPos);
-                            if (block == 0)
-                                continue;
-
-                            Axis? localAxis;
-                            IBlockDefinition blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(block);
-                            float? moveFactor = Block.Intersect(
-                                blockDefinition.GetCollisionBoxes(localChunkCache, blockPos.X, blockPos.Y, blockPos.Z),
-                                pos, playerBox, move, out localAxis);
-
-                            if (moveFactor.HasValue && moveFactor.Value < min)
-                            {
-                                collision = true;
-                                min = moveFactor.Value;
-                                minAxis = localAxis.Value;
-                            }
-                        }
-                    }
-                }
-
-                Player.Position += (move * min);
-                move *= (1f - min);
-                switch (minAxis)
-                {
-                    case Axis.X:
-                        Player.Velocity *= new Vector3(0, 1, 1);
-                        Player.Position += new Vector3(move.X > 0 ? -Gap : Gap, 0, 0);
-                        move.X = 0f;
-                        break;
-                    case Axis.Y:
-                        Player.Velocity *= new Vector3(1, 0, 1);
-                        Player.Position += new Vector3(0, move.Y > 0 ? -Gap : Gap, 0);
-                        move.Y = 0f;
-                        break;
-                    case Axis.Z:
-                        Player.OnGround = true;
-                        Player.Velocity *= new Vector3(1, 1, 0);
-                        Player.Position += new Vector3(0, 0, move.Z > 0 ? -Gap : Gap);
-                        move.Z = 0f;
-                        break;
-                }
-
-
-
-            // Koordinate normalisieren (Rundwelt)
-            Coordinate position = Player.Position;
-    position.NormalizeChunkIndexXY(planet.Size);
-
-
-
-    Player.Position = position;
-
-    loop++;
-}
-while (collision && loop < 3);
-*/
-
-            _watch.Stop();
-            Debug.WriteLine("Collision:{0}", _watch.ElapsedTicks);
 
             //Beam me up
             KeyboardState ks = Keyboard.GetState();
