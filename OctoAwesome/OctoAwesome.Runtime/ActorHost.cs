@@ -11,7 +11,6 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class ActorHost : IPlayerController
     {
-        private readonly float Gap = 0.001f;
 
         private IPlanet planet;
 
