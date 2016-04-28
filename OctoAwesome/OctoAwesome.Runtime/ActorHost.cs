@@ -101,7 +101,7 @@ namespace OctoAwesome.Runtime
 
             Player.OnGround = false;
 
-            //Blocks finden die eine Kolision verursachen könnten
+            //Blocks finden die eine Kollision verursachen könnten
             int minx = (int)Math.Floor(Math.Min(
                    Player.Position.BlockPosition.X - Player.Radius,
                    Player.Position.BlockPosition.X - Player.Radius + move.X));
@@ -188,6 +188,7 @@ namespace OctoAwesome.Runtime
                 }
             }
 
+            // TODO: Was ist für den Fall Gravitation = 0 oder im Scheitelpunkt des Sprungs?
             Player.OnGround = Player.Velocity.Z == 0f;
 
             Coordinate position = Player.Position + Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
