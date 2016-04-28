@@ -128,7 +128,7 @@ namespace OctoAwesome.Client.Screens
                 levelList.SelectedItem = levelList.Items[0];
 
             if (SettingsManager.KeyExists("LastUniverse") && SettingsManager.Get("LastUniverse") != null
-                && SettingsManager.Get("LastUniverse") != "" && levelList.Items.Count != 0)
+                && SettingsManager.Get("LastUniverse") != "")
             {
                 levelList.SelectedItem = levelList.Items.First(u => u.Id == Guid.Parse(SettingsManager.Get("LastUniverse")));
             }
