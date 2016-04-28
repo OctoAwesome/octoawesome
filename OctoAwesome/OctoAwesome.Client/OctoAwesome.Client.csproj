@@ -2,9 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FBCB341A-ACD0-4511-AD71-006779B90151}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -22,9 +20,6 @@
   <PropertyGroup>
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\bin\Debug\</OutputPath>
@@ -34,6 +29,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -43,6 +40,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\ChunkRenderer.cs" />
@@ -77,23 +75,19 @@
     <Compile Include="Screens\OptionsScreen.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MonoGameUi">
       <HintPath>..\libs\MonoGameUi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="engenious">
+      <HintPath>..\libs\engenious.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\OctoAwesome.Client\background_new.PNG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\OctoAwesome.Client\Crew\crew.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -150,12 +144,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
-      <Project>{31d774c6-e5d9-40b7-8d63-942e28fe1d94}</Project>
+      <Project>{31D774C6-E5D9-40B7-8D63-942E28FE1D94}</Project>
       <Name>OctoAwesome.Runtime</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
+      <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
       <Name>OctoAwesome</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -173,7 +167,9 @@
     <None Include="Content\GameFont.spritefont" />
     <None Include="Content\HeadlineFont.spritefont" />
     <None Include="Content\Hud.spritefont" />
-    <None Include="packages.config" />
+    <None Include="Assets\OctoAwesome.Client\background_new.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\OctoClient.de.resx" />

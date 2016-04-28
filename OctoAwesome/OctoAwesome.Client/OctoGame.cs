@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using OctoAwesome;
+﻿using OctoAwesome;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
@@ -11,6 +8,8 @@ using System.Linq;
 using MonoGameUi;
 using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 using EventArgs = System.EventArgs;
+using engenious;
+using engenious.Input;
 
 namespace OctoAwesome.Client
 {
@@ -19,7 +18,7 @@ namespace OctoAwesome.Client
     /// </summary>
     internal class OctoGame : Game
     {
-        GraphicsDeviceManager graphics;
+        //GraphicsDeviceManager graphics;
 
         public CameraComponent Camera { get; private set; }
 
@@ -32,18 +31,18 @@ namespace OctoAwesome.Client
         public KeyMapper KeyMapper { get; private set; }
 
         public OctoGame()
-            : base()
         {
-            graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1080;
-            graphics.PreferredBackBufferHeight = 720;
+            //graphics = new GraphicsDeviceManager(this);
+            //graphics.PreferredBackBufferWidth = 1080;
+            //graphics.PreferredBackBufferHeight = 720;
 
-            Content.RootDirectory = "Content";
-            Window.Title = "OctoAwesome";
+            //Content.RootDirectory = "Content";
+            Title = "OctoAwesome";
             IsMouseVisible = true;
-            Window.AllowUserResizing = true;
 
-            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
+            //Window.AllowUserResizing = true;
+
+            //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int viewrange;
             if (int.TryParse(SettingsManager.Get("Viewrange"), out viewrange))
@@ -73,16 +72,16 @@ namespace OctoAwesome.Client
 
             KeyMapper = new KeyMapper(Screen);
 
-            Window.ClientSizeChanged += (s, e) =>
+            /*Resize += (s, e) =>
             {
-                if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
-                   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
-                    return;
+                //if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
+                //   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
+                //    return;
 
-                graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                graphics.ApplyChanges();
-            };
+                //graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                //graphics.ApplyChanges();
+            };*/
 
             KeyMapper.RegisterBinding("octoawesome:debugBinding","Debug");
             KeyMapper.AddKey("octoawesome:debugBinding", Keys.F);
@@ -96,8 +95,6 @@ namespace OctoAwesome.Client
         {
             Player.RemovePlayer();
             Simulation.ExitGame();
-
-            base.OnExiting(sender, args);
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using OctoAwesome.Client.Controls;
+﻿using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using engenious;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client.Components
 {
@@ -75,10 +75,10 @@ namespace OctoAwesome.Client.Components
             if (!loaded)
                 return;
 
-            Matrix worldViewProj = Matrix.CreateTranslation(
+            Matrix worldViewProj = projection*view*Matrix.CreateTranslation(
                 shift.X * Chunk.CHUNKSIZE_X,
                 shift.Y * Chunk.CHUNKSIZE_Y,
-                shift.Z * Chunk.CHUNKSIZE_Z) * view * projection;
+                shift.Z * Chunk.CHUNKSIZE_Z);
 
             simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
             simple.Parameters["BlockTextures"].SetValue(textures);
@@ -91,13 +91,13 @@ namespace OctoAwesome.Client.Components
                 if (vb == null)
                     return;
 
-                graphicsDevice.SetVertexBuffer(vb);
-                graphicsDevice.Indices = ib;
+                graphicsDevice.VertexBuffer=vb;
+                graphicsDevice.IndexBuffer = ib;
 
                 foreach (var pass in simple.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexCount, 0, indexCount / 3);
+                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
                 }
             }
         }
@@ -360,10 +360,10 @@ namespace OctoAwesome.Client.Components
             {
                 try
                 {
-                    vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertexCount, BufferUsage.WriteOnly);
+                    vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertexCount);
                     vb2.SetData<VertexPositionNormalTexture>(vertices.ToArray());
 
-                    ib2 = new IndexBuffer(graphicsDevice, IndexElementSize.ThirtyTwoBits, indexCount, BufferUsage.WriteOnly);
+                    ib2 = new IndexBuffer(graphicsDevice,DrawElementsType.UnsignedInt, indexCount);
                     ib2.SetData<int>(index.ToArray());
                 }
                 catch (Exception) { }

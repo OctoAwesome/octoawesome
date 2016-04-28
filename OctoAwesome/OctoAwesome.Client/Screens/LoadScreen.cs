@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGameUi;
+﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using engenious;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -128,7 +128,7 @@ namespace OctoAwesome.Client.Screens
                 levelList.SelectedItem = levelList.Items[0];
 
             if (SettingsManager.KeyExists("LastUniverse") && SettingsManager.Get("LastUniverse") != null
-                && SettingsManager.Get("LastUniverse") != "")
+                && SettingsManager.Get("LastUniverse") != "" && levelList.Items.Count != 0)
             {
                 levelList.SelectedItem = levelList.Items.First(u => u.Id == Guid.Parse(SettingsManager.Get("LastUniverse")));
             }

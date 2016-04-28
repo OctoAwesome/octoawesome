@@ -1,0 +1,17 @@
+#version 130
+uniform float AmbientIntensity;
+uniform vec4 AmbientColor;
+uniform float DiffuseIntensity;
+uniform vec4 DiffuseColor;
+uniform vec3 DiffuseDirection;
+uniform sampler2D BlockTextures;
+
+in vec3 psNormal;
+in vec2 psTexcoord;
+void main()
+{
+	vec4 texColor = texture2D(BlockTextures,psTexcoord);
+	vec4 ambient = AmbientColor * AmbientIntensity;
+	vec4 diffuse = clamp(dot(-DiffuseDirection,psNormal),0.0,1.0) * DiffuseColor * DiffuseIntensity;
+	gl_FragColor = texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
+}

@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System.IO;
+﻿using System.IO;
+using engenious.Graphics;
+using engenious.Content;
 
 namespace OctoAwesome
 {

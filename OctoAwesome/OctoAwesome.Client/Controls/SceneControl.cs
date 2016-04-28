@@ -1,14 +1,14 @@
 ﻿using MonoGameUi;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
 using OctoAwesome.Client.Components;
 using System.IO;
 using System.Drawing.Imaging;
 using OctoAwesome.Runtime;
 using System.Drawing;
+using engenious;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -117,14 +117,14 @@ namespace OctoAwesome.Client.Controls
 
             selectionLines = new[]
             {
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), engenious.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), engenious.Color.Black * 0.5f),
             };
 
             billboardVertices = new[]
@@ -150,13 +150,13 @@ namespace OctoAwesome.Client.Controls
             selectionEffect = new BasicEffect(manager.GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
-            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
+            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128,PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
         }
 
-        protected override void OnDrawContent(SpriteBatch batch, Microsoft.Xna.Framework.Rectangle contentArea, GameTime gameTime, float alpha)
+        protected override void OnDrawContent(SpriteBatch batch, engenious.Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            batch.Draw(ControlTexture, contentArea, Microsoft.Xna.Framework.Color.White * alpha);
+            batch.Draw(ControlTexture, contentArea, engenious.Color.White * alpha);
         }
 
         protected override void OnUpdate(GameTime gameTime)
@@ -264,7 +264,7 @@ namespace OctoAwesome.Client.Controls
         {
             if (ControlTexture == null)
             {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height,PixelInternalFormat.Rgb8);
             }
 
             float octoDaysPerEarthDay = 360f;
@@ -284,7 +284,7 @@ namespace OctoAwesome.Client.Controls
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
-            simpleShader.Parameters["DiffuseColor"].SetValue(new Microsoft.Xna.Framework.Color(190, 190, 190).ToVector4());
+            simpleShader.Parameters["DiffuseColor"].SetValue(new engenious.Color(190, 190, 190));
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
@@ -292,8 +292,8 @@ namespace OctoAwesome.Client.Controls
 
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
-            Microsoft.Xna.Framework.Color background =
-                new Microsoft.Xna.Framework.Color(181, 224, 255);
+            engenious.Color background =
+                new engenious.Color(181, 224, 255);
 
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -340,7 +340,7 @@ namespace OctoAwesome.Client.Controls
             sunEffect.View = camera.View;
             sunEffect.Projection = camera.Projection;
             sunEffect.CurrentTechnique.Passes[0].Apply();
-            Manager.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, billboardVertices, 0, 2);
+            Manager.GraphicsDevice.DrawUserPrimitives(PrimitiveType.Triangles, billboardVertices, 0, 2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
@@ -389,7 +389,7 @@ namespace OctoAwesome.Client.Controls
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
                 }
             }
 
