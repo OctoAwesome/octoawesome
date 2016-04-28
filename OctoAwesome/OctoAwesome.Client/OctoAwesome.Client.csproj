@@ -121,7 +121,10 @@
     <Content Include="Assets\OctoAwesome.Client\UI\buttonLong_grey_pressed.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\simple.fx" />
+    <Content Include="Content\BoldFont.png" />
+    <Content Include="Content\GameFont.png" />
+    <Content Include="Content\HeadlineFont.png" />
+    <Content Include="Content\Hud.png" />
     <Content Include="Assets\OctoAwesome.Client\background_notext.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -135,9 +138,6 @@
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
     <Content Include="TODO.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
@@ -160,13 +160,17 @@
     <None Include="CompiledContent\HeadlineFont.xnb" />
     <None Include="CompiledContent\Hud.xnb" />
     <None Include="CompiledContent\simple.xnb" />
-    <None Include="Content\BoldFont.spritefont" />
-    <None Include="Content\GameFont.spritefont" />
-    <None Include="Content\HeadlineFont.spritefont" />
-    <None Include="Content\Hud.spritefont" />
+    <None Include="Content\BoldFont.fnt" />
+    <None Include="Content\Content.ecp" />
+    <None Include="Content\GameFont.fnt" />
+    <None Include="Content\HeadlineFont.fnt" />
+    <None Include="Content\Hud.fnt" />
     <None Include="Assets\OctoAwesome.Client\background_new.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Content\simple.glsl" />
+    <None Include="Content\simple\simple.ps" />
+    <None Include="Content\simple\simple.vs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\OctoClient.de.resx" />
