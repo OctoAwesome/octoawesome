@@ -58,6 +58,7 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkColumn.cs" />
+    <Compile Include="CollisionPlane.cs" />
     <Compile Include="ContentHelper.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="GlobalChunkCache.cs" />
