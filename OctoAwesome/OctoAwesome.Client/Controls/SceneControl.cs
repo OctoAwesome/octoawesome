@@ -34,9 +34,12 @@ namespace OctoAwesome.Client.Controls
         private Texture2D blockTextures;
         private Texture2D sunTexture;
 
-        private VertexPositionColor[] selectionLines;
-        private VertexPositionTexture[] billboardVertices;
-        private short[] selectionIndeces;
+        private IndexBuffer selectionIndexBuffer;
+        private VertexBuffer selectionLines;
+        private VertexBuffer billboardVertexbuffer;
+        //private VertexPositionColor[] selectionLines;
+        //private VertexPositionTexture[] billboardVertices;
+
         private Index2 currentChunk = new Index2(-1, -1);
 
         private Thread backgroundThread;
@@ -115,7 +118,7 @@ namespace OctoAwesome.Client.Controls
             backgroundThread.IsBackground = true;
             backgroundThread.Start();
 
-            selectionLines = new[]
+            var selectionVertices = new[]
             {
                 new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), engenious.Color.Black * 0.5f),
                 new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), engenious.Color.Black * 0.5f),
@@ -127,7 +130,7 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), engenious.Color.Black * 0.5f),
             };
 
-            billboardVertices = new[]
+            var billboardVertices = new[]
             {
                 new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
@@ -137,12 +140,22 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
             };
 
-            selectionIndeces = new short[]
+            var selectionIndices = new short[]
             {
                 0, 1, 0, 2, 1, 3, 2, 3,
                 4, 5, 4, 6, 5, 7, 6, 7,
                 0, 4, 1, 5, 2, 6, 3, 7
             };
+
+            selectionLines = new VertexBuffer(manager.GraphicsDevice,VertexPositionColor.VertexDeclaration,selectionVertices.Length);
+            selectionLines.SetData(selectionVertices);
+
+            selectionIndexBuffer = new IndexBuffer(manager.GraphicsDevice,DrawElementsType.UnsignedShort,selectionIndices.Length);
+            selectionIndexBuffer.SetData(selectionIndices);
+
+            billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice,VertexPositionTexture.VertexDeclaration,billboardVertices.Length);
+            billboardVertexbuffer.SetData(billboardVertices);
+
 
             sunEffect = new BasicEffect(manager.GraphicsDevice);
             sunEffect.TextureEnabled = true;
@@ -340,7 +353,8 @@ namespace OctoAwesome.Client.Controls
             sunEffect.View = camera.View;
             sunEffect.Projection = camera.Projection;
             sunEffect.CurrentTechnique.Passes[0].Apply();
-            Manager.GraphicsDevice.DrawUserPrimitives(PrimitiveType.Triangles, billboardVertices, 0, 2);
+            Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
+            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles,0,2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
@@ -386,10 +400,13 @@ namespace OctoAwesome.Client.Controls
                 selectionEffect.World = Matrix.CreateTranslation(relativePosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
+                Manager.GraphicsDevice.VertexBuffer = selectionLines;
+                Manager.GraphicsDevice.IndexBuffer = selectionIndexBuffer;
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines,0,0,8,0,12);
+                    //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
                 }
             }
 
