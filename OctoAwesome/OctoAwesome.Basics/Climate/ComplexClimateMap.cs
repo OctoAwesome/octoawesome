@@ -25,7 +25,7 @@ namespace OctoAwesome.Basics.Climate
         public float GetTemperature(Index3 blockIndex)
         {
             int equator = (Planet.Size.Y * Chunk.CHUNKSIZE_Y) / 2;
-            float equatorTemperature = 40f;
+            float equatorTemperature = 50f;
             float poleTemperature = -10f;
             float tempFluctuation = tempFluctuationGenerator.GetTileableNoise2D(blockIndex.X, blockIndex.Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y) * 5f;
             float temperatureDifference = poleTemperature - equatorTemperature;
@@ -35,7 +35,7 @@ namespace OctoAwesome.Basics.Climate
             float height = (blockIndex.Z - planet.BiomeGenerator.SeaLevel) / (Planet.Size.Z * Chunk.CHUNKSIZE_Z - planet.BiomeGenerator.SeaLevel);
             height = Math.Max(height, 0);
             height *= height;
-            return temperature - height * temperatureDecreasePerBlock;
+            return temperature - (height-planet.BiomeGenerator.SeaLevel) * temperatureDecreasePerBlock;
         }
 
         public int GetPrecipitation(Index3 blockIndex)
