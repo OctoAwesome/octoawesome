@@ -260,7 +260,7 @@ namespace OctoAwesome.Client.Screens
                 ///case Keys.W:
                 //    pressedMoveUp = false;
                 //    args.Handled = true;
-                    break;
+                //    break;
                 case Keys.A:
                     pressedMoveLeft = false;
                     args.Handled = true;
