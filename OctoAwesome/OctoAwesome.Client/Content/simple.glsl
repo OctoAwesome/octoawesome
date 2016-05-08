@@ -8,9 +8,8 @@
 
             </Shader>
             <Attributes>
-                <attribute name="position">Position</attribute>
-                <attribute name="normal">Normal</attribute>
-                <attribute name="texCoord">TextureCoordinate</attribute>
+                <attribute name="inputData">Position</attribute>
+              <attribute name="inputData2">Normal</attribute>
             </Attributes>
         </Pass>
     </Technique>

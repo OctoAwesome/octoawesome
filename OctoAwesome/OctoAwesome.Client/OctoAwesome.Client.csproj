@@ -48,6 +48,7 @@
     <Compile Include="Components\PlayerComponent.cs" />
     <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
+    <Compile Include="Components\VertexPositionNormalTexturePacked.cs" />
     <Compile Include="Controls\CompassControl.cs" />
     <Compile Include="Controls\CrosshairControl.cs" />
     <Compile Include="Controls\DebugControl.cs" />
@@ -175,7 +176,9 @@
     <None Include="Assets\OctoAwesome.Client\background_new.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\simple.glsl" />
+    <None Include="Content\simple.glsl">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Content\simple\simple.ps" />
     <None Include="Content\simple\simple.vs" />
     <None Include="packages.config" />
