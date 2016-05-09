@@ -4,22 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 namespace OctoAwesome.Client.Components
 {
-    struct VertexPositionNormalTexturePacked : IVertexType
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential,Pack=1)]
+    struct VertexPositionNormalTextureLight : IVertexType
     {
-        //uv:(0,0),(0,1),(1,0),(1,1)
-        //normal:(1,0,0),(-1,0,0)
-        //      (0,1,0),(0,-1,0)
-        //      (0,0,1),(0,0,-1)
-
         public static readonly VertexDeclaration VertexDeclaration;
-        static VertexPositionNormalTexturePacked()
+        static VertexPositionNormalTextureLight()
         {
-            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint)*2, new VertexElement(0, VertexElementFormat.Rgba32, VertexElementUsage.Position, 0), new VertexElement(sizeof(uint), VertexElementFormat.Rgba32, VertexElementUsage.Normal, 0));
+            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2, new VertexElement(0, VertexElementFormat.Rgba32, VertexElementUsage.Position, 0), new VertexElement(sizeof(uint), VertexElementFormat.Rgba32, VertexElementUsage.Normal, 0));
         }
-        public VertexPositionNormalTexturePacked(Vector3 position,Vector3 normal,Vector2 uv)
+        public VertexPositionNormalTextureLight(Vector3 position, Vector3 normal, Vector2 uv,byte layer,uint light)
         {
             uint posX = (uint)position.X;
             uint posY = (uint)position.Y;
@@ -45,19 +40,11 @@ namespace OctoAwesome.Client.Components
             }
 
             uint uvExpanded = ((uint)uv.X << 1) | ((uint)uv.Y);
-
-            PackedValue = (posX & 0xFF) | ((posY & 0xFF) << 8) | ((posZ & 0xFF) << 16) | (normalPacked << 24) | (uvExpanded << 28);
-            PackedValue2 = ((uint)(uv.X * 65536) << 16) | (uint)(uv.Y * 65536);
+            PackedValue = (posX & 0xFF) | ((posY & 0xFF) << 8) | ((posZ & 0xFF) << 16) | ((uint)layer << 24);
+            PackedValue2 = light | (normalPacked << 24) | (uvExpanded << 28);
         }
-        public UInt32 PackedValue
-        {
-            get;private set;
-        }
-        public UInt32 PackedValue2
-        {
-            get;private set;
-        }
-
+        public uint PackedValue { get; private set; }
+        public uint PackedValue2 { get; private set; }
         VertexDeclaration IVertexType.VertexDeclaration
         {
             get

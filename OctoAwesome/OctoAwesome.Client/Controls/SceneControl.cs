@@ -1,5 +1,6 @@
 ﻿using MonoGameUi;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using OctoAwesome.Client.Components;
@@ -31,7 +32,8 @@ namespace OctoAwesome.Client.Controls
         private BasicEffect selectionEffect;
         private Matrix miniMapProjectionMatrix;
 
-        private Texture2D blockTextures;
+        //private Texture2D blockTextures;
+        private Texture2DArray blockTextures;
         private Texture2D sunTexture;
 
         private IndexBuffer selectionIndexBuffer;
@@ -64,12 +66,31 @@ namespace OctoAwesome.Client.Controls
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
 
-            List<Bitmap> bitmaps = new List<Bitmap>();
+            //List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.Instance.GetBlockDefinitions();
+            int textureCount = 0;
             foreach (var definition in definitions)
-                bitmaps.AddRange(definition.Textures);
+            {
+                textureCount += definition.Textures.Length;
+            }
+            int bitmapSize = 128;
+            blockTextures = new Texture2DArray(manager.GraphicsDevice, 1, bitmapSize, bitmapSize, textureCount);
+            int layer = 0;
+            foreach (var definition in definitions)
+            {
+                foreach (var bitmap in definition.Textures)
+                {
+                    var scaled = bitmap;//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
+                    int[] data = new int[scaled.Width * scaled.Height];
+                    var bitmapData = scaled.LockBits(new System.Drawing.Rectangle(0, 0, scaled.Width, scaled.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, data, 0, data.Length);
+                    blockTextures.SetData(data, layer);
+                    scaled.UnlockBits(bitmapData);
+                    layer++;
+                }
+            }
 
-            int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
+            /*int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
             Bitmap blocks = new Bitmap(size * TEXTURESIZE, size * TEXTURESIZE);
             using (Graphics g = Graphics.FromImage(blocks))
             {
@@ -88,7 +109,7 @@ namespace OctoAwesome.Client.Controls
                 blocks.Save(stream, ImageFormat.Png);
                 stream.Seek(0, SeekOrigin.Begin);
                 blockTextures = Texture2D.FromStream(manager.GraphicsDevice, stream);
-            }
+            }*/
 
             planet = ResourceManager.Instance.GetPlanet(0);
 
@@ -147,13 +168,13 @@ namespace OctoAwesome.Client.Controls
                 0, 4, 1, 5, 2, 6, 3, 7
             };
 
-            selectionLines = new VertexBuffer(manager.GraphicsDevice,VertexPositionColor.VertexDeclaration,selectionVertices.Length);
+            selectionLines = new VertexBuffer(manager.GraphicsDevice, VertexPositionColor.VertexDeclaration, selectionVertices.Length);
             selectionLines.SetData(selectionVertices);
 
-            selectionIndexBuffer = new IndexBuffer(manager.GraphicsDevice,DrawElementsType.UnsignedShort,selectionIndices.Length);
+            selectionIndexBuffer = new IndexBuffer(manager.GraphicsDevice, DrawElementsType.UnsignedShort, selectionIndices.Length);
             selectionIndexBuffer.SetData(selectionIndices);
 
-            billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice,VertexPositionTexture.VertexDeclaration,billboardVertices.Length);
+            billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice, VertexPositionTexture.VertexDeclaration, billboardVertices.Length);
             billboardVertexbuffer.SetData(billboardVertices);
 
 
@@ -163,7 +184,7 @@ namespace OctoAwesome.Client.Controls
             selectionEffect = new BasicEffect(manager.GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
-            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128,PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
+            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
         }
 
@@ -277,7 +298,7 @@ namespace OctoAwesome.Client.Controls
         {
             if (ControlTexture == null)
             {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height,PixelInternalFormat.Rgb8);
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
             }
 
             float octoDaysPerEarthDay = 360f;
@@ -354,7 +375,7 @@ namespace OctoAwesome.Client.Controls
             sunEffect.Projection = camera.Projection;
             sunEffect.CurrentTechnique.Passes[0].Apply();
             Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
-            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles,0,2);
+            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
@@ -405,7 +426,7 @@ namespace OctoAwesome.Client.Controls
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines,0,0,8,0,12);
+                    Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);
                     //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
                 }
             }
