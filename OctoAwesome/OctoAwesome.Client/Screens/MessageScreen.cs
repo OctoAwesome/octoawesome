@@ -42,6 +42,8 @@ namespace OctoAwesome.Client.Screens
             {
                 if (click != null)
                     click(s, e);
+                else
+                    manager.NavigateBack();
             };
             spanel.Controls.Add(closeButton);
         }

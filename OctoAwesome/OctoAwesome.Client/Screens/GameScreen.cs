@@ -66,7 +66,7 @@ namespace OctoAwesome.Client.Screens
             crosshair.Height = 8;
             Controls.Add(crosshair);
 
-            Title = "Game";
+            Title = Languages.OctoClient.Game;
 
             //Register Action
             manager.Game.KeyMapper.AddAction("octoawesome:forward", type =>

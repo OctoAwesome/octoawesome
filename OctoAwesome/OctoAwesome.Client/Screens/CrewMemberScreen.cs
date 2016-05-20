@@ -16,7 +16,9 @@ namespace OctoAwesome.Client.Screens
             VerticalAlignment = VerticalAlignment.Stretch;
             HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            SpriteFont boldFont = manager.Content.Load<SpriteFont>("BoldFont");
+            Title = Languages.OctoClient.CreditsCrew + ": " + member.Username;
+
+            SpriteFont boldFont = manager.Content.Load<SpriteFont>("BoldFont");            
 
             Padding = new Border(0, 0, 0, 0);
 
@@ -42,8 +44,6 @@ namespace OctoAwesome.Client.Screens
             };
             // panel.Controls.Add(verticalStack);
 
-
-
             //The Main Stack - Split the Panel in half Horizontal
             StackPanel horizontalStack = new StackPanel(manager)
             {
@@ -66,8 +66,6 @@ namespace OctoAwesome.Client.Screens
                 profileImage.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/Crew/base.png", manager.GraphicsDevice);
             else profileImage.Texture = manager.Content.LoadTexture2DFromFile(member.PictureFilename, manager.GraphicsDevice);
             horizontalStack.Controls.Add(profileImage);
-
-
 
             //The Text Stack
             StackPanel textStack = new StackPanel(manager);
@@ -114,8 +112,6 @@ namespace OctoAwesome.Client.Screens
 
             achievementStack.Controls.Add(achievementsTitle);
             achievementStack.Controls.Add(achievements);
-
-
 
             Panel DescriptionPanel = new Panel(manager)
             {

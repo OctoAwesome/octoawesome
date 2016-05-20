@@ -178,7 +178,7 @@ namespace OctoAwesome.Client.Controls
             if (Player.ActorHost.ActiveTool != null)
                 activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Player.Tools.FindIndex(i => i.Definition == Player.ActorHost.ActiveTool.Definition);
 
-            toolCount.Text = "Tool Count: " + Player.Tools.Count;
+            toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.Tools.Count;
 
             //Fly Info
             if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
@@ -186,7 +186,7 @@ namespace OctoAwesome.Client.Controls
 
             IPlanet planet = ResourceManager.Instance.GetPlanet(Player.ActorHost.Position.Planet);
             // Temperature Info
-            temperatureInfo.Text = "Temperature: " + planet.ClimateMap.GetTemperature(Player.ActorHost.Position.GlobalBlockIndex);
+            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.ActorHost.Position.GlobalBlockIndex);
 
             // Precipitation Info
             precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.ActorHost.Position.GlobalBlockIndex);

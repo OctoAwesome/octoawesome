@@ -183,4 +183,40 @@
   <data name="Viewrange" xml:space="preserve">
     <value>Viewrange</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="CreateUniverse" xml:space="preserve">
+    <value>Create Universe</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Seed" xml:space="preserve">
+    <value>Seed</value>
+  </data>
+  <data name="SelectUniverse" xml:space="preserve">
+    <value>Select Universe</value>
+  </data>
+  <data name="SelectUniverseFirst" xml:space="preserve">
+    <value>Please select a universe first!</value>
+  </data>
+  <data name="Game" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Temperature" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="ToolCount" xml:space="preserve">
+    <value>Tool Count</value>
+  </data>
 </root>
