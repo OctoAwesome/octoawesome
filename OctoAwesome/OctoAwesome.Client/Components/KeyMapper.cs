@@ -104,7 +104,6 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-
             /// <summary>
             /// Sets the DisplayName of a Binding
             /// </summary>
@@ -115,6 +114,40 @@ namespace OctoAwesome.Client.Components
                 Binding binding;
                 if (bindings.TryGetValue(id, out binding))
                     binding.DisplayName = displayName;
+            }
+
+            /// <summary>
+            /// Lädt KeyBindings aus der App.config-Datei und greift, wenn kein Wert vorhanden ist, auf die angegebenen Standardwerte aus.
+            /// </summary>
+            /// <param name="standardKeys"></param>
+            public void LoadFromConfig(Dictionary<string, Keys> standardKeys)
+            {
+                foreach (var id in standardKeys.Keys)
+                {
+                    if (SettingsManager.KeyExists("KeyMapper-" + id))
+                    {
+                        try
+                        {
+                            string val = SettingsManager.Get("KeyMapper-" + id);
+                            Keys key = (Keys)Enum.Parse(typeof(Keys), val);
+                            AddKey(id, key);
+                        }
+                        catch
+                        {
+                            AddKey(id, standardKeys[id]);
+                        }
+                    }
+                    else
+                        AddKey(id, standardKeys[id]);
+                }
+            }
+
+            public List<Binding> GetBindings()
+            {
+                List<Binding> bindings = new List<Binding>();
+                foreach (var binding in Bindings)
+                    bindings.Add(binding.Value);
+                return bindings;
             }
 
 

@@ -25,7 +25,7 @@ namespace OctoAwesome.Client.Components
 
         public bool FlymodeInput { get; set; }
 
-        public bool[] SlotInput { get; private set; } = new bool[20];
+        public bool[] SlotInput { get; private set; } = new bool[10];
 
         public bool SlotLeftInput { get; set; }
 
