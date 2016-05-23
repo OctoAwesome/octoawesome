@@ -35,7 +35,7 @@ namespace OctoAwesome.Client.Components
             {
                 if (bindings.ContainsKey(id))
                     return;
-                bindings.Add(id, new Binding() {DisplayName = displayName});
+                bindings.Add(id, new Binding() { Id = id, DisplayName = displayName });
             }
 
             /// <summary>
