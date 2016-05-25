@@ -44,7 +44,7 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnKeyPress(KeyEventArgs args)
         {
-            if (Manager.CanGoBack && args.Key == Keys.Escape)
+            if (Manager.CanGoBack && args.Key == Keys.Back)
             {
                 args.Handled = true;
                 Manager.NavigateBack();
