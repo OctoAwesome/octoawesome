@@ -157,42 +157,46 @@ namespace OctoAwesome.Client.Screens
                 Label lbl = new Label(manager)
                 {
                     Text = binding.DisplayName,
-                    Width = 500
+                    Width = 480
                 };
 
-                Textbox bindingKeysTextBox = new Textbox(manager)
+                Label bindingKeyLabel = new Label(manager)
                 {
                     Text = binding.Keys.First().ToString(),
                     HorizontalAlignment = HorizontalAlignment.Right,
-                    Width = 70,
+                    Width = 90,
                     Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray),
                     Tag = new object[] { binding.Id, binding.Keys.First() }
                 };
-                bindingKeysTextBox.LostFocus += BindingKeysTextBox_LostFocus;
+                bindingKeyLabel.LeftMouseClick += BindingKeyLabel_LeftMouseClick;
 
                 bindingStack.Controls.Add(lbl);
-                bindingStack.Controls.Add(bindingKeysTextBox);
+                bindingStack.Controls.Add(bindingKeyLabel);
                 bindingsStack.Controls.Add(bindingStack);
             }
 
             #endregion
         }
 
-        private void BindingKeysTextBox_LostFocus(Control sender, MonoGameUi.EventArgs args)
+        private void BindingKeyLabel_LeftMouseClick(Control sender, MouseEventArgs args)
         {
             object[] data = (object[])sender.Tag;
             string id = (string)data[0];
             Keys oldKey = (Keys)data[1];
 
-            string text = ((Textbox)sender).Text;
-            if (text != null && text != "" && Enum.IsDefined(typeof(Keys), text))
+            Label lbl = (Label)sender;
+
+            MessageScreen screen = new MessageScreen((ScreenComponent)Manager, "Press key...", "", "Cancel");
+            screen.KeyDown += (s, a) =>
             {
-                Keys newKey = (Keys)Enum.Parse(typeof(Keys), text);
                 game.KeyMapper.RemoveKey(id, oldKey);
-                game.KeyMapper.AddKey(id, newKey);
-                data[1] = newKey;
-                SettingsManager.Set("KeyMapper-" + id, newKey.ToString());
-            }
+                game.KeyMapper.AddKey(id, a.Key);
+                data[1] = a.Key;
+                SettingsManager.Set("KeyMapper-" + id, a.Key.ToString());
+                lbl.Text = a.Key.ToString();
+                Manager.NavigateBack();
+            };
+            Manager.NavigateToScreen(screen);
         }
 
         private void SetViewrange(int newRange)
