@@ -132,7 +132,7 @@ namespace OctoAwesome.Runtime
                 {
                     for (int x = minx; x <= maxx && !abort; x++)
                     {
-                        move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;                    
+                        move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
@@ -140,7 +140,7 @@ namespace OctoAwesome.Runtime
                         if (block == 0)
                             continue;
 
-                        
+
 
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, Player.Velocity).ToList();
 
@@ -148,10 +148,10 @@ namespace OctoAwesome.Runtime
                                      from bp in blockplane
                                      where CollisionPlane.Intersect(bp, pp)
                                      let distance = CollisionPlane.GetDistance(bp, pp)
-                                     where CollisionPlane.CheckDistance(distance,move)
+                                     where CollisionPlane.CheckDistance(distance, move)
                                      select new { BlockPlane = bp, PlayerPlane = pp, Distance = distance };
 
-                        foreach (var plane in  planes )
+                        foreach (var plane in planes)
                         {
 
                             var subvelocity = (plane.Distance / (float)frameTime.ElapsedGameTime.TotalSeconds);
@@ -210,7 +210,7 @@ namespace OctoAwesome.Runtime
                 localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
                 {
                     ReadyState = success;
-                });                
+                });
             }
 
 
@@ -258,7 +258,7 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
                         case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
-                    }                    
+                    }
 
                     if (ActiveTool.Definition is IBlockDefinition)
                     {
@@ -266,15 +266,24 @@ namespace OctoAwesome.Runtime
 
                         Index3 idx = lastApply.Value + add;
                         var boxes = definition.GetCollisionBoxes(localChunkCache, idx.X, idx.Y, idx.Z);
-                        var playerBox = new BoundingBox(Player.Position.GlobalBlockIndex + new Vector3(-Player.Radius, -Player.Radius, 0), 
-                            Player.Position.GlobalBlockIndex + new Vector3(Player.Radius, Player.Radius, Player.Height));
+                        float gap = 0.01f;
+                        var playerBox = new BoundingBox(
+                            new Vector3(
+                                Player.Position.GlobalBlockIndex.X + Player.Position.BlockPosition.X - Player.Radius + gap,
+                                Player.Position.GlobalBlockIndex.Y + Player.Position.BlockPosition.Y - Player.Radius + gap,
+                                Player.Position.GlobalBlockIndex.Z + Player.Position.BlockPosition.Z + gap),
+                            new Vector3(
+                                Player.Position.GlobalBlockIndex.X + Player.Position.BlockPosition.X + Player.Radius - gap,
+                                Player.Position.GlobalBlockIndex.Y + Player.Position.BlockPosition.Y + Player.Radius - gap,
+                                Player.Position.GlobalBlockIndex.Z + Player.Position.BlockPosition.Z + Player.Height - gap)
+                            );
 
                         // Nicht in sich selbst reinbauen
                         bool intersects = false;
                         foreach (var box in boxes)
                         {
                             var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
-                            if (playerBox.Intersects(newBox))
+                            if (newBox.Intersects(playerBox))
                                 intersects = true;
                         }
 
@@ -306,7 +315,7 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
+        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode)
         {
             Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 
