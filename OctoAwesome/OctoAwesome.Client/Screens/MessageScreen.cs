@@ -3,45 +3,52 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class MessageScreen : Screen
     {
-        public MessageScreen(ScreenComponent manager, string title, string content, string button = "OK", Action<Control, MouseEventArgs> click = null) : base(manager)
+        public MessageScreen(ScreenComponent manager, string title, string content, string buttonText = "OK", Action<Control, MouseEventArgs> buttonClick = null) : base(manager)
         {
             IsOverlay = true;
+            Background = new BorderBrush(Color.Black * 0.5f);
+            Title = title;
 
             Texture2D panelBackground = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
-            Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
-
-            HorizontalAlignment = HorizontalAlignment.Center;
-            VerticalAlignment = VerticalAlignment.Center;
+            Panel panel = new Panel(manager)
+            {
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+                Padding = Border.All(20),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Controls.Add(panel);
 
             StackPanel spanel = new StackPanel(manager);
-            Controls.Add(spanel);
+            panel.Controls.Add(spanel);
 
-            Label headLine = new Label(manager);
-            headLine.Text = title;
-            headLine.Font = Skin.Current.HeadlineFont;
-            headLine.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Label headLine = new Label(manager)
+            {
+                Text = title,
+                Font = Skin.Current.HeadlineFont,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
             spanel.Controls.Add(headLine);
 
-            Label contentLabel = new Label(manager);
-            contentLabel.Text = content;
-            contentLabel.Font = Skin.Current.TextFont;
-            contentLabel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Label contentLabel = new Label(manager)
+            {
+                Text = content,
+                Font = Skin.Current.TextFont,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
             spanel.Controls.Add(contentLabel);
 
-            Button closeButton = Button.TextButton(manager, button);
+            Button closeButton = Button.TextButton(manager, buttonText);
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             closeButton.LeftMouseClick += (s, e) => 
             {
-                if (click != null)
-                    click(s, e);
+                if (buttonClick != null)
+                    buttonClick(s, e);
                 else
                     manager.NavigateBack();
             };
