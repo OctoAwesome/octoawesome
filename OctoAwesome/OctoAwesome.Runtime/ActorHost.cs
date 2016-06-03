@@ -258,18 +258,36 @@ namespace OctoAwesome.Runtime
                         case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
                         case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
-                    }
+                    }                    
 
                     if (ActiveTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
-                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.Instance.GetBlockDefinitionIndex(definition));
 
-                        ActiveTool.Amount--;
-                        if (ActiveTool.Amount <= 0)
+                        Index3 idx = lastApply.Value + add;
+                        var boxes = definition.GetCollisionBoxes(localChunkCache, idx.X, idx.Y, idx.Z);
+                        var playerBox = new BoundingBox(Player.Position.GlobalBlockIndex + new Vector3(-Player.Radius, -Player.Radius, 0), 
+                            Player.Position.GlobalBlockIndex + new Vector3(Player.Radius, Player.Radius, Player.Height));
+
+                        // Nicht in sich selbst reinbauen
+                        bool intersects = false;
+                        foreach (var box in boxes)
                         {
-                            Player.Inventory.Remove(ActiveTool);
-                            ActiveTool = null;
+                            var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
+                            if (playerBox.Intersects(newBox))
+                                intersects = true;
+                        }
+
+                        if (!intersects)
+                        {
+                            localChunkCache.SetBlock(idx, DefinitionManager.Instance.GetBlockDefinitionIndex(definition));
+
+                            ActiveTool.Amount--;
+                            if (ActiveTool.Amount <= 0)
+                            {
+                                Player.Inventory.Remove(ActiveTool);
+                                ActiveTool = null;
+                            }
                         }
                     }
 
