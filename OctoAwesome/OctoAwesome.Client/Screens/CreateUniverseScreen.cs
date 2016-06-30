@@ -45,10 +45,10 @@ namespace OctoAwesome.Client.Screens
             nameInput.TextChanged += (s, e) => {
                 createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
             };
-            AddLabeledControl(grid, Languages.OctoClient.Name + "Name: ", nameInput);
+            AddLabeledControl(grid, string.Format("{0}: ", Languages.OctoClient.Name), nameInput);
 
             seedInput = GetTextbox();
-            AddLabeledControl(grid, Languages.OctoClient.Seed + ": ", seedInput);
+            AddLabeledControl(grid, string.Format("{0}: ", Languages.OctoClient.Seed), seedInput);
 
             createButton = Button.TextButton(manager, Languages.OctoClient.Create);
             createButton.HorizontalAlignment = HorizontalAlignment.Right;
