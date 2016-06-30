@@ -285,7 +285,7 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:exit", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.NavigateToScreen(new MainScreen(Manager));
+                Manager.NavigateToScreen(new PauseScreen(Manager));
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:freemouse", type =>
             {

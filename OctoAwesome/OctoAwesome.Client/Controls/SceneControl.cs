@@ -161,6 +161,8 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnUpdate(GameTime gameTime)
         {
+            if (player.ActorHost == null) return;
+
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
 
             Index3 centerblock = player.ActorHost.Position.GlobalBlockIndex;
@@ -262,6 +264,8 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnPreDraw(GameTime gameTime)
         {
+            if (player.ActorHost == null) return;
+
             if (ControlTexture == null)
             {
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);

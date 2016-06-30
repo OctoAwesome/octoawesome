@@ -219,4 +219,10 @@
   <data name="ToolCount" xml:space="preserve">
     <value>Werkzeuganzahl</value>
   </data>
+  <data name="Resume" xml:space="preserve">
+    <value>Fortsetzen</value>
+  </data>
+  <data name="ToMainMenu" xml:space="preserve">
+    <value>Zum Hauptmenü</value>
+  </data>
 </root>

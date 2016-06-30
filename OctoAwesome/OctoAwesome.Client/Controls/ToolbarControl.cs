@@ -55,6 +55,8 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled)
                 return;
 
+            if (Player.ActorHost == null) return;
+
             if (Player.Tools != null && Player.Tools.Count > 0) // > 0 Check erforderlich da durch einen Bug ActiveTool auch gesetzt bleibt wenn kein Tool mehr vorhanden ist
             {
                 int width = Player.Tools.Count * 32 + (Player.Tools.Count - 1) * 10;
