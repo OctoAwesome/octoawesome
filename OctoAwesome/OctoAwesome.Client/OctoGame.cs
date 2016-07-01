@@ -32,6 +32,11 @@ namespace OctoAwesome.Client
 
         public KeyMapper KeyMapper { get; private set; }
 
+        // Fullscreen
+        private int oldHeight, oldWidth;
+        Point oldPositon;
+        bool fullscreen = false;
+
         public OctoGame()
             : base()
         {
@@ -113,11 +118,12 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:slot8", "Inventory Slot 8");
             KeyMapper.RegisterBinding("octoawesome:slot9", "Inventory Slot 9");
             KeyMapper.RegisterBinding("octoawesome:debug.allblocks", "DEBUG: All Blocktypes in Inventory");
-            KeyMapper.RegisterBinding("octoawesome:debug.control", "DEBUG: Show/Hide Degug Control");
+            KeyMapper.RegisterBinding("octoawesome:debug.control", "DEBUG: Show/Hide Debug Control");
             KeyMapper.RegisterBinding("octoawesome:inventory", "Inventory");
             KeyMapper.RegisterBinding("octoawesome:hidecontrols", "Hide all Controls");
             KeyMapper.RegisterBinding("octoawesome:exit", "Exit");
             KeyMapper.RegisterBinding("octoawesome:freemouse", "Free/Capture Mouse");
+            KeyMapper.RegisterBinding("octoawesome:fullscreen", "Toggle Full Screen Mode");
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -146,12 +152,45 @@ namespace OctoAwesome.Client
                 { "octoawesome:debug.allblocks", Keys.L },
                 { "octoawesome:debug.control", Keys.F10 },
                 { "octoawesome:inventory", Keys.I },
-                { "octoawesome:hidecontrols", Keys.F11 },
+                { "octoawesome:hidecontrols", Keys.F9 },
                 { "octoawesome:exit", Keys.Escape },
-                { "octoawesome:freemouse", Keys.F12 }
+                { "octoawesome:freemouse", Keys.F12 },
+                { "octoawesome:fullscreen", Keys.F11 }
             };
 
             KeyMapper.LoadFromConfig(standardKeys);
+
+            KeyMapper.AddAction("octoawesome:fullscreen", type =>
+            {
+                if (type == KeyMapper.KeyType.Down)
+                {
+                    if (!fullscreen)
+                    {
+                        oldHeight = Window.ClientBounds.Height;
+                        oldWidth = Window.ClientBounds.Width;
+                        oldPositon = Window.Position;
+                        var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                        var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+
+                        Window.Position = new Point(0, 0);
+                        Window.IsBorderless = true;
+
+                        graphics.PreferredBackBufferWidth = screenWidth;
+                        graphics.PreferredBackBufferHeight = screenHeight;
+                        fullscreen = true;
+                    }
+                    else
+                    {
+                        Window.Position = oldPositon;
+                        Window.IsBorderless = false;
+                        graphics.PreferredBackBufferHeight = oldHeight;
+                        graphics.PreferredBackBufferWidth = oldWidth;                        
+                        fullscreen = false;
+                    }
+
+                    graphics.ApplyChanges();
+                }
+            });
         }
 
         protected override void OnExiting(object sender, EventArgs args)
