@@ -295,6 +295,15 @@ namespace OctoAwesome.Client.Screens
                 else
                     Manager.CaptureMouse();
             });
+            Manager.Game.KeyMapper.AddAction("octoawesome:teleport", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
+                    Manager.Game.Player.ActorHost.Player.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
+                    Manager.NavigateBack();
+                    }, Manager.Game.Player.ActorHost.Player.Position.GlobalBlockIndex.X, Manager.Game.Player.ActorHost.Player.Position.GlobalBlockIndex.Y));
+                
+            });
         }
 
         #endregion
