@@ -54,6 +54,7 @@
     <Compile Include="Controls\CompassControl.cs" />
     <Compile Include="Controls\CrosshairControl.cs" />
     <Compile Include="Controls\DebugControl.cs" />
+    <Compile Include="Controls\HealthBarControl.cs" />
     <Compile Include="Controls\MinimapControl.cs" />
     <Compile Include="Controls\SceneControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
@@ -131,6 +132,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\OctoAwesome.Client\UI\buttonLong_grey_pressed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Client\UI\progress_background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\OctoAwesome.Client\UI\progress_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\simple.fx" />
