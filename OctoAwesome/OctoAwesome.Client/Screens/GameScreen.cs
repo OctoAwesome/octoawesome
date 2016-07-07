@@ -41,8 +41,9 @@ namespace OctoAwesome.Client.Screens
             compass = new CompassControl(manager);
             compass.HorizontalAlignment = HorizontalAlignment.Center;
             compass.VerticalAlignment = VerticalAlignment.Top;
+            compass.Margin = Border.All(10);
             compass.Width = 300;
-            compass.Height = 30;
+            compass.Height = 50;
             Controls.Add(compass);
 
             toolbar = new ToolbarControl(manager);
