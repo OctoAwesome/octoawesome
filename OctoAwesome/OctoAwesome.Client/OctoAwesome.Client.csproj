@@ -74,6 +74,7 @@
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\LoadScreen.cs" />
     <Compile Include="Screens\MainScreen.cs" />
+    <Compile Include="Screens\TargetScreen.cs" />
     <Compile Include="Screens\MessageScreen.cs" />
     <Compile Include="Screens\OptionsScreen.cs" />
     <Compile Include="Screens\PauseScreen.cs" />
