@@ -87,7 +87,8 @@ namespace OctoAwesome.Client.Screens
 
             Checkbox disablePersistence = new Checkbox(manager)
             {
-                Checked = bool.Parse(SettingsManager.Get("DisablePersistence"))
+                Checked = bool.Parse(SettingsManager.Get("DisablePersistence")),
+                HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
             };
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
             persistenceStack.Controls.Add(disablePersistence);
@@ -95,23 +96,24 @@ namespace OctoAwesome.Client.Screens
             //////////////////////Map Path//////////////////////
             StackPanel mapPathStack = new StackPanel(manager)
             {
-                Orientation = Orientation.Horizontal,
-                Margin = new Border(0, 10, 0, 0),
+                Orientation = Orientation.Vertical,
+                Margin = new Border(0, 30, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
             settingsStack.Controls.Add(mapPathStack);
 
             mapPath = new Textbox(manager)
             {
-                // HorizontalAlignment = HorizontalAlignment.Stretch,
                 Text = SettingsManager.Get("ChunkRoot"),
                 Enabled = false,
+                HorizontalAlignment = HorizontalAlignment.Stretch,              
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
             mapPathStack.Controls.Add(mapPath);
 
             Button changePath = Button.TextButton(manager, Languages.OctoClient.ChangePath);
-            changePath.Height = 33;
+            changePath.HorizontalAlignment = HorizontalAlignment.Center;
+            changePath.Height = 40;
             changePath.LeftMouseClick += (s, e) => ChangePath();
             mapPathStack.Controls.Add(changePath);
 
