@@ -37,6 +37,7 @@ namespace OctoAwesome.Client.Screens
             debug = new DebugControl(manager);
             debug.HorizontalAlignment = HorizontalAlignment.Stretch;
             debug.VerticalAlignment = VerticalAlignment.Stretch;
+            debug.Visible = false;
             Controls.Add(debug);
 
             compass = new CompassControl(manager);
