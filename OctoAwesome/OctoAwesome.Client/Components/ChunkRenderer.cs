@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Components
             {
                 if (vb == null)
                     return;
-
+                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
                 graphicsDevice.VertexBuffer = vb;
                 graphicsDevice.IndexBuffer = ib;
 
