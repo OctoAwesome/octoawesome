@@ -16,6 +16,7 @@ namespace OctoAwesome.Client
             Livegast,
             Tools,
             EmailJoker,
+            Contributor,
             Musik,
             Grafik,
             WikiAdmin

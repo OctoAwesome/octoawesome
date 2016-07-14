@@ -119,7 +119,6 @@ namespace OctoAwesome.Noise
         /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <param name="tileSizeZ">Tiefe der Kachel</param>
         /// <returns>Gibt ein float-Wert einer 3D Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
         float GetTileableNoise3D(int x, int y, int z, int tileSizeX, int tileSizeY);
 

@@ -183,4 +183,46 @@
   <data name="ActiveItemTool" xml:space="preserve">
     <value>Aktives Werkzeug</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="Play" xml:space="preserve">
+    <value>Spielen</value>
+  </data>
+  <data name="CreateUniverse" xml:space="preserve">
+    <value>Universum erstellen</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Seed" xml:space="preserve">
+    <value>Seed</value>
+  </data>
+  <data name="SelectUniverse" xml:space="preserve">
+    <value>Universum auswählen</value>
+  </data>
+  <data name="SelectUniverseFirst" xml:space="preserve">
+    <value>Bitte zuerst ein Universum auswählen!</value>
+  </data>
+  <data name="Game" xml:space="preserve">
+    <value>Spiel</value>
+  </data>
+  <data name="Temperature" xml:space="preserve">
+    <value>Temperatur</value>
+  </data>
+  <data name="ToolCount" xml:space="preserve">
+    <value>Werkzeuganzahl</value>
+  </data>
+  <data name="Resume" xml:space="preserve">
+    <value>Fortsetzen</value>
+  </data>
+  <data name="ToMainMenu" xml:space="preserve">
+    <value>Zum Hauptmenü</value>
+  </data>
 </root>

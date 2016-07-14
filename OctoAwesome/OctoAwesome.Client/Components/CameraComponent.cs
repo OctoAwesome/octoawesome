@@ -20,6 +20,11 @@ namespace OctoAwesome.Client.Components
         {
             base.Initialize();
 
+            RecreateProjection();
+        }
+
+        public void RecreateProjection()
+        {
             Projection = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
         }

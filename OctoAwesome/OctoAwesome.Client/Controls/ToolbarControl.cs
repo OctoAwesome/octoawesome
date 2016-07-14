@@ -55,19 +55,18 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled)
                 return;
 
-            if (Player.Tools != null && Player.Tools.Count > 0)
+            if (Player.ActorHost == null) return;
+
+            if (Player.Tools != null && Player.Tools.Count > 0) // > 0 Check erforderlich da durch einen Bug ActiveTool auch gesetzt bleibt wenn kein Tool mehr vorhanden ist
             {
                 int width = Player.Tools.Count * 32 + (Player.Tools.Count - 1) * 10;
                 int offset = (contentArea.Width - width) / 2;
                 int index = 0;
 
-                if (Player.ActorHost.ActiveTool != null && Player.Tools.Count > 0) // > 0 Check erforderlich da durch einen Bug ActiveTool auch gesetzt bleibt wenn kein Tool mehr vorhanden ist
+                if (Player.ActorHost.ActiveTool != null)
                 {
                     activeToolLabel.Visible = true;
                     activeToolLabel.Text = Player.ActorHost.ActiveTool.Definition.Name;
-                }
-                else { 
-                    activeToolLabel.Visible = false;
                 }
 
                 foreach (var tool in Player.Tools)
@@ -79,6 +78,10 @@ namespace OctoAwesome.Client.Controls
 
                     index++;
                 }
+            }
+            else
+            {
+                activeToolLabel.Visible = false;
             }
         }
     }

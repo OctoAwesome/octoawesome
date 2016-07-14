@@ -190,11 +190,27 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnDrawContent(SpriteBatch batch, engenious.Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            batch.Draw(ControlTexture, contentArea, engenious.Color.White * alpha);
+            if (ControlTexture != null)
+                batch.Draw(ControlTexture, contentArea, Microsoft.Xna.Framework.Color.White * alpha);
+        }
+
+        public override void OnResolutionChanged()
+        {
+            base.OnResolutionChanged();
+
+            if (ControlTexture != null)
+            {
+                ControlTexture.Dispose();
+                ControlTexture = null;
+            }
+
+            Manager.Game.Camera.RecreateProjection();
         }
 
         protected override void OnUpdate(GameTime gameTime)
         {
+            if (player.ActorHost == null) return;
+
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
 
             Index3 centerblock = player.ActorHost.Position.GlobalBlockIndex;
@@ -296,6 +312,8 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnPreDraw(GameTime gameTime)
         {
+            if (player.ActorHost == null) return;
+
             if (ControlTexture == null)
             {
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);

@@ -152,9 +152,18 @@
   <CrewMember>
     <Username>Ralf</Username>
     <Alias>Ralf</Alias>
-    <Description>alf teilt sich mit Andy zusammen die Spitze der mit Abstand umfangreichsten und ausgeklügelten Feedback-Mails. Da kommt nicht nur "Das und das ist falsch" sondern meist über Seiten hinweg Lösungsansätze und Referenz-Links. Vielen, vielen Dank dafür!</Description>
+    <Description>Ralf teilt sich mit Andy zusammen die Spitze der mit Abstand umfangreichsten und ausgeklügelten Feedback-Mails. Da kommt nicht nur "Das und das ist falsch" sondern meist über Seiten hinweg Lösungsansätze und Referenz-Links. Vielen, vielen Dank dafür!</Description>
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
+    </AchievementList>
+  </CrewMember>
+  <CrewMember>
+    <Username>Rave1000</Username>
+    <Alias>Rave1000</Alias>
+    <Description>Immer am Start, immer dabei mit jeder Menge Verbesserungen bei Octo und MonoGameUI.</Description>
+    <AchievementList>
+      <Achievements>EmailJoker</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
   </CrewMember>
   <CrewMember>

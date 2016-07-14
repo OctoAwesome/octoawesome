@@ -131,7 +131,7 @@ namespace OctoAwesome.Runtime
                 {
                     for (int x = minx; x <= maxx && !abort; x++)
                     {
-                        move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;                    
+                        move = Player.Velocity * (float)frameTime.ElapsedGameTime.TotalSeconds;
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
@@ -139,7 +139,7 @@ namespace OctoAwesome.Runtime
                         if (block == 0)
                             continue;
 
-                        
+
 
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, Player.Velocity).ToList();
 
@@ -147,10 +147,10 @@ namespace OctoAwesome.Runtime
                                      from bp in blockplane
                                      where CollisionPlane.Intersect(bp, pp)
                                      let distance = CollisionPlane.GetDistance(bp, pp)
-                                     where CollisionPlane.CheckDistance(distance,move)
+                                     where CollisionPlane.CheckDistance(distance, move)
                                      select new { BlockPlane = bp, PlayerPlane = pp, Distance = distance };
 
-                        foreach (var plane in  planes )
+                        foreach (var plane in planes)
                         {
 
                             var subvelocity = (plane.Distance / (float)frameTime.ElapsedGameTime.TotalSeconds);
@@ -209,7 +209,7 @@ namespace OctoAwesome.Runtime
                 localChunkCache.SetCenter(planet, new Index2(Player.Position.ChunkIndex), (success) =>
                 {
                     ReadyState = success;
-                });                
+                });
             }
 
 
@@ -262,13 +262,40 @@ namespace OctoAwesome.Runtime
                     if (ActiveTool.Definition is IBlockDefinition)
                     {
                         IBlockDefinition definition = ActiveTool.Definition as IBlockDefinition;
-                        localChunkCache.SetBlock(lastApply.Value + add, DefinitionManager.Instance.GetBlockDefinitionIndex(definition));
 
-                        ActiveTool.Amount--;
-                        if (ActiveTool.Amount <= 0)
+                        Index3 idx = lastApply.Value + add;
+                        var boxes = definition.GetCollisionBoxes(localChunkCache, idx.X, idx.Y, idx.Z);
+                        float gap = 0.01f;
+                        var playerBox = new BoundingBox(
+                            new Vector3(
+                                Player.Position.GlobalBlockIndex.X + Player.Position.BlockPosition.X - Player.Radius + gap,
+                                Player.Position.GlobalBlockIndex.Y + Player.Position.BlockPosition.Y - Player.Radius + gap,
+                                Player.Position.GlobalBlockIndex.Z + Player.Position.BlockPosition.Z + gap),
+                            new Vector3(
+                                Player.Position.GlobalBlockIndex.X + Player.Position.BlockPosition.X + Player.Radius - gap,
+                                Player.Position.GlobalBlockIndex.Y + Player.Position.BlockPosition.Y + Player.Radius - gap,
+                                Player.Position.GlobalBlockIndex.Z + Player.Position.BlockPosition.Z + Player.Height - gap)
+                            );
+
+                        // Nicht in sich selbst reinbauen
+                        bool intersects = false;
+                        foreach (var box in boxes)
                         {
-                            Player.Inventory.Remove(ActiveTool);
-                            ActiveTool = null;
+                            var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
+                            if (newBox.Intersects(playerBox))
+                                intersects = true;
+                        }
+
+                        if (!intersects)
+                        {
+                            localChunkCache.SetBlock(idx, DefinitionManager.Instance.GetBlockDefinitionIndex(definition));
+
+                            ActiveTool.Amount--;
+                            if (ActiveTool.Amount <= 0)
+                            {
+                                Player.Inventory.Remove(ActiveTool);
+                                ActiveTool = null;
+                            }
                         }
                     }
 
@@ -287,7 +314,7 @@ namespace OctoAwesome.Runtime
             #endregion
         }
 
-        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime,bool gravity,bool flymode)
+        private Vector3 PhysicalUpdate(Vector3 velocitydirection, TimeSpan elapsedtime, bool gravity, bool flymode)
         {
             Vector3 exforce = !flymode ? Player.ExternalForce : Vector3.Zero;
 

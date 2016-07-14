@@ -36,32 +36,16 @@ namespace OctoAwesome.Client.Screens
 
             foreach(CrewMember member in crew)
             {
-                Panel memberPanel = new Panel(manager)
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    MinHeight = 30,
-                    Background = new BorderBrush(Color.White),
-                    Margin = new Border(5, 5, 5, 5),
-                    HoveredBackground = new BorderBrush(Color.LightGray)
+                Button memberButton = Button.TextButton(manager, member.Username);
+                memberButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+                memberButton.Margin = new Border(5, 5, 5, 5);
 
-                };
-
-                memberPanel.LeftMouseClick += (s, e) =>
+                memberButton.LeftMouseClick += (s, e) =>
                 {
                     manager.NavigateToScreen(new CrewMemberScreen(manager, member));
                 };
 
-                Label name = new Label(manager)
-                {
-                    Text = member.Username,
-                    VerticalAlignment = VerticalAlignment.Stretch,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Padding = new Border(5, 5, 5, 5)
-                };
-
-                memberPanel.Controls.Add(name);
-                crewList.Controls.Add(memberPanel);
-
+                crewList.Controls.Add(memberButton);
             }
             
 

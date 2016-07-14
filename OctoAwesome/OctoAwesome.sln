@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
 EndProject
@@ -24,6 +24,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "OctoAwesome.Help", "OctoAwesome.Help\OctoAwesome.Help.shfbproj", "{AC11A51B-81E3-4D7B-BB62-1B222413282C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{739F0779-A605-49C9-A298-FE30DC628C9E} = {739F0779-A605-49C9-A298-FE30DC628C9E}
+		{93601DB8-F134-418E-8B35-11E30CFEC31C} = {93601DB8-F134-418E-8B35-11E30CFEC31C}
+		{31D774C6-E5D9-40B7-8D63-942E28FE1D94} = {31D774C6-E5D9-40B7-8D63-942E28FE1D94}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
