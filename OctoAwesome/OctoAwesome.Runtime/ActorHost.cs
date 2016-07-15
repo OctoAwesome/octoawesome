@@ -282,7 +282,9 @@ namespace OctoAwesome.Runtime
                         foreach (var box in boxes)
                         {
                             var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
-                            if (newBox.Intersects(playerBox))
+                            if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
+                                newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
+                                newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
                                 intersects = true;
                         }
 

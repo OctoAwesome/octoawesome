@@ -1,12 +1,9 @@
 ﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
-using System;
 using System.Linq;
-using System.IO;
-using System.Text;
-using System.Windows;
 using engenious.Graphics;
 using engenious;
+using engenious.Input;
 
 namespace OctoAwesome.Client.Screens
 {

@@ -137,7 +137,7 @@ namespace OctoAwesome.Client
                 { "octoawesome:headright", Keys.Right },
                 { "octoawesome:interact", Keys.E },
                 { "octoawesome:apply", Keys.Q },
-                { "octoawesome:flymode", Keys.Scroll },
+                { "octoawesome:flymode", Keys.ScrollLock },
                 { "octoawesome:jump", Keys.Space },
                 { "octoawesome:slot0", Keys.D1 },
                 { "octoawesome:slot1", Keys.D2 },
@@ -165,31 +165,32 @@ namespace OctoAwesome.Client
             {
                 if (type == KeyMapper.KeyType.Down)
                 {
-                    if (!fullscreen)
-                    {
-                        oldHeight = Window.ClientBounds.Height;
-                        oldWidth = Window.ClientBounds.Width;
-                        oldPositon = Window.Position;
-                        var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                        var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                    // TODO: Fullscreen wieder herstellen sobald das geht
+                    //if (!fullscreen)
+                    //{
+                    //    oldHeight = this. Window.ClientBounds.Height;
+                    //    oldWidth = Window.ClientBounds.Width;
+                    //    oldPositon = Window.Position;
+                    //    var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                    //    var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
 
-                        Window.Position = new Point(0, 0);
-                        Window.IsBorderless = true;
+                    //    Window.Position = new Point(0, 0);
+                    //    Window.IsBorderless = true;
 
-                        graphics.PreferredBackBufferWidth = screenWidth;
-                        graphics.PreferredBackBufferHeight = screenHeight;
-                        fullscreen = true;
-                    }
-                    else
-                    {
-                        Window.Position = oldPositon;
-                        Window.IsBorderless = false;
-                        graphics.PreferredBackBufferHeight = oldHeight;
-                        graphics.PreferredBackBufferWidth = oldWidth;                        
-                        fullscreen = false;
-                    }
+                    //    graphics.PreferredBackBufferWidth = screenWidth;
+                    //    graphics.PreferredBackBufferHeight = screenHeight;
+                    //    fullscreen = true;
+                    //}
+                    //else
+                    //{
+                    //    Window.Position = oldPositon;
+                    //    Window.IsBorderless = false;
+                    //    graphics.PreferredBackBufferHeight = oldHeight;
+                    //    graphics.PreferredBackBufferWidth = oldWidth;                        
+                    //    fullscreen = false;
+                    //}
 
-                    graphics.ApplyChanges();
+                    //graphics.ApplyChanges();
                 }
             });
         }
