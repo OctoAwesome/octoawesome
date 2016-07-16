@@ -32,8 +32,8 @@ namespace OctoAwesome.Client
         public KeyMapper KeyMapper { get; private set; }
 
         // Fullscreen
-        private int oldHeight, oldWidth;
-        Point oldPositon;
+        private Size oldSize;
+        private Point oldPositon;
         bool fullscreen = false;
 
         public OctoGame()
@@ -88,7 +88,6 @@ namespace OctoAwesome.Client
                 //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
                 //graphics.ApplyChanges();
             };*/
-
             SetKeyBindings();
         }
 
@@ -165,32 +164,7 @@ namespace OctoAwesome.Client
             {
                 if (type == KeyMapper.KeyType.Down)
                 {
-                    // TODO: Fullscreen wieder herstellen sobald das geht
-                    //if (!fullscreen)
-                    //{
-                    //    oldHeight = this. Window.ClientBounds.Height;
-                    //    oldWidth = Window.ClientBounds.Width;
-                    //    oldPositon = Window.Position;
-                    //    var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                    //    var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-
-                    //    Window.Position = new Point(0, 0);
-                    //    Window.IsBorderless = true;
-
-                    //    graphics.PreferredBackBufferWidth = screenWidth;
-                    //    graphics.PreferredBackBufferHeight = screenHeight;
-                    //    fullscreen = true;
-                    //}
-                    //else
-                    //{
-                    //    Window.Position = oldPositon;
-                    //    Window.IsBorderless = false;
-                    //    graphics.PreferredBackBufferHeight = oldHeight;
-                    //    graphics.PreferredBackBufferWidth = oldWidth;                        
-                    //    fullscreen = false;
-                    //}
-
-                    //graphics.ApplyChanges();
+                    Window.Fullscreen = !Window.Fullscreen;
                 }
             });
         }

@@ -1,24 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Content xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Name>Content</Name>
-  <Contents>
-    <ContentItem xsi:type="ContentFile">
-      <Name>BoldFont.fnt</Name>
-    </ContentItem>
-    <ContentItem xsi:type="ContentFile">
-      <Name>GameFont.fnt</Name>
-    </ContentItem>
-    <ContentItem xsi:type="ContentFile">
-      <Name>HeadlineFont.fnt</Name>
-    </ContentItem>
-    <ContentItem xsi:type="ContentFile">
-      <Name>simple.glsl</Name>
-    </ContentItem>
-    <ContentItem xsi:type="ContentFile">
-      <Name>Hud.fnt</Name>
-    </ContentItem>
-  </Contents>
+﻿<Content>
+  <References />
   <Configuration>Debug</Configuration>
   <OutputDir>bin/{Configuration}/</OutputDir>
-  <References />
+  <Name>Content</Name>
+  <Contents>
+    <ContentFile>
+      <Name>BoldFont.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>GameFont.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>HeadlineFont.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>Hud.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>simple.glsl</Name>
+      <Processor />
+    </ContentFile>
+  </Contents>
 </Content>
