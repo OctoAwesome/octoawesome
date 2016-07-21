@@ -13,9 +13,19 @@ namespace OctoAwesome.Client.Controls
 {
     internal class ToolbarControl : Panel
     {
+        private const int BUTTONCOUNT = 10;
+
         // private Texture2D[] toolTextures;
         // private Dictionary<IItemDefinition, Texture2D> toolTextures;
         private Dictionary<string, Texture2D> toolTextures;
+
+        private Button[] buttons = new Button[BUTTONCOUNT];
+
+        private Image[] images = new Image[BUTTONCOUNT];
+
+        private Brush buttonBackgroud;
+
+        private Brush activeBackground;
 
         public PlayerComponent Player { get; set; }
 
@@ -26,6 +36,9 @@ namespace OctoAwesome.Client.Controls
         {
             Player = screenManager.Player;
             toolTextures = new Dictionary<string, Texture2D>();
+
+            buttonBackgroud = new BorderBrush(Color.Black);
+            activeBackground = new BorderBrush(Color.Red);
 
             activeToolLabel = new Label(screenManager);
             activeToolLabel.VerticalAlignment = VerticalAlignment.Top;
@@ -48,41 +61,105 @@ namespace OctoAwesome.Client.Controls
                     toolTextures.Add(item.GetType().FullName, Texture2D.FromStream(ScreenManager.GraphicsDevice, stream));
                 }
             }
+
+            Grid grid = new Grid(screenManager)
+            {
+                Margin = new Border(0, 0, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            Controls.Add(grid);
+
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
+
+            for (int i = 0; i < BUTTONCOUNT; i++)
+            {
+                grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
+            }
+
+            for (int i = 0; i < BUTTONCOUNT; i++)
+            {
+                buttons[i] = new Button(screenManager)
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    Background = buttonBackgroud,
+                    HoveredBackground = null,
+                    PressedBackground = null,
+                };
+                buttons[i].Content = images[i] = new Image(screenManager)
+                {
+                    Width = 42,
+                    Height = 42,
+                };
+                grid.AddControl(buttons[i], i, 0);
+            }
         }
 
-        protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
+        protected override void OnUpdate(GameTime gameTime)
         {
             if (!Visible || !Enabled)
                 return;
 
             if (Player.ActorHost == null) return;
 
-            if (Player.Tools != null && Player.Tools.Count > 0) // > 0 Check erforderlich da durch einen Bug ActiveTool auch gesetzt bleibt wenn kein Tool mehr vorhanden ist
+            for (int i = 0; i < BUTTONCOUNT; i++)
             {
-                int width = Player.Tools.Count * 32 + (Player.Tools.Count - 1) * 10;
-                int offset = (contentArea.Width - width) / 2;
-                int index = 0;
-
-                if (Player.ActorHost.ActiveTool != null)
+                if (Player.Tools != null && 
+                    Player.Tools.Count > i && 
+                    Player.Tools[i] != null && 
+                    Player.Tools[i].Definition != null)
                 {
-                    activeToolLabel.Visible = true;
-                    activeToolLabel.Text = Player.ActorHost.ActiveTool.Definition.Name;
+                    images[i].Texture = toolTextures[Player.Tools[i].Definition.GetType().FullName];
+
+                    if (Player.ActorHost.ActiveTool == Player.Tools[i])
+                        buttons[i].Background = activeBackground;
+                    else
+                        buttons[i].Background = buttonBackgroud;
                 }
-
-                foreach (var tool in Player.Tools)
+                else
                 {
-                    batch.Draw(Skin.Pix, new Rectangle(offset + (index * 42) - 2 + contentArea.X, contentArea.Height - 60 - 2 + contentArea.Y, 36, 36),
-                        Player.ActorHost.ActiveTool == tool ? Color.Gold : new Color(Color.White, 0.8f));
-                    batch.Draw(toolTextures[tool.Definition.GetType().FullName], new Rectangle(offset + (index * 42) + contentArea.X, contentArea.Height - 60 + contentArea.Y, 32, 32),
-                       Player.ActorHost.ActiveTool == tool ? Color.White : new Color(Color.White, 0.8f));
-
-                    index++;
+                    images[i].Texture = null;
+                    buttons[i].Background = buttonBackgroud;
                 }
             }
-            else
-            {
-                activeToolLabel.Visible = false;
-            }
+
+            base.OnUpdate(gameTime);
         }
+
+        //protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
+        //{
+        //    if (!Visible || !Enabled)
+        //        return;
+
+        //    if (Player.ActorHost == null) return;
+
+        //    if (Player.Tools != null && Player.Tools.Count > 0) // > 0 Check erforderlich da durch einen Bug ActiveTool auch gesetzt bleibt wenn kein Tool mehr vorhanden ist
+        //    {
+        //        int width = Player.Tools.Count * 32 + (Player.Tools.Count - 1) * 10;
+        //        int offset = (contentArea.Width - width) / 2;
+        //        int index = 0;
+
+        //        if (Player.ActorHost.ActiveTool != null)
+        //        {
+        //            activeToolLabel.Visible = true;
+        //            activeToolLabel.Text = Player.ActorHost.ActiveTool.Definition.Name;
+        //        }
+
+        //        foreach (var tool in Player.Tools)
+        //        {
+        //            batch.Draw(Skin.Pix, new Rectangle(offset + (index * 42) - 2 + contentArea.X, contentArea.Height - 60 - 2 + contentArea.Y, 36, 36),
+        //                Player.ActorHost.ActiveTool == tool ? Color.Gold : new Color(Color.White, 0.8f));
+        //            batch.Draw(toolTextures[tool.Definition.GetType().FullName], new Rectangle(offset + (index * 42) + contentArea.X, contentArea.Height - 60 + contentArea.Y, 32, 32),
+        //               Player.ActorHost.ActiveTool == tool ? Color.White : new Color(Color.White, 0.8f));
+
+        //            index++;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        activeToolLabel.Visible = false;
+        //    }
+        //}
     }
 }
