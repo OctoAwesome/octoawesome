@@ -115,13 +115,6 @@
     <Compile Include="TreePopulator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
-      <Name>OctoAwesome</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Languages\OctoBasics.de.resx" />
     <EmbeddedResource Include="Languages\OctoBasics.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -229,6 +222,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Biomes\Noise\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
+      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
+      <Name>OctoAwesome</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

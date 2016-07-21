@@ -73,6 +73,11 @@ namespace OctoAwesome
         public bool FlyMode { get; set; }
 
         /// <summary>
+        /// Maximales Gewicht im Inventar.
+        /// </summary>
+        public float InventoryLimit { get; set; }
+
+        /// <summary>
         /// Das Inventar des Spielers.
         /// TODO: Persistieren...
         /// </summary>
@@ -92,6 +97,7 @@ namespace OctoAwesome
             Height = 3.5f;
             Mass = 100;
             FlyMode = false;
+            InventoryLimit = 1000;
         }
     }
 }

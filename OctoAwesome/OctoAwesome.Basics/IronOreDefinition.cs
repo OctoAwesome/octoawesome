@@ -32,6 +32,14 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public float VolumePerUnit
+        {
+            get
+            {
+                return 125;
+            }
+        }
+
         public IResource GetInstance()
         {
             throw new NotImplementedException();

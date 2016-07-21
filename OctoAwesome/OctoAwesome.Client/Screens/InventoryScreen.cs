@@ -1,12 +1,16 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
+using System.IO;
 
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class InventoryScreen : Screen
     {
+        private const int COLUMNS = 8;
+
         private PlayerComponent player;
 
         public InventoryScreen(ScreenComponent manager) : base(manager)
@@ -29,18 +33,52 @@ namespace OctoAwesome.Client.Screens
             headLine.VerticalAlignment = VerticalAlignment.Top;
             Controls.Add(headLine);
 
-            Button closeButton = Button.TextButton(manager, Languages.OctoClient.Close);
-            closeButton.LeftMouseClick += (s, e) => { manager.NavigateBack(); };
-            Controls.Add(closeButton);
+            ScrollContainer scroll = new ScrollContainer(manager)
+            {
+                Margin = new Border(0, 50, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            Controls.Add(scroll);
 
-            //counter = new LabelControl(ScreenManager)
-            //{
-            //    Font = ScreenManager.NormalText,
-            //    Color = Color.Black,
-            //    Position = new Index2(((ScreenManager.ScreenSize.X - 600) / 2) + 100,
-            //        ((ScreenManager.ScreenSize.Y - 400) / 2) + 140),
-            //};
-            //Controls.Add(counter);
+            Grid grid = new Grid(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            for (int i = 0; i < COLUMNS; i++)
+                grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+            int rows = (int)System.Math.Ceiling((float)manager.Game.Player.ActorHost.Player.Inventory.Count / COLUMNS);
+            for (int i = 0; i < rows; i++)
+                grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
+
+            int column = 0;
+            int row = 0;
+            foreach (var item in manager.Game.Player.ActorHost.Player.Inventory)
+            {
+                Texture2D texture;
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    System.Drawing.Bitmap bitmap = item.Definition.Icon;
+                    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    texture = Texture2D.FromStream(ScreenManager.GraphicsDevice, stream);
+                }
+
+                var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+                var label = new Label(manager) { Text = item.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
+                grid.AddControl(image, column, row);
+                grid.AddControl(label, column, row);
+
+                column++;
+                if (column >= COLUMNS)
+                {
+                    row++;
+                    column = 0;
+                }
+            }
+
+            scroll.Content = grid;
 
             Title = Languages.OctoClient.Inventory;
         }

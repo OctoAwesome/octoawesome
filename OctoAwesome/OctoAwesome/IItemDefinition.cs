@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace OctoAwesome
 {
@@ -18,8 +19,14 @@ namespace OctoAwesome
         Bitmap Icon { get; }
 
         /// <summary>
+        /// Gibt das Volumen für eine Einheit an.
+        /// </summary>
+        float VolumePerUnit { get; }
+
+        /// <summary>
         /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können
         /// </summary>
+        [Obsolete]
         int StackLimit { get; }
 
         /*/// <summary>

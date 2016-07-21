@@ -33,6 +33,14 @@ namespace OctoAwesome.Basics
             }
         }
 
+        public float VolumePerUnit
+        {
+            get
+            {
+                return 10;
+            }
+        }
+
         public PhysicalProperties GetProperties(IItem item)
         {
             return new PhysicalProperties()

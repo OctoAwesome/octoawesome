@@ -24,6 +24,11 @@ namespace OctoAwesome
         public virtual int StackLimit { get { return 100; } }
 
         /// <summary>
+        /// Gibt das Volumen für eine Einheit an.
+        /// </summary>
+        public virtual float VolumePerUnit { get { return 125; } }
+
+        /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
         /// </summary>
         public abstract Bitmap[] Textures { get; }
