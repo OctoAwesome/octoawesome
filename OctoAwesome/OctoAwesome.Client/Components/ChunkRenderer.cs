@@ -323,36 +323,31 @@ namespace OctoAwesome.Client.Components
             vertexCount = vertices.Count;
             indexCount = index.Count;
 
-            VertexBuffer vb2 = null;
-            IndexBuffer ib2 = null;
             if (vertexCount > 0)
             {
                 try
                 {
-                    vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
-                    vb2.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
+                    if (vb == null || ib == null)
+                    {
+                        vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);
+                        ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
+                    }
+                    if (vertexCount+2 > vb.VertexCount)
+                        vb.Resize(vertexCount+2);
+                    //vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
+                    vb.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
 
-                    ib2 = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
-                    ib2.SetData<int>(index.ToArray());
+                    if (indexCount > ib.IndexCount)
+                        ib.Resize(indexCount);
+                    ib.SetData<int>(index.ToArray());
                 }
                 catch (Exception) { }
             }
 
-            VertexBuffer vbOld = vb;
-            IndexBuffer ibOld = ib;
-
             lock (this)
             {
-                vb = vb2;
-                ib = ib2;
                 loaded = true;
             }
-
-            if (vbOld != null)
-                vbOld.Dispose();
-
-            if (ibOld != null)
-                ibOld.Dispose();
 
             lastReset = chunk.ChangeCounter;
         }
