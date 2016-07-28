@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace OctoAwesome
@@ -29,5 +30,36 @@ namespace OctoAwesome
         /// </summary>
         [XmlIgnore]
         public Vector3 ExternalForce { get; set; }
+
+        public virtual void Serialize(BinaryWriter writer)
+        {
+            // Position
+            writer.Write(Position.Planet);
+            writer.Write(Position.GlobalBlockIndex.X);
+            writer.Write(Position.GlobalBlockIndex.Y);
+            writer.Write(Position.GlobalBlockIndex.Z);
+            writer.Write(Position.BlockPosition.X);
+            writer.Write(Position.BlockPosition.Y);
+            writer.Write(Position.BlockPosition.Z);
+
+            // Mass
+            writer.Write(Mass);
+        }
+
+        public virtual void Deserialize(BinaryReader reader)
+        {
+            // Pos
+            int planet = reader.ReadInt32();
+            int blockX = reader.ReadInt32();
+            int blockY = reader.ReadInt32();
+            int blockZ = reader.ReadInt32();
+            float posX = reader.ReadSingle();
+            float posY = reader.ReadSingle();
+            float posZ = reader.ReadSingle();
+            Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+
+            // Mass
+            Mass = reader.ReadSingle();
+        }
     }
 }

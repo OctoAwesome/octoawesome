@@ -123,7 +123,6 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-
             if (SlotLeftInput)
             {
                 if (activeTool > -1)

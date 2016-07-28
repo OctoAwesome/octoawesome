@@ -248,13 +248,18 @@ namespace OctoAwesome.Runtime
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                try {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Player));
-                    return (Player)serializer.Deserialize(stream);
-                }
-                catch (Exception)
+                using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    File.Delete(file);
+                    try
+                    {
+                        Player player = new Player();
+                        player.Deserialize(reader);
+                        return player;
+                    }
+                    catch (Exception)
+                    {
+                        File.Delete(file);
+                    }
                 }
             }
 
@@ -275,8 +280,10 @@ namespace OctoAwesome.Runtime
             string file = Path.Combine(path, "player.info");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Player));
-                serializer.Serialize(stream, player);
+                using (BinaryWriter writer = new BinaryWriter(stream))
+                {
+                    player.Serialize(writer);
+                }
             }
         }
     }

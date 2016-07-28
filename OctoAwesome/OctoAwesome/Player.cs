@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using System.IO;
 
 namespace OctoAwesome
 {
@@ -67,12 +68,6 @@ namespace OctoAwesome
         public float Tilt { get; set; }
 
         /// <summary>
-        /// Zurzeit nicht benutzt
-        /// TODO: Ist das Nötig?
-        /// </summary>
-        public int InventorySlots { get; set; }
-
-        /// <summary>
         /// Gibt an, ob der Flugmodus aktiviert ist.
         /// </summary>
         public bool FlyMode { get; set; }
@@ -110,6 +105,62 @@ namespace OctoAwesome
             Mass = 100;
             FlyMode = false;
             InventoryLimit = 1000;
+        }
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            // Entity
+            base.Serialize(writer);
+
+            // Radius
+            writer.Write(Radius);
+
+            // Angle
+            writer.Write(Angle);
+
+            // Height
+            writer.Write(Height);
+
+            // Tilt
+            writer.Write(Tilt);
+
+            // FlyMode
+            writer.Write(FlyMode);
+
+            // Inventory Limit
+            // TODO: Überlegen was damit passiert
+
+            // Inventory ???
+
+
+            // Inventory Tools (Index auf Inventory)
+        }
+
+        public override void Deserialize(BinaryReader reader)
+        {
+            // Entity
+            base.Deserialize(reader);
+
+            // Radius
+            Radius = reader.ReadSingle();
+
+            // Angle
+            Angle = reader.ReadSingle();
+
+            // Height
+            Height = reader.ReadSingle();
+
+            // Tilt
+            Tilt = reader.ReadSingle();
+
+            // FlyMode
+            FlyMode = reader.ReadBoolean();
+
+            // Inventory Limit
+
+            // Inventory ???
+
+            // Inventory Tools (Index auf Inventory)
         }
     }
 }
