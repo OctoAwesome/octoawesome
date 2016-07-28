@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO;
+using System.Linq;
 
 namespace OctoAwesome
 {
@@ -107,10 +108,10 @@ namespace OctoAwesome
             InventoryLimit = 1000;
         }
 
-        public override void Serialize(BinaryWriter writer)
+        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             // Entity
-            base.Serialize(writer);
+            base.Serialize(writer, definitionManager);
 
             // Radius
             writer.Write(Radius);
@@ -130,16 +131,31 @@ namespace OctoAwesome
             // Inventory Limit
             // TODO: Überlegen was damit passiert
 
-            // Inventory ???
-
+            // Inventory
+            writer.Write(Inventory.Count);
+            foreach (var slot in Inventory)
+            {
+                writer.Write(slot.Definition.GetType().FullName);
+                writer.Write(slot.Amount);
+            }
 
             // Inventory Tools (Index auf Inventory)
+            byte toolCount = (byte)Tools.Count(t => t != null);
+            writer.Write(toolCount);
+            for (byte i = 0; i < Tools.Length; i++)
+            {
+                if (Tools[i] == null)
+                    continue;
+
+                writer.Write(i);
+                writer.Write(Tools[i].Definition.GetType().FullName);
+            }
         }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             // Entity
-            base.Deserialize(reader);
+            base.Deserialize(reader, definitionManager);
 
             // Radius
             Radius = reader.ReadSingle();
@@ -158,9 +174,34 @@ namespace OctoAwesome
 
             // Inventory Limit
 
-            // Inventory ???
+            // Inventory
+            int inventoryCount = reader.ReadInt32();
+            for (int i = 0; i < inventoryCount; i++)
+            {
+                string definitionName = reader.ReadString();
+                decimal amount = reader.ReadDecimal();
+
+                var definition = definitionManager.GetItemDefinitions().FirstOrDefault(d => d.GetType().FullName.Equals(definitionName));
+                if (definition != null)
+                {
+                    InventorySlot slot = new InventorySlot();
+                    slot.Definition = definition;
+                    slot.Amount = amount;
+                    Inventory.Add(slot);
+                }
+            }
 
             // Inventory Tools (Index auf Inventory)
+            byte toolCount = reader.ReadByte();
+            for (byte i = 0; i < toolCount; i++)
+            {
+                byte index = reader.ReadByte();
+                string definitionType = reader.ReadString();
+
+                InventorySlot slot = Inventory.FirstOrDefault(s => s.Definition.GetType().FullName.Equals(definitionType));
+                if (slot != null)
+                    Tools[index] = slot;
+            }
         }
     }
 }

@@ -253,7 +253,7 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         Player player = new Player();
-                        player.Deserialize(reader);
+                        player.Deserialize(reader, DefinitionManager.Instance);
                         return player;
                     }
                     catch (Exception)
@@ -282,7 +282,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    player.Serialize(writer);
+                    player.Serialize(writer, DefinitionManager.Instance);
                 }
             }
         }

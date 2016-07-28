@@ -31,7 +31,7 @@ namespace OctoAwesome
         [XmlIgnore]
         public Vector3 ExternalForce { get; set; }
 
-        public virtual void Serialize(BinaryWriter writer)
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             // Position
             writer.Write(Position.Planet);
@@ -46,7 +46,7 @@ namespace OctoAwesome
             writer.Write(Mass);
         }
 
-        public virtual void Deserialize(BinaryReader reader)
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             // Pos
             int planet = reader.ReadInt32();
