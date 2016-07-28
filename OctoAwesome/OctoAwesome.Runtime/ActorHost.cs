@@ -11,8 +11,6 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class ActorHost : IPlayerController
     {
-        private readonly float Gap = 0.001f;
-
         private IPlanet planet;
 
         private bool lastJump = false;
@@ -295,6 +293,11 @@ namespace OctoAwesome.Runtime
                             if (ActiveTool.Amount <= 0)
                             {
                                 Player.Inventory.Remove(ActiveTool);
+                                for (int i = 0; i < Player.Tools.Length; i++)
+                                {
+                                    if (Player.Tools[i] == ActiveTool)
+                                        Player.Tools[i] = null;
+                                }
                                 ActiveTool = null;
                             }
                         }

@@ -13,15 +13,15 @@ namespace OctoAwesome.Client.Controls
 {
     internal class ToolbarControl : Panel
     {
-        private const int BUTTONCOUNT = 10;
+        
 
         // private Texture2D[] toolTextures;
         // private Dictionary<IItemDefinition, Texture2D> toolTextures;
         private Dictionary<string, Texture2D> toolTextures;
 
-        private Button[] buttons = new Button[BUTTONCOUNT];
+        private Button[] buttons = new Button[OctoAwesome.Player.TOOLCOUNT];
 
-        private Image[] images = new Image[BUTTONCOUNT];
+        private Image[] images = new Image[OctoAwesome.Player.TOOLCOUNT];
 
         private Brush buttonBackgroud;
 
@@ -72,12 +72,12 @@ namespace OctoAwesome.Client.Controls
 
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
-            for (int i = 0; i < BUTTONCOUNT; i++)
+            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
             {
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
 
-            for (int i = 0; i < BUTTONCOUNT; i++)
+            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
             {
                 buttons[i] = new Button(screenManager)
                 {
@@ -103,16 +103,16 @@ namespace OctoAwesome.Client.Controls
 
             if (Player.ActorHost == null) return;
 
-            for (int i = 0; i < BUTTONCOUNT; i++)
+            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
             {
-                if (Player.Tools != null && 
-                    Player.Tools.Count > i && 
-                    Player.Tools[i] != null && 
-                    Player.Tools[i].Definition != null)
+                if (Player.ActorHost.Player.Tools != null && 
+                    Player.ActorHost.Player.Tools.Length > i && 
+                    Player.ActorHost.Player.Tools[i] != null && 
+                    Player.ActorHost.Player.Tools[i].Definition != null)
                 {
-                    images[i].Texture = toolTextures[Player.Tools[i].Definition.GetType().FullName];
+                    images[i].Texture = toolTextures[Player.ActorHost.Player.Tools[i].Definition.GetType().FullName];
 
-                    if (Player.ActorHost.ActiveTool == Player.Tools[i])
+                    if (Player.ActorHost.ActiveTool == Player.ActorHost.Player.Tools[i])
                         buttons[i].Background = activeBackground;
                     else
                         buttons[i].Background = buttonBackgroud;

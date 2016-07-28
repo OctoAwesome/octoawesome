@@ -30,6 +30,11 @@ namespace OctoAwesome
         public const float FRICTION = 60f;
 
         /// <summary>
+        /// Gibt die Anzahl Tools in der Toolbar an.
+        /// </summary>
+        public const int TOOLCOUNT = 10;
+
+        /// <summary>
         /// Der Radius des Spielers in Blocks.
         /// </summary>
         public float Radius { get; set; }
@@ -85,6 +90,12 @@ namespace OctoAwesome
         public List<InventorySlot> Inventory { get; set; }
 
         /// <summary>
+        /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
+        /// </summary>
+        [XmlIgnore]
+        public InventorySlot[] Tools { get; set; }
+
+        /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
         public Player()
@@ -92,6 +103,7 @@ namespace OctoAwesome
             Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
             Velocity = new Vector3(0, 0, 0);
             Inventory = new List<InventorySlot>();
+            Tools = new InventorySlot[TOOLCOUNT];
             Radius = 0.75f;
             Angle = 0f;
             Height = 3.5f;
