@@ -50,13 +50,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="engenious">
-      <HintPath>..\packages\engenious.0.0.1.20\lib\net40\engenious.dll</HintPath>
+      <HintPath>..\packages\engenious.0.0.1.21\lib\net40\engenious.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\packages\engenious.0.0.1.20\lib\net40\OpenTK.dll</HintPath>
+      <HintPath>..\packages\engenious.0.0.1.21\lib\net40\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis">
-      <HintPath>..\packages\engenious.0.0.1.20\lib\net40\NVorbis.dll</HintPath>
+      <HintPath>..\packages\engenious.0.0.1.21\lib\net40\NVorbis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -235,7 +235,7 @@
     <Folder Include="Biomes\Noise\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\engenious.0.0.1.20\build\engenious.targets" Condition="Exists('..\packages\engenious.0.0.1.20\build\engenious.targets')" />
+  <Import Project="..\packages\engenious.0.0.1.21\build\engenious.targets" Condition="Exists('..\packages\engenious.0.0.1.21\build\engenious.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
