@@ -237,6 +237,15 @@ namespace OctoAwesome.Runtime
                             Amount = 0
                         };
                         Player.Inventory.Add(slot);
+
+                        for (int i = 0; i < Player.Tools.Length; i++)
+                        {
+                            if (Player.Tools[i] == null)
+                            {
+                                Player.Tools[i] = slot;
+                                break;
+                            }
+                        }
                     }
                     slot.Amount += 125;
                 }

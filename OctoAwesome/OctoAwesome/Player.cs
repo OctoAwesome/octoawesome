@@ -173,6 +173,7 @@ namespace OctoAwesome
             FlyMode = reader.ReadBoolean();
 
             // Inventory Limit
+            // TODO: Noch nicht persistiert
 
             // Inventory
             int inventoryCount = reader.ReadInt32();
