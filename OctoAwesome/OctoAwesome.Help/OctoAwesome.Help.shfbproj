@@ -54,10 +54,11 @@
 &amp;lt%3bp&amp;gt%3bDies ist die Dokumentation des stabilen &amp;lt%3bstrong&amp;gt%3bmaster-Branches&amp;lt%3b/strong&amp;gt%3b. Die Dokumentation des develop-Branches kann man unter &amp;lt%3ba href=&amp;quot%3bhttp://doc.octoawesome.net/develop&amp;quot%3b&amp;gt%3bdoc.octoawesome.net/develop&amp;lt%3b/a&amp;gt%3b finden. Feature-Branches werden nicht dokumentiert.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="False" />
-<NamespaceSummaryItem name="OctoAwesome" isDocumented="True">Der Hauptnamespace für alle Basisinterfaces und Basisklassen für alle Spielelemente.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="OctoAwesome.Runtime" isDocumented="True">Die Laufzeitumgebung des Spiels, die vom Client und vom Server referenziert wird.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="OctoAwesome.Noise" isDocumented="False" />
-<NamespaceSummaryItem name="OctoAwesome.Basics" isDocumented="True">Basiserweiterung für OctoAwesome, die durch verschiedene Schnittstellen erweiterbar ist.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="OctoAwesome" isDocumented="True">Der Hauptnamespace für alle Basisinterfaces und Basisklassen für alle Spielelemente.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="OctoAwesome.Runtime" isDocumented="True">Die Laufzeitumgebung des Spiels, die vom Client und vom Server referenziert wird.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="OctoAwesome.Noise" isDocumented="False" />
+      <NamespaceSummaryItem name="OctoAwesome.Basics" isDocumented="True">Basiserweiterung für OctoAwesome, die durch verschiedene Schnittstellen erweiterbar ist.</NamespaceSummaryItem>
+    </NamespaceSummaries>
     <FooterText>&amp;lt%3ba href=&amp;quot%3bhttp://wiki.octoawesome.net/wiki/Hauptseite&amp;quot%3b&amp;gt%3bProjektwebseite&amp;lt%3b/a&amp;gt%3b &amp;amp%3b#183%3b &amp;lt%3ba href=&amp;quot%3bhttp://wiki.octoawesome.net/wiki/Octoawesomewiki:Impressum&amp;quot%3b&amp;gt%3bImpressum&amp;lt%3b/a&amp;gt%3b &amp;amp%3b#183%3b Generiert am {%40BuildDate:dd\.MM\.yyyy}.</FooterText>
     <ApiFilter>
       <Filter entryType="Namespace" fullName="OctoAwesome.Basics" isExposed="False">
