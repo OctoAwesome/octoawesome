@@ -1,0 +1,14 @@
+﻿apiRules:
+- include:
+      uidRegex: ^OctoAwesome\.Basics\.TreeDefinition
+- include:
+      uidRegex: ^OctoAwesome\.Basics\.ITreeDefinition
+- include:
+      uidRegex: ^OctoAwesome\.Basics
+      type: Namespace
+- exclude:
+      uidRegex: ^OctoAwesome\.Basics
+- exclude:
+      uidRegex: ^OctoAwesome\.Noise
+#- exclude:
+#      uidRegex: ^System\.Object
