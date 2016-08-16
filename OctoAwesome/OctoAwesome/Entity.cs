@@ -22,15 +22,18 @@ namespace OctoAwesome
         /// <summary>
         /// Geschwindikeit der Entität als Vektor
         /// </summary>
-        [XmlIgnore]
         public Vector3 Velocity { get; set; }
 
         /// <summary>
         /// Kraft die von aussen auf die Entität wirkt.
         /// </summary>
-        [XmlIgnore]
         public Vector3 ExternalForce { get; set; }
 
+        /// <summary>
+        /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
+        /// </summary>
+        /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             // Position
@@ -46,9 +49,14 @@ namespace OctoAwesome
             writer.Write(Mass);
         }
 
+        /// <summary>
+        /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
+        /// </summary>
+        /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            // Pos
+            // Position
             int planet = reader.ReadInt32();
             int blockX = reader.ReadInt32();
             int blockY = reader.ReadInt32();
