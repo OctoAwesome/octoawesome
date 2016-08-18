@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using System.IO;
 using System.Linq;
 
@@ -60,7 +59,6 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt an, ob der Spieler an Boden ist
         /// </summary>
-        [XmlIgnore]
         public bool OnGround { get; set; }
 
         /// <summary>
@@ -80,15 +78,12 @@ namespace OctoAwesome
 
         /// <summary>
         /// Das Inventar des Spielers.
-        /// TODO: Persistieren...
         /// </summary>
-        [XmlIgnore]
         public List<InventorySlot> Inventory { get; set; }
 
         /// <summary>
         /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
         /// </summary>
-        [XmlIgnore]
         public InventorySlot[] Tools { get; set; }
 
         /// <summary>
@@ -108,6 +103,11 @@ namespace OctoAwesome
             InventoryLimit = 1000;
         }
 
+        /// <summary>
+        /// Serialisiert den Player mit dem angegebenen BinaryWriter.
+        /// </summary>
+        /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             // Entity
@@ -152,6 +152,11 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Deserialisiert den Player aus dem angegebenen BinaryReader.
+        /// </summary>
+        /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             // Entity
