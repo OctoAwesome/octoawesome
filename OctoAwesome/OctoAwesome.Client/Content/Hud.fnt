@@ -102,7 +102,7 @@ char id=-99 x=75 y=41 width=8 height=10 xoffset=1 yoffset=4 xadvance=10 page=0 c
 char id=-95 x=84 y=41 width=2 height=10 xoffset=3 yoffset=7 xadvance=10 page=0 chnl=0 letter="¡"
 char id=-101 x=87 y=41 width=8 height=10 xoffset=1 yoffset=4 xadvance=10 page=0 chnl=0 letter="?"
 char id=-108 x=96 y=41 width=8 height=10 xoffset=1 yoffset=4 xadvance=10 page=0 chnl=0 letter="?"
-char id=-10 x=105 y=41 width=8 height=10 xoffset=1 yoffset=5 xadvance=10 page=0 chnl=0 letter="ö"
+char id=-10 x=105 y=41 width=8 height=10 xoffset=1 yoffset=6 xadvance=10 page=0 chnl=0 letter="ö"
 char id=-17 x=114 y=41 width=7 height=10 xoffset=1 yoffset=5 xadvance=10 page=0 chnl=0 letter="ï"
 char id=-21 x=122 y=41 width=8 height=10 xoffset=1 yoffset=5 xadvance=10 page=0 chnl=0 letter="ë"
 char id=-48 x=131 y=41 width=9 height=10 xoffset=1 yoffset=5 xadvance=10 page=0 chnl=0 letter="Ð"
