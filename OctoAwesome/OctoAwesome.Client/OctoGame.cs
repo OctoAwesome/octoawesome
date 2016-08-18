@@ -45,6 +45,7 @@ namespace OctoAwesome.Client
             //Content.RootDirectory = "Content";
             Title = "OctoAwesome";
             IsMouseVisible = true;
+            Icon = Properties.Resources.octoawesome;
 
             //Window.AllowUserResizing = true;
 
