@@ -17,9 +17,9 @@ namespace OctoAwesome.Client.Controls
         /// <summary>
         /// Gibt den aktuell selektierten Slot an.
         /// </summary>
-        public InventorySlot Hovered { get; private set; }
+        public InventorySlot HoveredSlot { get; private set; }
 
-        public InventoryControl(ScreenComponent manager) : base(manager)
+        public InventoryControl(ScreenComponent manager, int columns = COLUMNS) : base(manager)
         {
             Label headLine = new Label(manager);
             headLine.Text = Languages.OctoClient.Inventory;
@@ -27,13 +27,6 @@ namespace OctoAwesome.Client.Controls
             headLine.HorizontalAlignment = HorizontalAlignment.Left;
             headLine.VerticalAlignment = VerticalAlignment.Top;
             Controls.Add(headLine);
-
-            Label infoLabel = new Label(manager)
-            {
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Top,
-            };
-            Controls.Add(infoLabel);
 
             ScrollContainer scroll = new ScrollContainer(manager)
             {
@@ -68,14 +61,14 @@ namespace OctoAwesome.Client.Controls
                 }
 
                 var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-                image.MouseEnter += (s, e) => { Hovered = item; infoLabel.Text = item.Definition.Name; };
-                image.MouseLeave += (s, e) => { Hovered = null; infoLabel.Text = string.Empty; };
+                image.MouseEnter += (s, e) => { HoveredSlot = item; };
+                image.MouseLeave += (s, e) => { HoveredSlot = null; };
                 var label = new Label(manager) { Text = item.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
                 grid.AddControl(image, column, row);
                 grid.AddControl(label, column, row);
 
                 column++;
-                if (column >= COLUMNS)
+                if (column >= columns)
                 {
                     row++;
                     column = 0;

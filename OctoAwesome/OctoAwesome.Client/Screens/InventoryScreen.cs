@@ -14,6 +14,12 @@ namespace OctoAwesome.Client.Screens
 
         private InventoryControl inventory;
 
+        private Label nameLabel;
+
+        private Label massLabel;
+
+        private Label volumeLabel;
+
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
             player = manager.Player;
@@ -22,24 +28,47 @@ namespace OctoAwesome.Client.Screens
 
             Texture2D panelBackground = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
 
+            Grid grid = new Grid(manager)
+            {
+                Width = 800,
+                Height = 400,
+            };
+
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 600 });
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 200 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 400 });
+
+            Controls.Add(grid);
+
             inventory = new InventoryControl(manager)
             {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Width = 600,
-                Height = 400,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = Border.All(20),
             };
 
-            Controls.Add(inventory);
+            grid.AddControl(inventory, 0, 0);
+
+            StackPanel infoPanel = new StackPanel(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+                Padding = Border.All(20),
+                Margin = Border.All(10, 0, 0, 0),
+            };
+
+            nameLabel = new Label(manager);
+            infoPanel.Controls.Add(nameLabel);
+            massLabel = new Label(manager);
+            infoPanel.Controls.Add(massLabel);
+            volumeLabel = new Label(manager);
+            infoPanel.Controls.Add(volumeLabel);
+
+            grid.AddControl(infoPanel, 1, 0);
 
             Title = Languages.OctoClient.Inventory;
-        }
-
-        private void Image_MouseEnter(Control sender, MouseEventArgs args)
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override void OnKeyDown(KeyEventArgs args)
@@ -73,11 +102,20 @@ namespace OctoAwesome.Client.Screens
             // Alle Slots entfernen die das selbe Tool enthalten
             for (int i = 0; i < player.ActorHost.Player.Tools.Length; i++)
             {
-                if (player.ActorHost.Player.Tools[i] == inventory.Hovered)
+                if (player.ActorHost.Player.Tools[i] == inventory.HoveredSlot)
                     player.ActorHost.Player.Tools[i] = null;
             }
 
-            player.ActorHost.Player.Tools[slot] = inventory.Hovered;
+            player.ActorHost.Player.Tools[slot] = inventory.HoveredSlot;
+        }
+
+        protected override void OnUpdate(GameTime gameTime)
+        {
+            base.OnUpdate(gameTime);
+
+            nameLabel.Text = inventory.HoveredSlot != null ? inventory.HoveredSlot.Definition.Name : string.Empty;
+            massLabel.Text = inventory.HoveredSlot != null ? inventory.HoveredSlot.Amount.ToString() : string.Empty;
+            volumeLabel.Text = inventory.HoveredSlot != null ? inventory.HoveredSlot.Amount.ToString() : string.Empty;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)
