@@ -88,14 +88,14 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="engenious">
-      <HintPath>..\packages\engenious.0.0.1.21\lib\net40\engenious.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\packages\engenious.0.0.1.21\lib\net40\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\packages\engenious.0.0.1.21\lib\net40\NVorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="engenious">
+      <HintPath>..\libs\engenious.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

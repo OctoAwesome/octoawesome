@@ -22,7 +22,7 @@ namespace OctoAwesome.Client.Components
         private bool loaded = false;
 
         private VertexBuffer vb;
-        private IndexBuffer ib;
+        private static IndexBuffer ib;
         private int vertexCount;
         private int indexCount;
         private int lastReset;
@@ -40,6 +40,7 @@ namespace OctoAwesome.Client.Components
             this.lastReset = -1;
 
             simple = simpleShader;
+            GenerateIndexBuffer();
         }
 
         public void SetChunk(ILocalChunkCache manager, int x, int y, int z)
@@ -101,7 +102,27 @@ namespace OctoAwesome.Client.Components
                 }
             }
         }
+        private object ibLock = new object();
+        public void GenerateIndexBuffer()
+        {
+            lock(ibLock){
+                if (ib != null)
+                    return;
+                ib = new IndexBuffer(graphicsDevice,DrawElementsType.UnsignedInt,Chunk.CHUNKSIZE_X*Chunk.CHUNKSIZE_Y*Chunk.CHUNKSIZE_Z*6*6);
+                List<int> indices = new List<int>(ib.IndexCount);
+                for (int i=0;i<ib.IndexCount*2/3;i+=4){
+                    indices.Add(i + 0);
+                    indices.Add(i + 1);
+                    indices.Add(i + 3);
 
+                    indices.Add(i + 0);
+                    indices.Add(i + 3);
+                    indices.Add(i + 2);
+                }
+                ib.SetData(indices.ToArray());
+            }
+
+        }
         public void RegenerateVertexBuffer()
         {
             if (!ChunkPosition.HasValue)
@@ -330,16 +351,16 @@ namespace OctoAwesome.Client.Components
                     if (vb == null || ib == null)
                     {
                         vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);
-                        ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
+                        //ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
                     }
                     if (vertexCount+2 > vb.VertexCount)
                         vb.Resize(vertexCount+2);
                     //vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
                     vb.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
 
-                    if (indexCount > ib.IndexCount)
-                        ib.Resize(indexCount);
-                    ib.SetData<int>(index.ToArray());
+                    //if (indexCount > ib.IndexCount)
+                    //    ib.Resize(indexCount);
+                    //ib.SetData<int>(index.ToArray());
                 }
                 catch (Exception) { }
             }
@@ -360,11 +381,11 @@ namespace OctoAwesome.Client.Components
                 vb = null;
             }
 
-            if (ib != null)
-            {
-                ib.Dispose();
-                ib = null;
-            }
+            //if (ib != null)
+            //{
+            //    ib.Dispose();
+            //    ib = null;
+            //}
         }
     }
 }
