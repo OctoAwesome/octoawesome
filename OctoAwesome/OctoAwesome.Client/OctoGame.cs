@@ -41,8 +41,28 @@ namespace OctoAwesome.Client
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1080;
-            graphics.PreferredBackBufferHeight = 720;
+
+            int width;
+            if (int.TryParse(SettingsManager.Get("Width"), out width))
+            {
+                if (width < 1)
+                    throw new NotSupportedException("Width in app.config darf nicht kleiner 1 sein");
+
+                graphics.PreferredBackBufferWidth = width;
+            }
+            else
+                graphics.PreferredBackBufferWidth = 1080;
+
+            int height;
+            if (int.TryParse(SettingsManager.Get("Height"), out height))
+            {
+                if (height < 1)
+                    throw new NotSupportedException("Height in app.config darf nicht kleiner 1 sein");
+
+                graphics.PreferredBackBufferHeight = height;
+            }
+            else
+                graphics.PreferredBackBufferHeight = 720;
 
             Content.RootDirectory = "Content";
             Window.Title = "OctoAwesome";
@@ -50,6 +70,10 @@ namespace OctoAwesome.Client
             Window.AllowUserResizing = true;
 
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
+
+            bool enablefullscreen;
+            if (bool.TryParse(SettingsManager.Get("EnableFullscreen"), out enablefullscreen) && enablefullscreen)
+                Fullscreen();
 
             int viewrange;
             if (int.TryParse(SettingsManager.Get("Viewrange"), out viewrange))
@@ -165,33 +189,7 @@ namespace OctoAwesome.Client
             KeyMapper.AddAction("octoawesome:fullscreen", type =>
             {
                 if (type == KeyMapper.KeyType.Down)
-                {
-                    if (!fullscreen)
-                    {
-                        oldHeight = Window.ClientBounds.Height;
-                        oldWidth = Window.ClientBounds.Width;
-                        oldPositon = Window.Position;
-                        var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                        var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-
-                        Window.Position = new Point(0, 0);
-                        Window.IsBorderless = true;
-
-                        graphics.PreferredBackBufferWidth = screenWidth;
-                        graphics.PreferredBackBufferHeight = screenHeight;
-                        fullscreen = true;
-                    }
-                    else
-                    {
-                        Window.Position = oldPositon;
-                        Window.IsBorderless = false;
-                        graphics.PreferredBackBufferHeight = oldHeight;
-                        graphics.PreferredBackBufferWidth = oldWidth;                        
-                        fullscreen = false;
-                    }
-
-                    graphics.ApplyChanges();
-                }
+                    Fullscreen();
             });
         }
 
@@ -201,6 +199,35 @@ namespace OctoAwesome.Client
             Simulation.ExitGame();
 
             base.OnExiting(sender, args);
+        }
+
+        private void Fullscreen()
+        {
+            if (!fullscreen)
+            {
+                oldHeight = Window.ClientBounds.Height;
+                oldWidth = Window.ClientBounds.Width;
+                oldPositon = Window.Position;
+                var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+
+                Window.Position = new Point(0, 0);
+                Window.IsBorderless = true;
+
+                graphics.PreferredBackBufferWidth = screenWidth;
+                graphics.PreferredBackBufferHeight = screenHeight;
+                fullscreen = true;
+            }
+            else
+            {
+                Window.Position = oldPositon;
+                Window.IsBorderless = false;
+                graphics.PreferredBackBufferHeight = oldHeight;
+                graphics.PreferredBackBufferWidth = oldWidth;
+                fullscreen = false;
+            }
+
+            graphics.ApplyChanges();
         }
     }
 }
