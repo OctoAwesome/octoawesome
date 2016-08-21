@@ -15,6 +15,7 @@ namespace OctoAwesome.Client.Screens
 
         Button deleteButton, createButton, playButton;
         Grid mainStack;
+        Listbox<IUniverse> levelList;
 
         public LoadScreen(ScreenComponent manager) : base(manager)
         {
@@ -38,7 +39,7 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(mainStack);
 
             //Level Stack
-            Listbox<IUniverse> levelList = new Listbox<IUniverse>(manager);
+            levelList = new Listbox<IUniverse>(manager);
             levelList.Background = new BorderBrush(Color.White * 0.5f);
             levelList.VerticalAlignment = VerticalAlignment.Stretch;
             levelList.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -119,11 +120,7 @@ namespace OctoAwesome.Client.Screens
                     return;
                 }
 
-                manager.Player.RemovePlayer();
-                manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
-                SettingsManager.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
-                manager.Game.Player.InsertPlayer();
-                manager.NavigateToScreen(new GameScreen(manager));
+                Play();
             };
             buttonStack.Controls.Add(playButton);
 
@@ -146,6 +143,28 @@ namespace OctoAwesome.Client.Screens
             Button button = Button.TextButton(Manager, title);
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
             return button;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs args)
+        {
+            if (args.Key == Microsoft.Xna.Framework.Input.Keys.Enter)
+            {
+                if (levelList.SelectedItem == null)
+                    return;
+
+                Play();
+
+                base.OnKeyDown(args);
+            }
+        }
+
+        private void Play()
+        {
+            Manager.Player.RemovePlayer();
+            Manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
+            SettingsManager.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
+            Manager.Game.Player.InsertPlayer();
+            Manager.NavigateToScreen(new GameScreen(Manager));
         }
     }
 }
