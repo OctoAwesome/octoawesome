@@ -31,12 +31,13 @@ namespace OctoAwesome.Client.Screens
             Grid grid = new Grid(manager)
             {
                 Width = 800,
-                Height = 400,
+                Height = 500,
             };
 
             grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 600 });
             grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 200 });
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 400 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 100 });
 
             Controls.Add(grid);
 
@@ -65,9 +66,17 @@ namespace OctoAwesome.Client.Screens
             infoPanel.Controls.Add(massLabel);
             volumeLabel = new Label(manager);
             infoPanel.Controls.Add(volumeLabel);
-
             grid.AddControl(infoPanel, 1, 0);
 
+            ToolbarControl toolbar = new ToolbarControl(manager)
+            {
+                Height = 100,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+            };
+
+            grid.AddControl(toolbar, 0, 1, 2);
             Title = Languages.OctoClient.Inventory;
         }
 
