@@ -32,6 +32,8 @@ namespace OctoAwesome.Client
 
         public KeyMapper KeyMapper { get; private set; }
 
+        public AssetComponent Assets { get; private set; }
+
         // Fullscreen
         private int oldHeight, oldWidth;
         Point oldPositon;
@@ -83,6 +85,9 @@ namespace OctoAwesome.Client
 
                 SceneControl.VIEWRANGE = viewrange;
             }
+
+            Assets = new AssetComponent(this);
+            Components.Add(Assets);
 
             Simulation = new SimulationComponent(this);
             Simulation.UpdateOrder = 4;
