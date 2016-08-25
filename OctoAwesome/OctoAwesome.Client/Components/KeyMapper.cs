@@ -17,7 +17,7 @@ namespace OctoAwesome.Client.Components
             
             public Dictionary<string, Binding> Bindings { get {return bindings;} } 
 
-            public KeyMapper(IScreenManager manager)
+            public KeyMapper(BaseScreenComponent manager)
             {
                 manager.KeyDown += KeyDown;
                 manager.KeyUp += KeyUp;

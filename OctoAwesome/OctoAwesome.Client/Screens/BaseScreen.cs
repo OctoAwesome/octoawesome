@@ -11,7 +11,7 @@ namespace OctoAwesome.Client.Screens
     {
         protected Button BackButton;
 
-        public BaseScreen(IScreenManager manager) : base(manager)
+        public BaseScreen(BaseScreenComponent manager) : base(manager)
         {            
         }
 
