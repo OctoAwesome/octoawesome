@@ -254,7 +254,7 @@ namespace OctoAwesome.Runtime
                 }
                 catch (Exception)
                 {
-                    File.Delete(file);
+                    // File.Delete(file);
                 }
             }
 
