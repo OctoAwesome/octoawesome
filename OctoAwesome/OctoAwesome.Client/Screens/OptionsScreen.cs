@@ -75,7 +75,7 @@ namespace OctoAwesome.Client.Screens
             StackPanel persistenceStack = new StackPanel(manager)
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Border(0, 10, 0, 0)
+                Margin = new Border(0, 20, 0, 0)
             };
             settingsStack.Controls.Add(persistenceStack);
 
@@ -97,7 +97,7 @@ namespace OctoAwesome.Client.Screens
             StackPanel mapPathStack = new StackPanel(manager)
             {
                 Orientation = Orientation.Vertical,
-                Margin = new Border(0, 30, 0, 0),
+                Margin = new Border(0, 20, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
             settingsStack.Controls.Add(mapPathStack);
@@ -113,19 +113,75 @@ namespace OctoAwesome.Client.Screens
 
             Button changePath = Button.TextButton(manager, Languages.OctoClient.ChangePath);
             changePath.HorizontalAlignment = HorizontalAlignment.Center;
-            changePath.Height = 40;
+            changePath.Height = 40;            
             changePath.LeftMouseClick += (s, e) => ChangePath();
             mapPathStack.Controls.Add(changePath);
 
-            ////////////////////////////////////////////Restart Button////////////////////////////////////////////
-            exitButton = Button.TextButton(manager, Languages.OctoClient.RestartGameToApplyChanges);
-            exitButton.VerticalAlignment = VerticalAlignment.Top;
-            exitButton.HorizontalAlignment = HorizontalAlignment.Right;
-            exitButton.Enabled = false;
-            exitButton.Visible = false;
-            exitButton.LeftMouseClick += (s, e) => Program.Restart();
-            exitButton.Margin = new Border(10, 10, 10, 10);
-            Controls.Add(exitButton);
+            //////////////////////Fullscreen//////////////////////
+            StackPanel fullscreenStack = new StackPanel(manager)
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Border(0, 20, 0, 0)
+            };
+            settingsStack.Controls.Add(fullscreenStack);
+
+            Label fullscreenTitle = new Label(manager)
+            {
+                Text = Languages.OctoClient.EnableFullscreenOnStartup + ":"
+            };
+            fullscreenStack.Controls.Add(fullscreenTitle);
+
+            Checkbox enableFullscreen = new Checkbox(manager)
+            {
+                Checked = bool.Parse(SettingsManager.Get("EnableFullscreen")),
+                HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
+            };
+            enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
+            fullscreenStack.Controls.Add(enableFullscreen);
+
+            //////////////////////Auflösung//////////////////////
+            StackPanel resolutionStack = new StackPanel(manager)
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Border(0, 20, 0, 0)
+            };
+            settingsStack.Controls.Add(resolutionStack);
+
+            Label resolutionTitle = new Label(manager)
+            {
+                Text = Languages.OctoClient.Resolution + ":"
+            };
+            resolutionStack.Controls.Add(resolutionTitle);
+
+            Textbox resolutionWidthTextbox = new Textbox(manager)
+            {
+                Text = SettingsManager.Get("Width"),
+                Width = 50,
+                Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
+            };
+            resolutionWidthTextbox.TextChanged += ResolutionWidthTextbox_TextChanged;
+            resolutionStack.Controls.Add(resolutionWidthTextbox);
+
+            Label xLabel = new Label(manager)
+            {
+                Text = "x"
+            };
+            resolutionStack.Controls.Add(xLabel);
+
+            Textbox resolutionHeightTextbox = new Textbox(manager)
+            {
+                Text = SettingsManager.Get("Height"),
+                Width = 50,
+                Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
+            };
+            resolutionHeightTextbox.TextChanged += ResolutionHeightTextbox_TextChanged;
+            resolutionStack.Controls.Add(resolutionHeightTextbox);
+
+            Label pxLabel = new Label(manager)
+            {
+                Text = Languages.OctoClient.Pixels
+            };
+            resolutionStack.Controls.Add(pxLabel);
 
             #endregion
 
@@ -178,6 +234,32 @@ namespace OctoAwesome.Client.Screens
             }
 
             #endregion
+
+            ////////////////////////////////////////////Restart Button////////////////////////////////////////////
+            exitButton = Button.TextButton(manager, Languages.OctoClient.RestartGameToApplyChanges);
+            exitButton.VerticalAlignment = VerticalAlignment.Top;
+            exitButton.HorizontalAlignment = HorizontalAlignment.Right;
+            exitButton.Enabled = false;
+            exitButton.Visible = false;
+            exitButton.LeftMouseClick += (s, e) => Program.Restart();
+            exitButton.Margin = new Border(10, 10, 10, 10);
+            Controls.Add(exitButton);
+        }
+
+        private void ResolutionWidthTextbox_TextChanged(Control sender, PropertyEventArgs<string> args)
+        {
+            SettingsManager.Set("Width", args.NewValue);
+
+            exitButton.Visible = true;
+            exitButton.Enabled = true;
+        }
+
+        private void ResolutionHeightTextbox_TextChanged(Control sender, PropertyEventArgs<string> args)
+        {
+            SettingsManager.Set("Height", args.NewValue);
+
+            exitButton.Visible = true;
+            exitButton.Enabled = true;
         }
 
         private void BindingKeyLabel_LeftMouseClick(Control sender, MouseEventArgs args)
@@ -220,7 +302,7 @@ namespace OctoAwesome.Client.Screens
             {
                 string path = folderBrowser.SelectedPath;
                 SettingsManager.Set("ChunkRoot", path);
-                mapPath.Text = path;                
+                mapPath.Text = path;
 
                 exitButton.Visible = true;
                 exitButton.Enabled = true;
@@ -230,6 +312,14 @@ namespace OctoAwesome.Client.Screens
         private void SetPersistence(bool state)
         {
             SettingsManager.Set("DisablePersistence", state.ToString());
+
+            exitButton.Visible = true;
+            exitButton.Enabled = true;
+        }
+
+        private void SetFullscreen(bool state)
+        {
+            SettingsManager.Set("EnableFullscreen", state.ToString());
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
