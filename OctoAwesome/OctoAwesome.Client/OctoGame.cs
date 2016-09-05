@@ -119,36 +119,36 @@ namespace OctoAwesome.Client
 
         private void SetKeyBindings()
         {
-            KeyMapper.RegisterBinding("octoawesome:forward", "Move Forward");
-            KeyMapper.RegisterBinding("octoawesome:left", "Move Left");
-            KeyMapper.RegisterBinding("octoawesome:backward", "Move Backward");
-            KeyMapper.RegisterBinding("octoawesome:right", "Move Right");
-            KeyMapper.RegisterBinding("octoawesome:headup", "Head Up");
-            KeyMapper.RegisterBinding("octoawesome:headdown", "Head Down");
-            KeyMapper.RegisterBinding("octoawesome:headleft", "Head Left");
-            KeyMapper.RegisterBinding("octoawesome:headright", "Head Right");
-            KeyMapper.RegisterBinding("octoawesome:interact", "Interact");
-            KeyMapper.RegisterBinding("octoawesome:apply", "Apply");
-            KeyMapper.RegisterBinding("octoawesome:flymode", "Flymode");
-            KeyMapper.RegisterBinding("octoawesome:jump", "Jump");
-            KeyMapper.RegisterBinding("octoawesome:slot0", "Inventory Slot 0");
-            KeyMapper.RegisterBinding("octoawesome:slot1", "Inventory Slot 1");
-            KeyMapper.RegisterBinding("octoawesome:slot2", "Inventory Slot 2");
-            KeyMapper.RegisterBinding("octoawesome:slot3", "Inventory Slot 3");
-            KeyMapper.RegisterBinding("octoawesome:slot4", "Inventory Slot 4");
-            KeyMapper.RegisterBinding("octoawesome:slot5", "Inventory Slot 5");
-            KeyMapper.RegisterBinding("octoawesome:slot6", "Inventory Slot 6");
-            KeyMapper.RegisterBinding("octoawesome:slot7", "Inventory Slot 7");
-            KeyMapper.RegisterBinding("octoawesome:slot8", "Inventory Slot 8");
-            KeyMapper.RegisterBinding("octoawesome:slot9", "Inventory Slot 9");
-            KeyMapper.RegisterBinding("octoawesome:debug.allblocks", "DEBUG: All Blocktypes in Inventory");
-            KeyMapper.RegisterBinding("octoawesome:debug.control", "DEBUG: Show/Hide Debug Control");
-            KeyMapper.RegisterBinding("octoawesome:inventory", "Inventory");
-            KeyMapper.RegisterBinding("octoawesome:hidecontrols", "Hide all Controls");
-            KeyMapper.RegisterBinding("octoawesome:exit", "Exit");
-            KeyMapper.RegisterBinding("octoawesome:freemouse", "Free/Capture Mouse");
-            KeyMapper.RegisterBinding("octoawesome:fullscreen", "Toggle Full Screen Mode");
-            KeyMapper.RegisterBinding("octoawesome:teleport", "Teleport");
+            KeyMapper.RegisterBinding("octoawesome:forward", Languages.OctoKeys.forward);
+            KeyMapper.RegisterBinding("octoawesome:left", Languages.OctoKeys.left);
+            KeyMapper.RegisterBinding("octoawesome:backward", Languages.OctoKeys.backward);
+            KeyMapper.RegisterBinding("octoawesome:right", Languages.OctoKeys.right);
+            KeyMapper.RegisterBinding("octoawesome:headup", Languages.OctoKeys.headup);
+            KeyMapper.RegisterBinding("octoawesome:headdown", Languages.OctoKeys.headdown);
+            KeyMapper.RegisterBinding("octoawesome:headleft", Languages.OctoKeys.headleft);
+            KeyMapper.RegisterBinding("octoawesome:headright", Languages.OctoKeys.headright);
+            KeyMapper.RegisterBinding("octoawesome:interact", Languages.OctoKeys.interact);
+            KeyMapper.RegisterBinding("octoawesome:apply", Languages.OctoKeys.apply);
+            KeyMapper.RegisterBinding("octoawesome:flymode", Languages.OctoKeys.flymode);
+            KeyMapper.RegisterBinding("octoawesome:jump", Languages.OctoKeys.jump);
+            KeyMapper.RegisterBinding("octoawesome:slot0", Languages.OctoKeys.slot0);
+            KeyMapper.RegisterBinding("octoawesome:slot1", Languages.OctoKeys.slot1);
+            KeyMapper.RegisterBinding("octoawesome:slot2", Languages.OctoKeys.slot2);
+            KeyMapper.RegisterBinding("octoawesome:slot3", Languages.OctoKeys.slot3);
+            KeyMapper.RegisterBinding("octoawesome:slot4", Languages.OctoKeys.slot4);
+            KeyMapper.RegisterBinding("octoawesome:slot5", Languages.OctoKeys.slot5);
+            KeyMapper.RegisterBinding("octoawesome:slot6", Languages.OctoKeys.slot6);
+            KeyMapper.RegisterBinding("octoawesome:slot7", Languages.OctoKeys.slot7);
+            KeyMapper.RegisterBinding("octoawesome:slot8", Languages.OctoKeys.slot8);
+            KeyMapper.RegisterBinding("octoawesome:slot9", Languages.OctoKeys.slot9);
+            KeyMapper.RegisterBinding("octoawesome:debug.allblocks", Languages.OctoKeys.debug_allblocks);
+            KeyMapper.RegisterBinding("octoawesome:debug.control", Languages.OctoKeys.debug_control);
+            KeyMapper.RegisterBinding("octoawesome:inventory", Languages.OctoKeys.inventory);
+            KeyMapper.RegisterBinding("octoawesome:hidecontrols", Languages.OctoKeys.hidecontrols);
+            KeyMapper.RegisterBinding("octoawesome:exit", Languages.OctoKeys.exit);
+            KeyMapper.RegisterBinding("octoawesome:freemouse", Languages.OctoKeys.freemouse);
+            KeyMapper.RegisterBinding("octoawesome:fullscreen", Languages.OctoKeys.fullscreen);
+            KeyMapper.RegisterBinding("octoawesome:teleport", Languages.OctoKeys.teleport);
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {

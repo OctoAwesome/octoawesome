@@ -38,7 +38,7 @@ namespace OctoAwesome.Client.Screens
 
             #region OptionsPage
 
-            TabPage optionsPage = new TabPage(manager, "Options");
+            TabPage optionsPage = new TabPage(manager, Languages.OctoClient.Options);
             tabs.Pages.Add(optionsPage);
 
             ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
@@ -187,7 +187,7 @@ namespace OctoAwesome.Client.Screens
 
             #region BindingsPage
 
-            TabPage bindingsPage = new TabPage(manager, "Bindings");
+            TabPage bindingsPage = new TabPage(manager, Languages.OctoClient.KeyBindings);
             tabs.Pages.Add(bindingsPage);
 
             ScrollContainer bindingsScroll = new ScrollContainer(manager);
