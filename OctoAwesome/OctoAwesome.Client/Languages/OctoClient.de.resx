@@ -234,4 +234,7 @@
   <data name="Pixels" xml:space="preserve">
     <value>Pixel</value>
   </data>
+  <data name="KeyBindings" xml:space="preserve">
+    <value>Tastaturbelegung</value>
+  </data>
 </root>
