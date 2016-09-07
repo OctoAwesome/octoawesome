@@ -16,7 +16,7 @@ namespace OctoAwesome
         /// <summary>
         /// Icon für die Toolbar
         /// </summary>
-        public abstract Bitmap Icon { get; }
+        public abstract string Icon { get; }
 
         /// <summary>
         /// Die maximale Stackgrösse

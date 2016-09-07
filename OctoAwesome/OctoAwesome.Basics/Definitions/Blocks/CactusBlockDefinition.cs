@@ -4,13 +4,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public class CactusBlockDefinition : BlockDefinition
     {
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return Textures[0]; }
+            get { return "cactus_inside"; }
         }
 
         public override string Name

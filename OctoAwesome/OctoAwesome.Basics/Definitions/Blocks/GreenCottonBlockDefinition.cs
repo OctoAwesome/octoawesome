@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class GreenCottonBlockDefinition : BlockDefinition
     {
@@ -10,9 +10,9 @@ namespace OctoAwesome.Basics
             get { return Languages.OctoBasics.GreenCotton; }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/cotton_green.png"); }
+            get { return "cotton_green"; }
         }
 
 

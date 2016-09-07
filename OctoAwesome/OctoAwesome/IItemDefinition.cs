@@ -16,7 +16,7 @@ namespace OctoAwesome
         /// <summary>
         /// Bild, das das Item repräsentiert
         /// </summary>
-        Bitmap Icon { get; }
+        string Icon { get; }
 
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.

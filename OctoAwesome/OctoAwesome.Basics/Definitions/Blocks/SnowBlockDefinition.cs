@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public class SnowBlockDefinition : BlockDefinition
     {
@@ -16,11 +16,11 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
             get
             {
-                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"); 
+                return "snow"; 
             }
         }
 

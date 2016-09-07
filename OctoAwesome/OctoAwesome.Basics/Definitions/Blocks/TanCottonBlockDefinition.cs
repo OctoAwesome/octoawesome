@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class TanCottonBlockDefinition : BlockDefinition
     {
@@ -10,9 +10,9 @@ namespace OctoAwesome.Basics
             get { return Languages.OctoBasics.TanCotton; }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/cotton_tan.png"); }
+            get { return "cotton_tan"; }
         }
 
 

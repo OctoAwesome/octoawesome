@@ -110,6 +110,7 @@
     <Content Include="Assets\OctoAwesome.Client\compass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Assets\OctoAwesome.Client\FallbackTexture.png" />
     <Content Include="Assets\OctoAwesome.Client\octocross.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
