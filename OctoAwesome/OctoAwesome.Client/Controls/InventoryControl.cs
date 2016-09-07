@@ -44,14 +44,6 @@ namespace OctoAwesome.Client.Controls
             foreach (var item in manager.Game.Player.ActorHost.Player.Inventory)
             {
                 Texture2D texture = manager.Game.Assets.LoadTexture(item.Definition.GetType(), item.Definition.Icon);
-                //using (MemoryStream stream = new MemoryStream())
-                //{
-                //    System.Drawing.Bitmap bitmap = item.Definition.Icon;
-                //    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                //    stream.Seek(0, SeekOrigin.Begin);
-
-                //    texture = Texture2D.FromStream(ScreenManager.GraphicsDevice, stream);
-                //}
 
                 var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
                 image.MouseEnter += (s, e) => { HoveredSlot = item; };

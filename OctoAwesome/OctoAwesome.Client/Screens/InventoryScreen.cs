@@ -36,14 +36,6 @@ namespace OctoAwesome.Client.Screens
             {
                 Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
-                //using (MemoryStream stream = new MemoryStream())
-                //{
-                //    System.Drawing.Bitmap bitmap = item.Icon;
-                //    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                //    stream.Seek(0, SeekOrigin.Begin);
-
-                //    toolTextures.Add(item.GetType().FullName, Texture2D.FromStream(ScreenManager.GraphicsDevice, stream));
-                //}
             }
 
             player = manager.Player;
