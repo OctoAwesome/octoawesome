@@ -21,13 +21,13 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData { get { return true; } }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/birch_wood_top.png"),
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/birch_wood_side.png") };
+                "birch_wood_top",
+                "birch_wood_side" };
             }
         }
 

@@ -15,16 +15,16 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             get { return "grass_top"; }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 
 
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_grass.png"),
+                    "grass_top",
+                    "dirt",
+                    "dirt_grass",
                 };
             }
         }

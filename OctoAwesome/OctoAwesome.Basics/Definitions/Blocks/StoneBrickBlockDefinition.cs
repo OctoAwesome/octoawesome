@@ -16,12 +16,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/brick_grey.png"),
+                    "brick_grey",
                 };
             }
         }

@@ -24,14 +24,14 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_snow.png"),
+                    "snow",
+                    "dirt",
+                    "dirt_snow",
                 };
             }
         }

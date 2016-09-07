@@ -64,7 +64,12 @@ namespace OctoAwesome.Client.Controls
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.Instance.GetBlockDefinitions();
             foreach (var definition in definitions)
-                bitmaps.AddRange(definition.Textures);
+            {
+                foreach (var texture in definition.Textures)
+                {
+                    bitmaps.Add(manager.Game.Assets.LoadBitmap(definition.GetType(), texture));
+                }
+            }
 
             int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
             Bitmap blocks = new Bitmap(size * TEXTURESIZE, size * TEXTURESIZE);

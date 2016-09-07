@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,9 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class AssetComponent : DrawableGameComponent
     {
-        Dictionary<string, Texture2D> cache;
+        Dictionary<string, Texture2D> textures;
+
+        Dictionary<string, Bitmap> bitmaps;
 
         string[] textureTypes = new string[] { "png", "jpg", "jpeg", "bmp" };
 
@@ -21,16 +24,27 @@ namespace OctoAwesome.Client.Components
         /// <summary>
         /// Gibt die Anzahl geladener Texturen zurück.
         /// </summary>
-        public int LoadedTextures { get { return cache.Count; } }
+        public int LoadedTextures { get { return textures.Count + bitmaps.Count; } }
 
         public AssetComponent(OctoGame game) : base(game)
         {
-            cache = new Dictionary<string, Texture2D>();
+            textures = new Dictionary<string, Texture2D>();
+            bitmaps = new Dictionary<string, Bitmap>();
             resourcePacks.Add("PetersTexturePack");
             resourcePacks.Add("Toms Tolle Texturen");
         }
 
         public Texture2D LoadTexture(Type baseType, string key)
+        {
+            return Load(baseType, key, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
+        }
+
+        public Bitmap LoadBitmap(Type baseType, string key)
+        {
+            return Load(baseType, key, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
+        }
+
+        private T Load<T>(Type baseType, string key, Dictionary<string, T> cache, Func<Stream, T> callback)
         {
             if (baseType == null)
                 throw new ArgumentNullException();
@@ -47,7 +61,7 @@ namespace OctoAwesome.Client.Components
                 Replace('.', Path.DirectorySeparatorChar);
 
             // Cache fragen
-            Texture2D result = null;
+            T result = default(T);
             if (cache.TryGetValue(fullkey, out result))
                 return result;
 
@@ -63,7 +77,7 @@ namespace OctoAwesome.Client.Components
                     {
                         using (var stream = File.Open(filename, FileMode.Open))
                         {
-                            result = Texture2D.FromStream(GraphicsDevice, stream);
+                            result = callback(stream);
                         }
                         break;
                     }
@@ -84,7 +98,7 @@ namespace OctoAwesome.Client.Components
                     {
                         if (stream != null)
                         {
-                            result = Texture2D.FromStream(GraphicsDevice, stream);
+                            result = callback(stream);
                             break;
                         }
                     }
@@ -96,7 +110,7 @@ namespace OctoAwesome.Client.Components
                 // Im worstcase CheckerTex laden
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("OctoAwesome.Client.Assets.OctoAwesome.Client.FallbackTexture.png"))
                 {
-                    result = Texture2D.FromStream(GraphicsDevice, stream);
+                    result = callback(stream);
                 }
             }
 

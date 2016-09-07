@@ -21,12 +21,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData { get { return true; } }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/planks_red.png")};
+                "planks_red"};
             }
         }
 

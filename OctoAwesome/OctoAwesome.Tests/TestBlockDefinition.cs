@@ -24,7 +24,7 @@ namespace OctoAwesome.Tests
             }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {

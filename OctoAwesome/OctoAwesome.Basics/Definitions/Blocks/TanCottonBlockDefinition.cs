@@ -16,12 +16,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/cotton_tan.png")
+                    "cotton_tan"
                 };
             }
         }
