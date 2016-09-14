@@ -43,7 +43,7 @@ namespace OctoAwesome.Client
             graphics = new GraphicsDeviceManager(this);
 
             int width;
-            if (int.TryParse(SettingsManager.Get("Width"), out width))
+            if (int.TryParse(SettingsManager.Get<string>("Width"), out width))
             {
                 if (width < 1)
                     throw new NotSupportedException("Width in app.config darf nicht kleiner 1 sein");
@@ -54,7 +54,7 @@ namespace OctoAwesome.Client
                 graphics.PreferredBackBufferWidth = 1080;
 
             int height;
-            if (int.TryParse(SettingsManager.Get("Height"), out height))
+            if (int.TryParse(SettingsManager.Get<string>("Height"), out height))
             {
                 if (height < 1)
                     throw new NotSupportedException("Height in app.config darf nicht kleiner 1 sein");
@@ -72,11 +72,11 @@ namespace OctoAwesome.Client
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             bool enablefullscreen;
-            if (bool.TryParse(SettingsManager.Get("EnableFullscreen"), out enablefullscreen) && enablefullscreen)
+            if (bool.TryParse(SettingsManager.Get<string>("EnableFullscreen"), out enablefullscreen) && enablefullscreen)
                 Fullscreen();
 
             int viewrange;
-            if (int.TryParse(SettingsManager.Get("Viewrange"), out viewrange))
+            if (int.TryParse(SettingsManager.Get<string>("Viewrange"), out viewrange))
             {
                 if (viewrange < 1)
                     throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");

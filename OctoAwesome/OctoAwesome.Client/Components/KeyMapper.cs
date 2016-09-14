@@ -128,7 +128,7 @@ namespace OctoAwesome.Client.Components
                     {
                         try
                         {
-                            string val = SettingsManager.Get("KeyMapper-" + id);
+                            string val = SettingsManager.Get<string>("KeyMapper-" + id);
                             Keys key = (Keys)Enum.Parse(typeof(Keys), val);
                             AddKey(id, key);
                         }

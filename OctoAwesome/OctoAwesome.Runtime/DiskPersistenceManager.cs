@@ -28,7 +28,7 @@ namespace OctoAwesome.Runtime
             if (root != null)
                 return root.FullName;
 
-            string appconfig = SettingsManager.Get("ChunkRoot");
+            string appconfig = SettingsManager.Get<string>("ChunkRoot");
             if (!string.IsNullOrEmpty(appconfig))
             {
                 root = new DirectoryInfo(appconfig);
