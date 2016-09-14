@@ -13,25 +13,56 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class AssetComponent : DrawableGameComponent
     {
+        public const string INFOFILENAME = "packinfo.xml";
+
         Dictionary<string, Texture2D> textures;
 
         Dictionary<string, Bitmap> bitmaps;
 
         string[] textureTypes = new string[] { "png", "jpg", "jpeg", "bmp" };
 
-        List<string> resourcePacks = new List<string>();
+        List<ResourcePack> resourcePacks = new List<ResourcePack>();
+
+        List<ResourcePack> activePacks = new List<ResourcePack>();
 
         /// <summary>
         /// Gibt die Anzahl geladener Texturen zurück.
         /// </summary>
         public int LoadedTextures { get { return textures.Count + bitmaps.Count; } }
 
+        /// <summary>
+        /// Auflistung aller bekannten Resource Packs.
+        /// </summary>
+        public IEnumerable<ResourcePack> LoadedResourcePacks { get { return resourcePacks.AsEnumerable(); } }
+
         public AssetComponent(OctoGame game) : base(game)
         {
             textures = new Dictionary<string, Texture2D>();
             bitmaps = new Dictionary<string, Bitmap>();
-            resourcePacks.Add("PetersTexturePack");
-            resourcePacks.Add("Toms Tolle Texturen");
+            ScanForResourcePacks();
+        }
+
+        public void ScanForResourcePacks()
+        {
+            resourcePacks.Clear();
+            foreach (var directory in Directory.GetDirectories("Resources"))
+            {
+                DirectoryInfo info = new DirectoryInfo(directory);
+                if (File.Exists(Path.Combine(directory, INFOFILENAME)))
+                {
+                    // TODO: Scan info File
+                }
+                else
+                {
+                    ResourcePack pack = new ResourcePack()
+                    {
+                        Path = info.FullName,
+                        Name = info.Name
+                    };
+
+                    resourcePacks.Add(pack);
+                }
+            }
         }
 
         public Texture2D LoadTexture(Type baseType, string key)
@@ -68,7 +99,7 @@ namespace OctoAwesome.Client.Components
             // Versuche Datei zu laden
             foreach (var resourcePack in resourcePacks)
             {
-                string localFolder = Path.Combine("Resources", resourcePack, basefolder);
+                string localFolder = Path.Combine(resourcePack.Path, basefolder);
 
                 foreach (var textureType in textureTypes)
                 {

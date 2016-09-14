@@ -73,6 +73,7 @@
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourcePack.cs" />
     <Compile Include="Screens\BaseScreen.cs" />
     <Compile Include="Screens\CreateUniverseScreen.cs" />
     <Compile Include="Screens\CreditsScreen.cs" />
