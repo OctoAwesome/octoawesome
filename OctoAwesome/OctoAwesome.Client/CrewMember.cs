@@ -24,6 +24,7 @@ namespace OctoAwesome.Client
         };
 
         public string Username { get; set; }
+
         public string Alias { get; set; }
 
         public string Description { get; set; }

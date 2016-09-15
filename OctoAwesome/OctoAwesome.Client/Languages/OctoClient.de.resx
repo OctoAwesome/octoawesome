@@ -237,4 +237,7 @@
   <data name="KeyBindings" xml:space="preserve">
     <value>Tastaturbelegung</value>
   </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
 </root>
