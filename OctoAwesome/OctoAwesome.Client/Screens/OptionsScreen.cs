@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Screens
             optionsPage.Controls.Add(settingsStack);
 
             //////////////////////Viewrange//////////////////////
-            string viewrange = SettingsManager.Get("Viewrange");
+            string viewrange = SettingsManager.Get<string>("Viewrange");
 
             rangeTitle = new Label(manager)
             {
@@ -87,7 +87,7 @@ namespace OctoAwesome.Client.Screens
 
             Checkbox disablePersistence = new Checkbox(manager)
             {
-                Checked = bool.Parse(SettingsManager.Get("DisablePersistence")),
+                Checked = bool.Parse(SettingsManager.Get<string>("DisablePersistence")),
                 HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
             };
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
@@ -104,7 +104,7 @@ namespace OctoAwesome.Client.Screens
 
             mapPath = new Textbox(manager)
             {
-                Text = SettingsManager.Get("ChunkRoot"),
+                Text = SettingsManager.Get<string>("ChunkRoot"),
                 Enabled = false,
                 HorizontalAlignment = HorizontalAlignment.Stretch,              
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
@@ -133,7 +133,7 @@ namespace OctoAwesome.Client.Screens
 
             Checkbox enableFullscreen = new Checkbox(manager)
             {
-                Checked = bool.Parse(SettingsManager.Get("EnableFullscreen")),
+                Checked = bool.Parse(SettingsManager.Get<string>("EnableFullscreen")),
                 HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
             };
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
@@ -155,7 +155,7 @@ namespace OctoAwesome.Client.Screens
 
             Textbox resolutionWidthTextbox = new Textbox(manager)
             {
-                Text = SettingsManager.Get("Width"),
+                Text = SettingsManager.Get<string>("Width"),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -170,7 +170,7 @@ namespace OctoAwesome.Client.Screens
 
             Textbox resolutionHeightTextbox = new Textbox(manager)
             {
-                Text = SettingsManager.Get("Height"),
+                Text = SettingsManager.Get<string>("Height"),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -296,7 +296,7 @@ namespace OctoAwesome.Client.Screens
         private void ChangePath()
         {
             System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            folderBrowser.SelectedPath = SettingsManager.Get("ChunkRoot");
+            folderBrowser.SelectedPath = SettingsManager.Get<string>("ChunkRoot");
 
             if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
