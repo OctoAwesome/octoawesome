@@ -42,28 +42,31 @@ namespace OctoAwesome.Client
         {
             graphics = new GraphicsDeviceManager(this);
 
-            int width;
-            if (int.TryParse(SettingsManager.Get<string>("Width"), out width))
-            {
-                if (width < 1)
-                    throw new NotSupportedException("Width in app.config darf nicht kleiner 1 sein");
+            
 
-                graphics.PreferredBackBufferWidth = width;
+            int width;
+            if (SettingsManager.KeyExists("Width"))
+            {
+                width = SettingsManager.Get<int>("Width");
             }
             else
-                graphics.PreferredBackBufferWidth = 1080;
+            {
+                width = 1080;
+            }
+            graphics.PreferredBackBufferWidth = width;
 
             int height;
-            if (int.TryParse(SettingsManager.Get<string>("Height"), out height))
+            if (SettingsManager.KeyExists("Height"))
             {
-                if (height < 1)
-                    throw new NotSupportedException("Height in app.config darf nicht kleiner 1 sein");
-
-                graphics.PreferredBackBufferHeight = height;
+                height = SettingsManager.Get<int>("Height");
             }
             else
-                graphics.PreferredBackBufferHeight = 720;
+            {
+                height = 1080;
+            }
+            graphics.PreferredBackBufferHeight = height;
 
+          
             Content.RootDirectory = "Content";
             Window.Title = "OctoAwesome";
             IsMouseVisible = true;
@@ -71,18 +74,19 @@ namespace OctoAwesome.Client
 
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
-            bool enablefullscreen;
-            if (bool.TryParse(SettingsManager.Get<string>("EnableFullscreen"), out enablefullscreen) && enablefullscreen)
+            if(SettingsManager.KeyExists("EnableFullscreen") && SettingsManager.Get<bool>("EnableFullscreen"))
                 Fullscreen();
 
-            int viewrange;
-            if (int.TryParse(SettingsManager.Get<string>("Viewrange"), out viewrange))
+            if (SettingsManager.KeyExists("Viewrange"))
             {
+                var viewrange = SettingsManager.Get<int>("Viewrange");
+
                 if (viewrange < 1)
                     throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");
 
                 SceneControl.VIEWRANGE = viewrange;
             }
+
 
             Simulation = new SimulationComponent(this);
             Simulation.UpdateOrder = 4;

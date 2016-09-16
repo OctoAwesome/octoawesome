@@ -55,8 +55,19 @@ namespace OctoAwesome.Tests
 
             Assert.AreEqual(inputBool, SettingsManager.Get<bool>("inputBool"));
 
+            
 
 
+
+        }
+
+        [TestMethod]
+        public void NullTest()
+        {
+            SettingsManager.DEBUG = true;
+
+            int test = SettingsManager.Get<int>("foobarnotset");
+            Console.WriteLine(test);
         }
     }
 }
