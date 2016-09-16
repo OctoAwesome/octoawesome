@@ -35,7 +35,7 @@ namespace OctoAwesome.Client
 
         public static List<CrewMember> getCrew(BaseScreenComponent manager)
         {
-            using (Stream stream = File.Open("./Assets/OctoAwesome.Client/Crew/crew.xml", FileMode.Open, FileAccess.Read))
+            using (Stream stream = File.Open("./Assets/crew.xml", FileMode.Open, FileAccess.Read))
             {
                 try
                 {

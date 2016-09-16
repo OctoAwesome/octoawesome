@@ -130,7 +130,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (!Visible || !Enabled)
+            if (!Visible || !Enabled || !assets.Ready)
                 return;
 
             if (Player == null || Player.ActorHost == null)

@@ -19,6 +19,7 @@ namespace OctoAwesome.Client.Controls
 
         private PlayerComponent player;
         private CameraComponent camera;
+        private AssetComponent assets;
 
         private ChunkRenderer[,] chunkRenderer;
         private List<ChunkRenderer> orderedChunkRenderer;
@@ -55,11 +56,12 @@ namespace OctoAwesome.Client.Controls
         {
             player = manager.Player;
             camera = manager.Camera;
+            assets = manager.Game.Assets;
 
             Manager = manager;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
+            sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.Instance.GetBlockDefinitions();

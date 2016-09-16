@@ -23,9 +23,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             get
             {
                 return new[] {
-                    "cactus_inside.png",
-                    "cactus_side.png",
-                    "cactus_top.png"
+                    "cactus_inside",
+                    "cactus_side",
+                    "cactus_top"
                 };
             }
         }

@@ -8,13 +8,17 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class TargetScreen : Screen
     {
+        private AssetComponent assets;
+
         public TargetScreen(ScreenComponent manager, Action<int, int> tp, int x, int y) : base(manager)
         {
+            assets = manager.Game.Assets;
+
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.5f);
             Title = "Select target";
 
-            Texture2D panelBackground = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
             Panel panel = new Panel(manager)
             {
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),

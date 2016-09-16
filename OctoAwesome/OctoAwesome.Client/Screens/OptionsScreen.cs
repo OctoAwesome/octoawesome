@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Client.Controls;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OctoAwesome.Client.Screens
@@ -11,6 +13,8 @@ namespace OctoAwesome.Client.Screens
     class OptionsScreen : BaseScreen
     {
         private OctoGame game;
+        private AssetComponent assets;
+
         private Button exitButton;
         private Label rangeTitle;
         private Textbox mapPath;
@@ -18,11 +22,13 @@ namespace OctoAwesome.Client.Screens
         public OptionsScreen(ScreenComponent manager) : base(manager)
         {
             game = manager.Game;
+            assets = game.Assets;
+
             Padding = new Border(0, 0, 0, 0);
 
             Title = Languages.OctoClient.Options;
 
-            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
 
             SetDefaultBackground();
 
@@ -31,8 +37,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(20, 20, 20, 20),
                 Width = 700,
                 TabPageBackground = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-                TabBrush = NineTileBrush.FromSingleTexture(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/buttonLong_brown.png", manager.GraphicsDevice), 15, 15),
-                TabActiveBrush = NineTileBrush.FromSingleTexture(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/buttonLong_beige.png", manager.GraphicsDevice), 15, 15),
+                TabBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture(typeof(ScreenComponent), "buttonLong_brown"), 15, 15),
+                TabActiveBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture(typeof(ScreenComponent), "buttonLong_beige"), 15, 15),
             };
             Controls.Add(tabs);
 
@@ -88,7 +94,7 @@ namespace OctoAwesome.Client.Screens
             Checkbox disablePersistence = new Checkbox(manager)
             {
                 Checked = bool.Parse(SettingsManager.Get("DisablePersistence")),
-                HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "iconCheck_brown"), TextureBrushMode.Stretch),
             };
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
             persistenceStack.Controls.Add(disablePersistence);
@@ -106,14 +112,14 @@ namespace OctoAwesome.Client.Screens
             {
                 Text = SettingsManager.Get("ChunkRoot"),
                 Enabled = false,
-                HorizontalAlignment = HorizontalAlignment.Stretch,              
+                HorizontalAlignment = HorizontalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
             mapPathStack.Controls.Add(mapPath);
 
             Button changePath = Button.TextButton(manager, Languages.OctoClient.ChangePath);
             changePath.HorizontalAlignment = HorizontalAlignment.Center;
-            changePath.Height = 40;            
+            changePath.Height = 40;
             changePath.LeftMouseClick += (s, e) => ChangePath();
             mapPathStack.Controls.Add(changePath);
 
@@ -134,7 +140,7 @@ namespace OctoAwesome.Client.Screens
             Checkbox enableFullscreen = new Checkbox(manager)
             {
                 Checked = bool.Parse(SettingsManager.Get("EnableFullscreen")),
-                HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "iconCheck_brown"), TextureBrushMode.Stretch),
             };
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
             fullscreenStack.Controls.Add(enableFullscreen);
@@ -232,6 +238,20 @@ namespace OctoAwesome.Client.Screens
                 bindingStack.Controls.Add(bindingKeyLabel);
                 bindingsStack.Controls.Add(bindingStack);
             }
+
+            #endregion
+
+            #region TexturePackPage
+
+            TabPage resourcePackPage = new TabPage(manager, "Resource Packs");
+            tabs.Pages.Add(resourcePackPage);
+
+            ResourcePacksOptionControl resourcePacksOptions = new ResourcePacksOptionControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            resourcePackPage.Controls.Add(resourcePacksOptions);
 
             #endregion
 
