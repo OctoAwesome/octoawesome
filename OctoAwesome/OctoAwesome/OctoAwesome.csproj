@@ -64,6 +64,7 @@
     <Compile Include="CollisionPlane.cs" />
     <Compile Include="ContentHelper.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="FileHeaderStream.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
