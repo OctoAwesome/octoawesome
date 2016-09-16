@@ -287,7 +287,7 @@ namespace OctoAwesome.Client.Screens
         {
             rangeTitle.Text = Languages.OctoClient.Viewrange + ": " + newRange;
 
-            SettingsManager.Set("Viewrange", newRange.ToString());
+            SettingsManager.Set("Viewrange", newRange);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
@@ -311,7 +311,7 @@ namespace OctoAwesome.Client.Screens
 
         private void SetPersistence(bool state)
         {
-            SettingsManager.Set("DisablePersistence", state.ToString());
+            SettingsManager.Set("DisablePersistence", state);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
@@ -319,7 +319,7 @@ namespace OctoAwesome.Client.Screens
 
         private void SetFullscreen(bool state)
         {
-            SettingsManager.Set("EnableFullscreen", state.ToString());
+            SettingsManager.Set("EnableFullscreen", state);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;

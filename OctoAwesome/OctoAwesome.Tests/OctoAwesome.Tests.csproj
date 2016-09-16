@@ -76,6 +76,7 @@
     <Compile Include="LocalChunkCacheTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CoordinateTests.cs" />
+    <Compile Include="SettingsManagerTests.cs" />
     <Compile Include="TestBlockDefinition.cs" />
     <Compile Include="TestChunkColumn.cs" />
     <Compile Include="TestGlobalCache.cs" />
