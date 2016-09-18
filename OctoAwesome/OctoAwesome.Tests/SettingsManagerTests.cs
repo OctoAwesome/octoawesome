@@ -11,49 +11,51 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void ReadWrite()
         {
-            SettingsManager.DEBUG = true;
+            Settings settings = new Settings();
+
+            settings.DEBUG = true;
 
             string[] testArray = new string[] {"foo", "bar"};
-            SettingsManager.Set("foo", testArray);
+            settings.Set("foo", testArray);
             
-            string[] newArray = SettingsManager.GetArray<string>("foo");
+            string[] newArray = settings.GetArray<string>("foo");
 
             Assert.IsTrue(testArray.SequenceEqual(newArray));
 
 
             int[] testArrayInt = new int[] { 3,5,333,456,3457};
-            SettingsManager.Set("fooInt", testArrayInt);
+            settings.Set("fooInt", testArrayInt);
 
-            int[] newArrayInt = SettingsManager.GetArray<int>("fooInt");
+            int[] newArrayInt = settings.GetArray<int>("fooInt");
 
             Assert.IsTrue(testArray.SequenceEqual(newArray));
 
 
             bool[] testArrayBool = new bool[] { true, false};
-            SettingsManager.Set("fooBool", testArrayBool);
+            settings.Set("fooBool", testArrayBool);
 
-            bool[] newArrayBool = SettingsManager.GetArray<bool>("fooBool");
+            bool[] newArrayBool = settings.GetArray<bool>("fooBool");
 
             Assert.IsTrue(testArray.SequenceEqual(newArray));
 
 
             String inputString = "randomStringWith§$%&/()=Charakters";
-            SettingsManager.Set("inputString", inputString);
+            settings.Set("inputString", inputString);
 
 
-            Assert.AreEqual(inputString, SettingsManager.Get<string>("inputString"));
+            Assert.AreEqual(inputString, settings.Get<string>("inputString"));
 
 
             int inputInt = new Random().Next();
-            SettingsManager.Set("inputInt", inputInt);
+            settings.Set("inputInt", inputInt);
 
-            Assert.AreEqual(inputInt, SettingsManager.Get<int>("inputInt"));
+            Assert.AreEqual(inputInt, settings.Get<int>("inputInt"));
 
 
             bool inputBool = true;
-            SettingsManager.Set("inputBool", inputBool);
+            settings.Set("inputBool", inputBool);
 
-            Assert.AreEqual(inputBool, SettingsManager.Get<bool>("inputBool"));
+            Assert.AreEqual(inputBool, settings.Get<bool>("inputBool"));
 
             
 
@@ -64,9 +66,12 @@ namespace OctoAwesome.Tests
         [TestMethod]
         public void NullTest()
         {
-            SettingsManager.DEBUG = true;
 
-            int test = SettingsManager.Get<int>("foobarnotset");
+            Settings settings = new Settings();
+
+            settings.DEBUG = true;
+
+            int test = settings.Get<int>("foobarnotset");
             Console.WriteLine(test);
         }
     }
