@@ -17,9 +17,12 @@ namespace OctoAwesome.Client.Screens
         Grid mainStack;
         Listbox<IUniverse> levelList;
 
+        private ISettings settings;
+
         public LoadScreen(ScreenComponent manager) : base(manager)
         {
             Manager = manager;
+            settings = manager.Game.Settings;
 
             Padding = new Border(0, 0, 0, 0);
 
@@ -102,7 +105,7 @@ namespace OctoAwesome.Client.Screens
                 levelList.Items.Remove(levelList.SelectedItem);
                 levelList.SelectedItem = null;
                 levelList.InvalidateDimensions();
-                SettingsManager.Set("LastUniverse", "");
+                settings.Set("LastUniverse", "");
             };
 
             createButton = GetButton(Languages.OctoClient.Create);
@@ -131,10 +134,10 @@ namespace OctoAwesome.Client.Screens
             if (levelList.Items.Count >= 1)
                 levelList.SelectedItem = levelList.Items[0];
 
-            if (SettingsManager.KeyExists("LastUniverse") && SettingsManager.Get<string>("LastUniverse") != null
-                && SettingsManager.Get<string>("LastUniverse") != "")
+            if (settings.KeyExists("LastUniverse") && settings.Get<string>("LastUniverse") != null
+                && settings.Get<string>("LastUniverse") != "")
             {
-                levelList.SelectedItem = levelList.Items.First(u => u.Id == Guid.Parse(SettingsManager.Get<string>("LastUniverse")));
+                levelList.SelectedItem = levelList.Items.First(u => u.Id == Guid.Parse(settings.Get<string>("LastUniverse")));
             }
         }
 
@@ -162,7 +165,7 @@ namespace OctoAwesome.Client.Screens
         {
             Manager.Player.RemovePlayer();
             Manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
-            SettingsManager.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
+            settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
             Manager.Game.Player.InsertPlayer();
             Manager.NavigateToScreen(new GameScreen(Manager));
         }

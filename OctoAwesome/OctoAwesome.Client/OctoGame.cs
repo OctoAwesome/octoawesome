@@ -32,6 +32,8 @@ namespace OctoAwesome.Client
 
         public KeyMapper KeyMapper { get; private set; }
 
+        public Settings Settings { get; private set; }
+
         // Fullscreen
         private int oldHeight, oldWidth;
         Point oldPositon;
@@ -42,12 +44,13 @@ namespace OctoAwesome.Client
         {
             graphics = new GraphicsDeviceManager(this);
 
-            
+            Settings = new Settings();
+            ResourceManager.Settings = Settings;
 
             int width;
-            if (SettingsManager.KeyExists("Width"))
+            if (Settings.KeyExists("Width"))
             {
-                width = SettingsManager.Get<int>("Width");
+                width = Settings.Get<int>("Width");
             }
             else
             {
@@ -56,9 +59,9 @@ namespace OctoAwesome.Client
             graphics.PreferredBackBufferWidth = width;
 
             int height;
-            if (SettingsManager.KeyExists("Height"))
+            if (Settings.KeyExists("Height"))
             {
-                height = SettingsManager.Get<int>("Height");
+                height = Settings.Get<int>("Height");
             }
             else
             {
@@ -74,12 +77,12 @@ namespace OctoAwesome.Client
 
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
-            if(SettingsManager.KeyExists("EnableFullscreen") && SettingsManager.Get<bool>("EnableFullscreen"))
+            if(Settings.KeyExists("EnableFullscreen") && Settings.Get<bool>("EnableFullscreen"))
                 Fullscreen();
 
-            if (SettingsManager.KeyExists("Viewrange"))
+            if (Settings.KeyExists("Viewrange"))
             {
-                var viewrange = SettingsManager.Get<int>("Viewrange");
+                var viewrange = Settings.Get<int>("Viewrange");
 
                 if (viewrange < 1)
                     throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");
@@ -105,7 +108,7 @@ namespace OctoAwesome.Client
             Screen.DrawOrder = 1;
             Components.Add(Screen);
 
-            KeyMapper = new KeyMapper(Screen);
+            KeyMapper = new KeyMapper(Screen, Settings);
 
             Window.ClientSizeChanged += (s, e) =>
             {

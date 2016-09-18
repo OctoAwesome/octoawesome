@@ -15,10 +15,13 @@ namespace OctoAwesome.Client.Screens
         private Label rangeTitle;
         private Textbox mapPath;
 
+        private ISettings settings;
+
         public OptionsScreen(ScreenComponent manager) : base(manager)
         {
             game = manager.Game;
             Padding = new Border(0, 0, 0, 0);
+            settings = manager.Game.Settings;
 
             Title = Languages.OctoClient.Options;
 
@@ -52,7 +55,7 @@ namespace OctoAwesome.Client.Screens
             optionsPage.Controls.Add(settingsStack);
 
             //////////////////////Viewrange//////////////////////
-            string viewrange = SettingsManager.Get<string>("Viewrange");
+            string viewrange = settings.Get<string>("Viewrange");
 
             rangeTitle = new Label(manager)
             {
@@ -87,7 +90,7 @@ namespace OctoAwesome.Client.Screens
 
             Checkbox disablePersistence = new Checkbox(manager)
             {
-                Checked = bool.Parse(SettingsManager.Get<string>("DisablePersistence")),
+                Checked = bool.Parse(settings.Get<string>("DisablePersistence")),
                 HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
             };
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
@@ -104,7 +107,7 @@ namespace OctoAwesome.Client.Screens
 
             mapPath = new Textbox(manager)
             {
-                Text = SettingsManager.Get<string>("ChunkRoot"),
+                Text = settings.Get<string>("ChunkRoot"),
                 Enabled = false,
                 HorizontalAlignment = HorizontalAlignment.Stretch,              
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
@@ -133,7 +136,7 @@ namespace OctoAwesome.Client.Screens
 
             Checkbox enableFullscreen = new Checkbox(manager)
             {
-                Checked = bool.Parse(SettingsManager.Get<string>("EnableFullscreen")),
+                Checked = bool.Parse(settings.Get<string>("EnableFullscreen")),
                 HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
             };
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
@@ -155,7 +158,7 @@ namespace OctoAwesome.Client.Screens
 
             Textbox resolutionWidthTextbox = new Textbox(manager)
             {
-                Text = SettingsManager.Get<string>("Width"),
+                Text = settings.Get<string>("Width"),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -170,7 +173,7 @@ namespace OctoAwesome.Client.Screens
 
             Textbox resolutionHeightTextbox = new Textbox(manager)
             {
-                Text = SettingsManager.Get<string>("Height"),
+                Text = settings.Get<string>("Height"),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -248,7 +251,7 @@ namespace OctoAwesome.Client.Screens
 
         private void ResolutionWidthTextbox_TextChanged(Control sender, PropertyEventArgs<string> args)
         {
-            SettingsManager.Set("Width", args.NewValue);
+            settings.Set("Width", args.NewValue);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
@@ -256,7 +259,7 @@ namespace OctoAwesome.Client.Screens
 
         private void ResolutionHeightTextbox_TextChanged(Control sender, PropertyEventArgs<string> args)
         {
-            SettingsManager.Set("Height", args.NewValue);
+            settings.Set("Height", args.NewValue);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
@@ -276,7 +279,7 @@ namespace OctoAwesome.Client.Screens
                 game.KeyMapper.RemoveKey(id, oldKey);
                 game.KeyMapper.AddKey(id, a.Key);
                 data[1] = a.Key;
-                SettingsManager.Set("KeyMapper-" + id, a.Key.ToString());
+                settings.Set("KeyMapper-" + id, a.Key.ToString());
                 lbl.Text = a.Key.ToString();
                 Manager.NavigateBack();
             };
@@ -287,7 +290,7 @@ namespace OctoAwesome.Client.Screens
         {
             rangeTitle.Text = Languages.OctoClient.Viewrange + ": " + newRange;
 
-            SettingsManager.Set("Viewrange", newRange);
+            settings.Set("Viewrange", newRange);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
@@ -296,12 +299,12 @@ namespace OctoAwesome.Client.Screens
         private void ChangePath()
         {
             System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            folderBrowser.SelectedPath = SettingsManager.Get<string>("ChunkRoot");
+            folderBrowser.SelectedPath = settings.Get<string>("ChunkRoot");
 
             if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = folderBrowser.SelectedPath;
-                SettingsManager.Set("ChunkRoot", path);
+                settings.Set("ChunkRoot", path);
                 mapPath.Text = path;
 
                 exitButton.Visible = true;
@@ -311,7 +314,7 @@ namespace OctoAwesome.Client.Screens
 
         private void SetPersistence(bool state)
         {
-            SettingsManager.Set("DisablePersistence", state);
+            settings.Set("DisablePersistence", state);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
@@ -319,7 +322,7 @@ namespace OctoAwesome.Client.Screens
 
         private void SetFullscreen(bool state)
         {
-            SettingsManager.Set("EnableFullscreen", state);
+            settings.Set("EnableFullscreen", state);
 
             exitButton.Visible = true;
             exitButton.Enabled = true;
