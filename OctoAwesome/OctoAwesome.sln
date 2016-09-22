@@ -32,6 +32,8 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "OctoAwesome.Help", "OctoAwe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Docs", "OctoAwesome.Docs\OctoAwesome.Docs.csproj", "{A144F0E6-716C-40C1-83DD-A1039DA7F73B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Community", "OctoAwesome.Community\OctoAwesome.Community.csproj", "{016407F4-814F-4183-855F-FA32C7378261}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

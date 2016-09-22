@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace OctoAwesome.Client.Components
 {
@@ -85,7 +86,14 @@ namespace OctoAwesome.Client.Components
                     DirectoryInfo info = new DirectoryInfo(directory);
                     if (File.Exists(Path.Combine(directory, INFOFILENAME)))
                     {
-                        // TODO: Scan info File
+                        // Scan info File
+                        XmlSerializer serializer = new XmlSerializer(typeof(ResourcePack));
+                        using (Stream stream = File.OpenRead(Path.Combine(directory, INFOFILENAME)))
+                        {
+                            ResourcePack pack = (ResourcePack)serializer.Deserialize(stream);
+                            pack.Path = info.FullName;
+                            loadedPacks.Add(pack);
+                        }
                     }
                     else
                     {
