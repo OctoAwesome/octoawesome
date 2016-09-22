@@ -118,6 +118,8 @@ namespace OctoAwesome.Client.Controls
                 string.Format("{0} ({1})", Player.ActorHost.ActiveTool.Definition.Name, Player.ActorHost.ActiveTool.Amount) : 
                 string.Empty;
 
+            activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
+
             base.OnUpdate(gameTime);
         }
     }

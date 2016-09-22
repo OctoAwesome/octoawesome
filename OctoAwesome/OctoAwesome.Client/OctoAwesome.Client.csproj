@@ -72,6 +72,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>OctoClient.resx</DependentUpon>
     </Compile>
+    <Compile Include="Languages\OctoKeys.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OctoKeys.resx</DependentUpon>
+    </Compile>
     <Compile Include="OctoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -162,6 +167,11 @@
     <EmbeddedResource Include="Languages\OctoClient.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OctoClient.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\OctoKeys.de.resx" />
+    <EmbeddedResource Include="Languages\OctoKeys.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OctoKeys.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

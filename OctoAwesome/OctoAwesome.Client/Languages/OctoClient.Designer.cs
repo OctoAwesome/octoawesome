@@ -259,6 +259,24 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Key Bindings ähnelt.
+        /// </summary>
+        internal static string KeyBindings {
+            get {
+                return ResourceManager.GetString("KeyBindings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Links ähnelt.
+        /// </summary>
+        internal static string Links {
+            get {
+                return ResourceManager.GetString("Links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Dirty/Loaded ChunkColumn ähnelt.
         /// </summary>
         internal static string LoadedChunks {

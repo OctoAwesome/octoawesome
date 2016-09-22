@@ -84,6 +84,7 @@
     <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="ISettings.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="LocalBuilder.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsManager.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Universe.cs" />
   </ItemGroup>
   <ItemGroup>

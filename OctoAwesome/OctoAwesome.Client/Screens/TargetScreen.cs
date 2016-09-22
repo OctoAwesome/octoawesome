@@ -43,23 +43,39 @@ namespace OctoAwesome.Client.Screens
             vstack.Orientation = Orientation.Vertical;
             spanel.Controls.Add(vstack);
 
+            StackPanel xStack = new StackPanel(manager);
+            xStack.Orientation = Orientation.Horizontal;
+            vstack.Controls.Add(xStack);
+
+            Label xLabel = new Label(manager);
+            xLabel.Text = "X:";
+            xStack.Controls.Add(xLabel);
+
             Textbox xText = new Textbox(manager)
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
-                Margin = new Border(10, 10, 10, 10),
+                Margin = new Border(2, 10, 2, 10),
                 Text = x.ToString()
             };
-            vstack.Controls.Add(xText);
+            xStack.Controls.Add(xText);
+
+            StackPanel yStack = new StackPanel(manager);
+            yStack.Orientation = Orientation.Horizontal;
+            vstack.Controls.Add(yStack);
+
+            Label yLabel = new Label(manager);
+            yLabel.Text = "Y:";
+            yStack.Controls.Add(yLabel);
 
             Textbox yText = new Textbox(manager)
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
-                Margin = new Border(10, 10, 10, 10),
+                Margin = new Border(2, 10, 2, 10),
                 Text = y.ToString()
             };
-            vstack.Controls.Add(yText);
+            yStack.Controls.Add(yText);
 
             Button closeButton = Button.TextButton(manager, "Teleport");
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
