@@ -97,7 +97,7 @@ namespace OctoAwesome.Client.Screens
             Checkbox disablePersistence = new Checkbox(manager)
             {
                 Checked = bool.Parse(settings.Get<string>("DisablePersistence")),
-                HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "iconCheck_brown"), TextureBrushMode.Stretch),
             };
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
             persistenceStack.Controls.Add(disablePersistence);
@@ -143,7 +143,7 @@ namespace OctoAwesome.Client.Screens
             Checkbox enableFullscreen = new Checkbox(manager)
             {
                 Checked = bool.Parse(settings.Get<string>("EnableFullscreen")),
-                HookBrush = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/iconCheck_brown.png", manager.GraphicsDevice), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "iconCheck_brown"), TextureBrushMode.Stretch),
             };
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
             fullscreenStack.Controls.Add(enableFullscreen);
