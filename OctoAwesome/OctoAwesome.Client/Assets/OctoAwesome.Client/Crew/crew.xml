@@ -251,6 +251,19 @@
     <Links></Links>
   </CrewMember>
   <CrewMember>
+    <Username>TupperBox</Username>
+    <Alias>Johann</Alias>
+    <Description>Offensichtlich bin ich der erste Mensch, der seine Beschreibung hier selbst rein schreiben muss.
+Ich bin Student der Informatik, studiere in Magdeburg und interessiere mich schon seit längerer Zeit für Spieleentwicklung. Ich schaue, dass ich Tom kleine Aufgaben abnehmen kann und somit das Projekt vorran bringe.</Description>
+      <AchievementList>
+        <Achievements>Contributor</Achievements>
+      </AchievementList>
+    <Links>
+      <Link Title="GitHub" Url="http://github.com/tupperbox" />
+    </Links>
+    <PictureFilename>./Assets/OctoAwesome.Client/Crew/tupperbox.jpg</PictureFilename>
+  </CrewMember>
+  <CrewMember>
     <Username>Ulrich</Username>
     <Alias>Ulrich</Alias>
     <Description>Von Ulrich weiß ich leider auch eigentlich überhaupt nichts :( Aber er unterstützt mich bei Patreon und hilft damit ungemein weiter</Description>
