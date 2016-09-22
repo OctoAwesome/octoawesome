@@ -106,9 +106,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\Components\background.png" />
     <EmbeddedResource Include="Assets\Components\background_new.png" />
-    <Content Include="Assets\crew.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="Assets\crew.xml" />
     <EmbeddedResource Include="Assets\Controls\compass.png" />
     <EmbeddedResource Include="Assets\FallbackTexture.png" />
     <EmbeddedResource Include="Assets\Controls\octocross.png" />

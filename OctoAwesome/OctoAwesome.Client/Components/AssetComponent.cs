@@ -153,7 +153,7 @@ namespace OctoAwesome.Client.Components
         {
             lock (textures)
             {
-                return Load(baseType, key, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
+                return Load(baseType, key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
             }
         }
 
@@ -161,11 +161,28 @@ namespace OctoAwesome.Client.Components
         {
             lock (bitmaps)
             {
-                return Load(baseType, key, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
+                return Load(baseType, key, textureTypes, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
             }
         }
 
-        private T Load<T>(Type baseType, string key, Dictionary<string, T> cache, Func<Stream, T> callback)
+        public Stream LoadStream(Type baseType, string key, params string[] fileTypes)
+        {
+            return Load(baseType, key, fileTypes, null, (stream) =>
+            {
+                MemoryStream result = new MemoryStream();
+                byte[] buffer = new byte[1024];
+                int count = 0;
+                do
+                {
+                    count = stream.Read(buffer, 0, buffer.Length);
+                    result.Write(buffer, 0, count);
+                } while (count != 0);
+                result.Seek(0, SeekOrigin.Begin);
+                return result;
+            });
+        }
+
+        private T Load<T>(Type baseType, string key, string[] fileTypes, Dictionary<string, T> cache, Func<Stream, T> callback)
         {
             if (baseType == null)
                 throw new ArgumentNullException();
@@ -181,7 +198,7 @@ namespace OctoAwesome.Client.Components
 
             // Cache fragen
             T result = default(T);
-            if (cache.TryGetValue(fullkey, out result))
+            if (cache != null && cache.TryGetValue(fullkey, out result))
                 return result;
 
             // Versuche Datei zu laden
@@ -189,9 +206,9 @@ namespace OctoAwesome.Client.Components
             {
                 string localFolder = Path.Combine(resourcePack.Path, basefolder);
 
-                foreach (var textureType in textureTypes)
+                foreach (var fileType in fileTypes)
                 {
-                    string filename = Path.Combine(localFolder, string.Format("{0}.{1}", key, textureType));
+                    string filename = Path.Combine(localFolder, string.Format("{0}.{1}", key, fileType));
                     if (File.Exists(filename))
                     {
                         using (var stream = File.Open(filename, FileMode.Open))
@@ -216,9 +233,9 @@ namespace OctoAwesome.Client.Components
                     assemblyName = "OctoAwesome.Client";
 
                 var resKey = fullkey.Replace(assemblyName, string.Format("{0}.Assets", assemblyName));
-                foreach (var texturetype in textureTypes)
+                foreach (var fileType in fileTypes)
                 {
-                    using (var stream = baseType.Assembly.GetManifestResourceStream(string.Format("{0}.{1}", resKey, texturetype)))
+                    using (var stream = baseType.Assembly.GetManifestResourceStream(string.Format("{0}.{1}", resKey, fileType)))
                     {
                         if (stream != null)
                         {
@@ -239,7 +256,7 @@ namespace OctoAwesome.Client.Components
             }
 
             // In Cache speichern
-            if (result != null)
+            if (result != null && cache != null)
                 cache[fullkey] = result;
 
             return result;
