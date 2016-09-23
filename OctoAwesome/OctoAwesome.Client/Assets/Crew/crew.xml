@@ -141,6 +141,7 @@
       <Link Title="OctoReminder" Url="https://github.com/ManuelHu/OctoReminder" />
       <Link Title="Website" Url="https://www.manuelhu.de/" />
     </Links>
+    <PictureFilename>manuelhu</PictureFilename>
   </CrewMember>
   <CrewMember>
     <Username>Marcus_Aurelius</Username>

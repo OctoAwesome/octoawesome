@@ -124,6 +124,7 @@
     <EmbeddedResource Include="Assets\Components\iconCheck_brown.png" />
     <EmbeddedResource Include="Assets\Components\progress_background.png" />
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
+    <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
     <Content Include="Content\simple.fx" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
