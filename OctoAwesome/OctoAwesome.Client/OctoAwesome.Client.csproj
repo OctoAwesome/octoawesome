@@ -66,7 +66,7 @@
     <Compile Include="Controls\ResourcePacksOptionControl.cs" />
     <Compile Include="Controls\SceneControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
-    <Compile Include="CrewMember.cs" />
+    <Compile Include="Crew\CrewMember.cs" />
     <Compile Include="Languages\OctoClient.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -111,7 +111,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\Components\background.png" />
     <EmbeddedResource Include="Assets\Components\background_new.png" />
-    <EmbeddedResource Include="Assets\crew.xml" />
+    <EmbeddedResource Include="Assets\Crew\crew.xml" />
     <EmbeddedResource Include="Assets\Controls\compass.png" />
     <EmbeddedResource Include="Assets\FallbackTexture.png" />
     <EmbeddedResource Include="Assets\Controls\octocross.png" />
@@ -125,8 +125,8 @@
     <EmbeddedResource Include="Assets\Components\progress_background.png" />
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
     <Content Include="Content\simple.fx" />
-    <EmbeddedResource Include="Assets\Components\base.png" />
-    <EmbeddedResource Include="Assets\Components\bobstriker.png" />
+    <EmbeddedResource Include="Assets\Crew\base.png" />
+    <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OctoAwesome.Client.Components;
 using System.Diagnostics;
+using OctoAwesome.Client.Crew;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -58,8 +59,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(0, 0, 10, 0)
             };
             if (member.PictureFilename == null)
-                profileImage.Texture = assets.LoadTexture(typeof(ScreenComponent), "base");
-            else profileImage.Texture = assets.LoadTexture(typeof(ScreenComponent), member.PictureFilename);
+                profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "base");
+            else profileImage.Texture = assets.LoadTexture(typeof(CrewMember), member.PictureFilename);
             horizontalStack.Controls.Add(profileImage);
 
             //The Text Stack

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Storage;
 using OctoAwesome.Client.Components;
 using MonoGameUi;
 using Microsoft.Xna.Framework.Input;
+using OctoAwesome.Client.Crew;
 
 namespace OctoAwesome.Client.Screens
 {
