@@ -5,15 +5,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Items
 {
     public class PickaxeDefinition : IItemDefinition
     {
-        public Bitmap Icon
+        public string Icon
         {
             get
             {
-                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Items/pick_iron.png");
+                return "pick_iron";
             }
         }
 

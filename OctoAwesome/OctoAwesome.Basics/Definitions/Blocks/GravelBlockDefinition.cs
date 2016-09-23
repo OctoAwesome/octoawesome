@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class GravelBLockDefinition : BlockDefinition
     {
@@ -10,18 +10,18 @@ namespace OctoAwesome.Basics
             get { return Languages.OctoBasics.Gravel; }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/gravel.png"); }
+            get { return "gravel"; }
         }
 
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/gravel.png"),
+                    "gravel",
                 };
             }
         }

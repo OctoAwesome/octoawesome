@@ -2,6 +2,8 @@
 using System.Xml.Serialization;
 using System.IO;
 using MonoGameUi;
+using OctoAwesome.Client.Components;
+using System;
 
 namespace OctoAwesome.Client
 {
@@ -37,18 +39,20 @@ namespace OctoAwesome.Client
 
         public CrewMember() { }
 
-        public static List<CrewMember> getCrew(BaseScreenComponent manager)
+        internal static List<CrewMember> getCrew(ScreenComponent manager)
         {
-            using (Stream stream = File.Open("./Assets/OctoAwesome.Client/Crew/crew.xml", FileMode.Open, FileAccess.Read))
+
+            using (Stream stream = manager.Game.Assets.LoadStream(typeof(CrewMember), "crew", "xml"))
             {
                 try
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(List<CrewMember>));
                     return (List<CrewMember>)serializer.Deserialize(stream);
                 }
-                catch { }
+                catch (Exception ex)
+                { }
 
-                return new List<CrewMember>();                
+                return new List<CrewMember>();
             }
         }
 

@@ -15,6 +15,7 @@ namespace OctoAwesome.Client.Screens
         private Dictionary<string, Texture2D> toolTextures = new Dictionary<string, Texture2D>();
 
         private PlayerComponent player;
+        private AssetComponent assets;
 
         private InventoryControl inventory;
 
@@ -32,16 +33,12 @@ namespace OctoAwesome.Client.Screens
 
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
+            assets = manager.Game.Assets;
+
             foreach (var item in DefinitionManager.Instance.GetItemDefinitions())
             {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    System.Drawing.Bitmap bitmap = item.Icon;
-                    bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    toolTextures.Add(item.GetType().FullName, Texture2D.FromStream(ScreenManager.GraphicsDevice, stream));
-                }
+                Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
+                toolTextures.Add(item.GetType().FullName, texture);
             }
 
             player = manager.Player;
@@ -51,7 +48,7 @@ namespace OctoAwesome.Client.Screens
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
 
-            Texture2D panelBackground = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
 
             Grid grid = new Grid(manager)
             {

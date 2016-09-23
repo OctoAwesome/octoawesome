@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class RedPlankBlockDefinition : BlockDefinition
     {
@@ -14,19 +14,19 @@ namespace OctoAwesome.Basics
             get { return Languages.OctoBasics.RedPlank; }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/planks.png"); }
+            get { return "planks"; }
         }
 
         public override bool HasMetaData { get { return true; } }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/planks.png")};
+                "planks"};
             }
         }
 

@@ -10,10 +10,14 @@ using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
-    class CrewMemberScreen : BaseScreen
+    internal class CrewMemberScreen : BaseScreen
     {
+        private AssetComponent assets;
+
         public CrewMemberScreen(ScreenComponent manager, CrewMember member) : base(manager)
         {
+            assets = manager.Game.Assets;
+
             VerticalAlignment = VerticalAlignment.Stretch;
             HorizontalAlignment = HorizontalAlignment.Stretch;
 
@@ -26,7 +30,7 @@ namespace OctoAwesome.Client.Screens
             SetDefaultBackground();
 
             //The Panel
-            Texture2D panelBackground = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
+            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
             Panel panel = new Panel(manager)
             {
                 MaxWidth = 750,                
@@ -54,8 +58,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(0, 0, 10, 0)
             };
             if (member.PictureFilename == null)
-                profileImage.Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/Crew/base.png", manager.GraphicsDevice);
-            else profileImage.Texture = manager.Content.LoadTexture2DFromFile(member.PictureFilename, manager.GraphicsDevice);
+                profileImage.Texture = assets.LoadTexture(typeof(ScreenComponent), "base");
+            else profileImage.Texture = assets.LoadTexture(typeof(ScreenComponent), member.PictureFilename);
             horizontalStack.Controls.Add(profileImage);
 
             //The Text Stack

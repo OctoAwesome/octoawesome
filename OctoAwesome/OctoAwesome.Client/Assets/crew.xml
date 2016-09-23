@@ -36,7 +36,7 @@
       <Link Title="Youtube Channel" Url="https://www.youtube.com/c/tomwendel" />
       <Link Title="Patreon" Url="https://www.patreon.com/bobstriker" />
     </Links>
-    <PictureFilename>./Assets/OctoAwesome.Client/Crew/bobstriker.png</PictureFilename>
+    <PictureFilename>bobstriker</PictureFilename>
   </CrewMember>
   <CrewMember>
     <Username>Christian</Username>

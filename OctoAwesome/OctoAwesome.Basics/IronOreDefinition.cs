@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics
 {
     class IronOreDefinition : IResourceDefinition
     {
-        public Bitmap Icon
+        public string Icon
         {
             get
             {

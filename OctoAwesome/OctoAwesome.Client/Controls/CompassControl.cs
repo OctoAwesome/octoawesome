@@ -10,23 +10,25 @@ namespace OctoAwesome.Client.Controls
     {
         private Texture2D compassTexture;
 
+        private AssetComponent assets;
+
         public PlayerComponent Player { get; set; }
 
         public CompassControl(ScreenComponent screenManager) : base(screenManager)
         {
+            assets = screenManager.Game.Assets;
+
             Player = screenManager.Player;
             Padding = Border.All(7);
 
-            Background = NineTileBrush.FromSingleTexture(
-                    screenManager.Game.Screen.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/buttonLong_brown_pressed.png",
-                        screenManager.GraphicsDevice), 7, 7);
-
-            compassTexture = ScreenManager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/compass.png", ScreenManager.GraphicsDevice);
+            Texture2D background = assets.LoadTexture(typeof(ScreenComponent), "buttonLong_brown_pressed");
+            Background = NineTileBrush.FromSingleTexture(background, 7, 7);
+            compassTexture = assets.LoadTexture(GetType(), "compass");
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (Player == null || Player.ActorHost == null)
+            if (Player == null || Player.ActorHost == null || !assets.Ready)
                 return;
 
             float compassValue = Player.ActorHost.Angle / (float)(2 * Math.PI);
