@@ -5,6 +5,7 @@ using System.Text;
 using OctoAwesome.Client.Components;
 using MonoGameUi;
 using engenious;
+using OctoAwesome.Client.Crew;
 
 namespace OctoAwesome.Client.Screens
 {

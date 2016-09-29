@@ -140,15 +140,6 @@
     <Content Include="Content\GameFont.png" />
     <Content Include="Content\HeadlineFont.png" />
     <Content Include="Content\Hud.png" />
-    <Content Include="Assets\OctoAwesome.Client\background_notext.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Client\Crew\base.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Client\Crew\bobstriker.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
     <Content Include="Copyright.txt" />
@@ -182,9 +173,6 @@
     <None Include="Content\GameFont.fnt" />
     <None Include="Content\HeadlineFont.fnt" />
     <None Include="Content\Hud.fnt" />
-    <None Include="Assets\OctoAwesome.Client\background_new.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Content\simple.glsl">
       <SubType>Designer</SubType>
     </None>

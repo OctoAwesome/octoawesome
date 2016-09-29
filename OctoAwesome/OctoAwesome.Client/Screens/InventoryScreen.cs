@@ -2,6 +2,10 @@
 using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using engenious.Input;
+using System.Collections.Generic;
+using OctoAwesome.Client.Controls;
+using engenious;
+using OctoAwesome.Runtime;
 
 namespace OctoAwesome.Client.Screens
 {

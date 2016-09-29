@@ -79,19 +79,15 @@ namespace OctoAwesome.Client.Controls
             {
                 foreach (var bitmap in definition.Textures)
                 {
-                    var scaled = bitmap;//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
+                    System.Drawing.Bitmap texture = manager.Game.Assets.LoadBitmap(definition.GetType(), bitmap);
+
+                    var scaled = texture;//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
                     int[] data = new int[scaled.Width * scaled.Height];
                     var bitmapData = scaled.LockBits(new System.Drawing.Rectangle(0, 0, scaled.Width, scaled.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                     System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, data, 0, data.Length);
                     blockTextures.SetData(data, layer);
                     scaled.UnlockBits(bitmapData);
                     layer++;
-                }
-            }
-            {
-                foreach (var texture in definition.Textures)
-                {
-                    bitmaps.Add(manager.Game.Assets.LoadBitmap(definition.GetType(), texture));
                 }
             }
 

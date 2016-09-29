@@ -52,13 +52,16 @@ namespace OctoAwesome.Client
             Icon = Properties.Resources.octoawesome;
 
             //Window.AllowUserResizing = true;
+            Settings = new Settings();
+            ResourceManager.Settings = Settings;
+
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int viewrange;
-            if (int.TryParse(SettingsManager.Get("Viewrange"), out viewrange))
+            if (int.TryParse(Settings.Get<string>("Viewrange"), out viewrange))
             {
-                var viewrange = Settings.Get<int>("Viewrange");
+                // var viewrange = Settings.Get<int>("Viewrange");
 
                 if (viewrange < 1)
                     throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");
