@@ -57,12 +57,14 @@
     <Compile Include="Components\PlayerComponent.cs" />
     <Compile Include="Components\ScreenComponent.cs" />
     <Compile Include="Components\SimulationComponent.cs" />
+    <Compile Include="Controls\BindingsOptionControl.cs" />
     <Compile Include="Controls\CompassControl.cs" />
     <Compile Include="Controls\CrosshairControl.cs" />
     <Compile Include="Controls\DebugControl.cs" />
     <Compile Include="Controls\HealthBarControl.cs" />
     <Compile Include="Controls\InventoryControl.cs" />
     <Compile Include="Controls\MinimapControl.cs" />
+    <Compile Include="Controls\OptionsOptionControl.cs" />
     <Compile Include="Controls\ResourcePacksOptionControl.cs" />
     <Compile Include="Controls\SceneControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
