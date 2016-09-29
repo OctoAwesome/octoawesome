@@ -28,6 +28,8 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public IUniverse CurrentUniverse { get { return universe; } }
 
+        public static ISettings Settings;
+
         #region Singleton
 
         private static ResourceManager instance = null;
@@ -48,7 +50,8 @@ namespace OctoAwesome.Runtime
 
         private ResourceManager()
         {
-            persistenceManager = new DiskPersistenceManager();
+            persistenceManager = new DiskPersistenceManager(Settings);
+            
 
             globalChunkCache = new GlobalChunkCache(
                 (p, i) => loadChunkColumn(p, i),
@@ -56,7 +59,7 @@ namespace OctoAwesome.Runtime
 
             planets = new Dictionary<int, IPlanet>();
 
-            bool.TryParse(SettingsManager.Get("DisablePersistence"), out disablePersistence);
+            bool.TryParse(Settings.Get<string>("DisablePersistence"), out disablePersistence);
         }
 
         /// <summary>

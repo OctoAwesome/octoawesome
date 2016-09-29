@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics
 {
     class IronOreDefinition : IResourceDefinition
     {
-        public Bitmap Icon
+        public string Icon
         {
             get
             {
@@ -29,6 +29,14 @@ namespace OctoAwesome.Basics
             get
             {
                 return 50;
+            }
+        }
+
+        public float VolumePerUnit
+        {
+            get
+            {
+                return 125;
             }
         }
 

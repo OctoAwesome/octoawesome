@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class GrassBlockDefinition : BlockDefinition
     {
@@ -10,21 +10,21 @@ namespace OctoAwesome.Basics
             get { return Languages.OctoBasics.Grass; }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"); }
+            get { return "grass_top"; }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 
 
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_grass.png"),
+                    "grass_top",
+                    "dirt",
+                    "dirt_grass",
                 };
             }
         }

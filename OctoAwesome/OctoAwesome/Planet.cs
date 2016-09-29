@@ -34,6 +34,11 @@ namespace OctoAwesome
         public Index3 Size { get; private set; }
 
         /// <summary>
+        /// Gravitation des Planeten.
+        /// </summary>
+        public float Gravity { get; private set; }
+
+        /// <summary>
         /// Der Generator des Planeten.
         /// </summary>
         public IMapGenerator Generator { get; set; }

@@ -8,7 +8,7 @@ namespace OctoAwesome.Tests
 {
     public sealed class TestBlockDefinition : BlockDefinition
     {
-        public override Bitmap Icon
+        public override string Icon
         {
             get
             {
@@ -24,7 +24,7 @@ namespace OctoAwesome.Tests
             }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {

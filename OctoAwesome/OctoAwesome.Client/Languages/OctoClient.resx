@@ -225,4 +225,19 @@
   <data name="ToMainMenu" xml:space="preserve">
     <value>To Main Menu</value>
   </data>
+  <data name="EnableFullscreenOnStartup" xml:space="preserve">
+    <value>Enable Fullscreen Mode on Startup</value>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="Pixels" xml:space="preserve">
+    <value>Pixels</value>
+  </data>
+  <data name="KeyBindings" xml:space="preserve">
+    <value>Key Bindings</value>
+  </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
 </root>

@@ -7,6 +7,7 @@
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Anteru</Username>
@@ -16,7 +17,12 @@
       <Achievements>EmailJoker</Achievements>
       <Achievements>Livegast</Achievements>
       <Achievements>Streamer</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Blog" Url="https://anteru.net/" />
+      <Link Title="OctoAwesome Blogeintrag" Url="https://anteru.net/2015/08/06/2847/" />      
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>bobstriker</Username>
@@ -26,7 +32,11 @@
       <Achievements>Streamer</Achievements>
       <Achievements>Livegast</Achievements>
     </AchievementList>
-    <PictureFilename>./Assets/OctoAwesome.Client/Crew/bobstriker.png</PictureFilename>
+    <Links>
+      <Link Title="Youtube Channel" Url="https://www.youtube.com/c/tomwendel" />
+      <Link Title="Patreon" Url="https://www.patreon.com/bobstriker" />
+    </Links>
+    <PictureFilename>bobstriker</PictureFilename>
   </CrewMember>
   <CrewMember>
     <Username>Christian</Username>
@@ -36,6 +46,9 @@
       <Achievements>Patron</Achievements>
       <Achievements>HardwareDealer</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Youtube Channel" Url="https://www.youtube.com/channel/UCihFcS0QvNaVY84-hFmNE3A" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>hendifw</Username>
@@ -43,7 +56,10 @@
     <Description>Der Mann für die Registrierungs Webseite, ist seit der 20 Folge mit dabei und Streamt in Zukunft die Coolen ASP.NET OctoAwesome Sachen.</Description>
     <AchievementList>
       <Achievements>Streamer</Achievements>
+      <Achievements>Contributor</Achievements>
+      <Achievements>DatenbankFreigeschaltet</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Dennis</Username>
@@ -52,6 +68,7 @@
     <AchievementList>
       <Achievements>Patron</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>jvbsl</Username>
@@ -61,7 +78,12 @@
       <Achievements>Livegast</Achievements>
       <Achievements>Streamer</Achievements>
       <Achievements>Tools</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Livecoding.tv" Url="https://www.livecoding.tv/jvbsl/" />
+      <Link Title="GitHub-Projekte" Url="https://github.com/jvbsl/" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>Juergen</Username>
@@ -70,6 +92,7 @@
     <AchievementList>
       <Achievements>Patron</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Kapu</Username>
@@ -78,6 +101,9 @@
     <AchievementList>
       <Achievements>Musik</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Youtube Channel" Url="https://www.youtube.com/user/Raidon90" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>Lassi</Username>
@@ -85,7 +111,11 @@
     <Description>Lassi war der erste Stargast im Octo-Universum und hat recht früh im Spiel dafür gesorgt, dass die Physik die richtigen Wege geht. Das ganze Trägheits- und Beschleunigungsthema war noch nie so meins. Wie wir alle wissen, hat er zuletzt seinen Elektrotechniker abgeschlossen, studiert aber tapfer weiter. Ich kann nur hoffen, dass es ein Master mit Schwerpunkt Animations-Physik ist.</Description>
     <AchievementList>
       <Achievements>Livegast</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="GitHub-Projekte" Url="https://github.com/CsharpLassi" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>macx</Username>
@@ -94,16 +124,24 @@
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>manuelhu</Username>
     <Alias>Manuel</Alias>
-    <Description>Von Manuel habe ich anfangs reichlich Feedback per YouTube-Kommentaren bekommen. Später dann per Email, bis er letztendlich durch die Livestreams zur rettenden Fee im Wiki wurde. Ohne ihn hätten wir hier keinen Episoden-Guide und auch mein Octo-Timer stammt aus seinem Compiler.</Description>
+    <Description>Von Manuel habe ich anfangs reichlich Feedback per YouTube-Kommentaren bekommen. Später dann per Email, bis er letztendlich durch die Livestreams zur rettenden Fee im Wiki wurde. Ohne ihn hätten wir hier keinen Episoden-Guide und auch mein Octo-Timer stammt aus seinem Compiler. Er kümmert sich außerdem noch um usere Dokumentation auf doc.octoawesome.net.</Description>
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
       <Achievements>Tools</Achievements>
       <Achievements>WikiAdmin</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="GitHub-Projekte" Url="https://github.com/ManuelHu" />
+      <Link Title="OctoReminder" Url="https://github.com/ManuelHu/OctoReminder" />
+      <Link Title="Website" Url="https://www.manuelhu.de/" />
+    </Links>
+    <PictureFilename>manuelhu</PictureFilename>
   </CrewMember>
   <CrewMember>
     <Username>Marcus_Aurelius</Username>
@@ -112,7 +150,9 @@
     <AchievementList>
       <Achievements>WikiAdmin</Achievements>
       <Achievements>Streamer</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>MarkusK</Username>
@@ -122,6 +162,7 @@
       <Achievements>EmailJoker</Achievements>
       <Achievements>Patron</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Mrsfuckingsunshine</Username>
@@ -131,6 +172,9 @@
       <Achievements>Livegast</Achievements>
       <Achievements>Grafik</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Web" Url="http://www.alineimwunderland.de/" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>patteki</Username>
@@ -140,6 +184,11 @@
       <Achievements>Livegast</Achievements>
       <Achievements>Streamer</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Livecoding.tv" Url="https://www.livecoding.tv/patteki/" />
+      <Link Title="Youtube" Url="https://www.youtube.com/user/Patteminecraft" />
+      <Link Title="Twitch" Url="http://www.twitch.tv/patteki" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>Paul</Username>
@@ -147,7 +196,9 @@
     <Description>Paul kenne ich noch aus den guten alten Microsoft Student Partner Zeiten. Er ist Software Entwickler im Raum Berlin und hat uns einzig und alleine ins Chaos gestürzt. Ihn hatten wir im Stream zur Performance- und Speicher-Optimierung. Mit großem Erfolg hat er Octo umgekrempelt.</Description>
     <AchievementList>
       <Achievements>Livegast</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Ralf</Username>
@@ -156,15 +207,19 @@
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Rave1000</Username>
-    <Alias>Rave1000</Alias>
+    <Alias>fnawratil / Fabian</Alias>
     <Description>Immer am Start, immer dabei mit jeder Menge Verbesserungen bei Octo und MonoGameUI.</Description>
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
       <Achievements>Contributor</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="GitHub" Url="https://github.com/fnawratil" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>Redwork</Username>
@@ -173,6 +228,7 @@
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>SomaFM</Username>
@@ -181,6 +237,9 @@
     <AchievementList>
       <Achievements>Tools</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="Secret Agent" Url="http://somafm.com/secretagent/" />
+    </Links>
   </CrewMember>
   <CrewMember>
     <Username>susch19</Username>
@@ -190,6 +249,7 @@
       <Achievements>EmailJoker</Achievements>
       <Achievements>Streamer</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Ulrich</Username>
@@ -198,6 +258,7 @@
     <AchievementList>
       <Achievements>Patron</Achievements>
     </AchievementList>
+    <Links></Links>
   </CrewMember>
   <CrewMember>
     <Username>Vengarioth</Username>
@@ -207,5 +268,8 @@
       <Achievements>Livegast</Achievements>
       <Achievements>Patron</Achievements>
     </AchievementList>
+    <Links>
+      <Link Title="GitHub" Url="https://github.com/Vengarioth" />
+    </Links>
   </CrewMember>
 </ArrayOfCrewMember>

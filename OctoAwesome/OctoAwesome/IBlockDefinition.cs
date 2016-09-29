@@ -18,7 +18,7 @@ namespace OctoAwesome
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
         /// </summary>
-        Bitmap[] Textures { get; }
+        string[] Textures { get; }
 
         /// <summary>
         /// Zeigt, ob der Block-Typ Metadaten besitzt

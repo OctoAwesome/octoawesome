@@ -21,14 +21,22 @@ namespace OctoAwesome.Runtime
 
         private const string ColumnFilename = "column_{0}_{1}.dat";
 
-        private DirectoryInfo root;        
+        private DirectoryInfo root;
+        private ISettings Settings;
+
+
+
+        public DiskPersistenceManager(ISettings Settings)
+        {
+            this.Settings = Settings;
+        }
 
         private string GetRoot()
         {
             if (root != null)
                 return root.FullName;
 
-            string appconfig = SettingsManager.Get("ChunkRoot");
+            string appconfig = Settings.Get<string>("ChunkRoot");
             if (!string.IsNullOrEmpty(appconfig))
             {
                 root = new DirectoryInfo(appconfig);
@@ -248,13 +256,18 @@ namespace OctoAwesome.Runtime
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
-                try {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Player));
-                    return (Player)serializer.Deserialize(stream);
-                }
-                catch (Exception)
+                using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    File.Delete(file);
+                    try
+                    {
+                        Player player = new Player();
+                        player.Deserialize(reader, DefinitionManager.Instance);
+                        return player;
+                    }
+                    catch (Exception)
+                    {
+                        // File.Delete(file);
+                    }
                 }
             }
 
@@ -275,8 +288,10 @@ namespace OctoAwesome.Runtime
             string file = Path.Combine(path, "player.info");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Player));
-                serializer.Serialize(stream, player);
+                using (BinaryWriter writer = new BinaryWriter(stream))
+                {
+                    player.Serialize(writer, DefinitionManager.Instance);
+                }
             }
         }
     }

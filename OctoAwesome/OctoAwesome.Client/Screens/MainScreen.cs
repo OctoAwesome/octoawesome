@@ -6,11 +6,15 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class MainScreen : BaseScreen
     {
+        private AssetComponent assets;
+
         public MainScreen(ScreenComponent manager) : base(manager)
         {
+            assets = manager.Game.Assets;
+
             Padding = new Border(0,0,0,0);
 
-            Background = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background.png", manager.GraphicsDevice), TextureBrushMode.Stretch);
+            Background = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "background"), TextureBrushMode.Stretch);
 
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
