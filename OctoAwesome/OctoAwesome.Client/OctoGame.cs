@@ -35,11 +35,6 @@ namespace OctoAwesome.Client
 
         public Settings Settings { get; private set; }
 
-        // Fullscreen
-        private Size oldSize;
-        private Point oldPositon;
-        bool fullscreen = false;
-
         public OctoGame()
         {
             //graphics = new GraphicsDeviceManager(this);
@@ -58,10 +53,19 @@ namespace OctoAwesome.Client
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
-            int viewrange;
-            if (int.TryParse(Settings.Get<string>("Viewrange"), out viewrange))
+            int width = 1080, height = 720;
+            if (Settings.KeyExists("Width"))
+                width = Settings.Get<int>("Width");
+            if (Settings.KeyExists("Height"))
+               height = Settings.Get<int>("Height");            
+            Window.ClientSize = new Size(width, height);
+
+            if (Settings.KeyExists("EnableFullscreen") && Settings.Get<bool>("EnableFullscreen"))
+                Window.Fullscreen = true;
+
+            if (Settings.KeyExists("Viewrange"))
             {
-                // var viewrange = Settings.Get<int>("Viewrange");
+                var viewrange = Settings.Get<int>("Viewrange");
 
                 if (viewrange < 1)
                     throw new NotSupportedException("Viewrange in app.config darf nicht kleiner 1 sein");
