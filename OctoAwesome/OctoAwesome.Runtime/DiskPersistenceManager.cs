@@ -141,7 +141,7 @@ namespace OctoAwesome.Runtime
             List<IUniverse> universes = new List<IUniverse>();
             foreach (var folder in Directory.GetDirectories(root))
             {
-                string id = folder.Replace(root + "\\", "");
+                string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
                 Guid guid;
                 if (Guid.TryParse(id, out guid))
                     universes.Add(LoadUniverse(guid));

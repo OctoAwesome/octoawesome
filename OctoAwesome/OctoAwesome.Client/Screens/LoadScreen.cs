@@ -1,11 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGameUi;
+﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using engenious;
+using engenious.Input;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -153,7 +154,7 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            if (args.Key == Microsoft.Xna.Framework.Input.Keys.Enter)
+            if (args.Key == Keys.Enter)
             {
                 if (levelList.SelectedItem == null)
                     return;

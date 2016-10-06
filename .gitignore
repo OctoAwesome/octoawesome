@@ -5,6 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
+## MonoDev user-specific files
+*.userprefs
 
 # Build results
 [Dd]ebug/
