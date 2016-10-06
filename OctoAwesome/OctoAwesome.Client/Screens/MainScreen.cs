@@ -1,6 +1,5 @@
 ﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
-using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens

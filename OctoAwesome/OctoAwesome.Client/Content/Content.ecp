@@ -1,0 +1,28 @@
+﻿<Content>
+  <References />
+  <Configuration>Debug</Configuration>
+  <OutputDir>bin/{Configuration}/</OutputDir>
+  <Name>Content</Name>
+  <Contents>
+    <ContentFile>
+      <Name>BoldFont.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>GameFont.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>HeadlineFont.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>Hud.fnt</Name>
+      <Processor />
+    </ContentFile>
+    <ContentFile>
+      <Name>simple.glsl</Name>
+      <Processor />
+    </ContentFile>
+  </Contents>
+</Content>

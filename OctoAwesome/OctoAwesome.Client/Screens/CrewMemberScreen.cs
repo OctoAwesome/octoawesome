@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MonoGameUi;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using OctoAwesome.Client.Components;
+using engenious.Graphics;
 using System.Diagnostics;
 using OctoAwesome.Client.Crew;
 
