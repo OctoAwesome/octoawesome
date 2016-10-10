@@ -135,6 +135,7 @@
     <EmbeddedResource Include="Assets\Components\progress_background.png" />
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
     <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
+    <EmbeddedResource Include="Assets\Crew\blackorca.png" />
     <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
     <Content Include="Content\GameFont.png" />
