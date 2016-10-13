@@ -69,6 +69,9 @@
     <Compile Include="Biomes\HighMountainBiome.cs" />
     <Compile Include="Biomes\HillsBiome.cs" />
     <Compile Include="Biomes\IBiome.cs" />
+    <Compile Include="Components\BoxCollisionComponent.cs" />
+    <Compile Include="Components\ControllableComponent.cs" />
+    <Compile Include="Components\EntityCollisionComponent.cs" />
     <Compile Include="Definitions\Blocks\BirchWoodBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\CactusBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\GravelBlockDefinition.cs" />
@@ -79,6 +82,7 @@
     <Compile Include="Definitions\Blocks\PlankBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\BirchTreeDefinition.cs" />
     <Compile Include="Definitions\Trees\CactusTreeDefinition.cs" />
+    <Compile Include="Entities\AppleEntity.cs" />
     <Compile Include="ITreeDefinition.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Biomes\LandBiomeGenerator.cs" />
