@@ -72,7 +72,9 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkColumn.cs" />
     <Compile Include="CollisionPlane.cs" />
+    <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="EntityComponent.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />

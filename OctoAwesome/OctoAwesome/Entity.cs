@@ -1,4 +1,5 @@
 ﻿using engenious;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -7,7 +8,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity
+    public abstract class Entity : ComponentList<EntityComponent>
     {
         /// <summary>
         /// Die Position der Entität
