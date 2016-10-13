@@ -69,23 +69,18 @@ namespace OctoAwesome.Client.Screens
             textStack.Width = 430;
             horizontalStack.Controls.Add(textStack);
 
-            //The Username
+            //The Username & Alias
+            string usernameText = member.Username;
+            if (member.Alias != member.Username)
+                usernameText += " (" + member.Alias + ")";
             Label username = new Label(manager)
             {
-                Text = member.Username,
+                Text = usernameText,
                 Font = manager.Content.Load<SpriteFont>("HeadlineFont"),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
             textStack.Controls.Add(username);
-
-            //The Alias
-            Label alias = new Label(manager)
-            {
-                Text = member.Alias,
-                HorizontalAlignment = HorizontalAlignment.Left
-            };
-            textStack.Controls.Add(alias);
 
             //Achievements
             string achievementString = string.Join(", ", member.AchievementList.Select(a => a.ToString()));
