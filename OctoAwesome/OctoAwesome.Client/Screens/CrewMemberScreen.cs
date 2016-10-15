@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MonoGameUi;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using OctoAwesome.Client.Components;
+using engenious.Graphics;
 using System.Diagnostics;
+using OctoAwesome.Client.Crew;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -58,8 +58,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(0, 0, 10, 0)
             };
             if (member.PictureFilename == null)
-                profileImage.Texture = assets.LoadTexture(typeof(ScreenComponent), "base");
-            else profileImage.Texture = assets.LoadTexture(typeof(ScreenComponent), member.PictureFilename);
+                profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "base");
+            else profileImage.Texture = assets.LoadTexture(typeof(CrewMember), member.PictureFilename);
             horizontalStack.Controls.Add(profileImage);
 
             //The Text Stack
@@ -69,23 +69,18 @@ namespace OctoAwesome.Client.Screens
             textStack.Width = 430;
             horizontalStack.Controls.Add(textStack);
 
-            //The Username
+            //The Username & Alias
+            string usernameText = member.Username;
+            if (member.Alias != member.Username)
+                usernameText += " (" + member.Alias + ")";
             Label username = new Label(manager)
             {
-                Text = member.Username,
+                Text = usernameText,
                 Font = manager.Content.Load<SpriteFont>("HeadlineFont"),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
             textStack.Controls.Add(username);
-
-            //The Alias
-            Label alias = new Label(manager)
-            {
-                Text = member.Alias,
-                HorizontalAlignment = HorizontalAlignment.Left
-            };
-            textStack.Controls.Add(alias);
 
             //Achievements
             string achievementString = string.Join(", ", member.AchievementList.Select(a => a.ToString()));

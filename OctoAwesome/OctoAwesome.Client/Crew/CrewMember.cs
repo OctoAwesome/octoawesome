@@ -5,7 +5,7 @@ using MonoGameUi;
 using OctoAwesome.Client.Components;
 using System;
 
-namespace OctoAwesome.Client
+namespace OctoAwesome.Client.Crew
 {
     public class CrewMember
     {

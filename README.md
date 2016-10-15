@@ -10,8 +10,9 @@ The videos are in German, but the source code is clean and written to be underst
 
 #### Links
 * [Project Wiki](http://wiki.octoawesome.net/wiki/Hauptseite)
-* <del>[Livestream on livecoding.tv](http://www.livecoding.tv/bobstriker)</del>
-* [Livestream on beam.pro](http://beam.pro/tomwendel)
+* [API Documentation](http://doc.octoawesome.net/)
+* [Livestream on livecoding.tv](http://www.livecoding.tv/bobstriker)
+* <del>[Livestream on beam.pro](http://beam.pro/tomwendel)</del>
 * [Youtube Playlist](https://www.youtube.com/playlist?list=PLFOBQ8ri3LGzTuupbPahvVylv4OOyRVaK)
 * [Facebook Page](https://www.facebook.com/octoawesome)
 * [Twitter](http://www.twitter.com/bobstriker)

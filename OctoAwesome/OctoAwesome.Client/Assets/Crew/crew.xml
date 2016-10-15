@@ -62,13 +62,16 @@
     <Links></Links>
   </CrewMember>
   <CrewMember>
-    <Username>Dennis</Username>
+    <Username>BlackOrca</Username>
     <Alias>Dennis</Alias>
     <Description>Nach Folge 250 hat mir Dennis (aka. BlackOrca) doch prompt eine kleine Wer-bin-ich Nachricht geschickt die mich sehr gefreut hat. Viele Jahre verfolgt er bereits Projekte wie MoonTaxi, AntMe! und nun eben OctoAwesome. Ihm steht IoT auf der Flagge - speziell das Verbinden von Hard- und Software im Heimbereich.</Description>
     <AchievementList>
       <Achievements>Patron</Achievements>
     </AchievementList>
-    <Links></Links>
+    <Links>
+      <Link Title="Blog" Url="http://blog.dashboard-buster.de/" />
+    </Links>
+    <PictureFilename>blackorca</PictureFilename>
   </CrewMember>
   <CrewMember>
     <Username>jvbsl</Username>
@@ -141,6 +144,7 @@
       <Link Title="OctoReminder" Url="https://github.com/ManuelHu/OctoReminder" />
       <Link Title="Website" Url="https://www.manuelhu.de/" />
     </Links>
+    <PictureFilename>manuelhu</PictureFilename>
   </CrewMember>
   <CrewMember>
     <Username>Marcus_Aurelius</Username>

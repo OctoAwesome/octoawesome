@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using OctoAwesome;
+﻿using OctoAwesome;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
@@ -11,6 +8,8 @@ using System.Linq;
 using MonoGameUi;
 using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 using EventArgs = System.EventArgs;
+using engenious;
+using engenious.Input;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Client
@@ -20,7 +19,7 @@ namespace OctoAwesome.Client
     /// </summary>
     internal class OctoGame : Game
     {
-        GraphicsDeviceManager graphics;
+        //GraphicsDeviceManager graphics;
 
         public CameraComponent Camera { get; private set; }
 
@@ -36,51 +35,33 @@ namespace OctoAwesome.Client
 
         public Settings Settings { get; private set; }
 
-        // Fullscreen
-        private int oldHeight, oldWidth;
-        Point oldPositon;
-        bool fullscreen = false;
-
         public OctoGame()
-            : base()
         {
-            graphics = new GraphicsDeviceManager(this);
+            //graphics = new GraphicsDeviceManager(this);
+            //graphics.PreferredBackBufferWidth = 1080;
+            //graphics.PreferredBackBufferHeight = 720;
 
+            //Content.RootDirectory = "Content";
+            Title = "OctoAwesome";
+            IsMouseVisible = true;
+            Icon = Properties.Resources.octoawesome;
+
+            //Window.AllowUserResizing = true;
             Settings = new Settings();
             ResourceManager.Settings = Settings;
 
-            int width;
+
+            //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
+
+            int width = 1080, height = 720;
             if (Settings.KeyExists("Width"))
-            {
                 width = Settings.Get<int>("Width");
-            }
-            else
-            {
-                width = 1080;
-            }
-            graphics.PreferredBackBufferWidth = width;
-
-            int height;
             if (Settings.KeyExists("Height"))
-            {
-                height = Settings.Get<int>("Height");
-            }
-            else
-            {
-                height = 1080;
-            }
-            graphics.PreferredBackBufferHeight = height;
+               height = Settings.Get<int>("Height");            
+            Window.ClientSize = new Size(width, height);
 
-          
-            Content.RootDirectory = "Content";
-            Window.Title = "OctoAwesome";
-            IsMouseVisible = true;
-            Window.AllowUserResizing = true;
-
-            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
-
-            if(Settings.KeyExists("EnableFullscreen") && Settings.Get<bool>("EnableFullscreen"))
-                Fullscreen();
+            if (Settings.KeyExists("EnableFullscreen") && Settings.Get<bool>("EnableFullscreen"))
+                Window.Fullscreen = true;
 
             if (Settings.KeyExists("Viewrange"))
             {
@@ -114,17 +95,16 @@ namespace OctoAwesome.Client
 
             KeyMapper = new KeyMapper(Screen, Settings);
 
-            Window.ClientSizeChanged += (s, e) =>
+            /*Resize += (s, e) =>
             {
-                if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
-                   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
-                    return;
+                //if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
+                //   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
+                //    return;
 
-                graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                graphics.ApplyChanges();
-            };
-
+                //graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                //graphics.ApplyChanges();
+            };*/
             SetKeyBindings();
         }
 
@@ -173,7 +153,7 @@ namespace OctoAwesome.Client
                 { "octoawesome:headright", Keys.Right },
                 { "octoawesome:interact", Keys.E },
                 { "octoawesome:apply", Keys.Q },
-                { "octoawesome:flymode", Keys.Scroll },
+                { "octoawesome:flymode", Keys.ScrollLock },
                 { "octoawesome:jump", Keys.Space },
                 { "octoawesome:slot0", Keys.D1 },
                 { "octoawesome:slot1", Keys.D2 },
@@ -200,7 +180,9 @@ namespace OctoAwesome.Client
             KeyMapper.AddAction("octoawesome:fullscreen", type =>
             {
                 if (type == KeyMapper.KeyType.Down)
-                    Fullscreen();
+                {
+                    Window.Fullscreen = !Window.Fullscreen;
+                }
             });
         }
 
@@ -208,37 +190,6 @@ namespace OctoAwesome.Client
         {
             Player.RemovePlayer();
             Simulation.ExitGame();
-
-            base.OnExiting(sender, args);
-        }
-
-        private void Fullscreen()
-        {
-            if (!fullscreen)
-            {
-                oldHeight = Window.ClientBounds.Height;
-                oldWidth = Window.ClientBounds.Width;
-                oldPositon = Window.Position;
-                var screenWidth = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                var screenHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-
-                Window.Position = new Point(0, 0);
-                Window.IsBorderless = true;
-
-                graphics.PreferredBackBufferWidth = screenWidth;
-                graphics.PreferredBackBufferHeight = screenHeight;
-                fullscreen = true;
-            }
-            else
-            {
-                Window.Position = oldPositon;
-                Window.IsBorderless = false;
-                graphics.PreferredBackBufferHeight = oldHeight;
-                graphics.PreferredBackBufferWidth = oldWidth;
-                fullscreen = false;
-            }
-
-            graphics.ApplyChanges();
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using engenious;
 
 namespace OctoAwesome.Client.Components
 {
@@ -82,7 +82,7 @@ namespace OctoAwesome.Client.Components
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);
-            Frustum = new BoundingFrustum(View * Projection);
+            Frustum = new BoundingFrustum(Projection*View);
         }
 
         public Index3 CameraChunk { get; private set; }

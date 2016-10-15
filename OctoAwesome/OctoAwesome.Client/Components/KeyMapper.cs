@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using MonoGameUi;
 using KeyEventArgs = MonoGameUi.KeyEventArgs;
-using Keys = Microsoft.Xna.Framework.Input.Keys;
+using Keys = engenious.Input.Keys;
 
 namespace OctoAwesome.Client.Components
 {

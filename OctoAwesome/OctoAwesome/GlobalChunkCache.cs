@@ -233,7 +233,7 @@ namespace OctoAwesome
 
                 for (int i = 0; i < ChunkColumn.Chunks.Length; i++)
                 {
-                    if (ChunkColumn.Chunks[i].ChangeCounter != SavedChangeCounter[i])
+                    if (ChunkColumn.Chunks[i] != null && ChunkColumn.Chunks[i].ChangeCounter != SavedChangeCounter[i])
                         return true;
                 }
 
