@@ -77,6 +77,7 @@
     <Compile Include="BlockIntersectTests.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="CollisionTests.cs" />
+    <Compile Include="FileHeaderStreamTest.cs" />
     <Compile Include="GlobalChunkCacheTest.cs" />
     <Compile Include="Index2Tests.cs" />
     <Compile Include="Index3Tests.cs" />
