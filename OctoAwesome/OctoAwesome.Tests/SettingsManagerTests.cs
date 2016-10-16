@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace OctoAwesome.Tests
 {
-    [TestClass]
+    
     public class SettingsManagerTests
     {
-        [TestMethod]
+        [Fact]
         public void ReadWrite()
         {
             Settings settings = new Settings();
@@ -20,7 +20,7 @@ namespace OctoAwesome.Tests
             
             string[] newArray = settings.GetArray<string>("foo");
 
-            Assert.IsTrue(testArray.SequenceEqual(newArray));
+            Assert.True(testArray.SequenceEqual(newArray));
 
 
             int[] testArrayInt = new int[] { 3,5,333,456,3457};
@@ -28,7 +28,7 @@ namespace OctoAwesome.Tests
 
             int[] newArrayInt = settings.GetArray<int>("fooInt");
 
-            Assert.IsTrue(testArray.SequenceEqual(newArray));
+            Assert.True(testArray.SequenceEqual(newArray));
 
 
             bool[] testArrayBool = new bool[] { true, false};
@@ -36,26 +36,26 @@ namespace OctoAwesome.Tests
 
             bool[] newArrayBool = settings.GetArray<bool>("fooBool");
 
-            Assert.IsTrue(testArray.SequenceEqual(newArray));
+            Assert.True(testArray.SequenceEqual(newArray));
 
 
             String inputString = "randomStringWith§$%&/()=Charakters";
             settings.Set("inputString", inputString);
 
 
-            Assert.AreEqual(inputString, settings.Get<string>("inputString"));
+            Assert.Equal(inputString, settings.Get<string>("inputString"));
 
 
             int inputInt = new Random().Next();
             settings.Set("inputInt", inputInt);
 
-            Assert.AreEqual(inputInt, settings.Get<int>("inputInt"));
+            Assert.Equal(inputInt, settings.Get<int>("inputInt"));
 
 
             bool inputBool = true;
             settings.Set("inputBool", inputBool);
 
-            Assert.AreEqual(inputBool, settings.Get<bool>("inputBool"));
+            Assert.Equal(inputBool, settings.Get<bool>("inputBool"));
 
             
 
@@ -63,7 +63,7 @@ namespace OctoAwesome.Tests
 
         }
 
-        [TestMethod]
+        [Fact]
         public void NullTest()
         {
 
