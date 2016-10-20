@@ -25,7 +25,7 @@ namespace OctoAwesome.Client
 
         public PlayerComponent Player { get; private set; }
 
-        public SimulationComponent Simulation { get; private set; }
+        public Components.SimulationComponent Simulation { get; private set; }
 
         public ScreenComponent Screen { get; private set; }
 
@@ -72,7 +72,7 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new SimulationComponent(this);
+            Simulation = new Components.SimulationComponent(this);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 

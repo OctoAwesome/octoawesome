@@ -8,8 +8,12 @@ namespace OctoAwesome
     /// Base Class for all Component based Entities.
     /// </summary>
     /// <typeparam name="T">Type of Component</typeparam>
-    public abstract class ComponentList<T> : IEnumerable<T> where T : EntityComponent
+    public sealed class ComponentList<T> : IEnumerable<T> where T : Component
     {
+        private Action<T> insertValidator;
+
+        private Action<T> removeValidator;
+
         private Dictionary<Type, T> components = new Dictionary<Type, T>();
 
         public T this[Type type]
@@ -21,6 +25,16 @@ namespace OctoAwesome
                     return result;
                 return null;
             }
+        }
+
+        public ComponentList()
+        {
+        }
+
+        public ComponentList(Action<T> insertValidator, Action<T> removeValidator)
+        {
+            this.insertValidator = insertValidator;
+            this.removeValidator = removeValidator;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -39,6 +53,9 @@ namespace OctoAwesome
         /// <param name="component">Component</param>
         public void AddComponent(T component)
         {
+            insertValidator?.Invoke(component);
+
+
             Type type = component.GetType();
             components.Add(type, component);
         }
@@ -73,6 +90,11 @@ namespace OctoAwesome
         /// <returns></returns>
         public bool RemoveComponent<V>() where V : T
         {
+            T component;
+            if (!components.TryGetValue(typeof(V), out component))
+                return false;
+
+            removeValidator?.Invoke(component);
             return components.Remove(typeof(V));
         }
     }

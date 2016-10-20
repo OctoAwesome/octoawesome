@@ -72,6 +72,7 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkColumn.cs" />
     <Compile Include="CollisionPlane.cs" />
+    <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="EntityComponent.cs" />
@@ -109,7 +110,11 @@
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Simulation.cs" />
+    <Compile Include="SimulationComponent.cs" />
+    <Compile Include="SimulationState.cs" />
     <Compile Include="Universe.cs" />
+    <Compile Include="UpdateableEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
