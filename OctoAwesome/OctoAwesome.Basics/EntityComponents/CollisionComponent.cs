@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Basics.Components
+namespace OctoAwesome.Basics.EntityComponents
 {
-    class EntityCollisionComponent
+    public abstract class CollisionComponent : EntityComponent
     {
     }
 }

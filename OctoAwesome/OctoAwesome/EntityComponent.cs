@@ -3,7 +3,7 @@
     /// <summary>
     /// Base Class for all Entity Components.
     /// </summary>
-    public abstract class EntityComponent
+    public abstract class EntityComponent : Component
     {
         /// <summary>
         /// Reference to the Entity.

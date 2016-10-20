@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Basics.Components
+namespace OctoAwesome.Basics.EntityComponents
 {
-    public sealed class ControllableComponent : EntityComponent
+    public sealed class BoxCollisionComponent : CollisionComponent
     {
     }
 }

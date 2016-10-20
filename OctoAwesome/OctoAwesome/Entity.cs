@@ -1,15 +1,29 @@
 ﻿using engenious;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Xml.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity : ComponentList<EntityComponent>
+    public abstract class Entity
     {
+        /// <summary>
+        /// Contains all Components.
+        /// </summary>
+        public ComponentList<EntityComponent> Components { get; private set; }
+
+        /// <summary>
+        /// Temp Id
+        /// </summary>
+        public int Id { get; internal set; }
+
+        /// <summary>
+        /// Reference to the active Simulation.
+        /// </summary>
+        public Simulation Simulation { get; internal set; }
+
         /// <summary>
         /// Die Position der Entität
         /// </summary>
@@ -29,6 +43,24 @@ namespace OctoAwesome
         /// Kraft die von aussen auf die Entität wirkt.
         /// </summary>
         public Vector3 ExternalForce { get; set; }
+
+        public Entity()
+        {
+            Components = new ComponentList<EntityComponent>(
+                ValidateAddComponent, ValidateRemoveComponent);
+        }
+
+        private void ValidateAddComponent(EntityComponent component)
+        {
+            if (Simulation != null)
+                throw new NotSupportedException("Can't add components during simulation");
+        }
+
+        private void ValidateRemoveComponent(EntityComponent component)
+        {
+            if (Simulation != null)
+                throw new NotSupportedException("Can't remove components during simulation");
+        }
 
         /// <summary>
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.

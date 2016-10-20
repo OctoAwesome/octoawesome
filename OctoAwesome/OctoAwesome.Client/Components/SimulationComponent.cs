@@ -27,7 +27,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation();
+            Simulation = new Simulation(ResourceManager.Instance);
             return Simulation.NewGame(name, seed);
         }
 
@@ -39,8 +39,13 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation();
+            Simulation = new Simulation(ResourceManager.Instance);
             Simulation.LoadGame(guid);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Simulation?.Update(gameTime);
         }
 
         public void ExitGame()
@@ -60,7 +65,8 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            return Simulation.InsertPlayer(player);
+            Simulation.AddEntity(player); // InsertPlayer(player);
+            return null;
         }
 
         public void RemovePlayer(ActorHost host)
@@ -71,7 +77,8 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            Simulation.RemovePlayer(host);
+            // Simulation.RemovePlayer(host);
+            Simulation.RemoveEntity(host.Player);
         }
     }
 }

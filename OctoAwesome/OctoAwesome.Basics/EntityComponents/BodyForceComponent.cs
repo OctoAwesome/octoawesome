@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Basics.Components
+namespace OctoAwesome.Basics.EntityComponents
 {
-    class BoxCollisionComponent
+    public class BodyForceComponent : ForceComponent
     {
+        // TODO: Body Power?
     }
 }

@@ -8,6 +8,14 @@ namespace OctoAwesome
     public interface IResourceManager
     {
         /// <summary>
+        /// Erzuegt ein neues Universum.
+        /// </summary>
+        /// <param name="name">Name des neuen Universums.</param>
+        /// <param name="seed">Weltgenerator-Seed für das neue Universum.</param>
+        /// <returns>Die Guid des neuen Universums.</returns>
+        Guid NewUniverse(string name, int seed);
+
+        /// <summary>
         /// Lädt das Universum für die angegebene GUID.
         /// </summary>
         /// <param name="universeId">Die Guid des Universums.</param>
