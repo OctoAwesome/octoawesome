@@ -1,11 +1,12 @@
 ﻿using engenious;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OctoAwesome.Tests
 {
-    [TestClass]
+    using Xunit;
+
     public class CollisionTests
     {
         private float gap = 0.00001f;
@@ -16,19 +17,12 @@ namespace OctoAwesome.Tests
         private BlockDefinition blockDefinition = new TestBlockDefinition();
         private List<Index3> blocks = new List<Index3>();
 
-        [TestInitialize]
-        public void Init()
+        public CollisionTests()
         {
             blocks.Clear();
         }
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-
-        }
-
-        [TestMethod]
+        [Fact]
         public void CollisionFromEastToWestTest()
         {
             player = new Coordinate();
@@ -64,26 +58,26 @@ namespace OctoAwesome.Tests
 
             move = new Vector3(-1, 0, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(9.6f, 10.5f, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(9.6f, 10.5f, 10f + gap), player.GlobalPosition);
 
             move = new Vector3(-1, 0.1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(8.6f, 10.6f, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(8.6f, 10.6f, 10f + gap), player.GlobalPosition);
 
             move = new Vector3(-1, 0.1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(8.5f + gap, 10.7f, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(8.5f + gap, 10.7f, 10f + gap), player.GlobalPosition);
 
             move = new Vector3(-0.4f, -0.1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(8.5f + gap, 10.6f, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(8.5f + gap, 10.6f, 10f + gap), player.GlobalPosition);
         }
 
-        [TestMethod]
+        [Fact]
         public void CollisionFromEastToWestIntMaxTest()
         {
             int max = int.MaxValue - 1000;
@@ -121,26 +115,26 @@ namespace OctoAwesome.Tests
 
             move = new Vector3(-1, 0, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(max + 9.6f, max + 10.5f, max + 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(max + 9.6f, max + 10.5f, max + 10f + gap), player.GlobalPosition);
 
             move = new Vector3(-1, 0.1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(max + 8.6f, max + 10.6f, max + 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(max + 8.6f, max + 10.6f, max + 10f + gap), player.GlobalPosition);
 
             move = new Vector3(-1, 0.1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(max + 8.5f + gap, max + 10.7f, max + 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(max + 8.5f + gap, max + 10.7f, max + 10f + gap), player.GlobalPosition);
 
             move = new Vector3(-0.4f, -0.1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(max + 8.5f + gap, max + 10.6f, max + 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(max + 8.5f + gap, max + 10.6f, max + 10f + gap), player.GlobalPosition);
         }
 
-        [TestMethod]
+        [Fact]
         public void CollisionFrameSouthToNorthTest()
         {
             player = new Coordinate();
@@ -174,23 +168,23 @@ namespace OctoAwesome.Tests
 
             move = new Vector3(0f, -1, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(10.5f, 9.5f, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(10.5f, 9.5f, 10f + gap), player.GlobalPosition);
 
             move = new Vector3(0f, -1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(10.5f, 8.5f, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(10.5f, 8.5f, 10f + gap), player.GlobalPosition);
 
             move = new Vector3(0f, -1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(10.5f, 8.5f + gap, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(10.5f, 8.5f + gap, 10f + gap), player.GlobalPosition);
 
             move = new Vector3(0f, -1f, -0.1f);
             Move();
-            AssertEx.AreEqual(Vector3.Zero, move);
-            AssertEx.AreEqual(new Vector3(10.5f, 8.5f + gap, 10f + gap), player.GlobalPosition);
+            AssertEx.Equal(Vector3.Zero, move);
+            AssertEx.Equal(new Vector3(10.5f, 8.5f + gap, 10f + gap), player.GlobalPosition);
         }
 
         private void Move()

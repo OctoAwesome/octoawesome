@@ -1,40 +1,40 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace OctoAwesome.Model.Tests
 {
-    [TestClass]
+    
     public class Index3Tests
     {
-        [TestMethod]
+        [Fact]
         public void Index3ConstructorTest()
         {
             // Parameterlos
             Index3 i1 = new Index3();
-            Assert.AreEqual(0, i1.X);
-            Assert.AreEqual(0, i1.Y);
-            Assert.AreEqual(0, i1.Z);
+            Assert.Equal(0, i1.X);
+            Assert.Equal(0, i1.Y);
+            Assert.Equal(0, i1.Z);
 
             // Simpler Parameter
             Index3 i2 = new Index3(21, 32, 99);
-            Assert.AreEqual(21, i2.X);
-            Assert.AreEqual(32, i2.Y);
-            Assert.AreEqual(99, i2.Z);
+            Assert.Equal(21, i2.X);
+            Assert.Equal(32, i2.Y);
+            Assert.Equal(99, i2.Z);
 
             // Index2-Parameter
             Index3 i3 = new Index3(new Index2(-2, 80), 76);
-            Assert.AreEqual(-2, i3.X);
-            Assert.AreEqual(80, i3.Y);
-            Assert.AreEqual(76, i3.Z);
+            Assert.Equal(-2, i3.X);
+            Assert.Equal(80, i3.Y);
+            Assert.Equal(76, i3.Z);
 
             // Index3 Parameter
             Index3 i4 = new Index3(new Index3(int.MinValue, int.MaxValue, 3));
-            Assert.AreEqual(int.MinValue, i4.X);
-            Assert.AreEqual(int.MaxValue, i4.Y);
-            Assert.AreEqual(3, i4.Z);
+            Assert.Equal(int.MinValue, i4.X);
+            Assert.Equal(int.MaxValue, i4.Y);
+            Assert.Equal(3, i4.Z);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3ComparerTest()
         {
             Index3 i1 = new Index3(12, 13, 14);
@@ -46,26 +46,26 @@ namespace OctoAwesome.Model.Tests
             Index3 i7 = new Index3(12, 0, 14);
             Index3 i8 = new Index3(12, 13, 14);
 
-            Assert.AreEqual(i1, i1);
-            Assert.AreEqual(i1, i8);
-            Assert.AreNotEqual(i1, i2);
-            Assert.AreNotEqual(i1, i3);
-            Assert.AreNotEqual(i1, i4);
-            Assert.AreNotEqual(i1, i5);
-            Assert.AreNotEqual(i1, i6);
-            Assert.AreNotEqual(i1, i7);
+            Assert.Equal(i1, i1);
+            Assert.Equal(i1, i8);
+            Assert.NotEqual(i1, i2);
+            Assert.NotEqual(i1, i3);
+            Assert.NotEqual(i1, i4);
+            Assert.NotEqual(i1, i5);
+            Assert.NotEqual(i1, i6);
+            Assert.NotEqual(i1, i7);
 
-            // Assert.IsTrue(i1 == i1);
-            Assert.IsTrue(i1 == i8);
-            Assert.IsTrue(i1 != i2);
-            Assert.IsTrue(i1 != i3);
-            Assert.IsTrue(i1 != i4);
-            Assert.IsTrue(i1 != i5);
-            Assert.IsTrue(i1 != i6);
-            Assert.IsTrue(i1 != i7);
+            // Assert.True(i1 == i1);
+            Assert.True(i1 == i8);
+            Assert.True(i1 != i2);
+            Assert.True(i1 != i3);
+            Assert.True(i1 != i4);
+            Assert.True(i1 != i5);
+            Assert.True(i1 != i6);
+            Assert.True(i1 != i7);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3NormaizeMethodenTest()
         {
             Index3 i1 = new Index3(20, 20, 20); // Startwert
@@ -80,70 +80,70 @@ namespace OctoAwesome.Model.Tests
             // Norm X (int)
             Index3 t = i1;
             t.NormalizeX(i2.X);
-            Assert.AreEqual(ix, t);
+            Assert.Equal(ix, t);
 
             // Norm X (index2)
             t = i1;
             t.NormalizeX(i2);
-            Assert.AreEqual(ix, t);
+            Assert.Equal(ix, t);
 
             // Norm X (index3)
             t = i1;
             t.NormalizeX(i2b);
-            Assert.AreEqual(ix, t);
+            Assert.Equal(ix, t);
 
             // Norm Y (int)
             t = i1;
             t.NormalizeY(i2.Y);
-            Assert.AreEqual(iy, t);
+            Assert.Equal(iy, t);
 
             // Norm Y (index2)
             t = i1;
             t.NormalizeY(i2);
-            Assert.AreEqual(iy, t);
+            Assert.Equal(iy, t);
 
             // Norm Y (index3)
             t = i1;
             t.NormalizeY(i2b);
-            Assert.AreEqual(iy, t);
+            Assert.Equal(iy, t);
 
             // Norm Z (int)
             t = i1;
             t.NormalizeZ(i2b.Z);
-            Assert.AreEqual(iz, t);
+            Assert.Equal(iz, t);
 
             // Norm Z (index3)
             t = i1;
             t.NormalizeZ(i2b);
-            Assert.AreEqual(iz, t);
+            Assert.Equal(iz, t);
 
             // Norm XY (int)
             t = i1;
             t.NormalizeXY(i2.X, i2.Y);
-            Assert.AreEqual(ixy, t);
+            Assert.Equal(ixy, t);
 
             // Norm XY (index2)
             t = i1;
             t.NormalizeXY(i2);
-            Assert.AreEqual(ixy, t);
+            Assert.Equal(ixy, t);
 
             // Norm XY (index3)
             t = i1;
             t.NormalizeXY(i2b);
-            Assert.AreEqual(ixy, t);
+            Assert.Equal(ixy, t);
 
             // Norm XYZ (int)
             t = i1;
             t.NormalizeXYZ(i2.X, i2.Y, i2b.Z);
-            Assert.AreEqual(ixyz, t);
+            Assert.Equal(ixyz, t);
 
             // Norm XYZ (index3)
             t = i1;
             t.NormalizeXYZ(i2b);
-            Assert.AreEqual(ixyz, t);
+            Assert.Equal(ixyz, t);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3ShortestDistanceMethodenTest()
         {
             Index3 size = new Index3(20, 20, 20);
@@ -151,17 +151,17 @@ namespace OctoAwesome.Model.Tests
             Index3 i2 = new Index3(12, 13, 8); // Destinations
             Index3 i3 = new Index3(7, 6, 2); // Results
 
-            Assert.AreEqual(i3.X, i1.ShortestDistanceX(i2.X, size.X));
-            Assert.AreEqual(i3.Y, i1.ShortestDistanceY(i2.Y, size.Y));
-            Assert.AreEqual(i3.Z, i1.ShortestDistanceZ(i2.Z, size.Z));
+            Assert.Equal(i3.X, i1.ShortestDistanceX(i2.X, size.X));
+            Assert.Equal(i3.Y, i1.ShortestDistanceY(i2.Y, size.Y));
+            Assert.Equal(i3.Z, i1.ShortestDistanceZ(i2.Z, size.Z));
 
-            Assert.AreEqual(new Index2(i3.X, i3.Y), i1.ShortestDistanceXY(new Index2(i2.X, i2.Y), new Index2(size.X, size.Y)));
-            Assert.AreEqual(new Index3(i3.X, i3.Y, i2.Z - i1.Z), i1.ShortestDistanceXY(i2, new Index2(size.X, size.Y)));
+            Assert.Equal(new Index2(i3.X, i3.Y), i1.ShortestDistanceXY(new Index2(i2.X, i2.Y), new Index2(size.X, size.Y)));
+            Assert.Equal(new Index3(i3.X, i3.Y, i2.Z - i1.Z), i1.ShortestDistanceXY(i2, new Index2(size.X, size.Y)));
 
-            Assert.AreEqual(i3, i1.ShortestDistanceXYZ(i2, size));
+            Assert.Equal(i3, i1.ShortestDistanceXYZ(i2, size));
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3AdditionTest()
         {
             Index3 i1 = new Index3(20, 15, 17);     // Startwert
@@ -176,13 +176,13 @@ namespace OctoAwesome.Model.Tests
             Index3 ip3r = new Index3(97, 59, 71);  // Ergebnis i1 + ip3
 
             // Addition
-            Assert.AreEqual(in2r, i1 + in2);
-            Assert.AreEqual(in3r, i1 + in3);
-            Assert.AreEqual(ip2r, i1 + ip2);
-            Assert.AreEqual(ip3r, i1 + ip3);
+            Assert.Equal(in2r, i1 + in2);
+            Assert.Equal(in3r, i1 + in3);
+            Assert.Equal(ip2r, i1 + ip2);
+            Assert.Equal(ip3r, i1 + ip3);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3SubtraktionTest()
         {
             throw new NotImplementedException();
@@ -193,11 +193,11 @@ namespace OctoAwesome.Model.Tests
             //    Index2 i5 = new Index2(-57, -29);  // Ergebnis i1 - i4
 
             //    // Addition
-            //    Assert.AreEqual(i3, i1 - i2);
-            //    Assert.AreEqual(i5, i1 - i4);
+            //    Assert.Equal(i3, i1 - i2);
+            //    Assert.Equal(i5, i1 - i4);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3MultiplikationTest()
         {
             throw new NotImplementedException();
@@ -205,11 +205,11 @@ namespace OctoAwesome.Model.Tests
             //    Index2 i2 = new Index2(60, 45); // Multiplikation mit 3
             //    Index2 i3 = new Index2(-40, -30); // Multi mit -2
 
-            //    Assert.AreEqual(i2, i1 * 3);
-            //    Assert.AreEqual(i3, i1 * -2);
+            //    Assert.Equal(i2, i1 * 3);
+            //    Assert.Equal(i3, i1 * -2);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3DivisionTest()
         {
             throw new NotImplementedException();
@@ -217,11 +217,11 @@ namespace OctoAwesome.Model.Tests
             //    Index2 i2 = new Index2(6, 5); // Multiplikation mit 3
             //    Index2 i3 = new Index2(-10, -7); // Multi mit -2
 
-            //    Assert.AreEqual(i2, i1 / 3);
-            //    Assert.AreEqual(i3, i1 / -2);
+            //    Assert.Equal(i2, i1 / 3);
+            //    Assert.Equal(i3, i1 / -2);
         }
 
-        [TestMethod]
+        [Fact]
         public void Index3LengthTest()
         {
             throw new NotImplementedException();
@@ -230,14 +230,14 @@ namespace OctoAwesome.Model.Tests
         /// <summary>
         /// Testet die Konstanten
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void Index3Constants()
         {
-            Assert.AreEqual(new Index3(0, 0, 0), Index3.Zero);
-            Assert.AreEqual(new Index3(1, 1, 1), Index3.One);
-            Assert.AreEqual(new Index3(1, 0, 0), Index3.UnitX);
-            Assert.AreEqual(new Index3(0, 1, 0), Index3.UnitY);
-            Assert.AreEqual(new Index3(0, 0, 1), Index3.UnitZ);
+            Assert.Equal(new Index3(0, 0, 0), Index3.Zero);
+            Assert.Equal(new Index3(1, 1, 1), Index3.One);
+            Assert.Equal(new Index3(1, 0, 0), Index3.UnitX);
+            Assert.Equal(new Index3(0, 1, 0), Index3.UnitY);
+            Assert.Equal(new Index3(0, 0, 1), Index3.UnitZ);
         }
     }
 }
