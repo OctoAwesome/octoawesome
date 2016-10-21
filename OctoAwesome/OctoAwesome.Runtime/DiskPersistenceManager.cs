@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using OctoAwesome.Ecs;
 
 namespace OctoAwesome.Runtime
 {
@@ -246,8 +247,9 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="universeGuid">Die Guid des Universums.</param>
         /// <param name="playername">Der Name des Spielers.</param>
+        /// <param name="entityManager"></param>
         /// <returns></returns>
-        public Player LoadPlayer(Guid universeGuid, string playername)
+        public Entity LoadPlayer(Guid universeGuid, string playername, EntityManager entityManager)
         {
             // TODO: Später durch Playername ersetzen
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), "player.info");
@@ -260,8 +262,9 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        Player player = new Player();
-                        player.Deserialize(reader, DefinitionManager.Instance);
+                        return null;
+                        var player = entityManager.NewEntity();
+                        //player.Get<>()
                         return player;
                     }
                     catch (Exception)
@@ -279,7 +282,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="universeGuid">Die Guid des Universums.</param>
         /// <param name="player">Der Player.</param>
-        public void SavePlayer(Guid universeGuid, Player player)
+        public void SavePlayer(Guid universeGuid, Entity player)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
             Directory.CreateDirectory(path);
@@ -290,7 +293,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    player.Serialize(writer, DefinitionManager.Instance);
+                    //player.Serialize(writer, DefinitionManager.Instance);
                 }
             }
         }

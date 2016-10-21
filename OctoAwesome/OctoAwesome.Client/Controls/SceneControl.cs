@@ -221,11 +221,11 @@ namespace OctoAwesome.Client.Controls
             Axis? selectedAxis = null;
             Vector3? selectionPoint = null;
             float bestDistance = 9999;
-            for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
+            for (int z = -EntityComponents.PlayerComponent.SELECTIONRANGE; z < EntityComponents.PlayerComponent.SELECTIONRANGE; z++)
             {
-                for (int y = -Player.SELECTIONRANGE; y < Player.SELECTIONRANGE; y++)
+                for (int y = -EntityComponents.PlayerComponent.SELECTIONRANGE; y < EntityComponents.PlayerComponent.SELECTIONRANGE; y++)
                 {
-                    for (int x = -Player.SELECTIONRANGE; x < Player.SELECTIONRANGE; x++)
+                    for (int x = -EntityComponents.PlayerComponent.SELECTIONRANGE; x < EntityComponents.PlayerComponent.SELECTIONRANGE; x++)
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
@@ -323,8 +323,8 @@ namespace OctoAwesome.Client.Controls
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
-            float playerPosX = ((float)player.ActorHost.Player.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
-            float playerPosY = ((float)player.ActorHost.Player.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
+            float playerPosX = ((float)player.ActorHost.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
+            float playerPosY = ((float)player.ActorHost.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
 
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 

@@ -1,9 +1,9 @@
 ﻿namespace OctoAwesome.Basics.Entities
 {
-    public class AppleEntity : Entity
-    {
-        public AppleEntity()
-        {
-        }
-    }
+    //public class AppleEntity : Entity
+    //{
+    //    public AppleEntity()
+    //    {
+    //    }
+    //}
 }

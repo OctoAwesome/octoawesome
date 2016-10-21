@@ -6,11 +6,11 @@ using System;
 using System.Configuration;
 using System.Linq;
 using MonoGameUi;
-using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;
+using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client
 {
@@ -76,7 +76,7 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new Components.SimulationComponent(this);
+            Simulation = new SimulationComponent(this);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 

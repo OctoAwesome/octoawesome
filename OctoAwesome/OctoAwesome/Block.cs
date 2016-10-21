@@ -1,5 +1,6 @@
 ﻿using System;
 using engenious;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
 {
@@ -19,7 +20,7 @@ namespace OctoAwesome
         public static float? Intersect(BoundingBox[] collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
-            float raylength = Player.SELECTIONRANGE * 2;
+            float raylength = PlayerComponent.SELECTIONRANGE * 2;
             float? minDistance = null;
             bool collided = false;
 

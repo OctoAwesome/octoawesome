@@ -10,14 +10,18 @@ using System.Text;
 using System.Threading;
 using System.Xml.Serialization;
 using engenious;
+using OctoAwesome.Basics.SimulationComponents;
+using OctoAwesome.Ecs;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class SimulationComponent : GameComponent
     {
         private Simulation Simulation { get; set; }
-
+        
         public SimulationComponent(Game game) : base(game) { }
+
+        public EntityManager EntityManager;
 
         public Guid NewGame(string name, int? seed = null)
         {
@@ -26,8 +30,28 @@ namespace OctoAwesome.Client.Components
                 Simulation.ExitGame();
                 Simulation = null;
             }
+            
+            EntityManager = new EntityManager();
 
-            Simulation = new Simulation(ResourceManager.Instance);
+
+            var systems = new List<BaseSystem> {
+                new GravitySystem(EntityManager),
+                new LookMovementSystem(EntityManager),
+                new CollidingMovementSystem(EntityManager)
+            };
+
+            var updateGroups = new List<List<BaseSystem>> {
+                new List<BaseSystem> {
+                    systems[0],
+                    systems[1],
+                    systems[2]
+                }
+            };
+
+            EntityManager.Systems.AddRange(systems);
+            EntityManager.UpdateGroups.AddRange(updateGroups);
+
+            Simulation = new Simulation(ResourceManager.Instance, EntityManager);
             return Simulation.NewGame(name, seed);
         }
 
@@ -39,7 +63,27 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(ResourceManager.Instance);
+            EntityManager = new EntityManager();
+
+
+            var systems = new List<BaseSystem> {
+                new GravitySystem(EntityManager),
+                new LookMovementSystem(EntityManager),
+                new CollidingMovementSystem(EntityManager)
+            };
+
+            var updateGroups = new List<List<BaseSystem>> {
+                new List<BaseSystem> {
+                    systems[0],
+                    systems[1],
+                    systems[2],
+                }
+            };
+
+            EntityManager.Systems.AddRange(systems);
+            EntityManager.UpdateGroups.AddRange(updateGroups);
+
+            Simulation = new Simulation(ResourceManager.Instance, EntityManager);
             Simulation.LoadGame(guid);
         }
 
@@ -57,7 +101,7 @@ namespace OctoAwesome.Client.Components
             Simulation = null;
         }
 
-        public ActorHost InsertPlayer(Player player)
+        public ActorHost InsertPlayer(Entity player)
         {
             if (Simulation == null)
                 throw new NotSupportedException();
@@ -65,7 +109,10 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            Simulation.AddEntity(player); // InsertPlayer(player);
+            return new ActorHost(player);
+            //Simulation.EntityManager.NewEntity();
+
+            //Simulation.AddEntity(player); // InsertPlayer(player);
             return null;
         }
 
@@ -78,7 +125,7 @@ namespace OctoAwesome.Client.Components
                 throw new NotSupportedException();
 
             // Simulation.RemovePlayer(host);
-            Simulation.RemoveEntity(host.Player);
+            //Simulation.RemoveEntity(host.Player);
         }
     }
 }

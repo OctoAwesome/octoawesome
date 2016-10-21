@@ -15,9 +15,9 @@ namespace OctoAwesome.Client.Controls
     {
         private Dictionary<string, Texture2D> toolTextures;
 
-        private Button[] buttons = new Button[OctoAwesome.Player.TOOLCOUNT];
+        private Button[] buttons = new Button[EntityComponents.PlayerComponent.TOOLCOUNT];
 
-        private Image[] images = new Image[OctoAwesome.Player.TOOLCOUNT];
+        private Image[] images = new Image[EntityComponents.PlayerComponent.TOOLCOUNT];
 
         private Brush buttonBackgroud;
 
@@ -53,7 +53,7 @@ namespace OctoAwesome.Client.Controls
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
-            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
+            for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
@@ -63,9 +63,9 @@ namespace OctoAwesome.Client.Controls
             activeToolLabel.HorizontalAlignment = HorizontalAlignment.Center;
             activeToolLabel.Background = new BorderBrush(Color.Black * 0.3f);
             activeToolLabel.TextColor = Color.White;
-            grid.AddControl(activeToolLabel, 0, 0, OctoAwesome.Player.TOOLCOUNT);
+            grid.AddControl(activeToolLabel, 0, 0, EntityComponents.PlayerComponent.TOOLCOUNT);
 
-            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
+            for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
                 buttons[i] = new Button(screenManager)
                 {
@@ -92,7 +92,7 @@ namespace OctoAwesome.Client.Controls
             if (Player.ActorHost == null) return;
 
             // Aktualisierung des aktiven Buttons
-            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
+            for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
                 if (Player.ActorHost.Player.Tools != null && 
                     Player.ActorHost.Player.Tools.Length > i && 

@@ -1,4 +1,5 @@
 using System;
+using OctoAwesome.Ecs;
 
 namespace OctoAwesome
 {
@@ -37,13 +38,13 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="playername">Der Name des Players.</param>
         /// <returns></returns>
-        Player LoadPlayer(string playername);
+        Entity LoadPlayer(string playername, EntityManager entityManager);
 
         /// <summary>
         /// Speichert einen Player.
         /// </summary>
         /// <param name="player">Der Player.</param>
-        void SavePlayer(Player player);
+        void SavePlayer(Entity player);
 
         /// <summary>
         /// Entlädt das aktuelle Universum

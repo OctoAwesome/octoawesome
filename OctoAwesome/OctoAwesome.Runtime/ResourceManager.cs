@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Ecs;
+using OctoAwesome.EntityComponents;
+using engenious;
 
 namespace OctoAwesome.Runtime
 {
@@ -178,15 +182,36 @@ namespace OctoAwesome.Runtime
         /// Lädt einen Player.
         /// </summary>
         /// <param name="playername">Der Name des Players.</param>
+        /// <param name="simulationEntityManager"></param>
         /// <returns></returns>
-        public Player LoadPlayer(string playername)
+        public Entity LoadPlayer(string playername, EntityManager entityManager)
         {
             if (universe == null)
                 throw new Exception("No Universe loaded");
 
-            Player player = persistenceManager.LoadPlayer(universe.Id, playername);
+            Entity player = persistenceManager.LoadPlayer(universe.Id, playername, entityManager);
             if (player == null)
-                player = new Player();
+            {
+                player = entityManager.NewEntity();
+                var planet = GetPlanet(0);
+                entityManager
+                    .Add<PlayerComponent>(player)
+                    .Add<PositionComponent>(player,
+                        p => {
+                            p.Coordinate = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
+                            p.Planet = planet;
+                            p.Radius = 0.75f;
+                            p.Height = 3.5f;
+                        })
+                    .Add<MoveableComponent>(player, m => { m.Mass = 100;
+                        m.JumpForce = PlayerComponent.JUMPPOWER;
+                    })
+                    .Add<LookComponent>(player, l => { l.Angle = 0; })
+                    .Add<CollisionComponent>(player)
+                    .Add<AffectedByGravity>(player);
+
+
+            }
             return player;
         }
 
@@ -194,7 +219,7 @@ namespace OctoAwesome.Runtime
         /// Speichert einen Player.
         /// </summary>
         /// <param name="player">Der Player.</param>
-        public void SavePlayer(Player player)
+        public void SavePlayer(Entity player)
         {
             if (universe == null)
                 throw new Exception("No Universe loaded");

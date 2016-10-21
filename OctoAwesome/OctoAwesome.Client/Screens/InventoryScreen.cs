@@ -99,13 +99,13 @@ namespace OctoAwesome.Client.Screens
             };
 
             toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            for (int i = 0; i < Player.TOOLCOUNT; i++)
+            for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
                 toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
             toolbar.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
 
-            images = new Image[Player.TOOLCOUNT];
-            for (int i = 0; i < Player.TOOLCOUNT; i++)
+            images = new Image[EntityComponents.PlayerComponent.TOOLCOUNT];
+            for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
                 Image image = images[i] = new Image(manager)
                 {
@@ -234,7 +234,7 @@ namespace OctoAwesome.Client.Screens
             if (player.ActorHost == null) return;
 
             // Aktualisierung des aktiven Buttons
-            for (int i = 0; i < Player.TOOLCOUNT; i++)
+            for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
                 if (player.ActorHost.Player.Tools != null &&
                     player.ActorHost.Player.Tools.Length > i &&

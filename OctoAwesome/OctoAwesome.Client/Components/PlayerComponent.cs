@@ -53,8 +53,7 @@ namespace OctoAwesome.Client.Components
 
         public void InsertPlayer()
         {
-            Player player = ResourceManager.Instance.LoadPlayer("Adam");
-            ActorHost = Game.Simulation.InsertPlayer(player);
+            ActorHost = Game.Simulation.InsertPlayer(ResourceManager.Instance.LoadPlayer("Adam", Game.Simulation.EntityManager));
         }
 
         public void RemovePlayer()
@@ -62,7 +61,7 @@ namespace OctoAwesome.Client.Components
             if (ActorHost == null)
                 return;
 
-            ResourceManager.Instance.SavePlayer(ActorHost.Player);
+            //ResourceManager.Instance.SavePlayer(ActorHost.Player);
             Game.Simulation.RemovePlayer(ActorHost);
             ActorHost = null;
         }
@@ -146,6 +145,8 @@ namespace OctoAwesome.Client.Components
                 activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
                 ActorHost.ActiveTool = ActorHost.Player.Tools[toolIndices[activeTool]];
             }
+
+            ActorHost.Update(gameTime);
         }
     }
 }
