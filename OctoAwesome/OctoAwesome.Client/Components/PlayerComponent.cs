@@ -61,7 +61,7 @@ namespace OctoAwesome.Client.Components
             if (ActorHost == null)
                 return;
 
-            //ResourceManager.Instance.SavePlayer(ActorHost.Player);
+            ResourceManager.Instance.SavePlayer(ActorHost.PlayerEntity);
             Game.Simulation.RemovePlayer(ActorHost);
             ActorHost = null;
         }

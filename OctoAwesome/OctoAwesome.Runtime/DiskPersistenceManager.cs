@@ -262,14 +262,26 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        return null;
                         var player = entityManager.NewEntity();
-                        //player.Get<>()
+                        var componentCount = reader.ReadInt32();
+
+                        for (int i = 0; i < componentCount; i++)
+                        {
+                            Action<Entity, BinaryReader> deserializer = null;
+                            var name = reader.ReadString();
+                            if (!EntityManager.Deserializers.TryGetValue(name, out deserializer))
+                            {
+                                return null;
+                            }
+                            deserializer(player, reader);
+                        }
+
+
                         return player;
                     }
                     catch (Exception)
                     {
-                        // File.Delete(file);
+                        File.Delete(file);
                     }
                 }
             }
@@ -293,6 +305,16 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
+                    writer.Write(player.Components.Count(c => c != null));
+                    for (int i = 0; i < player.Components.Length; i++)
+                    {
+                        var c = player.Components[i];
+                        if (c != null)
+                        {
+                            writer.Write(c.GetType().FullName);
+                            c.Serialize(player, writer);
+                        }
+                    }
                     //player.Serialize(writer, DefinitionManager.Instance);
                 }
             }

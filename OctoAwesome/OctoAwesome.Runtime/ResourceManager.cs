@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Ecs;
 using OctoAwesome.EntityComponents;
 using engenious;
@@ -192,25 +191,21 @@ namespace OctoAwesome.Runtime
             Entity player = persistenceManager.LoadPlayer(universe.Id, playername, entityManager);
             if (player == null)
             {
-                player = entityManager.NewEntity();
+                
                 var planet = GetPlanet(0);
-                entityManager
-                    .Add<PlayerComponent>(player)
-                    .Add<PositionComponent>(player,
-                        p => {
-                            p.Coordinate = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
-                            p.Planet = planet;
-                            p.Radius = 0.75f;
-                            p.Height = 3.5f;
-                        })
-                    .Add<MoveableComponent>(player, m => { m.Mass = 100;
-                        m.JumpForce = PlayerComponent.JUMPPOWER;
+                player = entityManager.NewEntity()
+                    .Add<PlayerComponent>()
+                    .Add<PositionComponent>(p => {
+                        p.Coordinate = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
+                        p.Planet = planet;
+                        p.Radius = 0.75f;
+                        p.Height = 3.5f;
                     })
-                    .Add<LookComponent>(player, l => { l.Angle = 0; })
-                    .Add<CollisionComponent>(player)
-                    .Add<AffectedByGravity>(player);
-
-
+                    .Add<MoveableComponent>( m => { m.Mass = 100;})
+                    .Add<JumpComponent>(j => { j.JumpPower = PlayerComponent.JUMPPOWER; })
+                    .Add<LookComponent>(l => { l.Angle = 0; })
+                    .Add<CollisionComponent>()
+                    .Add<AffectedByGravity>();
             }
             return player;
         }

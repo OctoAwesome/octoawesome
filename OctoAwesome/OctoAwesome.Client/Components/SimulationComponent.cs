@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Xml.Serialization;
 using engenious;
-using OctoAwesome.Basics.SimulationComponents;
+using OctoAwesome.Basics.Systems;
 using OctoAwesome.Ecs;
 
 namespace OctoAwesome.Client.Components
@@ -37,15 +37,12 @@ namespace OctoAwesome.Client.Components
             var systems = new List<BaseSystem> {
                 new GravitySystem(EntityManager),
                 new LookMovementSystem(EntityManager),
+                new JumpingSystem(EntityManager),
                 new CollidingMovementSystem(EntityManager)
             };
 
             var updateGroups = new List<List<BaseSystem>> {
-                new List<BaseSystem> {
-                    systems[0],
-                    systems[1],
-                    systems[2]
-                }
+                systems
             };
 
             EntityManager.Systems.AddRange(systems);
@@ -69,15 +66,12 @@ namespace OctoAwesome.Client.Components
             var systems = new List<BaseSystem> {
                 new GravitySystem(EntityManager),
                 new LookMovementSystem(EntityManager),
+                new JumpingSystem(EntityManager),
                 new CollidingMovementSystem(EntityManager)
             };
 
             var updateGroups = new List<List<BaseSystem>> {
-                new List<BaseSystem> {
-                    systems[0],
-                    systems[1],
-                    systems[2],
-                }
+                systems
             };
 
             EntityManager.Systems.AddRange(systems);
@@ -124,7 +118,9 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            // Simulation.RemovePlayer(host);
+            EntityManager.RemoveEntity(host.PlayerEntity);
+
+            //Simulation.RemovePlayer(host);
             //Simulation.RemoveEntity(host.Player);
         }
     }

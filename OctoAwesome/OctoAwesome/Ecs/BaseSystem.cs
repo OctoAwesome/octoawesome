@@ -119,7 +119,22 @@ namespace OctoAwesome.Ecs
 
         protected bool Matches(Entity e)
         {
-            return RequiredIndexes.All(i => e.Flags[i]) && (NegativeIndexes == null || !NegativeIndexes.Any(i => e.Flags[i]));
+            for (int i = 0; i < RequiredIndexes.Count; i++)
+            {
+                if (e.Components[RequiredIndexes[i]] == null)
+                    return false;
+            }
+
+            if (NegativeIndexes != null)
+            {
+                for (int i = 0; i < NegativeIndexes.Count; i++)
+                {
+                    if (e.Components[NegativeIndexes[i]] != null)
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         protected virtual void Update(Entity entity, int idx) { }
@@ -153,7 +168,7 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
+            R1S[index] = e.Get<TR1>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -203,8 +218,8 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            R2S[index] = Manager.Get<TR2>(e);
+            R1S[index] = e.Get<TR1>();
+            R2S[index] = e.Get<TR2>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -261,9 +276,9 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            R2S[index] = Manager.Get<TR2>(e);
-            R3S[index] = Manager.Get<TR3>(e);
+            R1S[index] = e.Get<TR1>();
+            R2S[index] = e.Get<TR2>();
+            R3S[index] = e.Get<TR3>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -322,8 +337,8 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            R2S[index] = Manager.Get<TR2>(e);
+            R1S[index] = e.Get<TR1>();
+            R2S[index] = e.Get<TR2>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -401,8 +416,8 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            O1S[index] = Manager.Get<TO1>(e);
+            R1S[index] = e.Get<TR1>();
+            O1S[index] = e.Get<TO1>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -443,15 +458,7 @@ namespace OctoAwesome.Ecs
 
         protected override void Update(Entity entity, int idx)
         {
-            if (entity.Flags[OptionalIndexes[0]])
-            {
-                if (O1S[idx] == null)
-                    O1S[idx] = Manager.Get<TO1>(entity);
-            }
-            else
-            {
-                O1S[idx] = null;
-            }
+            O1S[idx] = entity.Get<TO1>();
         }
     }
 
@@ -499,9 +506,9 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            O1S[index] = Manager.Get<TO1>(e);
-            O2S[index] = Manager.Get<TO2>(e);
+            R1S[index] = e.Get<TR1>();
+            O1S[index] = e.Get<TO1>();
+            O2S[index] = e.Get<TO2>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -547,25 +554,8 @@ namespace OctoAwesome.Ecs
 
         protected override void Update(Entity entity, int idx)
         {
-            if (entity.Flags[OptionalIndexes[0]])
-            {
-                if (O1S[idx] == null)
-                    O1S[idx] = Manager.Get<TO1>(entity);
-            }
-            else
-            {
-                O1S[idx] = null;
-            }
-
-            if (entity.Flags[OptionalIndexes[1]])
-            {
-                if (O2S[idx] == null)
-                    O2S[idx] = Manager.Get<TO2>(entity);
-            }
-            else
-            {
-                O2S[idx] = null;
-            }
+            O1S[idx] = entity.Get<TO1>();
+            O2S[idx] = entity.Get<TO2>();
         }
     }
 
@@ -588,9 +578,9 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            R2S[index] = Manager.Get<TR2>(e);
-            O1S[index] = Manager.Get<TO1>(e);
+            R1S[index] = e.Get<TR1>();
+            R2S[index] = e.Get<TR2>();
+            O1S[index] = e.Get<TO1>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -635,15 +625,7 @@ namespace OctoAwesome.Ecs
 
         protected override void Update(Entity entity, int idx)
         {
-            if (entity.Flags[OptionalIndexes[0]])
-            {
-                if (O1S[idx] == null)
-                    O1S[idx] = Manager.Get<TO1>(entity);
-            }
-            else
-            {
-                O1S[idx] = null;
-            }
+            O1S[idx] = entity.Get<TO1>();
         }
     }
 
@@ -669,10 +651,10 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            R2S[index] = Manager.Get<TR2>(e);
-            R3S[index] = Manager.Get<TR3>(e);
-            O1S[index] = Manager.Get<TO1>(e);
+            R1S[index] = e.Get<TR1>();
+            R2S[index] = e.Get<TR2>();
+            R3S[index] = e.Get<TR3>();
+            O1S[index] = e.Get<TO1>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -721,15 +703,7 @@ namespace OctoAwesome.Ecs
 
         protected override void Update(Entity entity, int idx)
         {
-            if (entity.Flags[OptionalIndexes[0]])
-            {
-                if (O1S[idx] == null)
-                    O1S[idx] = Manager.Get<TO1>(entity);
-            }
-            else
-            {
-                O1S[idx] = null;
-            }
+            O1S[idx] = entity.Get<TO1>();
         }
     }
 
@@ -756,10 +730,10 @@ namespace OctoAwesome.Ecs
 
         protected override void Add(Entity e, int index)
         {
-            R1S[index] = Manager.Get<TR1>(e);
-            R2S[index] = Manager.Get<TR2>(e);
-            O1S[index] = Manager.Get<TO1>(e);
-            O2S[index] = Manager.Get<TO2>(e);
+            R1S[index] = e.Get<TR1>();
+            R2S[index] = e.Get<TR2>();
+            O1S[index] = e.Get<TO1>();
+            O2S[index] = e.Get<TO2>();
         }
 
         protected override void Remove(int index, int? swapWith)
@@ -808,25 +782,8 @@ namespace OctoAwesome.Ecs
 
         protected override void Update(Entity entity, int idx)
         {
-            if (entity.Flags[OptionalIndexes[0]])
-            {
-                if (O1S[idx] == null)
-                    O1S[idx] = Manager.Get<TO1>(entity);
-            }
-            else
-            {
-                O1S[idx] = null;
-            }
-
-            if (entity.Flags[OptionalIndexes[1]])
-            {
-                if (O2S[idx] == null)
-                    O2S[idx] = Manager.Get<TO2>(entity);
-            }
-            else
-            {
-                O2S[idx] = null;
-            }
+            O1S[idx] = entity.Get<TO1>();
+            O2S[idx] = entity.Get<TO2>();
         }
     }
 

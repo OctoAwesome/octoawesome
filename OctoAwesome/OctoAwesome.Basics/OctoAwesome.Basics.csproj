@@ -123,7 +123,10 @@
     <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
-    <Compile Include="SimulationComponents\MoveComponent.cs" />
+    <Compile Include="Systems\GravitySystem.cs" />
+    <Compile Include="Systems\JumpingSystem.cs" />
+    <Compile Include="Systems\LookMovementSystem.cs" />
+    <Compile Include="Systems\CollidingMovementSystem.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
     <Compile Include="Definitions\Items\PickAxeDefinition.cs" />

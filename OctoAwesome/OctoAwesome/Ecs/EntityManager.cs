@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,13 +17,11 @@ namespace OctoAwesome.Ecs
 
     public class ComponentConfigAttribute : Attribute
     {
-        public int ExpectedEntityCount;
         public int Prefill;
 
-        public ComponentConfigAttribute(int prefill = 16, int expectedEntityCount = 128)
+        public ComponentConfigAttribute(int prefill = 16)
         {
             Prefill = prefill;
-            ExpectedEntityCount = expectedEntityCount;
         }
     }
     public class GameEvent { }
@@ -49,9 +48,10 @@ namespace OctoAwesome.Ecs
 
         private readonly Dictionary<string, Func<EntityManager, Entity>> _prefabs = new Dictionary<string, Func<EntityManager, Entity>>();
         private readonly List<Entity> _removedEntities = new List<Entity>();
-        private static readonly Action<Entity>[] _removers;
         public readonly List<BaseSystem> Systems = new List<BaseSystem>();
         public readonly List<List<BaseSystem>> UpdateGroups = new List<List<BaseSystem>>();
+
+        public static readonly Dictionary<string, Action<Entity, BinaryReader>> Deserializers;
 
         public static readonly int ComponentCount;
         private int _lastIndex = 0;
@@ -93,9 +93,11 @@ namespace OctoAwesome.Ecs
 
             registryType = typeof(ComponentRegistry<>);
             var entityType = typeof(Entity);
-
-            _removers = new Action<Entity>[componentTypes.Count];
+            
             ComponentCount = componentTypes.Count;
+             Deserializers = new Dictionary<string, Action<Entity, BinaryReader>>(ComponentCount);
+            ComponentArrayPool.Initialize(ComponentCount);
+
             for (var i = 0; i < componentTypes.Count; i++)
             {
                 var componentType = componentTypes[i];
@@ -104,31 +106,46 @@ namespace OctoAwesome.Ecs
                 var attr = componentType.GetCustomAttributes(typeof(ComponentConfigAttribute), false);
 
                 int prefill = 16;
-                int entityCount = 128;
                 if (attr.Length > 0)
                 {
                     var a = (ComponentConfigAttribute)attr[0];
                     prefill = a.Prefill;
-                    entityCount = a.ExpectedEntityCount;
                 }
                 rType.GetMethod("Initialize", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public).Invoke(
                     null,
                     new object[] {
-                        i,  prefill, entityCount
+                        i,  prefill
                     });
                 componentType.GetMethod("Initialize", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(null, null);
 
-                var p = Expression.Parameter(entityType);
-                var method = rType.GetMethod("Remove", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                var deserializeMethod = componentType.GetMethod("Deserialize", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,null, new []{ typeof(Entity), componentType, typeof(BinaryReader) }, null);
 
-                _removers[i] = Expression.Lambda<Action<Entity>>(Expression.Call(method, p), p).Compile();
+                if (deserializeMethod == null)
+                {
+                    throw new Exception($"Component {componentType.FullName} has no valid deserialize method. Expected signature: static void Deserialize(Entity,{componentType.FullName},BinaryReader)");
+                }
+
+                var p1 = Expression.Parameter(typeof(Entity));
+                var p3 = Expression.Parameter(typeof(BinaryReader));
+                var variable = Expression.Variable(componentType);
+
+                var getMethod = rType.GetMethod("Take", BindingFlags.Static | BindingFlags.Public);
+
+                Deserializers[componentType.FullName] = Expression.Lambda<Action<Entity, BinaryReader>>(
+                    Expression.Block(new [] { variable },
+                       Expression.Assign(variable, Expression.Call(null, getMethod)),
+                    Expression.Assign(Expression.ArrayAccess(Expression.Field(p1, typeof(Entity).GetField("Components")), Expression.Constant(i)), 
+                        variable
+                    ),
+                    Expression.Call(deserializeMethod, p1, variable, p3)
+                    ), 
+                false, p1, p3).Compile();
+
             }
 
             foreach (var map in SubscriptionMap)
                 map.Sort();
         }
-
-        
 
         public void ApplyChanges()
         {
@@ -142,12 +159,11 @@ namespace OctoAwesome.Ecs
 
             if (_addedEntities.Count > 0)
             {
-                Parallel.ForEach(
-                    Systems,
-                    s => {
-                        foreach (var a in _addedEntities)
-                            s.EntityAdded(a);
-                    });
+                foreach (var r in _addedEntities)
+                {
+                    foreach (var s in Systems)
+                        s.EntityAdded(r);
+                }
 
                 _entities.AddRange(_addedEntities);
                 _addedEntities.ForEach(e => e.Complete = true);
@@ -156,34 +172,24 @@ namespace OctoAwesome.Ecs
 
             if (_changedEntities.Count > 0)
             {
-                Parallel.ForEach(
-                    Systems,
-                    s => {
-                        foreach (var c in _changedEntities)
-                            s.EntityChanged(c);
-                    });
+                foreach (var r in _changedEntities)
+                {
+                    foreach (var s in Systems)
+                        s.EntityChanged(r);
+                }
 
                 _changedEntities.Clear();
             }
 
             if (_removedEntities.Count > 0)
             {
-                Parallel.ForEach(
-                    Systems,
-                    s => {
-                        foreach (var r in _removedEntities)
-                            s.EntityRemoved(r);
-                    });
-
-                _removedEntities.ForEach(
-                    e => {
-                        _entities.Remove(e);
-                        e.Complete = false;
-                        for (var i = 0; i < ComponentCount; i++)
-                        {
-                            _removers[i](e);
-                        }
-                    });
+                foreach (var r in _removedEntities)
+                {
+                    foreach(var s in Systems)
+                        s.EntityRemoved(r);
+                    ComponentArrayPool.Release(r.Components);
+                    _entities.Remove(r);
+                }
                 _removedEntities.Clear();
             }
         }
@@ -207,10 +213,9 @@ namespace OctoAwesome.Ecs
         public EntityManager Add<T>(Entity e, bool throwOnExists = false) where T : Component, new()
         {
             var idx = FlagIndex<T>();
-            if (!e.Flags[idx])
+            if (e.Components[idx] == null)
             {
-                ComponentRegistry<T>.Add(e);
-                e.Flags.Set(idx, true);
+                e.Components[idx] = ComponentRegistry<T>.Take();
 
                 if (e.Complete)
                     _changedEntities.Add(e);
@@ -228,10 +233,14 @@ namespace OctoAwesome.Ecs
                 return Add<T>(e);
 
             var idx = FlagIndex<T>();
-            if (!e.Flags[idx])
+
+            var existing = e.Get<T>();
+
+            if (existing == null)
             {
-                action(ComponentRegistry<T>.Add(e));
-                e.Flags.Set(FlagIndex<T>(), true);
+                var item = ComponentRegistry<T>.Take();
+                action(item);
+                e.Components[idx] = item;
 
                 if (e.Complete)
                     _changedEntities.Add(e);
@@ -242,21 +251,19 @@ namespace OctoAwesome.Ecs
             }
             else if (actionIfAlreadyExists)
             {
-                action(Get<T>(e));
+                action(existing);
             }
-
+            
             return this;
         }
 
         public EntityManager Remove<T>(Entity e) where T : Component, new()
         {
-            e.Flags.Set(FlagIndex<T>(), false);
-
             lock (_pendingActions)
             {
                 _pendingActions.Add(
                     () => {
-                        ComponentRegistry<T>.Remove(e);
+                        ComponentRegistry<T>.Release(e.Get<T>());
                         if (e.Complete)
                             _changedEntities.Add(e);
                     });
@@ -267,16 +274,11 @@ namespace OctoAwesome.Ecs
 
         public Entity NewEntity()
         {
-            var e = new Entity { Flags = new BitArray(ComponentCount), Manager = this };
+            var e = new Entity { Components = ComponentArrayPool.Take(), Manager = this };
             _addedEntities.Add(e);
             return e;
         }
-
-        public T Get<T>(Entity p0) where T : Component, new()
-        {
-            return ComponentRegistry<T>.Get(p0);
-        }
-
+       
         public int FlagIndex<T>() where T : Component, new()
         {
             return ComponentRegistry<T>.Index;
@@ -357,7 +359,7 @@ namespace OctoAwesome.Ecs
 
         public override bool Matches(Entity e)
         {
-            return e.Flags[ComponentRegistry<TComponent>.Index];
+            return e.Get<TComponent>() != null;
         }
 
         public override bool Invoke(EntityManager manager, Entity e, object @event)
@@ -380,7 +382,7 @@ namespace OctoAwesome.Ecs
 
         public override bool Matches(Entity e)
         {
-            return e.Flags[ComponentRegistry<TComponent>.Index];
+            return e.Get<TComponent>() != null;
         }
 
         public override bool Invoke(EntityManager manager, Entity e, object @event)

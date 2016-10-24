@@ -17,12 +17,12 @@ namespace OctoAwesome
         /// <summary>
         /// Index des betroffenen Blocks.
         /// </summary>
-        private Index3 block;
+        public Index3 Block;
 
         /// <summary>
         /// Position innerhalb des Blocks (0...1).
         /// </summary>
-        private Vector3 position;
+        public Vector3 Position;
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Coordinate-Struktur.
@@ -33,8 +33,8 @@ namespace OctoAwesome
         public Coordinate(int planet, Index3 block, Vector3 position)
         {
             Planet = planet;
-            this.block = block;
-            this.position = position;
+            Block = block;
+            Position = position;
             Normalize();
         }
 
@@ -46,13 +46,13 @@ namespace OctoAwesome
         {
             get
             {
-                return new Index3(block.X >> Chunk.LimitX, block.Y >> Chunk.LimitY,
-                    block.Z >> Chunk.LimitZ);
+                return new Index3(Block.X >> Chunk.LimitX, Block.Y >> Chunk.LimitY,
+                    Block.Z >> Chunk.LimitZ);
             }
             set
             {
                 Index3 localBlockIndex = LocalBlockIndex;
-                block = new Index3(
+                Block = new Index3(
                     (value.X * Chunk.CHUNKSIZE_X) + localBlockIndex.X,
                     (value.Y * Chunk.CHUNKSIZE_Y) + localBlockIndex.Y,
                     (value.Z * Chunk.CHUNKSIZE_Z) + localBlockIndex.Z);
@@ -64,8 +64,8 @@ namespace OctoAwesome
         /// </summary>
         public Index3 GlobalBlockIndex
         {
-            get { return block; }
-            set { block = value; }
+            get { return Block; }
+            set { Block = value; }
         }
 
         /// <summary>
@@ -78,9 +78,9 @@ namespace OctoAwesome
             {
                 Index3 chunk = ChunkIndex;
                 return new Index3(
-                    block.X - (chunk.X * Chunk.CHUNKSIZE_X),
-                    block.Y - (chunk.Y * Chunk.CHUNKSIZE_Y),
-                    block.Z - (chunk.Z * Chunk.CHUNKSIZE_Z));
+                    Block.X - (chunk.X * Chunk.CHUNKSIZE_X),
+                    Block.Y - (chunk.Y * Chunk.CHUNKSIZE_Y),
+                    Block.Z - (chunk.Z * Chunk.CHUNKSIZE_Z));
             }
             set
             {
@@ -102,14 +102,14 @@ namespace OctoAwesome
             get
             {
                 return new Vector3(
-                    block.X + position.X,
-                    block.Y + position.Y,
-                    block.Z + position.Z);
+                    Block.X + Position.X,
+                    Block.Y + Position.Y,
+                    Block.Z + Position.Z);
             }
             set
             {
-                block = Index3.Zero;
-                position = value;
+                Block = Index3.Zero;
+                Position = value;
                 Normalize();
             }
         }
@@ -124,18 +124,18 @@ namespace OctoAwesome
             {
                 Index3 blockIndex = LocalBlockIndex;
                 return new Vector3(
-                    blockIndex.X + position.X,
-                    blockIndex.Y + position.Y,
-                    blockIndex.Z + position.Z);
+                    blockIndex.X + Position.X,
+                    blockIndex.Y + Position.Y,
+                    blockIndex.Z + Position.Z);
             }
             set
             {
                 Index3 chunkIndex = ChunkIndex;
-                block = new Index3(
+                Block = new Index3(
                     chunkIndex.X * Chunk.CHUNKSIZE_X,
                     chunkIndex.Y * Chunk.CHUNKSIZE_Y,
                     chunkIndex.Z * Chunk.CHUNKSIZE_Z);
-                position = value;
+                Position = value;
                 Normalize();
             }
         }
@@ -145,10 +145,10 @@ namespace OctoAwesome
         /// </summary>
         public Vector3 BlockPosition
         {
-            get { return position; }
+            get { return Position; }
             set
             {
-                position = value;
+                Position = value;
                 Normalize();
             }
         }
@@ -159,12 +159,12 @@ namespace OctoAwesome
         private void Normalize()
         {
             Index3 shift = new Index3(
-                (int)Math.Floor(position.X),
-                (int)Math.Floor(position.Y),
-                (int)Math.Floor(position.Z));
+                (int)Math.Floor(Position.X),
+                (int)Math.Floor(Position.Y),
+                (int)Math.Floor(Position.Z));
 
-            block += shift;
-            position = position - shift;
+            Block += shift;
+            Position = Position - shift;
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace OctoAwesome
             if (i1.Planet != i2.Planet)
                 throw new NotSupportedException();
 
-            return new Coordinate(i1.Planet, i1.block + i2.block, i1.position + i2.position);
+            return new Coordinate(i1.Planet, i1.Block + i2.Block, i1.Position + i2.Position);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace OctoAwesome
         /// <returns>Das Ergebnis der Addition</returns>
         public static Coordinate operator +(Coordinate i1, Vector3 i2)
         {
-            return new Coordinate(i1.Planet, i1.block, i1.position + i2);
+            return new Coordinate(i1.Planet, i1.Block, i1.Position + i2);
         }
 
         /// <summary>
@@ -212,9 +212,9 @@ namespace OctoAwesome
         {
             return
                 "(" + Planet + "/" +
-                (block.X + position.X).ToString("0.00") + "/" +
-                (block.Y + position.Y).ToString("0.00") + "/" +
-                (block.Z + position.Z).ToString("0.00") + ")";
+                (Block.X + Position.X).ToString("0.00") + "/" +
+                (Block.Y + Position.Y).ToString("0.00") + "/" +
+                (Block.Z + Position.Z).ToString("0.00") + ")";
         }
     }
 }

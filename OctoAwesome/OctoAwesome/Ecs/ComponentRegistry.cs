@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OctoAwesome.Ecs
 {
     public class ComponentRegistry<T> where T : Component, new()
     {
-        public static Dictionary<Entity, T> Map;
-
         private static Stack<T> _freeList;
 
         // ReSharper disable once StaticMemberInGenericType
         public static int Index;
 
-
         // ReSharper disable once UnusedMember.Local
-        private static void Initialize(int index, int prefill, int expectedEntityCount) // Called via reflection
+        private static void Initialize(int index, int prefill) // Called via reflection
         {
             Index = index;
             _freeList = new Stack<T>(prefill);
@@ -22,31 +20,17 @@ namespace OctoAwesome.Ecs
             {
                 _freeList.Push(new T());
             }
-            Map = new Dictionary<Entity, T>(expectedEntityCount);
+        }
+        
+        public static void Release(T item)
+        {
+            item.Reset();
+            _freeList.Push(item);
         }
 
-        public static T Get(Entity entity)
+        public static T Take()
         {
-            T c;
-            return Map.TryGetValue(entity, out c) ? c : null;
-        }
-
-        public static void Remove(Entity entity)
-        {
-            T c;
-            if (!Map.TryGetValue(entity, out c))
-                return;
-
-            c.Reset();
-            _freeList.Push(c);
-            Map.Remove(entity);
-        }
-
-        public static T Add(Entity entity)
-        {
-            var c = _freeList.Count > 0 ? _freeList.Pop() : new T();
-            Map[entity] = c;
-            return c;
+            return _freeList.Count > 0 ? _freeList.Pop() : new T();
         }
     }
 }

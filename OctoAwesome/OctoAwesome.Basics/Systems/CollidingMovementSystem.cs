@@ -1,147 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using engenious;
-using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Ecs;
 using OctoAwesome.EntityComponents;
 
-namespace OctoAwesome.Basics.SimulationComponents
+namespace OctoAwesome.Basics.Systems
 {
-    public sealed class NonCollidingMovementSystem : BaseSystemR2N1<PositionComponent, MoveableComponent, CollisionComponent>
-    {
-        public NonCollidingMovementSystem(EntityManager manager) : base(manager) {}
-        protected override void Update(Entity e, PositionComponent r1, MoveableComponent r2)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public sealed class LookMovementSystem : BaseSystemR2<LookComponent, MoveableComponent>
-    {
-        public LookMovementSystem(EntityManager manager) : base(manager) {}
-        protected override void Update(Entity e, LookComponent o1, MoveableComponent r2)
-        {
-            var elapsedTime = Manager.GameTime.ElapsedGameTime;
-
-            o1.Angle += (float)elapsedTime.TotalSeconds * o1.Head.X;
-            o1.Tilt += (float)elapsedTime.TotalSeconds * o1.Head.Y;
-            o1.Tilt = Math.Min(1.5f, Math.Max(-1.5f, o1.Tilt));
-
-
-            float lookX = (float)Math.Cos(o1.Angle);
-            float lookY = -(float)Math.Sin(o1.Angle);
-            var velocitydirection = new Vector3(lookX, lookY, 0) * r2.Move.Y;
-
-            float stafeX = (float)Math.Cos(o1.Angle + MathHelper.PiOver2);
-            float stafeY = -(float)Math.Sin(o1.Angle + MathHelper.PiOver2);
-            velocitydirection += new Vector3(stafeX, stafeY, 0) * r2.Move.X;
-
-            r2.TransientForce += (PlayerComponent.POWER * velocitydirection);
-           
-        }
-    }
-
     public sealed class CollidingMovementSystem : BaseSystemR3<PositionComponent, MoveableComponent, CollisionComponent>
     {
-        public CollidingMovementSystem(EntityManager manager) : base(manager)
-        {
-          
-        }
+        public CollidingMovementSystem(EntityManager manager) : base(manager) { }
 
         protected override void Update(Entity e, PositionComponent r1, MoveableComponent r2, CollisionComponent r3)
         {
             Vector3 exforce = r2.Force;
 
             var elapsedTime = Manager.GameTime.ElapsedGameTime;
-            //if (gravity && !flymode)
-            //{
-            //exforce += new Vector3(0, 0, -20f) * r2.Mass;
-            //}
 
-            Vector3 externalPower = ((exforce * exforce) / (2 * r2.Mass)) * (float)elapsedTime.TotalSeconds;
+            Vector3 externalPower = ((exforce * exforce) / (2 * r2.Mass)) * (float)elapsedTime.TotalSeconds ;
             externalPower *= new Vector3(Math.Sign(exforce.X), Math.Sign(exforce.Y), Math.Sign(exforce.Z));
+            externalPower += r2.Power;
 
             Vector3 friction = new Vector3(1, 1, 0.1f) * PlayerComponent.FRICTION;
 
-            //if (o1 != null)
-            //{
-            //    o1.Angle += (float) elapsedTime.TotalSeconds*o1.Head.X;
-            //    o1.Tilt += (float) elapsedTime.TotalSeconds*o1.Head.Y;
-            //    o1.Tilt = Math.Min(1.5f, Math.Max(-1.5f, o1.Tilt));
-
-
-            //    float lookX = (float) Math.Cos(o1.Angle);
-            //    float lookY = -(float) Math.Sin(o1.Angle);
-            //    var velocitydirection = new Vector3(lookX, lookY, 0)*r2.Move.Y;
-
-            //    float stafeX = (float) Math.Cos(o1.Angle + MathHelper.PiOver2);
-            //    float stafeY = -(float) Math.Sin(o1.Angle + MathHelper.PiOver2);
-            //    velocitydirection += new Vector3(stafeX, stafeY, 0)*r2.Move.X;
-
-
-            //    Vector3 powerdirection = new Vector3();
-
-            //    //if (flymode)
-            //    //{
-            //    //    velocitydirection += new Vector3(0, 0, (float)Math.Sin(Player.Tilt) * Move.Y);
-            //    //    friction = Vector3.One * Player.FRICTION;
-            //    //}
-
-                //powerdirection += externalPower;
-                //powerdirection += (PlayerComponent.POWER*velocitydirection);
-                if (r2.Jumping && (r1.OnGround))
-                {
-                    Vector3 jumpDirection = new Vector3(0, 0, 1);
-                    jumpDirection.Z = 1f;
-                    jumpDirection.Normalize();
-                    r2.TransientForce += jumpDirection * r2.JumpForce;
-                }
-                r2.Jumping = false;
-
-
-                var velocityChange = (2.0f/r2.Mass*(r2.TransientForce - friction*r2.Velocity))*(float) elapsedTime.TotalSeconds;
-
-                r2.Velocity += new Vector3(
-                    (float) (velocityChange.X < 0 ? -Math.Sqrt(-velocityChange.X) : Math.Sqrt(velocityChange.X)),
-                    (float) (velocityChange.Y < 0 ? -Math.Sqrt(-velocityChange.Y) : Math.Sqrt(velocityChange.Y)),
-                    (float) (velocityChange.Z < 0 ? -Math.Sqrt(-velocityChange.Z) : Math.Sqrt(velocityChange.Z))
-                );
-            //}
-            //else
-            //{
-            //    var velocityChange = (2.0f / r2.Mass * (friction * r2.Velocity)) * (float)elapsedTime.TotalSeconds;
-
-            //    r2.Velocity += new Vector3(
-            //        (float)(velocityChange.X < 0 ? -Math.Sqrt(-velocityChange.X) : Math.Sqrt(velocityChange.X)),
-            //        (float)(velocityChange.Y < 0 ? -Math.Sqrt(-velocityChange.Y) : Math.Sqrt(velocityChange.Y)),
-            //        (float)(velocityChange.Z < 0 ? -Math.Sqrt(-velocityChange.Z) : Math.Sqrt(velocityChange.Z))
-            //    );
-            //}
+            var velocityChange = (2.0f/r2.Mass*(externalPower - friction*r2.Velocity))*(float) elapsedTime.TotalSeconds;
+           
+            r2.Velocity += new Vector3(
+                (float) (velocityChange.X < 0 ? -Math.Sqrt(-velocityChange.X) : Math.Sqrt(velocityChange.X)),
+                (float) (velocityChange.Y < 0 ? -Math.Sqrt(-velocityChange.Y) : Math.Sqrt(velocityChange.Y)),
+                (float) (velocityChange.Z < 0 ? -Math.Sqrt(-velocityChange.Z) : Math.Sqrt(velocityChange.Z))
+            );
 
             var move = r2.Velocity*(float) elapsedTime.TotalSeconds;
 
-            int minx = (int)Math.Floor(Math.Min(
-                  r1.Coordinate.BlockPosition.X - r1.Radius,
-                  r1.Coordinate.BlockPosition.X - r1.Radius + move.X));
-            int maxx = (int)Math.Ceiling(Math.Max(
-                r1.Coordinate.BlockPosition.X + r1.Radius,
-                r1.Coordinate.BlockPosition.X + r1.Radius + move.X));
-            int miny = (int)Math.Floor(Math.Min(
-                r1.Coordinate.BlockPosition.Y - r1.Radius,
-                r1.Coordinate.BlockPosition.Y - r1.Radius + move.Y));
-            int maxy = (int)Math.Ceiling(Math.Max(
-                r1.Coordinate.BlockPosition.Y + r1.Radius,
-                r1.Coordinate.BlockPosition.Y + r1.Radius + move.Y));
-            int minz = (int)Math.Floor(Math.Min(
-                r1.Coordinate.BlockPosition.Z,
-                r1.Coordinate.BlockPosition.Z + move.Z));
-            int maxz = (int)Math.Ceiling(Math.Max(
-                r1.Coordinate.BlockPosition.Z + r1.Height,
-                r1.Coordinate.BlockPosition.Z + r1.Height + move.Z));
-
+            int minx = (int)Math.Floor(Math.Min(r1.Coordinate.BlockPosition.X - r1.Radius, r1.Coordinate.BlockPosition.X - r1.Radius + move.X));
+            int maxx = (int)Math.Ceiling(Math.Max(r1.Coordinate.BlockPosition.X + r1.Radius, r1.Coordinate.BlockPosition.X + r1.Radius + move.X));
+            int miny = (int)Math.Floor(Math.Min(r1.Coordinate.BlockPosition.Y - r1.Radius, r1.Coordinate.BlockPosition.Y - r1.Radius + move.Y));
+            int maxy = (int)Math.Ceiling(Math.Max(r1.Coordinate.BlockPosition.Y + r1.Radius, r1.Coordinate.BlockPosition.Y + r1.Radius + move.Y));
+            int minz = (int)Math.Floor(Math.Min(r1.Coordinate.BlockPosition.Z, r1.Coordinate.BlockPosition.Z + move.Z));
+            int maxz = (int)Math.Ceiling(Math.Max(r1.Coordinate.BlockPosition.Z + r1.Height, r1.Coordinate.BlockPosition.Z + r1.Height + move.Z));
 
             var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(r1, r2.Velocity).ToList();
 
@@ -157,15 +54,11 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + r1.Coordinate.GlobalBlockIndex;
-                        ushort block = r1.LocalChunkCache.GetBlock(blockPos);
-
-                        
+                        ushort block = r2.LocalChunkCache.GetBlock(blockPos);
 
                         if (block == 0)
                             continue;
-
-
-
+                        
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, r2.Velocity).ToList();
 
                         var planes = from pp in playerplanes
@@ -212,7 +105,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                 }
             }
             r1.OnGround = r2.Velocity.Z == 0f;
-            r2.TransientForce = Vector3.Zero;
+            r2.Force = Vector3.Zero;
+            r2.Power = Vector3.Zero;
             var position = r1.Coordinate + r2.Velocity * (float)elapsedTime.TotalSeconds;
             position.NormalizeChunkIndexXY(r1.Planet.Size);
             r1.Coordinate = position;
@@ -476,16 +370,6 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
 
 
-        }
-    }
-    
-
-    public sealed class GravitySystem : BaseSystemR2<MoveableComponent, AffectedByGravity>
-    {
-        public GravitySystem(EntityManager manager) : base(manager) {}
-        protected override void Update(Entity e, MoveableComponent r1, AffectedByGravity r2)
-        {
-            r1.TransientForce += new Vector3(0, 0, -20f) * r1.Mass;
         }
     }
 }
