@@ -1,14 +1,12 @@
 ﻿using MonoGameUi;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
 using OctoAwesome.Client.Components;
-using System.IO;
 using System.Drawing.Imaging;
 using OctoAwesome.Runtime;
-using System.Drawing;
+using engenious;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -19,6 +17,7 @@ namespace OctoAwesome.Client.Controls
 
         private PlayerComponent player;
         private CameraComponent camera;
+        private AssetComponent assets;
 
         private ChunkRenderer[,] chunkRenderer;
         private List<ChunkRenderer> orderedChunkRenderer;
@@ -31,12 +30,16 @@ namespace OctoAwesome.Client.Controls
         private BasicEffect selectionEffect;
         private Matrix miniMapProjectionMatrix;
 
-        private Texture2D blockTextures;
+        //private Texture2D blockTextures;
+        private Texture2DArray blockTextures;
         private Texture2D sunTexture;
 
-        private VertexPositionColor[] selectionLines;
-        private VertexPositionTexture[] billboardVertices;
-        private short[] selectionIndeces;
+        private IndexBuffer selectionIndexBuffer;
+        private VertexBuffer selectionLines;
+        private VertexBuffer billboardVertexbuffer;
+        //private VertexPositionColor[] selectionLines;
+        //private VertexPositionTexture[] billboardVertices;
+
         private Index2 currentChunk = new Index2(-1, -1);
 
         private Thread backgroundThread;
@@ -55,18 +58,40 @@ namespace OctoAwesome.Client.Controls
         {
             player = manager.Player;
             camera = manager.Camera;
+            assets = manager.Game.Assets;
 
             Manager = manager;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/sun.png", manager.GraphicsDevice);
+            sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
-            List<Bitmap> bitmaps = new List<Bitmap>();
+            //List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = DefinitionManager.Instance.GetBlockDefinitions();
+            int textureCount = 0;
             foreach (var definition in definitions)
-                bitmaps.AddRange(definition.Textures);
+            {
+                textureCount += definition.Textures.Length;
+            }
+            int bitmapSize = 128;
+            blockTextures = new Texture2DArray(manager.GraphicsDevice, 1, bitmapSize, bitmapSize, textureCount);
+            int layer = 0;
+            foreach (var definition in definitions)
+            {
+                foreach (var bitmap in definition.Textures)
+                {
+                    System.Drawing.Bitmap texture = manager.Game.Assets.LoadBitmap(definition.GetType(), bitmap);
 
-            int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
+                    var scaled = texture;//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
+                    int[] data = new int[scaled.Width * scaled.Height];
+                    var bitmapData = scaled.LockBits(new System.Drawing.Rectangle(0, 0, scaled.Width, scaled.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                    System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, data, 0, data.Length);
+                    blockTextures.SetData(data, layer);
+                    scaled.UnlockBits(bitmapData);
+                    layer++;
+                }
+            }
+
+            /*int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
             Bitmap blocks = new Bitmap(size * TEXTURESIZE, size * TEXTURESIZE);
             using (Graphics g = Graphics.FromImage(blocks))
             {
@@ -85,7 +110,7 @@ namespace OctoAwesome.Client.Controls
                 blocks.Save(stream, ImageFormat.Png);
                 stream.Seek(0, SeekOrigin.Begin);
                 blockTextures = Texture2D.FromStream(manager.GraphicsDevice, stream);
-            }
+            }*/
 
             planet = ResourceManager.Instance.GetPlanet(0);
 
@@ -115,19 +140,19 @@ namespace OctoAwesome.Client.Controls
             backgroundThread.IsBackground = true;
             backgroundThread.Start();
 
-            selectionLines = new[]
+            var selectionVertices = new[]
             {
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Microsoft.Xna.Framework.Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
             };
 
-            billboardVertices = new[]
+            var billboardVertices = new[]
             {
                 new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
@@ -137,12 +162,22 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
             };
 
-            selectionIndeces = new short[]
+            var selectionIndices = new short[]
             {
                 0, 1, 0, 2, 1, 3, 2, 3,
                 4, 5, 4, 6, 5, 7, 6, 7,
                 0, 4, 1, 5, 2, 6, 3, 7
             };
+
+            selectionLines = new VertexBuffer(manager.GraphicsDevice, VertexPositionColor.VertexDeclaration, selectionVertices.Length);
+            selectionLines.SetData(selectionVertices);
+
+            selectionIndexBuffer = new IndexBuffer(manager.GraphicsDevice, DrawElementsType.UnsignedShort, selectionIndices.Length);
+            selectionIndexBuffer.SetData(selectionIndices);
+
+            billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice, VertexPositionTexture.VertexDeclaration, billboardVertices.Length);
+            billboardVertexbuffer.SetData(billboardVertices);
+
 
             sunEffect = new BasicEffect(manager.GraphicsDevice);
             sunEffect.TextureEnabled = true;
@@ -150,14 +185,14 @@ namespace OctoAwesome.Client.Controls
             selectionEffect = new BasicEffect(manager.GraphicsDevice);
             selectionEffect.VertexColorEnabled = true;
 
-            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
+            MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
         }
 
-        protected override void OnDrawContent(SpriteBatch batch, Microsoft.Xna.Framework.Rectangle contentArea, GameTime gameTime, float alpha)
+        protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             if (ControlTexture != null)
-                batch.Draw(ControlTexture, contentArea, Microsoft.Xna.Framework.Color.White * alpha);
+                batch.Draw(ControlTexture, contentArea, Color.White * alpha);
         }
 
         public override void OnResolutionChanged()
@@ -282,7 +317,7 @@ namespace OctoAwesome.Client.Controls
 
             if (ControlTexture == null)
             {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
             }
 
             float octoDaysPerEarthDay = 360f;
@@ -302,7 +337,7 @@ namespace OctoAwesome.Client.Controls
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
-            simpleShader.Parameters["DiffuseColor"].SetValue(new Microsoft.Xna.Framework.Color(190, 190, 190).ToVector4());
+            simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
@@ -310,8 +345,8 @@ namespace OctoAwesome.Client.Controls
 
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
-            Microsoft.Xna.Framework.Color background =
-                new Microsoft.Xna.Framework.Color(181, 224, 255);
+            Color background =
+                new Color(181, 224, 255);
 
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -358,7 +393,8 @@ namespace OctoAwesome.Client.Controls
             sunEffect.View = camera.View;
             sunEffect.Projection = camera.Projection;
             sunEffect.CurrentTechnique.Passes[0].Apply();
-            Manager.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, billboardVertices, 0, 2);
+            Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
+            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
@@ -404,10 +440,13 @@ namespace OctoAwesome.Client.Controls
                 selectionEffect.World = Matrix.CreateTranslation(relativePosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;
+                Manager.GraphicsDevice.VertexBuffer = selectionLines;
+                Manager.GraphicsDevice.IndexBuffer = selectionIndexBuffer;
                 foreach (var pass in selectionEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);
+                    //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
                 }
             }
 

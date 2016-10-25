@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGameUi;
+﻿using MonoGameUi;
 using OctoAwesome.Client.Screens;
 using System;
+using engenious;
 
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class ScreenComponent : BaseScreenComponent
+    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent
     {
         public new OctoGame Game { get; private set; }
 
@@ -23,33 +23,7 @@ namespace OctoAwesome.Client.Components
         {
             base.LoadContent();
 
-            Skin.Current.ButtonBrush =
-                NineTileBrush.FromSingleTexture(
-                    Game.Screen.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/buttonLong_brown.png",
-                        GraphicsDevice), 15, 15);
-
-            Skin.Current.ButtonHoverBrush =
-                NineTileBrush.FromSingleTexture(
-                    Game.Screen.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/buttonLong_beige.png",
-                        GraphicsDevice), 15, 15);
-
-            Skin.Current.ButtonPressedBrush =
-                NineTileBrush.FromSingleTexture(
-                    Game.Screen.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/buttonLong_beige_pressed.png",
-                        GraphicsDevice), 15, 15);
-
-            Skin.Current.ProgressBarBrush =
-                NineTileBrush.FromSingleTexture(
-                    Game.Screen.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/progress_red.png",
-                        GraphicsDevice), 10, 8);
-
-            Skin.Current.HorizontalScrollBackgroundBrush =
-                NineTileBrush.FromSingleTexture(
-                    Game.Screen.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/UI/progress_background.png",
-                        GraphicsDevice), 10, 8);
-
-            
-
+            ReloadAssets();
 
             Frame.Background = new BorderBrush(Color.CornflowerBlue);
 
@@ -57,11 +31,31 @@ namespace OctoAwesome.Client.Components
             NavigateToTransition = new AlphaTransition(Frame, Transition.Linear, TimeSpan.FromMilliseconds(200), 1f);
 
             NavigateToScreen(new MainScreen(this));
+
+            
         }
 
         public void Exit()
         {
             Game.Exit();
+        }
+
+        public void UnloadAssets()
+        {
+            Skin.Current.ButtonBrush = null;
+            Skin.Current.ButtonHoverBrush = null;
+            Skin.Current.ButtonPressedBrush = null;
+            Skin.Current.ProgressBarBrush = null;
+            Skin.Current.HorizontalScrollBackgroundBrush = null;
+        }
+
+        public void ReloadAssets()
+        {
+            Skin.Current.ButtonBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_brown"), 15, 15);
+            Skin.Current.ButtonHoverBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_beige"), 15, 15);
+            Skin.Current.ButtonPressedBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_beige_pressed"), 15, 15);
+            Skin.Current.ProgressBarBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "progress_red"), 10, 8);
+            Skin.Current.HorizontalScrollBackgroundBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "progress_background"), 10, 8);
         }
     }
 }

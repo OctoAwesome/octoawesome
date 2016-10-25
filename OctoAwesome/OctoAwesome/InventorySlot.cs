@@ -11,8 +11,8 @@
         public IItemDefinition Definition { get; set; }
 
         /// <summary>
-        /// Anzahl der Elemente <see cref="Definition"/> in diesem Slot
+        /// Volumen des Elementes <see cref="Definition"/> in diesem Slot in dm³.
         /// </summary>
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

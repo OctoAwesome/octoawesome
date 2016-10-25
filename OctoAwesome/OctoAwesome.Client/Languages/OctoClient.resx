@@ -234,4 +234,10 @@
   <data name="Pixels" xml:space="preserve">
     <value>Pixels</value>
   </data>
+  <data name="KeyBindings" xml:space="preserve">
+    <value>Key Bindings</value>
+  </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
 </root>

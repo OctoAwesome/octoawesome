@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using engenious;
+using engenious.Graphics;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
 using System;
@@ -8,16 +8,19 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class MessageScreen : Screen
     {
+        Panel panel;
+        AssetComponent assets;
+
         public MessageScreen(ScreenComponent manager, string title, string content, string buttonText = "OK", Action<Control, MouseEventArgs> buttonClick = null) : base(manager)
         {
+            assets = manager.Game.Assets;
+
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.5f);
             Title = title;
 
-            Texture2D panelBackground = manager.Game.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/panel.png", manager.GraphicsDevice);
-            Panel panel = new Panel(manager)
+            panel = new Panel(manager)
             {
-                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = Border.All(20),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
@@ -53,6 +56,8 @@ namespace OctoAwesome.Client.Screens
                     manager.NavigateBack();
             };
             spanel.Controls.Add(closeButton);
+
+            panel.Background = NineTileBrush.FromSingleTexture(assets.LoadTexture(typeof(ScreenComponent), "panel"), 30, 30);
         }
     }
 }

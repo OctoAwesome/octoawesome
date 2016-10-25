@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
+using engenious;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -15,15 +15,23 @@ namespace OctoAwesome.Client.Controls
         public float Transparency;
         public Color Color;
 
+        AssetComponent assets;
+
         public CrosshairControl(ScreenComponent manager) : base(manager)
         {
-            Texture = manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/octocross.png", manager.GraphicsDevice);
+            assets = manager.Game.Assets;
+
             Transparency = 0.5f;
             Color = Color.White;
+
+            Texture = assets.LoadTexture(GetType(), "octocross");
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
+            if (!assets.Ready)
+                return;
+
             batch.Draw(Texture, contentArea, Color * Transparency);
         }
     }

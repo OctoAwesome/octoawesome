@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Drawing;
+﻿using System.Drawing;
+using engenious;
 
 namespace OctoAwesome
 {
@@ -16,7 +16,7 @@ namespace OctoAwesome
         /// <summary>
         /// Icon für die Toolbar
         /// </summary>
-        public abstract Bitmap Icon { get; }
+        public abstract string Icon { get; }
 
         /// <summary>
         /// Die maximale Stackgrösse
@@ -24,9 +24,14 @@ namespace OctoAwesome
         public virtual int StackLimit { get { return 100; } }
 
         /// <summary>
+        /// Gibt das Volumen für eine Einheit an.
+        /// </summary>
+        public virtual float VolumePerUnit { get { return 125; } }
+
+        /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
         /// </summary>
-        public abstract Bitmap[] Textures { get; }
+        public abstract string[] Textures { get; }
 
         /// <summary>
         /// Zeigt, ob der Block-Typ Metadaten besitzt

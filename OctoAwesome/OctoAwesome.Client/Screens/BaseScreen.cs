@@ -1,18 +1,22 @@
-﻿using Microsoft.Xna.Framework.Input;
-using MonoGameUi;
+﻿using MonoGameUi;
+using OctoAwesome.Client.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using engenious.Input;
 
 namespace OctoAwesome.Client.Screens
 {
-    public abstract class BaseScreen : Screen
+    internal abstract class BaseScreen : Screen
     {
+        private AssetComponent assets;
+
         protected Button BackButton;
 
-        public BaseScreen(IScreenManager manager) : base(manager)
-        {            
+        public BaseScreen(ScreenComponent manager) : base(manager)
+        {
+            assets = manager.Game.Assets;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)
@@ -32,14 +36,9 @@ namespace OctoAwesome.Client.Screens
 
         }
 
-        protected TextureBrush GetDefaultBackground()
-        {
-            return new TextureBrush(Manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background_new.png", Manager.GraphicsDevice), TextureBrushMode.Stretch);
-        }
-
         protected void SetDefaultBackground()
         {
-            Background = GetDefaultBackground();
+            Background = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "background_new"), TextureBrushMode.Stretch);
         }
 
         protected override void OnKeyPress(KeyEventArgs args)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
 EndProject
@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Basics", "OctoA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Runtime", "OctoAwesome.Runtime\OctoAwesome.Runtime.csproj", "{31D774C6-E5D9-40B7-8D63-942E28FE1D94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Tests", "OctoAwesome.Tests\OctoAwesome.Tests.csproj", "{0468B67C-E076-4B19-833C-382513606A5A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D269F5F0-2B6A-471A-8A44-253DEF5D98A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Tests", "OctoAwesome.Tests\OctoAwesome.Tests.csproj", "{0468B67C-E076-4B19-833C-382513606A5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -31,6 +31,8 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "OctoAwesome.Help", "OctoAwe
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Docs", "OctoAwesome.Docs\OctoAwesome.Docs.csproj", "{A144F0E6-716C-40C1-83DD-A1039DA7F73B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Community", "OctoAwesome.Community\OctoAwesome.Community.csproj", "{016407F4-814F-4183-855F-FA32C7378261}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,9 +65,12 @@ Global
 		{AC11A51B-81E3-4D7B-BB62-1B222413282C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC11A51B-81E3-4D7B-BB62-1B222413282C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A144F0E6-716C-40C1-83DD-A1039DA7F73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{016407F4-814F-4183-855F-FA32C7378261}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
