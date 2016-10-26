@@ -7,6 +7,7 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.Systems
 {
+    [SystemConfiguration(After = new [] { "GravitySystem", "JumpingSystem", "LookMovementSystem" })]
     public sealed class CollidingMovementSystem : BaseSystemR3<PositionComponent, MoveableComponent, CollisionComponent>
     {
         public CollidingMovementSystem(EntityManager manager) : base(manager) { }

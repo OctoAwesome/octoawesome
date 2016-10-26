@@ -1,42 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using engenious;
 
 namespace OctoAwesome.Ecs
 {
-    public class EntityReference
-    {
-        public Entity Entity;
-    }
-
-    public class ComponentConfigAttribute : Attribute
-    {
-        public int Prefill;
-
-        public ComponentConfigAttribute(int prefill = 16)
-        {
-            Prefill = prefill;
-        }
-    }
-    public class GameEvent { }
-    public class EventRegistry<TEvent> where TEvent : GameEvent
-    {
-        // ReSharper disable once StaticMemberInGenericType
-        public static int Index;
-
-        public static void Initialize(int index)
-        {
-            Index = index;
-        }
-    }
-
-
     public class EntityManager
     {
         private readonly List<Entity> _addedEntities = new List<Entity>();
@@ -48,8 +19,9 @@ namespace OctoAwesome.Ecs
 
         private readonly Dictionary<string, Func<EntityManager, Entity>> _prefabs = new Dictionary<string, Func<EntityManager, Entity>>();
         private readonly List<Entity> _removedEntities = new List<Entity>();
-        public readonly List<BaseSystem> Systems = new List<BaseSystem>();
-        public readonly List<List<BaseSystem>> UpdateGroups = new List<List<BaseSystem>>();
+        internal static readonly List<Func<EntityManager, BaseSystem>> SystemConstructorsnUpdateOrder = new List<Func<EntityManager, BaseSystem>>();
+        internal readonly List<BaseSystem> Systems;
+        internal readonly List<List<BaseSystem>> UpdateGroups;
 
         public static readonly Dictionary<string, Action<Entity, BinaryReader>> Deserializers;
 
@@ -62,8 +34,11 @@ namespace OctoAwesome.Ecs
         {
             var baseEventType = typeof(GameEvent);
 
-            var eventTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
-                .Where(t => !t.IsAbstract && baseEventType.IsAssignableFrom(t))
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            var nonAbstractTypes = assemblies.SelectMany(a => a.GetTypes()).Where(t => !t.IsAbstract).ToList();
+
+            var eventTypes = nonAbstractTypes
+                .Where(t => baseEventType.IsAssignableFrom(t))
                 .ToList();
 
             var registryType = typeof(EventRegistry<>);
@@ -87,12 +62,11 @@ namespace OctoAwesome.Ecs
             }
 
             var baseComponentType = typeof(Component);
-            var componentTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
-                .Where(t => !t.IsAbstract && baseComponentType.IsAssignableFrom(t))
+            var componentTypes = nonAbstractTypes
+                .Where(t => baseComponentType.IsAssignableFrom(t))
                 .ToList();
 
             registryType = typeof(ComponentRegistry<>);
-            var entityType = typeof(Entity);
             
             ComponentCount = componentTypes.Count;
              Deserializers = new Dictionary<string, Action<Entity, BinaryReader>>(ComponentCount);
@@ -140,11 +114,156 @@ namespace OctoAwesome.Ecs
                     Expression.Call(deserializeMethod, p1, variable, p3)
                     ), 
                 false, p1, p3).Compile();
-
             }
+
+            var baseSystemType = typeof(BaseSystem);
+            
+            var systemTypes = nonAbstractTypes
+               .Where(t => baseSystemType.IsAssignableFrom(t))
+               .ToList();
+
+            var validSystems = new List<Tuple<Type, SystemConfigurationAttribute>>();
+
+            foreach (var st in systemTypes)
+            {
+                var config = st.GetCustomAttributes(typeof(SystemConfigurationAttribute)).FirstOrDefault();
+                if(config == null)
+                    continue;
+
+                validSystems.Add(Tuple.Create(st, (SystemConfigurationAttribute)config));
+            }
+
+            var systemMap = new Dictionary<string, Tuple<Type, SystemConfigurationAttribute>>();
+
+            foreach (var vs in validSystems)
+            {
+                Action<string[]> validateNames = (arr) => {
+                    if (arr == null || arr.Length == 0)
+                        return;
+
+                    foreach (var item in arr)
+                    {
+                        if(validSystems.Any(s => s.Item1.Name == item))
+                            break;
+
+                        throw new ArgumentException($"System named `{item}` not found (Referenced by {vs.Item1.FullName})");
+                    }
+                };
+
+                validateNames(vs.Item2.After);
+                validateNames(vs.Item2.Before);
+                validateNames(vs.Item2.ConcurrentlyWith);
+                validateNames(vs.Item2.Replaces);
+            }
+
+            foreach (var vs in validSystems)
+            {
+                var replacement = vs.Item2.Replaces;
+                if(replacement == null || replacement.Length == 0)
+                    continue;
+
+                foreach (var item in replacement)
+                    systemMap[item] = vs;
+            }
+
+            for (int i = 0; i < validSystems.Count; i++)
+            {
+                if (systemMap.ContainsKey(validSystems[i].Item1.Name))
+                {
+                    validSystems.RemoveAt(i--);
+                }
+                else
+                {
+                    systemMap[validSystems[i].Item1.Name] = validSystems[i];
+                }
+            }
+
+            var systems = validSystems.Where(i => (i.Item2.After == null || i.Item2.After.Length == 0) && (i.Item2.Before == null || i.Item2.Before.Length == 0)).ToList();
+
+            for (int j = 0; j < 5; j++)
+            {
+                for (int i = 0; i < validSystems.Count; i++)
+                {
+                    var item = validSystems[i];
+                    if (systems.Contains(item))
+                        continue;
+
+                    Func<string[], bool> allPresent = (arr) => {
+                        return arr.All(s => systems.Contains(systemMap[s]));
+                    };
+
+                    var hasDependencies = item.Item2.After != null && item.Item2.After.Length > 0;
+                    var affects = item.Item2.Before != null && item.Item2.Before.Length > 0;
+
+                    if (hasDependencies && affects)
+                    {
+                        if (allPresent(item.Item2.After) && allPresent(item.Item2.Before))
+                        {
+                            var latest = item.Item2.After.Select(n => systems.IndexOf(systemMap[n])).Max();
+                            var least = item.Item2.Before.Select(n => systems.IndexOf(systemMap[n])).Min();
+
+                            int index = -1;
+
+                            if (least > latest)
+                                index = least;
+                            else if (least == latest)
+                            {
+                                index = least - 1;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+
+                            if (index == systems.Count - 1)
+                                systems.Add(item);
+                            else
+                                systems.Insert(index, item);
+                        }
+                    }
+                    else if (hasDependencies)
+                    {
+                        if (allPresent(item.Item2.After))
+                        {
+                            var index = item.Item2.After.Select(n => systems.IndexOf(systemMap[n])).Max();
+                            if (index == systems.Count - 1)
+                                systems.Add(item);
+                            else
+                                systems.Insert(index + 1, item);
+                            validSystems.RemoveAt(i--);
+                        }
+                    }
+                    else if (affects)
+                    {
+                        if (allPresent(item.Item2.Before))
+                        {
+                            var index = item.Item2.Before.Select(n => systems.IndexOf(systemMap[n])).Min();
+                            systems.Insert(index, item);
+                            validSystems.RemoveAt(i--);
+                        }
+                    }
+                }
+            }
+
+
+            // TODO: reorder systems to resolve systems with before / after dependencies
+
+            var types = systems.Select(i => i.Item1).ToList();
+            var arg = Expression.Parameter(typeof(EntityManager));
+            SystemConstructorsnUpdateOrder = types
+                .Select(t => t.GetConstructor(new [] {typeof(EntityManager) }))
+                .Select(ci => Expression.New(ci, arg))
+                .Select(e => Expression.Lambda<Func<EntityManager, BaseSystem>>(e, false, arg).Compile())
+                .ToList();
 
             foreach (var map in SubscriptionMap)
                 map.Sort();
+        }
+
+        public EntityManager()
+        {
+            Systems = SystemConstructorsnUpdateOrder.Select(c => c(this)).ToList();
+            UpdateGroups = Systems.Select(s => new List<BaseSystem> {s}).ToList();
         }
 
         public void ApplyChanges()
@@ -207,7 +326,15 @@ namespace OctoAwesome.Ecs
 
         public void Tick()
         {
-            Parallel.ForEach(UpdateGroups, g => g.ForEach(s => s.Tick()));
+            for (int i = 0; i < UpdateGroups.Count; i++)
+            {
+                for (int j = 0; j < UpdateGroups[i].Count; j++)
+                {
+                    //Parallel.ForEach(UpdateGroups[i], s => s.Tick());
+                    UpdateGroups[i][j].Tick();
+                }
+            }
+
         }
 
         public EntityManager Add<T>(Entity e, bool throwOnExists = false) where T : Component, new()
@@ -329,66 +456,6 @@ namespace OctoAwesome.Ecs
                 throw new ArgumentException($"Duplicate prefab key: {key}");
 
             _prefabs[key] = prefab;
-        }
-    }
-
-    public abstract class EventSubscription : IComparable<EventSubscription>
-    {
-        public int Priority;
-
-        public int CompareTo(EventSubscription other)
-        {
-            return Priority.CompareTo(other.Priority);
-        }
-
-        public abstract bool Matches(Entity e);
-        public abstract bool Invoke(EntityManager manager, Entity e, object @event);
-    }
-
-    public class CancellableEventSubscription<TComponent, TEvent> : EventSubscription
-        where TComponent : Component, new()
-        where TEvent : GameEvent
-    {
-        private readonly Func<EntityManager, Entity, TComponent, TEvent, bool> _callBack;
-
-        public CancellableEventSubscription(Func<EntityManager, Entity, TComponent, TEvent, bool> cb, int priority)
-        {
-            _callBack = cb;
-            Priority = priority;
-        }
-
-        public override bool Matches(Entity e)
-        {
-            return e.Get<TComponent>() != null;
-        }
-
-        public override bool Invoke(EntityManager manager, Entity e, object @event)
-        {
-            return _callBack(manager, e, e.Get<TComponent>(), (TEvent)@event);
-        }
-    }
-
-    public class EventSubscription<TComponent, TEvent> : EventSubscription
-        where TComponent : Component, new()
-        where TEvent : GameEvent
-    {
-        private readonly Action<EntityManager, Entity, TComponent, TEvent> _callBack;
-
-        public EventSubscription(Action<EntityManager, Entity, TComponent, TEvent> cb, int priority)
-        {
-            _callBack = cb;
-            Priority = priority;
-        }
-
-        public override bool Matches(Entity e)
-        {
-            return e.Get<TComponent>() != null;
-        }
-
-        public override bool Invoke(EntityManager manager, Entity e, object @event)
-        {
-            _callBack(manager, e, e.Get<TComponent>(), (TEvent)@event);
-            return true;
         }
     }
 }

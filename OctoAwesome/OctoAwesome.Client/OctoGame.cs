@@ -50,7 +50,7 @@ namespace OctoAwesome.Client
             Settings = new Settings();
             ResourceManager.Settings = Settings;
 
-
+            DefinitionManager.Instance.GetBlockDefinitions();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = 1080, height = 720;

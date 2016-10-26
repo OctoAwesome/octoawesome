@@ -4,6 +4,7 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.Systems
 {
+    [SystemConfiguration]
     public sealed class JumpingSystem : BaseSystemR3<PositionComponent, JumpComponent, MoveableComponent>
     {
         public JumpingSystem(EntityManager manager) : base(manager) {}

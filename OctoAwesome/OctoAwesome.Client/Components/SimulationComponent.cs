@@ -1,16 +1,6 @@
 ﻿using OctoAwesome.Runtime;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Xml.Serialization;
 using engenious;
-using OctoAwesome.Basics.Systems;
 using OctoAwesome.Ecs;
 
 namespace OctoAwesome.Client.Components
@@ -34,20 +24,7 @@ namespace OctoAwesome.Client.Components
             EntityManager = new EntityManager();
 
 
-            var systems = new List<BaseSystem> {
-                new GravitySystem(EntityManager),
-                new LookMovementSystem(EntityManager),
-                new JumpingSystem(EntityManager),
-                new CollidingMovementSystem(EntityManager)
-            };
-
-            var updateGroups = new List<List<BaseSystem>> {
-                systems
-            };
-
-            EntityManager.Systems.AddRange(systems);
-            EntityManager.UpdateGroups.AddRange(updateGroups);
-
+            
             Simulation = new Simulation(ResourceManager.Instance, EntityManager);
             return Simulation.NewGame(name, seed);
         }
@@ -62,20 +39,7 @@ namespace OctoAwesome.Client.Components
 
             EntityManager = new EntityManager();
 
-
-            var systems = new List<BaseSystem> {
-                new GravitySystem(EntityManager),
-                new LookMovementSystem(EntityManager),
-                new JumpingSystem(EntityManager),
-                new CollidingMovementSystem(EntityManager)
-            };
-
-            var updateGroups = new List<List<BaseSystem>> {
-                systems
-            };
-
-            EntityManager.Systems.AddRange(systems);
-            EntityManager.UpdateGroups.AddRange(updateGroups);
+            
 
             Simulation = new Simulation(ResourceManager.Instance, EntityManager);
             Simulation.LoadGame(guid);

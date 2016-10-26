@@ -182,6 +182,7 @@ namespace OctoAwesome.EntityComponents
         //    }
         //}
 
+        // ReSharper disable once UnusedMember.Local (Reflection)
         private static void Deserialize(Entity target, PlayerComponent comp, BinaryReader reader) { }
 
         public override void Serialize(Entity e, BinaryWriter writer)

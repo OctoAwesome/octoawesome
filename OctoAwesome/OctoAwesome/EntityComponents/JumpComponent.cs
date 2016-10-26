@@ -8,10 +8,12 @@ namespace OctoAwesome.EntityComponents
         public bool Jump;
         public float JumpPower;
 
+        // ReSharper disable once UnusedMember.Local (Reflection)
         private static void Deserialize(Entity target, JumpComponent component, BinaryReader reader)
         {
             component.JumpPower = reader.ReadSingle();
         }
+
         public override void Serialize(Entity e, BinaryWriter writer)
         {
             writer.Write(JumpPower);

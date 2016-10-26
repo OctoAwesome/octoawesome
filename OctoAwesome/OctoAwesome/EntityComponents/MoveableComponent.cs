@@ -24,6 +24,7 @@ namespace OctoAwesome.EntityComponents
             other.Power = Power;
         }
 
+        // ReSharper disable once UnusedMember.Local (Reflection)
         private static void Deserialize(Entity target, MoveableComponent component, BinaryReader reader)
         {
             component.Velocity = new Vector3(reader.ReadSingle(), reader.ReadSingle(),reader.ReadSingle());

@@ -10,6 +10,7 @@ namespace OctoAwesome.EntityComponents
         public float Angle;
         public float Tilt;
 
+        // ReSharper disable once UnusedMember.Local (Reflection)
         private static void Deserialize(Entity target, LookComponent component, BinaryReader reader)
         {
             component.Head = new Vector2(reader.ReadSingle(), reader.ReadSingle());

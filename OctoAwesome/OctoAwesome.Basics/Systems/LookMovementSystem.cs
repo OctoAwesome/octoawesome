@@ -5,6 +5,7 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.Systems
 {
+    [SystemConfiguration]
     public sealed class LookMovementSystem : BaseSystemR2<LookComponent, MoveableComponent>
     {
         public LookMovementSystem(EntityManager manager) : base(manager) {}

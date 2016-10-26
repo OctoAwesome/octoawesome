@@ -151,10 +151,6 @@
     <Content Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj">
-      <Project>{739F0779-A605-49C9-A298-FE30DC628C9E}</Project>
-      <Name>OctoAwesome.Basics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
       <Project>{31D774C6-E5D9-40B7-8D63-942E28FE1D94}</Project>
       <Name>OctoAwesome.Runtime</Name>

@@ -24,6 +24,7 @@ namespace OctoAwesome.EntityComponents
             other.OnGround = OnGround;
         }
 
+        // ReSharper disable once UnusedMember.Local (Reflection)
         private static void Deserialize(Entity target, PositionComponent component, BinaryReader reader)
         {
             var planet = reader.ReadInt32();
