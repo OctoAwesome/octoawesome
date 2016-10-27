@@ -43,20 +43,7 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public bool FlyMode { get; set; }
 
-        /// <summary>
-        /// Maximales Gewicht im Inventar.
-        /// </summary>
-        public float InventoryLimit { get; set; }
-
-        /// <summary>
-        /// Das Inventar des Spielers.
-        /// </summary>
-        public List<InventorySlot> Inventory { get; set; }
-
-        /// <summary>
-        /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
-        /// </summary>
-        public InventorySlot[] Tools { get; set; }
+       
 
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
@@ -65,14 +52,14 @@ namespace OctoAwesome.EntityComponents
         {
             //Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
             //Velocity = new Vector3(0, 0, 0);
-            Inventory = new List<InventorySlot>();
-            Tools = new InventorySlot[TOOLCOUNT];
+            //Inventory = new List<InventorySlot>();
+            //Tools = new InventorySlot[TOOLCOUNT];
             //Radius = 0.75f;
             //Angle = 0f;
             //Height = 3.5f;
             //Mass = 100;
             FlyMode = false;
-            InventoryLimit = 1000;
+            //InventoryLimit = 1000;
         }
 
         /// <summary>

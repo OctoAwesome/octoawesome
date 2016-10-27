@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorHost.cs" />
+    <Compile Include="BlockInteractionSystem.cs" />
     <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionManager.cs" />

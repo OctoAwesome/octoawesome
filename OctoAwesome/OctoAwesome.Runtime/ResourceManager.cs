@@ -205,6 +205,13 @@ namespace OctoAwesome.Runtime
                     .Add<JumpComponent>(j => { j.JumpPower = PlayerComponent.JUMPPOWER; })
                     .Add<LookComponent>(l => { l.Angle = 0; })
                     .Add<CollisionComponent>()
+                    .Add<InventoryComponent>(
+                        i => {
+                            i.InventoryLimit = 1000;
+                            i.Inventory = new List<InventorySlot>();
+                            i.Tools = new InventorySlot[PlayerComponent.TOOLCOUNT];
+                        })
+                    .Add<BlockInteractor>()
                     .Add<AffectedByGravity>();
             }
             return player;

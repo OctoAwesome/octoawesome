@@ -94,14 +94,14 @@ namespace OctoAwesome.Client.Controls
             // Aktualisierung des aktiven Buttons
             for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
-                if (Player.ActorHost.Player.Tools != null && 
-                    Player.ActorHost.Player.Tools.Length > i && 
-                    Player.ActorHost.Player.Tools[i] != null && 
-                    Player.ActorHost.Player.Tools[i].Definition != null)
+                if (Player.ActorHost.PlayerInventory.Tools != null && 
+                    Player.ActorHost.PlayerInventory.Tools.Length > i && 
+                    Player.ActorHost.PlayerInventory.Tools[i] != null && 
+                    Player.ActorHost.PlayerInventory.Tools[i].Definition != null)
                 {
-                    images[i].Texture = toolTextures[Player.ActorHost.Player.Tools[i].Definition.GetType().FullName];
+                    images[i].Texture = toolTextures[Player.ActorHost.PlayerInventory.Tools[i].Definition.GetType().FullName];
 
-                    if (Player.ActorHost.ActiveTool == Player.ActorHost.Player.Tools[i])
+                    if (Player.ActorHost.ActiveTool == Player.ActorHost.PlayerInventory.Tools[i])
                         buttons[i].Background = activeBackground;
                     else
                         buttons[i].Background = buttonBackgroud;

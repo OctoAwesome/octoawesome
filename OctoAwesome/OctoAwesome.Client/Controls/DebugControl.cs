@@ -184,9 +184,9 @@ namespace OctoAwesome.Client.Controls
 
             //Active Tool
             if (Player.ActorHost.ActiveTool != null)
-                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Array.FindIndex(Player.ActorHost.Player.Tools, (i => i.Definition == Player.ActorHost.ActiveTool.Definition));
+                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Array.FindIndex(Player.ActorHost.PlayerInventory.Tools, (i => i.Definition == Player.ActorHost.ActiveTool.Definition));
 
-            toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.ActorHost.Player.Tools.Length;
+            toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.ActorHost.PlayerInventory.Tools.Length;
 
             //Fly Info
             if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;

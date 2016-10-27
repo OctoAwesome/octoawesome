@@ -119,7 +119,7 @@ namespace OctoAwesome.Client.Screens
 
                 image.StartDrag += (e) =>
                 {
-                    InventorySlot slot = player.ActorHost.Player.Tools[(int)image.Tag];
+                    InventorySlot slot = player.ActorHost.PlayerInventory.Tools[(int)image.Tag];
                     if (slot != null)
                     {
                         e.Handled = true;
@@ -139,13 +139,13 @@ namespace OctoAwesome.Client.Screens
                     {
                         // Swap
                         int targetIndex = (int)image.Tag;
-                        InventorySlot targetSlot = player.ActorHost.Player.Tools[targetIndex];
+                        InventorySlot targetSlot = player.ActorHost.PlayerInventory.Tools[targetIndex];
                         int sourceIndex = -1;
                         InventorySlot sourceSlot = e.Content as InventorySlot;
 
-                        for (int j = 0; j < player.ActorHost.Player.Tools.Length; j++)
+                        for (int j = 0; j < player.ActorHost.PlayerInventory.Tools.Length; j++)
                         {
-                            if (player.ActorHost.Player.Tools[j] == sourceSlot)
+                            if (player.ActorHost.PlayerInventory.Tools[j] == sourceSlot)
                             {
                                 sourceIndex = j;
                                 break;
@@ -177,10 +177,10 @@ namespace OctoAwesome.Client.Screens
             if (args.Sender is Grid)
             {
                 InventorySlot slot = args.Content as InventorySlot;
-                for (int i = 0; i < player.ActorHost.Player.Tools.Length; i++)
+                for (int i = 0; i < player.ActorHost.PlayerInventory.Tools.Length; i++)
                 {
-                    if (player.ActorHost.Player.Tools[i] == slot)
-                        player.ActorHost.Player.Tools[i] = null;
+                    if (player.ActorHost.PlayerInventory.Tools[i] == slot)
+                        player.ActorHost.PlayerInventory.Tools[i] = null;
                 }
             }
         }
@@ -214,13 +214,13 @@ namespace OctoAwesome.Client.Screens
         private void SetTool(InventorySlot slot, int index)
         {
             // Alle Slots entfernen die das selbe Tool enthalten
-            for (int i = 0; i < player.ActorHost.Player.Tools.Length; i++)
+            for (int i = 0; i < player.ActorHost.PlayerInventory.Tools.Length; i++)
             {
-                if (player.ActorHost.Player.Tools[i] == slot)
-                    player.ActorHost.Player.Tools[i] = null;
+                if (player.ActorHost.PlayerInventory.Tools[i] == slot)
+                    player.ActorHost.PlayerInventory.Tools[i] = null;
             }
 
-            player.ActorHost.Player.Tools[index] = slot;
+            player.ActorHost.PlayerInventory.Tools[index] = slot;
         }
 
         protected override void OnUpdate(GameTime gameTime)
@@ -236,12 +236,12 @@ namespace OctoAwesome.Client.Screens
             // Aktualisierung des aktiven Buttons
             for (int i = 0; i < EntityComponents.PlayerComponent.TOOLCOUNT; i++)
             {
-                if (player.ActorHost.Player.Tools != null &&
-                    player.ActorHost.Player.Tools.Length > i &&
-                    player.ActorHost.Player.Tools[i] != null &&
-                    player.ActorHost.Player.Tools[i].Definition != null)
+                if (player.ActorHost.PlayerInventory.Tools != null &&
+                    player.ActorHost.PlayerInventory.Tools.Length > i &&
+                    player.ActorHost.PlayerInventory.Tools[i] != null &&
+                    player.ActorHost.PlayerInventory.Tools[i].Definition != null)
                 {
-                    images[i].Texture = toolTextures[player.ActorHost.Player.Tools[i].Definition.GetType().FullName];
+                    images[i].Texture = toolTextures[player.ActorHost.PlayerInventory.Tools[i].Definition.GetType().FullName];
                 }
                 else
                 {

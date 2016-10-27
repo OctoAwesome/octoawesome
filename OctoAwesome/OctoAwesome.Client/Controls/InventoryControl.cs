@@ -30,13 +30,13 @@ namespace OctoAwesome.Client.Controls
             };
             for (int i = 0; i < columns; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            int rows = (int)System.Math.Ceiling((float)manager.Game.Player.ActorHost.Player.Inventory.Count / columns);
+            int rows = (int)System.Math.Ceiling((float)manager.Game.Player.ActorHost.PlayerInventory.Inventory.Count / columns);
             for (int i = 0; i < rows; i++)
                 grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
             int column = 0;
             int row = 0;
-            foreach (var item in manager.Game.Player.ActorHost.Player.Inventory)
+            foreach (var item in manager.Game.Player.ActorHost.PlayerInventory.Inventory)
             {
                 Texture2D texture = manager.Game.Assets.LoadTexture(item.Definition.GetType(), item.Definition.Icon);
 

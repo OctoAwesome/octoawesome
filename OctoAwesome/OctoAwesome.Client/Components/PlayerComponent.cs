@@ -96,13 +96,13 @@ namespace OctoAwesome.Client.Components
                 ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             FlymodeInput = false;
 
-            if (ActorHost.Player.Tools != null && ActorHost.Player.Tools.Length > 0)
+            if (ActorHost.PlayerInventory.Tools != null && ActorHost.PlayerInventory.Tools.Length > 0)
             {
-                if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = ActorHost.Player.Tools[0];
-                for (int i = 0; i < Math.Min(ActorHost.Player.Tools.Length, SlotInput.Length); i++)
+                if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = ActorHost.PlayerInventory.Tools[0];
+                for (int i = 0; i < Math.Min(ActorHost.PlayerInventory.Tools.Length, SlotInput.Length); i++)
                 {
                     if (SlotInput[i])
-                        ActorHost.ActiveTool = ActorHost.Player.Tools[i];
+                        ActorHost.ActiveTool = ActorHost.PlayerInventory.Tools[i];
                     SlotInput[i] = false;
                 }
             }
@@ -110,14 +110,14 @@ namespace OctoAwesome.Client.Components
             // Index des aktiven Werkzeugs ermitteln
             int activeTool = -1;
             List<int> toolIndices = new List<int>();
-            if (ActorHost.Player.Tools != null)
+            if (ActorHost.PlayerInventory.Tools != null)
             {
-                for (int i = 0; i < ActorHost.Player.Tools.Length; i++)
+                for (int i = 0; i < ActorHost.PlayerInventory.Tools.Length; i++)
                 {
-                    if (ActorHost.Player.Tools[i] != null)
+                    if (ActorHost.PlayerInventory.Tools[i] != null)
                         toolIndices.Add(i);
 
-                    if (ActorHost.Player.Tools[i] == ActorHost.ActiveTool)
+                    if (ActorHost.PlayerInventory.Tools[i] == ActorHost.ActiveTool)
                         activeTool = toolIndices.Count - 1;
                 }
             }
@@ -143,7 +143,7 @@ namespace OctoAwesome.Client.Components
             if (activeTool > -1)
             {
                 activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                ActorHost.ActiveTool = ActorHost.Player.Tools[toolIndices[activeTool]];
+                ActorHost.ActiveTool = ActorHost.PlayerInventory.Tools[toolIndices[activeTool]];
             }
 
             ActorHost.Update(gameTime);

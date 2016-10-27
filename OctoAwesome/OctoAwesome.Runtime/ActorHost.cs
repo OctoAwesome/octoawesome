@@ -13,7 +13,6 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class ActorHost : IPlayerController
     {
-        private Index3? lastInteract = null;
         private Index3? lastApply = null;
         private OrientationFlags lastOrientation = OrientationFlags.None;
         private Index3 _oldIndex;
@@ -29,6 +28,8 @@ namespace OctoAwesome.Runtime
         public MoveableComponent PlayerMoveable;
         public LookComponent PlayerLook;
         public JumpComponent PlayerJump;
+        public BlockInteractor PlayerBlockInteractor;
+        public InventoryComponent PlayerInventory;
 
         /// <summary>
         /// Das zur Zeit aktive Werkzeug.
@@ -54,10 +55,12 @@ namespace OctoAwesome.Runtime
             Player = player.Get<PlayerComponent>();
             PlayerJump = player.Get<JumpComponent>();
             PlayerPosition.Planet = ResourceManager.Instance.GetPlanet(PlayerPosition.Coordinate.Planet);
+            PlayerBlockInteractor = player.Get<BlockInteractor>();
+            PlayerInventory = player.Get<InventoryComponent>();
             //Player = player;
             //planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
 
-            PlayerMoveable.LocalChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
+            PlayerPosition.LocalChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
             _oldIndex = PlayerPosition.Coordinate.ChunkIndex;
 
             ActiveTool = null;
@@ -105,41 +108,7 @@ namespace OctoAwesome.Runtime
             // #endregion
 
             #region Block Interaction
-
-            //if (lastInteract.HasValue)
-            //{
-            //    ushort lastBlock = localChunkCache.GetBlock(lastInteract.Value);
-            //    localChunkCache.SetBlock(lastInteract.Value, 0);
-
-            //    if (lastBlock != 0)
-            //    {
-            //        var blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(lastBlock);
-
-            //        var slot = Player.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
-
-            //        Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-            //        if (slot == null)
-            //        {
-            //            slot = new InventorySlot()
-            //            {
-            //                Definition = blockDefinition,
-            //                Amount = 0
-            //            };
-            //            Player.Inventory.Add(slot);
-
-            //            for (int i = 0; i < Player.Tools.Length; i++)
-            //            {
-            //                if (Player.Tools[i] == null)
-            //                {
-            //                    Player.Tools[i] = slot;
-            //                    break;
-            //                }
-            //            }
-            //        }
-            //        slot.Amount += 125;
-            //    }
-            //    lastInteract = null;
-            //}
+            
 
             //if (lastApply.HasValue)
             //{
@@ -174,7 +143,7 @@ namespace OctoAwesome.Runtime
             //                    Player.Position.GlobalBlockIndex.Z + Player.Position.BlockPosition.Z + Player.Height - gap)
             //                );
 
-            //            Nicht in sich selbst reinbauen
+            //            //Nicht in sich selbst reinbauen
             //            bool intersects = false;
             //            foreach (var box in boxes)
             //            {
@@ -203,7 +172,7 @@ namespace OctoAwesome.Runtime
             //            }
             //        }
 
-            //        TODO: Fix Interaction;)
+                    
             //        ushort block = _manager.GetBlock(lastApply.Value);
             //        IBlockDefinition blockDefinition = BlockDefinitionManager.GetForType(block);
             //        IItemDefinition itemDefinition = ActiveTool.Definition;
@@ -277,7 +246,8 @@ namespace OctoAwesome.Runtime
         /// <param name="blockIndex"></param>
         public void Interact(Index3 blockIndex)
         {
-            lastInteract = blockIndex;
+            PlayerBlockInteractor.Target = blockIndex;
+            PlayerBlockInteractor.Interact = true;
         }
 
         /// <summary>
@@ -296,25 +266,25 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void AllBlocksDebug()
         {
-            var blockDefinitions = DefinitionManager.Instance.GetBlockDefinitions();
+            //    var blockDefinitions = DefinitionManager.Instance.GetBlockDefinitions();
 
-            foreach (var blockDefinition in blockDefinitions)
-            {
+            //    foreach (var blockDefinition in blockDefinitions)
+            //    {
 
-                var slot = Player.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
+            //        var slot = Player.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
 
-                // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                if (slot == null)
-                {
-                    slot = new InventorySlot()
-                    {
-                        Definition = blockDefinition,
-                        Amount = 0
-                    };
-                    Player.Inventory.Add(slot);
-                }
-                slot.Amount += 125;
-            }
+            //        // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+            //        if (slot == null)
+            //        {
+            //            slot = new InventorySlot()
+            //            {
+            //                Definition = blockDefinition,
+            //                Amount = 0
+            //            };
+            //            Player.Inventory.Add(slot);
+            //        }
+            //        slot.Amount += 125;
+            //    }
         }
     }
 }
