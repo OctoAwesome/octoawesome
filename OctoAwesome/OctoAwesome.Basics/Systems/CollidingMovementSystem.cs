@@ -55,7 +55,7 @@ namespace OctoAwesome.Basics.Systems
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + r1.Coordinate.GlobalBlockIndex;
-                        ushort block = r2.LocalChunkCache.GetBlock(blockPos);
+                        ushort block = r1.LocalChunkCache.GetBlock(blockPos);
 
                         if (block == 0)
                             continue;

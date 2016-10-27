@@ -14,6 +14,7 @@ namespace OctoAwesome.EntityComponents
         public IPlanet Planet;
         public bool OnGround;
 
+        public ILocalChunkCache LocalChunkCache;
         public override void CopyTo(PositionComponent other)
         {
             other.Coordinate = Coordinate;
@@ -22,6 +23,8 @@ namespace OctoAwesome.EntityComponents
             other.Height = Height;
             other.Planet = Planet;
             other.OnGround = OnGround;
+
+            other.LocalChunkCache = LocalChunkCache;
         }
 
         // ReSharper disable once UnusedMember.Local (Reflection)

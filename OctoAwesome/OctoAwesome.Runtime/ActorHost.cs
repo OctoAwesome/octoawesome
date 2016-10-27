@@ -71,7 +71,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void Initialize()
         {
-            PlayerMoveable.LocalChunkCache.SetCenter(PlayerPosition.Planet, new Index2(PlayerPosition.Coordinate.ChunkIndex), (success) =>
+            PlayerPosition.LocalChunkCache.SetCenter(PlayerPosition.Planet, new Index2(PlayerPosition.Coordinate.ChunkIndex), (success) =>
             {
                 ReadyState = success;
             });
@@ -94,7 +94,7 @@ namespace OctoAwesome.Runtime
             {
                 _oldIndex = PlayerPosition.Coordinate.ChunkIndex;
                 ReadyState = false;
-                PlayerMoveable.LocalChunkCache.SetCenter(PlayerPosition.Planet, new Index2(PlayerPosition.Coordinate.ChunkIndex), (success) =>
+                PlayerPosition.LocalChunkCache.SetCenter(PlayerPosition.Planet, new Index2(PlayerPosition.Coordinate.ChunkIndex), (success) =>
                 {
                     ReadyState = success;
                 });
@@ -220,7 +220,7 @@ namespace OctoAwesome.Runtime
 
         internal void Unload()
         {
-            PlayerMoveable.LocalChunkCache.Flush();
+            PlayerPosition.LocalChunkCache.Flush();
         }
 
         /// <summary>

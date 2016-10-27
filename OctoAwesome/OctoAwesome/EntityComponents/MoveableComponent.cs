@@ -12,7 +12,6 @@ namespace OctoAwesome.EntityComponents
         public float Mass;
         public Vector3 Force;
         public Vector3 Power;
-        public ILocalChunkCache LocalChunkCache;
 
         public override void CopyTo(MoveableComponent other)
         {
@@ -20,7 +19,6 @@ namespace OctoAwesome.EntityComponents
             other.Move = Move;
             other.Mass = Mass;
             other.Force = Force;
-            other.LocalChunkCache = LocalChunkCache;
             other.Power = Power;
         }
 
