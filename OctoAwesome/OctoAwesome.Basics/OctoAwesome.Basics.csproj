@@ -134,7 +134,7 @@
     <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
     <Compile Include="SimulationComponents\CollisionComponent.cs" />
-    <Compile Include="SimulationComponents\ForceResolverComponent.cs" />
+    <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
     <Compile Include="SimulationComponents\MoveComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
