@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Ecs
 {
+    public static class ComponentRegistry
+    {
+        public static Action<Component>[] Release;
+    }
+
     public class ComponentRegistry<T> where T : Component, new()
     {
-        private static Stack<T> _freeList;
+        private static ConcurrentStack<T> _freeList;
 
         // ReSharper disable once StaticMemberInGenericType
         public static int Index;
@@ -14,7 +20,7 @@ namespace OctoAwesome.Ecs
         private static void Initialize(int index, int prefill) // Called via reflection
         {
             Index = index;
-            _freeList = new Stack<T>(prefill);
+            _freeList = new ConcurrentStack<T>();
 
             for (int i = 0; i < prefill; i++)
             {
@@ -30,7 +36,12 @@ namespace OctoAwesome.Ecs
 
         public static T Take()
         {
-            return _freeList.Count > 0 ? _freeList.Pop() : new T();
+            T item;
+
+            if (!_freeList.TryPop(out item))
+                item = new T();
+
+            return item;
         }
     }
 }

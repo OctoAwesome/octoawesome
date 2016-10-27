@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace OctoAwesome.Ecs
 {
     public static class ComponentArrayPool
     {
-        private static Stack<Component[]> _freeList;
+        private static ConcurrentStack<Component[]> _freeList;
         
         public static void Initialize(int componentCount)
         {
             const int prefill = 2000;
             
-            _freeList = new Stack<Component[]>(prefill);
+            _freeList = new ConcurrentStack<Component[]>();
 
             for (int i = 0; i < prefill; i++)
             {
@@ -20,7 +21,11 @@ namespace OctoAwesome.Ecs
 
         public static Component[] Take()
         {
-            return _freeList.Count > 0 ? _freeList.Pop() : new Component[EntityManager.ComponentCount];
+            Component[] item;
+            if(!_freeList.TryPop(out item))
+                item = new Component[EntityManager.ComponentCount];
+
+            return item;
         }
 
         public static void Release(Component[] arr, bool clear = true)
@@ -31,8 +36,7 @@ namespace OctoAwesome.Ecs
                 {
                     if (arr[i] != null)
                     {
-                        // TODO: implement release method
-                       // ComponentRegistry.Release(i, arr[i]);
+                       ComponentRegistry.Release[i](arr[i]);
                     }
                     arr[i] = null;
                 }

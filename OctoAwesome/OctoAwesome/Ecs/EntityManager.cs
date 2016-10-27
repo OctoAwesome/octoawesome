@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,15 +11,16 @@ namespace OctoAwesome.Ecs
 {
     public class EntityManager
     {
-        private readonly List<Entity> _addedEntities = new List<Entity>();
-        private readonly List<Entity> _changedEntities = new List<Entity>();
+        private readonly ConcurrentBag<Entity> _addedEntities = new ConcurrentBag<Entity>();
+        private readonly ConcurrentBag<Entity> _changedEntities = new ConcurrentBag<Entity>();
+        private readonly ConcurrentBag<Entity> _removedEntities = new ConcurrentBag<Entity>();
 
         private readonly List<Entity> _entities = new List<Entity>();
 
-        private readonly List<Action> _pendingActions = new List<Action>(512);
+        private readonly ConcurrentBag<Action> _pendingActions = new ConcurrentBag<Action>();
 
         private readonly Dictionary<string, Func<EntityManager, Entity>> _prefabs = new Dictionary<string, Func<EntityManager, Entity>>();
-        private readonly List<Entity> _removedEntities = new List<Entity>();
+        
         internal static readonly List<Func<EntityManager, BaseSystem>> SystemConstructorsnUpdateOrder = new List<Func<EntityManager, BaseSystem>>();
         internal readonly List<BaseSystem> Systems;
         internal readonly List<List<BaseSystem>> UpdateGroups;
@@ -71,6 +73,7 @@ namespace OctoAwesome.Ecs
             ComponentCount = componentTypes.Count;
              Deserializers = new Dictionary<string, Action<Entity, BinaryReader>>(ComponentCount);
             ComponentArrayPool.Initialize(ComponentCount);
+            ComponentRegistry.Release = new Action<Component>[ComponentCount];
 
             for (var i = 0; i < componentTypes.Count; i++)
             {
@@ -90,7 +93,14 @@ namespace OctoAwesome.Ecs
                     new object[] {
                         i,  prefill
                     });
+
+
+                var genericRelease = rType.GetMethod("Release", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                var cParam = Expression.Parameter(baseComponentType);
+                ComponentRegistry.Release[i] = Expression.Lambda<Action<Component>>(Expression.Call(null, genericRelease, Expression.Convert(cParam, componentType)), false, cParam).Compile();
+
                 componentType.GetMethod("Initialize", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(null, null);
+                
 
                 var deserializeMethod = componentType.GetMethod("Deserialize", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public,null, new []{ typeof(Entity), componentType, typeof(BinaryReader) }, null);
 
@@ -268,48 +278,37 @@ namespace OctoAwesome.Ecs
 
         public void ApplyChanges()
         {
-            if (_pendingActions.Count > 0)
-            {
-                foreach (var a in _pendingActions)
-                    a();
+            Action a;
 
-                _pendingActions.Clear();
+            while (_pendingActions.TryTake(out a))
+            {
+                a();
             }
 
-            if (_addedEntities.Count > 0)
+            Entity e;
+            while (_addedEntities.TryTake(out e))
             {
-                foreach (var r in _addedEntities)
-                {
-                    foreach (var s in Systems)
-                        s.EntityAdded(r);
-                }
+                foreach (var s in Systems)
+                    s.EntityAdded(e);
 
-                _entities.AddRange(_addedEntities);
-                _addedEntities.ForEach(e => e.Complete = true);
-                _addedEntities.Clear();
+                e.Complete = true;
+                _entities.Add(e);
             }
 
-            if (_changedEntities.Count > 0)
+            while (_changedEntities.TryTake(out e))
             {
-                foreach (var r in _changedEntities)
-                {
-                    foreach (var s in Systems)
-                        s.EntityChanged(r);
-                }
-
-                _changedEntities.Clear();
+                foreach (var s in Systems)
+                    s.EntityChanged(e);
             }
 
-            if (_removedEntities.Count > 0)
+            while (_removedEntities.TryTake(out e))
             {
-                foreach (var r in _removedEntities)
-                {
-                    foreach(var s in Systems)
-                        s.EntityRemoved(r);
-                    ComponentArrayPool.Release(r.Components);
-                    _entities.Remove(r);
-                }
-                _removedEntities.Clear();
+                foreach (var s in Systems)
+                    s.EntityRemoved(e);
+
+                ComponentArrayPool.Release(e.Components);
+                e.Components = null;
+                _entities.Remove(e);
             }
         }
 
@@ -386,16 +385,11 @@ namespace OctoAwesome.Ecs
 
         public EntityManager Remove<T>(Entity e) where T : Component, new()
         {
-            lock (_pendingActions)
-            {
-                _pendingActions.Add(
-                    () => {
-                        ComponentRegistry<T>.Release(e.Get<T>());
-                        if (e.Complete)
-                            _changedEntities.Add(e);
-                    });
-            }
-
+            _pendingActions.Add(() => {
+                ComponentRegistry<T>.Release(e.Get<T>());
+                if (e.Complete)
+                    _changedEntities.Add(e);
+            });
             return this;
         }
 
