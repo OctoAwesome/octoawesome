@@ -34,12 +34,12 @@ namespace OctoAwesome.Ecs
         
         static EntityManager()
         {
-            var baseEventType = typeof(GameEvent);
-
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
-            var nonAbstractTypes = assemblies.SelectMany(a => a.GetTypes()).Where(t => !t.IsAbstract).ToList();
+            var concreteTypes = assemblies.SelectMany(a => a.GetTypes()).Where(t => !t.IsAbstract).ToList();
 
-            var eventTypes = nonAbstractTypes
+            // Game Event Setup
+            var baseEventType = typeof(GameEvent);
+            var eventTypes = concreteTypes
                 .Where(t => baseEventType.IsAssignableFrom(t))
                 .ToList();
 
@@ -63,8 +63,9 @@ namespace OctoAwesome.Ecs
                 SubscriptionMap.Add(new List<EventSubscription>());
             }
 
+            // Component Setup
             var baseComponentType = typeof(Component);
-            var componentTypes = nonAbstractTypes
+            var componentTypes = concreteTypes
                 .Where(t => baseComponentType.IsAssignableFrom(t))
                 .ToList();
 
@@ -93,7 +94,6 @@ namespace OctoAwesome.Ecs
                     new object[] {
                         i,  prefill
                     });
-
 
                 var genericRelease = rType.GetMethod("Release", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
                 var cParam = Expression.Parameter(baseComponentType);
@@ -126,9 +126,11 @@ namespace OctoAwesome.Ecs
                 false, p1, p3).Compile();
             }
 
+
+            // System Setup
             var baseSystemType = typeof(BaseSystem);
             
-            var systemTypes = nonAbstractTypes
+            var systemTypes = concreteTypes
                .Where(t => baseSystemType.IsAssignableFrom(t))
                .ToList();
 
@@ -176,6 +178,8 @@ namespace OctoAwesome.Ecs
                     systemMap[item] = vs;
             }
 
+           
+
             for (int i = 0; i < validSystems.Count; i++)
             {
                 if (systemMap.ContainsKey(validSystems[i].Item1.Name))
@@ -189,6 +193,8 @@ namespace OctoAwesome.Ecs
             }
 
             var systems = validSystems.Where(i => (i.Item2.After == null || i.Item2.After.Length == 0) && (i.Item2.Before == null || i.Item2.Before.Length == 0)).ToList();
+
+            // System Setup - WTF ghetto dependency resolution
 
             for (int j = 0; j < 5; j++)
             {
@@ -254,8 +260,7 @@ namespace OctoAwesome.Ecs
                     }
                 }
             }
-
-
+            
             // TODO: reorder systems to resolve systems with before / after dependencies
 
             var types = systems.Select(i => i.Item1).ToList();
@@ -325,15 +330,11 @@ namespace OctoAwesome.Ecs
 
         public void Tick()
         {
-            for (int i = 0; i < UpdateGroups.Count; i++)
-            {
-                for (int j = 0; j < UpdateGroups[i].Count; j++)
-                {
-                    //Parallel.ForEach(UpdateGroups[i], s => s.Tick());
-                    UpdateGroups[i][j].Tick();
+            foreach (var t in UpdateGroups) {
+                foreach (var s in t) {
+                    s.Tick();
                 }
             }
-
         }
 
         public EntityManager Add<T>(Entity e, bool throwOnExists = false) where T : Component, new()
