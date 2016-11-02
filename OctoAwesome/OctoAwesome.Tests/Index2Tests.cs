@@ -256,11 +256,25 @@ namespace OctoAwesome.Model.Tests
             Assert.Equal(i2, i1 / 3);
             Assert.Equal(i3, i1 / -2);
         }
-
         [Fact]
         public void Index2LengthTest()
         {
-            throw new NotImplementedException();
+            int length = 2;
+            Index2 i1 = new Index2(length,0);
+            Index2 i2 = new Index2(0,length);
+
+            Assert.Equal(i1.LengthSquared(),4.0);
+            Assert.Equal(i2.LengthSquared(),4.0);
+
+            Assert.Equal(i1.Length(),2.0);
+            Assert.Equal(i2.Length(),2.0);
+
+            Index2 i3 = new Index2(3,4);
+            Index2 i4 = new Index2(4,3);
+            Assert.Equal(i3.LengthSquared(),25.0);
+            Assert.Equal(i4.LengthSquared(),25.0);
+            Assert.Equal(i3.Length(),5.0);
+            Assert.Equal(i4.Length(),5.0);
         }
 
         /// <summary>

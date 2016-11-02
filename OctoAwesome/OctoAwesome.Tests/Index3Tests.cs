@@ -185,46 +185,68 @@ namespace OctoAwesome.Model.Tests
         [Fact]
         public void Index3SubtraktionTest()
         {
-            throw new NotImplementedException();
-            //    Index2 i1 = new Index2(20, 15);     // Startwert
-            //    Index2 i2 = new Index2(-100, -130); // Negativ Addition
-            //    Index2 i3 = new Index2(120, 145);  // Ergebnis i1 - i2
-            //    Index2 i4 = new Index2(77, 44); // positive Addition
-            //    Index2 i5 = new Index2(-57, -29);  // Ergebnis i1 - i4
+            Index3 i1 = new Index3(20, 15, 17);     // Startwert
+            Index2 in2 = new Index2(-100, -130); // Negativ Subtraktion (2D)
+            Index3 in3 = new Index3(-100, -130, -33); // Negativ Subtraktion (3D)
+            Index3 in2r = new Index3(120, 145, 17);  // Ergebnis i1 - in2
+            Index3 in3r = new Index3(120, 145, 50);  // Ergebnis i1 - in3
 
-            //    // Addition
-            //    Assert.Equal(i3, i1 - i2);
-            //    Assert.Equal(i5, i1 - i4);
+            Index2 ip2 = new Index2(77, 44); // positive Subtraktion (2D)
+            Index3 ip3 = new Index3(77, 44, 54); // positive Subtraktion (3D)
+            Index3 ip2r = new Index3(-57, -29, 17);  // Ergebnis i1 + ip2
+            Index3 ip3r = new Index3(-57, -29, -37);  // Ergebnis i1 + ip3
+
+            // Addition
+            Assert.Equal(in2r, i1 - in2);
+            Assert.Equal(in3r, i1 - in3);
+            Assert.Equal(ip2r, i1 - ip2);
+            Assert.Equal(ip3r, i1 - ip3);
         }
 
         [Fact]
         public void Index3MultiplikationTest()
         {
-            throw new NotImplementedException();
-            //    Index2 i1 = new Index2(20, 15); // Startwert
-            //    Index2 i2 = new Index2(60, 45); // Multiplikation mit 3
-            //    Index2 i3 = new Index2(-40, -30); // Multi mit -2
+            Index3 i1 = new Index3(20, 15,-7); // Startwert
+            Index3 i2 = new Index3(60, 45,-21); // Multiplikation mit 3
+            Index3 i3 = new Index3(-40, -30,14); // Multi mit -2
 
-            //    Assert.Equal(i2, i1 * 3);
-            //    Assert.Equal(i3, i1 * -2);
+            Assert.Equal(i2, i1 * 3);
+            Assert.Equal(i3, i1 * -2);
         }
 
         [Fact]
         public void Index3DivisionTest()
         {
-            throw new NotImplementedException();
-            //    Index2 i1 = new Index2(20, 15); // Startwert
-            //    Index2 i2 = new Index2(6, 5); // Multiplikation mit 3
-            //    Index2 i3 = new Index2(-10, -7); // Multi mit -2
+            Index3 i1 = new Index3(42, 30,-66); // Startwert
+            Index3 i2 = new Index3(7, 5,-11); // Division mit 6
+            Index3 i3 = new Index3(-21, -15,33); // Multi mit -2
 
-            //    Assert.Equal(i2, i1 / 3);
-            //    Assert.Equal(i3, i1 / -2);
+            Assert.Equal(i2, i1 / 6);
+            Assert.Equal(i3, i1 / -2);
         }
 
         [Fact]
         public void Index3LengthTest()
         {
-            throw new NotImplementedException();
+            int length = 2;
+            Index3 i1 = new Index3(length,0,0);
+            Index3 i2 = new Index3(0,length,0);
+            Index3 i3 = new Index3(0,0,length);
+
+            Assert.Equal(i1.LengthSquared(),4.0);
+            Assert.Equal(i2.LengthSquared(),4.0);
+            Assert.Equal(i3.LengthSquared(),4.0);
+
+            Assert.Equal(i1.Length(),2.0);
+            Assert.Equal(i2.Length(),2.0);
+            Assert.Equal(i3.Length(),2.0);
+
+            Index3 i4 = new Index3(3,2,4);
+            Index3 i5 = new Index3(3,4,2);
+            Index3 i6 = new Index3(4,2,3);
+            Assert.Equal(i4.LengthSquared(),29.0);
+            Assert.Equal(i5.LengthSquared(),29.0);
+            Assert.Equal(i6.LengthSquared(),29.0);
         }
 
         /// <summary>

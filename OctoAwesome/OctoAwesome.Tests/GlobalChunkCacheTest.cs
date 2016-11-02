@@ -53,10 +53,10 @@ namespace OctoAwesome.Tests
 
             // Chunk unload
             cache.Release(planet, index);
-
+            System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);
-            Assert.Equal(1, saveCallCounter);
+            Assert.Equal(0, saveCallCounter);//Expected 0 cause chunk wasn't changed
         }
 
         [Fact]
@@ -131,19 +131,25 @@ namespace OctoAwesome.Tests
             Assert.Equal(2, loadCallCounter);
             Assert.Equal(0, saveCallCounter);
 
+            //Change Chunk so that they get saved
+            result1.Chunks[0].SetBlock(Index3.Zero,0,0);
+
+
             // Unload 1
             cache.Release(planet1, index1);
-
+            System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(1, cache.LoadedChunkColumns);
             Assert.Equal(2, loadCallCounter);
             Assert.Equal(1, saveCallCounter);
 
+            result2.Chunks[0].SetBlock(Index3.Zero,0,0);
             // Unload 2
             cache.Release(planet2, index2);
-
+            System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(2, loadCallCounter);
             Assert.Equal(2, saveCallCounter);
+            
         }
 
         [Fact]
@@ -194,16 +200,19 @@ namespace OctoAwesome.Tests
             Assert.Equal(1, loadCallCounter);
             Assert.Equal(0, saveCallCounter);
 
+
+
             // Unload 1
             cache.Release(planet, index);
-
+            System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(1, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);
             Assert.Equal(0, saveCallCounter);
 
+            x2.Chunks[0].SetBlock(Index3.Zero,0);
             // Unload 2
             cache.Release(planet, index);
-
+            System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);
             Assert.Equal(1, saveCallCounter);

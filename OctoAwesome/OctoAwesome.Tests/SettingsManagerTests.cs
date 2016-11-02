@@ -11,9 +11,7 @@ namespace OctoAwesome.Tests
         [Fact]
         public void ReadWrite()
         {
-            Settings settings = new Settings();
-
-            settings.DEBUG = true;
+            Settings settings = new Settings(true);
 
             string[] testArray = new string[] {"foo", "bar"};
             settings.Set("foo", testArray);
@@ -67,12 +65,10 @@ namespace OctoAwesome.Tests
         public void NullTest()
         {
 
-            Settings settings = new Settings();
-
-            settings.DEBUG = true;
+            Settings settings = new Settings(true);
 
             int test = settings.Get<int>("foobarnotset");
-            Console.WriteLine(test);
+            Assert.Equal(0,test);
         }
     }
 }

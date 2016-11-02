@@ -90,6 +90,8 @@ namespace OctoAwesome
                 {
                     cacheItem = new CacheItem()
                     {
+                        Planet=planet,
+                        Index = position,
                         References = 0,
                         ChunkColumn = null,
                     };

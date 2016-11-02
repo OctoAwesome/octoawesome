@@ -17,13 +17,11 @@ namespace OctoAwesome
         /// Bei UnitTests ist Assembly.GetEntryAssembly null, Gründe dazu gibts auf StackOverflow.
         /// Um Schmerzen zu vermeiden wurde eine Variable eingeführt, die unabhängig testet.
         /// </summary>
-        public bool DEBUG = false;
 
         private Configuration _config;
-
-        public Settings()
+        internal Settings(bool debug)
         {
-            if (DEBUG)
+            if (debug)
             {
                 ExeConfigurationFileMap map = new ExeConfigurationFileMap {ExeConfigFilename = "EXECONFIG_PATH"};
                 _config = ConfigurationManager.OpenMappedExeConfiguration(map,
@@ -33,6 +31,10 @@ namespace OctoAwesome
             {
                 _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
             }
+        }
+        public Settings()
+        {
+            _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
         }
 
         /// <summary>
@@ -44,8 +46,10 @@ namespace OctoAwesome
         {
             // var config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
 
-            
-            var valueConfig = _config.AppSettings.Settings[key].Value;
+            var settingElement = _config.AppSettings.Settings[key];
+            if (settingElement == null)
+                return default(T);
+            var valueConfig = settingElement.Value;
 
             return (T) Convert.ChangeType(valueConfig, typeof(T));
         }
