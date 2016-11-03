@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.EntityComponents
 {
-    public class BodyForceComponent : ForceComponent
+    public sealed class BodyPowerComponent : PowerComponent
     {
-        // TODO: Body Power?
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome
+﻿namespace OctoAwesome
 {
     /// <summary>
     /// Base Class for all Components.
@@ -12,5 +6,10 @@ namespace OctoAwesome
     public abstract class Component
     {
         public bool Enabled { get; set; }
+
+        public Component()
+        {
+            Enabled = true;
+        }
     }
 }

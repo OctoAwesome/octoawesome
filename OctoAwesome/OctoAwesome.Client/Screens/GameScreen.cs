@@ -2,7 +2,6 @@
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Client.Components;
 using System;
-using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 using engenious;
 using engenious.Input;
 

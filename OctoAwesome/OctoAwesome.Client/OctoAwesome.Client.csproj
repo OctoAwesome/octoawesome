@@ -155,9 +155,8 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
+      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
       <Name>OctoAwesome</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
