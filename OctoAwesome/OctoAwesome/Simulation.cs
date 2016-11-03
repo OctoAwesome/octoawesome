@@ -202,7 +202,7 @@ namespace OctoAwesome
             entity.Id = nextId++;
 
             foreach (var component in Components)
-                component.AddEntity(entity);
+                component.Add(entity);
         }
 
         public void RemoveEntity(Entity entity)
@@ -217,7 +217,7 @@ namespace OctoAwesome
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
             foreach (var component in Components)
-                component.RemoveEntity(entity);
+                component.Remove(entity);
 
             entity.Id = 0;
             entity.Simulation = null;

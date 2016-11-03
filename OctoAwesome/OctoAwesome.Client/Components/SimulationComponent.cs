@@ -1,14 +1,5 @@
 ﻿using OctoAwesome.Runtime;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Xml.Serialization;
 using engenious;
 
 namespace OctoAwesome.Client.Components
@@ -26,8 +17,12 @@ namespace OctoAwesome.Client.Components
                 Simulation.ExitGame();
                 Simulation = null;
             }
-
+            
+            var components = ExtensionManager.GetInstances<OctoAwesome.SimulationComponent>();
             Simulation = new Simulation(ResourceManager.Instance);
+            foreach (var component in components)
+                Simulation.Components.AddComponent(component);
+
             return Simulation.NewGame(name, seed);
         }
 
@@ -39,7 +34,11 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
+            var components = ExtensionManager.GetInstances<OctoAwesome.SimulationComponent>();
             Simulation = new Simulation(ResourceManager.Instance);
+            foreach (var component in components)
+                Simulation.Components.AddComponent(component);
+
             Simulation.LoadGame(guid);
         }
 
@@ -65,7 +64,12 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            Simulation.AddEntity(player); // InsertPlayer(player);
+            var entites = ExtensionManager.GetInstances<Entity>();
+            foreach (var entity in entites)
+            {
+                Simulation.AddEntity(entity);
+            }
+            // Simulation.AddEntity(player); // InsertPlayer(player);
             return null;
         }
 

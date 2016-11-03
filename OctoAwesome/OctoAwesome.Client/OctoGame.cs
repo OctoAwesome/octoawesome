@@ -6,7 +6,6 @@ using System;
 using System.Configuration;
 using System.Linq;
 using MonoGameUi;
-using OctoAwesome.Client.Components.OctoAwesome.Client.Components;
 using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
@@ -49,8 +48,7 @@ namespace OctoAwesome.Client
             //Window.AllowUserResizing = true;
             Settings = new Settings();
             ResourceManager.Settings = Settings;
-
-
+            
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);

@@ -9,19 +9,19 @@ namespace OctoAwesome.Basics.SimulationComponents
 {
     public sealed class MoveComponent : SimulationComponent
     {
-        public override void AddEntity(Entity entity)
+        protected override bool AddEntity(Entity entity)
         {
             throw new NotImplementedException();
         }
 
-        public override void RemoveEntity(Entity entity)
+        protected override void RemoveEntity(Entity entity)
         {
             throw new NotImplementedException();
         }
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 }
