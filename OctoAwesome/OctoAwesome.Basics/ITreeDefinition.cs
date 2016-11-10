@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics
     /// <summary>
     /// Basisschnittstelle für Baumdefinitionen, die vom TreePopulator verarbeitet werden sollen.
     /// </summary>
-    public interface ITreeDefinition
+    public interface ITreeDefinition : IDefinition
     {
         /// <summary>
         /// Gibt die Reihenfolge dieser ITreeDefinition in der Abarbeitung beim bepflanzen der Chunks an.

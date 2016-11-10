@@ -25,11 +25,13 @@ namespace OctoAwesome.Runtime
         private ISettings Settings;
 
         private IDefinitionManager definitionManager;
+        private IExtensionResolver extensionResolver;
 
 
 
-        public DiskPersistenceManager(IDefinitionManager definitionManager, ISettings Settings)
+        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings Settings)
         {
+            this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
             this.Settings = Settings;
         }
@@ -194,7 +196,7 @@ namespace OctoAwesome.Runtime
                 using (BinaryReader bw = new BinaryReader(stream))
                 {
                     string generatorName = bw.ReadString();
-                    generator = MapGeneratorManager.GetMapGenerators().FirstOrDefault(g => g.GetType().FullName.Equals(generatorName));
+                    generator = extensionResolver.GetMapGenerator().FirstOrDefault(g => g.GetType().FullName.Equals(generatorName));
                 }
             }
 
