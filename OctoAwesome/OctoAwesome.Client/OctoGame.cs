@@ -50,9 +50,7 @@ namespace OctoAwesome.Client
             ResourceManager.Settings = Settings;
 
             ExtensionLoader extensionLoader = new ExtensionLoader();
-            var extensions = ExtensionManager.GetInstances<IExtension>();
-            foreach (var extension in extensions)
-                extension.Register(extensionLoader);
+            extensionLoader.LoadExtensions();
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
