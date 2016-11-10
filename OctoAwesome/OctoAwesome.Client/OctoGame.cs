@@ -34,6 +34,10 @@ namespace OctoAwesome.Client
 
         public Settings Settings { get; private set; }
 
+        public IDefinitionManager DefinitionManager { get; private set; }
+
+        public IResourceManager ResourceManager { get; private set; }
+
         public OctoGame()
         {
             //graphics = new GraphicsDeviceManager(this);
@@ -47,10 +51,12 @@ namespace OctoAwesome.Client
 
             //Window.AllowUserResizing = true;
             Settings = new Settings();
-            ResourceManager.Settings = Settings;
 
             ExtensionLoader extensionLoader = new ExtensionLoader();
             extensionLoader.LoadExtensions();
+
+            DefinitionManager = new DefinitionManager(extensionLoader);
+            ResourceManager = new ResourceManager(DefinitionManager, Settings);
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
@@ -77,11 +83,12 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new Components.SimulationComponent(this, extensionLoader);
+            Simulation = new Components.SimulationComponent(this, 
+                extensionLoader, ResourceManager);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 
-            Player = new PlayerComponent(this);
+            Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
             Components.Add(Player);
 

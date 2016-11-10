@@ -59,14 +59,13 @@ namespace OctoAwesome.Client.Controls
             player = manager.Player;
             camera = manager.Camera;
             assets = manager.Game.Assets;
-
             Manager = manager;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
-            var definitions = DefinitionManager.Instance.GetBlockDefinitions();
+            var definitions = Manager.Game.DefinitionManager.GetBlockDefinitions();
             int textureCount = 0;
             foreach (var definition in definitions)
             {
@@ -112,12 +111,12 @@ namespace OctoAwesome.Client.Controls
                 blockTextures = Texture2D.FromStream(manager.GraphicsDevice, stream);
             }*/
 
-            planet = ResourceManager.Instance.GetPlanet(0);
+            planet = Manager.Game.ResourceManager.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
 
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE, range);
+            localChunkCache = new LocalChunkCache(Manager.Game.ResourceManager.GlobalChunkCache, VIEWRANGE, range);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -129,7 +128,7 @@ namespace OctoAwesome.Client.Controls
             {
                 for (int j = 0; j < chunkRenderer.GetLength(1); j++)
                 {
-                    ChunkRenderer renderer = new ChunkRenderer(simpleShader, manager.GraphicsDevice, camera.Projection, blockTextures);
+                    ChunkRenderer renderer = new ChunkRenderer(Manager.Game.DefinitionManager, simpleShader, manager.GraphicsDevice, camera.Projection, blockTextures);
                     chunkRenderer[i, j] = renderer;
                     orderedChunkRenderer.Add(renderer);
                 }
@@ -233,7 +232,7 @@ namespace OctoAwesome.Client.Controls
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
 
                         Axis? collisionAxis;
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);

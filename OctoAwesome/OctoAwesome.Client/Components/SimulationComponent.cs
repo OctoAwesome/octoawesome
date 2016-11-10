@@ -8,11 +8,14 @@ namespace OctoAwesome.Client.Components
     {
         private readonly IExtensionResolver extensionResolver;
 
+        private readonly IResourceManager resourceManager;
+
         private Simulation Simulation { get; set; }
 
-        public SimulationComponent(Game game, IExtensionResolver extensionResolver) : base(game)
+        public SimulationComponent(Game game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
         {
             this.extensionResolver = extensionResolver;
+            this.resourceManager = resourceManager;
         }
 
         public Guid NewGame(string name, int? seed = null)
@@ -23,7 +26,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(ResourceManager.Instance, extensionResolver);
+            Simulation = new Simulation(resourceManager, extensionResolver);
             return Simulation.NewGame(name, seed);
         }
 
@@ -35,7 +38,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(ResourceManager.Instance, extensionResolver);
+            Simulation = new Simulation(resourceManager, extensionResolver);
             Simulation.LoadGame(guid);
         }
 

@@ -98,11 +98,11 @@ namespace OctoAwesome.Client.Screens
                 }
 
                 // Sicherstellen, dass universe nicht geladen ist
-                if (ResourceManager.Instance.CurrentUniverse != null && 
-                    ResourceManager.Instance.CurrentUniverse.Id == levelList.SelectedItem.Id)
+                if (Manager.Game.ResourceManager.CurrentUniverse != null &&
+                    Manager.Game.ResourceManager.CurrentUniverse.Id == levelList.SelectedItem.Id)
                     return;
 
-                ResourceManager.Instance.DeleteUniverse(levelList.SelectedItem.Id);
+                Manager.Game.ResourceManager.DeleteUniverse(levelList.SelectedItem.Id);
                 levelList.Items.Remove(levelList.SelectedItem);
                 levelList.SelectedItem = null;
                 levelList.InvalidateDimensions();
@@ -128,7 +128,7 @@ namespace OctoAwesome.Client.Screens
             };
             buttonStack.Controls.Add(playButton);
 
-            foreach (var universe in ResourceManager.Instance.ListUniverses())
+            foreach (var universe in Manager.Game.ResourceManager.ListUniverses())
                 levelList.Items.Add(universe);
 
             // Erstes Element auswählen, oder falls vorhanden das letzte gespielte Universum

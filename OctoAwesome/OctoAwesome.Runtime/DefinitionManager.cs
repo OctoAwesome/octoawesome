@@ -9,56 +9,28 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class DefinitionManager : IDefinitionManager
     {
-        #region Singleton
-
-        private static DefinitionManager instance;
-
-        /// <summary>
-        /// Die Instanz des DefinitionManagers.
-        /// </summary>
-        public static IDefinitionManager Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = new DefinitionManager();
-                return instance;
-            }
-        }
-
-        private DefinitionManager()
-        {
-
-        }
-
-        #endregion
-
-        private object lockobject = new object();
-
         private List<IItemDefinition> itemDefinitions;
 
         private List<IResourceDefinition> resourceDefinitions;
 
         private IBlockDefinition[] blockDefinitions;
 
-        private void EnsureLoaded()
+        private IExtensionResolver extensionResolver;
+
+        public DefinitionManager(IExtensionResolver extensionResolver)
         {
-            lock (lockobject)
-            {
-                if (itemDefinitions == null)
-                {
-                    // Items sammeln
-                    itemDefinitions = new List<IItemDefinition>();
-                    itemDefinitions.AddRange(ExtensionManager.GetInstances<IItemDefinition>());
+            this.extensionResolver = extensionResolver;
 
-                    // Ressourcen sammeln
-                    resourceDefinitions = new List<IResourceDefinition>();
-                    resourceDefinitions.AddRange(itemDefinitions.OfType<IResourceDefinition>());
+            // Items sammeln
+            itemDefinitions = new List<IItemDefinition>();
+            itemDefinitions.AddRange(extensionResolver.GetDefinitions<IItemDefinition>());
 
-                    // Blöcke sammeln
-                    blockDefinitions = itemDefinitions.OfType<IBlockDefinition>().ToArray();
-                }
-            }
+            // Ressourcen sammeln
+            resourceDefinitions = new List<IResourceDefinition>();
+            resourceDefinitions.AddRange(itemDefinitions.OfType<IResourceDefinition>());
+
+            // Blöcke sammeln
+            blockDefinitions = itemDefinitions.OfType<IBlockDefinition>().ToArray();
         }
 
         /// <summary>
@@ -67,7 +39,6 @@ namespace OctoAwesome.Runtime
         /// <returns></returns>
         public IEnumerable<IItemDefinition> GetItemDefinitions()
         {
-            EnsureLoaded();
             return itemDefinitions;
         }
 
@@ -77,7 +48,6 @@ namespace OctoAwesome.Runtime
         /// <returns></returns>
         public IEnumerable<IResourceDefinition> GetResourceDefinitions()
         {
-            EnsureLoaded();
             return resourceDefinitions;
         }
 
@@ -87,7 +57,6 @@ namespace OctoAwesome.Runtime
         /// <returns></returns>
         public IEnumerable<IBlockDefinition> GetBlockDefinitions()
         {
-            EnsureLoaded();
             return blockDefinitions;
         }
 
@@ -101,7 +70,6 @@ namespace OctoAwesome.Runtime
             if (index == 0)
                 return null;
 
-            EnsureLoaded();
             return blockDefinitions[(index & Blocks.TypeMask) - 1];
         }
 
@@ -112,7 +80,6 @@ namespace OctoAwesome.Runtime
         /// <returns>Index der Block Definition</returns>
         public ushort GetBlockDefinitionIndex(IBlockDefinition definition)
         {
-            EnsureLoaded();
             return (ushort)(Array.IndexOf(blockDefinitions, definition) + 1);
         }
 
@@ -132,10 +99,10 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Typ der Definition</typeparam>
         /// <returns>Auflistung von Instanzen</returns>
-        public IEnumerable<T> GetDefinitions<T>()
+        public IEnumerable<T> GetDefinitions<T>() where T : IDefinition
         {
             // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary)
-            return ExtensionManager.GetInstances<T>();
+            return extensionResolver.GetDefinitions<T>();
         }
     }
 }

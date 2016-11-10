@@ -22,9 +22,20 @@ namespace OctoAwesome
         void LoadUniverse(Guid universeId);
 
         /// <summary>
+        /// Das aktuell geladene Universum.
+        /// </summary>
+        IUniverse CurrentUniverse { get; }
+
+        /// <summary>
         /// Entlädt das aktuelle Universum.
         /// </summary>
         void UnloadUniverse();
+
+        /// <summary>
+        /// Gibt alle Universen zurück, die geladen werden können.
+        /// </summary>
+        /// <returns>Die Liste der Universen.</returns>
+        IUniverse[] ListUniverses();
 
         /// <summary>
         /// Löscht ein Universum.
