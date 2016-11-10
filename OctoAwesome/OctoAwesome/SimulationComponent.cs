@@ -38,6 +38,9 @@ namespace OctoAwesome
 
         protected virtual bool Match(Entity entity)
         {
+            if (componentFilter.Count == 0)
+                return true;
+
             return componentFilter.Any(
                 x => x.All(
                     t => entity.Components.Any(

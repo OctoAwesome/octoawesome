@@ -6,7 +6,7 @@ namespace OctoAwesome
     /// <summary>
     /// Interface für die Definition eînes Items
     /// </summary>
-    public interface IItemDefinition
+    public interface IItemDefinition : IDefinition
     {
         /// <summary>
         /// Der Name des Items

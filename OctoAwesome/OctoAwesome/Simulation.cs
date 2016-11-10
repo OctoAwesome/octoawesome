@@ -17,7 +17,9 @@ namespace OctoAwesome
 
         private int nextId = 1;
 
-        private IResourceManager resourceManager;
+        private readonly IResourceManager resourceManager;
+
+        private readonly IExtensionResolver extensionResolver;
 
         private HashSet<Entity> entites = new HashSet<Entity>();
 
@@ -44,14 +46,17 @@ namespace OctoAwesome
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
         /// </summary>
-        public Simulation(IResourceManager resourceManager)
+        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
         {
             this.resourceManager = resourceManager;
+            this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
 
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent);
+
+            extensionResolver.ExtendSimulation(this);
         }
 
         private void ValidateAddComponent(SimulationComponent component)
@@ -196,6 +201,8 @@ namespace OctoAwesome
 
             if (entity.Simulation != null)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
+
+            extensionResolver.ExtendEntity(entity);
 
             entites.Add(entity);
             entity.Simulation = this;

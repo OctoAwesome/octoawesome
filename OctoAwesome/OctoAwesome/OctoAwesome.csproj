@@ -81,6 +81,9 @@
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkColumn.cs" />
+    <Compile Include="IDefinition.cs" />
+    <Compile Include="IExtensionLoader.cs" />
+    <Compile Include="IExtensionResolver.cs" />
     <Compile Include="IPersistenceManager.cs" />
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IDefinitionManager.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="ISettings.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="IExtension.cs" />
     <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />

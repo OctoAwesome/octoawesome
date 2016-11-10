@@ -6,9 +6,14 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class SimulationComponent : GameComponent
     {
+        private readonly IExtensionResolver extensionResolver;
+
         private Simulation Simulation { get; set; }
 
-        public SimulationComponent(Game game) : base(game) { }
+        public SimulationComponent(Game game, IExtensionResolver extensionResolver) : base(game)
+        {
+            this.extensionResolver = extensionResolver;
+        }
 
         public Guid NewGame(string name, int? seed = null)
         {
@@ -17,12 +22,8 @@ namespace OctoAwesome.Client.Components
                 Simulation.ExitGame();
                 Simulation = null;
             }
-            
-            var components = ExtensionManager.GetInstances<OctoAwesome.SimulationComponent>();
-            Simulation = new Simulation(ResourceManager.Instance);
-            foreach (var component in components)
-                Simulation.Components.AddComponent(component);
 
+            Simulation = new Simulation(ResourceManager.Instance, extensionResolver);
             return Simulation.NewGame(name, seed);
         }
 
@@ -34,11 +35,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            var components = ExtensionManager.GetInstances<OctoAwesome.SimulationComponent>();
-            Simulation = new Simulation(ResourceManager.Instance);
-            foreach (var component in components)
-                Simulation.Components.AddComponent(component);
-
+            Simulation = new Simulation(ResourceManager.Instance, extensionResolver);
             Simulation.LoadGame(guid);
         }
 
@@ -64,12 +61,7 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            var entites = ExtensionManager.GetInstances<Entity>();
-            foreach (var entity in entites)
-            {
-                Simulation.AddEntity(entity);
-            }
-            // Simulation.AddEntity(player); // InsertPlayer(player);
+            Simulation.AddEntity(player); // InsertPlayer(player);
             return null;
         }
 
