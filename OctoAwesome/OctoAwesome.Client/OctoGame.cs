@@ -48,7 +48,12 @@ namespace OctoAwesome.Client
             //Window.AllowUserResizing = true;
             Settings = new Settings();
             ResourceManager.Settings = Settings;
-            
+
+            ExtensionLoader extensionLoader = new ExtensionLoader();
+            var extensions = ExtensionManager.GetInstances<IExtension>();
+            foreach (var extension in extensions)
+                extension.Register(extensionLoader);
+
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);
@@ -70,7 +75,7 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new Components.SimulationComponent(this);
+            Simulation = new Components.SimulationComponent(this, extensionLoader);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 

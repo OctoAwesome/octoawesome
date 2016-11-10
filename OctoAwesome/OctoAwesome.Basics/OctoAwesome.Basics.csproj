@@ -65,11 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extension.cs" />
     <Compile Include="Biomes\FlatlandBiome.cs" />
     <Compile Include="Biomes\HighMountainBiome.cs" />
     <Compile Include="Biomes\HillsBiome.cs" />
     <Compile Include="Biomes\IBiome.cs" />
-    <Compile Include="Entities\PlayerEntity.cs" />
     <Compile Include="EntityComponents\BodyComponent.cs" />
     <Compile Include="EntityComponents\BodyPowerComponent.cs" />
     <Compile Include="EntityComponents\CollisionComponent.cs" />
