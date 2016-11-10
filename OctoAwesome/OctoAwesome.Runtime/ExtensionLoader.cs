@@ -16,12 +16,15 @@ namespace OctoAwesome.Runtime
 
         private List<Action<Simulation>> simulationExtender;
 
+        private List<IMapGenerator> mapGenerator;
+
         public ExtensionLoader()
         {
             definitions = new List<IDefinition>();
             entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
             simulationExtender = new List<Action<Simulation>>();
+            mapGenerator = new List<IMapGenerator>();
         }
 
         public void LoadExtensions()
@@ -125,9 +128,10 @@ namespace OctoAwesome.Runtime
             simulationExtender.Add(extenderDelegate);
         }
 
-        public void RegisterMapGenerator<T>() where T : IMapGenerator
+        public void RegisterMapGenerator(IMapGenerator generator)
         {
-            throw new NotImplementedException();
+            // TODO: Checks
+            mapGenerator.Add(generator);
         }
 
         public void RemoveEntity<T>() where T : Entity
@@ -177,6 +181,16 @@ namespace OctoAwesome.Runtime
         public IEnumerable<T> GetDefinitions<T>() where T : IDefinition
         {
             return definitions.OfType<T>();
+        }
+
+        public IEnumerable<IMapGenerator> GetMapGenerator()
+        {
+            return mapGenerator;
+        }
+
+        public IEnumerable<IMapPopulator> GetMapPopulator()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

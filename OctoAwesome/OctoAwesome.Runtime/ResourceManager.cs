@@ -30,11 +30,15 @@ namespace OctoAwesome.Runtime
 
         private IDefinitionManager definitionManager;
 
-        public ResourceManager(IDefinitionManager definitionManager, ISettings settings)
+        private IExtensionResolver extensionResolver;
+
+        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
+            this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
-            persistenceManager = new DiskPersistenceManager(definitionManager, settings);
-            
+            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, settings);
+
+            populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
             globalChunkCache = new GlobalChunkCache(
                 (p, i) => loadChunkColumn(p, i),
@@ -144,7 +148,7 @@ namespace OctoAwesome.Runtime
                 {
                     // Keiner da -> neu erzeugen
                     Random rand = new Random(universe.Seed + id);
-                    var generators = MapGeneratorManager.GetMapGenerators().ToArray();
+                    var generators = extensionResolver.GetMapGenerator().ToArray();
                     int index = rand.Next(generators.Length - 1);
                     IMapGenerator generator = generators[index];
                     planet = generator.GeneratePlanet(universe.Id, id, universe.Seed + id);
@@ -207,10 +211,6 @@ namespace OctoAwesome.Runtime
             IChunkColumn column02 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 1), planet.Size));
             IChunkColumn column12 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, 1), planet.Size));
             IChunkColumn column22 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 1), planet.Size));
-
-            // Populatoren erzeugen
-            if (populators == null)
-                populators = ExtensionManager.GetInstances<IMapPopulator>().OrderBy(p => p.Order).ToList();
 
             // Zentrum
             if (!column11.Populated && column21 != null && column12 != null && column22 != null)

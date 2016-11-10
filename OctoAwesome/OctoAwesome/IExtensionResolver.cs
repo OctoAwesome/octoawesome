@@ -9,5 +9,9 @@ namespace OctoAwesome
         void ExtendEntity(Entity entity);
 
         IEnumerable<T> GetDefinitions<T>() where T : IDefinition;
+
+        IEnumerable<IMapGenerator> GetMapGenerator();
+
+        IEnumerable<IMapPopulator> GetMapPopulator();
     }
 }

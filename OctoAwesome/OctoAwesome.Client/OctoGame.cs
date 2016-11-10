@@ -56,7 +56,7 @@ namespace OctoAwesome.Client
             extensionLoader.LoadExtensions();
 
             DefinitionManager = new DefinitionManager(extensionLoader);
-            ResourceManager = new ResourceManager(DefinitionManager, Settings);
+            ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings);
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 

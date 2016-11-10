@@ -48,7 +48,7 @@ namespace OctoAwesome
         /// Adds a new Map Generator.
         /// </summary>
         /// <typeparam name="T">Map Generator Type</typeparam>
-        void RegisterMapGenerator<T>() where T : IMapGenerator;
+        void RegisterMapGenerator(IMapGenerator generator);
 
         /// <summary>
         /// Removes an existing Map Generator.
