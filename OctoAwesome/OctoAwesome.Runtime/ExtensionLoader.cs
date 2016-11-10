@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace OctoAwesome.Runtime
 {
@@ -22,6 +22,56 @@ namespace OctoAwesome.Runtime
             entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
             simulationExtender = new List<Action<Simulation>>();
+        }
+
+        public void LoadExtensions()
+        {
+            List<Assembly> assemblies = new List<Assembly>();
+            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            assemblies.AddRange(LoadAssemblies(dir));
+
+            DirectoryInfo plugins = new DirectoryInfo(Path.Combine(dir.FullName, "plugins"));
+            if (plugins.Exists)
+                assemblies.AddRange(LoadAssemblies(plugins));
+
+
+            List<Type> result = new List<Type>();
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (!typeof(IExtension).IsAssignableFrom(type))
+                        continue;
+
+                    try
+                    {
+                        IExtension extension = (IExtension)Activator.CreateInstance(type);
+                        extension.Register(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        // TODO: Logging
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<Assembly> LoadAssemblies(DirectoryInfo directory)
+        {
+            List<Assembly> assemblies = new List<Assembly>();
+            foreach (var file in directory.GetFiles("*.dll"))
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(file.FullName);
+                    assemblies.Add(assembly);
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Error Handling
+                }
+            }
+            return assemblies;
         }
 
         #region Loader Methods
@@ -103,7 +153,6 @@ namespace OctoAwesome.Runtime
         public void ExtendEntity(Entity entity)
         {
             List<Type> stack = new List<Type>();
-
             Type t = entity.GetType();
             stack.Add(t);
             do
@@ -112,11 +161,9 @@ namespace OctoAwesome.Runtime
                 stack.Add(t);
             }
             while (t != typeof(Entity));
-            Type[] stack2 = stack.ToArray();
+            stack.Reverse();
 
-            Array.Reverse(stack2);
-
-            foreach (var type in stack2)
+            foreach (var type in stack)
             {
                 List<Action<Entity>> list;
                 if (!entityExtender.TryGetValue(type, out list))
