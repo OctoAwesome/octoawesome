@@ -18,10 +18,11 @@ namespace OctoAwesome.Client.Controls
         private double seconds = 0;
         private double lastfps = 0f;
 
-        ResourceManager resMan;
         AssetComponent assets;
 
         public PlayerComponent Player { get; set; }
+
+        private readonly ScreenComponent manager;
 
         StackPanel leftView, rightView;
         Label devText, position, rotation, fps, box, controlInfo, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo;
@@ -32,8 +33,6 @@ namespace OctoAwesome.Client.Controls
             framebuffer = new float[buffersize];
             Player = screenManager.Player;
 
-            //Get ResourceManager for further Information later...
-            resMan = ResourceManager.Instance;
             assets = screenManager.Game.Assets;
 
             //Brush for Debug Background
@@ -169,16 +168,16 @@ namespace OctoAwesome.Client.Controls
             //Draw Loaded Chunks
             loadedChunks.Text = string.Format("{0}: {1}/{2}", 
                 Languages.OctoClient.LoadedChunks, 
-                resMan.GlobalChunkCache.DirtyChunkColumn, 
-                resMan.GlobalChunkCache.LoadedChunkColumns);
+                manager.Game.ResourceManager.GlobalChunkCache.DirtyChunkColumn,
+                manager.Game.ResourceManager.GlobalChunkCache.LoadedChunkColumns);
 
             // Draw Loaded Textures
             loadedTextures.Text = string.Format("Loaded Textures: {0}",
                 assets.LoadedTextures);
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + (DefinitionManager.Instance.GetItemDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Items + " - " +
-                (DefinitionManager.Instance.GetBlockDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Blocks;
+            loadedInfo.Text = "" + (manager.Game.DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Items + " - " +
+                (manager.Game.DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Blocks;
 
             //Additional Play Information
 
@@ -192,7 +191,7 @@ namespace OctoAwesome.Client.Controls
             if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
             else flyInfo.Text = "";
 
-            IPlanet planet = ResourceManager.Instance.GetPlanet(Player.ActorHost.Position.Planet);
+            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.ActorHost.Position.Planet);
             // Temperature Info
             temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.ActorHost.Position.GlobalBlockIndex);
 

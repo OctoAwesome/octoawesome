@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.Controls
             buttonBackgroud = new BorderBrush(Color.Black);
             activeBackground = new BorderBrush(Color.Red);
 
-            foreach (var item in DefinitionManager.Instance.GetItemDefinitions())
+            foreach (var item in screenManager.Game.DefinitionManager.GetItemDefinitions())
             {
                 Texture2D texture = screenManager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);

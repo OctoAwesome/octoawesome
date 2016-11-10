@@ -11,6 +11,8 @@ namespace OctoAwesome.Client.Components
     {
         private new OctoGame Game;
 
+        private IResourceManager resourceManager;
+
         #region External Input
 
         public Vector2 HeadInput { get; set; }
@@ -45,15 +47,16 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
-        public PlayerComponent(OctoGame game)
+        public PlayerComponent(OctoGame game, IResourceManager resourceManager)
             : base(game)
         {
+            this.resourceManager = resourceManager;
             Game = game;
         }
 
         public void InsertPlayer()
         {
-            Player player = ResourceManager.Instance.LoadPlayer("Adam");
+            Player player = resourceManager.LoadPlayer("Adam");
             ActorHost = Game.Simulation.InsertPlayer(player);
         }
 
@@ -62,7 +65,7 @@ namespace OctoAwesome.Client.Components
             if (ActorHost == null)
                 return;
 
-            ResourceManager.Instance.SavePlayer(ActorHost.Player);
+            resourceManager.SavePlayer(ActorHost.Player);
             Game.Simulation.RemovePlayer(ActorHost);
             ActorHost = null;
         }

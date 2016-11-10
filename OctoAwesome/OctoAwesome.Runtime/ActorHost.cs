@@ -23,6 +23,10 @@ namespace OctoAwesome.Runtime
 
         private ILocalChunkCache localChunkCache;
 
+        private readonly IResourceManager resourceManager;
+
+        private readonly IDefinitionManager definitionManager;
+
         /// <summary>
         /// Der Spieler dieses ActorHosts.
         /// </summary>
@@ -42,12 +46,15 @@ namespace OctoAwesome.Runtime
         /// Erzeugt einen neuen ActorHost.
         /// </summary>
         /// <param name="player">Der Player</param>
-        public ActorHost(Player player)
+        public ActorHost(Player player, IResourceManager resourceManager, IDefinitionManager definitionManager)
         {
-            Player = player;
-            planet = ResourceManager.Instance.GetPlanet(Player.Position.Planet);
+            this.resourceManager = resourceManager;
+            this.definitionManager = definitionManager;
 
-            localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, 2, 1);
+            Player = player;
+            planet = resourceManager.GetPlanet(Player.Position.Planet);
+
+            localChunkCache = new LocalChunkCache(resourceManager.GlobalChunkCache, 2, 1);
             _oldIndex = Player.Position.ChunkIndex;
 
             ActiveTool = null;
@@ -225,7 +232,7 @@ namespace OctoAwesome.Runtime
 
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = DefinitionManager.Instance.GetBlockDefinitionByIndex(lastBlock);
+                    var blockDefinition = definitionManager.GetBlockDefinitionByIndex(lastBlock);
 
                     var slot = Player.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
 
@@ -299,7 +306,7 @@ namespace OctoAwesome.Runtime
 
                         if (!intersects)
                         {
-                            localChunkCache.SetBlock(idx, DefinitionManager.Instance.GetBlockDefinitionIndex(definition));
+                            localChunkCache.SetBlock(idx, definitionManager.GetBlockDefinitionIndex(definition));
 
                             ActiveTool.Amount -= 125;
                             if (ActiveTool.Amount <= 0)
@@ -469,7 +476,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void AllBlocksDebug()
         {
-            var blockDefinitions = DefinitionManager.Instance.GetBlockDefinitions();
+            var blockDefinitions = definitionManager.GetBlockDefinitions();
 
             foreach (var blockDefinition in blockDefinitions)
             {

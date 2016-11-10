@@ -7,12 +7,13 @@ namespace OctoAwesome.Basics.SimulationComponents
     {
         protected override bool AddEntity(Entity entity)
         {
-            throw new NotImplementedException();
+            return false;
+            // throw new NotImplementedException();
         }
 
         protected override void RemoveEntity(Entity entity)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public override void Update(GameTime gameTime)

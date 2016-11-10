@@ -24,10 +24,13 @@ namespace OctoAwesome.Runtime
         private DirectoryInfo root;
         private ISettings Settings;
 
+        private IDefinitionManager definitionManager;
 
 
-        public DiskPersistenceManager(ISettings Settings)
+
+        public DiskPersistenceManager(IDefinitionManager definitionManager, ISettings Settings)
         {
+            this.definitionManager = definitionManager;
             this.Settings = Settings;
         }
 
@@ -126,7 +129,7 @@ namespace OctoAwesome.Runtime
             {
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
                 {
-                    column.Serialize(zip, DefinitionManager.Instance);
+                    column.Serialize(zip, definitionManager);
                 }
             }
         }
@@ -226,7 +229,7 @@ namespace OctoAwesome.Runtime
             {
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
                 {
-                    return planet.Generator.GenerateColumn(zip, DefinitionManager.Instance, planet.Id, columnIndex);
+                    return planet.Generator.GenerateColumn(zip, definitionManager, planet.Id, columnIndex);
                 }
                 }
             }
@@ -261,7 +264,7 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         Player player = new Player();
-                        player.Deserialize(reader, DefinitionManager.Instance);
+                        player.Deserialize(reader, definitionManager);
                         return player;
                     }
                     catch (Exception)
@@ -290,7 +293,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    player.Serialize(writer, DefinitionManager.Instance);
+                    player.Serialize(writer, definitionManager);
                 }
             }
         }
