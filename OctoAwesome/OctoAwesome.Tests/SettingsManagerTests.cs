@@ -56,17 +56,11 @@ namespace OctoAwesome.Tests
             settings.Set("inputBool", inputBool);
 
             Assert.Equal(inputBool, settings.Get<bool>("inputBool"));
-
-            
-
-
-
         }
 
         [Fact]
         public void NullTest()
         {
-
             Settings settings = new Settings();
 
             settings.DEBUG = true;

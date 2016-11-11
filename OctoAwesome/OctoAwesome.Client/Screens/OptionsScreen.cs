@@ -80,6 +80,20 @@ namespace OctoAwesome.Client.Screens
 
             #endregion
 
+            #region ExtensionPage
+
+            TabPage extensionPage = new TabPage(manager, "Extensions");
+            tabs.Pages.Add(extensionPage);
+
+            ExtensionsOptionControl extensionOptions = new ExtensionsOptionControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            extensionPage.Controls.Add(extensionOptions);
+
+            #endregion
+
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
             exitButton = Button.TextButton(manager, Languages.OctoClient.RestartGameToApplyChanges);
             exitButton.VerticalAlignment = VerticalAlignment.Top;
