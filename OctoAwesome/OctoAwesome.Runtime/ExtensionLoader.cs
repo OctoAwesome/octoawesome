@@ -8,6 +8,8 @@ namespace OctoAwesome.Runtime
 {
     public sealed class ExtensionLoader : IExtensionLoader, IExtensionResolver
     {
+        private const string SETTINGSKEY = "DisabledExtensions";
+
         private List<IDefinition> definitions;
 
         private List<Type> entities;
@@ -18,13 +20,22 @@ namespace OctoAwesome.Runtime
 
         private List<IMapGenerator> mapGenerator;
 
-        public ExtensionLoader()
+        public List<IExtension> LoadedExtensions { get; private set; }
+
+        public List<IExtension> ActiveExtensions { get; private set; }
+
+        private ISettings settings;
+
+        public ExtensionLoader(ISettings settings)
         {
+            this.settings = settings;
             definitions = new List<IDefinition>();
             entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
             simulationExtender = new List<Action<Simulation>>();
             mapGenerator = new List<IMapGenerator>();
+            LoadedExtensions = new List<IExtension>();
+            ActiveExtensions = new List<IExtension>();
         }
 
         public void LoadExtensions()
@@ -37,6 +48,7 @@ namespace OctoAwesome.Runtime
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
+            var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : new string[0];
 
             List<Type> result = new List<Type>();
             foreach (var assembly in assemblies)
@@ -50,6 +62,11 @@ namespace OctoAwesome.Runtime
                     {
                         IExtension extension = (IExtension)Activator.CreateInstance(type);
                         extension.Register(this);
+
+                        if (disabledExtensions.Contains(type.FullName))
+                            LoadedExtensions.Add(extension);
+                        else
+                            ActiveExtensions.Add(extension);
                     }
                     catch (Exception ex)
                     {
@@ -75,6 +92,12 @@ namespace OctoAwesome.Runtime
                 }
             }
             return assemblies;
+        }
+
+        public void ApplyExtensions(IList<IExtension> disabledExtensions)
+        {
+            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
+            settings.Set(SETTINGSKEY, types);      
         }
 
         #region Loader Methods
@@ -190,7 +213,8 @@ namespace OctoAwesome.Runtime
 
         public IEnumerable<IMapPopulator> GetMapPopulator()
         {
-            throw new NotImplementedException();
+            return new List<IMapPopulator>();
+            //throw new NotImplementedException();
         }
 
         #endregion

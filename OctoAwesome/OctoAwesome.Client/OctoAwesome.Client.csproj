@@ -60,6 +60,7 @@
     <Compile Include="Controls\InventoryControl.cs" />
     <Compile Include="Controls\MinimapControl.cs" />
     <Compile Include="Controls\OptionsOptionControl.cs" />
+    <Compile Include="Controls\ExtensionsOptionControl.cs" />
     <Compile Include="Controls\ResourcePacksOptionControl.cs" />
     <Compile Include="Controls\SceneControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
