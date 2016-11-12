@@ -38,6 +38,8 @@ namespace OctoAwesome.Client
 
         public IResourceManager ResourceManager { get; private set; }
 
+        public IExtensionLoader ExtensionLoader { get; private set; }
+
         public OctoGame()
         {
             //graphics = new GraphicsDeviceManager(this);
@@ -52,8 +54,9 @@ namespace OctoAwesome.Client
             //Window.AllowUserResizing = true;
             Settings = new Settings();
 
-            ExtensionLoader extensionLoader = new ExtensionLoader();
+            ExtensionLoader extensionLoader = new ExtensionLoader(Settings);
             extensionLoader.LoadExtensions();
+            ExtensionLoader = extensionLoader;
 
             DefinitionManager = new DefinitionManager(extensionLoader);
             ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings);

@@ -70,8 +70,6 @@ namespace OctoAwesome
         /// <returns></returns>
         public bool KeyExists(string key)
         {
-          
-
             return _config.AppSettings.Settings.AllKeys.Contains(key);
         }
 
@@ -82,8 +80,6 @@ namespace OctoAwesome
         /// <param name="value">Der Wert der Einstellung.</param>
         public void Set(string key, string value)
         {
-        
-
             if (_config.AppSettings.Settings.AllKeys.Contains(key))
                 _config.AppSettings.Settings[key].Value = value;
             else
@@ -122,7 +118,6 @@ namespace OctoAwesome
              * Wenn eine Zeichenkette, die wir aus den Einstellugen lesen mit einer
              * eckigen Klammer anfängt, ist es ein Array.
              * [value1, value2, value3]
-             * 
              */
 
             string writeString = "[" + String.Join(",", values) + "]";
@@ -164,7 +159,6 @@ namespace OctoAwesome
         {
             // Wir müssten, um beide Klammern zu entfernen, - 3 rechnen. Ich lasse die letzte Klammer stellvertretend für das Komma, was folgen würde, stehen.
             // Das wird in der for-Schleife auseinander gepflückt.
-
 
             arrayString = arrayString.Substring(1, arrayString.Length - 2 /*- 1*/);
 

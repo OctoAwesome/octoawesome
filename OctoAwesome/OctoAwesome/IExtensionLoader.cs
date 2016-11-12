@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OctoAwesome
 {
@@ -7,6 +8,12 @@ namespace OctoAwesome
     /// </summary>
     public interface IExtensionLoader
     {
+        List<IExtension> LoadedExtensions { get; }
+
+        List<IExtension> ActiveExtensions { get; }
+
+        void ApplyExtensions(IList<IExtension> extensions);
+
         /// <summary>
         /// Registers a new Definition.
         /// </summary>
