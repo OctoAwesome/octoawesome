@@ -124,7 +124,7 @@ namespace OctoAwesome.Runtime
         public void DeleteUniverse(Guid id)
         {
             if (universe != null && universe.Id == id)
-                throw new Exception("Universe ist bereits geladen");
+                throw new Exception("Universe is already loaded");
 
             persistenceManager.DeleteUniverse(id);
         }

@@ -129,6 +129,12 @@
   <data name="Cactus" xml:space="preserve">
     <value>Cactus</value>
   </data>
+  <data name="ExtensionDescription" xml:space="preserve">
+    <value>Basic Extension with all important stuff</value>
+  </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Basics</value>
+  </data>
   <data name="Grass" xml:space="preserve">
     <value>Grass</value>
   </data>

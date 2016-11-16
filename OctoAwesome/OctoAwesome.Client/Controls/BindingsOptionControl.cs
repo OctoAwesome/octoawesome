@@ -67,7 +67,7 @@ namespace OctoAwesome.Client.Controls
 
             Label lbl = (Label)sender;
 
-            MessageScreen screen = new MessageScreen(Manager, "Press key...", "", "Cancel");
+            MessageScreen screen = new MessageScreen(Manager, Languages.OctoClient.PressKey, "", Languages.OctoClient.Cancel);
             screen.KeyDown += (s, a) =>
             {
                 Manager.Game.KeyMapper.RemoveKey(id, oldKey);

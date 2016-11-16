@@ -82,7 +82,7 @@ namespace OctoAwesome.Client.Screens
 
             #region ExtensionPage
 
-            TabPage extensionPage = new TabPage(manager, "Extensions");
+            TabPage extensionPage = new TabPage(manager, Languages.OctoClient.Extensions);
             tabs.Pages.Add(extensionPage);
 
             ExtensionsOptionControl extensionOptions = new ExtensionsOptionControl(manager)
