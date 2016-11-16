@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return "Basic Extension with all important stuff";
+                return Languages.OctoBasics.ExtensionDescription;
             }
         }
 
@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics
         {
             get
             {
-                return "Basics";
+                return Languages.OctoBasics.ExtensionName;
             }
         }
 

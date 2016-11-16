@@ -16,7 +16,7 @@ namespace OctoAwesome.Client.Screens
 
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.5f);
-            Title = "Select target";
+            Title = Languages.OctoClient.SelectTarget;
 
             Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
             Panel panel = new Panel(manager)
@@ -77,7 +77,7 @@ namespace OctoAwesome.Client.Screens
             };
             yStack.Controls.Add(yText);
 
-            Button closeButton = Button.TextButton(manager, "Teleport");
+            Button closeButton = Button.TextButton(manager, Languages.OctoClient.Teleport);
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             closeButton.LeftMouseClick += (s, e) => 
             {

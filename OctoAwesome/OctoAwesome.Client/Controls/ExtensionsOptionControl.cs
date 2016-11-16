@@ -10,8 +10,8 @@ namespace OctoAwesome.Client.Controls
         private Button enableButton;
         private Button disableButton;
         private Button applyButton;
-        private Listbox<IExtension> loadedPacksList;
-        private Listbox<IExtension> activePacksList;
+        private Listbox<IExtension> loadedExtensionsList;
+        private Listbox<IExtension> activeExtensionsList;
         private Label infoLabel;
 
         public ExtensionsOptionControl(ScreenComponent manager) : base(manager)
@@ -39,19 +39,19 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            enableButton = Button.TextButton(manager, "Enable");
+            enableButton = Button.TextButton(manager, Languages.OctoClient.Enable);
             enableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             enableButton.Visible = false;
             buttons.Controls.Add(enableButton);
 
-            disableButton = Button.TextButton(manager, "Disable");
+            disableButton = Button.TextButton(manager, Languages.OctoClient.Disable);
             disableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             disableButton.Visible = false;
             buttons.Controls.Add(disableButton);
 
             #endregion
 
-            applyButton = Button.TextButton(manager, "Apply");
+            applyButton = Button.TextButton(manager, Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);
@@ -67,7 +67,7 @@ namespace OctoAwesome.Client.Controls
 
             #region Listen
 
-            loadedPacksList = new Listbox<IExtension>(manager)
+            loadedExtensionsList = new Listbox<IExtension>(manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -75,9 +75,9 @@ namespace OctoAwesome.Client.Controls
                 TemplateGenerator = ListTemplateGenerator,
             };
 
-            grid.AddControl(loadedPacksList, 0, 0);
+            grid.AddControl(loadedExtensionsList, 0, 0);
 
-            activePacksList = new Listbox<IExtension>(manager)
+            activeExtensionsList = new Listbox<IExtension>(manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -85,81 +85,46 @@ namespace OctoAwesome.Client.Controls
                 TemplateGenerator = ListTemplateGenerator,
             };
 
-            grid.AddControl(activePacksList, 2, 0);
+            grid.AddControl(activeExtensionsList, 2, 0);
 
             #endregion
 
-            #region Info Grid
-
-            //Grid infoGrid = new Grid(ScreenManager)
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //};
-
-            //infoGrid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Auto, Width = 1 });
-            //infoGrid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            //infoGrid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
-            //infoGrid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
-            //infoGrid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
-
-            //Label nameLabel = new Label(ScreenManager)
-            //{
-            //    Text = "Name:",
-            //};
-            //infoGrid.AddControl(nameLabel, 0, 0);
-
-            //Label authorLabel = new Label(ScreenManager)
-            //{
-            //    Text = "Author:",
-            //};
-            //infoGrid.AddControl(authorLabel, 0, 1);
-
-            //Label descriptionLabel = new Label(ScreenManager)
-            //{
-            //    Text = "Description:",
-            //};
-            //infoGrid.AddControl(descriptionLabel, 0, 2);
-
-            //grid.AddControl(infoGrid, 0, 1, 3);
-
-            #endregion
-
-            loadedPacksList.SelectedItemChanged += loadedList_SelectedItemChanged;
-            activePacksList.SelectedItemChanged += activeList_SelectedItemChanged;
+            loadedExtensionsList.SelectedItemChanged += loadedList_SelectedItemChanged;
+            activeExtensionsList.SelectedItemChanged += activeList_SelectedItemChanged;
 
             enableButton.LeftMouseClick += (s, e) =>
             {
-                IExtension ext = loadedPacksList.SelectedItem;
-                loadedPacksList.Items.Remove(ext);
-                activePacksList.Items.Add(ext);
-                activePacksList.SelectedItem = ext;
+                IExtension ext = loadedExtensionsList.SelectedItem;
+                loadedExtensionsList.Items.Remove(ext);
+                activeExtensionsList.Items.Add(ext);
+                activeExtensionsList.SelectedItem = ext;
             };
 
             disableButton.LeftMouseClick += (s, e) =>
             {
-                IExtension ext = activePacksList.SelectedItem;
-                activePacksList.Items.Remove(ext);
-                loadedPacksList.Items.Add(ext);
-                loadedPacksList.SelectedItem = ext;
+                IExtension ext = activeExtensionsList.SelectedItem;
+                activeExtensionsList.Items.Remove(ext);
+                loadedExtensionsList.Items.Add(ext);
+                loadedExtensionsList.SelectedItem = ext;
             };
             
             applyButton.LeftMouseClick += (s, e) =>
             {
                 //TODO: Apply
-                manager.Game.ExtensionLoader.ApplyExtensions(loadedPacksList.Items);
+                manager.Game.ExtensionLoader.ApplyExtensions(loadedExtensionsList.Items);
                 Program.Restart();
             };
 
             // Daten laden
             var loader = manager.Game.ExtensionLoader;
             foreach (var item in loader.LoadedExtensions)
-                loadedPacksList.Items.Add(item);
+                loadedExtensionsList.Items.Add(item);
 
             foreach (var item in loader.ActiveExtensions)
             {
-                activePacksList.Items.Add(item);
-                if (loadedPacksList.Items.Contains(item))
-                    loadedPacksList.Items.Remove(item);
+                activeExtensionsList.Items.Add(item);
+                if (loadedExtensionsList.Items.Contains(item))
+                    loadedExtensionsList.Items.Remove(item);
             }
         }
 
@@ -180,12 +145,12 @@ namespace OctoAwesome.Client.Controls
 
             if (e.NewItem != null)
             {
-                activePacksList.SelectedItem = null;
+                activeExtensionsList.SelectedItem = null;
                 SetPackInfo(e.NewItem);
             }
             else
             {
-                if (activePacksList.SelectedItem == null)
+                if (activeExtensionsList.SelectedItem == null)
                     SetPackInfo(null);
             }
         }
@@ -197,12 +162,12 @@ namespace OctoAwesome.Client.Controls
 
             if (e.NewItem != null)
             {
-                loadedPacksList.SelectedItem = null;
+                loadedExtensionsList.SelectedItem = null;
                 SetPackInfo(e.NewItem);
             }
             else
             {
-                if (loadedPacksList.SelectedItem == null)
+                if (loadedExtensionsList.SelectedItem == null)
                     SetPackInfo(null);
             }
         }
