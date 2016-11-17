@@ -88,6 +88,24 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Add ähnelt.
+        /// </summary>
+        internal static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Anwenden ähnelt.
+        /// </summary>
+        internal static string Apply {
+            get {
+                return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Back ähnelt.
         /// </summary>
         internal static string Back {
@@ -102,6 +120,15 @@ namespace OctoAwesome.Client.Languages {
         internal static string Blocks {
             get {
                 return ResourceManager.GetString("Blocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
             }
         }
         
@@ -187,11 +214,38 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Disable ähnelt.
+        /// </summary>
+        internal static string Disable {
+            get {
+                return ResourceManager.GetString("Disable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Disable persistence ähnelt.
         /// </summary>
         internal static string DisablePersistence {
             get {
                 return ResourceManager.GetString("DisablePersistence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Down ähnelt.
+        /// </summary>
+        internal static string Down {
+            get {
+                return ResourceManager.GetString("Down", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable ähnelt.
+        /// </summary>
+        internal static string Enable {
+            get {
+                return ResourceManager.GetString("Enable", resourceCulture);
             }
         }
         
@@ -219,6 +273,15 @@ namespace OctoAwesome.Client.Languages {
         internal static string Exit {
             get {
                 return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Extensions ähnelt.
+        /// </summary>
+        internal static string Extensions {
+            get {
+                return ResourceManager.GetString("Extensions", resourceCulture);
             }
         }
         
@@ -322,6 +385,15 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Press key... ähnelt.
+        /// </summary>
+        internal static string PressKey {
+            get {
+                return ResourceManager.GetString("PressKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Really? ähnelt.
         /// </summary>
         internal static string Really {
@@ -331,11 +403,29 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Remove ähnelt.
+        /// </summary>
+        internal static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Resolution ähnelt.
         /// </summary>
         internal static string Resolution {
             get {
                 return ResourceManager.GetString("Resolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Resource Packs ähnelt.
+        /// </summary>
+        internal static string ResourcePacks {
+            get {
+                return ResourceManager.GetString("ResourcePacks", resourceCulture);
             }
         }
         
@@ -367,6 +457,15 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Select Target ähnelt.
+        /// </summary>
+        internal static string SelectTarget {
+            get {
+                return ResourceManager.GetString("SelectTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Select Universe ähnelt.
         /// </summary>
         internal static string SelectUniverse {
@@ -394,6 +493,15 @@ namespace OctoAwesome.Client.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
+        /// </summary>
+        internal static string Teleport {
+            get {
+                return ResourceManager.GetString("Teleport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Temperature ähnelt.
         /// </summary>
         internal static string Temperature {
@@ -417,6 +525,15 @@ namespace OctoAwesome.Client.Languages {
         internal static string ToolCount {
             get {
                 return ResourceManager.GetString("ToolCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Up ähnelt.
+        /// </summary>
+        internal static string Up {
+            get {
+                return ResourceManager.GetString("Up", resourceCulture);
             }
         }
         
