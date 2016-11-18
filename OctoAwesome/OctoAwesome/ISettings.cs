@@ -1,5 +1,8 @@
 ﻿namespace OctoAwesome
 {
+    /// <summary>
+    /// Interface zur Verwaltung der Anwendungseinstellungen
+    /// </summary>
     public interface ISettings
     {
         /// <summary>
@@ -8,6 +11,14 @@
         /// <param name="key">Der Schlüssel der Einstellung.</param>
         /// <returns>Der Wert der Einstellung.</returns>
         T Get<T>(string key);
+
+        /// <summary>
+        /// Gibt den Wert einer Einstellung zurück.
+        /// </summary>
+        /// <param name="key">Der Schlüssel der Einstellung.</param>
+        /// <param name="defaultValue">Default-Wert, der zurückgegeben wird, wenn der key nicht vorhanden ist.</param>
+        /// <returns>Der Wert der Einstellung oder der Default-Wert.</returns>
+        T Get<T>(string key, T defaultValue);
 
         /// <summary>
         /// Gibt das Array einer Einstellung zurück

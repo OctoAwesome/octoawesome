@@ -13,12 +13,13 @@ namespace OctoAwesome
     /// </summary>
     public class Settings : ISettings
     {
-        /// <summary>
-        /// Bei UnitTests ist Assembly.GetEntryAssembly null, Gründe dazu gibts auf StackOverflow.
-        /// Um Schmerzen zu vermeiden wurde eine Variable eingeführt, die unabhängig testet.
-        /// </summary>
-
         private Configuration _config;
+
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse Settings, die auf die Konfigurationsdatei der aktuell laufenden Anwendung zugreift.
+        /// </summary>
+        /// <param name="debug">Bei UnitTests ist Assembly.GetEntryAssembly null, Gründe dazu gibts auf StackOverflow.
+        /// Um Schmerzen zu vermeiden wurde eine Variable eingeführt, die unabhängig testet.</param>
         internal Settings(bool debug)
         {
             if (debug)
@@ -32,6 +33,10 @@ namespace OctoAwesome
                 _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
             }
         }
+
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse Settings, die auf die Konfigurationsdatei der aktuell laufenden Anwendung zugreift.
+        /// </summary>
         public Settings()
         {
             _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
@@ -44,11 +49,20 @@ namespace OctoAwesome
         /// <returns>Der Wert der Einstellung.</returns>
         public T Get<T>(string key)
         {
-            // var config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
+            return Get<T>(key, default(T));
+        }
 
+        /// <summary>
+        /// Gibt den Wert einer Einstellung zurück.
+        /// </summary>
+        /// <param name="key">Der Schlüssel der Einstellung.</param>
+        /// <param name="defaultValue">Default-Wert, der zurückgegeben wird, wenn der key nicht vorhanden ist.</param>
+        /// <returns>Der Wert der Einstellung oder der Default-Wert.</returns>
+        public T Get<T>(string key, T defaultValue)
+        {
             var settingElement = _config.AppSettings.Settings[key];
             if (settingElement == null)
-                return default(T);
+                return defaultValue;
             var valueConfig = settingElement.Value;
 
             return (T)Convert.ChangeType(valueConfig, typeof(T));
@@ -84,8 +98,6 @@ namespace OctoAwesome
         /// <param name="value">Der Wert der Einstellung.</param>
         public void Set(string key, string value)
         {
-
-
             if (_config.AppSettings.Settings.AllKeys.Contains(key))
                 _config.AppSettings.Settings[key].Value = value;
             else
@@ -120,12 +132,10 @@ namespace OctoAwesome
         /// <param name="values">Der Wert der Einstellung.</param>
         public void Set(string key, string[] values)
         {
-            /* Wir bauen das Array in eine Art serialisierten String um.
-             * Wenn eine Zeichenkette, die wir aus den Einstellugen lesen mit einer
-             * eckigen Klammer anfängt, ist es ein Array.
-             * [value1, value2, value3]
-             * 
-             */
+            // Wir bauen das Array in eine Art serialisierten String um.
+            // Wenn eine Zeichenkette, die wir aus den Einstellugen lesen mit einer
+            // eckigen Klammer anfängt, ist es ein Array.
+            // [value1, value2, value3]
 
             string writeString = "[" + String.Join(",", values) + "]";
             Set(key, writeString);
@@ -140,9 +150,7 @@ namespace OctoAwesome
         {
             string[] strValues = new string[values.Length];
             for (int i = 0; i < values.Length; i++)
-            {
                 strValues[i] = Convert.ToString(values[i]);
-            }
             Set(key, strValues);
         }
 
@@ -155,9 +163,7 @@ namespace OctoAwesome
         {
             string[] stringValues = new string[values.Length];
             for (int i = 0; i < values.Length; i++)
-            {
                 stringValues[i] = Convert.ToString(values[i]);
-            }
             Set(key, stringValues);
         }
 
@@ -172,9 +178,7 @@ namespace OctoAwesome
             string[] partsString = arrayString.Split(',');
             T[] tArray = new T[partsString.Length];
             for (int i = 0; i < partsString.Length; i++)
-            {
                 tArray[i] = (T)Convert.ChangeType(partsString[i], typeof(T));
-            }
 
             return tArray;
         }

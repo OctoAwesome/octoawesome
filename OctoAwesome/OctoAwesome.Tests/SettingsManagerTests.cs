@@ -56,7 +56,7 @@ namespace OctoAwesome.Tests
         }
 
         [Fact]
-        public void NullTest()
+        public void UnsetTest()
         {
             Settings settings = new Settings(true);
 
@@ -65,6 +65,12 @@ namespace OctoAwesome.Tests
 
             string testString = settings.Get<string>("foobarnotset");
             Assert.Equal(null, testString);
+
+            int testIntDefault = settings.Get("foobarnotset", 42);
+            Assert.Equal(42, testIntDefault);
+
+            string testStringDefault = settings.Get("foobarnotset", "ABC");
+            Assert.Equal("ABC", testStringDefault);
         }
 
         [Fact]
