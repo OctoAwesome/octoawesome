@@ -5,7 +5,6 @@ using Xunit;
 
 namespace OctoAwesome.Tests
 {
-    
     public class SettingsManagerTests
     {
         [Fact]
@@ -13,15 +12,15 @@ namespace OctoAwesome.Tests
         {
             Settings settings = new Settings(true);
 
-            string[] testArray = new string[] {"foo", "bar"};
+            string[] testArray = new string[] { "foo", "bar" };
             settings.Set("foo", testArray);
-            
+
             string[] newArray = settings.GetArray<string>("foo");
 
             Assert.True(testArray.SequenceEqual(newArray));
 
 
-            int[] testArrayInt = new int[] { 3,5,333,456,3457};
+            int[] testArrayInt = new int[] { 3, 5, 333, 456, 3457 };
             settings.Set("fooInt", testArrayInt);
 
             int[] newArrayInt = settings.GetArray<int>("fooInt");
@@ -29,7 +28,7 @@ namespace OctoAwesome.Tests
             Assert.True(testArray.SequenceEqual(newArray));
 
 
-            bool[] testArrayBool = new bool[] { true, false};
+            bool[] testArrayBool = new bool[] { true, false };
             settings.Set("fooBool", testArrayBool);
 
             bool[] newArrayBool = settings.GetArray<bool>("fooBool");
@@ -54,21 +53,32 @@ namespace OctoAwesome.Tests
             settings.Set("inputBool", inputBool);
 
             Assert.Equal(inputBool, settings.Get<bool>("inputBool"));
-
-            
-
-
-
         }
 
         [Fact]
         public void NullTest()
         {
-
             Settings settings = new Settings(true);
 
-            int test = settings.Get<int>("foobarnotset");
-            Assert.Equal(0,test);
+            int testInt = settings.Get<int>("foobarnotset");
+            Assert.Equal(0, testInt);
+
+            string testString = settings.Get<string>("foobarnotset");
+            Assert.Equal(null, testString);
+        }
+
+        [Fact]
+        public void DeleteTest()
+        {
+            Settings settings = new Settings(true);
+
+            settings.Set("test", 1);
+            int test1 = settings.Get<int>("test");
+            Assert.Equal(1, test1);
+
+            settings.Delete("test");
+            int test2 = settings.Get<int>("test");
+            Assert.Equal(0, test2);
         }
     }
 }

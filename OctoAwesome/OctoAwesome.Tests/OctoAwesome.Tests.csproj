@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7E2C82CC-CCC7-4837-9662-9850092BDC3B}</ProjectGuid>
+    <ProjectGuid>{0468B67C-E076-4B19-833C-382513606A5A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctoAwesome.Tests</RootNamespace>

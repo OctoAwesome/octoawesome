@@ -23,7 +23,7 @@ namespace OctoAwesome
         {
             if (debug)
             {
-                ExeConfigurationFileMap map = new ExeConfigurationFileMap {ExeConfigFilename = "EXECONFIG_PATH"};
+                ExeConfigurationFileMap map = new ExeConfigurationFileMap { ExeConfigFilename = "EXECONFIG_PATH" };
                 _config = ConfigurationManager.OpenMappedExeConfiguration(map,
                     ConfigurationUserLevel.None);
             }
@@ -51,7 +51,7 @@ namespace OctoAwesome
                 return default(T);
             var valueConfig = settingElement.Value;
 
-            return (T) Convert.ChangeType(valueConfig, typeof(T));
+            return (T)Convert.ChangeType(valueConfig, typeof(T));
         }
 
         /// <summary>
@@ -74,8 +74,6 @@ namespace OctoAwesome
         /// <returns></returns>
         public bool KeyExists(string key)
         {
-          
-
             return _config.AppSettings.Settings.AllKeys.Contains(key);
         }
 
@@ -86,7 +84,7 @@ namespace OctoAwesome
         /// <param name="value">Der Wert der Einstellung.</param>
         public void Set(string key, string value)
         {
-        
+
 
             if (_config.AppSettings.Settings.AllKeys.Contains(key))
                 _config.AppSettings.Settings[key].Value = value;
@@ -169,18 +167,26 @@ namespace OctoAwesome
             // Wir müssten, um beide Klammern zu entfernen, - 3 rechnen. Ich lasse die letzte Klammer stellvertretend für das Komma, was folgen würde, stehen.
             // Das wird in der for-Schleife auseinander gepflückt.
 
-
             arrayString = arrayString.Substring(1, arrayString.Length - 2 /*- 1*/);
 
             string[] partsString = arrayString.Split(',');
             T[] tArray = new T[partsString.Length];
             for (int i = 0; i < partsString.Length; i++)
             {
-                tArray[i] = (T) Convert.ChangeType(partsString[i], typeof(T));
+                tArray[i] = (T)Convert.ChangeType(partsString[i], typeof(T));
             }
 
-
             return tArray;
+        }
+
+        /// <summary>
+        /// Löscht eine Eigenschaft aus den Einstellungen
+        /// </summary>
+        /// <param name="key">Der Schlüssel der Einstellung</param>
+        public void Delete(string key)
+        {
+            _config.AppSettings.Settings.Remove(key);
+            _config.Save(ConfigurationSaveMode.Modified, false);
         }
     }
 }

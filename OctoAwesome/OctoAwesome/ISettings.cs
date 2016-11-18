@@ -65,5 +65,11 @@
         /// <param name="key">Der Schlüssel der Einstellung.</param>
         /// <param name="values">Der Wert der Einstellung.</param>
         void Set(string key, bool[] values);
+
+        /// <summary>
+        /// Löscht eine Eigenschaft aus den Einstellungen
+        /// </summary>
+        /// <param name="key">Der Schlüssel der Einstellung</param>
+        void Delete(string key);
     }
 }
