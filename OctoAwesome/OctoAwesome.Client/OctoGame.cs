@@ -53,15 +53,11 @@ namespace OctoAwesome.Client
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
-            int width = 1080, height = 720;
-            if (Settings.KeyExists("Width"))
-                width = Settings.Get<int>("Width");
-            if (Settings.KeyExists("Height"))
-               height = Settings.Get<int>("Height");            
+            int width = Settings.Get("Width", 1080);
+            int height = Settings.Get("Height", 720);
             Window.ClientSize = new Size(width, height);
 
-            if (Settings.KeyExists("EnableFullscreen") && Settings.Get<bool>("EnableFullscreen"))
-                Window.Fullscreen = true;
+            Window.Fullscreen = Settings.Get("EnableFullscreen", false);
 
             if (Settings.KeyExists("Viewrange"))
             {
