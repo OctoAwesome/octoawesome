@@ -28,10 +28,10 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (Player == null || Player.ActorHost == null || !assets.Ready)
+            if (Player == null || Player.CurrentEntity == null || !assets.Ready)
                 return;
 
-            float compassValue = Player.ActorHost.Angle / (float)(2 * Math.PI);
+            float compassValue = Player.CurrentEntity.Direction / (float)(2 * Math.PI);
             compassValue %= 1f;
             if (compassValue < 0)
                 compassValue += 1f;

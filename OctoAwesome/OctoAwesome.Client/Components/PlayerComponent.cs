@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using engenious;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Components
 {
@@ -35,7 +36,11 @@ namespace OctoAwesome.Client.Components
 
         #endregion
 
-        public ActorHost ActorHost { get; private set; }
+        public Entity CurrentEntity { get; private set; }
+
+        public HeadComponent CurrentEntityHead { get; private set; }
+
+        // public ActorHost ActorHost { get; private set; }
 
         public Index3? SelectedBox { get; set; }
 
@@ -54,20 +59,20 @@ namespace OctoAwesome.Client.Components
             Game = game;
         }
 
-        public void InsertPlayer()
+        public void SetEntity(Entity entity)
         {
-            Player player = resourceManager.LoadPlayer("Adam");
-            ActorHost = Game.Simulation.InsertPlayer(player);
-        }
+            CurrentEntity = entity;
 
-        public void RemovePlayer()
-        {
-            if (ActorHost == null)
-                return;
-
-            resourceManager.SavePlayer(ActorHost.Player);
-            Game.Simulation.RemovePlayer(ActorHost);
-            ActorHost = null;
+            if (CurrentEntity == null)
+            {
+                CurrentEntityHead = null;
+            }
+            else
+            {
+                // Map other Components
+                CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
+                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -75,80 +80,82 @@ namespace OctoAwesome.Client.Components
             if (!Enabled)
                 return;
 
-            if (ActorHost == null)
+            if (CurrentEntity == null)
                 return;
 
-            ActorHost.Head = HeadInput;
+            CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
+            CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
+            CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
             HeadInput = Vector2.Zero;
 
-            ActorHost.Move = MoveInput;
-            MoveInput = Vector2.Zero;
+            //ActorHost.Move = MoveInput;
+            //MoveInput = Vector2.Zero;
 
-            if (JumpInput)
-                ActorHost.Jump();
-            JumpInput = false;
+            //if (JumpInput)
+            //    ActorHost.Jump();
+            //JumpInput = false;
 
-            if (InteractInput && SelectedBox.HasValue)
-                ActorHost.Interact(SelectedBox.Value);
-            InteractInput = false;
+            //if (InteractInput && SelectedBox.HasValue)
+            //    ActorHost.Interact(SelectedBox.Value);
+            //InteractInput = false;
 
-            if (ApplyInput && SelectedBox.HasValue)
-                ActorHost.Apply(SelectedBox.Value, SelectedSide);
-            ApplyInput = false;
+            //if (ApplyInput && SelectedBox.HasValue)
+            //    ActorHost.Apply(SelectedBox.Value, SelectedSide);
+            //ApplyInput = false;
 
-            if (FlymodeInput)
-                ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
-            FlymodeInput = false;
+            //if (FlymodeInput)
+            //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
+            //FlymodeInput = false;
 
-            if (ActorHost.Player.Tools != null && ActorHost.Player.Tools.Length > 0)
-            {
-                if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = ActorHost.Player.Tools[0];
-                for (int i = 0; i < Math.Min(ActorHost.Player.Tools.Length, SlotInput.Length); i++)
-                {
-                    if (SlotInput[i])
-                        ActorHost.ActiveTool = ActorHost.Player.Tools[i];
-                    SlotInput[i] = false;
-                }
-            }
+            //if (ActorHost.Player.Tools != null && ActorHost.Player.Tools.Length > 0)
+            //{
+            //    if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = ActorHost.Player.Tools[0];
+            //    for (int i = 0; i < Math.Min(ActorHost.Player.Tools.Length, SlotInput.Length); i++)
+            //    {
+            //        if (SlotInput[i])
+            //            ActorHost.ActiveTool = ActorHost.Player.Tools[i];
+            //        SlotInput[i] = false;
+            //    }
+            //}
 
             // Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            List<int> toolIndices = new List<int>();
-            if (ActorHost.Player.Tools != null)
-            {
-                for (int i = 0; i < ActorHost.Player.Tools.Length; i++)
-                {
-                    if (ActorHost.Player.Tools[i] != null)
-                        toolIndices.Add(i);
+            //int activeTool = -1;
+            //List<int> toolIndices = new List<int>();
+            //if (ActorHost.Player.Tools != null)
+            //{
+            //    for (int i = 0; i < ActorHost.Player.Tools.Length; i++)
+            //    {
+            //        if (ActorHost.Player.Tools[i] != null)
+            //            toolIndices.Add(i);
 
-                    if (ActorHost.Player.Tools[i] == ActorHost.ActiveTool)
-                        activeTool = toolIndices.Count - 1;
-                }
-            }
+            //        if (ActorHost.Player.Tools[i] == ActorHost.ActiveTool)
+            //            activeTool = toolIndices.Count - 1;
+            //    }
+            //}
 
-            if (SlotLeftInput)
-            {
-                if (activeTool > -1)
-                    activeTool--;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[toolIndices.Count - 1];
-            }
-            SlotLeftInput = false;
+            //if (SlotLeftInput)
+            //{
+            //    if (activeTool > -1)
+            //        activeTool--;
+            //    else if (toolIndices.Count > 0)
+            //        activeTool = toolIndices[toolIndices.Count - 1];
+            //}
+            //SlotLeftInput = false;
 
-            if (SlotRightInput)
-            {
-                if (activeTool > -1)
-                    activeTool++;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[0];
-            }
-            SlotRightInput = false;
+            //if (SlotRightInput)
+            //{
+            //    if (activeTool > -1)
+            //        activeTool++;
+            //    else if (toolIndices.Count > 0)
+            //        activeTool = toolIndices[0];
+            //}
+            //SlotRightInput = false;
 
-            if (activeTool > -1)
-            {
-                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                ActorHost.ActiveTool = ActorHost.Player.Tools[toolIndices[activeTool]];
-            }
+            //if (activeTool > -1)
+            //{
+            //    activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
+            //    ActorHost.ActiveTool = ActorHost.Player.Tools[toolIndices[activeTool]];
+            //}
         }
     }
 }

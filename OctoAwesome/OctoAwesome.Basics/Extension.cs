@@ -25,6 +25,8 @@ namespace OctoAwesome.Basics
 
         public void Register(IExtensionLoader extensionLoader)
         {
+            extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
+
             extensionLoader.RegisterDefinition(new GroundBlockDefinition());
             extensionLoader.RegisterEntity<AppleEntity>();
 

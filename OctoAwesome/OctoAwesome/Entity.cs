@@ -25,24 +25,20 @@ namespace OctoAwesome
         public Simulation Simulation { get; internal set; }
 
         /// <summary>
-        /// Die Position der Entität
+        /// Gets or sets the Position.
         /// </summary>
         public Coordinate Position { get; set; }
 
-        /// <summary>
-        /// Die Masse der Entität. 
-        /// </summary>
-        public float Mass { get; set; }
+        private float direction;
 
         /// <summary>
-        /// Geschwindikeit der Entität als Vektor
+        /// Gets or sets the Direction.
         /// </summary>
-        public Vector3 Velocity { get; set; }
-
-        /// <summary>
-        /// Kraft die von aussen auf die Entität wirkt.
-        /// </summary>
-        public Vector3 ExternalForce { get; set; }
+        public float Direction
+        {
+            get { return direction; }
+            set { direction = MathHelper.WrapAngle(value); }
+        }
 
         public Entity()
         {
@@ -77,9 +73,6 @@ namespace OctoAwesome
             writer.Write(Position.BlockPosition.X);
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
-
-            // Mass
-            writer.Write(Mass);
         }
 
         /// <summary>
@@ -98,9 +91,6 @@ namespace OctoAwesome
             float posY = reader.ReadSingle();
             float posZ = reader.ReadSingle();
             Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
-
-            // Mass
-            Mass = reader.ReadSingle();
         }
     }
 }

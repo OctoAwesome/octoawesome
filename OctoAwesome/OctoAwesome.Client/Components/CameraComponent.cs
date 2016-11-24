@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using engenious;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Components
 {
@@ -34,45 +32,45 @@ namespace OctoAwesome.Client.Components
             if (!Enabled)
                 return;
 
-            if (player == null || player.ActorHost == null)
+            if (player == null || player.CurrentEntity == null)
                 return;
 
-            CameraChunk = player.ActorHost.Position.ChunkIndex;
+            Entity entity = player.CurrentEntity;
+            HeadComponent head = player.CurrentEntityHead;
 
-            CameraPosition = new Vector3(
-                player.ActorHost.Position.LocalPosition.X,
-                player.ActorHost.Position.LocalPosition.Y,
-                player.ActorHost.Position.LocalPosition.Z + 3.2f);
+            CameraChunk = entity.Position.ChunkIndex;
+
+            CameraPosition = entity.Position.LocalPosition + head.Offset;
             CameraUpVector = new Vector3(0, 0, 1f);
 
-            float height = (float)Math.Sin(player.ActorHost.Tilt);
-            float distance = (float)Math.Cos(player.ActorHost.Tilt);
+            float height = (float)Math.Sin(head.Tilt);
+            float distance = (float)Math.Cos(head.Tilt);
 
-            float lookX = (float)Math.Cos(player.ActorHost.Angle) * distance;
-            float lookY = -(float)Math.Sin(player.ActorHost.Angle) * distance;
+            float lookX = (float)Math.Cos(head.Angle) * distance;
+            float lookY = -(float)Math.Sin(head.Angle) * distance;
 
-            float strafeX = (float)Math.Cos(player.ActorHost.Angle + MathHelper.PiOver2);
-            float strafeY = -(float)Math.Sin(player.ActorHost.Angle + MathHelper.PiOver2);
+            float strafeX = (float)Math.Cos(head.Angle + MathHelper.PiOver2);
+            float strafeY = -(float)Math.Sin(head.Angle + MathHelper.PiOver2);
 
             CameraUpVector = Vector3.Cross(new Vector3(strafeX, strafeY, 0), new Vector3(lookX, lookY, height));
 
             View = Matrix.CreateLookAt(
                 CameraPosition,
                 new Vector3(
-                    player.ActorHost.Position.LocalPosition.X + lookX,
-                    player.ActorHost.Position.LocalPosition.Y + lookY,
-                    player.ActorHost.Position.LocalPosition.Z + 3.2f + height),
+                    CameraPosition.X + lookX,
+                    CameraPosition.Y + lookY,
+                    CameraPosition.Z + height),
                 CameraUpVector);
 
             MinimapView = Matrix.CreateLookAt(
                 new Vector3(CameraPosition.X, CameraPosition.Y, 100),
                 new Vector3(
-                    player.ActorHost.Position.LocalPosition.X,
-                    player.ActorHost.Position.LocalPosition.Y,
+                    entity.Position.LocalPosition.X,
+                    entity.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(player.ActorHost.Angle), 
-                    (float)Math.Sin(-player.ActorHost.Angle), 0f));
+                    (float)Math.Cos(head.Angle), 
+                    (float)Math.Sin(-head.Angle), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;
