@@ -12,6 +12,16 @@ namespace OctoAwesome.Client.Components
 
         private Simulation Simulation { get; set; }
 
+        public SimulationState State
+        {
+            get
+            {
+                if (Simulation != null)
+                    return Simulation.State;
+                return SimulationState.Undefined;
+            }
+        }
+
         public SimulationComponent(Game game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
         {
             this.extensionResolver = extensionResolver;
@@ -56,7 +66,7 @@ namespace OctoAwesome.Client.Components
             Simulation = null;
         }
 
-        public ActorHost InsertPlayer(Player player)
+        public Player LoginPlayer(Guid id)
         {
             if (Simulation == null)
                 throw new NotSupportedException();
@@ -64,11 +74,12 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            Simulation.AddEntity(player); // InsertPlayer(player);
-            return null;
+            Player player = resourceManager.LoadPlayer(id.ToString());
+            Simulation.AddEntity(player);
+            return player;
         }
 
-        public void RemovePlayer(ActorHost host)
+        public void LogoutPlayer(Player player)
         {
             if (Simulation == null)
                 throw new NotSupportedException();
@@ -76,8 +87,7 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            // Simulation.RemovePlayer(host);
-            Simulation.RemoveEntity(host.Player);
+            Simulation.RemoveEntity(player);
         }
     }
 }

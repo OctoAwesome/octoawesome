@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using engenious;
 using System.IO;
 using System.Linq;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
 {
@@ -40,17 +41,6 @@ namespace OctoAwesome
         /// Der Radius des Spielers in Blocks.
         /// </summary>
         public float Radius { get; set; }
-
-        private float angle = 0f;
-
-        /// <summary>
-        /// Blickwinkel in der horizontalen Achse
-        /// </summary>
-        public float Angle
-        {
-            get { return angle; }
-            set { angle = MathHelper.WrapAngle(value); }
-        }
 
         /// <summary>
         /// Die Körperhöhe des Spielers in Blocks
@@ -93,15 +83,15 @@ namespace OctoAwesome
         public Player()
         {
             Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
-            Velocity = new Vector3(0, 0, 0);
             Inventory = new List<InventorySlot>();
             Tools = new InventorySlot[TOOLCOUNT];
             Radius = 0.75f;
-            Angle = 0f;
+            Direction = 0f;
             Height = 3.5f;
-            Mass = 100;
             FlyMode = false;
             InventoryLimit = 1000;
+
+            Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
         }
 
         /// <summary>
@@ -118,7 +108,7 @@ namespace OctoAwesome
             writer.Write(Radius);
 
             // Angle
-            writer.Write(Angle);
+            writer.Write(Direction);
 
             // Height
             writer.Write(Height);
@@ -167,7 +157,7 @@ namespace OctoAwesome
             Radius = reader.ReadSingle();
 
             // Angle
-            Angle = reader.ReadSingle();
+            Direction = reader.ReadSingle();
 
             // Height
             Height = reader.ReadSingle();

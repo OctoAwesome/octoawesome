@@ -112,7 +112,7 @@ namespace OctoAwesome
         public static IEnumerable<CollisionPlane> GetPlayerCollisionPlanes(Player player,bool invertvelocity = true)
         {
             var pos = player.Position.BlockPosition;
-            var vel = invertvelocity ? -1 * player.Velocity : player.Velocity;
+            var vel = new Vector3(); // TODO:  invertvelocity ? -1 * player.Velocity : player.Velocity;
 
             //Ebene X
             if (vel.X > 0)

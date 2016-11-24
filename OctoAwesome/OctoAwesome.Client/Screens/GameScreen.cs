@@ -270,11 +270,11 @@ namespace OctoAwesome.Client.Screens
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.Player.SlotInput[9] = true;
             });
-            Manager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.ActorHost.AllBlocksDebug();
-            });
+            //Manager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", type =>
+            //{
+            //    if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+            //    Manager.Player.ActorHost.AllBlocksDebug();
+            //});
             Manager.Game.KeyMapper.AddAction("octoawesome:debug.control", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
@@ -311,9 +311,9 @@ namespace OctoAwesome.Client.Screens
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
-                    Manager.Game.Player.ActorHost.Player.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
+                    Manager.Game.Player.CurrentEntity.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
                     Manager.NavigateBack();
-                    }, Manager.Game.Player.ActorHost.Player.Position.GlobalBlockIndex.X, Manager.Game.Player.ActorHost.Player.Position.GlobalBlockIndex.Y));
+                    }, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.X, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.Y));
                 
             });
         }

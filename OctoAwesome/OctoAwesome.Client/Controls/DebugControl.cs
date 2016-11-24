@@ -32,7 +32,7 @@ namespace OctoAwesome.Client.Controls
         {
             framebuffer = new float[buffersize];
             Player = screenManager.Player;
-
+            manager = screenManager;
             assets = screenManager.Game.Assets;
 
             //Brush for Debug Background
@@ -131,7 +131,7 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled || !assets.Ready)
                 return;
 
-            if (Player == null || Player.ActorHost == null)
+            if (Player == null || Player.CurrentEntity == null)
                 return;
 
             //Calculate FPS
@@ -151,14 +151,14 @@ namespace OctoAwesome.Client.Controls
             controlInfo.Text = Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
 
             //Draw Position
-            string pos = "pos: " + Player.ActorHost.Position.ToString();
+            string pos = "pos: " + Player.CurrentEntity.Position.ToString();
             position.Text = pos;
 
             //Draw Rotation
-            float grad = (Player.ActorHost.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360;
             string rot = "rot: " +
-                (((Player.ActorHost.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.ActorHost.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.CurrentEntityHead.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
 
             //Draw Fps
@@ -181,22 +181,22 @@ namespace OctoAwesome.Client.Controls
 
             //Additional Play Information
 
-            //Active Tool
-            if (Player.ActorHost.ActiveTool != null)
-                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Array.FindIndex(Player.ActorHost.Player.Tools, (i => i.Definition == Player.ActorHost.ActiveTool.Definition));
+            ////Active Tool
+            //if (Player.ActorHost.ActiveTool != null)
+            //    activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Array.FindIndex(Player.ActorHost.Player.Tools, (i => i.Definition == Player.ActorHost.ActiveTool.Definition));
 
-            toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.ActorHost.Player.Tools.Length;
+            // toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.ActorHost.Player.Tools.Length;
 
-            //Fly Info
-            if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
-            else flyInfo.Text = "";
+            ////Fly Info
+            //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
+            //else flyInfo.Text = "";
 
-            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.ActorHost.Position.Planet);
+            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.CurrentEntity.Position.Planet);
             // Temperature Info
-            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.ActorHost.Position.GlobalBlockIndex);
+            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             // Precipitation Info
-            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.ActorHost.Position.GlobalBlockIndex);
+            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)
