@@ -59,7 +59,7 @@ namespace OctoAwesome.Runtime
 
             planets = new Dictionary<int, IPlanet>();
 
-            bool.TryParse(Settings.Get<string>("DisablePersistence"), out disablePersistence);
+            disablePersistence = Settings.Get("DisablePersistence", false);
         }
 
         /// <summary>

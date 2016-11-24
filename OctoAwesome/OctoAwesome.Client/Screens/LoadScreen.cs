@@ -135,8 +135,7 @@ namespace OctoAwesome.Client.Screens
             if (levelList.Items.Count >= 1)
                 levelList.SelectedItem = levelList.Items[0];
 
-            if (settings.KeyExists("LastUniverse") && settings.Get<string>("LastUniverse") != null
-                && settings.Get<string>("LastUniverse") != "")
+            if (settings.Get<string>("LastUniverse") != null)
             {
                 var lastlevel =  levelList.Items.FirstOrDefault(u => u.Id == Guid.Parse(settings.Get<string>("LastUniverse")));
                 if (lastlevel != null)
