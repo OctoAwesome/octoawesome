@@ -54,7 +54,7 @@ namespace OctoAwesome
             UniverseId = Guid.Empty;
 
             Components = new ComponentList<SimulationComponent>(
-                ValidateAddComponent, ValidateRemoveComponent);
+                ValidateAddComponent, ValidateRemoveComponent,null,null);
 
             extensionResolver.ExtendSimulation(this);
         }

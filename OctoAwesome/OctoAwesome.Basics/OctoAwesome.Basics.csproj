@@ -141,6 +141,7 @@
     <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
     <Compile Include="SimulationComponents\MoveComponent.cs" />
     <Compile Include="SimulationComponents\AccelerationComponent.cs" />
+    <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
     <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
