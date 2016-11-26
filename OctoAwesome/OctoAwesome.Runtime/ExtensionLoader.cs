@@ -194,7 +194,7 @@ namespace OctoAwesome.Runtime
             {
                 List<Action<Entity>> list;
                 if (!entityExtender.TryGetValue(type, out list))
-                    return;
+                    continue;
 
                 foreach (var item in list)
                     item(entity);
