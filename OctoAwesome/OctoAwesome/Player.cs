@@ -77,6 +77,8 @@ namespace OctoAwesome
         /// </summary>
         public InventorySlot[] Tools { get; set; }
 
+        
+
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>

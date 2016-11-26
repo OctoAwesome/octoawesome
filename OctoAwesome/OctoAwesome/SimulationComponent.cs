@@ -80,4 +80,25 @@ namespace OctoAwesome
 
         protected abstract void UpdateEntity(Entity e, C1 component1);
     }
+
+    public abstract class SimulationComponent<C1,C2> : SimulationComponent 
+        where C1 : EntityComponent
+        where C2 : EntityComponent
+    {
+        protected override bool Match(Entity entity)
+        {
+            return entity.Components.ContainsComponent<C1>()
+                && entity.Components.ContainsComponent<C2>();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            foreach (var entity in entities)
+            {
+                UpdateEntity(entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>());
+            }
+        }
+
+        protected abstract void UpdateEntity(Entity e, C1 component1, C2 component2);
+    }
 }
