@@ -14,6 +14,10 @@ namespace OctoAwesome
 
         private Action<T> removeValidator;
 
+        private Action<T> onInserter;
+
+        private Action<T> onRemover;
+
         private Dictionary<Type, T> components = new Dictionary<Type, T>();
 
         public T this[Type type]
@@ -31,10 +35,12 @@ namespace OctoAwesome
         {
         }
 
-        public ComponentList(Action<T> insertValidator, Action<T> removeValidator)
+        public ComponentList(Action<T> insertValidator, Action<T> removeValidator, Action<T> onInserter, Action<T> onRemover)
         {
             this.insertValidator = insertValidator;
             this.removeValidator = removeValidator;
+            this.onInserter = onInserter;
+            this.onRemover = onRemover;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -58,6 +64,7 @@ namespace OctoAwesome
 
             Type type = component.GetType();
             components.Add(type, component);
+            onInserter?.Invoke(component);
         }
 
         /// <summary>
@@ -95,7 +102,12 @@ namespace OctoAwesome
                 return false;
 
             removeValidator?.Invoke(component);
-            return components.Remove(typeof(V));
+            if (components.Remove(typeof(V)))
+            {
+                onRemover?.Invoke(component);
+                return true;
+            }
+            return false;
         }
     }
 }

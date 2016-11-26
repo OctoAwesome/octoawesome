@@ -43,7 +43,17 @@ namespace OctoAwesome
         public Entity()
         {
             Components = new ComponentList<EntityComponent>(
-                ValidateAddComponent, ValidateRemoveComponent);
+                ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
+        }
+
+        private void OnRemoveComponent(EntityComponent component)
+        {
+            
+        }
+
+        private void OnAddComponent(EntityComponent component)
+        {
+            component.SetEntity(this);
         }
 
         private void ValidateAddComponent(EntityComponent component)

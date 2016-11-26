@@ -42,6 +42,7 @@ namespace OctoAwesome.Basics
             });
 
             extensionLoader.RegisterSimulationExtender((s) => {
+                s.Components.AddComponent(new NewtonGravitatorComponent());
                 s.Components.AddComponent(new ForceAggregatorComponent());
                 s.Components.AddComponent(new PowerAggregatorComponent());
                 s.Components.AddComponent(new AccelerationComponent());
