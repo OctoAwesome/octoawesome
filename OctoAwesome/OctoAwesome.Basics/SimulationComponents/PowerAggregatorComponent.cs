@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             foreach (var entity in poweredEntities)
             {
-                entity.Moveable.ExternalForces =
+                entity.Moveable.ExternalPowers =
                     entity.Powers.Aggregate(Vector3.Zero, (s, f) => s + f.Power * f.Direction);
             }
         }

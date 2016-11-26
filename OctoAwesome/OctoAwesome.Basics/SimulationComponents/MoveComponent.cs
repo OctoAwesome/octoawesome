@@ -1,24 +1,25 @@
 ﻿using System;
 using engenious;
+using OctoAwesome.Basics.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    public sealed class MoveComponent : SimulationComponent
+    [EntityFilter(typeof(MoveableComponent), typeof(PositionComponent))]
+    public sealed class MoveComponent : SimulationComponent<MoveableComponent,PositionComponent>
     {
         protected override bool AddEntity(Entity entity)
         {
-            return false;
-            // throw new NotImplementedException();
+            return true;
         }
 
         protected override void RemoveEntity(Entity entity)
         {
-            // throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateEntity(Entity e, MoveableComponent component1, PositionComponent component2)
         {
-            // throw new NotImplementedException();
+            //TODO:Sehr unschön
+            e.Position += component1.Move;
         }
     }
 }
