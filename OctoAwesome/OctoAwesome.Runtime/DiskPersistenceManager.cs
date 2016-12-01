@@ -26,14 +26,16 @@ namespace OctoAwesome.Runtime
 
         private IDefinitionManager definitionManager;
         private IExtensionResolver extensionResolver;
+        private IResourceManager manager;
 
 
 
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings Settings)
+        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager,IResourceManager manager, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
             this.Settings = Settings;
+            this.manager = manager;
         }
 
         private string GetRoot()
@@ -265,7 +267,7 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        Player player = new Player();
+                        Player player = new Player(new LocalChunkCache(manager.GlobalChunkCache,2,1));
                         player.Deserialize(reader, definitionManager);
                         return player;
                     }

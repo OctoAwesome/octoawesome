@@ -61,5 +61,10 @@ namespace OctoAwesome.Tests
         {
             throw new NotImplementedException();
         }
+
+        public IPlanet GetPlanet(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -40,8 +40,12 @@ namespace OctoAwesome
             set { direction = MathHelper.WrapAngle(value); }
         }
 
-        public Entity()
+        public LocalChunkCache Cache { get; private set; }
+
+        public Entity(LocalChunkCache cache)
         {
+            Cache = cache;
+
             Components = new ComponentList<EntityComponent>(
                 ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
         }

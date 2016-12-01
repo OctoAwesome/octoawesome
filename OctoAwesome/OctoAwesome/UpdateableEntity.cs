@@ -9,6 +9,11 @@ namespace OctoAwesome
 {
     public abstract class UpdateableEntity : Entity
     {
+        public UpdateableEntity(LocalChunkCache cache) : base(cache)
+        {
+
+        }
+
         public abstract void Update(GameTime gameTime);
     }
 }

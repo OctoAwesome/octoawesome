@@ -36,18 +36,21 @@ namespace OctoAwesome.Runtime
         {
             this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
-            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, settings);
+            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager,this, settings);
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
             globalChunkCache = new GlobalChunkCache(
                 (p, i) => loadChunkColumn(p, i),
+                (i) => GetPlanet(i),
                 (p, i, c) => saveChunkColumn(p, i, c));
 
             planets = new Dictionary<int, IPlanet>();
 
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
         }
+
+        
 
         /// <summary>
         /// Der <see cref="IGlobalChunkCache"/>, der im Spiel verwendet werden soll.
@@ -174,7 +177,7 @@ namespace OctoAwesome.Runtime
             Player player = persistenceManager.LoadPlayer(universe.Id, playername);
             if (player == null)
             {
-                player = new Player();
+                player = new Player(new LocalChunkCache(GlobalChunkCache,2,1));
             }
             return player;
         }
