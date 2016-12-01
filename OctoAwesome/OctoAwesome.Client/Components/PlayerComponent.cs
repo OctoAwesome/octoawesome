@@ -40,6 +40,8 @@ namespace OctoAwesome.Client.Components
 
         public HeadComponent CurrentEntityHead { get; private set; }
 
+        public ControllableComponent CurrentController { get; private set; }
+
         // public ActorHost ActorHost { get; private set; }
 
         public Index3? SelectedBox { get; set; }
@@ -63,6 +65,8 @@ namespace OctoAwesome.Client.Components
         {
             CurrentEntity = entity;
 
+            
+
             if (CurrentEntity == null)
             {
                 CurrentEntityHead = null;
@@ -70,6 +74,9 @@ namespace OctoAwesome.Client.Components
             else
             {
                 // Map other Components
+
+                CurrentController = entity.Components.GetComponent<ControllableComponent>();
+
                 CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
                 if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
             }
@@ -88,8 +95,8 @@ namespace OctoAwesome.Client.Components
             CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
             HeadInput = Vector2.Zero;
 
-            //ActorHost.Move = MoveInput;
-            //MoveInput = Vector2.Zero;
+            CurrentController.Move = MoveInput;
+            MoveInput = Vector2.Zero;
 
             //if (JumpInput)
             //    ActorHost.Jump();

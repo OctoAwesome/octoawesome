@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics.EntityComponents
     {
         public Vector3 Velocity { get; set; }
 
-        public Vector3 Move { get; set; }
+        public Vector3 PositionMove { get; set; }
 
         public Vector3 ExternalForces { get; set; }
 

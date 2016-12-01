@@ -35,7 +35,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
             else
             {
-                component2.Position += component1.Move;
+                component2.Position += component1.PositionMove;
             }
 
             e.Cache.SetCenter(e.Cache.Planet, new Index2(component2.Position.ChunkIndex));
@@ -51,27 +51,27 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             Coordinate position = poscomp.Position;
 
-            Vector3 move = movecomp.Move;
+            Vector3 move = movecomp.PositionMove;
 
             //Blocks finden die eine Kollision verursachen könnten
             int minx = (int)Math.Floor(Math.Min(
                 position.BlockPosition.X - bc.Radius,
-                position.BlockPosition.X - bc.Radius + movecomp.Move.X));            
+                position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));            
             int maxx = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.X + bc.Radius,
-                position.BlockPosition.X + bc.Radius + movecomp.Move.X));
+                position.BlockPosition.X + bc.Radius + movecomp.PositionMove.X));
             int miny = (int)Math.Floor(Math.Min(
                 position.BlockPosition.Y - bc.Radius,
-                position.BlockPosition.Y - bc.Radius + movecomp.Move.Y));
+                position.BlockPosition.Y - bc.Radius + movecomp.PositionMove.Y));
             int maxy = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.Y + bc.Radius,
-                position.BlockPosition.Y + bc.Radius + movecomp.Move.Y));
+                position.BlockPosition.Y + bc.Radius + movecomp.PositionMove.Y));
             int minz = (int)Math.Floor(Math.Min(
                 position.BlockPosition.Z,
-                position.BlockPosition.Z + movecomp.Move.Z));
+                position.BlockPosition.Z + movecomp.PositionMove.Z));
             int maxz = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.Z + bc.Height,
-                position.BlockPosition.Z + bc.Height + movecomp.Move.Z));
+                position.BlockPosition.Z + bc.Height + movecomp.PositionMove.Z));
 
             //Beteiligte Flächen des Spielers
             var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(bc, movecomp, poscomp).ToList();

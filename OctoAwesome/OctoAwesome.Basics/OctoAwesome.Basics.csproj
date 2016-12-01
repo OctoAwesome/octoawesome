@@ -79,7 +79,6 @@
     <Compile Include="EntityComponents\JumpPowerComponent.cs" />
     <Compile Include="EntityComponents\MassComponent.cs" />
     <Compile Include="EntityComponents\BoxCollisionComponent.cs" />
-    <Compile Include="EntityComponents\ControllableComponent.cs" />
     <Compile Include="EntityComponents\EntityCollisionComponent.cs" />
     <Compile Include="Definitions\Blocks\BirchWoodBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\CactusBlockDefinition.cs" />
@@ -145,6 +144,7 @@
     <Compile Include="SimulationComponents\AccelerationComponent.cs" />
     <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
     <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
+    <Compile Include="SimulationComponents\WattMoverComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
     <Compile Include="Definitions\Items\PickAxeDefinition.cs" />
