@@ -28,6 +28,9 @@ namespace OctoAwesome.Basics.SimulationComponents
                 // Add external Power
                 power += entity.Move.ExternalPowers;
 
+                // Friction Power
+                power -= new Vector3(60F,60f,0.1f) * entity.Move.Velocity;
+
                 // Calculate Velocity change
                 Vector3 velocityChange = (2.0f / entity.Body.Mass * power) * 
                     (float)gameTime.ElapsedGameTime.TotalSeconds;
