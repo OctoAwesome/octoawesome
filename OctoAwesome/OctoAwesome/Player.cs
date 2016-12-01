@@ -18,11 +18,6 @@ namespace OctoAwesome
         public const int SELECTIONRANGE = 8;
 
         /// <summary>
-        /// Die Kraft, die der Spieler hat, um sich fortzubewegen
-        /// </summary>
-        public const float POWER = 600f;
-
-        /// <summary>
         /// Die Kraft, die der Spieler hat, um in die Luft zu springen
         /// </summary>
         public const float JUMPPOWER = 400000f;

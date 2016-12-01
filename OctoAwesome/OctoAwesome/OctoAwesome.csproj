@@ -75,6 +75,7 @@
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="EntityComponent.cs" />
+    <Compile Include="EntityComponents\ControllableComponent.cs" />
     <Compile Include="EntityComponents\HeadComponent.cs" />
     <Compile Include="EntityFilterAttribute.cs" />
     <Compile Include="GlobalChunkCache.cs" />

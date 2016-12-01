@@ -39,7 +39,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                     (float)(velocityChange.Z < 0 ? -Math.Sqrt(-velocityChange.Z) : Math.Sqrt(velocityChange.Z)));
 
                 // Calculate Move Vector for the upcoming frame
-                entity.Move.Move = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

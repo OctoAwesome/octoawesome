@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.EntityComponents;
 using System;
 using System.IO;
 
@@ -46,8 +47,13 @@ namespace OctoAwesome
         {
             Cache = cache;
 
+
+
             Components = new ComponentList<EntityComponent>(
                 ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
+
+            //TODO: Sehr schön
+            Components.AddComponent(new ControllableComponent());
         }
 
         private void OnRemoveComponent(EntityComponent component)
