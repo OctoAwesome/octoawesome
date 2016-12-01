@@ -32,9 +32,10 @@ namespace OctoAwesome.Basics
 
             extensionLoader.RegisterEntityExtender<Player>((p) =>
             {
+
                 p.Components.AddComponent(new GravityComponent());
                 p.Components.AddComponent(new PositionComponent());
-                p.Components.AddComponent(new BodyComponent() { Mass = 50f });
+                p.Components.AddComponent(new BodyComponent() { Mass = 50f,Height=3.5f,Radius=0.75f });
                 p.Components.AddComponent(new BodyPowerComponent() { Power = 600f });
                 p.Components.AddComponent(new JumpPowerComponent() { Power = 400000f });
                 p.Components.AddComponent(new MoveableComponent());

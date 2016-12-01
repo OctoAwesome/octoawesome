@@ -74,11 +74,11 @@ namespace OctoAwesome
         {
             foreach (var entity in entities)
             {
-                UpdateEntity(entity, entity.Components.GetComponent<C1>());
+                UpdateEntity(gameTime,entity, entity.Components.GetComponent<C1>());
             }
         }
 
-        protected abstract void UpdateEntity(Entity e, C1 component1);
+        protected abstract void UpdateEntity(GameTime gameTime,Entity e, C1 component1);
     }
 
     public abstract class SimulationComponent<C1,C2> : SimulationComponent 
@@ -95,10 +95,10 @@ namespace OctoAwesome
         {
             foreach (var entity in entities)
             {
-                UpdateEntity(entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>());
+                UpdateEntity(gameTime,entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>());
             }
         }
 
-        protected abstract void UpdateEntity(Entity e, C1 component1, C2 component2);
+        protected abstract void UpdateEntity(GameTime gameTime, Entity e, C1 component1, C2 component2);
     }
 }

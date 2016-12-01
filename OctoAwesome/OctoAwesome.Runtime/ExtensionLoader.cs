@@ -35,7 +35,7 @@ namespace OctoAwesome.Runtime
             simulationExtender = new List<Action<Simulation>>();
             mapGenerator = new List<IMapGenerator>();
             LoadedExtensions = new List<IExtension>();
-            ActiveExtensions = new List<IExtension>();
+            ActiveExtensions = new List<IExtension>();         
         }
 
         public void LoadExtensions()

@@ -13,6 +13,8 @@
         /// <returns>Den neu abonnierten Chunk</returns>
         IChunkColumn Subscribe(int planet,Index2 position);
 
+        IPlanet GetPlanet(int id);
+
         /// <summary>
         /// Liefert den Chunk, sofern geladen.
         /// </summary>

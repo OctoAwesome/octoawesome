@@ -29,6 +29,7 @@ namespace OctoAwesome.Tests
                     loadCallCounter++;
                     return result = new TestChunkColumn(planet, index);
                 },
+                (i) => null,
                 (p, i, c) =>
                 {
                     Assert.Equal(p, planet);
@@ -88,6 +89,7 @@ namespace OctoAwesome.Tests
 
                     throw new NotSupportedException();
                 },
+                (i) => null,
                 (p, i, c) =>
                 {
                     saveCallCounter++;
@@ -162,6 +164,7 @@ namespace OctoAwesome.Tests
                     Assert.Equal(i, index);
                     return result = new TestChunkColumn(planet, index);
                 },
+                (i) => null,
                 (p, i, c) =>
                 {
                     saveCallCounter++;
@@ -212,7 +215,7 @@ namespace OctoAwesome.Tests
         [Fact]
         public void UnloadNonexistingChunkTest()
         {
-            var cache = new GlobalChunkCache((p, i) => null, (p, i, c) => { });
+            var cache = new GlobalChunkCache((p, i) => null,(i)=> null ,(p, i, c) => { });
 
             Assert.Throws<NotSupportedException>(() =>
             {

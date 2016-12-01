@@ -38,16 +38,6 @@ namespace OctoAwesome
         public const int TOOLCOUNT = 10;
 
         /// <summary>
-        /// Der Radius des Spielers in Blocks.
-        /// </summary>
-        public float Radius { get; set; }
-
-        /// <summary>
-        /// Die Körperhöhe des Spielers in Blocks
-        /// </summary>
-        public float Height { get; set; }
-
-        /// <summary>
         /// Gibt an, ob der Spieler an Boden ist
         /// </summary>
         public bool OnGround { get; set; }
@@ -82,17 +72,16 @@ namespace OctoAwesome
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
-        public Player()
+        public Player(LocalChunkCache cache) : base(cache)
         {
             Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
             Inventory = new List<InventorySlot>();
             Tools = new InventorySlot[TOOLCOUNT];
-            Radius = 0.75f;
             Direction = 0f;
-            Height = 3.5f;
             FlyMode = false;
             InventoryLimit = 1000;
 
+            //TODO: HeadComponente über Extension
             Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
         }
 
@@ -106,14 +95,9 @@ namespace OctoAwesome
             // Entity
             base.Serialize(writer, definitionManager);
 
-            // Radius
-            writer.Write(Radius);
 
             // Angle
             writer.Write(Direction);
-
-            // Height
-            writer.Write(Height);
 
             // Tilt
             writer.Write(Tilt);
@@ -155,14 +139,9 @@ namespace OctoAwesome
             // Entity
             base.Deserialize(reader, definitionManager);
 
-            // Radius
-            Radius = reader.ReadSingle();
 
             // Angle
             Direction = reader.ReadSingle();
-
-            // Height
-            Height = reader.ReadSingle();
 
             // Tilt
             Tilt = reader.ReadSingle();

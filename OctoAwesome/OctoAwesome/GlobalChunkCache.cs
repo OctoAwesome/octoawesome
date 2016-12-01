@@ -25,6 +25,8 @@ namespace OctoAwesome
         /// </summary>
         private Action<int, Index2, IChunkColumn> saveDelegate;
 
+        private Func<int, IPlanet> loadPlanetDelagte;
+
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
         /// </summary>
@@ -32,6 +34,7 @@ namespace OctoAwesome
 
         // TODO: Früher oder später nach draußen auslagern
         private Thread cleanupThread;
+        
 
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
@@ -57,14 +60,16 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="loadDelegate">Delegat, der nicht geladene ChunkColumns nachläd.</param>
         /// <param name="saveDelegate">Delegat, der nicht mehr benötigte ChunkColumns abspeichert.</param>
-        public GlobalChunkCache(Func<int, Index2, IChunkColumn> loadDelegate,
+        public GlobalChunkCache(Func<int, Index2, IChunkColumn> loadDelegate,Func<int,IPlanet> loadPlanetDelegate,
             Action<int, Index2, IChunkColumn> saveDelegate)
         {
             if (loadDelegate == null) throw new ArgumentNullException("loadDelegate");
             if (saveDelegate == null) throw new ArgumentNullException("saveDelegate");
+            if (loadPlanetDelegate == null) throw new ArgumentNullException(nameof(loadPlanetDelegate));
 
             this.loadDelegate = loadDelegate;
             this.saveDelegate = saveDelegate;
+            this.loadPlanetDelagte = loadPlanetDelegate;
 
             cache = new Dictionary<Index3, CacheItem>();
 
@@ -204,6 +209,11 @@ namespace OctoAwesome
                     cache.Remove(key);
                 }
             }
+        }
+
+        public IPlanet GetPlanet(int id)
+        {
+            return loadPlanetDelagte(id);
         }
 
         /// <summary>

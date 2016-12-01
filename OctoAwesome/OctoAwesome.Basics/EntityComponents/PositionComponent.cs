@@ -8,6 +8,7 @@ namespace OctoAwesome.Basics.EntityComponents
 {
     public sealed class PositionComponent : EntityComponent
     {
+
         public Coordinate Position { get; set; }
     }
 }
