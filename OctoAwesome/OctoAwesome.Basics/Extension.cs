@@ -28,6 +28,13 @@ namespace OctoAwesome.Basics
             extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
 
             extensionLoader.RegisterDefinition(new GroundBlockDefinition());
+            extensionLoader.RegisterDefinition(new StoneBlockDefinition());
+            extensionLoader.RegisterDefinition(new GrassBlockDefinition());
+            extensionLoader.RegisterDefinition(new SandBlockDefinition());
+            extensionLoader.RegisterDefinition(new SnowBlockDefinition());
+            extensionLoader.RegisterDefinition(new WaterBlockDefinition());
+
+
             extensionLoader.RegisterEntity<AppleEntity>();
 
             extensionLoader.RegisterEntityExtender<Player>((p) =>
