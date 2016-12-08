@@ -77,6 +77,8 @@
     <Compile Include="EntityComponent.cs" />
     <Compile Include="EntityComponents\ControllableComponent.cs" />
     <Compile Include="EntityComponents\HeadComponent.cs" />
+    <Compile Include="EntityComponents\InventoryComponent.cs" />
+    <Compile Include="EntityComponents\ToolBarComponent.cs" />
     <Compile Include="EntityFilterAttribute.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />

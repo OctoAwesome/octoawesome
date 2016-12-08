@@ -42,6 +42,10 @@ namespace OctoAwesome.Client.Components
 
         public ControllableComponent CurrentController { get; private set; }
 
+        public InventoryComponent Inventory { get; private set; }
+
+        public ToolBarComponent Toolbar { get; set; }
+
         // public ActorHost ActorHost { get; private set; }
 
         public Index3? SelectedBox { get; set; }
@@ -79,6 +83,12 @@ namespace OctoAwesome.Client.Components
 
                 CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
                 if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
+
+                Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+                if (Inventory == null) Inventory = new InventoryComponent();
+
+                Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
+                if (Toolbar == null) Toolbar = new ToolBarComponent();
             }
         }
 
