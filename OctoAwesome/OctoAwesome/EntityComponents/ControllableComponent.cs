@@ -16,5 +16,7 @@ namespace OctoAwesome.EntityComponents
         public int JumpTime { get; set; }
 
         public Index3? InteractBlock { get; set; }
+        public Index3? ApplyBlock { get; set; }
+        public OrientationFlags ApplySide { get; set; }
     }
 }

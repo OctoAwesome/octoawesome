@@ -115,63 +115,67 @@ namespace OctoAwesome.Client.Components
                 CurrentController.InteractBlock = SelectedBox.Value;
             InteractInput = false;
 
-            //if (ApplyInput && SelectedBox.HasValue)
-            //    ActorHost.Apply(SelectedBox.Value, SelectedSide);
-            //ApplyInput = false;
+            if (ApplyInput && SelectedBox.HasValue)
+            {
+                CurrentController.ApplyBlock = SelectedBox.Value;
+                CurrentController.ApplySide = SelectedSide;
+            }
+                
+            ApplyInput = false;
 
             //if (FlymodeInput)
             //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             //FlymodeInput = false;
 
-            //if (ActorHost.Player.Tools != null && ActorHost.Player.Tools.Length > 0)
-            //{
-            //    if (ActorHost.ActiveTool == null) ActorHost.ActiveTool = ActorHost.Player.Tools[0];
-            //    for (int i = 0; i < Math.Min(ActorHost.Player.Tools.Length, SlotInput.Length); i++)
-            //    {
-            //        if (SlotInput[i])
-            //            ActorHost.ActiveTool = ActorHost.Player.Tools[i];
-            //        SlotInput[i] = false;
-            //    }
-            //}
+            if (Toolbar.Tools != null && Toolbar.Tools.Length > 0)
+            {
+                if (Toolbar.ActiveTool == null) Toolbar.ActiveTool = Toolbar.Tools[0];
+                for (int i = 0; i < Math.Min(Toolbar.Tools.Length, SlotInput.Length); i++)
+                {
+                    if (SlotInput[i])
+                        Toolbar.ActiveTool = Toolbar.Tools[i];
+                    SlotInput[i] = false;
+                }
+            }
 
-            // Index des aktiven Werkzeugs ermitteln
-            //int activeTool = -1;
-            //List<int> toolIndices = new List<int>();
-            //if (ActorHost.Player.Tools != null)
-            //{
-            //    for (int i = 0; i < ActorHost.Player.Tools.Length; i++)
-            //    {
-            //        if (ActorHost.Player.Tools[i] != null)
-            //            toolIndices.Add(i);
+            //Index des aktiven Werkzeugs ermitteln
+            int activeTool = -1;
+            List<int> toolIndices = new List<int>();
+            if (Toolbar.Tools != null)
+            {
+                for (int i = 0; i < Toolbar.Tools.Length; i++)
+                {
+                    if (Toolbar.Tools[i] != null)
+                        toolIndices.Add(i);
 
-            //        if (ActorHost.Player.Tools[i] == ActorHost.ActiveTool)
-            //            activeTool = toolIndices.Count - 1;
-            //    }
-            //}
+                    if (Toolbar.Tools[i] == Toolbar.ActiveTool)
+                        activeTool = toolIndices.Count - 1;
+                }
+            }
 
-            //if (SlotLeftInput)
-            //{
-            //    if (activeTool > -1)
-            //        activeTool--;
-            //    else if (toolIndices.Count > 0)
-            //        activeTool = toolIndices[toolIndices.Count - 1];
-            //}
-            //SlotLeftInput = false;
+            if (SlotLeftInput)
+            {
+                if (activeTool > -1)
+                    activeTool--;
+                else if (toolIndices.Count > 0)
+                    activeTool = toolIndices[toolIndices.Count - 1];
+            }
+            SlotLeftInput = false;
 
-            //if (SlotRightInput)
-            //{
-            //    if (activeTool > -1)
-            //        activeTool++;
-            //    else if (toolIndices.Count > 0)
-            //        activeTool = toolIndices[0];
-            //}
-            //SlotRightInput = false;
+            if (SlotRightInput)
+            {
+                if (activeTool > -1)
+                    activeTool++;
+                else if (toolIndices.Count > 0)
+                    activeTool = toolIndices[0];
+            }
+            SlotRightInput = false;
 
-            //if (activeTool > -1)
-            //{
-            //    activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-            //    ActorHost.ActiveTool = ActorHost.Player.Tools[toolIndices[activeTool]];
-            //}
+            if (activeTool > -1)
+            {
+                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
+                Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
+            }
         }
     }
 }
