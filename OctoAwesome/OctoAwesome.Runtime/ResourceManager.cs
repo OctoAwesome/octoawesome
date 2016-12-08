@@ -28,7 +28,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public IUniverse CurrentUniverse { get { return universe; } }
 
-        private IDefinitionManager definitionManager;
+        public IDefinitionManager DefinitionManager { get; private set; }
 
         private IExtensionResolver extensionResolver;
 
@@ -41,7 +41,7 @@ namespace OctoAwesome.Runtime
         public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
             this.extensionResolver = extensionResolver;
-            this.definitionManager = definitionManager;
+            DefinitionManager = definitionManager;
             persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager,this, settings);
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
@@ -208,7 +208,7 @@ namespace OctoAwesome.Runtime
             IChunkColumn column11 = persistenceManager.LoadColumn(universe.Id, planet, index);
             if (column11 == null)
             {
-                IChunkColumn column = planet.Generator.GenerateColumn(definitionManager.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
+                IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager.GetBlockDefinitions(), planet, new Index2(index.X, index.Y));
                 column11 = column;
             }
 
@@ -227,7 +227,7 @@ namespace OctoAwesome.Runtime
             if (!column11.Populated && column21 != null && column12 != null && column22 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(definitionManager, planet, column11, column21, column12, column22);
+                    populator.Populate(DefinitionManager, planet, column11, column21, column12, column22);
 
                 column11.Populated = true;
             }
@@ -236,7 +236,7 @@ namespace OctoAwesome.Runtime
             if (column00 != null && !column00.Populated && column10 != null && column01 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(definitionManager, planet, column00, column10, column01, column11);
+                    populator.Populate(DefinitionManager, planet, column00, column10, column01, column11);
 
                 column00.Populated = true;
             }
@@ -245,7 +245,7 @@ namespace OctoAwesome.Runtime
             if (column10 != null && !column10.Populated && column20 != null && column21 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(definitionManager, planet, column10, column20, column11, column21);
+                    populator.Populate(DefinitionManager, planet, column10, column20, column11, column21);
                 column10.Populated = true;
             }
 
@@ -253,7 +253,7 @@ namespace OctoAwesome.Runtime
             if (column01 != null && !column01.Populated && column02 != null && column12 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(definitionManager, planet, column01, column11, column02, column12);
+                    populator.Populate(DefinitionManager, planet, column01, column11, column02, column12);
                 column01.Populated = true;
             }
 

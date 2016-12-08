@@ -17,7 +17,7 @@ namespace OctoAwesome
 
         private int nextId = 1;
 
-        private readonly IResourceManager resourceManager;
+        public IResourceManager ResourceManager { get; private set; }
 
         private readonly IExtensionResolver extensionResolver;
 
@@ -48,14 +48,14 @@ namespace OctoAwesome
         /// </summary>
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
         {
-            this.resourceManager = resourceManager;
+            ResourceManager = resourceManager;
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
 
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent,null,null);
-
+            
             extensionResolver.ExtendSimulation(this);
         }
 
@@ -86,7 +86,7 @@ namespace OctoAwesome
                 seed = rand.Next(int.MaxValue);
             }
 
-            Guid guid = resourceManager.NewUniverse(name, seed.Value);
+            Guid guid = ResourceManager.NewUniverse(name, seed.Value);
             Start();
             return guid;
         }
@@ -97,7 +97,7 @@ namespace OctoAwesome
         /// <param name="guid">Die Guid des Universums.</param>
         public void LoadGame(Guid guid)
         {
-            resourceManager.LoadUniverse(guid);
+            ResourceManager.LoadUniverse(guid);
             Start();
         }
 
@@ -170,7 +170,7 @@ namespace OctoAwesome
             State = SimulationState.Finished;
             // thread.Join();
 
-            resourceManager.UnloadUniverse();
+            ResourceManager.UnloadUniverse();
         }
 
         ///// <summary>

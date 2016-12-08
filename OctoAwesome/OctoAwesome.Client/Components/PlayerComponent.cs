@@ -111,12 +111,9 @@ namespace OctoAwesome.Client.Components
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
 
-            //if (JumpInput)
-            //    ActorHost.Jump();
-
-            //if (InteractInput && SelectedBox.HasValue)
-            //    ActorHost.Interact(SelectedBox.Value);
-            //InteractInput = false;
+            if (InteractInput && SelectedBox.HasValue)
+                CurrentController.InteractBlock = SelectedBox.Value;
+            InteractInput = false;
 
             //if (ApplyInput && SelectedBox.HasValue)
             //    ActorHost.Apply(SelectedBox.Value, SelectedSide);
