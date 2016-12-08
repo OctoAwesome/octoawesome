@@ -32,7 +32,7 @@ namespace OctoAwesome.Client.Screens
 
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
-            //assets = manager.Game.Assets;
+            assets = manager.Game.Assets;
 
             //foreach (var item in manager.Game.DefinitionManager.GetItemDefinitions())
             //{
@@ -44,50 +44,50 @@ namespace OctoAwesome.Client.Screens
             //IsOverlay = true;
             //Background = new BorderBrush(Color.Black * 0.5f);
 
-            //backgroundBrush = new BorderBrush(Color.Black);
-            //hoverBrush = new BorderBrush(Color.Brown);
+            backgroundBrush = new BorderBrush(Color.Black);
+            hoverBrush = new BorderBrush(Color.Brown);
 
-            //Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
+            Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
 
-            //Grid grid = new Grid(manager)
-            //{
-            //    Width = 800,
-            //    Height = 500,
-            //};
+            Grid grid = new Grid(manager)
+            {
+                Width = 800,
+                Height = 500,
+            };
 
-            //grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 600 });
-            //grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 200 });
-            //grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
-            //grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 100 });
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 600 });
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 200 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 100 });
 
-            //Controls.Add(grid);
+            Controls.Add(grid);
 
-            //inventory = new InventoryControl(manager)
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    VerticalAlignment = VerticalAlignment.Stretch,
-            //    Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-            //    Padding = Border.All(20),
-            //};
+            inventory = new InventoryControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+                Padding = Border.All(20),
+            };
 
-            //grid.AddControl(inventory, 0, 0);
+            grid.AddControl(inventory, 0, 0);
 
-            //StackPanel infoPanel = new StackPanel(manager)
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    VerticalAlignment = VerticalAlignment.Stretch,
-            //    Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-            //    Padding = Border.All(20),
-            //    Margin = Border.All(10, 0, 0, 0),
-            //};
+            StackPanel infoPanel = new StackPanel(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+                Padding = Border.All(20),
+                Margin = Border.All(10, 0, 0, 0),
+            };
 
-            //nameLabel = new Label(manager);
-            //infoPanel.Controls.Add(nameLabel);
-            //massLabel = new Label(manager);
-            //infoPanel.Controls.Add(massLabel);
-            //volumeLabel = new Label(manager);
-            //infoPanel.Controls.Add(volumeLabel);
-            //grid.AddControl(infoPanel, 1, 0);
+            nameLabel = new Label(manager);
+            infoPanel.Controls.Add(nameLabel);
+            massLabel = new Label(manager);
+            infoPanel.Controls.Add(massLabel);
+            volumeLabel = new Label(manager);
+            infoPanel.Controls.Add(volumeLabel);
+            grid.AddControl(infoPanel, 1, 0);
 
             //Grid toolbar = new Grid(manager)
             //{
