@@ -8,5 +8,6 @@ namespace OctoAwesome.Basics.EntityComponents
 {
     public sealed class BodyPowerComponent : PowerComponent
     {
+        public int JumpTime { get; set; }
     }
 }
