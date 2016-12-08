@@ -9,6 +9,10 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class ControllableComponent : EntityComponent
     {
-        public Vector2 Move { get; set; }
+        public bool JumpInput { get; set; }
+        public Vector2 MoveInput { get; set; }
+
+        public bool JumpActive { get; set; }
+        public int JumpTime { get; set; }
     }
 }

@@ -95,12 +95,14 @@ namespace OctoAwesome.Client.Components
             CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
             HeadInput = Vector2.Zero;
 
-            CurrentController.Move = MoveInput;
+            CurrentController.MoveInput = MoveInput;
             MoveInput = Vector2.Zero;
+
+            CurrentController.JumpInput = JumpInput;
+            JumpInput = false;
 
             //if (JumpInput)
             //    ActorHost.Jump();
-            //JumpInput = false;
 
             //if (InteractInput && SelectedBox.HasValue)
             //    ActorHost.Interact(SelectedBox.Value);
