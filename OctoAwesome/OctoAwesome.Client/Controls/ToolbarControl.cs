@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using engenious;
 using engenious.Graphics;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -15,9 +16,9 @@ namespace OctoAwesome.Client.Controls
     {
         private Dictionary<string, Texture2D> toolTextures;
 
-        private Button[] buttons = new Button[OctoAwesome.Player.TOOLCOUNT];
+        private Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
 
-        private Image[] images = new Image[OctoAwesome.Player.TOOLCOUNT];
+        private Image[] images = new Image[ToolBarComponent.TOOLCOUNT];
 
         private Brush buttonBackgroud;
 
@@ -53,7 +54,7 @@ namespace OctoAwesome.Client.Controls
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
-            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
+            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
@@ -63,9 +64,9 @@ namespace OctoAwesome.Client.Controls
             activeToolLabel.HorizontalAlignment = HorizontalAlignment.Center;
             activeToolLabel.Background = new BorderBrush(Color.Black * 0.3f);
             activeToolLabel.TextColor = Color.White;
-            grid.AddControl(activeToolLabel, 0, 0, OctoAwesome.Player.TOOLCOUNT);
+            grid.AddControl(activeToolLabel, 0, 0, ToolBarComponent.TOOLCOUNT);
 
-            for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
+            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
                 buttons[i] = new Button(screenManager)
                 {
@@ -91,34 +92,34 @@ namespace OctoAwesome.Client.Controls
 
             if (Player.CurrentEntity == null) return;
 
-            // Aktualisierung des aktiven Buttons
-            //for (int i = 0; i < OctoAwesome.Player.TOOLCOUNT; i++)
-            //{
-            //    if (Player.ActorHost.Player.Tools != null && 
-            //        Player.ActorHost.Player.Tools.Length > i && 
-            //        Player.ActorHost.Player.Tools[i] != null && 
-            //        Player.ActorHost.Player.Tools[i].Definition != null)
-            //    {
-            //        images[i].Texture = toolTextures[Player.ActorHost.Player.Tools[i].Definition.GetType().FullName];
+           // Aktualisierung des aktiven Buttons
+            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            {
+                if (Player.Toolbar.Tools != null &&
+                    Player.Toolbar.Tools.Length > i &&
+                    Player.Toolbar.Tools[i] != null &&
+                    Player.Toolbar.Tools[i].Definition != null)
+                {
+                    images[i].Texture = toolTextures[Player.Toolbar.Tools[i].Definition.GetType().FullName];
 
-            //        if (Player.ActorHost.ActiveTool == Player.ActorHost.Player.Tools[i])
-            //            buttons[i].Background = activeBackground;
-            //        else
-            //            buttons[i].Background = buttonBackgroud;
-            //    }
-            //    else
-            //    {
-            //        images[i].Texture = null;
-            //        buttons[i].Background = buttonBackgroud;
-            //    }
-            //}
+                    if (Player.Toolbar.ActiveTool == Player.Toolbar.Tools[i])
+                        buttons[i].Background = activeBackground;
+                    else
+                        buttons[i].Background = buttonBackgroud;
+                }
+                else
+                {
+                    images[i].Texture = null;
+                    buttons[i].Background = buttonBackgroud;
+                }
+            }
 
-            //// Aktualisierung des ActiveTool Labels
-            //activeToolLabel.Text = Player.ActorHost.ActiveTool != null ? 
-            //    string.Format("{0} ({1})", Player.ActorHost.ActiveTool.Definition.Name, Player.ActorHost.ActiveTool.Amount) : 
-            //    string.Empty;
+            // Aktualisierung des ActiveTool Labels
+            activeToolLabel.Text = Player.Toolbar.ActiveTool != null ?
+                string.Format("{0} ({1})", Player.Toolbar.ActiveTool.Definition.Name, Player.Toolbar.ActiveTool.Amount) :
+                string.Empty;
 
-            //activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
+            activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
 
             base.OnUpdate(gameTime);
         }

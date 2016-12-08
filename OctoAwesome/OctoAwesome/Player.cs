@@ -28,11 +28,6 @@ namespace OctoAwesome
         public const float FRICTION = 60f;
 
         /// <summary>
-        /// Gibt die Anzahl Tools in der Toolbar an.
-        /// </summary>
-        public const int TOOLCOUNT = 10;
-
-        /// <summary>
         /// Gibt an, ob der Spieler an Boden ist
         /// </summary>
         public bool OnGround { get; set; }
@@ -52,16 +47,6 @@ namespace OctoAwesome
         /// </summary>
         public float InventoryLimit { get; set; }
 
-        /// <summary>
-        /// Das Inventar des Spielers.
-        /// </summary>
-        public List<InventorySlot> Inventory { get; set; }
-
-        /// <summary>
-        /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
-        /// </summary>
-        public InventorySlot[] Tools { get; set; }
-
         
 
         /// <summary>
@@ -70,8 +55,6 @@ namespace OctoAwesome
         public Player(LocalChunkCache cache) : base(cache)
         {
             Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
-            Inventory = new List<InventorySlot>();
-            Tools = new InventorySlot[TOOLCOUNT];
             Direction = 0f;
             FlyMode = false;
             InventoryLimit = 1000;
@@ -104,24 +87,24 @@ namespace OctoAwesome
             // TODO: Überlegen was damit passiert
 
             // Inventory
-            writer.Write(Inventory.Count);
-            foreach (var slot in Inventory)
-            {
-                writer.Write(slot.Definition.GetType().FullName);
-                writer.Write(slot.Amount);
-            }
+            //writer.Write(Inventory.Count);
+            //foreach (var slot in Inventory)
+            //{
+            //    writer.Write(slot.Definition.GetType().FullName);
+            //    writer.Write(slot.Amount);
+            //}
 
             // Inventory Tools (Index auf Inventory)
-            byte toolCount = (byte)Tools.Count(t => t != null);
-            writer.Write(toolCount);
-            for (byte i = 0; i < Tools.Length; i++)
-            {
-                if (Tools[i] == null)
-                    continue;
+            //byte toolCount = (byte)Tools.Count(t => t != null);
+            //writer.Write(toolCount);
+            //for (byte i = 0; i < Tools.Length; i++)
+            //{
+            //    if (Tools[i] == null)
+            //        continue;
 
-                writer.Write(i);
-                writer.Write(Tools[i].Definition.GetType().FullName);
-            }
+            //    writer.Write(i);
+            //    writer.Write(Tools[i].Definition.GetType().FullName);
+            //}
         }
 
         /// <summary>
@@ -148,33 +131,33 @@ namespace OctoAwesome
             // TODO: Noch nicht persistiert
 
             // Inventory
-            int inventoryCount = reader.ReadInt32();
-            for (int i = 0; i < inventoryCount; i++)
-            {
-                string definitionName = reader.ReadString();
-                decimal amount = reader.ReadDecimal();
+            //int inventoryCount = reader.ReadInt32();
+            //for (int i = 0; i < inventoryCount; i++)
+            //{
+            //    string definitionName = reader.ReadString();
+            //    decimal amount = reader.ReadDecimal();
 
-                var definition = definitionManager.GetItemDefinitions().FirstOrDefault(d => d.GetType().FullName.Equals(definitionName));
-                if (definition != null)
-                {
-                    InventorySlot slot = new InventorySlot();
-                    slot.Definition = definition;
-                    slot.Amount = amount;
-                    Inventory.Add(slot);
-                }
-            }
+            //    var definition = definitionManager.GetItemDefinitions().FirstOrDefault(d => d.GetType().FullName.Equals(definitionName));
+            //    if (definition != null)
+            //    {
+            //        InventorySlot slot = new InventorySlot();
+            //        slot.Definition = definition;
+            //        slot.Amount = amount;
+            //        Inventory.Add(slot);
+            //    }
+            //}
 
-            // Inventory Tools (Index auf Inventory)
-            byte toolCount = reader.ReadByte();
-            for (byte i = 0; i < toolCount; i++)
-            {
-                byte index = reader.ReadByte();
-                string definitionType = reader.ReadString();
+            //// Inventory Tools (Index auf Inventory)
+            //byte toolCount = reader.ReadByte();
+            //for (byte i = 0; i < toolCount; i++)
+            //{
+            //    byte index = reader.ReadByte();
+            //    string definitionType = reader.ReadString();
 
-                InventorySlot slot = Inventory.FirstOrDefault(s => s.Definition.GetType().FullName.Equals(definitionType));
-                if (slot != null)
-                    Tools[index] = slot;
-            }
+            //    InventorySlot slot = Inventory.FirstOrDefault(s => s.Definition.GetType().FullName.Equals(definitionType));
+            //    if (slot != null)
+            //        Tools[index] = slot;
+            //}
         }
     }
 }

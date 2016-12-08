@@ -2,6 +2,7 @@
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.SimulationComponents;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
@@ -48,6 +49,8 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new MoveableComponent());
                 p.Components.AddComponent(new BoxCollisionComponent());
                 p.Components.AddComponent(new EntityCollisionComponent());
+                p.Components.AddComponent(new InventoryComponent());
+                p.Components.AddComponent(new ToolBarComponent());
             });
 
             extensionLoader.RegisterSimulationExtender((s) => {
