@@ -7,6 +7,9 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+
+        IDefinitionManager DefinitionManager { get; }
+
         /// <summary>
         /// Erzuegt ein neues Universum.
         /// </summary>

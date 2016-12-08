@@ -138,6 +138,7 @@
     <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
+    <Compile Include="SimulationComponents\BlockInteractionComponent.cs" />
     <Compile Include="SimulationComponents\CollisionComponent.cs" />
     <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
     <Compile Include="SimulationComponents\MoveComponent.cs" />
