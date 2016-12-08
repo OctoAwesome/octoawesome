@@ -211,6 +211,11 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Gibt einen Planenten anhand seiner ID zurück
+        /// </summary>
+        /// <param name="id">ID des Planeten</param>
+        /// <returns>Planet</returns>
         public IPlanet GetPlanet(int id)
         {
             return loadPlanetDelagte(id);

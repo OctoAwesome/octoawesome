@@ -21,6 +21,10 @@ namespace OctoAwesome
         /// </summary>
         string Description { get; }
 
+        /// <summary>
+        /// Register the Components in the ExtensionsLoader
+        /// </summary>
+        /// <param name="extensionLoader">ExtensionsLoader</param>
         void Register(IExtensionLoader extensionLoader);
     }
 }

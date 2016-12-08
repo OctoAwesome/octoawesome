@@ -21,6 +21,9 @@ namespace OctoAwesome
 
         private Configuration _config;
 
+        /// <summary>
+        /// Kosntruktor
+        /// </summary>
         public Settings()
         {
             if (DEBUG)

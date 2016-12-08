@@ -49,7 +49,7 @@ namespace OctoAwesome.Client.Crew
                     XmlSerializer serializer = new XmlSerializer(typeof(List<CrewMember>));
                     return (List<CrewMember>)serializer.Deserialize(stream);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 { }
 
                 return new List<CrewMember>();

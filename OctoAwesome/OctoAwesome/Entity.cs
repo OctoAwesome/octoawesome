@@ -41,8 +41,15 @@ namespace OctoAwesome
             set { direction = MathHelper.WrapAngle(value); }
         }
 
+        /// <summary>
+        /// LocalChunkCache für die Entity
+        /// </summary>
         public LocalChunkCache Cache { get; private set; }
 
+        /// <summary>
+        /// Entity die regelmäßig eine Updateevent bekommt
+        /// </summary>
+        /// <param name="cache">LocalCache mit der die Entity initialisiert wird</param>
         public Entity(LocalChunkCache cache)
         {
             Cache = cache;

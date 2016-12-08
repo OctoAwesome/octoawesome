@@ -1,5 +1,8 @@
 ﻿namespace OctoAwesome
 {
+    /// <summary>
+    /// Vertrag für Spieleinstellungen
+    /// </summary>
     public interface ISettings
     {
         /// <summary>
