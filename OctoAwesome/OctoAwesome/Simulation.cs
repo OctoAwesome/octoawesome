@@ -116,6 +116,10 @@ namespace OctoAwesome
             //thread.Start();
         }
 
+        /// <summary>
+        /// Updatemethode der Simulation
+        /// </summary>
+        /// <param name="gameTime">Spielzeit</param>
         public void Update(GameTime gameTime)
         {
             if (State == SimulationState.Running)
@@ -191,8 +195,13 @@ namespace OctoAwesome
 
         //}
 
+        /// <summary>
+        /// Fügt eine Entity der Simulation hinzu
+        /// </summary>
+        /// <param name="entity">Neue Entity</param>
         public void AddEntity(Entity entity)
         {
+            //TODO: Überprüfen ob ENtity schon da ist
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
@@ -212,6 +221,10 @@ namespace OctoAwesome
                 component.Add(entity);
         }
 
+        /// <summary>
+        /// Entfernt eine Entity aus der Simulation
+        /// </summary>
+        /// <param name="entity">Entity die entfert werden soll</param>
         public void RemoveEntity(Entity entity)
         {
             if (entity == null)

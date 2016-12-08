@@ -24,7 +24,7 @@ namespace OctoAwesome
         private readonly IChunkColumn[] chunkColumns;
 
         /// <summary>
-        /// Der Planet, aus dem die Chunks im Cache sind
+        /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
         public IPlanet Planet { get; private set; }
 

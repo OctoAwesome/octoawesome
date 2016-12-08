@@ -8,10 +8,20 @@ namespace OctoAwesome
     /// </summary>
     public interface IExtensionLoader
     {
+        /// <summary>
+        /// List of Loaded Extensions
+        /// </summary>
         List<IExtension> LoadedExtensions { get; }
 
+        /// <summary>
+        /// List of active Extensions
+        /// </summary>
         List<IExtension> ActiveExtensions { get; }
 
+        /// <summary>
+        /// Activate the Extenisons
+        /// </summary>
+        /// <param name="extensions">List of Extensions</param>
         void ApplyExtensions(IList<IExtension> extensions);
 
         /// <summary>
@@ -54,7 +64,6 @@ namespace OctoAwesome
         /// <summary>
         /// Adds a new Map Generator.
         /// </summary>
-        /// <typeparam name="T">Map Generator Type</typeparam>
         void RegisterMapGenerator(IMapGenerator generator);
 
         /// <summary>

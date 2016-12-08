@@ -13,6 +13,11 @@
         /// <returns>Den neu abonnierten Chunk</returns>
         IChunkColumn Subscribe(int planet,Index2 position);
 
+        /// <summary>
+        /// Gibt einen Planenten anhand seiner ID zurück
+        /// </summary>
+        /// <param name="id">ID des Planeten</param>
+        /// <returns>Planet</returns>
         IPlanet GetPlanet(int id);
 
         /// <summary>

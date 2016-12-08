@@ -7,6 +7,9 @@ namespace OctoAwesome
     /// </summary>
     public interface ILocalChunkCache
     {
+        /// <summary>
+        /// Aktueller Planet auf dem sich der Cache bezieht.
+        /// </summary>
         IPlanet Planet { get; }
 
         /// <summary>

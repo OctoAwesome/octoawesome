@@ -32,6 +32,12 @@ namespace OctoAwesome.Runtime
 
         private IExtensionResolver extensionResolver;
 
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
+        /// <param name="extensionResolver">ExetnsionResolver</param>
+        /// <param name="definitionManager">DefinitionManager</param>
+        /// <param name="settings">Einstellungen</param>
         public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
             this.extensionResolver = extensionResolver;
