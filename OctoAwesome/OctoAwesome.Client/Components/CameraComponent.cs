@@ -8,6 +8,7 @@ namespace OctoAwesome.Client.Components
     {
         private PlayerComponent player;
 
+
         public CameraComponent(OctoGame game)
             : base(game)
         {
@@ -37,10 +38,11 @@ namespace OctoAwesome.Client.Components
 
             Entity entity = player.CurrentEntity;
             HeadComponent head = player.CurrentEntityHead;
+            PositionComponent position = player.Position;
 
-            CameraChunk = entity.Position.ChunkIndex;
+            CameraChunk = position.Position.ChunkIndex;
 
-            CameraPosition = entity.Position.LocalPosition + head.Offset;
+            CameraPosition = position.Position.LocalPosition + head.Offset;
             CameraUpVector = new Vector3(0, 0, 1f);
 
             float height = (float)Math.Sin(head.Tilt);
@@ -65,8 +67,8 @@ namespace OctoAwesome.Client.Components
             MinimapView = Matrix.CreateLookAt(
                 new Vector3(CameraPosition.X, CameraPosition.Y, 100),
                 new Vector3(
-                    entity.Position.LocalPosition.X,
-                    entity.Position.LocalPosition.Y,
+                    position.Position.LocalPosition.X,
+                    position.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
                     (float)Math.Cos(head.Angle), 

@@ -167,8 +167,16 @@ namespace OctoAwesome
             if (State != SimulationState.Running && State != SimulationState.Paused)
                 throw new Exception("Simulation is not running");
 
+            State = SimulationState.Paused;
+
+            //TODO: unschön
+            while (entites.Count > 0)
+                RemoveEntity(Entities.First());       
+
             State = SimulationState.Finished;
             // thread.Join();
+
+          
 
             ResourceManager.UnloadUniverse();
         }
@@ -242,6 +250,8 @@ namespace OctoAwesome
             entity.Id = 0;
             entity.Simulation = null;
             entites.Remove(entity);
+
+            ResourceManager.SaveEntity(entity);
         }
     }
 }

@@ -54,7 +54,6 @@ namespace OctoAwesome
         /// </summary>
         public Player(LocalChunkCache cache) : base(cache)
         {
-            Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
             Direction = 0f;
             FlyMode = false;
             InventoryLimit = 1000;

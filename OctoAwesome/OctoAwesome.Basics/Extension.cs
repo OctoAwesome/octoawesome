@@ -6,6 +6,7 @@ using OctoAwesome.EntityComponents;
 using System.Reflection;
 using System.Linq;
 using System;
+using engenious;
 
 namespace OctoAwesome.Basics
 {
@@ -55,10 +56,9 @@ namespace OctoAwesome.Basics
             {
 
                 p.Components.AddComponent(new GravityComponent());
-                p.Components.AddComponent(new PositionComponent());
+                p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0,new Index3(0,0,200),new Vector3(0,0,0)) } );
                 p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
                 p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                p.Components.AddComponent(new JumpPowerComponent() { Power = 400000f });
                 p.Components.AddComponent(new MoveableComponent());
                 p.Components.AddComponent(new BoxCollisionComponent());
                 p.Components.AddComponent(new EntityCollisionComponent());

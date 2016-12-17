@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace OctoAwesome
 {
@@ -8,7 +9,7 @@ namespace OctoAwesome
     /// Base Class for all Component based Entities.
     /// </summary>
     /// <typeparam name="T">Type of Component</typeparam>
-    public sealed class ComponentList<T> : IEnumerable<T> where T : Component
+    public class ComponentList<T> : IEnumerable<T> where T : Component
     {
         private Action<T> insertValidator;
 
@@ -59,10 +60,12 @@ namespace OctoAwesome
         /// <param name="component">Component</param>
         public void AddComponent(T component)
         {
-            insertValidator?.Invoke(component);
-
-
             Type type = component.GetType();
+
+            if (components.ContainsKey(type))
+                return;
+
+            insertValidator?.Invoke(component);
             components.Add(type, component);
             onInserter?.Invoke(component);
         }
@@ -108,6 +111,95 @@ namespace OctoAwesome
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
+        /// </summary>
+        /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        {
+            writer.Write(components.Count);
+            foreach (var componente in components)
+            {
+                using (MemoryStream memorystream = new MemoryStream())
+                {
+                    writer.Write(componente.Key.AssemblyQualifiedName);
+                    
+
+                    using (BinaryWriter componentbinarystream = new BinaryWriter(memorystream))
+                    {
+                        try
+                        {
+                            componente.Value.Serialize(componentbinarystream, definitionManager);
+                            writer.Write((int)memorystream.Length);
+                            memorystream.WriteTo(writer.BaseStream);
+
+                        }
+                        catch (Exception)
+                        {
+                            writer.Write(0);
+                            //throw;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
+        /// </summary>
+        /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        {
+            var count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                
+
+                var name = reader.ReadString();
+                var length = reader.ReadInt32();
+
+                var startposition = reader.BaseStream.Position;
+
+                
+
+                try
+                {
+                    var type = Type.GetType(name);
+
+                    if (type == null)
+                        continue;
+
+                    T component;
+
+                    if (!components.TryGetValue(type,out component))
+                    {
+                        component = (T)Activator.CreateInstance(type);
+                        components.Add(type, component);
+                    }
+
+                    byte[] buffer = new byte[length];
+                    reader.Read(buffer, 0, length);
+
+                    using (MemoryStream memorystream = new MemoryStream(buffer))
+                    using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
+                    {
+                        component.Deserialize(componentbinarystream, definitionManager);
+                    }
+
+                    
+                }
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    reader.BaseStream.Position = startposition + length;
+                }
+            }
         }
     }
 }
