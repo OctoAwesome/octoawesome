@@ -63,7 +63,6 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActorHost.cs" />
     <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionLoader.cs" />
