@@ -25,17 +25,6 @@ namespace OctoAwesome
         /// </summary>
         public Simulation Simulation { get; internal set; }
 
-        private float direction;
-
-        /// <summary>
-        /// Gets or sets the Direction.
-        /// </summary>
-        public float Direction
-        {
-            get { return direction; }
-            set { direction = MathHelper.WrapAngle(value); }
-        }
-
         /// <summary>
         /// LocalChunkCache für die Entity
         /// </summary>
