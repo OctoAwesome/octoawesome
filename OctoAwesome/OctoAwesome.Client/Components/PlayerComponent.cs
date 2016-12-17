@@ -44,7 +44,9 @@ namespace OctoAwesome.Client.Components
 
         public InventoryComponent Inventory { get; private set; }
 
-        public ToolBarComponent Toolbar { get; set; }
+        public ToolBarComponent Toolbar { get; private set; }
+
+        public PositionComponent Position { get; private set; }
 
         // public ActorHost ActorHost { get; private set; }
 
@@ -89,6 +91,9 @@ namespace OctoAwesome.Client.Components
 
                 Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
                 if (Toolbar == null) Toolbar = new ToolBarComponent();
+
+                Position = CurrentEntity.Components.GetComponent<PositionComponent>();
+                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0))};
             }
         }
 

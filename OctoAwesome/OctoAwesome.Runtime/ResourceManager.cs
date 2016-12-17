@@ -267,5 +267,11 @@ namespace OctoAwesome.Runtime
                 persistenceManager.SaveColumn(universe.Id, planetId, value);
             }
         }
+
+        public void SaveEntity(Entity entity)
+        {
+            if (entity is Player)
+                SavePlayer((Player)entity);
+        }
     }
 }

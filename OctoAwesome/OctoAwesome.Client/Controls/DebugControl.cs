@@ -151,7 +151,7 @@ namespace OctoAwesome.Client.Controls
             controlInfo.Text = Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
 
             //Draw Position
-            string pos = "pos: " + Player.CurrentEntity.Position.ToString();
+            string pos = "pos: " + Player.Position.ToString();
             position.Text = pos;
 
             //Draw Rotation
@@ -191,12 +191,12 @@ namespace OctoAwesome.Client.Controls
             //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
             //else flyInfo.Text = "";
 
-            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.CurrentEntity.Position.Planet);
+            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet);
             // Temperature Info
-            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.CurrentEntity.Position.GlobalBlockIndex);
+            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.Position.Position.GlobalBlockIndex);
 
             // Precipitation Info
-            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.CurrentEntity.Position.GlobalBlockIndex);
+            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.Position.Position.GlobalBlockIndex);
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)

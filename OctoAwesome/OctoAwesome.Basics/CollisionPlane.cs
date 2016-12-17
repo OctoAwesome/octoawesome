@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

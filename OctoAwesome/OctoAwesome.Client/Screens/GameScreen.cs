@@ -311,9 +311,9 @@ namespace OctoAwesome.Client.Screens
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
-                    Manager.Game.Player.CurrentEntity.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
+                    Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
                     Manager.NavigateBack();
-                    }, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.X, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.Y));
+                    }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
                 
             });
         }

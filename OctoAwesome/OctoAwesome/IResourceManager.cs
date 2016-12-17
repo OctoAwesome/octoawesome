@@ -7,7 +7,6 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
-
         IDefinitionManager DefinitionManager { get; }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace OctoAwesome
         /// </summary>
         /// <returns>Das gewünschte Universum, falls es existiert</returns>
         IUniverse GetUniverse();
-        
+
         /// <summary>
         /// Gibt den Planeten mit der angegebenen ID zurück
         /// </summary>
@@ -76,5 +75,7 @@ namespace OctoAwesome
         /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.
         /// </summary>
         IGlobalChunkCache GlobalChunkCache { get; }
+
+        void SaveEntity(Entity entity);
     }
 }

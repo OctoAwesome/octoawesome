@@ -3,6 +3,7 @@ using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basic;
 using System.Linq;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -13,7 +14,6 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
 
             var poscomp = entity.Components.GetComponent<PositionComponent>();
-            poscomp.Position = entity.Position;
 
             entity.Cache.SetCenter(poscomp.Position.Planet, new Index2(poscomp.Position.ChunkIndex));
             return true;
@@ -27,7 +27,6 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
 
             //TODO:Sehr unschön
-            component2.Position = e.Position;
             
             if (e.Components.ContainsComponent<BoxCollisionComponent>())
             {
@@ -39,7 +38,6 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
 
             e.Cache.SetCenter(e.Cache.Planet, new Index2(component2.Position.ChunkIndex));
-            e.Position = component2.Position;
         }
 
         private void CheckBoxCollision(GameTime gameTime,Entity e,MoveableComponent movecomp,PositionComponent poscomp)
