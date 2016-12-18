@@ -13,12 +13,12 @@
         /// <summary>
         /// Versieht einen Chunk mit Items
         /// </summary>
-        /// <param name="definitionManager">Definition Manager</param>
+        /// <param name="resourceManager">Definition Manager</param>
         /// <param name="planet">Index des Planeten</param>
         /// <param name="column00">TODO: Kommentieren</param>
         /// <param name="column01">TODO: Kommentieren</param>
         /// <param name="column10">TODO: Kommentieren</param>
         /// <param name="column11">TODO: Kommentieren</param>
-        public abstract void Populate(IDefinitionManager definitionManager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11);
+        public abstract void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11);
     }
 }

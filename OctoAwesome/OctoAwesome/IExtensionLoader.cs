@@ -71,5 +71,9 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="T">Map Generator Type</typeparam>
         void RemoveMapGenerator<T>() where T : IMapGenerator;
+
+        void RegisterMapPopulator(IMapPopulator populator);
+
+        void RemoveMapPopulator<T>() where T : IMapPopulator; 
     }
 }

@@ -49,6 +49,9 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
         {
             ResourceManager = resourceManager;
+
+            resourceManager.ChunkColumLoaded += ResourceManager_ChunkColumLoaded;
+            resourceManager.ChunkColumRemoved += ResourceManager_ChunkColumRemoved;
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
@@ -57,6 +60,21 @@ namespace OctoAwesome
                 ValidateAddComponent, ValidateRemoveComponent,null,null);
             
             extensionResolver.ExtendSimulation(this);
+        }
+
+        private void ResourceManager_ChunkColumLoaded(IChunkColumn column)
+        {
+            foreach (var entity in column.Entities)
+                AddEntity(entity);
+        }
+
+        private void ResourceManager_ChunkColumRemoved(IChunkColumn column)
+        {
+            foreach (var entity in column.Entities)
+            {
+                if (Entities.Contains(entity))
+                    RemoveEntity(entity);
+            }
         }
 
         private void ValidateAddComponent(SimulationComponent component)

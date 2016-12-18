@@ -7,6 +7,11 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        //TODO:Eventsystem überdenken
+        event Action<IChunkColumn> ChunkColumLoaded;
+
+        event Action<IChunkColumn> ChunkColumRemoved;
+
         IDefinitionManager DefinitionManager { get; }
 
         /// <summary>

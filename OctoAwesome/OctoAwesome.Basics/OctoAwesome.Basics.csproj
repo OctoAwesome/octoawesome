@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollisionPlane.cs" />
+    <Compile Include="Entities\WauziEntity.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="Biomes\FlatlandBiome.cs" />
     <Compile Include="Biomes\HighMountainBiome.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="Definitions\Blocks\PlankBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\BirchTreeDefinition.cs" />
     <Compile Include="Definitions\Trees\CactusTreeDefinition.cs" />
-    <Compile Include="Entities\AppleEntity.cs" />
     <Compile Include="EntityComponents\ForceComponent.cs" />
     <Compile Include="EntityComponents\GravityComponent.cs" />
     <Compile Include="EntityComponents\MoveableComponent.cs" />
@@ -147,6 +147,7 @@
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
     <Compile Include="Definitions\Items\PickAxeDefinition.cs" />
+    <Compile Include="WauziPopulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">

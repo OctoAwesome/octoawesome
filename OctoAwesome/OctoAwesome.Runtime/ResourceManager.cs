@@ -23,6 +23,10 @@ namespace OctoAwesome.Runtime
 
         private Dictionary<int, IPlanet> planets;
 
+        public event Action<IChunkColumn> ChunkColumLoaded;
+
+        public event Action<IChunkColumn> ChunkColumRemoved;
+
         /// <summary>
         /// Das aktuell geladene Universum.
         /// </summary>
@@ -227,7 +231,7 @@ namespace OctoAwesome.Runtime
             if (!column11.Populated && column21 != null && column12 != null && column22 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(DefinitionManager, planet, column11, column21, column12, column22);
+                    populator.Populate(this, planet, column11, column21, column12, column22);
 
                 column11.Populated = true;
             }
@@ -236,7 +240,7 @@ namespace OctoAwesome.Runtime
             if (column00 != null && !column00.Populated && column10 != null && column01 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(DefinitionManager, planet, column00, column10, column01, column11);
+                    populator.Populate(this, planet, column00, column10, column01, column11);
 
                 column00.Populated = true;
             }
@@ -245,7 +249,7 @@ namespace OctoAwesome.Runtime
             if (column10 != null && !column10.Populated && column20 != null && column21 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(DefinitionManager, planet, column10, column20, column11, column21);
+                    populator.Populate(this, planet, column10, column20, column11, column21);
                 column10.Populated = true;
             }
 
@@ -253,8 +257,18 @@ namespace OctoAwesome.Runtime
             if (column01 != null && !column01.Populated && column02 != null && column12 != null)
             {
                 foreach (var populator in populators)
-                    populator.Populate(DefinitionManager, planet, column01, column11, column02, column12);
+                    populator.Populate(this, planet, column01, column11, column02, column12);
                 column01.Populated = true;
+            }
+
+            try
+            {
+                ChunkColumLoaded?.Invoke(column11);
+            }
+            catch (Exception)
+            {
+
+                //throw;
             }
 
             return column11;
