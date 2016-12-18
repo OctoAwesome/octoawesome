@@ -62,8 +62,6 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new MoveableComponent());
                 p.Components.AddComponent(new BoxCollisionComponent());
                 p.Components.AddComponent(new EntityCollisionComponent());
-                p.Components.AddComponent(new InventoryComponent());
-                p.Components.AddComponent(new ToolBarComponent());
             });
 
             extensionLoader.RegisterSimulationExtender((s) =>

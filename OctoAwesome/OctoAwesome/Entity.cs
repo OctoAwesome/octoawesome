@@ -42,9 +42,6 @@ namespace OctoAwesome
 
             Components = new ComponentList<EntityComponent>(
                 ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
-
-            //TODO: Sehr schön
-            Components.AddComponent(new ControllableComponent());
         }
 
         private void OnRemoveComponent(EntityComponent component)

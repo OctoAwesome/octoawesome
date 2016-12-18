@@ -23,10 +23,7 @@ namespace OctoAwesome
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
         public Player(LocalChunkCache cache) : base(cache)
-        {
-
-            //TODO: HeadComponente über Extension
-            Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
+        {          
         }
 
         /// <summary>
