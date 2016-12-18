@@ -10,7 +10,7 @@ namespace OctoAwesome.Client.Components
 
         private readonly IResourceManager resourceManager;
 
-        private Simulation Simulation { get; set; }
+        public Simulation Simulation { get; private set; }
 
         public SimulationState State
         {

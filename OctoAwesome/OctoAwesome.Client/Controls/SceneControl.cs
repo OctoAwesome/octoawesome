@@ -18,6 +18,7 @@ namespace OctoAwesome.Client.Controls
         private PlayerComponent player;
         private CameraComponent camera;
         private AssetComponent assets;
+        private Components.EntityComponent entities;
 
         private ChunkRenderer[,] chunkRenderer;
         private List<ChunkRenderer> orderedChunkRenderer;
@@ -59,7 +60,9 @@ namespace OctoAwesome.Client.Controls
             player = manager.Player;
             camera = manager.Camera;
             assets = manager.Game.Assets;
+            entities = manager.Game.Entity;
             Manager = manager;
+
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
@@ -376,7 +379,7 @@ namespace OctoAwesome.Client.Controls
                     shift.Y >= -range && shift.Y <= range)
                     renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
             }
-
+            
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
             Manager.GraphicsDevice.Clear(background);
 
@@ -420,6 +423,10 @@ namespace OctoAwesome.Client.Controls
                 if (camera.Frustum.Intersects(chunkBox))
                     renderer.Draw(camera.View, camera.Projection, shift);
             }
+
+           
+
+            entities.Draw(camera.View, camera.Projection,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
 
             if (player.SelectedBox.HasValue)
             {

@@ -40,6 +40,8 @@ namespace OctoAwesome.Client
 
         public IExtensionLoader ExtensionLoader { get; private set; }
 
+        public Components.EntityComponent Entity { get; private set; }
+
         public OctoGame()
         {
             //graphics = new GraphicsDeviceManager(this);
@@ -90,6 +92,10 @@ namespace OctoAwesome.Client
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
             Components.Add(Player);
+
+            Entity = new Client.Components.EntityComponent(this,Simulation);
+            Entity.UpdateOrder = 2;
+            Components.Add(Entity);
 
             Camera = new CameraComponent(this);
             Camera.UpdateOrder = 3;

@@ -69,8 +69,21 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
                 s.Components.AddComponent(new BlockInteractionComponent(s));
+                s.Components.AddComponent(new WauziControllComponent());
 
                 //TODO: unschön
+            });
+
+            extensionLoader.RegisterEntityExtender<WauziEntity>((w) => 
+            {
+                w.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
+                w.Components.AddComponent(new GravityComponent());
+                w.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+                w.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+                w.Components.AddComponent(new MoveableComponent());
+                w.Components.AddComponent(new BoxCollisionComponent());
+                w.Components.AddComponent(new ControllableComponent());
+                w.Components.AddComponent(new WauziKIComponent());
             });
         }
     }

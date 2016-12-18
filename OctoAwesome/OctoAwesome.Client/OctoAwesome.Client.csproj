@@ -45,6 +45,7 @@
     <Compile Include="Components\AssetComponent.cs" />
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\EntityComponent.cs" />
     <Compile Include="Components\IAssetRelatedComponent.cs" />
     <Compile Include="Components\KeyMapper.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
