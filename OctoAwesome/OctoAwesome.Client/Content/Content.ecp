@@ -25,6 +25,15 @@
       <Processor>EffectProcessor</Processor>
     </ContentFile>
     <ContentFile>
+      <Name>texdog.png</Name>
+      <Processor>BitmapProcessor</Processor>
+      <Settings>
+        <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+        <MipMapCount>1</MipMapCount>
+        <Format>0</Format>
+      </Settings>
+    </ContentFile>
+    <ContentFile>
       <Name>dog.fbx</Name>
       <Processor>ModelProcessor</Processor>
       <Settings>

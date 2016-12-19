@@ -11,9 +11,9 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class EntityComponent : GameComponent
     {
+        private Texture2D texture;
+        private Model model;
         private GraphicsDevice graphicsDevice;
-        private VertexBuffer vb;
-        private IndexBuffer ib;
         private BasicEffect effect;
         public SimulationComponent Simulation { get; private set; }
 
@@ -26,51 +26,18 @@ namespace OctoAwesome.Client.Components
 
             Entities = new List<Entity>();
             graphicsDevice = game.GraphicsDevice;
-            vb = new VertexBuffer(graphicsDevice, VertexPositionColor.VertexDeclaration, 24);
-            vb.SetData(new[] {  new VertexPositionColor(new Vector3(-0.5f,-0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,-0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,+0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,+0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,-0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,+0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,+0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,-0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,+0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,+0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,+0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,+0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,-0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,-0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,-0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,-0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,-0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,+0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,+0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(+0.5f,-0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,-0.5f,-0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,-0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,+0.5f,+0.5f+0.5f),Color.Red),
-                                new VertexPositionColor(new Vector3(-0.5f,+0.5f,-0.5f+0.5f),Color.Red) });
-
-            ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedByte, 36);
-            ib.SetData(new byte[]
-            {
-              0,  1,  2,      0,  2,  3,    // front
-              4,  5,  6,      4,  6,  7,    // back
-              8,  9,  10,     8,  10, 11,   // top
-              12, 13, 14,     12, 14, 15,   // bottom
-              16, 17, 18,     16, 18, 19,   // right
-              20, 21, 22,     20, 22, 23    // left
-            }
-            );
+           
             effect = new BasicEffect(graphicsDevice);
+
+            model = game.Content.Load<Model>("dog");
+            texture = game.Content.Load<Texture2D>("texdog");
+
         }
         public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
-            graphicsDevice.VertexBuffer = vb;
-            graphicsDevice.IndexBuffer = ib;
             effect.Projection = projection;
             effect.View = view;
+            effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
             foreach (var pass in effect.CurrentTechnique.Passes)
             {
@@ -80,6 +47,11 @@ namespace OctoAwesome.Client.Components
                 {
                     var position = entity.Components.GetComponent<PositionComponent>().Position;
                     var body = entity.Components.GetComponent<BodyComponent>();
+
+                    HeadComponent head = new HeadComponent();
+                    if (entity.Components.ContainsComponent<HeadComponent>())
+                        head = entity.Components.GetComponent<HeadComponent>();
+
                     Index3 shift = chunkOffset.ShortestDistanceXY(
                    position.ChunkIndex, planetSize);
 
@@ -88,7 +60,9 @@ namespace OctoAwesome.Client.Components
                         shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
                         shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z)* Matrix.CreateScaling(body.Radius*2, body.Radius*2, body.Height);
                     effect.World = world;
-                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, ib.IndexCount, 0, ib.IndexCount / 3);
+                    model.Transform = world;
+                    model.Draw(effect,texture);
+                    //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, ib.IndexCount, 0, ib.IndexCount / 3);
                 }
             }
         }

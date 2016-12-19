@@ -135,13 +135,13 @@
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
     <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
     <EmbeddedResource Include="Assets\Crew\blackorca.png" />
-    <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
     <Content Include="Content\GameFont.png" />
     <Content Include="Content\HeadlineFont.png" />
     <Content Include="Content\Hud.png" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
+    <Content Include="Content\texdog.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
@@ -169,6 +169,7 @@
     <None Include="CompiledContent\simple.xnb" />
     <None Include="Content\BoldFont.fnt" />
     <EngeniousContentReference Include="Content\Content.ecp" />
+    <None Include="Content\dog.fbx" />
     <None Include="Content\GameFont.fnt" />
     <None Include="Content\HeadlineFont.fnt" />
     <None Include="Content\Hud.fnt" />
