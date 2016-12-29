@@ -62,7 +62,6 @@ namespace OctoAwesome.Client.Components
                     effect.World = world;
                     model.Transform = world;
                     model.Draw(effect,texture);
-                    //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, ib.IndexCount, 0, ib.IndexCount / 3);
                 }
             }
         }

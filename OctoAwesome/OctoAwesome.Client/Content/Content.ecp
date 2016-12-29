@@ -33,27 +33,5 @@
         <Format>0</Format>
       </Settings>
     </ContentFile>
-    <ContentFile>
-      <Name>dog.fbx</Name>
-      <Processor>ModelProcessor</Processor>
-      <Settings>
-        <Scale>
-          <X>1</X>
-          <Y>1</Y>
-          <Z>1</Z>
-        </Scale>
-        <Translate>
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Translate>
-        <Rotation>
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Rotation>
-        <TransformMesh>True</TransformMesh>
-      </Settings>
-    </ContentFile>
   </Contents>
 </Content>
