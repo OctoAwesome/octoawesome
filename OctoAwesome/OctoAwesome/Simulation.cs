@@ -269,9 +269,10 @@ namespace OctoAwesome
             foreach (var component in Components)
                 component.Remove(entity);
 
+           
+            entites.Remove(entity);
             entity.Id = 0;
             entity.Simulation = null;
-            entites.Remove(entity);
 
             ResourceManager.SaveEntity(entity);
         }

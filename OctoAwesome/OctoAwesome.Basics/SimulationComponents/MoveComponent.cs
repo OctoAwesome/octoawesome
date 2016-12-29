@@ -23,21 +23,22 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
         }
 
-        protected override void UpdateEntity(GameTime gameTime,Entity e, MoveableComponent component1, PositionComponent component2)
+        protected override void UpdateEntity(GameTime gameTime,Entity e, MoveableComponent component1, PositionComponent poscomp)
         {
 
             //TODO:Sehr unschön
             
             if (e.Components.ContainsComponent<BoxCollisionComponent>())
             {
-                CheckBoxCollision(gameTime,e,component1,component2);
+                CheckBoxCollision(gameTime,e,component1,poscomp);
             }
-            else
-            {
-                component2.Position += component1.PositionMove;
-            }
+            
 
-            e.Cache.SetCenter(e.Cache.Planet, new Index2(component2.Position.ChunkIndex));
+            var newposition = poscomp.Position + component1.PositionMove;
+            newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
+            e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
+
+            poscomp.Position = newposition;
         }
 
         private void CheckBoxCollision(GameTime gameTime,Entity e,MoveableComponent movecomp,PositionComponent poscomp)
@@ -141,9 +142,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             // TODO: Was ist für den Fall Gravitation = 0 oder im Scheitelpunkt des Sprungs?
             //movecomp.OnGround = Player.Velocity.Z == 0f;
 
-            Coordinate newposition = poscomp.Position + movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
-            poscomp.Position = newposition;
+            movecomp.PositionMove = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

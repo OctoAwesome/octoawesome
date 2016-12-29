@@ -35,8 +35,6 @@ namespace OctoAwesome
         // TODO: Früher oder später nach draußen auslagern
         private Thread cleanupThread;
 
-        public event Action<int, Index3> OnUnloadChunk;
-
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
         /// </summary>
@@ -238,7 +236,6 @@ namespace OctoAwesome
                 {
                     // cache[key].ChunkColumn = null;
                     cache.Remove(key.Key);
-                    OnUnloadChunk?.Invoke(key.Value.Planet, key.Key);
                 }
             }
         }

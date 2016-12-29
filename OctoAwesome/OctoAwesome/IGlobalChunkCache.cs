@@ -7,8 +7,6 @@ namespace OctoAwesome
     /// </summary>
     public interface IGlobalChunkCache
     {
-        event Action<int, Index3> OnUnloadChunk; 
-
         /// <summary>
         /// Abonniert einen Chunk.
         /// </summary>

@@ -28,7 +28,7 @@ namespace OctoAwesome
 
         protected override void OnInitialize(IResourceManager manager)
         {
-            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 4, 2);
+            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
         }
 
         /// <summary>

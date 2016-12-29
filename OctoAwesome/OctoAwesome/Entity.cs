@@ -77,7 +77,11 @@ namespace OctoAwesome
 
         private void OnUnloaded()
         {
-            Simulation?.RemoveEntity(this);
+            if (Simulation != null)
+            {
+                Simulation.RemoveEntity(this);
+            }
+            
         }
 
         /// <summary>

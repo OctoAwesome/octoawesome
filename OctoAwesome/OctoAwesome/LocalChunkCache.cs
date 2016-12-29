@@ -57,8 +57,6 @@ namespace OctoAwesome
         {
             IsPassive = passive;
 
-            globalCache.OnUnloadChunk += GlobalCache_OnUnloadChunk;
-
             if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
