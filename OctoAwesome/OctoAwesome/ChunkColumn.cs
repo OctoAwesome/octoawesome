@@ -384,12 +384,8 @@ namespace OctoAwesome
                 var count = br.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
-
-
                     var name = br.ReadString();
                     var length = br.ReadInt32();
-
-
 
                     byte[] buffer = new byte[length];
                     br.Read(buffer, 0, length);
@@ -402,9 +398,7 @@ namespace OctoAwesome
                             continue;
 
                         
-
-                        /*
-                        Entity entity = (Entity) Activator.CreateInstance(type);
+                        Entity entity = (Entity)Activator.CreateInstance(type);
 
 
                         using (MemoryStream memorystream = new MemoryStream(buffer))
@@ -412,8 +406,8 @@ namespace OctoAwesome
                         {
                             entity.Deserialize(componentbinarystream, definitionManager);
                         }
-                        */
 
+                        Entities.Add(entity);
 
                     }
                     catch (Exception)

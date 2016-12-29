@@ -34,7 +34,8 @@ namespace OctoAwesome
 
         // TODO: Früher oder später nach draußen auslagern
         private Thread cleanupThread;
-        
+
+        public event Action<int, Index3> OnUnloadChunk;
 
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
@@ -85,7 +86,7 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <returns></returns>
-        public IChunkColumn Subscribe(int planet, Index2 position)
+        public IChunkColumn Subscribe(int planet, Index2 position,bool passive)
         {
             CacheItem cacheItem = null;
 
@@ -93,18 +94,29 @@ namespace OctoAwesome
             {
                 if (!cache.TryGetValue(new Index3(position, planet), out cacheItem))
                 {
+                    //TODO: Überdenken
+                    if (passive)
+                    {
+                        return null;
+                    }
+
                     cacheItem = new CacheItem()
                     {
-                        Planet=planet,
+                        Planet = planet,
                         Index = position,
                         References = 0,
+                        PassiveReference = 0,
                         ChunkColumn = null,
                     };
 
                     cache.Add(new Index3(position, planet), cacheItem);
                 }
 
-                cacheItem.References++;
+                if (passive)
+                    cacheItem.PassiveReference++;
+                else
+                    cacheItem.References++;
+                
             }
 
             lock (cacheItem)
@@ -117,6 +129,11 @@ namespace OctoAwesome
             }
 
             return cacheItem.ChunkColumn;
+        }
+
+        public bool IsChunkLoaded(int planet, Index2 position)
+        {
+            return cache.ContainsKey(new Index3(position, planet));
         }
 
         /// <summary>
@@ -135,6 +152,7 @@ namespace OctoAwesome
             return null;
         }
 
+
         /// <summary>
         /// Löscht den gesamten Inhalt des Caches.
         /// </summary>
@@ -145,6 +163,7 @@ namespace OctoAwesome
                 foreach (var value in cache.Values)
                 {
                     value.References = 0;
+                    value.PassiveReference = 0;
                 }
             }
 
@@ -156,17 +175,27 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        public void Release(int planet, Index2 position)
+        public void Release(int planet, Index2 position,bool passive)
         {
             CacheItem cacheItem = null;
             lock (lockObject)
             {
                 if (!cache.TryGetValue(new Index3(position, planet), out cacheItem))
                 {
-                    throw new NotSupportedException("Kein Chunk für Position in Cache");
+                    if (!passive)
+                    {
+                        throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
+                    }
+                    
                 }
 
-                cacheItem.References--;
+                if (passive)
+                {
+                    if (cacheItem != null)
+                        cacheItem.PassiveReference--;
+                }
+                else
+                    cacheItem.References--;
             }
         }
 
@@ -204,11 +233,12 @@ namespace OctoAwesome
             // Items ohne Ref aus Cache entfernen
             lock (lockObject)
             {
-                var keys = cache.Where(v => v.Value.References == 0 && v.Value.ChunkColumn != null && !v.Value.IsDirty()).Select(v => v.Key).ToArray();
+                var keys = cache.Where(v => v.Value.References == 0 && v.Value.ChunkColumn != null && !v.Value.IsDirty()).ToArray();
                 foreach (var key in keys)
                 {
                     // cache[key].ChunkColumn = null;
-                    cache.Remove(key);
+                    cache.Remove(key.Key);
+                    OnUnloadChunk?.Invoke(key.Value.Planet, key.Key);
                 }
             }
         }
@@ -236,6 +266,8 @@ namespace OctoAwesome
             /// Die Zahl der Subscriber, die das Item Abboniert hat.
             /// </summary>
             public int References { get; set; }
+
+            public int PassiveReference { get; set; }
 
             public int[] SavedChangeCounter { get; set; }
 

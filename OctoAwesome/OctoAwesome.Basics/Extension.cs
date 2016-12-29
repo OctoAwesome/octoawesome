@@ -50,7 +50,6 @@ namespace OctoAwesome.Basics
 
             extensionLoader.RegisterEntityExtender<Player>((p) =>
             {
-
                 p.Components.AddComponent(new GravityComponent());
                 p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0,new Index3(0,0,200),new Vector3(0,0,0)) } );
                 p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
@@ -58,6 +57,18 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new MoveableComponent());
                 p.Components.AddComponent(new BoxCollisionComponent());
                 p.Components.AddComponent(new EntityCollisionComponent());
+            });
+
+            extensionLoader.RegisterEntityExtender<WauziEntity>((w) =>
+            {
+                w.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
+                w.Components.AddComponent(new GravityComponent());
+                w.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+                w.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+                w.Components.AddComponent(new MoveableComponent());
+                w.Components.AddComponent(new BoxCollisionComponent());
+                w.Components.AddComponent(new ControllableComponent());
+                w.Components.AddComponent(new WauziKIComponent());
             });
 
             extensionLoader.RegisterSimulationExtender((s) =>
@@ -72,18 +83,6 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new WauziControllComponent());
 
                 //TODO: unschön
-            });
-
-            extensionLoader.RegisterEntityExtender<WauziEntity>((w) => 
-            {
-                w.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
-                w.Components.AddComponent(new GravityComponent());
-                w.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-                w.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                w.Components.AddComponent(new MoveableComponent());
-                w.Components.AddComponent(new BoxCollisionComponent());
-                w.Components.AddComponent(new ControllableComponent());
-                w.Components.AddComponent(new WauziKIComponent());
             });
         }
     }

@@ -8,8 +8,13 @@ namespace OctoAwesome.Basics.Entities
 {
     public class WauziEntity : Entity
     {
-        public WauziEntity(LocalChunkCache cache) : base(cache)
+        public WauziEntity() : base()
         {
+        }
+
+        protected override void OnInitialize(IResourceManager manager)
+        {
+            Cache = new LocalChunkCache(manager.GlobalChunkCache, true, 2, 1);
         }
     }
 }

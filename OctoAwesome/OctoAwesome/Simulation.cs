@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using engenious;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
 {
@@ -238,6 +239,9 @@ namespace OctoAwesome
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
             extensionResolver.ExtendEntity(entity);
+
+            entity.Initialize(this.ResourceManager);
+            
 
             entites.Add(entity);
             entity.Simulation = this;

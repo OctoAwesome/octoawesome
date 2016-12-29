@@ -22,8 +22,13 @@ namespace OctoAwesome
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
-        public Player(LocalChunkCache cache) : base(cache)
-        {          
+        public Player() : base()
+        {
+        }
+
+        protected override void OnInitialize(IResourceManager manager)
+        {
+            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 4, 2);
         }
 
         /// <summary>

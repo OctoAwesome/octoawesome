@@ -187,7 +187,7 @@ namespace OctoAwesome.Runtime
             Player player = persistenceManager.LoadPlayer(universe.Id, playername);
             if (player == null)
             {
-                player = new Player(new LocalChunkCache(GlobalChunkCache,2,1));
+                player = new Player();
             }
             return player;
         }

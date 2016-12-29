@@ -29,7 +29,7 @@ namespace OctoAwesome.Basics
             if (ispop-- <= 0)
                 return;
 
-            WauziEntity wauzi = new WauziEntity(new LocalChunkCache(resourcemanager.GlobalChunkCache,2,1));
+            WauziEntity wauzi = new WauziEntity();
 
             var x = r.Next(0, Chunk.CHUNKSIZE_X/2);
             var y = r.Next(0, Chunk.CHUNKSIZE_Y/2);
