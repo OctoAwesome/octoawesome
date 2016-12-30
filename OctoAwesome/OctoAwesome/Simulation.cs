@@ -196,8 +196,15 @@ namespace OctoAwesome
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
+
+
             if (entity.Simulation != this)
+            {
+                if(entity.Simulation == null)
+                    return;
+
                 throw new NotSupportedException("Entity can't be removed from a foreign simulation");
+            }
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
