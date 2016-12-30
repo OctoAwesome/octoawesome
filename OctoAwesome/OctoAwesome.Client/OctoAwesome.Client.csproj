@@ -32,6 +32,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -42,12 +43,12 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\AssetComponent.cs" />
     <Compile Include="Components\ChunkRenderer.cs" />
     <Compile Include="Components\CameraComponent.cs" />
-    <Compile Include="Components\EntityComponent.cs" />
     <Compile Include="Components\IAssetRelatedComponent.cs" />
     <Compile Include="Components\KeyMapper.cs" />
     <Compile Include="Components\PlayerComponent.cs" />
@@ -140,13 +141,13 @@
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
     <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
     <EmbeddedResource Include="Assets\Crew\blackorca.png" />
+    <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
     <Content Include="Content\GameFont.png" />
     <Content Include="Content\HeadlineFont.png" />
     <Content Include="Content\Hud.png" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
-    <Content Include="Content\texdog.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
@@ -174,7 +175,6 @@
     <None Include="CompiledContent\simple.xnb" />
     <None Include="Content\BoldFont.fnt" />
     <EngeniousContentReference Include="Content\Content.ecp" />
-    <None Include="Content\dog.fbx" />
     <None Include="Content\GameFont.fnt" />
     <None Include="Content\HeadlineFont.fnt" />
     <None Include="Content\Hud.fnt" />
@@ -206,7 +206,7 @@
   <Import Project="..\packages\engenious.0.1.1\build\engenious.targets" Condition="Exists('..\packages\engenious.0.1.1\build\engenious.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\engenious.0.1.1\build\engenious.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\engenious.0.1.1\build\engenious.targets'))" />
   </Target>
