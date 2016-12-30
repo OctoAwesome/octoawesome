@@ -68,7 +68,6 @@ namespace OctoAwesome.Basics
                 w.Components.AddComponent(new MoveableComponent());
                 w.Components.AddComponent(new BoxCollisionComponent());
                 w.Components.AddComponent(new ControllableComponent());
-                w.Components.AddComponent(new WauziKIComponent());
                 w.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation=-90 },true);
             });
 

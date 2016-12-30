@@ -24,7 +24,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
         }
 
-        protected override void UpdateEntity(GameTime gameTime,Entity e, MoveableComponent component1, PositionComponent poscomp)
+        protected override void UpdateEntity(GameTime gameTime,Entity e, MoveableComponent movecomp, PositionComponent poscomp)
         {
 
             if (e.Id == 0)
@@ -34,20 +34,20 @@ namespace OctoAwesome.Basics.SimulationComponents
             
             if (e.Components.ContainsComponent<BoxCollisionComponent>())
             {
-                CheckBoxCollision(gameTime,e,component1,poscomp);
+                CheckBoxCollision(gameTime,e,movecomp,poscomp);
             }
             
 
-            var newposition = poscomp.Position + component1.PositionMove;
+            var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
             var result = e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
             if (result)
                 poscomp.Position = newposition;
 
             //Direction
-            if (component1.PositionMove.LengthSquared != 0)
+            if (movecomp.PositionMove.LengthSquared != 0)
             {
-                var direction = MathHelper.WrapAngle((float)Math.Atan2(component1.PositionMove.Y, component1.PositionMove.X));
+                var direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
                 poscomp.Direction = direction;
             }
         }
