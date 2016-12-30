@@ -262,7 +262,7 @@ namespace OctoAwesome.Runtime
 
         private void saveChunkColumn(int planetId, Index2 index, IChunkColumn value)
         {
-            if (!disablePersistence && value.Chunks.Any(c => c.ChangeCounter > 0))
+            if (!disablePersistence && value.ChangeCounter > 0) //value.Chunks.Any(c => c.ChangeCounter > 0)
             {
                 persistenceManager.SaveColumn(universe.Id, planetId, value);
             }

@@ -24,6 +24,8 @@ namespace OctoAwesome
         /// </summary>
         Index2 Index { get; }
 
+       int ChangeCounter { get; set; }
+
         /// <summary>
         /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
         /// </summary>

@@ -265,11 +265,11 @@ namespace OctoAwesome
                                 ci.Changed -= ItemChanged;
                                 cache.Remove(key);
                             }
-                                    lock (updatelockobject)
-                                    {
-                                        oldchunks.Enqueue(ci);
-                                    }
-                                }
+                            lock (updatelockobject)
+                            {
+                                oldchunks.Enqueue(ci);
+                            }
+                        }
                     }
                 }
             }
@@ -336,7 +336,10 @@ namespace OctoAwesome
                     }
                     else
                     {
-                        throw new Exception("TODO");
+                        targetchunk = loadDelegate(entity.CurrentPlanet, entity.TargetChunk);
+                        targetchunk.Entities.Add(entity.Entity);
+                        saveDelegate(entity.CurrentPlanet, entity.TargetChunk, targetchunk);
+                        simulation.RemoveEntity(entity.Entity);
                     }
                 }
 

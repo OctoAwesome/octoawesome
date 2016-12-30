@@ -15,6 +15,8 @@ namespace OctoAwesome
         /// </summary>
         public IEntityList Entities { get; private set; }
 
+        public int ChangeCounter { get; set; }
+
         /// <summary>
         /// Erzeugt eine neue Instanz einer ChunkColumn.
         /// </summary>
@@ -35,6 +37,7 @@ namespace OctoAwesome
 
         private void OnChunkChanged(IChunk arg1, int arg2)
         {
+            ChangeCounter++;
             Changed?.Invoke(this, arg1, arg2);
         }
 

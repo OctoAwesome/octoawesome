@@ -28,8 +28,6 @@ namespace OctoAwesome
 
         public bool IsPassive { get; private set; }
 
-        public event Action OnUnloaded;
-
         /// <summary>
         /// Größe des Caches in Zweierpotenzen
         /// </summary>
