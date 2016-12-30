@@ -193,6 +193,9 @@ namespace OctoAwesome
         /// <param name="entity">Entity die entfert werden soll</param>
         public void RemoveEntity(Entity entity)
         {
+            if (entity.Id == 0)
+                return;
+
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
