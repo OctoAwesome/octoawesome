@@ -26,7 +26,7 @@ namespace OctoAwesome
             Planet = planet;
             Chunks = chunks;
             Index = columnIndex;
-            Entities = new List<Entity>();
+            Entities = new EntityList(this);
             foreach (var chunk in chunks)
             {
                 chunk.Changed += OnChunkChanged;
