@@ -64,24 +64,10 @@ namespace OctoAwesome
         public void Initialize(IResourceManager mananger)
         {
             OnInitialize(mananger);
-
-            if (Cache != null)
-            {
-                Cache.OnUnloaded += OnUnloaded;
-            }
         }
 
         protected virtual void OnInitialize(IResourceManager manager)
         {
-        }
-
-        private void OnUnloaded()
-        {
-            if (Simulation != null)
-            {
-                Simulation.RemoveEntity(this);
-            }
-            
         }
 
         /// <summary>

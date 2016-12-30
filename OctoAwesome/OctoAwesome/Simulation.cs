@@ -51,8 +51,6 @@ namespace OctoAwesome
         {
             ResourceManager = resourceManager;
 
-            resourceManager.ChunkColumLoaded += ResourceManager_ChunkColumLoaded;
-            resourceManager.ChunkColumRemoved += ResourceManager_ChunkColumRemoved;
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
@@ -63,18 +61,11 @@ namespace OctoAwesome
             extensionResolver.ExtendSimulation(this);
         }
 
-        private void ResourceManager_ChunkColumLoaded(IChunkColumn column)
+        private void ResourceManager_OnChunkCoumnLoaded(IChunkColumn obj)
         {
-            foreach (var entity in column.Entities)
-                AddEntity(entity);
-        }
-
-        private void ResourceManager_ChunkColumRemoved(IChunkColumn column)
-        {
-            foreach (var entity in column.Entities)
+            foreach (var entity in obj.Entities)
             {
-                if (Entities.Contains(entity))
-                    RemoveEntity(entity);
+                AddEntity(entity);
             }
         }
 
@@ -125,14 +116,7 @@ namespace OctoAwesome
             if (State != SimulationState.Ready)
                 throw new Exception();
 
-            // watch.Start();
-
             State = SimulationState.Running;
-
-            //thread = new Thread(updateLoop);
-            //thread.IsBackground = true;
-            //thread.Priority = ThreadPriority.BelowNormal;
-            //thread.Start();
         }
 
         /// <summary>
@@ -143,40 +127,13 @@ namespace OctoAwesome
         {
             if (State == SimulationState.Running)
             {
+                ResourceManager.GlobalChunkCache.SimulationUpdate(this);
+
                 // Update all Components
                 foreach (var component in Components.Where(c => c.Enabled))
                     component.Update(gameTime);
             }
         }
-
-        //private void updateLoop()
-        //{
-        //    TimeSpan lastCall = new TimeSpan();
-        //    TimeSpan frameTime = new TimeSpan(0, 0, 0, 0, 16);
-        //    while (State == SimulationState.Running || State == SimulationState.Paused)
-        //    {
-        //        GameTime gameTime = new GameTime(
-        //            watch.Elapsed, frameTime);
-        //        lastCall = watch.Elapsed;
-
-        //        if (State != SimulationState.Paused)
-        //        {
-        //            //foreach (var actorHost in actorHosts.Where(h => h.ReadyState))
-        //            //    actorHost.Update(gameTime);
-
-        //            // Update all Components
-        //            foreach (var component in Components.Where(c => c.Enabled))
-        //                component.Update(gameTime);
-        //        }
-
-        //        TimeSpan diff = frameTime - (watch.Elapsed - lastCall);
-        //        if (diff > TimeSpan.Zero)
-        //            Thread.Sleep(diff);
-        //    }
-
-        //    //foreach (var actorHost in actorHosts)
-        //    //    actorHost.Unload();
-        //}
 
         /// <summary>
         /// Beendet das aktuelle Spiel (nicht die Applikation)
@@ -200,27 +157,6 @@ namespace OctoAwesome
             ResourceManager.UnloadUniverse();
         }
 
-        ///// <summary>
-        ///// Fügt einen neuen Spieler hinzu.
-        ///// </summary>
-        ///// <param name="player">Der Player.</param>
-        ///// <returns>Der neue ActorHost zur Steuerung des Spielers.</returns>
-        //public ActorHost InsertPlayer(Player player)
-        //{
-        //    var host = new ActorHost(player);
-        //    actorHosts.Add(host);
-        //    host.Initialize();
-        //    return host;
-        //}
-
-        ///// <summary>
-        ///// Entfernt einen Spieler aus dem Spiel.
-        ///// </summary>
-        ///// <param name="host">Der ActorHost des Spielers.</param>
-        //public void RemovePlayer(ActorHost host)
-        //{
-
-        //}
 
         /// <summary>
         /// Fügt eine Entity der Simulation hinzu

@@ -97,10 +97,10 @@ namespace OctoAwesome
         /// <param name="planetid">ID des Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        public void SetCenter(int planetid, Index2 index, Action<bool> successCallback = null)
+        public bool SetCenter(int planetid, Index2 index, Action<bool> successCallback = null)
         {
             var planet = globalCache.GetPlanet(planetid);
-            SetCenter(planet, index, successCallback);
+            return SetCenter(planet, index, successCallback);
         }
 
         /// <summary>
@@ -109,13 +109,17 @@ namespace OctoAwesome
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        public void SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null)
+        public bool SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null)
         {
             if (IsPassive && !globalCache.IsChunkLoaded(planet.Id,index))
             {
                 OnUnloaded?.Invoke();
-                return;
+                return false;
             }
+
+            // Planet resetten falls notwendig
+            if (this.Planet != planet)
+                InitializePlanet(planet);
 
             CenterPosition = index;
 
@@ -130,6 +134,8 @@ namespace OctoAwesome
                 _cancellationToken = new CancellationTokenSource();
                 _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
+
+            return true;
         }
 
         /// <summary>
@@ -141,9 +147,7 @@ namespace OctoAwesome
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         private void InternalSetCenter(CancellationToken token, IPlanet planet, Index2 index, Action<bool> successCallback)
         {
-            // Planet resetten falls notwendig
-            if (this.Planet != planet)
-                InitializePlanet(planet);
+           
 
             if (planet == null)
             {
@@ -395,6 +399,11 @@ namespace OctoAwesome
         private int FlatIndex(int x, int y)
         {
             return (((y & (mask)) << limit) | ((x & (mask))));
+        }
+
+        public IPlanet LoadPlanet(int id)
+        {
+            return globalCache.GetPlanet(id);
         }
     }
 }

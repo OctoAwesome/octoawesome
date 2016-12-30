@@ -15,6 +15,12 @@ namespace OctoAwesome
         /// </summary>
         private Dictionary<Index3, CacheItem> cache;
 
+        private Queue<CacheItem> newchunks;
+
+        private Queue<CacheItem> oldchunks;
+
+        private object updatelockobject = new object();
+
         /// <summary>
         /// Funktion, die für das Laden der Chunks verwendet wird
         /// </summary>
@@ -71,6 +77,8 @@ namespace OctoAwesome
             this.loadPlanetDelagte = loadPlanetDelegate;
 
             cache = new Dictionary<Index3, CacheItem>();
+            newchunks = new Queue<CacheItem>();
+            oldchunks = new Queue<CacheItem>();
 
             cleanupThread = new Thread(BackgroundCleanup);
             cleanupThread.IsBackground = true;
@@ -123,6 +131,11 @@ namespace OctoAwesome
                 {
                     cacheItem.ChunkColumn = loadDelegate(planet, position);
                     cacheItem.SavedChangeCounter = cacheItem.ChunkColumn.Chunks.Select(c => c.ChangeCounter).ToArray();
+
+                    lock (updatelockobject)
+                    {
+                        newchunks.Enqueue(cacheItem);
+                    }
                 }
             }
 
@@ -236,6 +249,12 @@ namespace OctoAwesome
                 {
                     // cache[key].ChunkColumn = null;
                     cache.Remove(key.Key);
+
+                    lock (updatelockobject)
+                    {
+                        oldchunks.Enqueue(key.Value);
+                    }
+
                 }
             }
         }
@@ -248,6 +267,32 @@ namespace OctoAwesome
         public IPlanet GetPlanet(int id)
         {
             return loadPlanetDelagte(id);
+        }
+
+        public void SimulationUpdate(Simulation simulation)
+        {
+            lock (updatelockobject)
+            {
+                //Neue Chunks in die Simulation einpflegen
+                while (newchunks.Count > 0)
+                {
+                    var chunk = newchunks.Dequeue();
+                    foreach (var entity in chunk.ChunkColumn.Entities)
+                    {
+                        simulation.AddEntity(entity);
+                    }
+                }
+
+                //Alte Chunks aus der Siumaltion entfernen
+                while (oldchunks.Count > 0)
+                {
+                    var chunk = oldchunks.Dequeue();
+                    foreach (var entity in chunk.ChunkColumn.Entities)
+                    {
+                        simulation.RemoveEntity(entity);
+                    }
+                }
+            }
         }
 
         /// <summary>

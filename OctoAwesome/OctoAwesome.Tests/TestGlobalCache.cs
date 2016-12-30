@@ -13,8 +13,6 @@ namespace OctoAwesome.Tests
 
         public List<PlanetIndex3> Loaded { get; private set; }
 
-        public event Action<int, Index3> OnUnloadChunk;
-
         public int LoadedChunkColumns
         {
             get
@@ -65,6 +63,16 @@ namespace OctoAwesome.Tests
         }
 
         public IPlanet GetPlanet(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsChunkLoaded(int planet, Index2 position)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SimulationUpdate(Simulation simulation)
         {
             throw new NotImplementedException();
         }

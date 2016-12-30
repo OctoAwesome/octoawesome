@@ -12,10 +12,11 @@ namespace OctoAwesome.Basics.SimulationComponents
     {
         protected override bool AddEntity(Entity entity)
         {
-
             var poscomp = entity.Components.GetComponent<PositionComponent>();
 
-            entity.Cache.SetCenter(poscomp.Position.Planet, new Index2(poscomp.Position.ChunkIndex));
+            var planet = entity.Cache.LoadPlanet(poscomp.Position.Planet);
+            poscomp.Position.NormalizeChunkIndexXY(planet.Size);
+            entity.Cache.SetCenter(planet, new Index2(poscomp.Position.ChunkIndex));
             return true;
         }
 
@@ -25,6 +26,9 @@ namespace OctoAwesome.Basics.SimulationComponents
 
         protected override void UpdateEntity(GameTime gameTime,Entity e, MoveableComponent component1, PositionComponent poscomp)
         {
+
+            if (e.Id == 0)
+                return;
 
             //TODO:Sehr unschön
             
@@ -36,9 +40,9 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             var newposition = poscomp.Position + component1.PositionMove;
             newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
-            e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
-
-            poscomp.Position = newposition;
+            var result = e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
+            if (result)
+                poscomp.Position = newposition;
         }
 
         private void CheckBoxCollision(GameTime gameTime,Entity e,MoveableComponent movecomp,PositionComponent poscomp)

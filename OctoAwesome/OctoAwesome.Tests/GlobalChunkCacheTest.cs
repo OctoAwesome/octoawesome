@@ -43,7 +43,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(0, saveCallCounter);
 
             // Chunk laden
-            IChunkColumn x = cache.Subscribe(planet, index);
+            IChunkColumn x = cache.Subscribe(planet, index,false);
             Assert.Equal(x, result);
             Assert.Equal(x.Planet, planet);
             Assert.Equal(x.Index, index);
@@ -53,7 +53,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(1, cache.LoadedChunkColumns);
 
             // Chunk unload
-            cache.Release(planet, index);
+            cache.Release(planet, index,false);
             System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);
@@ -114,7 +114,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(0, loadCallCounter);
             Assert.Equal(0, saveCallCounter);
 
-            IChunkColumn x1 = cache.Subscribe(planet1, index1);
+            IChunkColumn x1 = cache.Subscribe(planet1, index1,false);
             Assert.Equal(x1, result1);
             Assert.Equal(x1.Planet, planet1);
             Assert.Equal(x1.Index, index1);
@@ -124,7 +124,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(0, saveCallCounter);
 
             // Load 2
-            IChunkColumn x2 = cache.Subscribe(planet2, index2);
+            IChunkColumn x2 = cache.Subscribe(planet2, index2,false);
             Assert.Equal(x2, result2);
             Assert.Equal(x2.Planet, planet2);
             Assert.Equal(x2.Index, index2);
@@ -138,7 +138,7 @@ namespace OctoAwesome.Tests
 
 
             // Unload 1
-            cache.Release(planet1, index1);
+            cache.Release(planet1, index1,false);
             System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(1, cache.LoadedChunkColumns);
             Assert.Equal(2, loadCallCounter);
@@ -146,7 +146,7 @@ namespace OctoAwesome.Tests
 
             result2.Chunks[0].SetBlock(Index3.Zero,0,0);
             // Unload 2
-            cache.Release(planet2, index2);
+            cache.Release(planet2, index2,false);
             System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(2, loadCallCounter);
@@ -183,7 +183,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(0, loadCallCounter);
             Assert.Equal(0, saveCallCounter);
 
-            IChunkColumn x1 = cache.Subscribe(planet, index);
+            IChunkColumn x1 = cache.Subscribe(planet, index,false);
             Assert.Equal(x1, result);
             Assert.Equal(x1.Planet, planet);
             Assert.Equal(x1.Index, index);
@@ -193,7 +193,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(0, saveCallCounter);
 
             // Load 2
-            IChunkColumn x2 = cache.Subscribe(planet, index);
+            IChunkColumn x2 = cache.Subscribe(planet, index,false);
             Assert.Equal(x2, result);
             Assert.Equal(x2.Planet, planet);
             Assert.Equal(x2.Index, index);
@@ -206,7 +206,7 @@ namespace OctoAwesome.Tests
 
 
             // Unload 1
-            cache.Release(planet, index);
+            cache.Release(planet, index,false);
             System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(1, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);
@@ -214,7 +214,7 @@ namespace OctoAwesome.Tests
 
             x2.Chunks[0].SetBlock(Index3.Zero,0);
             // Unload 2
-            cache.Release(planet, index);
+            cache.Release(planet, index,false);
             System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);
@@ -228,7 +228,7 @@ namespace OctoAwesome.Tests
 
             Assert.Throws<NotSupportedException>(() =>
             {
-                cache.Release(4, new Index2(2, 2));
+                cache.Release(4, new Index2(2, 2),false);
             });
         }
     }

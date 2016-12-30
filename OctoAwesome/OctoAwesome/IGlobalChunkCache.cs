@@ -53,5 +53,7 @@ namespace OctoAwesome
         /// Löscht den gesamten Inhalt des Caches.
         /// </summary>
         void Clear();
+
+        void SimulationUpdate(Simulation simulation);
     }
 }

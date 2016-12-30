@@ -24,6 +24,9 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.X);
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
+            writer.Write(Position.ChunkIndex.X);
+            writer.Write(Position.ChunkIndex.Y);
+            writer.Write(Position.ChunkIndex.Z);
         }
 
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
@@ -38,6 +41,7 @@ namespace OctoAwesome.EntityComponents
             float posX = reader.ReadSingle();
             float posY = reader.ReadSingle();
             float posZ = reader.ReadSingle();
+
             Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
         }
     }

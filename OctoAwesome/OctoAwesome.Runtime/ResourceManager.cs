@@ -23,10 +23,6 @@ namespace OctoAwesome.Runtime
 
         private Dictionary<int, IPlanet> planets;
 
-        public event Action<IChunkColumn> ChunkColumLoaded;
-
-        public event Action<IChunkColumn> ChunkColumRemoved;
-
         /// <summary>
         /// Das aktuell geladene Universum.
         /// </summary>
@@ -259,16 +255,6 @@ namespace OctoAwesome.Runtime
                 foreach (var populator in populators)
                     populator.Populate(this, planet, column01, column11, column02, column12);
                 column01.Populated = true;
-            }
-
-            try
-            {
-                ChunkColumLoaded?.Invoke(column11);
-            }
-            catch (Exception)
-            {
-
-                //throw;
             }
 
             return column11;
