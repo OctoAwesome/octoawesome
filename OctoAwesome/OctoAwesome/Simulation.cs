@@ -129,6 +129,10 @@ namespace OctoAwesome
             {
                 ResourceManager.GlobalChunkCache.SimulationUpdate(this);
 
+                //Update all Entities
+                foreach (var entity in Entities.OfType<UpdateableEntity>())
+                    entity.Update(gameTime);
+
                 // Update all Components
                 foreach (var component in Components.Where(c => c.Enabled))
                     component.Update(gameTime);

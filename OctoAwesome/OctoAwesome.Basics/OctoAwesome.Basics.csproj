@@ -143,7 +143,6 @@
     <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
     <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
     <Compile Include="SimulationComponents\WattMoverComponent.cs" />
-    <Compile Include="SimulationComponents\WauziControllComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
     <Compile Include="Definitions\Items\PickAxeDefinition.cs" />

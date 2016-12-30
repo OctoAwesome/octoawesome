@@ -30,7 +30,6 @@ namespace OctoAwesome
 
         public void Register(IExtensionLoader extensionLoader)
         {
-
             extensionLoader.RegisterEntityExtender<Player>((p) =>
             {
                 p.Components.AddComponent(new ControllableComponent());

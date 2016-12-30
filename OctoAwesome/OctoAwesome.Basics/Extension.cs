@@ -80,8 +80,6 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
                 s.Components.AddComponent(new BlockInteractionComponent(s));
-                s.Components.AddComponent(new WauziControllComponent());
-
                 //TODO: unschön
             });
         }
