@@ -89,6 +89,7 @@
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkColumn.cs" />
     <Compile Include="IDefinition.cs" />
+    <Compile Include="IEntityList.cs" />
     <Compile Include="IExtensionLoader.cs" />
     <Compile Include="IExtensionResolver.cs" />
     <Compile Include="IPersistenceManager.cs" />

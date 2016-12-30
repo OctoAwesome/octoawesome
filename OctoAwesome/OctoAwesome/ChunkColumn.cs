@@ -13,7 +13,7 @@ namespace OctoAwesome
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
-        public List<Entity> Entities { get; private set; }
+        public IEntityList Entities { get; private set; }
 
         /// <summary>
         /// Erzeugt eine neue Instanz einer ChunkColumn.
@@ -44,7 +44,7 @@ namespace OctoAwesome
         public ChunkColumn()
         {
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
-            Entities = new List<Entity>();
+            Entities = new EntityList(this);
         }
 
         /// <summary>

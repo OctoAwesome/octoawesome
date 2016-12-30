@@ -37,7 +37,7 @@ namespace OctoAwesome
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
-        List<Entity> Entities { get; }
+        IEntityList Entities { get; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.

@@ -275,6 +275,8 @@ namespace OctoAwesome
             }
         }
 
+        
+
         /// <summary>
         /// Gibt einen Planenten anhand seiner ID zurück
         /// </summary>
@@ -285,7 +287,7 @@ namespace OctoAwesome
             return loadPlanetDelagte(id);
         }
 
-        public void SimulationUpdate(Simulation simulation)
+        public void BeforSimulationUpdate(Simulation simulation)
         {
             lock (updatelockobject)
             {
@@ -308,6 +310,36 @@ namespace OctoAwesome
                         simulation.RemoveEntity(entity);
                     }
                 }
+            }
+        }
+
+        public void AfterSimulationUpdate(Simulation simulation)
+        {
+            //TODO: Überarbeiten
+
+            lock (lockObject)
+            {
+                var failchunkentities = (from chunk in cache
+                                         where chunk.Value.ChunkColumn != null
+                                        from entity in chunk.Value.ChunkColumn.Entities.FailChunkEntity()
+                                        select entity).ToArray();
+                foreach (var entity in failchunkentities)
+                {
+                    var currentchunk = Peek(entity.CurrentPlanet, entity.CurrentChunk);
+                    var targetchunk = Peek(entity.TargetPlanet, entity.TargetChunk);
+
+                    currentchunk.Entities.Remove(entity.Entity);
+
+                    if (targetchunk != null)
+                    {
+                        targetchunk.Entities.Add(entity.Entity);
+                    }
+                    else
+                    {
+                        throw new Exception("TODO");
+                    }
+                }
+
             }
         }
 

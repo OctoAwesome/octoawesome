@@ -25,6 +25,7 @@ namespace OctoAwesome.Basics.Entities
             BodyPowerComponent body = Components.GetComponent<BodyPowerComponent>();
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             WauziKIComponent ki = Components.GetComponent<WauziKIComponent>();
+            controller.MoveInput = new Vector2(0.5f, 0) ;
 
             if (ki.KIJumpTime <= 0)
             {

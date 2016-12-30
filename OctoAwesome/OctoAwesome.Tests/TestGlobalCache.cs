@@ -72,7 +72,12 @@ namespace OctoAwesome.Tests
             throw new NotImplementedException();
         }
 
-        public void SimulationUpdate(Simulation simulation)
+        public void BeforSimulationUpdate(Simulation simulation)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AfterSimulationUpdate(Simulation simulation)
         {
             throw new NotImplementedException();
         }

@@ -127,7 +127,7 @@ namespace OctoAwesome
         {
             if (State == SimulationState.Running)
             {
-                ResourceManager.GlobalChunkCache.SimulationUpdate(this);
+                ResourceManager.GlobalChunkCache.BeforSimulationUpdate(this);
 
                 //Update all Entities
                 foreach (var entity in Entities.OfType<UpdateableEntity>())
@@ -136,6 +136,8 @@ namespace OctoAwesome
                 // Update all Components
                 foreach (var component in Components.Where(c => c.Enabled))
                     component.Update(gameTime);
+
+                ResourceManager.GlobalChunkCache.AfterSimulationUpdate(this);
             }
         }
 
