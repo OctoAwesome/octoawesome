@@ -67,7 +67,6 @@
   <ItemGroup>
     <Compile Include="CollisionPlane.cs" />
     <Compile Include="Entities\WauziEntity.cs" />
-    <Compile Include="EntityComponents\WauziControllableComponent.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="Biomes\FlatlandBiome.cs" />
     <Compile Include="Biomes\HighMountainBiome.cs" />

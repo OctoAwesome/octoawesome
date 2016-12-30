@@ -66,19 +66,6 @@ namespace OctoAwesome
             chunkColumns = new IChunkColumn[(mask + 1) * (mask + 1)];
         }
 
-        private void GlobalCache_OnUnloadChunk(int planet, Index3 index)
-        {
-            if (!IsPassive || Planet.Id != planet)
-                return;
-
-           
-            if (planet == Planet.Id && CenterPosition.X == index.X && CenterPosition.Y == index.Y )
-            {
-                OnUnloaded?.Invoke();
-            }
-
-        }
-
         /// <summary>
         /// Task, der bei einem Wechsel des Zentralen Chunks neue nachlädt falls nötig
         /// </summary>
@@ -111,7 +98,6 @@ namespace OctoAwesome
         {
             if (IsPassive && !globalCache.IsChunkLoaded(planet.Id,index))
             {
-                OnUnloaded?.Invoke();
                 return false;
             }
 

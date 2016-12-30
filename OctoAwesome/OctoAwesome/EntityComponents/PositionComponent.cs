@@ -10,8 +10,9 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class PositionComponent : EntityComponent
     {
-
         public Coordinate Position { get; set; }
+
+        public float Direction { get; set; }
 
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {

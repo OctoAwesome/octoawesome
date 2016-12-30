@@ -43,6 +43,13 @@ namespace OctoAwesome.Basics.SimulationComponents
             var result = e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
             if (result)
                 poscomp.Position = newposition;
+
+            //Direction
+            if (component1.PositionMove.LengthSquared != 0)
+            {
+                var direction = MathHelper.WrapAngle((float)Math.Atan2(component1.PositionMove.Y, component1.PositionMove.X));
+                poscomp.Direction = direction;
+            }
         }
 
         private void CheckBoxCollision(GameTime gameTime,Entity e,MoveableComponent movecomp,PositionComponent poscomp)

@@ -11,6 +11,8 @@ namespace OctoAwesome.Basics.Entities
 {
     public class WauziEntity : UpdateableEntity
     {
+        public int JumpTime { get; set; }
+
         public WauziEntity() : base()
         {
         }
@@ -24,17 +26,16 @@ namespace OctoAwesome.Basics.Entities
         {
             BodyPowerComponent body = Components.GetComponent<BodyPowerComponent>();
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
-            WauziKIComponent ki = Components.GetComponent<WauziKIComponent>();
-            controller.MoveInput = new Vector2(0.5f, 0) ;
+            controller.MoveInput = new Vector2(0.5f, 0.5f) ;
 
-            if (ki.KIJumpTime <= 0)
+            if (JumpTime <= 0)
             {
                 controller.JumpInput = true;
-                ki.KIJumpTime = 10000;
+                JumpTime = 10000;
             }
             else
             {
-                ki.KIJumpTime -= gameTime.ElapsedGameTime.Milliseconds;
+                JumpTime -= gameTime.ElapsedGameTime.Milliseconds;
             }
 
             if (controller.JumpActive)
