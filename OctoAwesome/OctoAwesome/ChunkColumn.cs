@@ -13,7 +13,7 @@ namespace OctoAwesome
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
-        public IList<Entity> Entities { get; private set; }
+        public List<Entity> Entities { get; private set; }
 
         /// <summary>
         /// Erzeugt eine neue Instanz einer ChunkColumn.
@@ -27,6 +27,15 @@ namespace OctoAwesome
             Chunks = chunks;
             Index = columnIndex;
             Entities = new List<Entity>();
+            foreach (var chunk in chunks)
+            {
+                chunk.Changed += OnChunkChanged;
+            }
+        }
+
+        private void OnChunkChanged(IChunk arg1, int arg2)
+        {
+            Changed?.Invoke(this, arg1, arg2);
         }
 
         /// <summary>
@@ -364,6 +373,7 @@ namespace OctoAwesome
                 for (int c = 0; c < Chunks.Length; c++)
                 {
                     IChunk chunk = Chunks[c] = new Chunk(new Index3(columnIndex, c), planetId);
+                    chunk.Changed += OnChunkChanged;
                     for (int i = 0; i < chunk.Blocks.Length; i++)
                     {
                         ushort typeIndex = longIndex ? br.ReadUInt16() : br.ReadByte();
@@ -419,5 +429,7 @@ namespace OctoAwesome
                 }
             }
         }
+
+        public event Action<IChunkColumn, IChunk, int> Changed;
     }
 }

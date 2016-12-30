@@ -26,7 +26,7 @@ namespace OctoAwesome.Client.Components
 
             Entities = new List<Entity>();
             graphicsDevice = game.GraphicsDevice;
-           
+
             effect = new BasicEffect(graphicsDevice);
 
             model = game.Content.Load<Model>("dog");
@@ -58,10 +58,10 @@ namespace OctoAwesome.Client.Components
                     Matrix world = Matrix.CreateTranslation(
                         shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
                         shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z)* Matrix.CreateScaling(body.Radius*2, body.Radius*2, body.Height);
+                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height);
                     effect.World = world;
                     model.Transform = world;
-                    model.Draw(effect,texture);
+                    model.Draw(effect, texture);
                 }
             }
         }

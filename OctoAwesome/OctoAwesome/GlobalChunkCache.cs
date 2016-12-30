@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,7 +14,7 @@ namespace OctoAwesome
         /// <summary>
         /// Dictionary, das alle <see cref="CacheItem"/>s hält.
         /// </summary>
-        private Dictionary<Index3, CacheItem> cache;
+        private readonly Dictionary<Index3, CacheItem> cache;
 
         private Queue<CacheItem> newchunks;
 
@@ -24,41 +25,42 @@ namespace OctoAwesome
         /// <summary>
         /// Funktion, die für das Laden der Chunks verwendet wird
         /// </summary>
-        private Func<int, Index2, IChunkColumn> loadDelegate;
+        private readonly Func<int, Index2, IChunkColumn> loadDelegate;
 
         /// <summary>
         /// Routine, die für das Speichern der Chunks verwendet wird.
         /// </summary>
-        private Action<int, Index2, IChunkColumn> saveDelegate;
+        private readonly Action<int, Index2, IChunkColumn> saveDelegate;
 
-        private Func<int, IPlanet> loadPlanetDelagte;
+        private readonly Func<int, IPlanet> loadPlanetDelagte;
 
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
         /// </summary>
-        private object lockObject = new object();
+        private readonly object lockObject = new object();
 
         // TODO: Früher oder später nach draußen auslagern
         private Thread cleanupThread;
 
+
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
         /// </summary>
-        public int LoadedChunkColumns { get { return cache.Count; } }
-
-        /// <summary>
-        /// Anzahl der noch nicht gespeicherten ChunkColumns.
-        /// </summary>
-        public int DirtyChunkColumn
+        public int LoadedChunkColumns
         {
             get
             {
                 lock (lockObject)
                 {
-                    return cache.Values.Where(v => v.IsDirty()).Count();
+                    return cache.Count;
                 }
             }
         }
+
+        /// <summary>
+        /// Anzahl der noch nicht gespeicherten ChunkColumns.
+        /// </summary>
+        public int DirtyChunkColumn => _dirtyItems.Count;
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse GlobalChunkCache
@@ -80,9 +82,10 @@ namespace OctoAwesome
             newchunks = new Queue<CacheItem>();
             oldchunks = new Queue<CacheItem>();
 
-            cleanupThread = new Thread(BackgroundCleanup);
-            cleanupThread.IsBackground = true;
-            cleanupThread.Priority = ThreadPriority.Lowest;
+            cleanupThread = new Thread(BackgroundCleanup) {
+                IsBackground = true,
+                Priority = ThreadPriority.Lowest
+            };
             cleanupThread.Start();
         }
 
@@ -114,8 +117,10 @@ namespace OctoAwesome
                         PassiveReference = 0,
                         ChunkColumn = null,
                     };
-
+                    cacheItem.Changed += ItemChanged;
+                    //_dirtyItems.Enqueue(cacheItem);
                     cache.Add(new Index3(position, planet), cacheItem);
+                    //_autoResetEvent.Set();
                 }
 
                 if (passive)
@@ -130,7 +135,6 @@ namespace OctoAwesome
                 if (cacheItem.ChunkColumn == null)
                 {
                     cacheItem.ChunkColumn = loadDelegate(planet, position);
-                    cacheItem.SavedChangeCounter = cacheItem.ChunkColumn.Chunks.Select(c => c.ChangeCounter).ToArray();
 
                     lock (updatelockobject)
                     {
@@ -141,10 +145,16 @@ namespace OctoAwesome
 
             return cacheItem.ChunkColumn;
         }
-
+        
         public bool IsChunkLoaded(int planet, Index2 position)
         {
             return cache.ContainsKey(new Index3(position, planet));
+        }
+
+        private void ItemChanged(CacheItem obj)
+        {
+            _dirtyItems.Enqueue(obj);
+            _autoResetEvent.Set();
         }
 
         /// <summary>
@@ -175,10 +185,11 @@ namespace OctoAwesome
                 {
                     value.References = 0;
                     value.PassiveReference = 0;
+                    _unreferencedItems.Enqueue(value);
                 }
+                
             }
-
-            Cleanup();
+            _autoResetEvent.Set();
         }
 
         /// <summary>
@@ -197,7 +208,8 @@ namespace OctoAwesome
                     {
                         throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
                     }
-                    
+
+                    return;
                 }
 
                 if (passive)
@@ -206,55 +218,59 @@ namespace OctoAwesome
                         cacheItem.PassiveReference--;
                 }
                 else
-                    cacheItem.References--;
+                {
+                    if (--cacheItem.References <= 0)
+                    {
+                        _unreferencedItems.Enqueue(cacheItem);
+                        _autoResetEvent.Set();
+                    }
+                }
             }
         }
+
+        private readonly ConcurrentQueue<CacheItem> _dirtyItems = new ConcurrentQueue<CacheItem>();
+        private readonly ConcurrentQueue<CacheItem> _unreferencedItems = new ConcurrentQueue<CacheItem>();
+        private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private void BackgroundCleanup()
         {
             while (true)
             {
-                Cleanup();
-                Thread.Sleep(100);
-            }
-        }
-
-        private void Cleanup()
-        {
-            // Items mit ChangeCounter sichern
-            CacheItem[] cacheItems;
-            lock (lockObject)
-            {
-                cacheItems = cache.Values.Where(v => v.IsDirty()).ToArray();
-                // DirtyChunkColumn = cacheItems.Length;
-            }
-
-            foreach (var cacheItem in cacheItems)
-            {
-                lock (cacheItem)
+                _autoResetEvent.WaitOne();
+                var itemsToSave = new List<CacheItem>();
+                CacheItem ci;
+                while (_dirtyItems.TryDequeue(out ci))
                 {
-                    if (cacheItem.IsDirty())
-                    {
-                        cacheItem.SavedChangeCounter = cacheItem.ChunkColumn.Chunks.Select(c => c.ChangeCounter).ToArray();
-                        saveDelegate(cacheItem.Planet, cacheItem.Index, cacheItem.ChunkColumn);
-                    }
+                    itemsToSave.Add(ci);
                 }
-            }
 
-            // Items ohne Ref aus Cache entfernen
-            lock (lockObject)
-            {
-                var keys = cache.Where(v => v.Value.References == 0 && v.Value.ChunkColumn != null && !v.Value.IsDirty()).ToArray();
-                foreach (var key in keys)
+                foreach (var item in itemsToSave.Distinct())
                 {
-                    // cache[key].ChunkColumn = null;
-                    cache.Remove(key.Key);
-
-                    lock (updatelockobject)
+                    lock (item)
                     {
-                        oldchunks.Enqueue(key.Value);
+                        saveDelegate(item.Planet, item.Index, item.ChunkColumn);
                     }
+                    
+                }
 
+                while (_unreferencedItems.TryDequeue(out ci))
+                {
+                    lock (ci)
+                    {
+                        if (ci.References <= 0)
+                        {
+                            var key = new Index3(ci.Index, ci.Planet);
+                            lock (lockObject)
+                            {
+                                ci.Changed -= ItemChanged;
+                                cache.Remove(key);
+                            }
+                                    lock (updatelockobject)
+                                    {
+                                        oldchunks.Enqueue(ci);
+                                    }
+                                }
+                    }
                 }
             }
         }
@@ -300,6 +316,7 @@ namespace OctoAwesome
         /// </summary>
         private class CacheItem
         {
+            private IChunkColumn _chunkColumn;
             public int Planet { get; set; }
 
             public Index2 Index { get; set; }
@@ -308,28 +325,33 @@ namespace OctoAwesome
             /// Die Zahl der Subscriber, die das Item Abboniert hat.
             /// </summary>
             public int References { get; set; }
-
+            
             public int PassiveReference { get; set; }
-
-            public int[] SavedChangeCounter { get; set; }
 
             /// <summary>
             /// Der Chunk, auf den das <see cref="CacheItem"/> referenziert
             /// </summary>
-            public IChunkColumn ChunkColumn { get; set; }
-
-            public bool IsDirty()
+            public IChunkColumn ChunkColumn
             {
-                if (ChunkColumn == null) return false;
-
-                for (int i = 0; i < ChunkColumn.Chunks.Length; i++)
+                get { return _chunkColumn; }
+                set
                 {
-                    if (ChunkColumn.Chunks[i] != null && ChunkColumn.Chunks[i].ChangeCounter != SavedChangeCounter[i])
-                        return true;
-                }
+                    if (_chunkColumn != null)
+                        _chunkColumn.Changed -= OnChanged;
 
-                return false;
+                    _chunkColumn = value;
+
+                    if(value != null)
+                        value.Changed += OnChanged;
+                }
             }
+
+            public event Action<CacheItem> Changed;
+            private void OnChanged(IChunkColumn arg1, IChunk arg2, int arg3)
+            {
+                Changed?.Invoke(this);
+            }
+            
         }
     }
 }

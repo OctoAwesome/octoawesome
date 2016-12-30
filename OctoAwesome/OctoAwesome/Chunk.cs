@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using System;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Repräsentiert einen Karten-Abschnitt innerhalb des Planeten.
@@ -139,6 +141,7 @@
             Blocks[index] = block;
             MetaData[index] = meta;
             ChangeCounter++;
+            Changed?.Invoke(this, ChangeCounter);
         }
 
         /// <summary>
@@ -164,6 +167,7 @@
         {
             MetaData[GetFlatIndex(x, y, z)] = meta;
             ChangeCounter++;
+            Changed?.Invoke(this, ChangeCounter);
         }
 
         /// <summary>
@@ -189,6 +193,7 @@
         {
             Resources[GetFlatIndex(x, y, z)] = resources;
             ChangeCounter++;
+            Changed?.Invoke(this, ChangeCounter);
         }
 
         /// <summary>
@@ -205,5 +210,7 @@
                    | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
                    | ((x & (CHUNKSIZE_X - 1)));
         }
+
+        public event Action<IChunk, int> Changed;
     }
 }

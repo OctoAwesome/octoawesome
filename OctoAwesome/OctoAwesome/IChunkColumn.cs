@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+﻿using System;
 using System.IO;
 
 namespace OctoAwesome
@@ -36,7 +37,7 @@ namespace OctoAwesome
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
-        IList<Entity> Entities { get; }
+        List<Entity> Entities { get; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -123,5 +124,7 @@ namespace OctoAwesome
         /// <param name="columnIndex">Die Position der Säule</param>
         /// <param name="planetId">Der Index des Planeten</param>
         void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);
+
+        event Action<IChunkColumn, IChunk, int> Changed;
     }
 }
