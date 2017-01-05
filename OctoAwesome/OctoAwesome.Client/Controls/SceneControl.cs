@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using OctoAwesome.Client.Components;
 using System.Drawing.Imaging;
+using System.Linq;
 using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
@@ -19,6 +20,8 @@ namespace OctoAwesome.Client.Controls
         private CameraComponent camera;
         private AssetComponent assets;
 
+        private Texture2D waterWave;
+        private IndexBuffer chunkIndexBuffer;
         private ChunkRenderer[,] chunkRenderer;
         private List<ChunkRenderer> orderedChunkRenderer;
 
@@ -75,6 +78,8 @@ namespace OctoAwesome.Client.Controls
             int bitmapSize = 128;
             blockTextures = new Texture2DArray(manager.GraphicsDevice, 1, bitmapSize, bitmapSize, textureCount);
             int layer = 0;
+
+
             foreach (var definition in definitions)
             {
                 foreach (var bitmap in definition.Textures)
@@ -116,6 +121,7 @@ namespace OctoAwesome.Client.Controls
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
 
+            GenerateChunkIndexBuffer();
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
             localChunkCache = new LocalChunkCache(ResourceManager.Instance.GlobalChunkCache, VIEWRANGE, range);
 
@@ -188,7 +194,21 @@ namespace OctoAwesome.Client.Controls
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
         }
+        private void GenerateChunkIndexBuffer()
+        {
+            chunkIndexBuffer = new IndexBuffer(Manager.GraphicsDevice,DrawElementsType.UnsignedInt,Chunk.CHUNKSIZE_X*Chunk.CHUNKSIZE_Y*Chunk.CHUNKSIZE_Z*6*6);
+            List<int> indices = new List<int>(chunkIndexBuffer.IndexCount);
+            for (int i=0;i<chunkIndexBuffer.IndexCount*2/3;i+=4){
+                indices.Add(i + 0);
+                indices.Add(i + 1);
+                indices.Add(i + 3);
 
+                indices.Add(i + 0);
+                indices.Add(i + 3);
+                indices.Add(i + 2);
+            }
+            chunkIndexBuffer.SetData(indices.ToArray());
+        }
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             if (ControlTexture != null)
@@ -212,7 +232,7 @@ namespace OctoAwesome.Client.Controls
         {
             if (player.ActorHost == null) return;
 
-            sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
+            sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes*100 * MathHelper.TwoPi;
 
             Index3 centerblock = player.ActorHost.Position.GlobalBlockIndex;
             Index3 renderOffset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
@@ -340,6 +360,7 @@ namespace OctoAwesome.Client.Controls
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
+            //simpleShader.Parameters["viewDir"].SetValue(camera.CameraPosition);
 
             // Console.WriteLine(sunDirection);
 
@@ -351,7 +372,7 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Manager.GraphicsDevice.Clear(background);
-
+            Manager.GraphicsDevice.IndexBuffer = chunkIndexBuffer;
             foreach (var renderer in chunkRenderer)
             {
                 if (!renderer.ChunkPosition.HasValue)
@@ -375,8 +396,12 @@ namespace OctoAwesome.Client.Controls
                 int range = 3;
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
+                {
                     renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
+                    renderer.DrawTransparent(camera.MinimapView,miniMapProjectionMatrix,shift);
+                }
             }
+
 
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
             Manager.GraphicsDevice.Clear(background);
@@ -397,7 +422,7 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
+            Manager.GraphicsDevice.IndexBuffer = chunkIndexBuffer;
             foreach (var renderer in chunkRenderer)
             {
                 if (!renderer.ChunkPosition.HasValue)
@@ -420,6 +445,29 @@ namespace OctoAwesome.Client.Controls
 
                 if (camera.Frustum.Intersects(chunkBox))
                     renderer.Draw(camera.View, camera.Projection, shift);
+            }
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue)
+                    continue;
+
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    renderer.ChunkPosition.Value, new Index2(
+                        planet.Size.X,
+                        planet.Size.Y));
+
+                BoundingBox chunkBox = new BoundingBox(
+                    new Vector3(
+                        shift.X * Chunk.CHUNKSIZE_X,
+                        shift.Y * Chunk.CHUNKSIZE_Y,
+                        shift.Z * Chunk.CHUNKSIZE_Z),
+                    new Vector3(
+                        (shift.X + 1) * Chunk.CHUNKSIZE_X,
+                        (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
+                        (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
+
+                if (camera.Frustum.Intersects(chunkBox))
+                    renderer.DrawTransparent(camera.View, camera.Projection, shift);
             }
 
             if (player.SelectedBox.HasValue)

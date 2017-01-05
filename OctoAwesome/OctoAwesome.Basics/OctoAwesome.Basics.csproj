@@ -171,6 +171,7 @@
     <EmbeddedResource Include="Assets\Definitions\Blocks\snow.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\stone.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\water.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\water_wave.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\wood_side.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\wood_top.png" />
   </ItemGroup>

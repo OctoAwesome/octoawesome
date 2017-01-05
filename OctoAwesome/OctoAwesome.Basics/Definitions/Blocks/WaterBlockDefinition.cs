@@ -37,7 +37,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             get
             {
                 return new[] {
-                    "water"
+                    "water","water_wave"
                 };
             }
         }

@@ -1,9 +1,10 @@
 #version 400
-uniform mat4 WorldViewProj;
-
+uniform mat4 WorldView;
+uniform mat4 Proj;
 in uint inputData;
 in uint inputData2;
 
+out vec3 v;
 out vec3 psNormal;
 out vec2 psTexcoord;
 flat out uint psTexIndex;
@@ -18,8 +19,9 @@ void main()
 	psTexIndex = (inputData>>24);
 	psTexcoord = uvLookup[(inputData2 >> 28) & 0xF];
 	
-
-	gl_Position = WorldViewProj*position;
+    vec4 vertPos4 = WorldView * position;
+    v = vec3(vertPos4) / vertPos4.w;
+	gl_Position = Proj*WorldView*position;
 
 
 }

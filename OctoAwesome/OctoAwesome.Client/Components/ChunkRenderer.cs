@@ -19,12 +19,12 @@ namespace OctoAwesome.Client.Components
         /// Referenz auf den aktuellen Chunk (falls vorhanden)
         /// </summary>
         private IChunk chunk;
+
         private bool loaded = false;
 
-        private VertexBuffer vb;
-        private static IndexBuffer ib;
-        private int vertexCount;
-        private int indexCount;
+        private VertexBuffer vb, vbTransp;
+        private int vertexCount, vertexCountTransp;
+        private int indexCount, indexCountTransp;
         private int lastReset;
         private ILocalChunkCache _manager;
 
@@ -33,14 +33,14 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         public Index3? ChunkPosition { get; private set; }
 
-        public ChunkRenderer(Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public ChunkRenderer(Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection,
+            Texture2DArray textures)
         {
             this.graphicsDevice = graphicsDevice;
             this.textures = textures;
             this.lastReset = -1;
 
             simple = simpleShader;
-            GenerateIndexBuffer();
         }
 
         public void SetChunk(ILocalChunkCache manager, int x, int y, int z)
@@ -76,12 +76,13 @@ namespace OctoAwesome.Client.Components
             if (!loaded)
                 return;
 
-            Matrix worldViewProj = projection * view * Matrix.CreateTranslation(
-                shift.X * Chunk.CHUNKSIZE_X,
-                shift.Y * Chunk.CHUNKSIZE_Y,
-                shift.Z * Chunk.CHUNKSIZE_Z);
-
-            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
+            Matrix worldView = view * Matrix.CreateTranslation(
+                                       shift.X * Chunk.CHUNKSIZE_X,
+                                       shift.Y * Chunk.CHUNKSIZE_Y,
+                                       shift.Z * Chunk.CHUNKSIZE_Z);
+            simple.CurrentTechnique = simple.Techniques["Ambient"];
+            simple.Parameters["WorldView"].SetValue(worldView);
+            simple.Parameters["Proj"].SetValue(projection );
             simple.Parameters["BlockTextures"].SetValue(textures);
 
             simple.Parameters["AmbientIntensity"].SetValue(0.4f);
@@ -89,40 +90,55 @@ namespace OctoAwesome.Client.Components
 
             lock (this)
             {
-                if (vb == null)
-                    return;
-                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-                graphicsDevice.VertexBuffer = vb;
-                graphicsDevice.IndexBuffer = ib;
-
-                foreach (var pass in simple.CurrentTechnique.Passes)
+                if (vb != null)
                 {
-                    pass.Apply();
-                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
+                    graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                    graphicsDevice.VertexBuffer = vb;
+
+                    foreach (var pass in simple.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+                        graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0,
+                            indexCount / 3);
+                    }
                 }
             }
         }
-        private object ibLock = new object();
-        public void GenerateIndexBuffer()
+
+        public void DrawTransparent(Matrix view, Matrix projection, Index3 shift)
         {
-            lock(ibLock){
-                if (ib != null)
-                    return;
-                ib = new IndexBuffer(graphicsDevice,DrawElementsType.UnsignedInt,Chunk.CHUNKSIZE_X*Chunk.CHUNKSIZE_Y*Chunk.CHUNKSIZE_Z*6*6);
-                List<int> indices = new List<int>(ib.IndexCount);
-                for (int i=0;i<ib.IndexCount*2/3;i+=4){
-                    indices.Add(i + 0);
-                    indices.Add(i + 1);
-                    indices.Add(i + 3);
+            if (!loaded)
+                return;
 
-                    indices.Add(i + 0);
-                    indices.Add(i + 3);
-                    indices.Add(i + 2);
+            Matrix worldView = view * Matrix.CreateTranslation(
+                                       shift.X * Chunk.CHUNKSIZE_X,
+                                       shift.Y * Chunk.CHUNKSIZE_Y,
+                                       shift.Z * Chunk.CHUNKSIZE_Z);
+            simple.CurrentTechnique = simple.Techniques["water"];
+            simple.Parameters["WorldView"].SetValue(worldView);
+            simple.Parameters["Proj"].SetValue(projection );
+            simple.Parameters["BlockTextures"].SetValue(textures);
+
+            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
+            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+            simple.Parameters["time"].SetValue(System.Environment.TickCount/1000.0f);
+            lock (this)
+            {
+                if (vbTransp != null)
+                {
+                    graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                    graphicsDevice.VertexBuffer = vbTransp;
+
+                    foreach (var pass in simple.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+                        graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCountTransp, 0,
+                            indexCountTransp / 3);
+                    }
                 }
-                ib.SetData(indices.ToArray());
             }
-
         }
+
         public void RegenerateVertexBuffer()
         {
             if (!ChunkPosition.HasValue)
@@ -139,12 +155,7 @@ namespace OctoAwesome.Client.Components
             }
 
             List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>();
-            List<int> index = new List<int>();
-            int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
-            float textureWidth = 1f / textureColumns;
-            float texelSize = 1f / SceneControl.TEXTURESIZE;
-            float textureSizeGap = texelSize;
-            float textureGap = texelSize / 2;
+            List<VertexPositionNormalTextureLight> transparentVertices = new List<VertexPositionNormalTextureLight>();
             // BlockTypes sammlen
             Dictionary<IBlockDefinition, int> textureOffsets = new Dictionary<IBlockDefinition, int>();
             // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
@@ -156,12 +167,13 @@ namespace OctoAwesome.Client.Components
                 // definitionMapping.Add(definition.GetBlockType(), definition);
                 definitionIndex += textureCount;
             }
-            Vector2[] uvOffsets = new[] {
-                                new Vector2(0,0),
-                                new Vector2(1, 0),
-                                new Vector2(1,1),
-                                new Vector2(0,1)
-                            };
+            Vector2[] uvOffsets = new[]
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            };
             for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
             {
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
@@ -180,191 +192,225 @@ namespace OctoAwesome.Client.Components
                         if (!textureOffsets.TryGetValue(blockDefinition, out textureIndex))
                             continue;
 
-                        // Textur-Koordinate "berechnen"
-                        Vector2 textureOffset = new Vector2();
-                        Vector2 textureSize = new Vector2(textureWidth - textureSizeGap, textureWidth - textureSizeGap);
 
-
-                        ushort topBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z + 1));
-                        IBlockDefinition topBlockDefintion = DefinitionManager.Instance.GetBlockDefinitionByIndex(topBlock);
+                        ushort topBlock = _manager.GetBlock(
+                            (ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z + 1));
+                        IBlockDefinition topBlockDefintion =
+                            DefinitionManager.Instance.GetBlockDefinitionByIndex(topBlock);
 
                         // Top
-                        if (topBlock == 0 || (!topBlockDefintion.IsBottomSolidWall(_manager, x, y, z + 1) && topBlock != block))
+                        if (topBlock == 0 || (!topBlockDefintion.IsBottomSolidWall(_manager, x, y, z + 1) &&
+                                              topBlock != block))
                         {
-                            textureOffset = new Vector2(
-                                (((textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)) % textureColumns) * textureWidth) + textureGap,
-                                (((textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)) / textureColumns) * textureWidth) + textureGap);
-
                             int rotation = -blockDefinition.GetTopTextureRotation(_manager, x, y, z);
-
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 0, 1), uvOffsets[(6 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 0, 1), uvOffsets[(7 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1), new Vector3(0, 0, 1), uvOffsets[(5 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1), new Vector3(0, 0, 1), uvOffsets[(4 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            var curVertices = blockDefinition.IsTopSolidWall(_manager, x, y, z)
+                                ? vertices
+                                : transparentVertices;
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1),
+                                new Vector3(0, 0, 1), uvOffsets[(6 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1),
+                                new Vector3(0, 0, 1), uvOffsets[(7 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1),
+                                new Vector3(0, 0, 1), uvOffsets[(5 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1),
+                                new Vector3(0, 0, 1), uvOffsets[(4 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
                         }
 
-                        ushort bottomBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z - 1));
-                        IBlockDefinition bottomBlockDefintion = DefinitionManager.Instance.GetBlockDefinitionByIndex(bottomBlock);
+                        ushort bottomBlock =
+                            _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z - 1));
+                        IBlockDefinition bottomBlockDefintion =
+                            DefinitionManager.Instance.GetBlockDefinitionByIndex(bottomBlock);
 
 
                         // Unten
-                        if (bottomBlock == 0 || (!bottomBlockDefintion.IsTopSolidWall(_manager, x, y, z - 1) && bottomBlock != block))
+                        if (bottomBlock == 0 || (!bottomBlockDefintion.IsTopSolidWall(_manager, x, y, z - 1) &&
+                                                 bottomBlock != block))
                         {
-                            textureOffset = new Vector2(
-                                (((textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)) % textureColumns) * textureWidth) + textureGap,
-                                (((textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)) / textureColumns) * textureWidth) + textureGap);
-
                             int rotation = -blockDefinition.GetBottomTextureRotation(_manager, x, y, z);
-
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(6 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(7 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(5 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(4 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            var curVertices = blockDefinition.IsBottomSolidWall(_manager, x, y, z)
+                                ? vertices
+                                : transparentVertices;
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0),
+                                new Vector3(0, 0, -1), uvOffsets[(6 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0),
+                                new Vector3(0, 0, -1), uvOffsets[(7 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0),
+                                new Vector3(0, 0, -1), uvOffsets[(5 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0),
+                                new Vector3(0, 0, -1), uvOffsets[(4 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
                         }
 
-                        ushort southBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y + 1, z));
-                        IBlockDefinition southBlockDefintion = DefinitionManager.Instance.GetBlockDefinitionByIndex(southBlock);
+                        ushort southBlock =
+                            _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y + 1, z));
+                        IBlockDefinition southBlockDefintion =
+                            DefinitionManager.Instance.GetBlockDefinitionByIndex(southBlock);
 
                         // South
-                        if (southBlock == 0 || (!southBlockDefintion.IsNorthSolidWall(_manager, x, y + 1, z) && southBlock != block))
+                        if (southBlock == 0 || (!southBlockDefintion.IsNorthSolidWall(_manager, x, y + 1, z) &&
+                                                southBlock != block))
                         {
-                            textureOffset = new Vector2(
-                                (((textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)) % textureColumns) * textureWidth) + textureGap,
-                                (((textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)) / textureColumns) * textureWidth) + textureGap);
-
                             int rotation = -blockDefinition.GetSouthTextureRotation(_manager, x, y, z);
-
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(6 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(7 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(5 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(4 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)), 0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            var curVertices = blockDefinition.IsSouthSolidWall(_manager, x, y, z)
+                                ? vertices
+                                : transparentVertices;
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0),
+                                new Vector3(0, 1, 0), uvOffsets[(6 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetSouthTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0),
+                                new Vector3(0, 1, 0), uvOffsets[(7 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetSouthTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1),
+                                new Vector3(0, 1, 0), uvOffsets[(5 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetSouthTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1),
+                                new Vector3(0, 1, 0), uvOffsets[(4 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetSouthTextureIndex(_manager, x, y, z)), 0));
                         }
 
-                        ushort northBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y - 1, z));
-                        IBlockDefinition northBlockDefintion = DefinitionManager.Instance.GetBlockDefinitionByIndex(northBlock);
+                        ushort northBlock =
+                            _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y - 1, z));
+                        IBlockDefinition northBlockDefintion =
+                            DefinitionManager.Instance.GetBlockDefinitionByIndex(northBlock);
 
                         // North
-                        if (northBlock == 0 || (!northBlockDefintion.IsSouthSolidWall(_manager, x, y - 1, z) && northBlock != block))
+                        if (northBlock == 0 || (!northBlockDefintion.IsSouthSolidWall(_manager, x, y - 1, z) &&
+                                                northBlock != block))
                         {
-                            textureOffset = new Vector2(
-                                (((textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)) % textureColumns) * textureWidth) + textureGap,
-                                (((textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)) / textureColumns) * textureWidth) + textureGap);
-
                             int rotation = -blockDefinition.GetNorthTextureRotation(_manager, x, y, z);
-
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(4 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(5 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(7 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(6 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)), 0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            var curVertices = blockDefinition.IsNorthSolidWall(_manager, x, y, z)
+                                ? vertices
+                                : transparentVertices;
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1),
+                                new Vector3(0, -1, 0), uvOffsets[(4 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetNorthTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1),
+                                new Vector3(0, -1, 0), uvOffsets[(5 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetNorthTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0),
+                                new Vector3(0, -1, 0), uvOffsets[(7 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetNorthTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0),
+                                new Vector3(0, -1, 0), uvOffsets[(6 + rotation) % 4],
+                                (byte) (textureIndex +
+                                        blockDefinition.GetNorthTextureIndex(_manager, x, y, z)), 0));
                         }
 
-                        ushort westBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x - 1, y, z));
-                        IBlockDefinition westBlockDefintion = DefinitionManager.Instance.GetBlockDefinitionByIndex(westBlock);
+                        ushort westBlock =
+                            _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x - 1, y, z));
+                        IBlockDefinition westBlockDefintion =
+                            DefinitionManager.Instance.GetBlockDefinitionByIndex(westBlock);
 
                         // West
-                        if (westBlock == 0 || (!westBlockDefintion.IsEastSolidWall(_manager, x - 1, y, z) && westBlock != block))
+                        if (westBlock == 0 || (!westBlockDefintion.IsEastSolidWall(_manager, x - 1, y, z) &&
+                                               westBlock != block))
                         {
-                            textureOffset = new Vector2(
-                                (((textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)) % textureColumns) * textureWidth) + textureGap,
-                                (((textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)) / textureColumns) * textureWidth) + textureGap);
-
-
                             int rotation = -blockDefinition.GetWestTextureRotation(_manager, x, y, z);
-
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0), new Vector3(-1, 0, 0), uvOffsets[(7 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1), new Vector3(-1, 0, 0), uvOffsets[(4 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0), new Vector3(-1, 0, 0), uvOffsets[(6 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1), new Vector3(-1, 0, 0), uvOffsets[(5 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)), 0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            var curVertices = blockDefinition.IsWestSolidWall(_manager, x, y, z)
+                                ? vertices
+                                : transparentVertices;
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0),
+                                new Vector3(-1, 0, 0), uvOffsets[(7 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1),
+                                new Vector3(-1, 0, 0), uvOffsets[(4 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0),
+                                new Vector3(-1, 0, 0), uvOffsets[(6 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1),
+                                new Vector3(-1, 0, 0), uvOffsets[(5 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)), 0));
                         }
 
-                        ushort eastBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x + 1, y, z));
-                        IBlockDefinition eastBlockDefintion = DefinitionManager.Instance.GetBlockDefinitionByIndex(eastBlock);
+                        ushort eastBlock =
+                            _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x + 1, y, z));
+                        IBlockDefinition eastBlockDefintion =
+                            DefinitionManager.Instance.GetBlockDefinitionByIndex(eastBlock);
 
                         // Ost
-                        if (eastBlock == 0 || (!eastBlockDefintion.IsWestSolidWall(_manager, x + 1, y, z) && eastBlock != block))
+                        if (eastBlock == 0 || (!eastBlockDefintion.IsWestSolidWall(_manager, x + 1, y, z) &&
+                                               eastBlock != block))
                         {
-                            textureOffset = new Vector2(
-                                (((textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)) % textureColumns) * textureWidth) + textureGap,
-                                (((textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)) / textureColumns) * textureWidth) + textureGap);
-
-
                             int rotation = -blockDefinition.GetEastTextureRotation(_manager, x, y, z);
-
-                            int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1), new Vector3(1, 0, 0), uvOffsets[(5 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0), new Vector3(1, 0, 0), uvOffsets[(6 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1), new Vector3(1, 0, 0), uvOffsets[(4 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0), new Vector3(1, 0, 0), uvOffsets[(7 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)), 0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
+                            var curVertices = blockDefinition.IsEastSolidWall(_manager, x, y, z)
+                                ? vertices
+                                : transparentVertices;
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1),
+                                new Vector3(1, 0, 0), uvOffsets[(5 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0),
+                                new Vector3(1, 0, 0), uvOffsets[(6 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1),
+                                new Vector3(1, 0, 0), uvOffsets[(4 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)), 0));
+                            curVertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0),
+                                new Vector3(1, 0, 0), uvOffsets[(7 + rotation) % 4],
+                                (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)), 0));
                         }
                     }
                 }
             }
 
             vertexCount = vertices.Count;
-            indexCount = index.Count;
+            indexCount = vertices.Count / 2 * 3;
+            vertexCountTransp = transparentVertices.Count;
+            indexCountTransp = transparentVertices.Count / 2 * 3;
 
             if (vertexCount > 0)
             {
                 try
                 {
-                    if (vb == null || ib == null)
+                    if (vb == null)
                     {
-                        vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);
-                        //ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
+                        vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration,
+                            vertexCount + 2);
                     }
-                    if (vertexCount+2 > vb.VertexCount)
-                        vb.Resize(vertexCount+2);
+                    if (vertexCount + 2 > vb.VertexCount)
+                        vb.Resize(vertexCount + 2);
                     //vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
                     vb.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
-
-                    //if (indexCount > ib.IndexCount)
-                    //    ib.Resize(indexCount);
-                    //ib.SetData<int>(index.ToArray());
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                }
             }
-
+            if (vertexCountTransp > 0)
+            {
+                try
+                {
+                    if (vbTransp == null)
+                    {
+                        vbTransp = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration,
+                            vertexCountTransp + 2);
+                    }
+                    if (vertexCountTransp + 2 > vbTransp.VertexCount)
+                        vbTransp.Resize(vertexCountTransp + 2);
+                    vbTransp.SetData(transparentVertices.ToArray());
+                }
+                catch (Exception)
+                {
+                }
+            }
             lock (this)
             {
                 loaded = true;
@@ -373,19 +419,15 @@ namespace OctoAwesome.Client.Components
             lastReset = chunk.ChangeCounter;
         }
 
+
         public void Dispose()
         {
             if (vb != null)
             {
-                vb.Dispose();
+                vb.Dispose
+                    ();
                 vb = null;
             }
-
-            //if (ib != null)
-            //{
-            //    ib.Dispose();
-            //    ib = null;
-            //}
         }
     }
 }

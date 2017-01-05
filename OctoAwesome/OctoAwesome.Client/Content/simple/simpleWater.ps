@@ -1,0 +1,31 @@
+#version 130
+uniform float AmbientIntensity;
+uniform vec4 AmbientColor;
+uniform float DiffuseIntensity;
+uniform vec4 DiffuseColor;
+uniform vec3 DiffuseDirection;
+uniform sampler2DArray BlockTextures;
+
+uniform float time;
+
+in vec3 v;
+in vec3 psNormal;
+in vec2 psTexcoord;
+in vec4 psPosition;
+flat in uint psTexIndex;
+
+out vec4 outColor;
+void main()
+{
+    vec2 realPos = psTexcoord+vec2(sin(time/100)*10,cos(time/150))*10;
+    vec3 normalMap = texture(BlockTextures,vec3(realPos,psTexIndex+1u)).xyz;
+    normalMap = normalize(vec3(normalMap.x*2-1,normalMap.y*2-1,normalMap.z));
+	vec4 texColor = texture(BlockTextures,vec3(realPos,psTexIndex));
+	vec4 ambient = AmbientColor * AmbientIntensity;
+    vec3 reflectDir = reflect(-DiffuseDirection, psNormal);
+    float specAngle = max(dot(reflectDir, psPosition.xyz), 0.0);
+    float specular = pow(specAngle, 4.0);
+//TODO: specular
+	vec4 diffuse = clamp(dot(-DiffuseDirection,psNormal),0.0,1.0) * DiffuseColor * DiffuseIntensity;
+	outColor = texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
+}
