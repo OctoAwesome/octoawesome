@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 
 namespace OctoAwesome
 {
@@ -22,6 +24,8 @@ namespace OctoAwesome
         /// </summary>
         Index2 Index { get; }
 
+       int ChangeCounter { get; set; }
+
         /// <summary>
         /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
         /// </summary>
@@ -31,6 +35,11 @@ namespace OctoAwesome
         /// Die Chunks der Säule.
         /// </summary>
         IChunk[] Chunks { get; }
+
+        /// <summary>
+        /// Auflistung aller sich in dieser Column befindenden Entitäten.
+        /// </summary>
+        IEntityList Entities { get; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -117,5 +126,7 @@ namespace OctoAwesome
         /// <param name="columnIndex">Die Position der Säule</param>
         /// <param name="planetId">Der Index des Planeten</param>
         void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);
+
+        event Action<IChunkColumn, IChunk, int> Changed;
     }
 }

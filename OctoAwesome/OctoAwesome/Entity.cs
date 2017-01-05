@@ -28,23 +28,15 @@ namespace OctoAwesome
         /// <summary>
         /// LocalChunkCache für die Entity
         /// </summary>
-        public LocalChunkCache Cache { get; private set; }
+        public ILocalChunkCache Cache { get; protected set; }
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
-        /// <param name="cache">LocalCache mit der die Entity initialisiert wird</param>
-        public Entity(LocalChunkCache cache)
+        public Entity()
         {
-            Cache = cache;
-
-
-
             Components = new ComponentList<EntityComponent>(
                 ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
-
-            //TODO: Sehr schön
-            Components.AddComponent(new ControllableComponent());
         }
 
         private void OnRemoveComponent(EntityComponent component)
@@ -67,6 +59,15 @@ namespace OctoAwesome
         {
             if (Simulation != null)
                 throw new NotSupportedException("Can't remove components during simulation");
+        }
+
+        public void Initialize(IResourceManager mananger)
+        {
+            OnInitialize(mananger);
+        }
+
+        protected virtual void OnInitialize(IResourceManager manager)
+        {
         }
 
         /// <summary>

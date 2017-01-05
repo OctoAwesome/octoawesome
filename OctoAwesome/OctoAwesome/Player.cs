@@ -22,11 +22,13 @@ namespace OctoAwesome
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
-        public Player(LocalChunkCache cache) : base(cache)
+        public Player() : base()
         {
+        }
 
-            //TODO: HeadComponente über Extension
-            Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
+        protected override void OnInitialize(IResourceManager manager)
+        {
+            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
         }
 
         /// <summary>

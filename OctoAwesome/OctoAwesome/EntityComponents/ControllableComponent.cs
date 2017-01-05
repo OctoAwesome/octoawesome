@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class ControllableComponent : EntityComponent
+    public class ControllableComponent : EntityComponent
     {
         public bool JumpInput { get; set; }
         public Vector2 MoveInput { get; set; }

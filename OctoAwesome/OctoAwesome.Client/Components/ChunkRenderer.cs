@@ -3,6 +3,7 @@ using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using engenious;
 using engenious.Graphics;
 
@@ -28,19 +29,32 @@ namespace OctoAwesome.Client.Components
         private int lastReset;
         private ILocalChunkCache _manager;
 
+        private readonly SceneControl _sceneControl;
         private IDefinitionManager definitionManager;
 
         /// <summary>
         /// Adresse des aktuellen Chunks
         /// </summary>
-        public Index3? ChunkPosition { get; private set; }
-
-        public ChunkRenderer(IDefinitionManager definitionManager, Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public Index3? ChunkPosition
         {
+            get
+            {
+                return _chunkPosition;
+            }
+            private set
+            {
+                _chunkPosition = value;
+                NeedsUpdate = value != null;
+            }
+        }
+
+        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        {
+            _sceneControl = sceneControl;
             this.definitionManager = definitionManager;
             this.graphicsDevice = graphicsDevice;
             this.textures = textures;
-            this.lastReset = -1;
+            //this.lastReset = -1;
 
             simple = simpleShader;
             GenerateIndexBuffer();
@@ -51,17 +65,36 @@ namespace OctoAwesome.Client.Components
             var newPosition = new Index3(x, y, z);
 
             if (_manager == manager && newPosition == ChunkPosition)
+            {
+                NeedsUpdate = !loaded;
                 return;
+            }
 
             _manager = manager;
             ChunkPosition = newPosition;
 
-            chunk = null;
+            if (chunk != null)
+            {
+                chunk.Changed -= OnChunkChanged;
+                chunk = null;
+            }
+           
             loaded = false;
+            NeedsUpdate = true;
+        }
+
+        public bool NeedsUpdate = false;
+        
+
+        private void OnChunkChanged(IChunk c, int n)
+        {
+            NeedsUpdate = true;
+            _sceneControl.Enqueue(this);
         }
 
         public bool NeedUpdate()
         {
+            return NeedsUpdate;
             // Kein Chunk selektiert -> kein Update notwendig
             if (!ChunkPosition.HasValue)
                 return false;
@@ -106,6 +139,8 @@ namespace OctoAwesome.Client.Components
             }
         }
         private object ibLock = new object();
+        private Index3? _chunkPosition;
+
         public void GenerateIndexBuffer()
         {
             lock(ibLock){
@@ -126,21 +161,31 @@ namespace OctoAwesome.Client.Components
             }
 
         }
-        public void RegenerateVertexBuffer()
+        
+        private int ChangeStart = -1;
+
+        public bool RegenerateVertexBuffer()
         {
             if (!ChunkPosition.HasValue)
-                return;
+                return false;
+
 
             // Chunk nachladen
-            if (chunk == null)
+            if (this.chunk == null)
             {
-                chunk = _manager.GetChunk(ChunkPosition.Value);
-                if (chunk == null)
+                this.chunk = _manager.GetChunk(ChunkPosition.Value);
+                if (this.chunk == null)
                 {
-                    return;
+                    //Thread.Sleep(10);
+                    //RegenerateVertexBuffer();
+                    //NeedsUpdate = false;
+                    return false;
                 }
-            }
 
+                this.chunk.Changed += OnChunkChanged;
+            }
+            var chunk = this.chunk;
+            ChangeStart = chunk.ChangeCounter;
             List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>();
             List<int> index = new List<int>();
             int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
@@ -159,12 +204,15 @@ namespace OctoAwesome.Client.Components
                 // definitionMapping.Add(definition.GetBlockType(), definition);
                 definitionIndex += textureCount;
             }
+
+
+
             Vector2[] uvOffsets = new[] {
-                                new Vector2(0,0),
-                                new Vector2(1, 0),
-                                new Vector2(1,1),
-                                new Vector2(0,1)
-                            };
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            };
             for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
             {
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
@@ -185,7 +233,7 @@ namespace OctoAwesome.Client.Components
 
                         // Textur-Koordinate "berechnen"
                         Vector2 textureOffset = new Vector2();
-                        Vector2 textureSize = new Vector2(textureWidth - textureSizeGap, textureWidth - textureSizeGap);
+                        //Vector2 textureSize = new Vector2(textureWidth - textureSizeGap, textureWidth - textureSizeGap);
 
 
                         ushort topBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z + 1));
@@ -201,10 +249,34 @@ namespace OctoAwesome.Client.Components
                             int rotation = -blockDefinition.GetTopTextureRotation(_manager, x, y, z);
 
                             int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 0, 1), uvOffsets[(6 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 0, 1), uvOffsets[(7 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1), new Vector3(0, 0, 1), uvOffsets[(5 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1), new Vector3(0, 0, 1), uvOffsets[(4 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)), 0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 1, z + 1),
+                                    new Vector3(0, 0, 1),
+                                    uvOffsets[(6 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 1, z + 1),
+                                    new Vector3(0, 0, 1),
+                                    uvOffsets[(7 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 0, z + 1),
+                                    new Vector3(0, 0, 1),
+                                    uvOffsets[(5 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 0, z + 1),
+                                    new Vector3(0, 0, 1),
+                                    uvOffsets[(4 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetTopTextureIndex(_manager, x, y, z)),
+                                    0));
                             index.Add(localOffset + 0);
                             index.Add(localOffset + 1);
                             index.Add(localOffset + 3);
@@ -227,10 +299,34 @@ namespace OctoAwesome.Client.Components
                             int rotation = -blockDefinition.GetBottomTextureRotation(_manager, x, y, z);
 
                             int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(6 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(7 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(5 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(4 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)), 0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 1, z + 0),
+                                    new Vector3(0, 0, -1),
+                                    uvOffsets[(6 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 1, z + 0),
+                                    new Vector3(0, 0, -1),
+                                    uvOffsets[(7 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 0, z + 0),
+                                    new Vector3(0, 0, -1),
+                                    uvOffsets[(5 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 0, z + 0),
+                                    new Vector3(0, 0, -1),
+                                    uvOffsets[(4 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetBottomTextureIndex(_manager, x, y, z)),
+                                    0));
                             index.Add(localOffset + 0);
                             index.Add(localOffset + 1);
                             index.Add(localOffset + 3);
@@ -252,10 +348,34 @@ namespace OctoAwesome.Client.Components
                             int rotation = -blockDefinition.GetSouthTextureRotation(_manager, x, y, z);
 
                             int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(6 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(7 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(5 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(4 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)), 0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 1, z + 0),
+                                    new Vector3(0, 1, 0),
+                                    uvOffsets[(6 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 1, z + 0),
+                                    new Vector3(0, 1, 0),
+                                    uvOffsets[(7 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 1, z + 1),
+                                    new Vector3(0, 1, 0),
+                                    uvOffsets[(5 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 1, z + 1),
+                                    new Vector3(0, 1, 0),
+                                    uvOffsets[(4 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetSouthTextureIndex(_manager, x, y, z)),
+                                    0));
                             index.Add(localOffset + 0);
                             index.Add(localOffset + 1);
                             index.Add(localOffset + 3);
@@ -277,10 +397,34 @@ namespace OctoAwesome.Client.Components
                             int rotation = -blockDefinition.GetNorthTextureRotation(_manager, x, y, z);
 
                             int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(4 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(5 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(7 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(6 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)), 0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 0, z + 1),
+                                    new Vector3(0, -1, 0),
+                                    uvOffsets[(4 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 0, z + 1),
+                                    new Vector3(0, -1, 0),
+                                    uvOffsets[(5 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 0, z + 0),
+                                    new Vector3(0, -1, 0),
+                                    uvOffsets[(7 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 0, z + 0),
+                                    new Vector3(0, -1, 0),
+                                    uvOffsets[(6 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetNorthTextureIndex(_manager, x, y, z)),
+                                    0));
                             index.Add(localOffset + 0);
                             index.Add(localOffset + 1);
                             index.Add(localOffset + 3);
@@ -303,10 +447,34 @@ namespace OctoAwesome.Client.Components
                             int rotation = -blockDefinition.GetWestTextureRotation(_manager, x, y, z);
 
                             int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 0), new Vector3(-1, 0, 0), uvOffsets[(7 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 1, z + 1), new Vector3(-1, 0, 0), uvOffsets[(4 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 0), new Vector3(-1, 0, 0), uvOffsets[(6 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 0, y + 0, z + 1), new Vector3(-1, 0, 0), uvOffsets[(5 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)), 0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 1, z + 0),
+                                    new Vector3(-1, 0, 0),
+                                    uvOffsets[(7 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 1, z + 1),
+                                    new Vector3(-1, 0, 0),
+                                    uvOffsets[(4 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 0, z + 0),
+                                    new Vector3(-1, 0, 0),
+                                    uvOffsets[(6 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 0, y + 0, z + 1),
+                                    new Vector3(-1, 0, 0),
+                                    uvOffsets[(5 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetWestTextureIndex(_manager, x, y, z)),
+                                    0));
                             index.Add(localOffset + 0);
                             index.Add(localOffset + 1);
                             index.Add(localOffset + 3);
@@ -329,10 +497,34 @@ namespace OctoAwesome.Client.Components
                             int rotation = -blockDefinition.GetEastTextureRotation(_manager, x, y, z);
 
                             int localOffset = vertices.Count;
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 1), new Vector3(1, 0, 0), uvOffsets[(5 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 1, z + 0), new Vector3(1, 0, 0), uvOffsets[(6 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 1), new Vector3(1, 0, 0), uvOffsets[(4 + rotation) % 4],(byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),0));
-                            vertices.Add(new VertexPositionNormalTextureLight(new Vector3(x + 1, y + 0, z + 0), new Vector3(1, 0, 0), uvOffsets[(7 + rotation) % 4], (byte)(textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)), 0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 1, z + 1),
+                                    new Vector3(1, 0, 0),
+                                    uvOffsets[(5 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 1, z + 0),
+                                    new Vector3(1, 0, 0),
+                                    uvOffsets[(6 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 0, z + 1),
+                                    new Vector3(1, 0, 0),
+                                    uvOffsets[(4 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),
+                                    0));
+                            vertices.Add(
+                                new VertexPositionNormalTextureLight(
+                                    new Vector3(x + 1, y + 0, z + 0),
+                                    new Vector3(1, 0, 0),
+                                    uvOffsets[(7 + rotation) % 4],
+                                    (byte) (textureIndex + blockDefinition.GetEastTextureIndex(_manager, x, y, z)),
+                                    0));
                             index.Add(localOffset + 0);
                             index.Add(localOffset + 1);
                             index.Add(localOffset + 3);
@@ -346,6 +538,7 @@ namespace OctoAwesome.Client.Components
 
             vertexCount = vertices.Count;
             indexCount = index.Count;
+            
 
             if (vertexCount > 0)
             {
@@ -353,11 +546,11 @@ namespace OctoAwesome.Client.Components
                 {
                     if (vb == null || ib == null)
                     {
-                        vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);
+                        vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount + 2);
                         //ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
                     }
-                    if (vertexCount+2 > vb.VertexCount)
-                        vb.Resize(vertexCount+2);
+                    if (vertexCount + 2 > vb.VertexCount)
+                        vb.Resize(vertexCount + 2);
                     //vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
                     vb.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
 
@@ -365,15 +558,21 @@ namespace OctoAwesome.Client.Components
                     //    ib.Resize(indexCount);
                     //ib.SetData<int>(index.ToArray());
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    var foo = ex;
+                }
             }
+
 
             lock (this)
             {
                 loaded = true;
             }
 
-            lastReset = chunk.ChangeCounter;
+            NeedsUpdate = chunk.ChangeCounter != ChangeStart || chunk != this.chunk;
+            return !NeedsUpdate;
+            //lastReset = chunk.ChangeCounter;
         }
 
         public void Dispose()
@@ -382,6 +581,12 @@ namespace OctoAwesome.Client.Components
             {
                 vb.Dispose();
                 vb = null;
+            }
+
+            if (chunk != null)
+            {
+                chunk.Changed -= OnChunkChanged;
+                chunk = null;
             }
 
             //if (ib != null)

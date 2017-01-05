@@ -58,12 +58,32 @@ namespace OctoAwesome
         /// Adds a new Component to the List.
         /// </summary>
         /// <param name="component">Component</param>
-        public void AddComponent(T component)
+        public void AddComponent<V>(V component)
+            where V : T
+        {
+            AddComponent<V>(component, false);
+        }
+
+
+        public void AddComponent<V>(V component,bool replace)
+            where V : T
         {
             Type type = component.GetType();
 
             if (components.ContainsKey(type))
-                return;
+            {
+                if (replace)
+                {
+                    RemoveComponent<V>();   
+                }
+                else
+                {
+                    return;
+                }
+
+                
+            }
+            
 
             insertValidator?.Invoke(component);
             components.Add(type, component);

@@ -15,8 +15,7 @@ namespace OctoAwesome
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
-        /// <param name="cache">LocalCache mit der die Entity initialisiert wird</param>
-        public UpdateableEntity(LocalChunkCache cache) : base(cache)
+        public UpdateableEntity() : base()
         {
 
         }

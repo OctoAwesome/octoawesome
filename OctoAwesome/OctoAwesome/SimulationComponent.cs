@@ -25,7 +25,7 @@ namespace OctoAwesome
         public SimulationComponent()
         {
             // TODO: Refelct Attributes
-            foreach(EntityFilterAttribute attribute in GetType().GetCustomAttributes(typeof(EntityFilterAttribute), false))
+            foreach (EntityFilterAttribute attribute in GetType().GetCustomAttributes(typeof(EntityFilterAttribute), false))
             {
                 foreach (var entityComponentType in attribute.EntityComponentTypes)
                 {
@@ -122,7 +122,7 @@ namespace OctoAwesome
         {
             foreach (var entity in entities)
             {
-                UpdateEntity(gameTime,entity, entity.Components.GetComponent<C1>());
+                UpdateEntity(gameTime, entity, entity.Components.GetComponent<C1>());
             }
         }
 
@@ -132,13 +132,13 @@ namespace OctoAwesome
         /// <param name="gameTime">Spielzeit</param>
         /// <param name="entity">Entity die geupdatet werden muss</param>
         /// <param name="component1">Komponente 1</param>
-        protected abstract void UpdateEntity(GameTime gameTime,Entity entity, C1 component1);
+        protected abstract void UpdateEntity(GameTime gameTime, Entity entity, C1 component1);
     }
 
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<C1,C2> : SimulationComponent 
+    public abstract class SimulationComponent<C1, C2> : SimulationComponent
         where C1 : EntityComponent
         where C2 : EntityComponent
     {
@@ -160,9 +160,12 @@ namespace OctoAwesome
         /// <param name="gameTime">Spielzeit</param>
         public override void Update(GameTime gameTime)
         {
-            foreach (var entity in entities)
+            //TDOD: Ändern
+            var localentities = entities.ToArray();
+
+            foreach (var entity in localentities)
             {
-                UpdateEntity(gameTime,entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>());
+                UpdateEntity(gameTime, entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>());
             }
         }
 
@@ -174,5 +177,50 @@ namespace OctoAwesome
         /// <param name="component1">Komponente 1</param>
         /// <param name="component2">Komponente 2</param>
         protected abstract void UpdateEntity(GameTime gameTime, Entity entity, C1 component1, C2 component2);
+    }
+    /// <summary>
+    /// Basisklasse für Simulationskomponenten
+    /// </summary>
+    public abstract class SimulationComponent<C1, C2, C3> : SimulationComponent
+        where C1 : EntityComponent
+        where C2 : EntityComponent
+        where C3 : EntityComponent
+    {
+
+        /// <summary>
+        /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
+        /// </summary>
+        /// <param name="entity">Vergleichsentity</param>
+        /// <returns>Ergebnis des Vergleiches</returns>
+        protected override bool Match(Entity entity)
+        {
+            return entity.Components.ContainsComponent<C1>()
+                && entity.Components.ContainsComponent<C2>()
+                && entity.Components.ContainsComponent<C3>();
+        }
+
+        /// <summary>
+        /// Updatemethode der Entity
+        /// </summary>
+        /// <param name="gameTime">Spielzeit</param>
+        public override void Update(GameTime gameTime)
+        {
+            //TDOD: Ändern
+            var localentities = entities.ToArray();
+
+            foreach (var entity in localentities)
+            {
+                UpdateEntity(gameTime, entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>(), entity.Components.GetComponent<C3>());
+            }
+        }
+
+        /// <summary>
+        /// Internes Event, für das Updaten der Simulationskomponente
+        /// </summary>
+        /// <param name="gameTime">Spielzeit</param>
+        /// <param name="entity">Entity die geupdatet werden muss</param>
+        /// <param name="component1">Komponente 1</param>
+        /// <param name="component2">Komponente 2</param>
+        protected abstract void UpdateEntity(GameTime gameTime, Entity entity, C1 component1, C2 component2, C3 component3);
     }
 }

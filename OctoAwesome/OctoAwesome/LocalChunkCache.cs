@@ -9,14 +9,12 @@ namespace OctoAwesome
     /// <summary>
     /// Chunk Cache für lokale Anwendungen.
     /// </summary>
-    public sealed class LocalChunkCache : ILocalChunkCache
+    public class LocalChunkCache : ILocalChunkCache
     {
         /// <summary>
         /// Referenz auf den Globalen Cache
         /// </summary>
         private IGlobalChunkCache globalCache;
-
-       
 
         /// <summary>
         /// Die im lokalen Cache gespeicherten Chunks
@@ -27,6 +25,8 @@ namespace OctoAwesome
         /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
         public IPlanet Planet { get; private set; }
+
+        public bool IsPassive { get; private set; }
 
         /// <summary>
         /// Größe des Caches in Zweierpotenzen
@@ -43,14 +43,18 @@ namespace OctoAwesome
         /// </summary>
         private int range;
 
+        public Index2 CenterPosition { get; set; }
+
         /// <summary>
         /// Instanziert einen neuen local Chunk Cache.
         /// </summary>
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
         /// <param name="range">Gibt die Range in alle Richtungen an.</param>
-        public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range)
+        public LocalChunkCache(IGlobalChunkCache globalCache,bool passive, int dimensions, int range)
         {
+            IsPassive = passive;
+
             if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
@@ -78,10 +82,10 @@ namespace OctoAwesome
         /// <param name="planetid">ID des Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        public void SetCenter(int planetid, Index2 index, Action<bool> successCallback = null)
+        public bool SetCenter(int planetid, Index2 index, Action<bool> successCallback = null)
         {
             var planet = globalCache.GetPlanet(planetid);
-            SetCenter(planet, index, successCallback);
+            return SetCenter(planet, index, successCallback);
         }
 
         /// <summary>
@@ -90,8 +94,19 @@ namespace OctoAwesome
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        public void SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null)
+        public bool SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null)
         {
+            if (IsPassive && !globalCache.IsChunkLoaded(planet.Id,index))
+            {
+                return false;
+            }
+
+            // Planet resetten falls notwendig
+            if (this.Planet != planet)
+                InitializePlanet(planet);
+
+            CenterPosition = index;
+
             if (_loadingTask != null && !_loadingTask.IsCompleted)
             {
                 _cancellationToken.Cancel();
@@ -103,6 +118,8 @@ namespace OctoAwesome
                 _cancellationToken = new CancellationTokenSource();
                 _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
+
+            return true;
         }
 
         /// <summary>
@@ -114,9 +131,7 @@ namespace OctoAwesome
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         private void InternalSetCenter(CancellationToken token, IPlanet planet, Index2 index, Action<bool> successCallback)
         {
-            // Planet resetten falls notwendig
-            if (this.Planet != planet)
-                InitializePlanet(planet);
+           
 
             if (planet == null)
             {
@@ -152,7 +167,7 @@ namespace OctoAwesome
                 // Alten Chunk entfernen, falls notwendig
                 if (chunkColumn != null && chunkColumn.Index != chunkColumnIndex)
                 {
-                    globalCache.Release(planet.Id, chunkColumn.Index);
+                    globalCache.Release(planet.Id, chunkColumn.Index,IsPassive);
                     chunkColumns[flatIndex] = null;
                     chunkColumn = null;
                 }
@@ -167,8 +182,14 @@ namespace OctoAwesome
                 // Neuen Chunk laden
                 if (chunkColumn == null)
                 {
-                    chunkColumn = globalCache.Subscribe(planet.Id, new Index2(chunkColumnIndex));
+                    chunkColumn = globalCache.Subscribe(planet.Id, new Index2(chunkColumnIndex),IsPassive);
                     chunkColumns[flatIndex] = chunkColumn;
+
+                    if (chunkColumn == null)
+                    {
+                        if (successCallback != null) successCallback(false);
+                        return;
+                    }
                 }
 
                 // Dritte Abbruchmöglichkeit
@@ -347,7 +368,7 @@ namespace OctoAwesome
 
                 IChunkColumn chunkColumn = chunkColumns[i];
 
-                globalCache.Release(chunkColumn.Planet, chunkColumn.Index);
+                globalCache.Release(chunkColumn.Planet, chunkColumn.Index,IsPassive);
                 chunkColumns[i] = null;
 
             }
@@ -362,6 +383,11 @@ namespace OctoAwesome
         private int FlatIndex(int x, int y)
         {
             return (((y & (mask)) << limit) | ((x & (mask))));
+        }
+
+        public IPlanet LoadPlanet(int id)
+        {
+            return globalCache.GetPlanet(id);
         }
     }
 }

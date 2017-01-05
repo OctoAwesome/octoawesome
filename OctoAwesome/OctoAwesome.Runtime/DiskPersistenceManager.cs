@@ -267,7 +267,7 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        Player player = new Player(new LocalChunkCache(manager.GlobalChunkCache,2,1));
+                        Player player = new Player();
                         player.Deserialize(reader, definitionManager);
                         return player;
                     }

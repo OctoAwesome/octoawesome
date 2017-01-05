@@ -30,14 +30,14 @@ namespace OctoAwesome.Basics
             return column;
         }
 
-        public override void Populate(IDefinitionManager definitionManager, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
-        {
+        public override void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
+         {
             // Tree Definitions initialisieren
             if (treeDefinitions == null)
             {
-                treeDefinitions = definitionManager.GetDefinitions<ITreeDefinition>().OrderBy(d => d.Order).ToArray();
+                treeDefinitions = resourceManager.DefinitionManager.GetDefinitions<ITreeDefinition>().OrderBy(d => d.Order).ToArray();
                 foreach (var treeDefinition in treeDefinitions)
-                    treeDefinition.Init(definitionManager);
+                    treeDefinition.Init(resourceManager.DefinitionManager);
             }
 
             int salt = (column00.Index.X & 0xffff) + ((column00.Index.Y & 0xffff) << 16);
@@ -62,7 +62,7 @@ namespace OctoAwesome.Basics
                         continue;
 
                     LocalBuilder builder = new LocalBuilder(x, y, z + 1, column00, column10, column01, column11);
-                    treeDefinition.PlantTree(definitionManager, planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
+                    treeDefinition.PlantTree(resourceManager.DefinitionManager, planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
                 }
             }
         }

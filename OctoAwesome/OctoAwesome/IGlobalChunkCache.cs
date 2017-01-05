@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using System;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Basisinterface für einen Globalen Chunkcache
@@ -11,7 +13,7 @@
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <returns>Den neu abonnierten Chunk</returns>
-        IChunkColumn Subscribe(int planet,Index2 position);
+        IChunkColumn Subscribe(int planet,Index2 position,bool passive);
 
         /// <summary>
         /// Gibt einen Planenten anhand seiner ID zurück
@@ -19,6 +21,8 @@
         /// <param name="id">ID des Planeten</param>
         /// <returns>Planet</returns>
         IPlanet GetPlanet(int id);
+
+        bool IsChunkLoaded(int planet, Index2 position);
 
         /// <summary>
         /// Liefert den Chunk, sofern geladen.
@@ -43,11 +47,14 @@
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        void Release(int planet,Index2 position);
+        void Release(int planet,Index2 position,bool passive);
 
         /// <summary>
         /// Löscht den gesamten Inhalt des Caches.
         /// </summary>
         void Clear();
+
+        void BeforSimulationUpdate(Simulation simulation);
+        void AfterSimulationUpdate(Simulation simulation);
     }
 }
