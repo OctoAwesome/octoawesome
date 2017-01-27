@@ -131,7 +131,7 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.VertexBuffer = vb;
                 graphicsDevice.IndexBuffer = ib;
 
-                foreach (var pass in simple.CurrentTechnique.Passes)
+                foreach (var pass in simple.CurrentTechnique.Passes.PassesList)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);

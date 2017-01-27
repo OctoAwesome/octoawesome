@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctoAwesome.Tests</RootNamespace>
     <AssemblyName>OctoAwesome.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -37,9 +37,18 @@
       <HintPath>..\packages\engenious.0.1.1\lib\net40\engenious.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="engenious, Version=0.1.7.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\engenious.0.1.7\lib\net40\engenious.dll</HintPath>
+    </Reference>
     <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.1\lib\net40\NVorbis.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\engenious.0.1.7\lib\net40\NVorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
+      <HintPath>..\packages\engenious.0.1.7\lib\net40\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.1\lib\net40\OpenTK.dll</HintPath>
@@ -100,9 +109,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.2.0-beta3-build1187\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.2.0-beta3-build1187\build\net20\xunit.runner.visualstudio.props'))" />
-    <Error Condition="!Exists('..\packages\engenious.0.1.1\build\engenious.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\engenious.0.1.1\build\engenious.targets'))" />
-  </Target>
-  <Import Project="..\packages\engenious.0.1.1\build\engenious.targets" Condition="Exists('..\packages\engenious.0.1.1\build\engenious.targets')" />
+</Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

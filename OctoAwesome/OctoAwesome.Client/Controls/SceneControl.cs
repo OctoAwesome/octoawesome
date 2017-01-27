@@ -502,7 +502,7 @@ namespace OctoAwesome.Client.Controls
                 selectionEffect.Projection = camera.Projection;
                 Manager.GraphicsDevice.VertexBuffer = selectionLines;
                 Manager.GraphicsDevice.IndexBuffer = selectionIndexBuffer;
-                foreach (var pass in selectionEffect.CurrentTechnique.Passes)
+                foreach (var pass in selectionEffect.CurrentTechnique.Passes.PassesList)
                 {
                     pass.Apply();
                     Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);

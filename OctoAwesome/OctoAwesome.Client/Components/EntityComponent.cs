@@ -42,7 +42,7 @@ namespace OctoAwesome.Client.Components
             effect.View = view;
             effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            foreach (var pass in effect.CurrentTechnique.Passes)
+            foreach (var pass in effect.CurrentTechnique.Passes.PassesList)
             {
                 pass.Apply();
 
