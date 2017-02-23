@@ -270,11 +270,11 @@ namespace OctoAwesome.Client.Screens
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.Player.SlotInput[9] = true;
             });
-            //Manager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", type =>
-            //{
-            //    if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-            //    Manager.Player.ActorHost.AllBlocksDebug();
-            //});
+            Manager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+                Manager.Player.AllBlocksDebug();
+            });
             Manager.Game.KeyMapper.AddAction("octoawesome:debug.control", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;

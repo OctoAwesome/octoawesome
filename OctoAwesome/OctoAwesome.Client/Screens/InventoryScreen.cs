@@ -37,7 +37,7 @@ namespace OctoAwesome.Client.Screens
         {
             assets = manager.Game.Assets;
 
-            foreach (var item in manager.Game.DefinitionManager.GetItemDefinitions())
+            foreach (var item in manager.Game.DefinitionManager.GetDefinitions())
             {
                 Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
@@ -47,8 +47,9 @@ namespace OctoAwesome.Client.Screens
 
             player = manager.Player;
 
-            //isoverlay = true;
-            //background = new borderbrush(color.black * 0.5f);
+            IsOverlay = true;
+
+            Background = new BorderBrush(Color.Black * 0.3f);
 
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
