@@ -26,10 +26,12 @@ namespace OctoAwesome.EntityComponents
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var id = reader.ReadUInt16();
+                string name = reader.ReadString();
+                var definition = definitionManager.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
                 var amount = reader.ReadDecimal();
 
-                var definition = definitionManager.GetBlockDefinitionByIndex(id);
+                if (definition == null)
+                    continue;
 
                 var slot = new InventorySlot()
                 {
@@ -48,12 +50,9 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)
             {
-                var id = definitionManager.GetBlockDefinitionIndex((IBlockDefinition)slot.Definition);
-                writer.Write(id);
+                writer.Write(slot.Definition.GetType().FullName);
                 writer.Write(slot.Amount);
             }
-            
-            
         }
     }
 }
