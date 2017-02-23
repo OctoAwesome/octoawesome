@@ -190,7 +190,7 @@ namespace OctoAwesome.Client.Components
                 throw new ArgumentNullException();
 
             if (string.IsNullOrEmpty(key))
-                throw new ArgumentNullException();
+                return default(T);
 
             string fullkey = string.Format("{0}.{1}", baseType.Namespace, key);
 

@@ -16,25 +16,27 @@ namespace OctoAwesome.Basics
             return planet;
         }
 
-        public IChunkColumn GenerateColumn(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
+        public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
-            ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
+            IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
 
-            IBlockDefinition snowDefinition = blockDefinitions.FirstOrDefault(d => typeof(SnowBlockDefinition) == d.GetType());
-            ushort snowIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), snowDefinition) + 1);
+            IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().FirstOrDefault();
+            ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
-            IBlockDefinition groundDefinition = blockDefinitions.FirstOrDefault(d => typeof(GroundBlockDefinition) == d.GetType());
-            ushort groundIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), groundDefinition) + 1);
+            IBlockDefinition snowDefinition = definitions.OfType<SnowBlockDefinition>().FirstOrDefault();
+            ushort snowIndex = (ushort)(Array.IndexOf(definitions.ToArray(), snowDefinition) + 1);
 
-            IBlockDefinition stoneDefinition = blockDefinitions.FirstOrDefault(d => typeof(StoneBlockDefinition) == d.GetType());
-            ushort stoneIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), stoneDefinition) + 1);
+            IBlockDefinition groundDefinition = definitions.OfType<GroundBlockDefinition>().FirstOrDefault();
+            ushort groundIndex = (ushort)(Array.IndexOf(definitions.ToArray(), groundDefinition) + 1);
 
-            IBlockDefinition waterDefinition = blockDefinitions.FirstOrDefault(d => typeof(WaterBlockDefinition) == d.GetType());
-            ushort waterIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), waterDefinition) + 1);
+            IBlockDefinition stoneDefinition = definitions.OfType<StoneBlockDefinition>().FirstOrDefault();
+            ushort stoneIndex = (ushort)(Array.IndexOf(definitions.ToArray(), stoneDefinition) + 1);
 
-            IBlockDefinition grassDefinition = blockDefinitions.FirstOrDefault(d => typeof(GrassBlockDefinition) == d.GetType());
-            ushort grassIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), grassDefinition) + 1);
+            IBlockDefinition waterDefinition = definitions.OfType<WaterBlockDefinition>().FirstOrDefault();
+            ushort waterIndex = (ushort)(Array.IndexOf(definitions.ToArray(), waterDefinition) + 1);
+
+            IBlockDefinition grassDefinition = definitions.OfType<GrassBlockDefinition>().FirstOrDefault();
+            ushort grassIndex = (ushort)(Array.IndexOf(definitions.ToArray(), grassDefinition) + 1);
 
             if (!(planet is ComplexPlanet))
                 throw new ArgumentException("planet is not a Type of ComplexPlanet");

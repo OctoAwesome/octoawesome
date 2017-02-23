@@ -30,7 +30,7 @@ namespace OctoAwesome.Runtime
 
 
 
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager,IResourceManager manager, ISettings Settings)
+        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, IResourceManager manager, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
@@ -228,13 +228,14 @@ namespace OctoAwesome.Runtime
             if (!File.Exists(file))
                 return null;
 
-            try {
-            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+            try
             {
-                using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+                using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
                 {
-                    return planet.Generator.GenerateColumn(zip, definitionManager, planet.Id, columnIndex);
-                }
+                    using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
+                    {
+                        return planet.Generator.GenerateColumn(zip, definitionManager, planet.Id, columnIndex);
+                    }
                 }
             }
             catch (IOException)

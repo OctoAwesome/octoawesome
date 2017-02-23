@@ -5,6 +5,7 @@ using OctoAwesome.Client.Components;
 using System;
 using engenious;
 using engenious.Graphics;
+using System.Linq;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -176,8 +177,8 @@ namespace OctoAwesome.Client.Controls
                 assets.LoadedTextures);
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + (manager.Game.DefinitionManager.GetItemDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Items + " - " +
-                (manager.Game.DefinitionManager.GetBlockDefinitions() as IList<IItemDefinition>).Count + " " + Languages.OctoClient.Blocks;
+            loadedInfo.Text = "" + manager.Game.DefinitionManager.GetItemDefinitions().Count() + " " + Languages.OctoClient.Items + " - " +
+                manager.Game.DefinitionManager.GetBlockDefinitions().Count() + " " + Languages.OctoClient.Blocks;
 
             //Additional Play Information
 

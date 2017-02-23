@@ -242,7 +242,7 @@ namespace OctoAwesome
                     {
                         if (chunk.Blocks[i] != 0)
                         {
-                            IBlockDefinition definition = definitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                            IBlockDefinition definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
                             if (!definitions.Contains(definition))
                                 definitions.Add(definition);
                         }
@@ -288,7 +288,7 @@ namespace OctoAwesome
                         else
                         {
                             // Definition Index
-                            IBlockDefinition definition = definitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                            IBlockDefinition definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
 
                             if (longIndex)
                                 bw.Write((ushort)(definitions.IndexOf(definition) + 1));
@@ -358,14 +358,14 @@ namespace OctoAwesome
                     counter[i] = br.ReadInt32();
 
                 // Phase 2 (Block Definitionen)
-                List<IBlockDefinition> types = new List<IBlockDefinition>();
+                List<IDefinition> types = new List<IDefinition>();
                 Dictionary<ushort, ushort> map = new Dictionary<ushort, ushort>();
 
                 int typecount = longIndex ? br.ReadUInt16() : br.ReadByte();
                 for (int i = 0; i < typecount; i++)
                 {
                     string typeName = br.ReadString();
-                    IBlockDefinition[] definitions = definitionManager.GetBlockDefinitions().ToArray();
+                    IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
                     var blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                     types.Add(blockDefinition);
 
@@ -385,7 +385,7 @@ namespace OctoAwesome
                         {
                             chunk.Blocks[i] = map[typeIndex];
 
-                            var definition = definitionManager.GetBlockDefinitionByIndex(map[typeIndex]);
+                            var definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(map[typeIndex]);
                             if (definition.HasMetaData)
                                 chunk.MetaData[i] = br.ReadInt32();
                         }

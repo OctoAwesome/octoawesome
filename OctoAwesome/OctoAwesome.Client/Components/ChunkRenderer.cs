@@ -223,7 +223,7 @@ namespace OctoAwesome.Client.Components
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = definitionManager.GetBlockDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(block);
                         if (blockDefinition == null)
                             continue;
 
@@ -237,7 +237,7 @@ namespace OctoAwesome.Client.Components
 
 
                         ushort topBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z + 1));
-                        IBlockDefinition topBlockDefintion = definitionManager.GetBlockDefinitionByIndex(topBlock);
+                        IBlockDefinition topBlockDefintion = (IBlockDefinition)definitionManager.GetDefinitionByIndex(topBlock);
 
                         // Top
                         if (topBlock == 0 || (!topBlockDefintion.IsBottomSolidWall(_manager, x, y, z + 1) && topBlock != block))
@@ -286,7 +286,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort bottomBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z - 1));
-                        IBlockDefinition bottomBlockDefintion = definitionManager.GetBlockDefinitionByIndex(bottomBlock);
+                        IBlockDefinition bottomBlockDefintion = (IBlockDefinition)definitionManager.GetDefinitionByIndex(bottomBlock);
 
 
                         // Unten
@@ -336,7 +336,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort southBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y + 1, z));
-                        IBlockDefinition southBlockDefintion = definitionManager.GetBlockDefinitionByIndex(southBlock);
+                        IBlockDefinition southBlockDefintion = (IBlockDefinition)definitionManager.GetDefinitionByIndex(southBlock);
 
                         // South
                         if (southBlock == 0 || (!southBlockDefintion.IsNorthSolidWall(_manager, x, y + 1, z) && southBlock != block))
@@ -385,7 +385,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort northBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y - 1, z));
-                        IBlockDefinition northBlockDefintion = definitionManager.GetBlockDefinitionByIndex(northBlock);
+                        IBlockDefinition northBlockDefintion = (IBlockDefinition)definitionManager.GetDefinitionByIndex(northBlock);
 
                         // North
                         if (northBlock == 0 || (!northBlockDefintion.IsSouthSolidWall(_manager, x, y - 1, z) && northBlock != block))
@@ -434,7 +434,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort westBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x - 1, y, z));
-                        IBlockDefinition westBlockDefintion = definitionManager.GetBlockDefinitionByIndex(westBlock);
+                        IBlockDefinition westBlockDefintion = (IBlockDefinition)definitionManager.GetDefinitionByIndex(westBlock);
 
                         // West
                         if (westBlock == 0 || (!westBlockDefintion.IsEastSolidWall(_manager, x - 1, y, z) && westBlock != block))
@@ -484,7 +484,7 @@ namespace OctoAwesome.Client.Components
                         }
 
                         ushort eastBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x + 1, y, z));
-                        IBlockDefinition eastBlockDefintion = definitionManager.GetBlockDefinitionByIndex(eastBlock);
+                        IBlockDefinition eastBlockDefintion = (IBlockDefinition)definitionManager.GetDefinitionByIndex(eastBlock);
 
                         // Ost
                         if (eastBlock == 0 || (!eastBlockDefintion.IsWestSolidWall(_manager, x + 1, y, z) && eastBlock != block))

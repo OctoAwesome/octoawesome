@@ -17,10 +17,12 @@ namespace OctoAwesome.Basics
             return planet;
         }
 
-        public IChunkColumn GenerateColumn(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
+        public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
-            ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
+            IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
+
+            IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().First();
+            ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
