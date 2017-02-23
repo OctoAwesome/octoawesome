@@ -71,7 +71,7 @@ namespace OctoAwesome.Client.Components
         {
             CurrentEntity = entity;
 
-            
+
 
             if (CurrentEntity == null)
             {
@@ -93,7 +93,7 @@ namespace OctoAwesome.Client.Components
                 if (Toolbar == null) Toolbar = new ToolBarComponent();
 
                 Position = CurrentEntity.Components.GetComponent<PositionComponent>();
-                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0))};
+                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
         }
 
@@ -125,7 +125,7 @@ namespace OctoAwesome.Client.Components
                 CurrentController.ApplyBlock = SelectedBox.Value;
                 CurrentController.ApplySide = SelectedSide;
             }
-                
+
             ApplyInput = false;
 
             //if (FlymodeInput)
@@ -181,6 +181,55 @@ namespace OctoAwesome.Client.Components
                 activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
                 Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
             }
+        }
+
+        /// <summary>
+        /// DEBUG METHODE: NICHT FÜR VERWENDUNG IM SPIEL!
+        /// </summary>
+        internal void AllBlocksDebug()
+        {
+            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            if (inventory == null)
+                return;
+
+            var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
+            foreach (var blockDefinition in blockDefinitions)
+            {
+
+                var slot = inventory.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+
+                // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+                if (slot == null || slot.Amount >= blockDefinition.StackLimit)
+                {
+                    slot = new InventorySlot()
+                    {
+                        Definition = blockDefinition,
+                        Amount = 0
+                    };
+                    inventory.Inventory.Add(slot);
+                }
+                slot.Amount++;
+            }
+
+            var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
+            foreach (var blockDefinition in itemDefinitions)
+            {
+
+                var slot = inventory.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+
+                // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+                if (slot == null || slot.Amount >= blockDefinition.StackLimit)
+                {
+                    slot = new InventorySlot()
+                    {
+                        Definition = blockDefinition,
+                        Amount = 0
+                    };
+                    inventory.Inventory.Add(slot);
+                }
+                slot.Amount++;
+            }
+
         }
     }
 }
