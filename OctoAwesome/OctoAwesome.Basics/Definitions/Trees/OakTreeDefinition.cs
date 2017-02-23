@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Trees
 {
     public class OakTreeDefinition : TreeDefinition
     {
@@ -38,9 +38,9 @@ namespace OctoAwesome.Basics
 
         public override void Init(IDefinitionManager definitionManager)
         {
-            wood = definitionManager.GetBlockDefinitionIndex<WoodBlockDefinition>();
-            leave = definitionManager.GetBlockDefinitionIndex<LeavesBlockDefinition>();
-            water = definitionManager.GetBlockDefinitionIndex<WaterBlockDefinition>();
+            wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>();
+            leave = definitionManager.GetDefinitionIndex<LeavesBlockDefinition>();
+            water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
         }
 
         public override int GetDensity(IPlanet planet, Index3 index)
