@@ -32,16 +32,12 @@ namespace OctoAwesome.Basics
         {
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(
-                t => t.Namespace == "OctoAwesome.Basics.Definitions.Blocks" &&
-                typeof(IDefinition).IsAssignableFrom(t)))
+                t => !t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t)))
             {
                 extensionLoader.RegisterDefinition((IDefinition)Activator.CreateInstance(t));
             }
 
-
-
             extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
-
 
             extensionLoader.RegisterMapPopulator(new TreePopulator());
             extensionLoader.RegisterMapPopulator(new WauziPopulator());
