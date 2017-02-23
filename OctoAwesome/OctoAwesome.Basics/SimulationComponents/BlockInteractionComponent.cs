@@ -40,7 +40,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetBlockDefinitionByIndex(lastBlock);
+                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
 
                     var slot = inventory.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
 
@@ -127,7 +127,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         if (!intersects)
                         {
-                            entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetBlockDefinitionIndex(definition));
+                            entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
 
                             toolbar.ActiveTool.Amount -= 125;
                             if (toolbar.ActiveTool.Amount <= 0)

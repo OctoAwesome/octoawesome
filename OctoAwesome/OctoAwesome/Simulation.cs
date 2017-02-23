@@ -61,14 +61,6 @@ namespace OctoAwesome
             extensionResolver.ExtendSimulation(this);
         }
 
-        private void ResourceManager_OnChunkCoumnLoaded(IChunkColumn obj)
-        {
-            foreach (var entity in obj.Entities)
-            {
-                AddEntity(entity);
-            }
-        }
-
         private void ValidateAddComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)

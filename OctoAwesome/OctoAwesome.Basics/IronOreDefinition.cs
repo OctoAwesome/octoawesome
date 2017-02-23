@@ -6,48 +6,48 @@ using System.Text;
 
 namespace OctoAwesome.Basics
 {
-    class IronOreDefinition : IResourceDefinition
-    {
-        public string Icon
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+    //class IronOreDefinition : IResourceDefinition
+    //{
+    //    public string Icon
+    //    {
+    //        get
+    //        {
+    //            throw new NotImplementedException();
+    //        }
+    //    }
 
-        public string Name
-        {
-            get
-            {
-                return Languages.OctoBasics.IronOre;
-            }
-        }
+    //    public string Name
+    //    {
+    //        get
+    //        {
+    //            return Languages.OctoBasics.IronOre;
+    //        }
+    //    }
 
-        public int StackLimit
-        {
-            get
-            {
-                return 50;
-            }
-        }
+    //    public int StackLimit
+    //    {
+    //        get
+    //        {
+    //            return 50;
+    //        }
+    //    }
 
-        public float VolumePerUnit
-        {
-            get
-            {
-                return 125;
-            }
-        }
+    //    public float VolumePerUnit
+    //    {
+    //        get
+    //        {
+    //            return 125;
+    //        }
+    //    }
 
-        public IResource GetInstance()
-        {
-            throw new NotImplementedException();
-        }
+    //    public IResource GetInstance()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        public Type GetResourceType()
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //    public Type GetResourceType()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 }

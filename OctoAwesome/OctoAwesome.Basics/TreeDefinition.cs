@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace OctoAwesome.Basics
+﻿namespace OctoAwesome.Basics
 {
     /// <summary>
     /// Basisklasse für Baumdefinitionen, die vom TreePopulator verarbeitet werden sollen.
     /// </summary>
     public abstract class TreeDefinition : ITreeDefinition
     {
+        /// <summary>
+        /// Returns the not existing Name of the Tree Definition.
+        /// </summary>
+        public string Name => "";
+
+        /// <summary>
+        /// Returns the not existing Resource Name of the Definition Icon.
+        /// </summary>
+        public string Icon => "";
+
         /// <summary>
         /// Gibt die Reihenfolge dieser TreeDefinition in der Abarbeitung beim bepflanzen der Chunks an.
         /// </summary>
