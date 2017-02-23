@@ -6,7 +6,7 @@ namespace OctoAwesome
     /// Interface für die Definition einer Ressource
     /// TODO: Das hier ist ja inzwischen etwas aus der Mode gekommen -> Siehe BlockDefinition
     /// </summary>
-    public interface IResourceDefinition : IItemDefinition
+    public interface IResourceDefinition : IDefinition
     {
         /// <summary>
         /// Liefert eine Instanz der Ressource

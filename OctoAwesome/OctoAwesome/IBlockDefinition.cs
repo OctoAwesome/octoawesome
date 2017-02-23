@@ -1,13 +1,24 @@
-﻿using System.Drawing;
-using engenious;
+﻿using engenious;
+using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basisinterface für eine Blockdefinition
     /// </summary>
-    public interface IBlockDefinition : IItemDefinition
+    public interface IBlockDefinition : IDefinition
     {
+        /// <summary>
+        /// Gibt das Volumen für eine Einheit an.
+        /// </summary>
+        float VolumePerUnit { get; }
+
+        /// <summary>
+        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können
+        /// </summary>
+        [Obsolete]
+        int StackLimit { get; }
+
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
         /// </summary>
