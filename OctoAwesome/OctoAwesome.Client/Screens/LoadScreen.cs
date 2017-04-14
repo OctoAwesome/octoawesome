@@ -17,6 +17,7 @@ namespace OctoAwesome.Client.Screens
         Button deleteButton, createButton, playButton;
         Grid mainStack;
         Listbox<IUniverse> levelList;
+        Label seedLabel;
 
         private ISettings settings;
 
@@ -51,12 +52,20 @@ namespace OctoAwesome.Client.Screens
             levelList.SelectedItemBrush = new BorderBrush(Color.SaddleBrown * 0.7f);
             levelList.TemplateGenerator += (x) =>
             {
-                return new Label(manager)
+                var li = new Label(manager)
                 {
                     Text = string.Format("{0} ({1})", x.Name, x.Seed),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     Padding = Border.All(10),
                 };
+                li.LeftMouseDoubleClick += (s, e) => Play();
+                return li;
+            };
+            levelList.SelectedItemChanged += (s, e) =>
+            {
+                seedLabel.Text = "";
+                if (levelList.SelectedItem != null)
+                    seedLabel.Text = "Seed: " + levelList.SelectedItem.Seed;
             };
             mainStack.AddControl(levelList, 0, 0);
 
@@ -70,11 +79,11 @@ namespace OctoAwesome.Client.Screens
             mainStack.AddControl(sidebar, 1, 0);
 
             //Universe Info
-            Label l = new Label(manager);
-            l.Text = " Placeholder ";
-            l.VerticalAlignment = VerticalAlignment.Top;
-            l.HorizontalAlignment = HorizontalAlignment.Left;
-            sidebar.Controls.Add(l);
+            seedLabel = new Label(manager);
+            seedLabel.Text = "";
+            seedLabel.VerticalAlignment = VerticalAlignment.Top;
+            seedLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            sidebar.Controls.Add(seedLabel);
 
             //Buttons
             StackPanel buttonStack = new StackPanel(manager);
@@ -98,7 +107,7 @@ namespace OctoAwesome.Client.Screens
                 }
 
                 // Sicherstellen, dass universe nicht geladen ist
-                if (ResourceManager.Instance.CurrentUniverse != null && 
+                if (ResourceManager.Instance.CurrentUniverse != null &&
                     ResourceManager.Instance.CurrentUniverse.Id == levelList.SelectedItem.Id)
                     return;
 
@@ -120,7 +129,7 @@ namespace OctoAwesome.Client.Screens
                 {
                     MessageScreen msg = new MessageScreen(manager, Languages.OctoClient.Error, Languages.OctoClient.SelectUniverseFirst);
                     manager.NavigateToScreen(msg);
-                    
+
                     return;
                 }
 
