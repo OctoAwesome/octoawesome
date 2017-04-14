@@ -79,7 +79,7 @@ namespace OctoAwesome.Client.Screens
 
             Button closeButton = Button.TextButton(manager, "Teleport");
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            closeButton.LeftMouseClick += (s, e) => 
+            closeButton.LeftMouseClick += (s, e) =>
             {
                 if (tp != null)
                     tp(int.Parse(xText.Text), int.Parse(yText.Text));
@@ -87,6 +87,13 @@ namespace OctoAwesome.Client.Screens
                     manager.NavigateBack();
             };
             spanel.Controls.Add(closeButton);
+
+            KeyDown += (s, e) =>
+            {
+                if (e.Key == engenious.Input.Keys.Escape)
+                    manager.NavigateBack();
+                e.Handled = true;
+            };
         }
     }
 }
