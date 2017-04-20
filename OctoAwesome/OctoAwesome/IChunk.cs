@@ -20,6 +20,11 @@
         /// Der Index ist derselbe wie bei <see cref="MetaData"/> und <see cref="Resources"/>.
         /// </summary>
         ushort[] Blocks { get; }
+        
+        /// <summary>
+        /// Default Block eines Chunks beim erstellen
+        /// </summary>
+        ushort DefaultBlock { get; set; }
 
         /// <summary>
         /// Array, das die Metadaten zu den Blöcken eines Chunks enthält.

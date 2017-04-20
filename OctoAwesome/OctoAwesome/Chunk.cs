@@ -5,6 +5,8 @@
     /// </summary>
     public sealed class Chunk : IChunk
     {
+        #region public properties
+
         /// <summary>
         /// Zweierpotenz der Chunkgrösse. Ausserdem gibt es die Anzahl Bits an,
         /// die die X-Koordinate im Array <see cref="Blocks"/> verwendet.
@@ -25,7 +27,7 @@
         /// Größe eines Chunks in Blocks in X-Richtung.
         /// </summary>
         public const int CHUNKSIZE_X = 1 << LimitX;
-        
+
         /// <summary>
         /// Größe eines Chunks in Blocks in Y-Richtung.
         /// </summary>
@@ -45,20 +47,45 @@
         /// Array, das alle Blöcke eines Chunks enthält. Jeder eintrag entspricht einer Block-ID.
         /// Der Index ist derselbe wie bei <see cref="MetaData"/> und <see cref="Resources"/>.
         /// </summary>
-        public ushort[] Blocks { get; private set; }
+        public ushort[] Blocks
+        {
+            get { return this.GetBlocksAsArray(); }
+        }
+
+        /// <summary>
+        /// Default Block
+        /// WARNING: on set, reset the octree
+        /// </summary>
+        public ushort DefaultBlock
+        {
+            get
+            {
+                return this.defaultBlock;
+            }
+            set
+            {
+                this.defaultBlock = value;
+                this.blockTree.ResetWithValue(value);
+            }
+        }
 
         /// <summary>
         /// Array, das die Metadaten zu den Blöcken eines Chunks enthält.
         /// Der Index ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
         /// </summary>
-        public int[] MetaData { get; private set; }
+        public int[] MetaData
+        {
+            get { return this.GetMetasAsArray(); }
+        }
 
         /// <summary>
         /// Verzweigtes Array, das die Ressourcen zu den Blöcken eines Chunks enthält.
         /// Der Index der ersten Dimension ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
         /// </summary>
-        public ushort[][] Resources { get; private set; }
-
+        public ushort[][] Resources
+        {
+            get { return this.GetResourcesAsArray(); }
+        }
 
         /// <summary>
         /// Chunk Index innerhalb des Planeten.
@@ -76,6 +103,19 @@
         /// </summary>
         public int ChangeCounter { get; set; }
 
+        #endregion
+
+        #region private fields
+
+        private Octree<ushort> blockTree;
+        private Octree<int> metaTree;
+        private Octree<ushort[]> resourceTree;
+        private ushort defaultBlock;
+
+        #endregion
+
+        #region constructors
+
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Chunk
         /// </summary>
@@ -83,14 +123,17 @@
         /// <param name="planet">Index des Planeten</param>
         public Chunk(Index3 pos, int planet)
         {
-            Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            MetaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            Resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
-
             Index = pos;
             Planet = planet;
             ChangeCounter = 0;
+            this.blockTree = Octree<ushort>.CreateFromChunk(this);
+            this.metaTree = Octree<int>.CreateFromChunk(this);
+            this.resourceTree = Octree<ushort[]>.CreateFromChunk(this);
         }
+
+        #endregion
+
+        #region public methods
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -111,7 +154,8 @@
         /// <returns>Block-ID der angegebenen Koordinate</returns>
         public ushort GetBlock(int x, int y, int z)
         {
-            return Blocks[GetFlatIndex(x, y, z)];
+            var index = GetLocalPosition(x, y, z);
+            return this.blockTree.Get(index);
         }
 
         /// <summary>
@@ -135,10 +179,17 @@
         /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
-            int index = GetFlatIndex(x, y, z);
-            Blocks[index] = block;
-            MetaData[index] = meta;
-            ChangeCounter++;
+            var index = GetLocalPosition(x, y, z);
+            this.blockTree.Add(index, block);
+            if (meta != 0)
+            {
+                this.metaTree.Add(index, meta);
+            }
+            if (this.blockTree.IsDirty)
+            {
+                ChangeCounter++;
+                this.blockTree.IsDirty = false;
+            }
         }
 
         /// <summary>
@@ -150,7 +201,8 @@
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
         public int GetBlockMeta(int x, int y, int z)
         {
-            return MetaData[GetFlatIndex(x, y, z)];
+            var index = GetLocalPosition(x, y, z);
+            return this.metaTree.Get(index);
         }
 
         /// <summary>
@@ -162,8 +214,13 @@
         /// <param name="meta">Die neuen Metadaten</param>
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
-            MetaData[GetFlatIndex(x, y, z)] = meta;
-            ChangeCounter++;
+            var index = GetLocalPosition(x, y, z);
+            this.metaTree.Add(index, meta);
+            if (this.metaTree.IsDirty)
+            {
+                ChangeCounter++;
+                this.metaTree.IsDirty = false;
+            }
         }
 
         /// <summary>
@@ -175,7 +232,8 @@
         /// <returns>Ein Array aller Ressourcen des Blocks</returns>
         public ushort[] GetBlockResources(int x, int y, int z)
         {
-            return Resources[GetFlatIndex(x, y, z)];
+            var index = GetLocalPosition(x, y, z);
+            return this.resourceTree.Get(index);
         }
 
         /// <summary>
@@ -187,9 +245,18 @@
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
-            Resources[GetFlatIndex(x, y, z)] = resources;
-            ChangeCounter++;
+            var index = GetLocalPosition(x, y, z);
+            this.resourceTree.Add(index, resources);
+            if (this.resourceTree.IsDirty)
+            {
+                ChangeCounter++;
+                this.resourceTree.IsDirty = false;
+            }
         }
+
+        #endregion
+
+        #region private methods
 
         /// <summary>
         /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb
@@ -205,5 +272,89 @@
                    | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
                    | ((x & (CHUNKSIZE_X - 1)));
         }
+
+        /// <summary>
+        /// Sicherstellen, dass Koordinaten lokal ist
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
+        private Index3 GetLocalPosition(int x, int y, int z)
+        {
+            var index = new Index3(
+                x & 0x1f,
+                y & 0x1f,
+                z & 0x1f
+            );
+            return index;
+        }
+
+        /// <summary>
+        /// Gibt die Blockdaten als array zurück
+        /// TODO: Serialize umstellen
+        /// </summary>
+        /// <returns></returns>
+        private ushort[] GetBlocksAsArray()
+        {
+            var array = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            for (int x = 0; x < CHUNKSIZE_X; x++)
+            {
+                for (int y = 0; y < CHUNKSIZE_Y; y++)
+                {
+                    for (int z = 0; z < CHUNKSIZE_Z; z++)
+                    {
+                        var index = GetFlatIndex(x, y, z);
+                        array[index] = GetBlock(x, y, z);
+                    }
+                }
+            }
+            return array;
+        }
+
+        /// <summary>
+        /// Gibt die Metadaten als array zurück
+        /// TODO: Serialize umstellen
+        /// </summary>
+        /// <returns></returns>
+        private int[] GetMetasAsArray()
+        {
+            var array = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
+            for (int x = 0; x < CHUNKSIZE_X; x++)
+            {
+                for (int y = 0; y < CHUNKSIZE_Y; y++)
+                {
+                    for (int z = 0; z < CHUNKSIZE_Z; z++)
+                    {
+                        var index = GetFlatIndex(x, y, z);
+                        array[index] = GetBlockMeta(x, y, z);
+                    }
+                }
+            }
+            return array;
+        }
+
+        /// <summary>
+        /// Gibt die Blockdaten als array zurück
+        /// TODO: Als Octree Sinnvoll? Serialize umstellen
+        /// </summary>
+        /// <returns></returns>
+        private ushort[][] GetResourcesAsArray()
+        {
+            var array = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
+            for (int x = 0; x < CHUNKSIZE_X; x++)
+            {
+                for (int y = 0; y < CHUNKSIZE_Y; y++)
+                {
+                    for (int z = 0; z < CHUNKSIZE_Z; z++)
+                    {
+                        var index = GetFlatIndex(x, y, z);
+                        array[index] = GetBlockResources(x, y, z);
+                    }
+                }
+            }
+            return array;
+        }
+        #endregion
     }
 }
