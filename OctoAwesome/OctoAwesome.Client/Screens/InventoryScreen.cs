@@ -147,26 +147,18 @@ namespace OctoAwesome.Client.Screens
                         // Swap
                         int targetIndex = (int)image.Tag;
                         InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
-                        int sourceIndex = -1;
+
                         InventorySlot sourceSlot = e.Content as InventorySlot;
+                        int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
 
-                        for (int j = 0; j < player.Toolbar.Tools.Length; j++)
-                        {
-                            if (player.Toolbar.Tools[j] == sourceSlot)
-                            {
-                                sourceIndex = j;
-                                break;
-                            }
-                        }
-
-                        SetTool(sourceSlot, targetIndex);
-                        SetTool(targetSlot, sourceIndex);
+                        player.Toolbar.SetTool(sourceSlot, targetIndex);
+                        player.Toolbar.SetTool(targetSlot, sourceIndex);
                     }
                     else
                     {
                         // Inventory Drop
                         InventorySlot slot = e.Content as InventorySlot;
-                        SetTool(slot, (int)image.Tag);
+                        player.Toolbar.SetTool(slot, (int)image.Tag);
                     }
                 };
 
@@ -184,11 +176,7 @@ namespace OctoAwesome.Client.Screens
             if (args.Sender is Grid)
             {
                 InventorySlot slot = args.Content as InventorySlot;
-                for (int i = 0; i < player.Toolbar.Tools.Length; i++)
-                {
-                    if (player.Toolbar.Tools[i] == slot)
-                        player.Toolbar.Tools[i] = null;
-                }
+                player.Toolbar.RemoveSlot(slot);
             }
         }
 
@@ -197,16 +185,16 @@ namespace OctoAwesome.Client.Screens
             // Tool neu zuweisen
             switch (args.Key)
             {
-                case Keys.D1: SetTool(inventory.HoveredSlot, 0); args.Handled = true; break;
-                case Keys.D2: SetTool(inventory.HoveredSlot, 1); args.Handled = true; break;
-                case Keys.D3: SetTool(inventory.HoveredSlot, 2); args.Handled = true; break;
-                case Keys.D4: SetTool(inventory.HoveredSlot, 3); args.Handled = true; break;
-                case Keys.D5: SetTool(inventory.HoveredSlot, 4); args.Handled = true; break;
-                case Keys.D6: SetTool(inventory.HoveredSlot, 5); args.Handled = true; break;
-                case Keys.D7: SetTool(inventory.HoveredSlot, 6); args.Handled = true; break;
-                case Keys.D8: SetTool(inventory.HoveredSlot, 7); args.Handled = true; break;
-                case Keys.D9: SetTool(inventory.HoveredSlot, 8); args.Handled = true; break;
-                case Keys.D0: SetTool(inventory.HoveredSlot, 9); args.Handled = true; break;
+                case Keys.D1: player.Toolbar.SetTool(inventory.HoveredSlot, 0); args.Handled = true; break;
+                case Keys.D2: player.Toolbar.SetTool(inventory.HoveredSlot, 1); args.Handled = true; break;
+                case Keys.D3: player.Toolbar.SetTool(inventory.HoveredSlot, 2); args.Handled = true; break;
+                case Keys.D4: player.Toolbar.SetTool(inventory.HoveredSlot, 3); args.Handled = true; break;
+                case Keys.D5: player.Toolbar.SetTool(inventory.HoveredSlot, 4); args.Handled = true; break;
+                case Keys.D6: player.Toolbar.SetTool(inventory.HoveredSlot, 5); args.Handled = true; break;
+                case Keys.D7: player.Toolbar.SetTool(inventory.HoveredSlot, 6); args.Handled = true; break;
+                case Keys.D8: player.Toolbar.SetTool(inventory.HoveredSlot, 7); args.Handled = true; break;
+                case Keys.D9: player.Toolbar.SetTool(inventory.HoveredSlot, 8); args.Handled = true; break;
+                case Keys.D0: player.Toolbar.SetTool(inventory.HoveredSlot, 9); args.Handled = true; break;
             }
 
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
@@ -216,18 +204,6 @@ namespace OctoAwesome.Client.Screens
             }
 
             base.OnKeyDown(args);
-        }
-
-        private void SetTool(InventorySlot slot, int index)
-        {
-            // Alle Slots entfernen die das selbe Tool enthalten
-            for (int i = 0; i < player.Toolbar.Tools.Length; i++)
-            {
-                if (player.Toolbar.Tools[i] == slot)
-                    player.Toolbar.Tools[i] = null;
-            }
-
-            player.Toolbar.Tools[index] = slot;
         }
 
         protected override void OnUpdate(GameTime gameTime)
