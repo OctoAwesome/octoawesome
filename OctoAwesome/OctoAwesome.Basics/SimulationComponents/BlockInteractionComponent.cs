@@ -54,20 +54,11 @@ namespace OctoAwesome.Basics.SimulationComponents
                         };
                         inventory.Inventory.Add(slot);
 
-                        
+
                         if (toolbar != null)
-                        {
-                            for (int i = 0; i < toolbar.Tools.Length; i++)
-                            {
-                                if (toolbar.Tools[i] == null)
-                                {
-                                    toolbar.Tools[i] = slot;
-                                    break;
-                                }
-                            }
-                        }
+                            toolbar.AddNewSlot(slot);
                     }
-                    slot.Amount += 125;
+                    slot.Amount += 125; //TODO: Hardcoded?
                 }
                 controller.InteractBlock = null;
             }
@@ -113,7 +104,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 );
 
                             // Nicht in sich selbst reinbauen
-                            
+
                             foreach (var box in boxes)
                             {
                                 var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
@@ -123,22 +114,17 @@ namespace OctoAwesome.Basics.SimulationComponents
                                     intersects = true;
                             }
                         }
-                       
+
 
                         if (!intersects)
                         {
                             entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
 
-                            toolbar.ActiveTool.Amount -= 125;
+                            toolbar.ActiveTool.Amount -= 125; //TODO: Hardcoded?
                             if (toolbar.ActiveTool.Amount <= 0)
                             {
                                 inventory.Inventory.Remove(toolbar.ActiveTool);
-                                for (int i = 0; i < toolbar.Tools.Length; i++)
-                                {
-                                    if (toolbar.Tools[i] == toolbar.ActiveTool)
-                                        toolbar.Tools[i] = null;
-                                }
-                                toolbar.ActiveTool = null;
+                                toolbar.RemoveSlot(toolbar.ActiveTool);
                             }
                         }
                     }

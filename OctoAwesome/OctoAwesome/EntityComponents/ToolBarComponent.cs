@@ -75,5 +75,21 @@ namespace OctoAwesome.EntityComponents
 
             return -1;
         }
+
+        /// <summary>
+        /// Fügt einen neuen InventorySlot an der ersten freien Stelle hinzu.
+        /// </summary>
+        /// <param name="slot"></param>
+        public void AddNewSlot(InventorySlot slot)
+        {
+            for (int i = 0; i < Tools.Length; i++)
+            {
+                if (Tools[i] == null)
+                {
+                    Tools[i] = slot;
+                    break;
+                }
+            }
+        }
     }
 }
