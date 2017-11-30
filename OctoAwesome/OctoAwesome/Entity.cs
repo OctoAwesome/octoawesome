@@ -89,5 +89,10 @@ namespace OctoAwesome
         {
             Components.Deserialize(reader, definitionManager);
         }
+
+        public virtual void RegisterDefault()
+        {
+
+        }
     }
 }

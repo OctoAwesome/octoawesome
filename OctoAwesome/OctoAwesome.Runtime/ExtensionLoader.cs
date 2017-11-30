@@ -21,7 +21,7 @@ namespace OctoAwesome.Runtime
 
         private List<Action<Simulation>> simulationExtender;
 
-        private List<IMapGenerator> mapGenerator;
+        private List<IMapGenerator> mapGenerators;
 
         private List<IMapPopulator> mapPopulators;
 
@@ -48,11 +48,11 @@ namespace OctoAwesome.Runtime
             entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
             simulationExtender = new List<Action<Simulation>>();
-            mapGenerator = new List<IMapGenerator>();
+            mapGenerators = new List<IMapGenerator>();
             mapPopulators = new List<IMapPopulator>();
             LoadedExtensions = new List<IExtension>();
-            ActiveExtensions = new List<IExtension>();     
-                
+            ActiveExtensions = new List<IExtension>();
+
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace OctoAwesome.Runtime
         public void ApplyExtensions(IList<IExtension> disabledExtensions)
         {
             var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
-            settings.Set(SETTINGSKEY, types);      
+            settings.Set(SETTINGSKEY, types);
         }
 
         #region Loader Methods
@@ -183,6 +183,9 @@ namespace OctoAwesome.Runtime
             list.Add(extenderDelegate);
         }
 
+        public void RegisterDefaultEntityExtender<T>() where T : Entity 
+            => RegisterEntityExtender<T>((e) => e.RegisterDefault());
+
         /// <summary>
         /// Adds a new Extender for the simulation.
         /// </summary>
@@ -198,7 +201,7 @@ namespace OctoAwesome.Runtime
         public void RegisterMapGenerator(IMapGenerator generator)
         {
             // TODO: Checks
-            mapGenerator.Add(generator);
+            mapGenerators.Add(generator);
         }
 
         public void RegisterMapPopulator(IMapPopulator populator)
@@ -214,21 +217,21 @@ namespace OctoAwesome.Runtime
         /// <typeparam name="T"></typeparam>
         public void RemoveEntity<T>() where T : Entity
         {
-            throw new NotImplementedException();
+            entities.Remove(typeof(T));
         }
 
         /// <summary>
         /// Removes an existing Map Generator.
         /// </summary>
         /// <typeparam name="T">Map Generator Type</typeparam>
-        public void RemoveMapGenerator<T>() where T : IMapGenerator
+        public void RemoveMapGenerator<T>(T item) where T : IMapGenerator
         {
-           throw new NotImplementedException();
+            mapGenerators.Remove(item);
         }
 
-        public void RemoveMapPopulator<T>() where T : IMapPopulator
+        public void RemoveMapPopulator<T>(T item) where T : IMapPopulator
         {
-            throw new NotImplementedException();
+            mapPopulators.Remove(item);
         }
 
         #endregion
@@ -289,7 +292,7 @@ namespace OctoAwesome.Runtime
         /// <returns>List of Generators</returns>
         public IEnumerable<IMapGenerator> GetMapGenerator()
         {
-            return mapGenerator;
+            return mapGenerators;
         }
 
         /// <summary>

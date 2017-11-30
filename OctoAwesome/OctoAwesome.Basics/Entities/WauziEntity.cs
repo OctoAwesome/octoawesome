@@ -27,7 +27,7 @@ namespace OctoAwesome.Basics.Entities
             BodyPowerComponent body = Components.GetComponent<BodyPowerComponent>();
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.MoveInput = new Vector2(0.5f, 0.5f) ;
-
+            
             if (JumpTime <= 0)
             {
                 controller.JumpInput = true;
@@ -42,6 +42,18 @@ namespace OctoAwesome.Basics.Entities
             {
                 controller.JumpInput = false;
             }
+        }
+
+        public override void RegisterDefault()
+        {
+            Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
+            Components.AddComponent(new GravityComponent());
+            Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+            Components.AddComponent(new MoveableComponent());
+            Components.AddComponent(new BoxCollisionComponent());
+            Components.AddComponent(new ControllableComponent());
+            Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace OctoAwesome
         /// <summary>
         /// Removes an existing Entity Type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Entity Type</typeparam>
         void RemoveEntity<T>() where T : Entity;
 
         /// <summary>
@@ -54,6 +54,12 @@ namespace OctoAwesome
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
         void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity;
+
+        /// <summary>
+        /// Adds the Default Extender for the given Entity Type.
+        /// </summary>
+        /// <typeparam name="T">Entity Type</typeparam>
+        void RegisterDefaultEntityExtender<T>() where T : Entity;
 
         /// <summary>
         /// Adds a new Extender for the simulation.
@@ -70,10 +76,10 @@ namespace OctoAwesome
         /// Removes an existing Map Generator.
         /// </summary>
         /// <typeparam name="T">Map Generator Type</typeparam>
-        void RemoveMapGenerator<T>() where T : IMapGenerator;
+        void RemoveMapGenerator<T>(T item) where T : IMapGenerator;
 
         void RegisterMapPopulator(IMapPopulator populator);
 
-        void RemoveMapPopulator<T>() where T : IMapPopulator; 
+        void RemoveMapPopulator<T>(T item) where T : IMapPopulator; 
     }
 }
