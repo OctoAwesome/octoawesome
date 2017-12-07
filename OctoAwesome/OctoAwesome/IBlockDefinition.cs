@@ -56,65 +56,7 @@ namespace OctoAwesome
         /// <returns>Die physikalischen Parameter</returns>
         PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);*/
 
-        /// <summary>
-        /// Texturindex für das Array <see cref="Textures"/> für die Oberseite (Positiv Z) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Index für das Array <see cref="Textures"/></returns>
-        int GetTopTextureIndex(ILocalChunkCache manager, int x, int y, int z);
-
-        /// <summary>
-        /// Texturindex für das Array <see cref="Textures"/> für die Unterseite (Negativ Z) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Index für das Array <see cref="Textures"/></returns>
-        int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z);
-
-        /// <summary>
-        /// Texturindex für das Array <see cref="Textures"/> für die Nordseite (Positiv Y) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Index für das Array <see cref="Textures"/></returns>
-        int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z);
-
-        /// <summary>
-        /// Texturindex für das Array <see cref="Textures"/> für die Südseite (Negativ Y) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Index für das Array <see cref="Textures"/></returns>
-        int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z);
-
-        /// <summary>
-        /// Texturindex für das Array <see cref="Textures"/> für die Westseite (Negativ X) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Index für das Array <see cref="Textures"/></returns>
-        int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z);
-
-        /// <summary>
-        /// Texturindex für das Array <see cref="Textures"/> für die Ostseite (Positiv X) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Index für das Array <see cref="Textures"/></returns>
-        int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z);
+        int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z);
 
         /// <summary>
         /// Rotation der Textur in 90° Schritten für die Oberseite (Positiv Z) des Blocks

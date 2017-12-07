@@ -45,31 +45,19 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             throw new NotImplementedException();
         }
 
-        public override int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
+        public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
-            return 1;
+            if (wall == Wall.Top)
+            {
+                return 0;
+            } else if (wall == Wall.Bottom)
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
         }
-
-        public override int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        
     }
 }

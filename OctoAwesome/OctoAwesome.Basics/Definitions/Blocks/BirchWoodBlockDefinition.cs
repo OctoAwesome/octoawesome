@@ -47,114 +47,70 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             throw new NotImplementedException();
         }
 
-        public override int GetTopTextureIndex(ILocalChunkCache manager, int x, int y, int z)
+        public override int GetTextureIndex (Wall wall, ILocalChunkCache manager,
+            int x, int y, int z)
         {
             OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
 
-            switch (orientation)
+            switch (wall)
             {
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                    return 1;
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 0;
-            }
-        }
+                case Wall.Top:
+                case Wall.Bottom:
+                    {
+                        switch (orientation)
+                        {
+                            case OrientationFlags.SideWest:
+                            case OrientationFlags.SideEast:
+                            case OrientationFlags.SideSouth:
+                            case OrientationFlags.SideNorth:
+                                return 1;
+                            case OrientationFlags.SideBottom:
+                            case OrientationFlags.SideTop:
+                            default:
+                                return 0;
+                        }
+                    }
 
-        public override int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+                case Wall.Front:
+                case Wall.Back:
 
-            switch (orientation)
-            {
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                    return 1;
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 0;
-            }
-        }
+                    {
+                        switch (orientation)
+                        {
+                            case OrientationFlags.SideSouth:
+                            case OrientationFlags.SideNorth:
+                                return 0;
+                            case OrientationFlags.SideWest:
+                            case OrientationFlags.SideEast:
+                            case OrientationFlags.SideBottom:
+                            case OrientationFlags.SideTop:
+                            default:
+                                return 1;
+                        }
+                    }
 
-        public override int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+                case Wall.Left:
+                case Wall.Right:
+                    {
 
-            switch (orientation)
-            {
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                    return 0;
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 1;
-            }
-        }
-
-        public override int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
-
-            switch (orientation)
-            {
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                    return 0;
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 1;
+                        switch (orientation)
+                        {
+                            case OrientationFlags.SideWest:
+                            case OrientationFlags.SideEast:
+                                return 0;
+                            case OrientationFlags.SideSouth:
+                            case OrientationFlags.SideNorth:
+                            case OrientationFlags.SideBottom:
+                            case OrientationFlags.SideTop:
+                            default:
+                                return 1;
+                        }
+                    }
             }
 
-        }
-
-        public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
-
-            switch (orientation)
-            {
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                    return 0;
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 1;
-            }
-
-        }
-
-        public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
-
-            switch (orientation)
-            {
-                case OrientationFlags.SideWest:
-                case OrientationFlags.SideEast:
-                    return 0;
-                case OrientationFlags.SideSouth:
-                case OrientationFlags.SideNorth:
-                case OrientationFlags.SideBottom:
-                case OrientationFlags.SideTop:
-                default:
-                    return 1;
-            }
+            // Should never happen
+            // Assert here
+            return -1;
         }
 
         public override int GetTopTextureRotation(ILocalChunkCache manager, int x, int y, int z)
