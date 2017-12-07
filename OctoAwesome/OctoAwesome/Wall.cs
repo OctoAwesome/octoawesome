@@ -2,10 +2,8 @@
 
 namespace OctoAwesome
 {
-    [Flags]
     public enum Wall
     {
-        None,
         Top,
         Bottom,
         Left,

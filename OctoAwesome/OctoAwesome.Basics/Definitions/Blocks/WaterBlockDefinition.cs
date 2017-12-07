@@ -6,7 +6,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class WaterBlockDefinition : BlockDefinition
     {
         public override string Name => Languages.OctoBasics.Water;
-        public override Wall SolidWall => Wall.None;
+        public override uint SolidWall => 0;
         public override string Icon => "water";
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
