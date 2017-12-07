@@ -10,6 +10,14 @@ namespace OctoAwesome
     /// </summary>
     public abstract class BlockDefinition : IBlockDefinition
     {
+        public virtual Wall SolidWall =>
+            Wall.Back |
+            Wall.Bottom |
+            Wall.Front |
+            Wall.Left |
+            Wall.Right |
+            Wall.Top;
+
         /// <summary>
         /// Der Name des Block-Typen
         /// </summary>
@@ -23,12 +31,12 @@ namespace OctoAwesome
         /// <summary>
         /// Die maximale Stackgrösse
         /// </summary>
-        public virtual int StackLimit { get { return 100; } }
+        public virtual int StackLimit => 100;
 
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
-        public virtual float VolumePerUnit { get { return 125; } }
+        public virtual float VolumePerUnit => 125;
 
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
@@ -38,7 +46,7 @@ namespace OctoAwesome
         /// <summary>
         /// Zeigt, ob der Block-Typ Metadaten besitzt
         /// </summary>
-        public virtual bool HasMetaData { get { return false; } }
+        public virtual bool HasMetaData => false;
 
         /// <summary>
         /// Liefert die Physikalischen Paramerter, wie härte, dichte und bruchzähigkeit
@@ -196,7 +204,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>True, wenn die Wand undurchsichtig ist</returns>
-        public virtual bool IsTopSolidWall(ILocalChunkCache manager, int x, int y, int z) => true;
+        public bool IsTopSolidWall(ILocalChunkCache manager, int x, int y, int z) => SolidWall.HasFlag(Wall.Top);
 
         /// <summary>
         /// Gibt an, ob die Unterseite (Negativ Z) undurchsichtig ist, also Blöcke dahinter nicht gesehen werden können
@@ -206,7 +214,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>True, wenn die Wand undurchsichtig ist</returns>
-        public virtual bool IsBottomSolidWall(ILocalChunkCache manager, int x, int y, int z) => true;
+        public bool IsBottomSolidWall(ILocalChunkCache manager, int x, int y, int z) => SolidWall.HasFlag(Wall.Bottom);
 
         /// <summary>
         /// Gibt an, ob die Nordseite (Positiv Y) undurchsichtig ist, also Blöcke dahinter nicht gesehen werden können
@@ -216,7 +224,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>True, wenn die Wand undurchsichtig ist</returns>
-        public virtual bool IsNorthSolidWall(ILocalChunkCache manager, int x, int y, int z) => true;
+        public bool IsNorthSolidWall(ILocalChunkCache manager, int x, int y, int z) => SolidWall.HasFlag(Wall.Back);
 
         /// <summary>
         /// Gibt an, ob die Südseite (Negativ Y) undurchsichtig ist, also Blöcke dahinter nicht gesehen werden können
@@ -226,7 +234,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>True, wenn die Wand undurchsichtig ist</returns>
-        public virtual bool IsSouthSolidWall(ILocalChunkCache manager, int x, int y, int z) => true;
+        public bool IsSouthSolidWall(ILocalChunkCache manager, int x, int y, int z) => SolidWall.HasFlag(Wall.Right);
 
         /// <summary>
         /// Gibt an, ob die Westseite (Positiv X) undurchsichtig ist, also Blöcke dahinter nicht gesehen werden können
@@ -236,7 +244,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>True, wenn die Wand undurchsichtig ist</returns>
-        public virtual bool IsWestSolidWall(ILocalChunkCache manager, int x, int y, int z) => true;
+        public bool IsWestSolidWall(ILocalChunkCache manager, int x, int y, int z) => SolidWall.HasFlag(Wall.Left);
 
         /// <summary>
         /// Gibt an, ob die Ostseite (Negativ X) undurchsichtig ist, also Blöcke dahinter nicht gesehen werden können
@@ -246,6 +254,8 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>True, wenn die Wand undurchsichtig ist</returns>
-        public virtual bool IsEastSolidWall(ILocalChunkCache manager, int x, int y, int z) => true;
+        public bool IsEastSolidWall(ILocalChunkCache manager, int x, int y, int z) => SolidWall.HasFlag(Wall.Front);
+
+
     }
 }

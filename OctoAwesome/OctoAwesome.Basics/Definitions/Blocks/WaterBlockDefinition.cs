@@ -5,15 +5,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class WaterBlockDefinition : BlockDefinition
     {
-        public override string Name
-        {
-            get { return Languages.OctoBasics.Water; }
-        }
-
-        public override string Icon
-        {
-            get { return "water"; }
-        }
+        public override string Name => Languages.OctoBasics.Water;
+        public override Wall SolidWall => Wall.None;
+        public override string Icon => "water";
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
@@ -32,44 +26,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
+        public override string[] Textures => new[] {
                     "water"
                 };
-            }
-        }
 
-        public override bool IsTopSolidWall(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return false;
-        }
 
-        public override bool IsBottomSolidWall(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return false;
-        }
 
-        public override bool IsNorthSolidWall(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return false;
-        }
-
-        public override bool IsSouthSolidWall(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return false;
-        }
-
-        public override bool IsWestSolidWall(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return false;
-        }
-
-        public override bool IsEastSolidWall(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return false;
-        }
     }
 }
