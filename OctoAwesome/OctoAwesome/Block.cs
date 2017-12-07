@@ -3,6 +3,7 @@ using engenious;
 
 namespace OctoAwesome
 {
+    //TODO: #CleanUP -> combine intersect methods?
     /// <summary>
     /// Helferklasse für die Kollisionserkennung mit Blöcken.
     /// </summary>
@@ -28,12 +29,11 @@ namespace OctoAwesome
                 BoundingBox box = new BoundingBox(localBox.Min + boxPosition, localBox.Max + boxPosition);
 
                 float? distance = ray.Intersects(box);
-                if (!distance.HasValue) continue;
+                if (!distance.HasValue)
+                    continue;
 
                 if (!minDistance.HasValue || minDistance > distance)
-                {
                     minDistance = distance;
-                }
 
                 Vector3 boxCorner = new Vector3(
                         ray.Direction.X > 0 ? box.Min.X : box.Max.X,
@@ -72,8 +72,10 @@ namespace OctoAwesome
                 }
 
                 collisionAxis = axis;
+
                 if (axis.HasValue)
                     return max * raylength;
+
                 return null;
             }
             else
@@ -117,7 +119,8 @@ namespace OctoAwesome
                     playerMin.Y <= boxMax.Y && playerMax.Y >= boxMin.Y &&
                     playerMin.Z <= boxMax.Z && playerMax.Z >= boxMin.Z;
 
-                if (!collide) continue;
+                if (!collide)
+                    continue;
 
                 Vector3 boxCorner = new Vector3(
                         move.X > 0 ? boxMin.X : boxMax.X,
