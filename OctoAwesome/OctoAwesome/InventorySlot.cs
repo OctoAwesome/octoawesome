@@ -8,7 +8,7 @@
         /// <summary>
         /// Das Item das in dem Slot ist.
         /// </summary>
-        public IDefinition Definition { get; set; }
+        public IInventoryableDefinition Definition { get; set; }
 
         /// <summary>
         /// Volumen des Elementes <see cref="Definition"/> in diesem Slot in dm³.

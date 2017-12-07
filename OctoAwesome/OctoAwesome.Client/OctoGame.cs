@@ -84,7 +84,7 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new Components.SimulationComponent(this, 
+            Simulation = new Components.SimulationComponent(this,
                 extensionLoader, ResourceManager);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
@@ -135,16 +135,8 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:apply", Languages.OctoKeys.apply);
             KeyMapper.RegisterBinding("octoawesome:flymode", Languages.OctoKeys.flymode);
             KeyMapper.RegisterBinding("octoawesome:jump", Languages.OctoKeys.jump);
-            KeyMapper.RegisterBinding("octoawesome:slot0", Languages.OctoKeys.slot0);
-            KeyMapper.RegisterBinding("octoawesome:slot1", Languages.OctoKeys.slot1);
-            KeyMapper.RegisterBinding("octoawesome:slot2", Languages.OctoKeys.slot2);
-            KeyMapper.RegisterBinding("octoawesome:slot3", Languages.OctoKeys.slot3);
-            KeyMapper.RegisterBinding("octoawesome:slot4", Languages.OctoKeys.slot4);
-            KeyMapper.RegisterBinding("octoawesome:slot5", Languages.OctoKeys.slot5);
-            KeyMapper.RegisterBinding("octoawesome:slot6", Languages.OctoKeys.slot6);
-            KeyMapper.RegisterBinding("octoawesome:slot7", Languages.OctoKeys.slot7);
-            KeyMapper.RegisterBinding("octoawesome:slot8", Languages.OctoKeys.slot8);
-            KeyMapper.RegisterBinding("octoawesome:slot9", Languages.OctoKeys.slot9);
+            for (int i = 0; i < 10; i++)
+                KeyMapper.RegisterBinding("octoawesome:slot" + i, Languages.OctoKeys.ResourceManager.GetString("slot" + i));
             KeyMapper.RegisterBinding("octoawesome:debug.allblocks", Languages.OctoKeys.debug_allblocks);
             KeyMapper.RegisterBinding("octoawesome:debug.control", Languages.OctoKeys.debug_control);
             KeyMapper.RegisterBinding("octoawesome:inventory", Languages.OctoKeys.inventory);

@@ -41,6 +41,8 @@ namespace OctoAwesome.Basics.Definitions.Items
             }
         }
 
+        decimal IInventoryableDefinition.VolumePerUnit => 1;
+
         public PhysicalProperties GetProperties(IItem item)
         {
             return new PhysicalProperties()

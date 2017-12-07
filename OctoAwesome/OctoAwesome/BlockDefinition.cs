@@ -21,7 +21,7 @@ namespace OctoAwesome
         /// <summary>
         /// Die maximale Stackgrösse
         /// </summary>
-        public virtual int StackLimit { get { return 2; } }
+        public virtual int StackLimit { get { return 100; } }
 
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.

@@ -5,7 +5,6 @@ using engenious.Input;
 using System.Collections.Generic;
 using OctoAwesome.Client.Controls;
 using engenious;
-using OctoAwesome.Runtime;
 using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Screens
@@ -13,7 +12,6 @@ namespace OctoAwesome.Client.Screens
     internal sealed class InventoryScreen : Screen
     {
         private Dictionary<string, Texture2D> toolTextures = new Dictionary<string, Texture2D>();
-
 
         private PlayerComponent player;
 
@@ -43,12 +41,9 @@ namespace OctoAwesome.Client.Screens
                 toolTextures.Add(item.GetType().FullName, texture);
             }
 
-
-
             player = manager.Player;
 
             IsOverlay = true;
-
             Background = new BorderBrush(Color.Black * 0.3f);
 
             backgroundBrush = new BorderBrush(Color.Black);
@@ -183,18 +178,11 @@ namespace OctoAwesome.Client.Screens
         protected override void OnKeyDown(KeyEventArgs args)
         {
             // Tool neu zuweisen
-            switch (args.Key)
+            if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
             {
-                case Keys.D1: player.Toolbar.SetTool(inventory.HoveredSlot, 0); args.Handled = true; break;
-                case Keys.D2: player.Toolbar.SetTool(inventory.HoveredSlot, 1); args.Handled = true; break;
-                case Keys.D3: player.Toolbar.SetTool(inventory.HoveredSlot, 2); args.Handled = true; break;
-                case Keys.D4: player.Toolbar.SetTool(inventory.HoveredSlot, 3); args.Handled = true; break;
-                case Keys.D5: player.Toolbar.SetTool(inventory.HoveredSlot, 4); args.Handled = true; break;
-                case Keys.D6: player.Toolbar.SetTool(inventory.HoveredSlot, 5); args.Handled = true; break;
-                case Keys.D7: player.Toolbar.SetTool(inventory.HoveredSlot, 6); args.Handled = true; break;
-                case Keys.D8: player.Toolbar.SetTool(inventory.HoveredSlot, 7); args.Handled = true; break;
-                case Keys.D9: player.Toolbar.SetTool(inventory.HoveredSlot, 8); args.Handled = true; break;
-                case Keys.D0: player.Toolbar.SetTool(inventory.HoveredSlot, 9); args.Handled = true; break;
+                int offset = (int)args.Key - (int)Keys.D0;
+                player.Toolbar.SetTool(inventory.HoveredSlot, offset);
+                args.Handled = true;
             }
 
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
@@ -210,10 +198,8 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnUpdate(gameTime);
 
-            nameLabel.Text = inventory.HoveredSlot != null ? inventory.HoveredSlot.Definition.Name : string.Empty;
-            massLabel.Text = inventory.HoveredSlot != null ? inventory.HoveredSlot.Amount.ToString() : string.Empty;
-            volumeLabel.Text = inventory.HoveredSlot != null ? inventory.HoveredSlot.Amount.ToString() : string.Empty;
-
+            nameLabel.Text = inventory.HoveredSlot?.Definition.Name ?? "";
+            massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
             // Aktualisierung des aktiven Buttons
             for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)

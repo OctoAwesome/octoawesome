@@ -6,18 +6,8 @@ namespace OctoAwesome
     /// <summary>
     /// Basisinterface für eine Blockdefinition
     /// </summary>
-    public interface IBlockDefinition : IDefinition
+    public interface IBlockDefinition : IInventoryableDefinition, IDefinition
     {
-        /// <summary>
-        /// Gibt das Volumen für eine Einheit an.
-        /// </summary>
-        decimal VolumePerUnit { get; }
-
-        /// <summary>
-        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können (in Anzahl der Blöcke, nicht in Vielfachen der <see cref="VolumePerUnit"/>!).
-        /// </summary>
-        int StackLimit { get; }
-
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
         /// </summary>
