@@ -9,8 +9,8 @@ using OctoAwesome.Basics.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent),typeof(InventoryComponent))]
-    public class BlockInteractionComponent : SimulationComponent<ControllableComponent,InventoryComponent>
+    [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
+    public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
     {
         private Simulation simulation;
 
@@ -40,26 +40,8 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 if (lastBlock != 0)
                 {
-                    //TODO: Unschön, StackLimit & VolumePerUnit müssen in IDefinition!
-                    var blockDefinition = (IBlockDefinition)simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
-
-                    decimal limit = blockDefinition.VolumePerUnit * blockDefinition.StackLimit;
-                    var slot = inventory.Inventory.FirstOrDefault(s => s.Definition == blockDefinition && s.Amount < limit);
-
-                    // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                    if (slot == null)
-                    {
-                        slot = new InventorySlot()
-                        {
-                            Definition = blockDefinition,
-                            Amount = 0
-                        };
-                        inventory.Inventory.Add(slot);
-
-                        if (toolbar != null)
-                            toolbar.AddNewSlot(slot);
-                    }
-                    slot.Amount += blockDefinition.VolumePerUnit;
+                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
+                    inventory.AddOfType(blockDefinition);
                 }
                 controller.InteractBlock = null;
             }
@@ -115,26 +97,19 @@ namespace OctoAwesome.Basics.SimulationComponents
                             }
                         }
 
-
                         if (!intersects)
                         {
-                            //TODO: Das ist jetzt richtig unschön, wenn wir mal Tools einführen sollten (zum xten Mal), gibts Exceptions
-                            var bdef = (IBlockDefinition)toolbar.ActiveTool.Definition;
-                            if (toolbar.ActiveTool.Amount >= bdef.VolumePerUnit) // Wir können noch einen Block setzen
+                            var succeeded = inventory.RemoveUnit(toolbar.ActiveTool);
+                            if (succeeded)
                             {
                                 entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-
-                                toolbar.ActiveTool.Amount -= bdef.VolumePerUnit;
                                 if (toolbar.ActiveTool.Amount <= 0)
-                                {
-                                    inventory.Inventory.Remove(toolbar.ActiveTool);
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
-                                }
                             }
                         }
                     }
-                    controller.ApplyBlock = null;
                 }
+                controller.ApplyBlock = null;
             }
         }
     }
