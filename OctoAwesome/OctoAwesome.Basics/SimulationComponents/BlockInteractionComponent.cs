@@ -40,9 +40,11 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
+                    //TODO: Unschön, StackLimit & VolumePerUnit müssen in IDefinition!
+                    var blockDefinition = (IBlockDefinition)simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
 
-                    var slot = inventory.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
+                    decimal limit = blockDefinition.VolumePerUnit * blockDefinition.StackLimit;
+                    var slot = inventory.Inventory.FirstOrDefault(s => s.Definition == blockDefinition && s.Amount < limit);
 
                     // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
                     if (slot == null)
@@ -54,11 +56,10 @@ namespace OctoAwesome.Basics.SimulationComponents
                         };
                         inventory.Inventory.Add(slot);
 
-
                         if (toolbar != null)
                             toolbar.AddNewSlot(slot);
                     }
-                    slot.Amount += 125; //TODO: Hardcoded?
+                    slot.Amount += blockDefinition.VolumePerUnit;
                 }
                 controller.InteractBlock = null;
             }
@@ -104,7 +105,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 );
 
                             // Nicht in sich selbst reinbauen
-
                             foreach (var box in boxes)
                             {
                                 var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
@@ -118,13 +118,18 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         if (!intersects)
                         {
-                            entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-
-                            toolbar.ActiveTool.Amount -= 125; //TODO: Hardcoded?
-                            if (toolbar.ActiveTool.Amount <= 0)
+                            //TODO: Das ist jetzt richtig unschön, wenn wir mal Tools einführen sollten (zum xten Mal), gibts Exceptions
+                            var bdef = (IBlockDefinition)toolbar.ActiveTool.Definition;
+                            if (toolbar.ActiveTool.Amount >= bdef.VolumePerUnit) // Wir können noch einen Block setzen
                             {
-                                inventory.Inventory.Remove(toolbar.ActiveTool);
-                                toolbar.RemoveSlot(toolbar.ActiveTool);
+                                entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+
+                                toolbar.ActiveTool.Amount -= bdef.VolumePerUnit;
+                                if (toolbar.ActiveTool.Amount <= 0)
+                                {
+                                    inventory.Inventory.Remove(toolbar.ActiveTool);
+                                    toolbar.RemoveSlot(toolbar.ActiveTool);
+                                }
                             }
                         }
                     }

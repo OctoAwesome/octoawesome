@@ -195,11 +195,11 @@ namespace OctoAwesome.Client.Components
             var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
             foreach (var blockDefinition in blockDefinitions)
             {
-
-                var slot = inventory.Inventory.Where(s => s.Definition == blockDefinition /*&& s.Amount < blockDefinition.StackLimit*/).FirstOrDefault();
+                decimal limit = blockDefinition.VolumePerUnit * blockDefinition.StackLimit;
+                var slot = inventory.Inventory.FirstOrDefault(s => s.Definition == blockDefinition && s.Amount < limit);
 
                 // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                if (slot == null /*|| slot.Amount >= blockDefinition.StackLimit*/)
+                if (slot == null)
                 {
                     slot = new InventorySlot()
                     {
@@ -208,26 +208,26 @@ namespace OctoAwesome.Client.Components
                     };
                     inventory.Inventory.Add(slot);
                 }
-                slot.Amount+=125; //TODO: Hardcoded?
+                slot.Amount += blockDefinition.VolumePerUnit;
             }
 
             var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
-            foreach (var blockDefinition in itemDefinitions)
+            foreach (var itemDefinition in itemDefinitions)
             {
-
-                var slot = inventory.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
+                decimal limit = itemDefinition.StackLimit;
+                var slot = inventory.Inventory.Where(s => s.Definition == itemDefinition && s.Amount < limit).FirstOrDefault();
 
                 // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                if (slot == null || slot.Amount >= blockDefinition.StackLimit)
+                if (slot == null)
                 {
                     slot = new InventorySlot()
                     {
-                        Definition = blockDefinition,
+                        Definition = itemDefinition,
                         Amount = 0
                     };
                     inventory.Inventory.Add(slot);
                 }
-                slot.Amount++;
+                slot.Amount++; //TODO: Hardcoded
             }
 
         }

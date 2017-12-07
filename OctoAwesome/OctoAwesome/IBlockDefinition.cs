@@ -11,12 +11,11 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
-        float VolumePerUnit { get; }
+        decimal VolumePerUnit { get; }
 
         /// <summary>
-        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können
+        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können (in Anzahl der Blöcke, nicht in Vielfachen der <see cref="VolumePerUnit"/>!).
         /// </summary>
-        [Obsolete]
         int StackLimit { get; }
 
         /// <summary>
@@ -37,7 +36,7 @@ namespace OctoAwesome
         bool HasMetaData { get; }
 
         /// <summary>
-        /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die 
+        /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die
         /// </summary>
         /// <param name="manager">[Bitte ergänzen]</param>
         /// <param name="x">X-Anteil der Koordinate des Blocks</param>

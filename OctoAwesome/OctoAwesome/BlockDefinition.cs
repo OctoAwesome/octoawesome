@@ -21,12 +21,12 @@ namespace OctoAwesome
         /// <summary>
         /// Die maximale Stackgrösse
         /// </summary>
-        public virtual int StackLimit { get { return 100; } }
+        public virtual int StackLimit { get { return 2; } }
 
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
-        public virtual float VolumePerUnit { get { return 125; } }
+        public virtual decimal VolumePerUnit { get { return 125; } }
 
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
@@ -56,7 +56,7 @@ namespace OctoAwesome
         public abstract void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
 
         /// <summary>
-        /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die 
+        /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die
         /// </summary>
         /// <param name="manager">[Bitte ergänzen]</param>
         /// <param name="x">X-Anteil der Koordinate des Blocks</param>
