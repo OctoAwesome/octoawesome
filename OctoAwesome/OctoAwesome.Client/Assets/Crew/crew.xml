@@ -21,16 +21,17 @@
     </AchievementList>
     <Links>
       <Link Title="Blog" Url="https://anteru.net/" />
-      <Link Title="OctoAwesome Blogeintrag" Url="https://anteru.net/2015/08/06/2847/" />      
+      <Link Title="OctoAwesome Blogeintrag" Url="https://anteru.net/2015/08/06/2847/" />
     </Links>
   </CrewMember>
   <CrewMember>
     <Username>bobstriker</Username>
     <Alias>Tom</Alias>
-    <Description>Das ist der Typ, der meistens vor der Kamera sitzt und versucht das Projekt zusammen zu halten. Ich denke das läuft ganz gut. Als gelernter Programmierer versucht er wohl zu allem ein bisschen was zu wissen und zeigt in OctoAwesome seine Herangehensweise an Software-Probleme.</Description>
+    <Description>Das ist der Typ, der meistens vor der Kamera sitzt (saß) und versucht(e) das Projekt zusammen zu halten. Ich denke das läuft ganz gut. Als gelernter Programmierer versucht er wohl zu allem ein bisschen was zu wissen und zeigt in OctoAwesome seine Herangehensweise an Software-Probleme. Leider hat Tom in den letzten Monaten auf Grund seiner geänderten familiären Lage kaum Zeit ür Octo, deshalb lässt er sich nur ab und an bei den Streams im Chat blicken.</Description>
     <AchievementList>
       <Achievements>Streamer</Achievements>
       <Achievements>Livegast</Achievements>
+      <Achievements>Contributor</Achievements>
     </AchievementList>
     <Links>
       <Link Title="Youtube Channel" Url="https://www.youtube.com/c/tomwendel" />
@@ -149,10 +150,11 @@
   <CrewMember>
     <Username>Marcus_Aurelius</Username>
     <Alias>Maximilian</Alias>
-    <Description>Marcus arbeitet auch hier in unserem Wiki mit.</Description>
+    <Description>Nach Toms langer Stream-Pause veranstaltet MarcusAurelius zusammen mit susch19 unseren wöchentlichen Octo-Stream. Marcus arbeitet daneben (und auch schon viel länger) in unserem Octowiki mit.</Description>
     <AchievementList>
       <Achievements>WikiAdmin</Achievements>
       <Achievements>Streamer</Achievements>
+      <Achievements>Livegast</Achievements>
       <Achievements>Contributor</Achievements>
     </AchievementList>
     <Links></Links>
@@ -247,10 +249,11 @@
   <CrewMember>
     <Username>susch19</Username>
     <Alias>Susch19</Alias>
-    <Description>Susch war von Beginn an Befürworter das Stream-Formats und ist seither immer sehr hilfreich dabei meine Copy-Paste Probleme aufzudecken und an vielen Stellen gutes Feedback zu schicken.</Description>
+    <Description>Nach Toms langer Stream-Pause veranstaltet susch19 zusammen mit MarcusAurelius unseren wöchentlichen Octo-Stream. Susch war von Beginn an Befürworter das Stream-Formats und ist seither immer sehr hilfreich dabei meine Copy-Paste Probleme aufzudecken und an vielen Stellen gutes Feedback zu schicken.</Description>
     <AchievementList>
       <Achievements>EmailJoker</Achievements>
       <Achievements>Streamer</Achievements>
+      <Achievements>Livegast</Achievements>
     </AchievementList>
     <Links></Links>
   </CrewMember>
