@@ -11,8 +11,10 @@ namespace OctoAwesome.Basics
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
             Index3 size = new Index3(12, 12, 3);
-            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed);
-            planet.Generator = this;
+            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed)
+            {
+                Generator = this
+            };
             return planet;
         }
 
@@ -203,6 +205,7 @@ namespace OctoAwesome.Basics
         {
             IPlanet planet = new ComplexPlanet();
             planet.Deserialize(stream);
+            planet.Generator = this;
             return planet;
         }
 

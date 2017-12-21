@@ -36,7 +36,7 @@ namespace OctoAwesome
         /// <summary>
         /// Der Generator des Planeten
         /// </summary>
-        IMapGenerator Generator { get; }
+        IMapGenerator Generator { get; set; }
 
         /// <summary>
         /// Serialisiert den Chunk in den angegebenen Stream

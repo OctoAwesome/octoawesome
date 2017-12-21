@@ -47,7 +47,7 @@ namespace OctoAwesome.Basics
                         if (z < (int)(height + part))
                         {
                             int block = z % (Chunk.CHUNKSIZE_Z);
-                            int layer = (int)(z / Chunk.CHUNKSIZE_Z);
+                            int layer = z / Chunk.CHUNKSIZE_Z;
                             result[layer].SetBlock(x, y, block, sandIndex);
                         }
                     }
