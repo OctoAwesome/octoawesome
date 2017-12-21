@@ -6,19 +6,8 @@ namespace OctoAwesome
     /// <summary>
     /// Basisinterface für eine Blockdefinition
     /// </summary>
-    public interface IBlockDefinition : IDefinition
+    public interface IBlockDefinition : IInventoryableDefinition, IDefinition
     {
-        /// <summary>
-        /// Gibt das Volumen für eine Einheit an.
-        /// </summary>
-        float VolumePerUnit { get; }
-
-        /// <summary>
-        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können
-        /// </summary>
-        [Obsolete]
-        int StackLimit { get; }
-
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
         /// </summary>
@@ -37,7 +26,7 @@ namespace OctoAwesome
         bool HasMetaData { get; }
 
         /// <summary>
-        /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die 
+        /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die
         /// </summary>
         /// <param name="manager">[Bitte ergänzen]</param>
         /// <param name="x">X-Anteil der Koordinate des Blocks</param>

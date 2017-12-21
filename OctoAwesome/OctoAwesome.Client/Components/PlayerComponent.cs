@@ -194,42 +194,11 @@ namespace OctoAwesome.Client.Components
 
             var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
             foreach (var blockDefinition in blockDefinitions)
-            {
-
-                var slot = inventory.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
-
-                // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                if (slot == null || slot.Amount >= blockDefinition.StackLimit)
-                {
-                    slot = new InventorySlot()
-                    {
-                        Definition = blockDefinition,
-                        Amount = 0
-                    };
-                    inventory.Inventory.Add(slot);
-                }
-                slot.Amount++;
-            }
+                inventory.AddUnit(blockDefinition);
 
             var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
-            foreach (var blockDefinition in itemDefinitions)
-            {
-
-                var slot = inventory.Inventory.Where(s => s.Definition == blockDefinition && s.Amount < blockDefinition.StackLimit).FirstOrDefault();
-
-                // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                if (slot == null || slot.Amount >= blockDefinition.StackLimit)
-                {
-                    slot = new InventorySlot()
-                    {
-                        Definition = blockDefinition,
-                        Amount = 0
-                    };
-                    inventory.Inventory.Add(slot);
-                }
-                slot.Amount++;
-            }
-
+            foreach (var itemDefinition in itemDefinitions)
+                inventory.AddUnit(itemDefinition);
         }
     }
 }

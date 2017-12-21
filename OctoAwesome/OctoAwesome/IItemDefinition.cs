@@ -5,14 +5,8 @@ namespace OctoAwesome
     /// <summary>
     /// Interface für die Definition eînes Items
     /// </summary>
-    public interface IItemDefinition : IDefinition
+    public interface IItemDefinition : IDefinition, IInventoryableDefinition
     {
-        /// <summary>
-        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können
-        /// </summary>
-        [Obsolete]
-        int StackLimit { get; }
-
         /*/// <summary>
         /// Liefert die Physikalischen Paramerter, wie härte, dichte und bruchzähigkeit
         /// </summary>

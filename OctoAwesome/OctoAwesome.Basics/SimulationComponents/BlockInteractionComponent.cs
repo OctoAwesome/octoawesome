@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
-using OctoAwesome.Basics.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent),typeof(InventoryComponent))]
-    public class BlockInteractionComponent : SimulationComponent<ControllableComponent,InventoryComponent>
+    [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
+    public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
     {
         private Simulation simulation;
 
@@ -41,33 +40,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                 if (lastBlock != 0)
                 {
                     var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
-
-                    var slot = inventory.Inventory.FirstOrDefault(s => s.Definition == blockDefinition);
-
-                    // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
-                    if (slot == null)
-                    {
-                        slot = new InventorySlot()
-                        {
-                            Definition = blockDefinition,
-                            Amount = 0
-                        };
-                        inventory.Inventory.Add(slot);
-
-                        
-                        if (toolbar != null)
-                        {
-                            for (int i = 0; i < toolbar.Tools.Length; i++)
-                            {
-                                if (toolbar.Tools[i] == null)
-                                {
-                                    toolbar.Tools[i] = slot;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    slot.Amount += 125;
+                    if (blockDefinition is IInventoryableDefinition invDef)
+                        inventory.AddUnit(invDef);
                 }
                 controller.InteractBlock = null;
             }
@@ -113,7 +87,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 );
 
                             // Nicht in sich selbst reinbauen
-                            
                             foreach (var box in boxes)
                             {
                                 var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
@@ -123,27 +96,19 @@ namespace OctoAwesome.Basics.SimulationComponents
                                     intersects = true;
                             }
                         }
-                       
 
                         if (!intersects)
                         {
-                            entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-
-                            toolbar.ActiveTool.Amount -= 125;
-                            if (toolbar.ActiveTool.Amount <= 0)
+                            if (inventory.RemoveUnit(toolbar.ActiveTool))
                             {
-                                inventory.Inventory.Remove(toolbar.ActiveTool);
-                                for (int i = 0; i < toolbar.Tools.Length; i++)
-                                {
-                                    if (toolbar.Tools[i] == toolbar.ActiveTool)
-                                        toolbar.Tools[i] = null;
-                                }
-                                toolbar.ActiveTool = null;
+                                entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                if (toolbar.ActiveTool.Amount <= 0)
+                                    toolbar.RemoveSlot(toolbar.ActiveTool);
                             }
                         }
                     }
-                    controller.ApplyBlock = null;
                 }
+                controller.ApplyBlock = null;
             }
         }
     }
