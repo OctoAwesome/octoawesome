@@ -31,7 +31,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
-        public virtual float VolumePerUnit => 125;
+        public virtual decimal VolumePerUnit => 125;
 
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
