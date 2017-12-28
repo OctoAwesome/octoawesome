@@ -106,7 +106,6 @@
     <Compile Include="IPlanet.cs" />
     <Compile Include="ILocalChunkCache.cs" />
     <Compile Include="IResource.cs" />
-    <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="ISettings.cs" />
