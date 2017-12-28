@@ -36,13 +36,13 @@ namespace OctoAwesome
         /// <summary>
         /// List of all Entities.
         /// </summary>
-        public List<Entity> Entities => entites.ToList();
+        public List<Entity> Entities => entities.ToList();
 
         private int nextId = 1;
 
         private readonly IExtensionResolver extensionResolver;
 
-        private HashSet<Entity> entites = new HashSet<Entity>();
+        private HashSet<Entity> entities = new HashSet<Entity>();
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
@@ -161,7 +161,6 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void AddEntity(Entity entity)
         {
-            //TODO: Überprüfen ob Entity schon da ist
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
@@ -171,11 +170,14 @@ namespace OctoAwesome
             if (entity.Simulation != null)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
+            if (entities.Contains(entity))
+                return;
+
             extensionResolver.ExtendEntity(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
             entity.Id = nextId++;
-            entites.Add(entity);
+            entities.Add(entity);
 
             foreach (var component in Components)
                 component.Add(entity);
@@ -207,7 +209,7 @@ namespace OctoAwesome
             foreach (var component in Components)
                 component.Remove(entity);
 
-            entites.Remove(entity);
+            entities.Remove(entity);
             entity.Id = 0;
             entity.Simulation = null;
 
