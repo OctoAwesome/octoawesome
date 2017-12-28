@@ -193,7 +193,7 @@ namespace OctoAwesome
         {
             int index = z / Chunk.CHUNKSIZE_Z;
             z %= Chunk.CHUNKSIZE_Z;
-            Chunks[index].SetBlock(x, y, z,block,meta);
+            Chunks[index].SetBlock(x, y, z, block, meta);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace OctoAwesome
         {
             int index = z / Chunk.CHUNKSIZE_Z;
             z %= Chunk.CHUNKSIZE_Z;
-            Chunks[index].SetBlockMeta(x, y, z,  meta);
+            Chunks[index].SetBlockMeta(x, y, z, meta);
         }
 
         /// <summary>
@@ -231,7 +231,6 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der verwendete DefinitionManager</param>
         public void Serialize(Stream stream, IDefinitionManager definitionManager)
         {
-            //TODO: #CleanUp Method ok?
             using (BinaryWriter bw = new BinaryWriter(stream))
             {
                 // Definitionen sammeln
@@ -263,7 +262,7 @@ namespace OctoAwesome
 
                 for (int i = 0; i < Chunks.Length; i++) // Change Counter
                     bw.Write(Chunks[i].ChangeCounter);
-                
+
                 // Schreibe Phase 2 (Block Definitionen)
                 if (longIndex)
                     bw.Write((ushort)definitions.Count);
@@ -341,7 +340,6 @@ namespace OctoAwesome
         /// <param name="planetId">Der Index des Planeten</param>
         public void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex)
         {
-            //TODO #CleanUp Method ok?
             using (BinaryReader br = new BinaryReader(stream))
             {
                 bool longIndex = br.ReadByte() > 0;
@@ -352,11 +350,13 @@ namespace OctoAwesome
                 Index = columnIndex;
 
                 Populated = br.ReadBoolean(); // Populated
+
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         Heights[x, y] = br.ReadUInt16();
 
                 int[] counter = new int[Chunks.Length];
+
                 for (int i = 0; i < Chunks.Length; i++) // ChangeCounter
                     counter[i] = br.ReadInt32();
 
@@ -365,6 +365,7 @@ namespace OctoAwesome
                 Dictionary<ushort, ushort> map = new Dictionary<ushort, ushort>();
 
                 int typecount = longIndex ? br.ReadUInt16() : br.ReadByte();
+
                 for (int i = 0; i < typecount; i++)
                 {
                     string typeName = br.ReadString();
@@ -380,6 +381,7 @@ namespace OctoAwesome
                 {
                     IChunk chunk = Chunks[c] = new Chunk(new Index3(columnIndex, c), planetId);
                     chunk.Changed += OnChunkChanged;
+
                     for (int i = 0; i < chunk.Blocks.Length; i++)
                     {
                         ushort typeIndex = longIndex ? br.ReadUInt16() : br.ReadByte();
@@ -389,6 +391,7 @@ namespace OctoAwesome
                             chunk.Blocks[i] = map[typeIndex];
 
                             var definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(map[typeIndex]);
+
                             if (definition.HasMetaData)
                                 chunk.MetaData[i] = br.ReadInt32();
                         }
@@ -413,23 +416,19 @@ namespace OctoAwesome
                         if (type == null)
                             continue;
 
-                        
                         Entity entity = (Entity)Activator.CreateInstance(type);
 
-
                         using (MemoryStream memorystream = new MemoryStream(buffer))
-                        using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
                         {
-                            entity.Deserialize(componentbinarystream, definitionManager);
+                            using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
+                            {
+                                entity.Deserialize(componentbinarystream, definitionManager);
+                            }
                         }
 
                         Entities.Add(entity);
-
                     }
                     catch (Exception)
-                    {
-                    }
-                    finally
                     {
                     }
                 }

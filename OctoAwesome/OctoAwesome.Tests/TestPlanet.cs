@@ -44,6 +44,7 @@ namespace OctoAwesome.Tests
         public Index3 Size { get; private set; }
 
         public Guid Universe { get; private set; }
+        IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void Deserialize(Stream stream)
         {

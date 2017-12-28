@@ -73,66 +73,8 @@ namespace OctoAwesome
 
         public virtual int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
 
-        /// <summary>
-        /// Rotation der Textur in 90° Schritten für die Oberseite (Positiv Z) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Rotation der Textur in 90° Schritten</returns>
-        public virtual int GetTopTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
-
-        /// <summary>
-        /// Rotation der Textur in 90° Schritten für die Unterseite (Negativ Z) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Rotation der Textur in 90° Schritten</returns>
-        public virtual int GetBottomTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
-
-        /// <summary>
-        /// Rotation der Textur in 90° Schritten für die Ostseite (Positiv X) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Rotation der Textur in 90° Schritten</returns>
-        public virtual int GetEastTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
-
-        /// <summary>
-        /// Rotation der Textur in 90° Schritten für die Westseite (Negativ X) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Rotation der Textur in 90° Schritten</returns>
-        public virtual int GetWestTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
-
-        /// <summary>
-        /// Rotation der Textur in 90° Schritten für die Nordseite (Positiv Y) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Rotation der Textur in 90° Schritten</returns>
-        public virtual int GetNorthTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
-
-        /// <summary>
-        /// Rotation der Textur in 90° Schritten für die Südseite (Negativ Y) des Blocks
-        /// </summary>
-        /// <param name="manager">[Bitte ergänzen]</param>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Rotation der Textur in 90° Schritten</returns>
-        public virtual int GetSouthTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
-
+        public virtual int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
+        
         public bool IsSolidWall(Wall wall) => (SolidWall& (1 << (int)wall)) != 0;
     }
 }
