@@ -207,8 +207,6 @@ namespace OctoAwesome
                 Flush();
 
             Planet = planet;
-            //TODO: #CleanUp Uncomplete Code?
-            int height = planet.Size.Z;
         }
 
         /// <summary>
@@ -216,7 +214,6 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Chunk Index</param>
         /// <returns>Instanz des Chunks</returns>
-        [Obsolete]
         public IChunk GetChunk(Index3 index) 
             => GetChunk(index.X, index.Y, index.Z);
 
@@ -248,7 +245,6 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block Index</param>
         /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
-        [Obsolete]
         public ushort GetBlock(Index3 index) 
             => GetBlock(index.X, index.Y, index.Z);
 
@@ -274,7 +270,6 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Die neue Block-ID.</param>
-        [Obsolete]
         public void SetBlock(Index3 index, ushort block) 
             => SetBlock(index.X, index.Y, index.Z, block);
 
@@ -315,15 +310,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
-        public int GetBlockMeta(Index3 index)
-        {
-            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
-
-            if (chunk != null)
-                return chunk.GetBlockMeta(index.X, index.Y, index.Z);
-
-            return 0;
-        }
+        public int GetBlockMeta(Index3 index) 
+            => GetBlockMeta(index.X, index.Y, index.Z);
 
         /// <summary>
         /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
@@ -346,12 +334,7 @@ namespace OctoAwesome
         /// <param name="index">Block-Koordinate</param>
         /// <param name="meta">Die neuen Metadaten</param>
         public void SetBlockMeta(Index3 index, int meta)
-        {
-            IChunk chunk = GetChunk(index.X >> Chunk.LimitX, index.Y >> Chunk.LimitY, index.Z >> Chunk.LimitZ);
-
-            if (chunk != null)
-                chunk.SetBlockMeta(index.X, index.Y, index.Z, meta);
-        }
+            => SetBlockMeta(index.X, index.Y, index.Z, meta);
 
         /// <summary>
         /// Leert den Cache und gibt sie beim GlobalChunkCache wieder frei

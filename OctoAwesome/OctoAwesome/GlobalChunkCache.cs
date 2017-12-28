@@ -299,16 +299,10 @@ namespace OctoAwesome
             //TODO: Überarbeiten
             lock (lockObject)
             {
-                //TODO: #CleanUp Linq geändert, Funktion prüfen
                 var failChunkEntities = cache
                     .Where(chunk => chunk.Value.ChunkColumn != null)
                     .SelectMany(chunk => chunk.Value.ChunkColumn.Entities.FailChunkEntity())
                     .ToArray();
-
-                //var failchunkentities = (from chunk in cache
-                //                         where chunk.Value.ChunkColumn != null
-                //                         from entity in chunk.Value.ChunkColumn.Entities.FailChunkEntity()
-                //                         select entity).ToArray();
 
                 foreach (var entity in failChunkEntities)
                 {

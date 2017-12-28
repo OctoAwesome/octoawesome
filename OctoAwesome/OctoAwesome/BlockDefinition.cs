@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 namespace OctoAwesome
 {
-    //TODO: #CleanUp -> Default values or not complete?
-    //more generic please!
     /// <summary>
     /// Eine definition eines Block-Typen
     /// </summary>
