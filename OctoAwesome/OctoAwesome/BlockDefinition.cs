@@ -133,6 +133,6 @@ namespace OctoAwesome
         /// <returns>Rotation der Textur in 90° Schritten</returns>
         public virtual int GetSouthTextureRotation(ILocalChunkCache manager, int x, int y, int z) => 0;
 
-        public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
+        public bool IsSolidWall(Wall wall) => (SolidWall& (1 << (int)wall)) != 0;
     }
 }

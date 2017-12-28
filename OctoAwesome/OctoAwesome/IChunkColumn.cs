@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-﻿using System;
+using System;
 using System.IO;
 
 namespace OctoAwesome
@@ -24,7 +24,7 @@ namespace OctoAwesome
         /// </summary>
         Index2 Index { get; }
 
-       int ChangeCounter { get; set; }
+        int ChangeCounter { get; set; }
 
         /// <summary>
         /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
@@ -56,6 +56,8 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>Block-ID der angegebenen Koordinate</returns>
         ushort GetBlock(int x, int y, int z);
+
+        event Action<IChunkColumn, IChunk, int> Changed;
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.
@@ -126,7 +128,5 @@ namespace OctoAwesome
         /// <param name="columnIndex">Die Position der Säule</param>
         /// <param name="planetId">Der Index des Planeten</param>
         void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);
-
-        event Action<IChunkColumn, IChunk, int> Changed;
     }
 }

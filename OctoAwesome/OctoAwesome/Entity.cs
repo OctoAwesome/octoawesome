@@ -44,10 +44,8 @@ namespace OctoAwesome
             
         }
 
-        private void OnAddComponent(EntityComponent component)
-        {
-            component.SetEntity(this);
-        }
+        private void OnAddComponent(EntityComponent component) 
+            => component.SetEntity(this);
 
         private void ValidateAddComponent(EntityComponent component)
         {
@@ -75,20 +73,16 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
-        {
-            Components.Serialize(writer, definitionManager);
-        }
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager) 
+            => Components.Serialize(writer, definitionManager);
 
         /// <summary>
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
-        {
-            Components.Deserialize(reader, definitionManager);
-        }
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager) 
+            => Components.Deserialize(reader, definitionManager);
 
         public virtual void RegisterDefault()
         {

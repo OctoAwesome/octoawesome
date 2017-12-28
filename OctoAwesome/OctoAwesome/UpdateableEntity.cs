@@ -17,7 +17,6 @@ namespace OctoAwesome
         /// </summary>
         public UpdateableEntity() : base()
         {
-
         }
 
         /// <summary>

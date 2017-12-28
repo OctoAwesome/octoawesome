@@ -59,12 +59,12 @@ namespace OctoAwesome
             {
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
                 {
-                    Heights[x, y] = getTopBlockHeight(x, y);
+                    Heights[x, y] = GetTopBlockHeight(x, y);
                 }
             }
         }
 
-        private int getTopBlockHeight(int x, int y)
+        private int GetTopBlockHeight(int x, int y)
         {
             for (int z = Chunks.Length * Chunk.CHUNKSIZE_Z - 1; z >= 0; z--)
             {
@@ -231,6 +231,7 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der verwendete DefinitionManager</param>
         public void Serialize(Stream stream, IDefinitionManager definitionManager)
         {
+            //TODO: #CleanUp Method ok?
             using (BinaryWriter bw = new BinaryWriter(stream))
             {
                 // Definitionen sammeln
@@ -255,13 +256,14 @@ namespace OctoAwesome
                 // Schreibe Phase 1 (Column Meta: Heightmap, populated, chunkcount)
                 bw.Write((byte)Chunks.Length); // Chunk Count
                 bw.Write(Populated); // Populated
+
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         bw.Write((ushort)Heights[x, y]);
+
                 for (int i = 0; i < Chunks.Length; i++) // Change Counter
                     bw.Write(Chunks[i].ChangeCounter);
                 
-
                 // Schreibe Phase 2 (Block Definitionen)
                 if (longIndex)
                     bw.Write((ushort)definitions.Count);
@@ -339,6 +341,7 @@ namespace OctoAwesome
         /// <param name="planetId">Der Index des Planeten</param>
         public void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex)
         {
+            //TODO #CleanUp Method ok?
             using (BinaryReader br = new BinaryReader(stream))
             {
                 bool longIndex = br.ReadByte() > 0;

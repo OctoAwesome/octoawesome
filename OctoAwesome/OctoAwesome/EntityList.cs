@@ -13,28 +13,15 @@ namespace OctoAwesome
         private List<Entity> entities;
         private IChunkColumn column;
 
-
         public EntityList(IChunkColumn column)
         {
-            this.entities = new List<Entity>();
+            entities = new List<Entity>();
             this.column = column;
         }
 
-        public int Count
-        {
-            get
-            {
-                return entities.Count;
-            }
-        }
+        public int Count => entities.Count;
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
         public void Add(Entity item)
         {
@@ -42,25 +29,13 @@ namespace OctoAwesome
             column.ChangeCounter++;
         }
 
-        public void Clear()
-        {
-            entities.Clear();
-        }
+        public void Clear() => entities.Clear();
 
-        public bool Contains(Entity item)
-        {
-            return entities.Contains(item);
-        }
+        public bool Contains(Entity item) => entities.Contains(item);
 
-        public void CopyTo(Entity[] array, int arrayIndex)
-        {
-            entities.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(Entity[] array, int arrayIndex) => entities.CopyTo(array, arrayIndex);
 
-        public IEnumerator<Entity> GetEnumerator()
-        {
-            return entities.GetEnumerator();
-        }
+        public IEnumerator<Entity> GetEnumerator() => entities.GetEnumerator();
 
         public bool Remove(Entity item)
         {
@@ -68,10 +43,7 @@ namespace OctoAwesome
             return entities.Remove(item);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return entities.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => entities.GetEnumerator();
 
         public IEnumerable<FailEntityChunkArgs> FailChunkEntity()
         {
@@ -80,6 +52,7 @@ namespace OctoAwesome
                 if (entity.Components.ContainsComponent<PositionComponent>())
                 {
                     var position = entity.Components.GetComponent<PositionComponent>();
+
                     if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
                     {
                         yield return new FailEntityChunkArgs()
@@ -89,7 +62,6 @@ namespace OctoAwesome
                             CurrentPlanet = column.Planet,
                             TargetChunk = new Index2(position.Position.ChunkIndex),
                             TargetPlanet = position.Position.Planet,
-
                         };
                     }
                 }

@@ -80,6 +80,6 @@ namespace OctoAwesome
 
         void RegisterMapPopulator(IMapPopulator populator);
 
-        void RemoveMapPopulator<T>(T item) where T : IMapPopulator; 
+        void RemoveMapPopulator<T>(T item) where T : IMapPopulator;
     }
 }

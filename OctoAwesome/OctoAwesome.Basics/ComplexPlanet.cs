@@ -25,7 +25,6 @@ namespace OctoAwesome.Basics
         public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed)
             : base(id, universe, size, seed)
         {
-
             Initalize();
         }
 

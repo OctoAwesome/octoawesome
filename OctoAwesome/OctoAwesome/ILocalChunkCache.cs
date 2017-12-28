@@ -8,6 +8,14 @@ namespace OctoAwesome
     public interface ILocalChunkCache
     {
         /// <summary>
+        /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
+        /// </summary>
+        /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
+        /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
+        /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
+        bool SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null);
+        
+        /// <summary>
         /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
         IPlanet Planet { get; }
@@ -29,14 +37,6 @@ namespace OctoAwesome
         IChunk GetChunk(int x, int y, int z);
 
         IPlanet LoadPlanet(int id);
-
-        /// <summary>
-        /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
-        /// </summary>
-        /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
-        /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
-        /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        bool SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null);
 
         /// <summary>
         /// Setzt den Zentrums-Chunk für diesen lokalen Cache.

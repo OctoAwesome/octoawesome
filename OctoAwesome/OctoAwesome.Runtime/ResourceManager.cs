@@ -104,20 +104,17 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void UnloadUniverse()
         {
-            // TODO: Save
             persistenceManager.SaveUniverse(CurrentUniverse);
-
 
             // Unload Chunks
             globalChunkCache.Clear();
 
-            // TODO: Unload Planets
             foreach (var planet in planets)
             {
                 persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
             }
             planets.Clear();
-            // TODO: Unload Universe;
+
             CurrentUniverse = null;
             GC.Collect();
         }
