@@ -1,8 +1,8 @@
 # OctoAwesome Kodex
 
-OctoAwesome ist ein Spiele Projekt, das am 13.11.2014 auf YouTube von Tom Wendel gestartet wurde. Er wollte von beginn an mit uns allen __gemeinsam__ ein neues Spiel entwickeln. Seit diesem Tag wurden jede Menge Videos produziert und einige Richtungen, Style und Konzepte wurden geändert. Die Community wuchs stetig bis zu ihrer jetzigen Größe und Form und bestimmt wird sich auch die Community zukünftig wandeln, ändern und wachsen. Doch eine Sache bleibt und sollte auch bleiben nämlich der Sinn, der Geist, der in OctoAwesome mit uns allen entstanden ist, sollte bleiben. 
+OctoAwesome ist ein Spiele Projekt, das am 13.11.2014 auf YouTube von Tom Wendel gestartet wurde. Er wollte von Beginn an mit uns allen __gemeinsam__ ein neues Spiel entwickeln. Seit diesem Tag wurden jede Menge Videos produziert und einige Richtungen, Style und Konzepte wurden geändert. Die Community wuchs stetig bis zu ihrer jetzigen Größe und Form und bestimmt wird sich auch die Community zukünftig wandeln, ändern und wachsen. Doch eine Sache bleibt und sollte auch bleiben nämlich der Sinn, der Geist, der in OctoAwesome mit uns allen entstanden ist. 
 
-Wir möchten gemeinsam an diesem oder anderen Spielen unserer Community entwickeln, uns austauschen und gemeinsam miteinander und voneinander Lernen. Wir machen dies aus Spaß zum Projekt, der Spieleentwicklung und des Lernens. Damit das auch so bleibt, erwarten wir ein freundliches, sicheres und einladendes Umfeld für alle Menschen unabhängig von Geschlecht, sexueller Orientierung, Fähigkeiten, ethnischer Zugehörigkeit, Religion oder sozioökonomischem Status.
+Wir möchten gemeinsam an diesem oder anderen Spielen unserer Community entwickeln, uns austauschen und gemeinsam miteinander und voneinander lernen. Wir machen dies aus Spaß zum Projekt, der Spieleentwicklung und des Lernens. Damit das auch so bleibt, erwarten wir ein freundliches, sicheres und einladendes Umfeld für alle Menschen unabhängig von Geschlecht, sexueller Orientierung, Fähigkeiten, ethnischer Zugehörigkeit, Religion oder sozioökonomischem Status.
 
 Hier möchten wir gemeinsam die Verhaltensregeln festhalten für alle, die an unserer Gemeinschaft teilnehmen sowie die Konsequenzen für inakzeptables Verhalten. Außerdem möchten wir die ursprünglichen Regeln festhalten, mit denen das Projekt von Tom initiiert wurde.
 
@@ -53,9 +53,9 @@ Tom hat 500 Folgen OctoAwesome produziert, das Projekt initiiert und wesentlich 
 
 * __Das Projekt ist deutschsprachig.__ Stream auf deutsch, deutsche Texte, deutsche Doku also effektiv deutsche Lernsprache. Dass der Quellcode englisch ist, ist schlichtweg dem Sprachdesign geschuldet.
 
-* __Alles passiert on Screen -__ sogar das googeln nach der Lösung. Ein Thema, das mich gerade nach Ende meiner Stream Zeit durchaus beschäftigt hat. Die Idee, dass alles (zumindest wichtige einschneidende Dinge) per Stream oder Video nachvollziehbar gemacht werden soll. Ganz besonders schwer getroffen hat mich da dieser radikale "wir parallelisieren mal eben" Change vom grünen Schaf getroffen. Hauptsache kryptisch, Hauptsache ignorieren warum wir diese Designentscheidung früher getroffen haben und vor allem: kaputt gemacht. Und das alles offscreen. :(
+* __Alles passiert on Screen -__ sogar das googeln nach der Lösung. Die Idee ist, dass alles (zumindest wichtige einschneidende Dinge) per Stream oder Video nachvollziehbar gemacht werden soll. 
 
-* __Es handelt sich um eine Spielwiese, nicht um ein Tutorial.__ Das hat zur Folge, dass Dinge nicht perfekt gelöst sind, aber nun mal funktionieren. Aber gerade im späteren Verlauf gab es oft den Moment an dem ich mir anhören musste wie dumm doch meine Entscheidungen gewesen sind. Da kommt dann jemand, der das Projekt gerade mal eine Woche kennt, unreflektiert das implementiert was Minecraft an dieser Stelle macht und wir haben alle nichts dabei gelernt. Ganz zu schweigen vom WCF gebashe. Mag sein, dass ihr Profis alle schon die bessere Lösung kennt. Aber dennoch demonstiert WCF recht gut die konzeptionellen Zusammenhänge von RPCs. Ich möchte diesen Umweg nicht missen.
+* __Es handelt sich um eine Spielwiese, nicht um ein Tutorial.__ Das hat zur Folge, dass Dinge nicht perfekt gelöst sind, aber nun mal funktionieren. Auch wenn etwas anfangs über einen unschönen oder auch unperformanten Umweg erledigt wird, heißt es nicht, dass dadurch kein Wissen vermittelt werden konnte und außerdem kann Es gerne später überarbeitet werden.  
 
 Diese Grundregeln zufolge möchten wir uns an folgendes Credo halten.
 
@@ -73,7 +73,7 @@ __Der Weg ist das Ziel__ OctoAwesome ist ein Projekt, das von seiner Arbeit dara
 
 __Wir Teilen unser Wissen__ Es gehört ja auch zum Miteinander aber es will noch mal separat genannt werden, wir teilen unser Wissen, weil wir glauben, das wir durch geteiltes Wissen unser Wissen mehrt. Das heißt das niemand davon profitiert wenn er nur für sich selber dinge lernt sondern wir können alle voneinander lernen. ^^
 
-Mehr gibt es wohl nicht zu sagen. Außer viel spaß beim Coden.
+Mehr gibt es wohl nicht zu sagen. Außer viel Spaß beim Coden.
 
 # License and attribution
 
