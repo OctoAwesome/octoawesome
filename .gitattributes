@@ -1,5 +1,5 @@
 # Forces git CRLF->LF behaviour
-* text eol=lf
+* text=auto
 
 # Files that git should treat as binary
 *.dll binary
