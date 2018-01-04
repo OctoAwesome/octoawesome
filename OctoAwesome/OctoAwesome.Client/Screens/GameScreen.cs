@@ -220,56 +220,15 @@ namespace OctoAwesome.Client.Screens
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.Player.JumpInput = true;
             });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot0", type =>
+            for (int i = 0; i < 10; i++)
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[0] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot1", type =>
-            {
-                if (!IsActiveScreen) return;
-                Manager.Player.SlotInput[1] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot2", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[2] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot3", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[3] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot4", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[4] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot5", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[5] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot6", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[6] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot7", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[7] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot8", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[8] = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:slot9", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.SlotInput[9] = true;
-            });
+                int tmp = i; // Nicht löschen. Benötigt, um aktuellen Wert zu fangen.
+                Manager.Game.KeyMapper.AddAction("octoawesome:slot" + tmp, type =>
+                {
+                    if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+                    Manager.Player.SlotInput[tmp] = true;
+                });
+            }
             Manager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
@@ -311,10 +270,9 @@ namespace OctoAwesome.Client.Screens
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
-                    Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
-                    Manager.NavigateBack();
+                        Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
+                        Manager.NavigateBack();
                     }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
-                
             });
         }
 

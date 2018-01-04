@@ -17,8 +17,6 @@ namespace OctoAwesome
         /// </summary>
         public const int SELECTIONRANGE = 8;
 
-        
-
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
@@ -27,9 +25,7 @@ namespace OctoAwesome
         }
 
         protected override void OnInitialize(IResourceManager manager)
-        {
-            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-        }
+            => Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
 
         /// <summary>
         /// Serialisiert den Player mit dem angegebenen BinaryWriter.
@@ -37,11 +33,7 @@ namespace OctoAwesome
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
-        {
-            // Entity
-            base.Serialize(writer, definitionManager);
-
-        }
+            => base.Serialize(writer, definitionManager); // Entity
 
         /// <summary>
         /// Deserialisiert den Player aus dem angegebenen BinaryReader.
@@ -49,9 +41,6 @@ namespace OctoAwesome
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
-        {
-            // Entity
-            base.Deserialize(reader, definitionManager);
-        }
+            => base.Deserialize(reader, definitionManager); // Entity
     }
 }

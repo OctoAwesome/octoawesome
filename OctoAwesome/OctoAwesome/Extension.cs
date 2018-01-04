@@ -12,21 +12,9 @@ namespace OctoAwesome
 
     public sealed class Extension : IExtension
     {
-        public string Description
-        {
-            get
-            {
-                return "OctoAwesome";
-            }
-        }
+        public string Description => "OctoAwesome";
 
-        public string Name
-        {
-            get
-            {
-                return "OctoAwesome";
-            }
-        }
+        public string Name => "OctoAwesome";
 
         public void Register(IExtensionLoader extensionLoader)
         {

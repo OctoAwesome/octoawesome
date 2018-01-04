@@ -8,19 +8,16 @@ namespace OctoAwesome.Basics.Climate
 {
     public class ComplexClimateMap : IClimateMap
     {
+        public IPlanet Planet => planet;
+
         ComplexPlanet planet;
-        public IPlanet Planet
-        {
-            get { return planet; }
-        }
+        private INoise tempFluctuationGenerator;
+
         public ComplexClimateMap(ComplexPlanet planet)
         {
             this.planet = planet;
             tempFluctuationGenerator = new SimplexNoiseGenerator(planet.Seed - 1, 1f / 64, 1f / 64) { Octaves = 3};
         }
-
-        private INoise tempFluctuationGenerator;
-
 
         public float GetTemperature(Index3 blockIndex)
         {

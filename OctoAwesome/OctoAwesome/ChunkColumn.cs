@@ -59,12 +59,12 @@ namespace OctoAwesome
             {
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
                 {
-                    Heights[x, y] = getTopBlockHeight(x, y);
+                    Heights[x, y] = GetTopBlockHeight(x, y);
                 }
             }
         }
 
-        private int getTopBlockHeight(int x, int y)
+        private int GetTopBlockHeight(int x, int y)
         {
             for (int z = Chunks.Length * Chunk.CHUNKSIZE_Z - 1; z >= 0; z--)
             {
@@ -193,7 +193,7 @@ namespace OctoAwesome
         {
             int index = z / Chunk.CHUNKSIZE_Z;
             z %= Chunk.CHUNKSIZE_Z;
-            Chunks[index].SetBlock(x, y, z,block,meta);
+            Chunks[index].SetBlock(x, y, z, block, meta);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace OctoAwesome
         {
             int index = z / Chunk.CHUNKSIZE_Z;
             z %= Chunk.CHUNKSIZE_Z;
-            Chunks[index].SetBlockMeta(x, y, z,  meta);
+            Chunks[index].SetBlockMeta(x, y, z, meta);
         }
 
         /// <summary>
@@ -255,12 +255,13 @@ namespace OctoAwesome
                 // Schreibe Phase 1 (Column Meta: Heightmap, populated, chunkcount)
                 bw.Write((byte)Chunks.Length); // Chunk Count
                 bw.Write(Populated); // Populated
+
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         bw.Write((ushort)Heights[x, y]);
+
                 for (int i = 0; i < Chunks.Length; i++) // Change Counter
                     bw.Write(Chunks[i].ChangeCounter);
-                
 
                 // Schreibe Phase 2 (Block Definitionen)
                 if (longIndex)
@@ -349,11 +350,13 @@ namespace OctoAwesome
                 Index = columnIndex;
 
                 Populated = br.ReadBoolean(); // Populated
+
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                     for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         Heights[x, y] = br.ReadUInt16();
 
                 int[] counter = new int[Chunks.Length];
+
                 for (int i = 0; i < Chunks.Length; i++) // ChangeCounter
                     counter[i] = br.ReadInt32();
 
@@ -362,6 +365,7 @@ namespace OctoAwesome
                 Dictionary<ushort, ushort> map = new Dictionary<ushort, ushort>();
 
                 int typecount = longIndex ? br.ReadUInt16() : br.ReadByte();
+
                 for (int i = 0; i < typecount; i++)
                 {
                     string typeName = br.ReadString();
@@ -377,6 +381,7 @@ namespace OctoAwesome
                 {
                     IChunk chunk = Chunks[c] = new Chunk(new Index3(columnIndex, c), planetId);
                     chunk.Changed += OnChunkChanged;
+
                     for (int i = 0; i < chunk.Blocks.Length; i++)
                     {
                         ushort typeIndex = longIndex ? br.ReadUInt16() : br.ReadByte();
@@ -386,6 +391,7 @@ namespace OctoAwesome
                             chunk.Blocks[i] = map[typeIndex];
 
                             var definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(map[typeIndex]);
+
                             if (definition.HasMetaData)
                                 chunk.MetaData[i] = br.ReadInt32();
                         }
@@ -410,23 +416,19 @@ namespace OctoAwesome
                         if (type == null)
                             continue;
 
-                        
                         Entity entity = (Entity)Activator.CreateInstance(type);
 
-
                         using (MemoryStream memorystream = new MemoryStream(buffer))
-                        using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
                         {
-                            entity.Deserialize(componentbinarystream, definitionManager);
+                            using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
+                            {
+                                entity.Deserialize(componentbinarystream, definitionManager);
+                            }
                         }
 
                         Entities.Add(entity);
-
                     }
                     catch (Exception)
-                    {
-                    }
-                    finally
                     {
                     }
                 }

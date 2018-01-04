@@ -28,12 +28,12 @@ namespace OctoAwesome
                 BoundingBox box = new BoundingBox(localBox.Min + boxPosition, localBox.Max + boxPosition);
 
                 float? distance = ray.Intersects(box);
-                if (!distance.HasValue) continue;
+
+                if (!distance.HasValue)
+                    continue;
 
                 if (!minDistance.HasValue || minDistance > distance)
-                {
                     minDistance = distance;
-                }
 
                 Vector3 boxCorner = new Vector3(
                         ray.Direction.X > 0 ? box.Min.X : box.Max.X,
@@ -45,42 +45,42 @@ namespace OctoAwesome
                 collided = true;
             }
 
-            if (collided)
-            {
-                float max = -5f;
-                Axis? axis = null;
-
-                // Fall X
-                if (min.X < 1f && min.X > max)
-                {
-                    max = min.X;
-                    axis = Axis.X;
-                }
-
-                // Fall Y
-                if (min.Y < 1f && min.Y > max)
-                {
-                    max = min.Y;
-                    axis = Axis.Y;
-                }
-
-                // Fall Z
-                if (min.Z < 1f && min.Z > max)
-                {
-                    max = min.Z;
-                    axis = Axis.Z;
-                }
-
-                collisionAxis = axis;
-                if (axis.HasValue)
-                    return max * raylength;
-                return null;
-            }
-            else
+            if (!collided)
             {
                 collisionAxis = null;
                 return null;
             }
+
+            float max = -5f;
+            Axis? axis = null;
+
+            // Fall X
+            if (min.X < 1f && min.X > max)
+            {
+                max = min.X;
+                axis = Axis.X;
+            }
+
+            // Fall Y
+            if (min.Y < 1f && min.Y > max)
+            {
+                max = min.Y;
+                axis = Axis.Y;
+            }
+
+            // Fall Z
+            if (min.Z < 1f && min.Z > max)
+            {
+                max = min.Z;
+                axis = Axis.Z;
+            }
+
+            collisionAxis = axis;
+
+            if (axis.HasValue)
+                return max * raylength;
+
+            return null;
         }
 
         /// <summary>
@@ -117,7 +117,8 @@ namespace OctoAwesome
                     playerMin.Y <= boxMax.Y && playerMax.Y >= boxMin.Y &&
                     playerMin.Z <= boxMax.Z && playerMax.Z >= boxMin.Z;
 
-                if (!collide) continue;
+                if (!collide)
+                    continue;
 
                 Vector3 boxCorner = new Vector3(
                         move.X > 0 ? boxMin.X : boxMax.X,
@@ -129,42 +130,41 @@ namespace OctoAwesome
                 collided = true;
             }
 
-            if (collided)
-            {
-                float max = 0f;
-                Axis? axis = null;
-
-                // Fall X
-                if (min.X < 1f && min.X > max)
-                {
-                    max = min.X;
-                    axis = Axis.X;
-                }
-
-                // Fall Y
-                if (min.Y < 1f && min.Y > max)
-                {
-                    max = min.Y;
-                    axis = Axis.Y;
-                }
-
-                // Fall Z
-                if (min.Z < 1f && min.Z > max)
-                {
-                    max = min.Z;
-                    axis = Axis.Z;
-                }
-
-                collisionAxis = axis;
-                if (axis.HasValue)
-                    return max;
-                return null;
-            }
-            else
+            if (!collided)
             {
                 collisionAxis = null;
                 return null;
             }
+            float max = 0f;
+            Axis? axis = null;
+
+            // Fall X
+            if (min.X < 1f && min.X > max)
+            {
+                max = min.X;
+                axis = Axis.X;
+            }
+
+            // Fall Y
+            if (min.Y < 1f && min.Y > max)
+            {
+                max = min.Y;
+                axis = Axis.Y;
+            }
+
+            // Fall Z
+            if (min.Z < 1f && min.Z > max)
+            {
+                max = min.Z;
+                axis = Axis.Z;
+            }
+
+            collisionAxis = axis;
+
+            if (axis.HasValue)
+                return max;
+
+            return null;
         }
     }
 }

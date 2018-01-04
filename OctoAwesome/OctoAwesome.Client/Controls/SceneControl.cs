@@ -105,27 +105,6 @@ namespace OctoAwesome.Client.Controls
                 }
             }
 
-            /*int size = (int)Math.Ceiling(Math.Sqrt(bitmaps.Count));
-            Bitmap blocks = new Bitmap(size * TEXTURESIZE, size * TEXTURESIZE);
-            using (Graphics g = Graphics.FromImage(blocks))
-            {
-                int counter = 0;
-                foreach (var bitmap in bitmaps)
-                {
-                    int x = counter % size;
-                    int y = (int)(counter / size);
-                    g.DrawImage(bitmap, new System.Drawing.Rectangle(TEXTURESIZE * x, TEXTURESIZE * y, TEXTURESIZE, TEXTURESIZE));
-                    counter++;
-                }
-            }
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                blocks.Save(stream, ImageFormat.Png);
-                stream.Seek(0, SeekOrigin.Begin);
-                blockTextures = Texture2D.FromStream(manager.GraphicsDevice, stream);
-            }*/
-
             planet = Manager.Game.ResourceManager.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1

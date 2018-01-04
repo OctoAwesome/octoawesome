@@ -6,31 +6,13 @@ using System.Text;
 
 namespace OctoAwesome.Basics.Biomes
 {
-    public abstract class SuperBiomeBase : IBiome
+    public abstract class LargeBiomeBase : BiomeBase
     {
 
-        public IPlanet Planet { get; private set; }
 
-        public List<IBiome> SubBiomes { get; private set; }
-
-        public INoise BiomeNoiseGenerator { get; protected set; }
-
-        public float MinValue { get; protected set; }
-
-        public float MaxValue { get; protected set; }
-
-        public float ValueRangeOffset { get; protected set; }
-
-        public float ValueRange { get; protected set; }
-
-        public abstract float[,] GetHeightmap(Index2 chunkIndex);
-
-        public SuperBiomeBase(IPlanet planet, float valueRangeOffset, float valueRange)
+        public LargeBiomeBase(IPlanet planet, float valueRangeOffset, float valueRange)
+            : base(planet, 0, 0, valueRangeOffset, valueRange)
         {
-            this.Planet = planet;
-            this.SubBiomes = new List<IBiome>();
-            this.ValueRangeOffset = valueRangeOffset;
-            this.ValueRange = valueRange;
         }
 
         protected void SortSubBiomes()
@@ -45,7 +27,6 @@ namespace OctoAwesome.Basics.Biomes
 
         protected IBiome ChooseBiome(float value, out IBiome secondBiome)
         {
-
             secondBiome = null;
             bool betweenPossible = false;
             for (int i = 0; i < SubBiomes.Count; i++)
@@ -107,5 +88,7 @@ namespace OctoAwesome.Basics.Biomes
         {
             return inputValue;
         }
+
+        public override float[,] GetHeightmap(Index2 chunkIndex) => base.GetHeightmap(chunkIndex);
     }
 }

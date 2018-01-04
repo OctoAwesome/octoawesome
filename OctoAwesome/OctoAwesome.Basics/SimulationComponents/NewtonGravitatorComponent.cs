@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             public BodyComponent BodyComponent { get; set; }
         }
 
-        private List<GravityEntity> entities = new List<GravityEntity>();
+        private new List<GravityEntity> entities = new List<GravityEntity>();
 
         public override void Update(GameTime gameTime)
         {

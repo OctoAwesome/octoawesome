@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basic
+namespace OctoAwesome.Basics
 {
     /// <summary>
     /// Stellt eine Fläche dar, welche mit anderen Flächen Kollidieren kann

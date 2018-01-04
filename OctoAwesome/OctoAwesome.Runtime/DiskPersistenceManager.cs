@@ -149,8 +149,7 @@ namespace OctoAwesome.Runtime
             foreach (var folder in Directory.GetDirectories(root))
             {
                 string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
-                Guid guid;
-                if (Guid.TryParse(id, out guid))
+                if (Guid.TryParse(id, out Guid guid))
                     universes.Add(LoadUniverse(guid));
             }
 
@@ -193,7 +192,7 @@ namespace OctoAwesome.Runtime
                 return null;
 
             IMapGenerator generator = null;
-            using (Stream stream = File.Open(generatorInfo, FileMode.Create, FileAccess.Read))
+            using (Stream stream = File.Open(generatorInfo, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader bw = new BinaryReader(stream))
                 {
@@ -204,7 +203,7 @@ namespace OctoAwesome.Runtime
 
             if (generator == null)
                 throw new Exception("Unknown Generator");
-
+            
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
@@ -257,7 +256,7 @@ namespace OctoAwesome.Runtime
         /// <returns></returns>
         public Player LoadPlayer(Guid universeGuid, string playername)
         {
-            // TODO: Später durch Playername ersetzen
+            //TODO: Später durch Playername ersetzen
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), "player.info");
             if (!File.Exists(file))
                 return null;

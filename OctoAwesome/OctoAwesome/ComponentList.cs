@@ -12,11 +12,8 @@ namespace OctoAwesome
     public class ComponentList<T> : IEnumerable<T> where T : Component
     {
         private Action<T> insertValidator;
-
         private Action<T> removeValidator;
-
         private Action<T> onInserter;
-
         private Action<T> onRemover;
 
         private Dictionary<Type, T> components = new Dictionary<Type, T>();
@@ -25,9 +22,9 @@ namespace OctoAwesome
         {
             get
             {
-                T result;
-                if (components.TryGetValue(type, out result))
+                if (components.TryGetValue(type, out T result))
                     return result;
+
                 return null;
             }
         }
@@ -44,15 +41,9 @@ namespace OctoAwesome
             this.onRemover = onRemover;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return components.Values.GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() => components.Values.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return components.Values.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => components.Values.GetEnumerator();
 
         /// <summary>
         /// Adds a new Component to the List.
@@ -61,11 +52,11 @@ namespace OctoAwesome
         public void AddComponent<V>(V component)
             where V : T
         {
-            AddComponent<V>(component, false);
+            AddComponent(component, false);
         }
 
 
-        public void AddComponent<V>(V component,bool replace)
+        public void AddComponent<V>(V component, bool replace)
             where V : T
         {
             Type type = component.GetType();
@@ -74,16 +65,13 @@ namespace OctoAwesome
             {
                 if (replace)
                 {
-                    RemoveComponent<V>();   
+                    RemoveComponent<V>();
                 }
                 else
                 {
                     return;
                 }
-
-                
             }
-            
 
             insertValidator?.Invoke(component);
             components.Add(type, component);
@@ -93,11 +81,11 @@ namespace OctoAwesome
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="V"></typeparam>
         /// <returns></returns>
-        public bool ContainsComponent<T>()
+        public bool ContainsComponent<V>()
         {
-            return components.ContainsKey(typeof(T));
+            return components.ContainsKey(typeof(V));
         }
 
         /// <summary>
@@ -107,9 +95,9 @@ namespace OctoAwesome
         /// <returns>Component</returns>
         public V GetComponent<V>() where V : T
         {
-            T result;
-            if (components.TryGetValue(typeof(V), out result))
+            if (components.TryGetValue(typeof(V), out T result))
                 return (V)result;
+
             return null;
         }
 
@@ -130,6 +118,7 @@ namespace OctoAwesome
                 onRemover?.Invoke(component);
                 return true;
             }
+
             return false;
         }
 
@@ -146,7 +135,6 @@ namespace OctoAwesome
                 using (MemoryStream memorystream = new MemoryStream())
                 {
                     writer.Write(componente.Key.AssemblyQualifiedName);
-                    
 
                     using (BinaryWriter componentbinarystream = new BinaryWriter(memorystream))
                     {
@@ -160,7 +148,7 @@ namespace OctoAwesome
                         catch (Exception)
                         {
                             writer.Write(0);
-                            //throw;
+                            //throw; //TODO #CleanUp throw?
                         }
                     }
                 }
@@ -177,14 +165,10 @@ namespace OctoAwesome
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                
-
                 var name = reader.ReadString();
                 var length = reader.ReadInt32();
 
-                var startposition = reader.BaseStream.Position;
-
-                
+                var startPosition = reader.BaseStream.Position;
 
                 try
                 {
@@ -195,7 +179,7 @@ namespace OctoAwesome
 
                     T component;
 
-                    if (!components.TryGetValue(type,out component))
+                    if (!components.TryGetValue(type, out component))
                     {
                         component = (T)Activator.CreateInstance(type);
                         components.Add(type, component);
@@ -204,20 +188,20 @@ namespace OctoAwesome
                     byte[] buffer = new byte[length];
                     reader.Read(buffer, 0, length);
 
-                    using (MemoryStream memorystream = new MemoryStream(buffer))
-                    using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
+                    using (MemoryStream memoryStream = new MemoryStream(buffer))
                     {
-                        component.Deserialize(componentbinarystream, definitionManager);
+                        using (BinaryReader componentBinaryStream = new BinaryReader(memoryStream))
+                        {
+                            component.Deserialize(componentBinaryStream, definitionManager);
+                        }
                     }
-
-                    
                 }
                 catch (Exception)
                 {
                 }
                 finally
                 {
-                    reader.BaseStream.Position = startposition + length;
+                    reader.BaseStream.Position = startPosition + length;
                 }
             }
         }

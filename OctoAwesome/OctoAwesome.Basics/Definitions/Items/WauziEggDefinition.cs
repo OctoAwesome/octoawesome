@@ -33,5 +33,7 @@
                 return 1;
             }
         }
+
+        decimal IInventoryableDefinition.VolumePerUnit => 1;
     }
 }

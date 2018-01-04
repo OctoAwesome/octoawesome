@@ -5,11 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace OctoAwesome
+namespace OctoAwesome.Client
 {
     /// <summary>
     /// Verwaltet die Anwendungseinstellungen.
-    /// TODO: In den Client verschieben
     /// </summary>
     public class Settings : ISettings
     {

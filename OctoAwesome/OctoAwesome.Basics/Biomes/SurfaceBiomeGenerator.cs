@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Basics.Biomes
 {
-    public class SurfaceBiomeGenerator : SuperBiomeBase
+    public class SurfaceBiomeGenerator : LargeBiomeBase
     {
         public int SeaLevel
         {
@@ -17,7 +17,8 @@ namespace OctoAwesome.Basics.Biomes
         public SurfaceBiomeGenerator(IPlanet planet, int seaLevel)
             : base(planet, 0f, 1f)
         {
-            this.SeaLevel = seaLevel;
+
+            SeaLevel = seaLevel;
             BiomeNoiseGenerator = new SimplexNoiseGenerator(planet.Seed) { FrequencyX = 1f / 10000, FrequencyY = 1f / 10000, Factor = 1f };
 
             float offset = (float)seaLevel / (Planet.Size.Z * Chunk.CHUNKSIZE_Z);
@@ -44,7 +45,7 @@ namespace OctoAwesome.Basics.Biomes
         public override float[,] GetHeightmap(Index2 chunkIndex)
         {
             float[,] values = new float[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
-            
+
             Index2 blockIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);
 
             float[,] regions = BiomeNoiseGenerator.GetTileableNoiseMap2D(blockIndex.X, blockIndex.Y, Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y);
@@ -71,7 +72,6 @@ namespace OctoAwesome.Basics.Biomes
                     }
                     else
                         values[x, y] = biomeValues[biome1][x, y];
-
                 }
             }
             return values;
