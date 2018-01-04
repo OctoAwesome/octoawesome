@@ -21,7 +21,7 @@ namespace OctoAwesome.Basics
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
             IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
-            //TODO #CleanUp More Generic 
+            //TODO More Generic, überdenken der Planetgeneration im allgemeinen (Heapmap + Highmap + Biome + Modding)
             IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().FirstOrDefault();
             ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 

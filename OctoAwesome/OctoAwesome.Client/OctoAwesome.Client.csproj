@@ -101,6 +101,7 @@
     <Compile Include="Screens\MessageScreen.cs" />
     <Compile Include="Screens\OptionsScreen.cs" />
     <Compile Include="Screens\PauseScreen.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="engenious, Version=0.1.7.0, Culture=neutral, PublicKeyToken=null">

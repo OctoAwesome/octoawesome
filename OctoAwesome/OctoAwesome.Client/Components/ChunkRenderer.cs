@@ -26,7 +26,6 @@ namespace OctoAwesome.Client.Components
         private static IndexBuffer ib;
         private int vertexCount;
         private int indexCount;
-        private int lastReset;
         private ILocalChunkCache _manager;
 
         private readonly SceneControl _sceneControl;
@@ -54,7 +53,6 @@ namespace OctoAwesome.Client.Components
             this.definitionManager = definitionManager;
             this.graphicsDevice = graphicsDevice;
             this.textures = textures;
-            //this.lastReset = -1;
 
             simple = simpleShader;
             GenerateIndexBuffer();
@@ -91,22 +89,7 @@ namespace OctoAwesome.Client.Components
             NeedsUpdate = true;
             _sceneControl.Enqueue(this);
         }
-
-        public bool NeedUpdate()
-        {
-            return NeedsUpdate;
-            // Kein Chunk selektiert -> kein Update notwendig
-            if (!ChunkPosition.HasValue)
-                return false;
-
-            // Chunk vollständig geladen aber nicht vorahden -> kein Update
-            if (chunk == null)
-                return true;
-
-            // Chunk geladen und existient -> nur Update, wenn sich seit dem letzten Reset was verändert hat.
-            return chunk.ChangeCounter != lastReset;
-        }
-
+        
         public void Draw(Matrix view, Matrix projection, Index3 shift)
         {
             if (!loaded)
@@ -572,7 +555,6 @@ namespace OctoAwesome.Client.Components
 
             NeedsUpdate = chunk.ChangeCounter != ChangeStart || chunk != this.chunk;
             return !NeedsUpdate;
-            //lastReset = chunk.ChangeCounter;
         }
 
         public void Dispose()

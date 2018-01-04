@@ -81,11 +81,11 @@ namespace OctoAwesome
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="V"></typeparam>
         /// <returns></returns>
-        public bool ContainsComponent<T>()
+        public bool ContainsComponent<V>()
         {
-            return components.ContainsKey(typeof(T));
+            return components.ContainsKey(typeof(V));
         }
 
         /// <summary>

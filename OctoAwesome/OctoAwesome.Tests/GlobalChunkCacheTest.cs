@@ -53,7 +53,7 @@ namespace OctoAwesome.Tests
             Assert.Equal(1, cache.LoadedChunkColumns);
 
             // Chunk unload
-            cache.Release(planet, index,false);
+            cache.Release(planet, index, false);
             System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
             Assert.Equal(0, cache.LoadedChunkColumns);
             Assert.Equal(1, loadCallCounter);

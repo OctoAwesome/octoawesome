@@ -34,3 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("3.3.0.1818")]
 [assembly: AssemblyFileVersion("3.3.0.1818")]
+[assembly: InternalsVisibleTo("OctoAwesome.Tests")]

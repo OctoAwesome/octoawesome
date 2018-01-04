@@ -95,6 +95,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Client\OctoAwesome.Client.csproj">
+      <Project>{FBCB341A-ACD0-4511-AD71-006779B90151}</Project>
+      <Name>OctoAwesome.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
       <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
       <Name>OctoAwesome</Name>
@@ -109,7 +113,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.2.0-beta3-build1187\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.2.0-beta3-build1187\build\net20\xunit.runner.visualstudio.props'))" />
-</Target>
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
