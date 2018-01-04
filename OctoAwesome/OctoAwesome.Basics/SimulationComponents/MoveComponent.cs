@@ -1,7 +1,6 @@
 ﻿using System;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.Basic;
 using System.Linq;
 using OctoAwesome.EntityComponents;
 

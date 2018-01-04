@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Biomes\BiomeBase.cs" />
     <Compile Include="CollisionPlane.cs" />
     <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
     <Compile Include="Entities\WauziEntity.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="Noise\PerlinNoiseGenerator.cs" />
     <Compile Include="Noise\SimplexNoiseGenerator.cs" />
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
-    <Compile Include="Biomes\SuperBiomeBase.cs" />
+    <Compile Include="Biomes\LargeBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
     <Compile Include="Definitions\Blocks\IceBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\LeavesBlockDefinition.cs" />
@@ -111,8 +112,6 @@
     <Compile Include="DebugMapGenerator.cs" />
     <Compile Include="Definitions\Blocks\GrassBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\GroundBlockDefinition.cs" />
-    <Compile Include="IronOre.cs" />
-    <Compile Include="IronOreDefinition.cs" />
     <Compile Include="Definitions\Items\Pickaxe.cs" />
     <Compile Include="Languages\OctoBasics.Designer.cs">
       <AutoGen>True</AutoGen>
