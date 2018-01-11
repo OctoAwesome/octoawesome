@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
+using engenious.Helper;
 
 namespace OctoAwesome.Client.Controls
 {

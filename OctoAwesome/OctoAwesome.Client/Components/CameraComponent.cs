@@ -1,5 +1,6 @@
 ﻿using System;
 using engenious;
+using engenious.Helper;
 using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Components
