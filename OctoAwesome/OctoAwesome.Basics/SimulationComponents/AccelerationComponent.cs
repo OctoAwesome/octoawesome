@@ -32,8 +32,19 @@ namespace OctoAwesome.Basics.SimulationComponents
                 // Friction Power
                 power -= new Vector3(60F,60f,0.1f) * entity.Move.Velocity;
 
+                //DEBUGGING
+                var a1 = 2.0f / entity.Body.Mass;
+                var b = 2 / entity.Body.Mass;
+                var a2 = a1 * power;
+                var c = new Vector3(a1 * power.X, a1 * power.Y, a1 * power.Z);
+
+                var a3 = a2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                
+                //DEBUGGING
+
+
                 // Calculate Velocity change
-                Vector3 velocityChange = (2.0f / entity.Body.Mass * power) * 
+                Vector3 velocityChange = ((2.0f / entity.Body.Mass) * power) *
                     (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 // Take care of direction
