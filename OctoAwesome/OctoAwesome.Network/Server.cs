@@ -10,39 +10,48 @@ namespace OctoAwesome.Network
 {
     class Server
     {
+        public bool IsRunning { get; private set; }
+
         public List<Client> Clients { get; set; }
+
+        public event EventHandler<Client> OnClientConnected;
 
         private TcpListener tcpListener;
 
 
-        public Server()
+        public Server(int port)
         {
-            tcpListener = new TcpListener(IPAddress.Any, 44444); //TODO: variable port?
+            tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
         public void Start()
         {
             tcpListener.Start();
-            var socketArgs = new SocketAsyncEventArgs();
-            socketArgs.Completed += OnClientConnect;
-            tcpListener.Server.AcceptAsync(socketArgs);
-
-            //tcpListener.BeginAcceptTcpClient(OnClientConnect, null);
-        }
-
-        private void OnClientConnect(object sender, SocketAsyncEventArgs e)
-        {
-            var client = e.ConnectSocket;
-            tcpListener.Server.AcceptAsync(e);
-            
-            //TODO Handshake aka Registration and authentication ????
-            Clients.Add(new Client(e));
-
+            IsRunning = true;
+            WorkingLoop();
         }
 
         public void Stop()
         {
+            IsRunning = false;
             tcpListener.Stop();
+        }
+
+        private async void WorkingLoop()
+        {
+            while (IsRunning)
+            {
+                var client = await tcpListener.AcceptTcpClientAsync();
+                await OnClientConnect(client);
+            }
+        }
+
+        private async Task OnClientConnect(TcpClient tcpClient)
+        {
+            await Task.Yield();
+            var client = new Client(tcpClient);
+            Clients.Add(client);
+            OnClientConnected?.Invoke(this, client);
         }
     }
 }

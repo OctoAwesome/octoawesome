@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 // für COM-Komponenten unsichtbar.  Wenn Sie auf einen Typ in dieser Assembly von
 // COM aus zugreifen müssen, sollten Sie das ComVisible-Attribut für diesen Typ auf "True" festlegen.
 [assembly: ComVisible(false)]
+[assembly: InternalsVisibleTo("OctoAwesome.Network.Tests")]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
 [assembly: Guid("b1f4d7bb-7f56-4e96-87dd-ebebae9cf336")]

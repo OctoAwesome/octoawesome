@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Community", "Oc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Network", "OctoAwesome.Network\OctoAwesome.Network.csproj", "{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Network.Tests", "OctoAwesome.Network.Tests\OctoAwesome.Network.Tests.csproj", "{762E8B0C-2EF8-4EC6-BF47-8926871973D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,12 +102,21 @@ Global
 		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|x86.ActiveCfg = Release|Any CPU
 		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|x86.Build.0 = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|x86.Build.0 = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0468B67C-E076-4B19-833C-382513606A5A} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0BE45E2B-9F0C-49A7-AC90-A9B87EC9D7EA}

@@ -1,37 +1,28 @@
 ﻿using System.IO;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
     public class Client
     {
-        //public NetworkStream TcpStream => tcpClient.GetStream();
-
-        public Socket Socket { get; private set; }
-
-        private SocketAsyncEventArgs socketArgs;
-
-        public Client(Socket socket)
-        {
-            Socket = socket;
-            socketArgs = new SocketAsyncEventArgs();
-            socketArgs.Completed += SocketArgsCompleted;
-        }
+        public NetworkStream Stream => tcpClient.GetStream();
         
-        public void ReceiveAsync()
+        private TcpClient tcpClient;
+
+        public Client(TcpClient client)
         {
-            Socket.ReceiveAsync(socketArgs);
+            tcpClient = client;
         }
 
-        public void SendAsync(byte[] data)
+        public async Task<byte[]> ReceiveAsync()
         {
-            socketArgs.SetBuffer(data, 0, data.Length);
-            Socket.SendAsync(socketArgs);
+            var data = new byte[tcpClient.Available];
+            await Stream.ReadAsync(data, 0, data.Length);
+            return data;
         }
 
-        private void SocketArgsCompleted(object sender, SocketAsyncEventArgs e)
-        {
-        }
-
+        public async Task SendAsync(byte[] data) => await Stream.WriteAsync(data, 0, data.Length);
+        
     }
 }
