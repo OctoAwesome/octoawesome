@@ -22,6 +22,7 @@ namespace OctoAwesome.Network
         public Server(int port)
         {
             tcpListener = new TcpListener(IPAddress.Any, port);
+            Clients = new List<Client>();
         }
 
         public void Start()

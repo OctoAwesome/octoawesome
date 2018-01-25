@@ -56,14 +56,18 @@ namespace OctoAwesome.Network.Tests
 
                 using (var reader = new StreamReader(testClient.GetStream()))
                 {
-                    var content = reader.ReadToEnd();
+                    while (testClient.Available < 1)
+                        Thread.Sleep(1);
 
-                    Assert.Equals(content, "abc");
+
+                    var buffer = new char[testClient.Available];
+                    reader.Read(buffer, 0, buffer.Length);
+
+                    Assert.AreEqual("abc", new string(buffer));
+                    resetEvent.Set();
                 }
 
             });
-
-
             resetEvent.WaitOne();
         }
     }
