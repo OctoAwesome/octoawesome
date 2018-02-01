@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,49 +11,47 @@ namespace OctoAwesome.Network
 {
     class Server
     {
-        public bool IsRunning { get; private set; }
-
-        public List<Client> Clients { get; set; }
+        public ConcurrentBag<Client> Clients { get; set; }
 
         public event EventHandler<Client> OnClientConnected;
 
-        private TcpListener tcpListener;
+        private Socket socket;
 
-
-        public Server(int port)
+        public Server()
         {
-            tcpListener = new TcpListener(IPAddress.Any, port);
-            Clients = new List<Client>();
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Clients = new ConcurrentBag<Client>();
         }
 
-        public void Start()
+        public void Start(int port)
         {
-            tcpListener.Start();
-            IsRunning = true;
-            WorkingLoop();
+            socket.Bind(new IPEndPoint(IPAddress.Any, port));
+            socket.Listen(128);
+            socket.BeginAccept(OnClientConnect, null);
+        }
+
+        private void OnClientConnect(IAsyncResult ar)
+        {
+            var tmpSocket = socket.EndAccept(ar);
+            socket.BeginAccept(OnClientConnect, null);
+
+            tmpSocket.NoDelay = true;
+
+            var client = new Client(tmpSocket);
+            client.Listening();
+
+
+            Clients.Add(client);
+            
+            OnClientConnected?.Invoke(this, client);
         }
 
         public void Stop()
         {
-            IsRunning = false;
-            tcpListener.Stop();
+            socket.Disconnect(true);
         }
+        
 
-        private async void WorkingLoop()
-        {
-            while (IsRunning)
-            {
-                var client = await tcpListener.AcceptTcpClientAsync();
-                await OnClientConnect(client);
-            }
-        }
-
-        private async Task OnClientConnect(TcpClient tcpClient)
-        {
-            await Task.Yield();
-            var client = new Client(tcpClient);
-            Clients.Add(client);
-            OnClientConnected?.Invoke(this, client);
-        }
+       
     }
 }
