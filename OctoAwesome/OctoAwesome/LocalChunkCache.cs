@@ -290,8 +290,8 @@ namespace OctoAwesome
             if (chunk == null)
                 return;
             
-            chunk.SetBlock(x, y, z, block);
             InvalidateNeighbours(chunkX, chunkY, chunkZ, x, y, z);
+            chunk.SetBlock(x, y, z, block);
         }
 
         private void InvalidateNeighbours(int chunkX,int chunkY,int chunkZ,int x,int y,int z)
@@ -363,8 +363,9 @@ namespace OctoAwesome
 
             if (chunk == null)
                 return;
-            chunk.SetBlockMeta(x, y, z, meta);
+            
             InvalidateNeighbours(chunkX, chunkY, chunkZ, x, y, z);
+            chunk.SetBlockMeta(x, y, z, meta);
         }
 
         /// <summary>

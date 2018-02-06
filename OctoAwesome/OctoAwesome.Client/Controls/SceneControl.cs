@@ -592,7 +592,6 @@ namespace OctoAwesome.Client.Controls
             while (true)
             {
                 _forceResetEvent.WaitOne();
-
                 while(!_forcedRenders.IsEmpty)
                 {
                     ChunkRenderer r;
