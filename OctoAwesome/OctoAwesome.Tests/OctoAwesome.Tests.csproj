@@ -34,19 +34,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="engenious, Version=0.1.16.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\engenious.0.1.16\lib\net40\engenious.dll</HintPath>
+    <Reference Include="engenious, Version=0.1.17.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\engenious.0.1.17\lib\net40\engenious.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis, Version=0.8.5.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\engenious.0.1.16\lib\net40\NVorbis.dll</HintPath>
+      <HintPath>..\packages\engenious.0.1.17\lib\net40\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <HintPath>..\packages\engenious.0.1.16\lib\net40\OpenTK.dll</HintPath>
+      <HintPath>..\packages\engenious.0.1.17\lib\net40\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\engenious.0.1.16\lib\net40\System.Numerics.Vectors.dll</HintPath>
+      <HintPath>..\packages\engenious.0.1.17\lib\net40\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -110,10 +110,10 @@
     <Error Condition="!Exists('..\packages\xunit.core.2.3.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.3.1\build\xunit.core.props'))" />
     <Error Condition="!Exists('..\packages\xunit.core.2.3.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.3.1\build\xunit.core.targets'))" />
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props'))" />
-    <Error Condition="!Exists('..\packages\engenious.0.1.16\build\engenious.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\engenious.0.1.16\build\engenious.targets'))" />
+    <Error Condition="!Exists('..\packages\engenious.0.1.17\build\engenious.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\engenious.0.1.17\build\engenious.targets'))" />
   </Target>
   <Import Project="..\packages\xunit.core.2.3.1\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.3.1\build\xunit.core.targets')" />
-  <Import Project="..\packages\engenious.0.1.16\build\engenious.targets" Condition="Exists('..\packages\engenious.0.1.16\build\engenious.targets')" />
+  <Import Project="..\packages\engenious.0.1.17\build\engenious.targets" Condition="Exists('..\packages\engenious.0.1.17\build\engenious.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
