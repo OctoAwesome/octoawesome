@@ -110,6 +110,10 @@ namespace OctoAwesome
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
 
+        /// <summary>
+        /// Invalidiert den Chunk, sodass er neu aufgebaut wird
+        /// </summary>
+        void Invalidate();
         event Action<IChunk, int> Changed;
     }
 }
