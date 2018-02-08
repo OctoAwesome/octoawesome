@@ -93,7 +93,7 @@ namespace OctoAwesome.Client
             Player.UpdateOrder = 2;
             Components.Add(Player);
 
-            Entity = new Client.Components.EntityComponent(this,Simulation);
+            Entity = new Components.EntityComponent(this,Simulation);
             Entity.UpdateOrder = 2;
             Components.Add(Entity);
 
