@@ -6,134 +6,58 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Buffers;
 using System.Net;
+using System.Text;
+using System.Linq;
+using System.Threading;
+using System.Net.NetworkInformation;
 
 namespace OctoAwesome.Network
 {
-    public class Client
+    public class Client : BaseClient
     {
-        public event EventHandler<(byte[] data, int length)> OnMessageRecived;
+        public bool IsClient { get; set; }
 
-        private readonly Socket socket;
-        private readonly SocketAsyncEventArgs receiveArgs;
-        private readonly SocketAsyncEventArgs sendArgs;
+        private static int clientReceived;
 
-        private readonly Queue<byte[]> queue;
-        private readonly object lockObject;
-
-        public bool Connected => socket.Connected;
-
-        public Client(Socket socket)
+        public Client() :
+            base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
-            lockObject = new object();
-            queue = new Queue<byte[]>();
-
-            this.socket = socket;
-
-            receiveArgs = new SocketAsyncEventArgs();
-            receiveArgs.Completed += ReceiveArgsCompleted;
-            receiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(2048), 0, 2048);
-
-            sendArgs = new SocketAsyncEventArgs();
-            sendArgs.Completed += SendArgsCompleted; ;
-            sendArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(2048), 0, 2048);
-
         }
-        public Client() : this(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-        {
-            NoDelay = true
-        })
-        { }
 
-        public void Send(byte[] data)
+        public void SendPing()
         {
-            lock (lockObject)
-            {
-                queue.Enqueue(data);
-            }
-            
-            SendInternal(data);
+            var buffer = ArrayPool<byte>.Shared.Rent(4);
+            Encoding.UTF8.GetBytes("PING", 0, 4, buffer, 0);
+            Send(buffer, 4);
         }
 
         public void Connect(string host, int port)
-            => socket.BeginConnect(new IPEndPoint(IPAddress.Parse(host), port), OnConnect, null);
-
-
-
-        public void Listening()
         {
-            while (true)
-            {
-                if (socket.ReceiveAsync(receiveArgs))
-                    return;
+            var address = Dns.GetHostAddresses(host).FirstOrDefault(
+                a => a.AddressFamily == Socket.AddressFamily);
 
-                ProcessInternal(receiveArgs.Buffer, receiveArgs.BytesTransferred);
-            }
+            Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
         }
 
-        private void ProcessInternal(byte[] buffer, int bytesTransferred)
+        protected override void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount)
         {
-            OnMessageRecived?.Invoke(this, (buffer, bytesTransferred));
+            var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
+
+            var increment = Interlocked.Increment(ref clientReceived);
+            if (increment > 0 && increment % 10000 == 0)
+                Console.WriteLine($"CLIENTS Received 10000 messages");
         }
 
-        private void OnConnect(IAsyncResult ar)
+        private void OnConnected(IAsyncResult ar)
         {
-            socket.EndConnect(ar);
+            Socket.EndConnect(ar);
 
             while (true)
             {
-                if (socket.ReceiveAsync(receiveArgs))
+                if (Socket.ReceiveAsync(ReceiveArgs))
                     return;
 
-                ProcessInternal(receiveArgs.Buffer, receiveArgs.BytesTransferred);
-            }
-        }
-
-        private void SendInternal(byte[] data)
-        {
-            while (true)
-            {
-                Buffer.BlockCopy(data, 0, sendArgs.Buffer, 0, data.Length);
-                sendArgs.SetBuffer(0, data.Length);
-
-                //ArrayPool<byte>.Shared.Return(data);
-
-                if (socket.SendAsync(sendArgs))
-                    return;
-
-                lock (lockObject)
-                {
-                    if (queue.Count > 0)
-                        data = queue.Dequeue();
-                    else
-                        return;
-                }
-            }
-        }
-
-        private void SendArgsCompleted(object sender, SocketAsyncEventArgs e)
-        {
-            byte[] data;
-
-            lock (lockObject)
-            {
-                if (queue.Count > 0)
-                    data = queue.Dequeue();
-                else
-                    return;
-
-            }
-        }
-
-        private void ReceiveArgsCompleted(object sender, SocketAsyncEventArgs e)
-        {
-            ProcessInternal(e.Buffer, e.BytesTransferred);
-
-            while (true)
-            {
-                if (socket.ReceiveAsync(receiveArgs))
-                    return;
-
-                ProcessInternal(receiveArgs.Buffer, receiveArgs.BytesTransferred);
+                ProcessInternal(ReceiveArgs.Buffer, ReceiveArgs.BytesTransferred);
             }
         }
     }

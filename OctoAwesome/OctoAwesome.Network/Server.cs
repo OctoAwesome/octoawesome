@@ -11,47 +11,46 @@ namespace OctoAwesome.Network
 {
     class Server
     {
-        public ConcurrentBag<Client> Clients { get; set; }
-
-        public event EventHandler<Client> OnClientConnected;
+        public event EventHandler<ConnectedClient> OnClientConnected;
 
         private Socket socket;
+        private List<ConnectedClient> connectedClients;
+        private readonly object lockObj;
 
-        public Server()
+        public Server() : base()
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Clients = new ConcurrentBag<Client>();
+            lockObj = new object();
         }
 
-        public void Start(int port)
+        public void Start(IPAddress address, int port)
         {
-            socket.Bind(new IPEndPoint(IPAddress.Any, port));
-            socket.Listen(128);
-            socket.BeginAccept(OnClientConnect, null);
+            connectedClients = new List<ConnectedClient>();
+            socket.Bind(new IPEndPoint(address, port));
+            socket.Listen(1024);
+            socket.BeginAccept(OnClientAccepted, null);
+        }
+        public void Start(string host, int port)
+        {
+            var address = Dns.GetHostAddresses(host).FirstOrDefault(
+                a => a.AddressFamily == socket.AddressFamily);
+
+            Start(address, port);
         }
 
-        private void OnClientConnect(IAsyncResult ar)
+        private void OnClientAccepted(IAsyncResult ar)
         {
             var tmpSocket = socket.EndAccept(ar);
-            socket.BeginAccept(OnClientConnect, null);
-
+            socket.BeginAccept(OnClientAccepted, null);
             tmpSocket.NoDelay = true;
 
-            var client = new Client(tmpSocket);
-            client.Listening();
+            var client = new ConnectedClient(tmpSocket);
+            client.Start();
 
-
-            Clients.Add(client);
-            
             OnClientConnected?.Invoke(this, client);
-        }
 
-        public void Stop()
-        {
-            socket.Disconnect(true);
+            lock (lockObj)
+                connectedClients.Add(client);
         }
-        
-
-       
     }
 }
