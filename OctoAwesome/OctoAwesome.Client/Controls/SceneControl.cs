@@ -422,14 +422,14 @@ namespace OctoAwesome.Client.Controls
                 */
             }
 
-            var up = Vector3.UnitZ;
-            var sunView = Matrix.CreateLookAt(player.Position.Position.LocalPosition + sunDirection * -50,
+            var up = Vector3.UnitY;
+            var sunView = Matrix.CreateLookAt(player.Position.Position.LocalPosition + sunDirection * -10,
                 player.Position.Position.LocalPosition, up);
             
             //var sunView = Matrix.CreateLookAt(new Vector3(100,100,100), 
             //    Vector3.Zero, Vector3.UnitZ);
             
-            var sunProj = Matrix.CreateOrthographicOffCenter(-50,50,50,-50, 0.1f, 200f);
+            var sunProj = Matrix.CreateOrthographicOffCenter(-50,50,50,-50, 0, 30f);
             
             
             //Shadow
