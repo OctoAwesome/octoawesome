@@ -57,6 +57,7 @@ namespace OctoAwesome.Client.Controls
         private Thread[] _additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
+        public RenderTarget2D ShadowMap { get; set; }
         public RenderTarget2D ControlTexture { get; set; }
 
         private float sunPosition = 0f;
@@ -210,6 +211,9 @@ namespace OctoAwesome.Client.Controls
 
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
+            
+            ShadowMap = new RenderTarget2D(manager.GraphicsDevice,1024*8,1024*8,PixelInternalFormat.DepthComponent32);
+            ShadowMap.SamplerState = SamplerState.LinearClamp;
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -373,6 +377,8 @@ namespace OctoAwesome.Client.Controls
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
+            sunDirection = new Vector3(-0.5f,-0.5f,-1);
+            
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
@@ -409,17 +415,48 @@ namespace OctoAwesome.Client.Controls
                     (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 int range = 3;
+                /*
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
-                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
+                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix,, shift);
+                */
+            }
+
+            var up = Vector3.UnitZ;
+            var sunView = Matrix.CreateLookAt(player.Position.Position.LocalPosition + sunDirection * -50,
+                player.Position.Position.LocalPosition, up);
+            
+            //var sunView = Matrix.CreateLookAt(new Vector3(100,100,100), 
+            //    Vector3.Zero, Vector3.UnitZ);
+            
+            var sunProj = Matrix.CreateOrthographicOffCenter(-50,50,50,-50, 0.1f, 200f);
+            
+            
+            //Shadow
+            Manager.GraphicsDevice.SetRenderTarget(ShadowMap);
+            Manager.GraphicsDevice.Clear(Color.White);
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            Matrix shadowViewProj = sunProj * sunView;
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue)
+                    continue;
+
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    renderer.ChunkPosition.Value, new Index2(
+                        planet.Size.X,
+                        planet.Size.Y));
+
+                renderer.DrawShadow(shadowViewProj, shift);
             }
             
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
+            //Texture2D.ToBitmap(ShadowMap).Save("shadow.bmp",ImageFormat.Bmp);
             Manager.GraphicsDevice.Clear(background);
 
             Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-
+            
             // Draw Sun
             // GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             sunEffect.Texture = sunTexture;
@@ -433,7 +470,12 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
+            Matrix bias = new Matrix(0.5f,0.0f,0.0f,0.5f,
+                0.0f,0.5f,0.0f,0.5f,
+                0.0f,0.0f,0.5f,0.5f,
+                0.0f,0.0f,0.0f,1.0f);
+            shadowViewProj = bias*shadowViewProj;
+            //Normal
             foreach (var renderer in chunkRenderer)
             {
                 if (!renderer.ChunkPosition.HasValue)
@@ -455,7 +497,7 @@ namespace OctoAwesome.Client.Controls
                     (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 if (camera.Frustum.Intersects(chunkBox))
-                    renderer.Draw(camera.View, camera.Projection, shift);
+                    renderer.Draw(camera.View, camera.Projection,shadowViewProj,ShadowMap, shift);
             }
 
            

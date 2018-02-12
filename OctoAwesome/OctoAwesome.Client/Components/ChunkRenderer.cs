@@ -90,21 +90,19 @@ namespace OctoAwesome.Client.Components
             _sceneControl.Enqueue(this);
         }
         
-        public void Draw(Matrix view, Matrix projection, Index3 shift)
+        public void DrawShadow(Matrix viewProjection, Index3 shift)
         {
             if (!loaded)
                 return;
 
-            Matrix worldViewProj = projection * view * Matrix.CreateTranslation(
-                shift.X * Chunk.CHUNKSIZE_X,
-                shift.Y * Chunk.CHUNKSIZE_Y,
-                shift.Z * Chunk.CHUNKSIZE_Z);
+
+            
+            Matrix worldViewProj = viewProjection * Matrix.CreateTranslation(
+                                       shift.X * Chunk.CHUNKSIZE_X,
+                                       shift.Y * Chunk.CHUNKSIZE_Y,
+                                       shift.Z * Chunk.CHUNKSIZE_Z);
 
             simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
-            simple.Parameters["BlockTextures"].SetValue(textures);
-
-            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
-            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
 
             lock (this)
             {
@@ -114,13 +112,58 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.VertexBuffer = vb;
                 graphicsDevice.IndexBuffer = ib;
 
-                foreach (var pass in simple.CurrentTechnique.Passes)
+                foreach (var pass in simple.Techniques["Shadow"].Passes)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
                 }
             }
         }
+        
+        public void Draw(Matrix view, Matrix projection,Matrix shadowViewProjection,RenderTarget2D shadowMap, Index3 shift)
+        {
+            if (!loaded)
+                return;
+
+            Matrix worldViewProj = projection * view * Matrix.CreateTranslation(
+                shift.X * Chunk.CHUNKSIZE_X,
+                shift.Y * Chunk.CHUNKSIZE_Y,
+                shift.Z * Chunk.CHUNKSIZE_Z);
+            
+            Matrix shadowworldViewProj = shadowViewProjection * Matrix.CreateTranslation(
+                                             shift.X * Chunk.CHUNKSIZE_X,
+                                             shift.Y * Chunk.CHUNKSIZE_Y,
+                                             shift.Z * Chunk.CHUNKSIZE_Z);
+
+            
+
+            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
+            simple.Parameters["BlockTextures"].SetValue(textures);
+
+            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
+            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+            
+            simple.Parameters["shadowWorldViewProj"].SetValue(shadowworldViewProj);
+            simple.Parameters["ShadowMap"].SetValue(shadowMap);
+
+            lock (this)
+            {
+                if (vb == null)
+                    return;
+                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                graphicsDevice.VertexBuffer = vb;
+                graphicsDevice.IndexBuffer = ib;
+
+                foreach (var pass in simple.Techniques["Basic"].Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
+                }
+            }
+        }
+        
+        
+        
         private object ibLock = new object();
         private Index3? _chunkPosition;
 

@@ -1,9 +1,11 @@
 #version 400
 uniform mat4 WorldViewProj;
+uniform mat4 shadowWorldViewProj;
 
 in uint inputData;
 in uint inputData2;
 
+out vec4 shadowPosition;
 out vec3 psNormal;
 out vec2 psTexcoord;
 flat out uint psTexIndex;
@@ -20,7 +22,7 @@ void main()
 	
 
 	gl_Position = WorldViewProj*position;
-
+    shadowPosition = shadowWorldViewProj* position;
 
 }
 
