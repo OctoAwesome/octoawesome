@@ -360,7 +360,7 @@ namespace OctoAwesome.Client.Controls
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
             }
 
-            float octoDaysPerEarthDay = 360f;
+            float octoDaysPerEarthDay = 800f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
             float playerPosX = ((float)player.Position.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
@@ -377,7 +377,7 @@ namespace OctoAwesome.Client.Controls
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
-            sunDirection = new Vector3(-0.5f,-0.5f,-1);
+            //sunDirection = new Vector3(-0.5f,-0.5f,-1);
             
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
@@ -431,7 +431,7 @@ namespace OctoAwesome.Client.Controls
             //var sunView = Matrix.CreateLookAt(new Vector3(100,100,100), 
             //    Vector3.Zero, Vector3.UnitZ);
             
-            var sunProj = Matrix.CreateOrthographicOffCenter(-80,80,80,-80, -200f, 200f);
+            var sunProj = Matrix.CreateOrthographicOffCenter(-32,32,32,-32, -400f, 400f);
             
             
             //Shadow
