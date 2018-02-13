@@ -19,8 +19,10 @@ void main()
 {
 
     float lighted = 1.0f;
-    float bias = 0.005;
-    if ( texture( ShadowMap, shadowPosition.xy ).z  <  shadowPosition.z- bias){
+    float bias = 0.00009;
+    if (shadowPosition.x >-1 && shadowPosition.x <1 &&  
+        shadowPosition.y > -1 && shadowPosition.y <1 && 
+        texture( ShadowMap, shadowPosition.xy ).z  <  shadowPosition.z- bias){
         lighted = 0.5;
     }
 
