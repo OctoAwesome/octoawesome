@@ -22,8 +22,9 @@ namespace OctoAwesome.Basics
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
         /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
-        public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed)
-            : base(id, universe, size, seed)
+        /// <param name="gravity">Die Gravitationskonstante des neuen Planeten.</param>
+        public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed, float gravity)
+            : base(id, universe, size, seed, gravity)
         {
             Initalize();
         }

@@ -29,6 +29,11 @@ namespace OctoAwesome
         Index3 Size { get; }
 
         /// <summary>
+        /// Gravitation des Planeten.
+        /// </summary>
+        float Gravity { get; }
+
+        /// <summary>
         /// Die Klimakarte des Planeten
         /// </summary>
         IClimateMap ClimateMap { get; }

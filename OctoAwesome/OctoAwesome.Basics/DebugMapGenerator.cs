@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics
     {
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
-            Planet planet = new Planet(id, universe, new Index3(4, 4, 3), seed);
+            Planet planet = new Planet(id, universe, new Index3(4, 4, 3), seed, 10);
             planet.Generator = this;
             return planet;
         }
@@ -65,7 +65,7 @@ namespace OctoAwesome.Basics
             return planet;
         }
 
-        
+
 
         public IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index)
         {

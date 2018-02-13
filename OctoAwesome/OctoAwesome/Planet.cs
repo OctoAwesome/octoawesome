@@ -45,13 +45,14 @@ namespace OctoAwesome
         public IMapGenerator Generator { get; set; }
 
         /// <summary>
-        /// Initialisierung des Planeten
+        /// Initialisierung des Planeten.
         /// </summary>
-        /// <param name="id">ID des Planeten</param>
-        /// <param name="universe">ID des Universums</param>
-        /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
-        /// <param name="seed">Seed des Zufallsgenerators</param>
-        public Planet(int id, Guid universe, Index3 size, int seed)
+        /// <param name="id">ID des Planeten.</param>
+        /// <param name="universe">ID des Universums.</param>
+        /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
+        /// <param name="seed">Seed des Zufallsgenerators.</param>
+        /// <param name="gravity">Die Gravitationskonstante des neuen Planeten.</param>
+        public Planet(int id, Guid universe, Index3 size, int seed, float gravity)
         {
             Id = id;
             Universe = universe;
@@ -60,6 +61,7 @@ namespace OctoAwesome
                 (int)Math.Pow(2, size.Y),
                 (int)Math.Pow(2, size.Z));
             Seed = seed;
+            Gravity = gravity;
         }
 
         /// <summary>
