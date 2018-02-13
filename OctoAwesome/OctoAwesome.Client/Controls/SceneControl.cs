@@ -181,9 +181,13 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                
+                
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                
+                
             };
 
             var selectionIndices = new short[]
@@ -383,6 +387,9 @@ namespace OctoAwesome.Client.Controls
             simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
+            simpleShader.Parameters["AmbientIntensity"].SetValue(0.5f);
+            simpleShader.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+            
             // Console.WriteLine(sunDirection);
 
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
@@ -459,8 +466,10 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
             
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            
             // Draw Sun
-            // GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            //Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             sunEffect.Texture = sunTexture;
             Matrix billboard = Matrix.Invert(camera.View);
             billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
@@ -469,13 +478,14 @@ namespace OctoAwesome.Client.Controls
             sunEffect.Projection = camera.Projection;
             sunEffect.CurrentTechnique.Passes[0].Apply();
             Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
-            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
+            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0,6);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Matrix bias = new Matrix(0.5f,0.0f,0.0f,0.5f,
                 0.0f,0.5f,0.0f,0.5f,
                 0.0f,0.0f,0.5f,0.5f,
                 0.0f,0.0f,0.0f,1.0f);
+            
             shadowViewProj = bias*shadowViewProj;
             //Normal
             foreach (var renderer in chunkRenderer)

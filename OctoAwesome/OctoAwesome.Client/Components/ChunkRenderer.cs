@@ -139,10 +139,7 @@ namespace OctoAwesome.Client.Components
 
             simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
             simple.Parameters["BlockTextures"].SetValue(textures);
-
-            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
-            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
-            
+     
             simple.Parameters["shadowWorldViewProj"].SetValue(shadowworldViewProj);
             simple.Parameters["ShadowMap"].SetValue(shadowMap);
 
