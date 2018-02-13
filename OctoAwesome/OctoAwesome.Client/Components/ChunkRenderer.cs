@@ -112,7 +112,7 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.VertexBuffer = vb;
                 graphicsDevice.IndexBuffer = ib;
 
-                foreach (var pass in simple.Techniques["Shadow"].Passes)
+                foreach (var pass in simple.Techniques["BlockShadow"].Passes)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
@@ -154,7 +154,7 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.VertexBuffer = vb;
                 graphicsDevice.IndexBuffer = ib;
 
-                foreach (var pass in simple.Techniques["Basic"].Passes)
+                foreach (var pass in simple.Techniques["BlockBasic"].Passes)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);

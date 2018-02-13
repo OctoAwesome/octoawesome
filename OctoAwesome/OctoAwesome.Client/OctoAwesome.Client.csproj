@@ -153,6 +153,8 @@
     <Content Include="Content\Hud.png" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
+    <Content Include="Content\simple\entityShadow.ps" />
+    <Content Include="Content\simple\entityShadow.vs" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
@@ -186,10 +188,12 @@
     <None Include="Content\simple.glsl">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Content\simple\shadow.ps" />
-    <None Include="Content\simple\shadow.vs" />
-    <None Include="Content\simple\simple.ps" />
-    <None Include="Content\simple\simple.vs" />
+    <None Include="Content\simple\blockShadow.ps" />
+    <None Include="Content\simple\blockShadow.vs" />
+    <None Include="Content\simple\blockSimple.ps" />
+    <None Include="Content\simple\blockSimple.vs" />
+    <None Include="Content\simple\entitySimple.ps" />
+    <None Include="Content\simple\entitySimple.vs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

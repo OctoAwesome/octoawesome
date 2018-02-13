@@ -452,6 +452,8 @@ namespace OctoAwesome.Client.Controls
                 renderer.DrawShadow(shadowViewProj, shift);
             }
             
+            entities.DrawShadow(shadowViewProj,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
+            
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
             //Texture2D.ToBitmap(ShadowMap).Save("shadow.bmp",ImageFormat.Bmp);
             Manager.GraphicsDevice.Clear(background);
@@ -504,7 +506,7 @@ namespace OctoAwesome.Client.Controls
 
            
 
-            entities.Draw(camera.View, camera.Projection,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
+            entities.Draw(camera.View, camera.Projection,shadowViewProj,ShadowMap,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
 
             if (player.SelectedBox.HasValue)
             {
