@@ -194,7 +194,7 @@ namespace OctoAwesome.Client
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            IsMouseVisible = true;
+            //IsMouseVisible = true;
         }
 
         protected override void OnExiting(object sender, EventArgs args)

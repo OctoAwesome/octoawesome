@@ -1,4 +1,3 @@
-#version 400
 uniform mat4 WorldViewProj;
 uniform mat4 shadowWorldViewProj;
 

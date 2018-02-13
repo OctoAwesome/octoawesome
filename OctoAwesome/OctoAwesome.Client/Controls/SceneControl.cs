@@ -422,9 +422,7 @@ namespace OctoAwesome.Client.Controls
                 */
             }
 
-            
-            var up = Vector3.Cross(new Vector3(0,0,sunDirection.Z),new Vector3(sunDirection.X,sunDirection.Y,0) );
-            up = Vector3.Cross(sunDirection,up);
+            var up = Vector3.UnitZ;
             var sunView = Matrix.CreateLookAt(player.Position.Position.LocalPosition + sunDirection * -1,
                 player.Position.Position.LocalPosition, up);
             
