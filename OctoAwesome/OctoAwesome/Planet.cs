@@ -37,7 +37,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gravitation des Planeten.
         /// </summary>
-        public float Gravity { get; private set; }
+        public float Gravity { get; protected set; }
 
         /// <summary>
         /// Der Generator des Planeten.
@@ -51,8 +51,7 @@ namespace OctoAwesome
         /// <param name="universe">ID des Universums.</param>
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
         /// <param name="seed">Seed des Zufallsgenerators.</param>
-        /// <param name="gravity">Die Gravitationskonstante des neuen Planeten.</param>
-        public Planet(int id, Guid universe, Index3 size, int seed, float gravity)
+        public Planet(int id, Guid universe, Index3 size, int seed)
         {
             Id = id;
             Universe = universe;
@@ -61,7 +60,6 @@ namespace OctoAwesome
                 (int)Math.Pow(2, size.Y),
                 (int)Math.Pow(2, size.Z));
             Seed = seed;
-            Gravity = gravity;
         }
 
         /// <summary>

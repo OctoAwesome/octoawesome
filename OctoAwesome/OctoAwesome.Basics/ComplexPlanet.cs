@@ -22,10 +22,15 @@ namespace OctoAwesome.Basics
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
         /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
-        /// <param name="gravity">Die Gravitationskonstante des neuen Planeten.</param>
-        public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed, float gravity)
-            : base(id, universe, size, seed, gravity)
+        public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed)
+            : base(id, universe, size, seed)
         {
+            // Berechnung der Gravitation auf Basis des Newton'schen Grundgesetzes und
+            // der Annahme einer Kugel mit gleicher Oberfläche wie der rechteckige Planet.
+            // Die Gravitationskonstante ist absichtlich so "groß", vgl. Issue #220
+            var radius = Math.Sqrt((Size.X * Size.Y) / (16 * Math.PI));
+            Gravity = (float)((4f / 3f) * Math.PI * 6.67e-7 * 5510 * radius);
+
             Initalize();
         }
 
