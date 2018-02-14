@@ -281,6 +281,7 @@ namespace OctoAwesome.Client.Screens
         #region GamePad Input
 
         private bool pressedGamepadInventory = false;
+        private bool pressedGamepadPause = false;
         private bool pressedGamepadInteract = false;
         private bool pressedGamepadApply = false;
         private bool pressedGamepadJump = false;
@@ -333,6 +334,10 @@ namespace OctoAwesome.Client.Screens
                 if (gamePadState.Buttons.Back == ButtonState.Pressed && !pressedGamepadInventory)
                     Manager.NavigateToScreen(new InventoryScreen(Manager));
                 pressedGamepadInventory = gamePadState.Buttons.Back == ButtonState.Pressed;
+
+                if (gamePadState.Buttons.Start == ButtonState.Pressed && !pressedGamepadPause)
+                    Manager.NavigateToScreen(new PauseScreen(Manager));
+                pressedGamepadPause = gamePadState.Buttons.Start == ButtonState.Pressed;
             }
         }
 
