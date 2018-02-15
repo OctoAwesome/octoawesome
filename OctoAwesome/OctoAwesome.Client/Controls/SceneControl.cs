@@ -406,8 +406,8 @@ namespace OctoAwesome.Client.Controls
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
             Color background =
-                new Color(181, 224, 255);
-
+                new Color((byte)(181*sunIntenity),(byte)(224*sunIntenity),(byte)(255*sunIntenity));
+            
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Manager.GraphicsDevice.Clear(background);
@@ -487,16 +487,18 @@ namespace OctoAwesome.Client.Controls
             
             // Draw Sun
             //Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-            sunEffect.Texture = sunTexture;
-            Matrix billboard = Matrix.Invert(camera.View);
-            billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
-            sunEffect.World = billboard;
-            sunEffect.View = camera.View;
-            sunEffect.Projection = camera.Projection;
-            sunEffect.CurrentTechnique.Passes[0].Apply();
-            Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
-            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0,6);
-
+            if (drawSunShadow)
+            {
+                sunEffect.Texture = sunTexture;
+                Matrix billboard = Matrix.Invert(camera.View);
+                billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
+                sunEffect.World = billboard;
+                sunEffect.View = camera.View;
+                sunEffect.Projection = camera.Projection;
+                sunEffect.CurrentTechnique.Passes[0].Apply();
+                Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
+                Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 6);
+            }
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Matrix bias = new Matrix(0.5f,0.0f,0.0f,0.5f,
                 0.0f,0.5f,0.0f,0.5f,
