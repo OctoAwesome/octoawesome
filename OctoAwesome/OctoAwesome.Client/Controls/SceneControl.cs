@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using OctoAwesome.Client.Components;
 using System.Drawing.Imaging;
@@ -10,6 +11,8 @@ using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
 using engenious.Helper;
+using Color = engenious.Color;
+using Rectangle = engenious.Rectangle;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -54,6 +57,9 @@ namespace OctoAwesome.Client.Controls
         private ILocalChunkCache localChunkCache;
         private Effect simpleShader;
 
+        private Model skyBox;
+        private Texture2D skyMap;
+        
         private Thread[] _additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
@@ -206,7 +212,6 @@ namespace OctoAwesome.Client.Controls
             billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice, VertexPositionTexture.VertexDeclaration, billboardVertices.Length);
             billboardVertexbuffer.SetData(billboardVertices);
 
-
             sunEffect = new BasicEffect(manager.GraphicsDevice);
             sunEffect.TextureEnabled = true;
 
@@ -218,6 +223,9 @@ namespace OctoAwesome.Client.Controls
             
             ShadowMap = new RenderTarget2D(manager.GraphicsDevice,1024*8,1024*8,PixelInternalFormat.DepthComponent32);
             ShadowMap.SamplerState = SamplerState.LinearClamp;
+
+            skyBox = Manager.Content.Load<Model>("skybox");
+            skyMap = Texture2D.FromBitmap(Manager.GraphicsDevice,(Bitmap)Bitmap.FromFile("Content/skymap.png"));
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -373,11 +381,14 @@ namespace OctoAwesome.Client.Controls
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
             float inclination = ((float)Math.Sin(playerPosY) * inclinationVariance) + MathHelper.Pi / 6f;
+            float sunrotation = (float) (MathHelper.TwoPi -
+                                         ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) %
+                                          MathHelper.TwoPi));
             //Console.WriteLine("Stand: " + (MathHelper.Pi + playerPosX) + " Neigung: " + inclination);
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) *
                 //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
-                Matrix.CreateRotationY((float)(MathHelper.TwoPi - ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) % MathHelper.TwoPi)));
+                Matrix.CreateRotationY(sunrotation);
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
@@ -485,10 +496,25 @@ namespace OctoAwesome.Client.Controls
             
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             
+            //Draw Skybox
+            sunEffect.Texture = skyMap;
+            sunEffect.World = Matrix.CreateTranslation(player.Position.Position.LocalPosition)
+                              * Matrix.CreateScaling(10, 10, 10)
+                              * Matrix.CreateRotationX(inclination) 
+                              * Matrix.CreateRotationY(sunrotation);
+            sunEffect.View = camera.View;
+            sunEffect.Projection = camera.Projection;
+            sunEffect.CurrentTechnique.Passes[0].Apply();
+            skyBox.Draw();
+            
+            
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            
             // Draw Sun
             //Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             if (drawSunShadow)
             {
+                sunEffect.TextureEnabled = true;
                 sunEffect.Texture = sunTexture;
                 Matrix billboard = Matrix.Invert(camera.View);
                 billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);

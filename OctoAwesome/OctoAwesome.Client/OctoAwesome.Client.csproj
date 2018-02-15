@@ -155,6 +155,10 @@
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
     <Content Include="Content\simple\entityShadow.ps" />
     <Content Include="Content\simple\entityShadow.vs" />
+    <Content Include="Content\skybox.fbx" />
+    <Content Include="Content\skymap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
