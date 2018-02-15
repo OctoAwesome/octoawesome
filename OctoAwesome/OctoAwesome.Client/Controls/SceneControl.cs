@@ -382,12 +382,23 @@ namespace OctoAwesome.Client.Controls
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
             //sunDirection = new Vector3(-0.5f,-0.5f,-1);
+
+            float intensity = 0.2f;
+            float sunIntenity = 0f;
+            bool drawSunShadow = false;
+
+            if (sunDirection.Z < 0)
+            {
+                drawSunShadow = true;
+                intensity = intensity - sunDirection.Z *0.5f;
+                sunIntenity = -sunDirection.Z * 0.6f;
+            }
             
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
-            simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
+            simpleShader.Parameters["DiffuseIntensity"].SetValue(sunIntenity);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
-            simpleShader.Parameters["AmbientIntensity"].SetValue(0.5f);
+            simpleShader.Parameters["AmbientIntensity"].SetValue(intensity);
             simpleShader.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
             
             // Console.WriteLine(sunDirection);
@@ -441,24 +452,30 @@ namespace OctoAwesome.Client.Controls
             
             //Shadow
             Manager.GraphicsDevice.SetRenderTarget(ShadowMap);
-            Manager.GraphicsDevice.Clear(Color.White);
-            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            Manager.GraphicsDevice.Clear(Color.Black);
+
             Matrix shadowViewProj = sunProj * sunView;
-            foreach (var renderer in chunkRenderer)
+            
+            if (drawSunShadow)
             {
-                if (!renderer.ChunkPosition.HasValue)
-                    continue;
+                Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+                
+                foreach (var renderer in chunkRenderer)
+                {
+                    if (!renderer.ChunkPosition.HasValue)
+                        continue;
 
-                Index3 shift = chunkOffset.ShortestDistanceXY(
-                    renderer.ChunkPosition.Value, new Index2(
-                        planet.Size.X,
-                        planet.Size.Y));
+                    Index3 shift = chunkOffset.ShortestDistanceXY(
+                        renderer.ChunkPosition.Value, new Index2(
+                            planet.Size.X,
+                            planet.Size.Y));
 
-                renderer.DrawShadow(shadowViewProj, shift);
+                    renderer.DrawShadow(shadowViewProj, shift);
+                }
+
+                entities.DrawShadow(shadowViewProj, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
             }
-            
-            entities.DrawShadow(shadowViewProj,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
-            
+
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
             //Texture2D.ToBitmap(ShadowMap).Save("shadow.bmp",ImageFormat.Bmp);
             Manager.GraphicsDevice.Clear(background);
