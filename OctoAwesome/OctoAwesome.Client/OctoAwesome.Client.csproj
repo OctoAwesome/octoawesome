@@ -146,19 +146,28 @@
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
     <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
     <EmbeddedResource Include="Assets\Crew\blackorca.png" />
-    <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
+    <Content Include="Content\Effects\simple.glsl" />
+    <Content Include="Content\Effects\simple\blockShadow.ps" />
+    <Content Include="Content\Effects\simple\blockShadow.vs" />
+    <Content Include="Content\Effects\simple\blockSimple.ps" />
+    <Content Include="Content\Effects\simple\blockSimple.vs" />
+    <Content Include="Content\Effects\simple\entityShadow.ps" />
+    <Content Include="Content\Effects\simple\entityShadow.vs" />
+    <Content Include="Content\Effects\simple\entitySimple.ps" />
+    <Content Include="Content\Effects\simple\entitySimple.vs" />
+    <Content Include="Content\Effects\skybox.glsl" />
+    <Content Include="Content\Effects\skybox\skybox.ps" />
+    <Content Include="Content\Effects\skybox\skybox.vs" />
     <Content Include="Content\GameFont.png" />
     <Content Include="Content\HeadlineFont.png" />
     <Content Include="Content\Hud.png" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
-    <Content Include="Content\simple\entityShadow.ps" />
-    <Content Include="Content\simple\entityShadow.vs" />
-    <Content Include="Content\skybox.fbx" />
-    <Content Include="Content\skymap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Content\Models\dog.fbx" />
+    <Content Include="Content\Models\skybox.fbx" />
+    <Content Include="Content\Textures\skymap.png" />
+    <Content Include="Content\Textures\texdog.png" />
     <Content Include="Copyright.txt" />
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
@@ -189,15 +198,6 @@
     <None Include="Content\GameFont.fnt" />
     <None Include="Content\HeadlineFont.fnt" />
     <None Include="Content\Hud.fnt" />
-    <None Include="Content\simple.glsl">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Content\simple\blockShadow.ps" />
-    <None Include="Content\simple\blockShadow.vs" />
-    <None Include="Content\simple\blockSimple.ps" />
-    <None Include="Content\simple\blockSimple.vs" />
-    <None Include="Content\simple\entitySimple.ps" />
-    <None Include="Content\simple\entitySimple.vs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

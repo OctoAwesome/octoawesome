@@ -57,6 +57,8 @@ namespace OctoAwesome.Client.Controls
         private ILocalChunkCache localChunkCache;
         private Effect simpleShader;
 
+        private engenious.UserEffects.skybox skyEffect;
+
         private Model skyBox;
         private Texture2D skyMap;
         
@@ -224,8 +226,10 @@ namespace OctoAwesome.Client.Controls
             ShadowMap = new RenderTarget2D(manager.GraphicsDevice,1024*8,1024*8,PixelInternalFormat.DepthComponent32);
             ShadowMap.SamplerState = SamplerState.LinearClamp;
 
-            skyBox = Manager.Content.Load<Model>("skybox");
-            skyMap = Texture2D.FromBitmap(Manager.GraphicsDevice,(Bitmap)Bitmap.FromFile("Content/skymap.png"));
+            skyBox = Manager.Content.Load<Model>("Models/skybox");
+            skyMap = Manager.Content.Load<Texture2D>("Textures/skymap");
+            skyEffect = Manager.Content.Load<engenious.UserEffects.skybox>("Effects/skybox");
+            skyMap.SamplerState = SamplerState.LinearWrap;
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -394,34 +398,22 @@ namespace OctoAwesome.Client.Controls
 
             //sunDirection = new Vector3(-0.5f,-0.5f,-1);
 
-            float intensity = 0.2f;
-            float sunIntenity = 0f;
-            bool drawSunShadow = false;
 
-            if (sunDirection.Z < 0)
-            {
-                drawSunShadow = true;
-                intensity = intensity - sunDirection.Z *0.5f;
-                sunIntenity = -sunDirection.Z * 0.6f;
-            }
+
             
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
-            simpleShader.Parameters["DiffuseIntensity"].SetValue(sunIntenity);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
-
-            simpleShader.Parameters["AmbientIntensity"].SetValue(intensity);
-            simpleShader.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+            simpleShader.Parameters["AmbientColor"].SetValue(Color.White);
             
             // Console.WriteLine(sunDirection);
 
             // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
-            Color background =
-                new Color((byte)(181*sunIntenity),(byte)(224*sunIntenity),(byte)(255*sunIntenity));
+
             
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            Manager.GraphicsDevice.Clear(background);
+            Manager.GraphicsDevice.Clear(Color.AliceBlue);
 
             foreach (var renderer in chunkRenderer)
             {
@@ -467,52 +459,51 @@ namespace OctoAwesome.Client.Controls
 
             Matrix shadowViewProj = sunProj * sunView;
             
-            if (drawSunShadow)
+
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            
+            foreach (var renderer in chunkRenderer)
             {
-                Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-                
-                foreach (var renderer in chunkRenderer)
-                {
-                    if (!renderer.ChunkPosition.HasValue)
-                        continue;
+                if (!renderer.ChunkPosition.HasValue)
+                    continue;
 
-                    Index3 shift = chunkOffset.ShortestDistanceXY(
-                        renderer.ChunkPosition.Value, new Index2(
-                            planet.Size.X,
-                            planet.Size.Y));
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    renderer.ChunkPosition.Value, new Index2(
+                        planet.Size.X,
+                        planet.Size.Y));
 
-                    renderer.DrawShadow(shadowViewProj, shift);
-                }
-
-                entities.DrawShadow(shadowViewProj, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
+                renderer.DrawShadow(shadowViewProj, shift);
             }
+
+            entities.DrawShadow(shadowViewProj, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
 
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
             //Texture2D.ToBitmap(ShadowMap).Save("shadow.bmp",ImageFormat.Bmp);
-            Manager.GraphicsDevice.Clear(background);
+            Manager.GraphicsDevice.Clear(Color.White);
 
-            Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            Manager.GraphicsDevice.BlendState = BlendState.Opaque;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
             
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             
             //Draw Skybox
-            sunEffect.Texture = skyMap;
-            sunEffect.World = Matrix.CreateTranslation(player.Position.Position.LocalPosition)
-                              * Matrix.CreateScaling(10, 10, 10)
-                              * Matrix.CreateRotationX(inclination) 
-                              * Matrix.CreateRotationY(sunrotation);
-            sunEffect.View = camera.View;
-            sunEffect.Projection = camera.Projection;
-            sunEffect.CurrentTechnique.Passes[0].Apply();
-            skyBox.Draw();
+            var skyTechnique =skyEffect.SkyBox;
+            skyTechnique.Pass1.Apply();
+            skyTechnique.Pass1.DiffuseDirection = sunDirection;
+            skyTechnique.Pass1.NightSky = skyMap;
+            skyTechnique.Pass1.WorldViewProj = camera.Projection*camera.View*(Matrix.CreateTranslation(player.Position.Position.LocalPosition)
+                                                                                          * Matrix.CreateScaling(10, 10, 10)
+                                                                                          * Matrix.CreateRotationX(inclination) 
+                                                                                          * Matrix.CreateRotationY(sunrotation));
             
+
+            skyBox.Draw();
             
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             
             // Draw Sun
             //Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-            if (drawSunShadow)
+            if (sunDirection.Z < 0)
             {
                 sunEffect.TextureEnabled = true;
                 sunEffect.Texture = sunTexture;

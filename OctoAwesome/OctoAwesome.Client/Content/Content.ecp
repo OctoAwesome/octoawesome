@@ -24,30 +24,90 @@
       <Processor>FontProcessor</Processor>
       <Importer>FontImporter</Importer>
     </ContentFile>
-    <ContentFile>
-      <Name>simple.glsl</Name>
-      <Processor />
-      <Importer />
-    </ContentFile>
-    <ContentFile>
-      <Name>texdog.png</Name>
-      <Processor />
-      <Importer />
-    </ContentFile>
-    <ContentFile>
-      <Name>dog.fbx</Name>
-      <Processor />
-      <Importer />
-    </ContentFile>
-    <ContentFile>
-      <Name>skybox.fbx</Name>
-      <Processor />
-      <Importer />
-    </ContentFile>
-    <ContentFile>
-      <Name>skymap.png</Name>
-      <Processor />
-      <Importer>BitmapImporter</Importer>
-    </ContentFile>
+    <ContentFolder>
+      <Name>Models</Name>
+      <Contents>
+        <ContentFile>
+          <Name>dog.fbx</Name>
+          <Processor>ModelProcessor</Processor>
+          <Importer>FbxImporter</Importer>
+          <Scale>
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Scale>
+          <Translate>
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Translate>
+          <Rotation>
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Rotation>
+          <TransformMesh>True</TransformMesh>
+        </ContentFile>
+        <ContentFile>
+          <Name>skybox.fbx</Name>
+          <Processor>ModelProcessor</Processor>
+          <Importer>FbxImporter</Importer>
+          <Scale>
+            <X>1</X>
+            <Y>1</Y>
+            <Z>1</Z>
+          </Scale>
+          <Translate>
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Translate>
+          <Rotation>
+            <X>0</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Rotation>
+          <TransformMesh>True</TransformMesh>
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
+    <ContentFolder>
+      <Name>Effects</Name>
+      <Contents>
+        <ContentFile>
+          <Name>simple.glsl</Name>
+          <Processor>EffectProcessor</Processor>
+          <Importer>EffectImporter</Importer>
+          <CreateUserEffect>True</CreateUserEffect>
+        </ContentFile>
+        <ContentFile>
+          <Name>skybox.glsl</Name>
+          <Processor>EffectProcessor</Processor>
+          <Importer>EffectImporter</Importer>
+          <CreateUserEffect>True</CreateUserEffect>
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
+    <ContentFolder>
+      <Name>Textures</Name>
+      <Contents>
+        <ContentFile>
+          <Name>skymap.png</Name>
+          <Processor>BitmapProcessor</Processor>
+          <Importer>BitmapImporter</Importer>
+          <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+          <MipMapCount>1</MipMapCount>
+          <Format>0</Format>
+        </ContentFile>
+        <ContentFile>
+          <Name>texdog.png</Name>
+          <Processor>BitmapProcessor</Processor>
+          <Importer>BitmapImporter</Importer>
+          <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+          <MipMapCount>1</MipMapCount>
+          <Format>0</Format>
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
   </Contents>
 </Content>
