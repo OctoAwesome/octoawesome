@@ -35,7 +35,7 @@ namespace OctoAwesome.Client.Components
             Entities = new List<Entity>();
             graphicsDevice = game.GraphicsDevice;
 
-            effect = Game.Content.Load<Effect>("simple");
+            effect = Game.Content.Load<Effect>("Effects/simple");
         }
         
         public void DrawShadow(Matrix viewProjection, Index3 chunkOffset, Index2 planetSize)

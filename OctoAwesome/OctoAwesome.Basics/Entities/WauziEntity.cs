@@ -53,7 +53,7 @@ namespace OctoAwesome.Basics.Entities
             Components.AddComponent(new MoveableComponent());
             Components.AddComponent(new BoxCollisionComponent());
             Components.AddComponent(new ControllableComponent());
-            Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "Models/dog", TextureName = "Textures/texdog", BaseZRotation = -90 }, true);
         }
     }
 }

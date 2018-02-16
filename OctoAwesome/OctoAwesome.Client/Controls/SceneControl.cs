@@ -86,7 +86,7 @@ namespace OctoAwesome.Client.Controls
             Manager = manager;
 
 
-            simpleShader = manager.Game.Content.Load<Effect>("simple");
+            simpleShader = manager.Game.Content.Load<Effect>("Effects/simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();

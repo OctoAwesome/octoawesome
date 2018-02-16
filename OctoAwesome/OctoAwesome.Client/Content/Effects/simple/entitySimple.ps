@@ -36,5 +36,5 @@ void main()
 	vec4 texColor = texture2D(text,psTexCoord);
 	vec4 ambient = AmbientColor * AmbientIntensity;
 	vec4 diffuse = lighted*clamp(dot(-DiffuseDirection,psNormal),0.0,1.0) * DiffuseColor * DiffuseIntensity;
-	outColor = vec4(1.0);//texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
+	outColor = texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
 }

@@ -14,8 +14,8 @@ in vec4 shadowPosition;
 out vec4 outColor;
 void main()
 {
-    float DiffuseIntensity = clamp(-DiffuseDirection.z * 0.6,1.0,1.0);
-    float AmbientIntensity = 0.5f + clamp(-DiffuseDirection.z *0.5f,0.0,0.8);
+    float DiffuseIntensity = clamp(-DiffuseDirection.z * 0.6,0.0,1.0);
+    float AmbientIntensity = 0.2f + clamp(-DiffuseDirection.z *0.5f,0.0,0.8);
     float lighted = 1.0f;
     float cosTheta = clamp(dot(psNormal,DiffuseDirection),0,1);
     
@@ -33,5 +33,5 @@ void main()
 	vec4 texColor = texture(BlockTextures,vec3(psTexcoord,psTexIndex));
 	vec4 ambient = AmbientColor * AmbientIntensity;
 	vec4 diffuse = lighted*clamp(dot(-DiffuseDirection,psNormal),0.0,1.0) * DiffuseColor * DiffuseIntensity;
-	outColor = vec4(1.0);//texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
+	outColor = texColor * clamp(ambient + vec4(diffuse.rgb,1.0),0.0,1.0);
 }
