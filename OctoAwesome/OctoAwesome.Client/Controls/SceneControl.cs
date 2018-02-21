@@ -57,7 +57,7 @@ namespace OctoAwesome.Client.Controls
         private ILocalChunkCache localChunkCache;
         private Effect simpleShader;
 
-        private engenious.UserEffects.skybox skyEffect;
+        private engenious.UserDefined.Effects.skybox skyEffect;
 
         private Model skyBox;
         private Texture2D skyMap;
@@ -228,7 +228,7 @@ namespace OctoAwesome.Client.Controls
 
             skyBox = Manager.Content.Load<Model>("Models/skybox");
             skyMap = Manager.Content.Load<Texture2D>("Textures/skymap");
-            skyEffect = Manager.Content.Load<engenious.UserEffects.skybox>("Effects/skybox");
+            skyEffect = Manager.Content.Load<engenious.UserDefined.Effects.skybox>("Effects/skybox");
             skyMap.SamplerState = SamplerState.LinearWrap;
         }
 

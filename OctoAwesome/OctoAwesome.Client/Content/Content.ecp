@@ -30,44 +30,48 @@
         <ContentFile>
           <Name>dog.fbx</Name>
           <Processor>ModelProcessor</Processor>
-          <Importer>FbxImporter</Importer>
-          <Scale>
-            <X>1</X>
-            <Y>1</Y>
-            <Z>1</Z>
-          </Scale>
-          <Translate>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-          </Translate>
-          <Rotation>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-          </Rotation>
-          <TransformMesh>True</TransformMesh>
+          <Importer>Model Importer</Importer>
+          <Settings>
+            <Scale>
+              <X>1</X>
+              <Y>1</Y>
+              <Z>1</Z>
+            </Scale>
+            <Translate>
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Translate>
+            <Rotation>
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Rotation>
+            <TransformMesh>True</TransformMesh>
+          </Settings>
         </ContentFile>
         <ContentFile>
           <Name>skybox.fbx</Name>
           <Processor>ModelProcessor</Processor>
-          <Importer>FbxImporter</Importer>
-          <Scale>
-            <X>1</X>
-            <Y>1</Y>
-            <Z>1</Z>
-          </Scale>
-          <Translate>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-          </Translate>
-          <Rotation>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-          </Rotation>
-          <TransformMesh>True</TransformMesh>
+          <Importer>Model Importer</Importer>
+          <Settings>
+            <Scale>
+              <X>1</X>
+              <Y>1</Y>
+              <Z>1</Z>
+            </Scale>
+            <Translate>
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Translate>
+            <Rotation>
+              <X>0</X>
+              <Y>0</Y>
+              <Z>0</Z>
+            </Rotation>
+            <TransformMesh>True</TransformMesh>
+          </Settings>
         </ContentFile>
       </Contents>
     </ContentFolder>
@@ -77,14 +81,18 @@
         <ContentFile>
           <Name>simple.glsl</Name>
           <Processor>EffectProcessor</Processor>
-          <Importer>EffectImporter</Importer>
-          <CreateUserEffect>True</CreateUserEffect>
+          <Importer>Effect Importer</Importer>
+          <Settings>
+            <CreateUserEffect>True</CreateUserEffect>
+          </Settings>
         </ContentFile>
         <ContentFile>
           <Name>skybox.glsl</Name>
           <Processor>EffectProcessor</Processor>
-          <Importer>EffectImporter</Importer>
-          <CreateUserEffect>True</CreateUserEffect>
+          <Importer>Effect Importer</Importer>
+          <Settings>
+            <CreateUserEffect>True</CreateUserEffect>
+          </Settings>
         </ContentFile>
       </Contents>
     </ContentFolder>
@@ -94,18 +102,22 @@
         <ContentFile>
           <Name>skymap.png</Name>
           <Processor>BitmapProcessor</Processor>
-          <Importer>BitmapImporter</Importer>
-          <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
-          <MipMapCount>1</MipMapCount>
-          <Format>0</Format>
+          <Importer>Bitmap Importer</Importer>
+          <Settings>
+            <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+            <MipMapCount>1</MipMapCount>
+            <Format>0</Format>
+          </Settings>
         </ContentFile>
         <ContentFile>
           <Name>texdog.png</Name>
           <Processor>BitmapProcessor</Processor>
-          <Importer>BitmapImporter</Importer>
-          <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
-          <MipMapCount>1</MipMapCount>
-          <Format>0</Format>
+          <Importer>Bitmap Importer</Importer>
+          <Settings>
+            <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+            <MipMapCount>1</MipMapCount>
+            <Format>0</Format>
+          </Settings>
         </ContentFile>
       </Contents>
     </ContentFolder>
