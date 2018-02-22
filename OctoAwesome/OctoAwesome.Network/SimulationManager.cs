@@ -29,9 +29,9 @@ namespace OctoAwesome.Network
         public GameTime GameTime { get; private set; }
         
         private Simulation simulation;
-        private ExtensionLoader ExtensionLoader;
-        private DefinitionManager DefinitionManager;
-        private ResourceManager ResourceManager;
+        private ExtensionLoader extensionLoader;
+        private DefinitionManager definitionManager;
+        private ResourceManager resourceManager;
         private Settings settings;
 
         private Thread backgroundThread;
@@ -43,14 +43,16 @@ namespace OctoAwesome.Network
 
             settings = new Settings(); //TODO: Where are the settings?
             
-            var extensionLoader = new ExtensionLoader(settings);
+            extensionLoader = new ExtensionLoader(settings);
             extensionLoader.LoadExtensions();
-            ExtensionLoader = extensionLoader;
 
-            DefinitionManager = new DefinitionManager(extensionLoader);
-            ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, settings);
+            definitionManager = new DefinitionManager(extensionLoader);
 
-            simulation = new Simulation(ResourceManager, extensionLoader);
+            var persistenceManager = new DiskPersistenceManager(extensionLoader, definitionManager, settings);
+
+            resourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
+
+            simulation = new Simulation(resourceManager, extensionLoader);
             backgroundThread = new Thread(SimulationLoop)
             {
                 Name = "Simulation Loop",

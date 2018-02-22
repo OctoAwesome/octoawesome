@@ -28,7 +28,7 @@ namespace OctoAwesome.Client.Components
 
         public List<Entity> Entities { get; set; }
 
-        public EntityComponent(Game game, SimulationComponent simulation) : base(game)
+        public EntityComponent(OctoGame game, SimulationComponent simulation) : base(game)
         {
             Simulation = simulation;
 

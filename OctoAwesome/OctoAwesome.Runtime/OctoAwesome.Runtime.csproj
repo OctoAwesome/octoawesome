@@ -59,6 +59,7 @@
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionLoader.cs" />
     <Compile Include="IPlayerController.cs" />
+    <Compile Include="NetworkPersistenceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManager.cs" />
   </ItemGroup>

@@ -281,4 +281,7 @@
   <data name="Up" xml:space="preserve">
     <value>Up</value>
   </data>
+  <data name="Multiplayer" xml:space="preserve">
+    <value>Multiplayer</value>
+  </data>
 </root>
