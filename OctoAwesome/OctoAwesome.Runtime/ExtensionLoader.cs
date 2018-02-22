@@ -61,7 +61,12 @@ namespace OctoAwesome.Runtime
         public void LoadExtensions()
         {
             List<Assembly> assemblies = new List<Assembly>();
-            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            var tempAssembly = Assembly.GetEntryAssembly();
+
+            if (tempAssembly == null)
+                tempAssembly = Assembly.GetAssembly(GetType());
+
+            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(tempAssembly.Location));
             assemblies.AddRange(LoadAssemblies(dir));
 
             DirectoryInfo plugins = new DirectoryInfo(Path.Combine(dir.FullName, "plugins"));
