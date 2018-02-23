@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace OctoAwesome.Runtime
 {
     /// <summary>
@@ -14,8 +15,6 @@ namespace OctoAwesome.Runtime
 
         private IPersistenceManager persistenceManager = null;
 
-        private IExtensionResolver extensionResolver;
-
         private GlobalChunkCache globalChunkCache = null;
 
         private List<IMapPopulator> populators = null;
@@ -26,10 +25,10 @@ namespace OctoAwesome.Runtime
         /// Das aktuell geladene Universum.
         /// </summary>
         public IUniverse CurrentUniverse { get; private set; }
-        /// <summary>
-        /// Manager for Definitions (<see cref="IBlockDefinition"/>...).
-        /// </summary>
+
         public IDefinitionManager DefinitionManager { get; private set; }
+
+        private IExtensionResolver extensionResolver;
 
         /// <summary>
         /// Konstruktor
@@ -203,14 +202,7 @@ namespace OctoAwesome.Runtime
 
             persistenceManager.SavePlayer(CurrentUniverse.Id, player);
         }
-        /// <summary>
-        /// Save method for <see cref="Entity"/>.
-        /// </summary>
-        /// <param name="entity">Instance of an Entity.</param>
-        public void SaveEntity(Entity entity)
-        {
-            if (entity is Player) SavePlayer((Player) entity);
-        }
+
         private IChunkColumn LoadChunkColumn(int planetId, Index2 index)
         {
             IPlanet planet = GetPlanet(planetId);
@@ -277,6 +269,12 @@ namespace OctoAwesome.Runtime
             {
                 persistenceManager.SaveColumn(CurrentUniverse.Id, planetId, value);
             }
+        }
+
+        public void SaveEntity(Entity entity)
+        {
+            if (entity is Player)
+                SavePlayer((Player)entity);
         }
     }
 }

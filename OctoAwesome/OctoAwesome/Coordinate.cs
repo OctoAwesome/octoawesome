@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 using engenious;
+
 namespace OctoAwesome
 {
     /// <summary>
@@ -11,7 +12,7 @@ namespace OctoAwesome
         /// <summary>
         /// Index des Planeten im Universum.
         /// </summary>
-        public int Planet { get; set; }
+        public int Planet;
 
         /// <summary>
         /// Index des betroffenen Blocks.

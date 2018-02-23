@@ -16,22 +16,25 @@ namespace OctoAwesome.EntityComponents
         /// Gibt die Anzahl Tools in der Toolbar an.
         /// </summary>
         public const int TOOLCOUNT = 10;
+
         /// <summary>
         /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
         /// </summary>
         public InventorySlot[] Tools { get; set; }
+
         /// <summary>
         /// Derzeit aktives Werkzeug des Spielers
         /// </summary>
         public InventorySlot ActiveTool { get; set; }
+
         /// <summary>
-        /// 
+        /// Erzeugte eine neue ToolBarComponent
         /// </summary>
-        /// <param name="entity"></param>
-        public ToolBarComponent(Entity entity) : base(entity)
+        public ToolBarComponent()
         {
             Tools = new InventorySlot[TOOLCOUNT];
         }
+
         /// <summary>
         /// Entfernt einen InventorySlot aus der Toolbar
         /// </summary>
@@ -46,6 +49,7 @@ namespace OctoAwesome.EntityComponents
             if (ActiveTool == slot)
                 ActiveTool = null;
         }
+
         /// <summary>
         /// Setzt einen InventorySlot an eine Stelle in der Toolbar und löscht ggf. vorher den Slot aus alten Positionen.
         /// </summary>
@@ -57,6 +61,7 @@ namespace OctoAwesome.EntityComponents
 
             Tools[index] = slot;
         }
+
         /// <summary>
         /// Gibt den Index eines InventorySlots in der Toolbar zurück.
         /// </summary>
@@ -70,6 +75,7 @@ namespace OctoAwesome.EntityComponents
 
             return -1;
         }
+
         /// <summary>
         /// Fügt einen neuen InventorySlot an der ersten freien Stelle hinzu.
         /// </summary>

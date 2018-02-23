@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Entity
+namespace OctoAwesome
 {
     public interface IEntityList : ICollection<Entity>
     {

@@ -36,27 +36,23 @@ namespace OctoAwesome.Basics
             extensionLoader.RegisterEntityExtender<Player>((p) =>
             {
                 p.Components.AddComponent(new GravityComponent());
-                //p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
-                //p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
+                p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
+                p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
                 p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                p.Components.AddComponent(new MoveableComponent(p));
+                p.Components.AddComponent(new MoveableComponent());
                 p.Components.AddComponent(new BoxCollisionComponent());
                 p.Components.AddComponent(new EntityCollisionComponent());
             });
 
-
-            extensionLoader.RegisterSimulationExtender(() =>
+            extensionLoader.RegisterSimulationExtender((s) =>
             {
-                return new SimulationComponent[]
-                {
-                    //new WattMoverComponent(),
-                    //new NewtonGravitatorComponent(),
-                    //new ForceAggregatorComponent(),
-                    //new PowerAggregatorComponent(),
-                    //new AccelerationComponent(),
-                    //new MoveComponent(),
-                    new BlockInteractionComponent(d),
-                };
+                s.Components.AddComponent(new WattMoverComponent());
+                s.Components.AddComponent(new NewtonGravitatorComponent());
+                s.Components.AddComponent(new ForceAggregatorComponent());
+                s.Components.AddComponent(new PowerAggregatorComponent());
+                s.Components.AddComponent(new AccelerationComponent());
+                s.Components.AddComponent(new MoveComponent());
+                s.Components.AddComponent(new BlockInteractionComponent(s));
                 //TODO: unschön
             });
         }

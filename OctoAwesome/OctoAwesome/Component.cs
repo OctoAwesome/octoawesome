@@ -1,19 +1,14 @@
 ﻿using System.IO;
+
 namespace OctoAwesome
 {
     /// <summary>
     /// Base Class for all Components.
     /// </summary>
-    public abstract class Component : SerializBase
+    public abstract class Component
     {
-        /// <summary>
-        /// Indicates that the Component is Enabled or Disabled.
-        /// </summary>
         public bool Enabled { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public Component()
         {
             Enabled = true;
@@ -24,7 +19,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             writer.Write(Enabled);
         }
@@ -34,7 +29,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             Enabled = reader.ReadBoolean();
         }

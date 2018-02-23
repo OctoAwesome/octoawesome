@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace OctoAwesome.Entity
+
+namespace OctoAwesome
 {
     public class EntityList : IEntityList
     {
@@ -48,34 +49,22 @@ namespace OctoAwesome.Entity
         {
             foreach (var entity in entities)
             {
-                //if (entity.Components.TryGetComponent<PositionComponent>())
-                //{
-                //    var position = entity.Components.GetComponent<PositionComponent>();
-
-                //    if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
-                //    {
-                //        yield return new FailEntityChunkArgs()
-                //        {
-                //            Entity = entity,
-                //            CurrentChunk = new Index2(column.Index),
-                //            CurrentPlanet = column.Planet,
-                //            TargetChunk = new Index2(position.Position.ChunkIndex),
-                //            TargetPlanet = position.Position.Planet,
-                //        };
-                //    }
-                //}
-                if (entity.Position.ChunkIndex.X != column.Index.X || entity.Position.ChunkIndex.Y != column.Index.Y)
+                if (entity.Components.ContainsComponent<PositionComponent>())
                 {
-                    yield return new FailEntityChunkArgs()
-                    {
-                        Entity = entity,
-                        CurrentChunk = new Index2(column.Index),
-                        CurrentPlanet = column.Planet,
-                        TargetChunk = new Index2(entity.Position.ChunkIndex),
-                        TargetPlanet = entity.Position.Planet,
-                    };
-                }
+                    var position = entity.Components.GetComponent<PositionComponent>();
 
+                    if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
+                    {
+                        yield return new FailEntityChunkArgs()
+                        {
+                            Entity = entity,
+                            CurrentChunk = new Index2(column.Index),
+                            CurrentPlanet = column.Planet,
+                            TargetChunk = new Index2(position.Position.ChunkIndex),
+                            TargetPlanet = position.Position.Planet,
+                        };
+                    }
+                }
             }
         }
     }

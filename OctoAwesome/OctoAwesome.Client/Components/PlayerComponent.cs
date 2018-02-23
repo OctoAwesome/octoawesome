@@ -16,9 +16,9 @@ namespace OctoAwesome.Client.Components
 
         #region External Input
 
-        public Vector3 HeadInput { get; set; }
-                     
-        public Vector3 MoveInput { get; set; }
+        public Vector2 HeadInput { get; set; }
+
+        public Vector2 MoveInput { get; set; }
 
         public bool InteractInput { get; set; }
 
@@ -40,13 +40,13 @@ namespace OctoAwesome.Client.Components
 
         public HeadComponent CurrentEntityHead { get; private set; }
 
-        public ControllerComponent CurrentController { get; private set; }
+        public ControllableComponent CurrentController { get; private set; }
 
         public InventoryComponent Inventory { get; private set; }
 
         public ToolBarComponent Toolbar { get; private set; }
 
-        //public PositionComponent Position { get; private set; }
+        public PositionComponent Position { get; private set; }
 
         // public ActorHost ActorHost { get; private set; }
 
@@ -71,6 +71,8 @@ namespace OctoAwesome.Client.Components
         {
             CurrentEntity = entity;
 
+
+
             if (CurrentEntity == null)
             {
                 CurrentEntityHead = null;
@@ -79,19 +81,19 @@ namespace OctoAwesome.Client.Components
             {
                 // Map other Components
 
-                CurrentController = entity.Components.GetComponent<ControllerComponent>();
+                CurrentController = entity.Components.GetComponent<ControllableComponent>();
 
                 CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent(entity);
+                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
 
                 Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-                if (Inventory == null) Inventory = new InventoryComponent(entity);
+                if (Inventory == null) Inventory = new InventoryComponent();
 
                 Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar == null) Toolbar = new ToolBarComponent(entity);
+                if (Toolbar == null) Toolbar = new ToolBarComponent();
 
-                //Position = CurrentEntity.Components.GetComponent<PositionComponent>();
-                //if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
+                Position = CurrentEntity.Components.GetComponent<PositionComponent>();
+                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
         }
 
@@ -103,13 +105,13 @@ namespace OctoAwesome.Client.Components
             if (CurrentEntity == null)
                 return;
 
-            CurrentEntityHead.Yaw += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
+            CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
             CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
             CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
-            HeadInput = Vector3.Zero;
+            HeadInput = Vector2.Zero;
 
             CurrentController.MoveInput = MoveInput;
-            MoveInput = Vector3.Zero;
+            MoveInput = Vector2.Zero;
 
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
@@ -186,7 +188,6 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         internal void AllBlocksDebug()
         {
-#if DEBUG
             var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
             if (inventory == null)
                 return;
@@ -198,7 +199,6 @@ namespace OctoAwesome.Client.Components
             var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
             foreach (var itemDefinition in itemDefinitions)
                 inventory.AddUnit(itemDefinition);
-#endif
         }
     }
 }

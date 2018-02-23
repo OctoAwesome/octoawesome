@@ -26,11 +26,7 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Angle
         /// </summary>
-        public float Yaw { get; set; }
-
-        public HeadComponent(Entity entity) : base(entity)
-        {
-        }
+        public float Angle { get; set; }
 
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
@@ -41,17 +37,21 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Offset.Z);
 
             writer.Write(Tilt);
-            writer.Write(Yaw);
+            writer.Write(Angle);
         }
 
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             base.Deserialize(reader, definitionManager);
-            
-            Offset = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+
+            var x = reader.ReadSingle();
+            var y = reader.ReadSingle();
+            var z = reader.ReadSingle();
+            Offset = new Vector3(x, y, z);
+
 
             Tilt = reader.ReadSingle();
-            Yaw = reader.ReadSingle();
+            Angle = reader.ReadSingle();
         }
     }
 }

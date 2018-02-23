@@ -270,10 +270,6 @@ namespace OctoAwesome
         public IPlanet GetPlanet(int id)
             => loadPlanetDelagte(id);
 
-        /// <summary>
-        /// Shifting Entities between <see cref="IChunkColumn"/>.
-        /// </summary>
-        /// <param name="simulation"></param>
         public void BeforeSimulationUpdate(Simulation simulation)
         {
             lock (updateLockObject)
@@ -321,7 +317,6 @@ namespace OctoAwesome
                     }
                     else
                     {
-                        // TODO: performantere methode
                         targetchunk = loadDelegate(entity.CurrentPlanet, entity.TargetChunk);
                         targetchunk.Entities.Add(entity.Entity);
                         saveDelegate(entity.CurrentPlanet, entity.TargetChunk, targetchunk);
