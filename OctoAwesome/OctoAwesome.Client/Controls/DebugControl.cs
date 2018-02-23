@@ -160,9 +160,9 @@ namespace OctoAwesome.Client.Controls
             position.Text = pos;
 
             //Draw Rotation
-            float grad = (Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.CurrentEntityHead.Yaw / MathHelper.TwoPi) * 360;
             string rot = "rot: " +
-                (((Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                (((Player.CurrentEntityHead.Yaw / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
                 ((Player.CurrentEntityHead.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
 

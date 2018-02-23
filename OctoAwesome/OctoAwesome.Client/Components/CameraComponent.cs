@@ -49,11 +49,11 @@ namespace OctoAwesome.Client.Components
             float height = (float)Math.Sin(head.Tilt);
             float distance = (float)Math.Cos(head.Tilt);
 
-            float lookX = (float)Math.Cos(head.Angle) * distance;
-            float lookY = -(float)Math.Sin(head.Angle) * distance;
+            float lookX = (float)Math.Cos(head.Yaw) * distance;
+            float lookY = -(float)Math.Sin(head.Yaw) * distance;
 
-            float strafeX = (float)Math.Cos(head.Angle + MathHelper.PiOver2);
-            float strafeY = -(float)Math.Sin(head.Angle + MathHelper.PiOver2);
+            float strafeX = (float)Math.Cos(head.Yaw + MathHelper.PiOver2);
+            float strafeY = -(float)Math.Sin(head.Yaw + MathHelper.PiOver2);
 
             CameraUpVector = Vector3.Cross(new Vector3(strafeX, strafeY, 0), new Vector3(lookX, lookY, height));
 
@@ -72,8 +72,8 @@ namespace OctoAwesome.Client.Components
                     position.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(head.Angle), 
-                    (float)Math.Sin(-head.Angle), 0f));
+                    (float)Math.Cos(head.Yaw), 
+                    (float)Math.Sin(-head.Yaw), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;

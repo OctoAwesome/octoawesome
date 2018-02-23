@@ -65,7 +65,7 @@ namespace OctoAwesome
         /// Adds a new Extender for the simulation.
         /// </summary>
         /// <param name="extenderDelegate"></param>
-        void RegisterSimulationExtender(Action<Simulation> extenderDelegate);
+        void RegisterSimulationExtender(Func<IEnumerable<SimulationComponent>> extenderDelegate);
 
         /// <summary>
         /// Adds a new Map Generator.

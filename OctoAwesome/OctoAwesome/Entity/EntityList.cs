@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace OctoAwesome
+namespace OctoAwesome.Entity
 {
     public class EntityList : IEntityList
     {
@@ -49,22 +48,34 @@ namespace OctoAwesome
         {
             foreach (var entity in entities)
             {
-                if (entity.Components.ContainsComponent<PositionComponent>())
-                {
-                    var position = entity.Components.GetComponent<PositionComponent>();
+                //if (entity.Components.TryGetComponent<PositionComponent>())
+                //{
+                //    var position = entity.Components.GetComponent<PositionComponent>();
 
-                    if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
+                //    if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
+                //    {
+                //        yield return new FailEntityChunkArgs()
+                //        {
+                //            Entity = entity,
+                //            CurrentChunk = new Index2(column.Index),
+                //            CurrentPlanet = column.Planet,
+                //            TargetChunk = new Index2(position.Position.ChunkIndex),
+                //            TargetPlanet = position.Position.Planet,
+                //        };
+                //    }
+                //}
+                if (entity.Position.ChunkIndex.X != column.Index.X || entity.Position.ChunkIndex.Y != column.Index.Y)
+                {
+                    yield return new FailEntityChunkArgs()
                     {
-                        yield return new FailEntityChunkArgs()
-                        {
-                            Entity = entity,
-                            CurrentChunk = new Index2(column.Index),
-                            CurrentPlanet = column.Planet,
-                            TargetChunk = new Index2(position.Position.ChunkIndex),
-                            TargetPlanet = position.Position.Planet,
-                        };
-                    }
+                        Entity = entity,
+                        CurrentChunk = new Index2(column.Index),
+                        CurrentPlanet = column.Planet,
+                        TargetChunk = new Index2(entity.Position.ChunkIndex),
+                        TargetPlanet = entity.Position.Planet,
+                    };
                 }
+
             }
         }
     }

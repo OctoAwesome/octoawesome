@@ -11,7 +11,6 @@ namespace OctoAwesome.Basics.EntityComponents
     public abstract class PowerComponent : EntityComponent
     {
         public float Power { get; set; }
-
         public Vector3 Direction { get; set; }
 
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)

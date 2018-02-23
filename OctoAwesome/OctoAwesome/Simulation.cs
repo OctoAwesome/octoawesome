@@ -16,6 +16,9 @@ namespace OctoAwesome
         // private Stopwatch watch = new Stopwatch();
         // private Thread thread;
 
+        /// <summary>
+        /// <see cref="IResourceManager"/> for game resources.
+        /// </summary>
         public IResourceManager ResourceManager { get; private set; }
 
         /// <summary>
@@ -42,8 +45,7 @@ namespace OctoAwesome
 
         private readonly IExtensionResolver extensionResolver;
 
-        private HashSet<Entity> entities = new HashSet<Entity>();
-
+        private readonly HashSet<Entity> entities = new HashSet<Entity>();
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
         /// </summary>
@@ -55,8 +57,7 @@ namespace OctoAwesome
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
 
-            Components = new ComponentList<SimulationComponent>(
-                ValidateAddComponent, ValidateRemoveComponent, null, null);
+            Components = new ComponentList<SimulationComponent>(ValidateAddComponent, ValidateRemoveComponent);
 
             extensionResolver.ExtendSimulation(this);
         }
@@ -123,9 +124,10 @@ namespace OctoAwesome
                 ResourceManager.GlobalChunkCache.BeforeSimulationUpdate(this);
 
                 //Update all Entities
-                foreach (var entity in Entities.OfType<UpdateableEntity>())
-                    entity.Update(gameTime);
+                foreach (var entity in Entities)
+                    if(entity.NeedUpdate) entity.Update(gameTime);
 
+                // TODO: überarbeiten
                 // Update all Components
                 foreach (var component in Components.Where(c => c.Enabled))
                     component.Update(gameTime);
@@ -161,6 +163,7 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void AddEntity(Entity entity)
         {
+            // TODO: überarbeiten.
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
@@ -189,6 +192,7 @@ namespace OctoAwesome
         /// <param name="entity">Entity die entfert werden soll</param>
         public void RemoveEntity(Entity entity)
         {
+            // TODO: überarbeiten
             if (entity.Id == 0)
                 return;
 

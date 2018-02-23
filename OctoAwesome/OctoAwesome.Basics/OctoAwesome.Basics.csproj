@@ -91,7 +91,6 @@
     <Compile Include="Definitions\Trees\CactusTreeDefinition.cs" />
     <Compile Include="EntityComponents\ForceComponent.cs" />
     <Compile Include="EntityComponents\GravityComponent.cs" />
-    <Compile Include="EntityComponents\MoveableComponent.cs" />
     <Compile Include="EntityComponents\PowerComponent.cs" />
     <Compile Include="ITreeDefinition.cs" />
     <Compile Include="Noise\INoise.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
     <Compile Include="SimulationComponents\MoveComponent.cs" />
     <Compile Include="SimulationComponents\AccelerationComponent.cs" />
+    <Compile Include="SimulationComponents\MovementComponent.cs" />
     <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
     <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
     <Compile Include="SimulationComponents\WattMoverComponent.cs" />

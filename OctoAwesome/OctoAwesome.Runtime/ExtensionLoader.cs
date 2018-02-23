@@ -11,20 +11,6 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public sealed class ExtensionLoader : IExtensionLoader, IExtensionResolver
     {
-        private const string SETTINGSKEY = "DisabledExtensions";
-
-        private List<IDefinition> definitions;
-
-        private List<Type> entities;
-
-        private Dictionary<Type, List<Action<Entity>>> entityExtender;
-
-        private List<Action<Simulation>> simulationExtender;
-
-        private List<IMapGenerator> mapGenerators;
-
-        private List<IMapPopulator> mapPopulators;
-
         /// <summary>
         /// List of Loaded Extensions
         /// </summary>
@@ -35,6 +21,20 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public List<IExtension> ActiveExtensions { get; private set; }
 
+        private const string SETTINGSKEY = "DisabledExtensions";
+
+        private List<IDefinition> definitions;
+
+        private List<Type> entities;
+
+        private Dictionary<Type, List<Action<Entity>>> entityExtender;
+
+        private List<Func<IEnumerable<SimulationComponent>>> simulationExtender;
+
+        private List<IMapGenerator> mapGenerators;
+
+        private List<IMapPopulator> mapPopulators;
+        
         private ISettings settings;
 
         /// <summary>
@@ -47,12 +47,11 @@ namespace OctoAwesome.Runtime
             definitions = new List<IDefinition>();
             entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
-            simulationExtender = new List<Action<Simulation>>();
+            simulationExtender = new List<Func<IEnumerable<SimulationComponent>>>();
             mapGenerators = new List<IMapGenerator>();
             mapPopulators = new List<IMapPopulator>();
             LoadedExtensions = new List<IExtension>();
             ActiveExtensions = new List<IExtension>();
-
         }
 
         /// <summary>
@@ -165,7 +164,6 @@ namespace OctoAwesome.Runtime
 
             entities.Add(type);
         }
-
         /// <summary>
         /// Adds a new Extender for the given Entity Type.
         /// </summary>
@@ -174,15 +172,17 @@ namespace OctoAwesome.Runtime
         public void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity
         {
             Type type = typeof(T);
-            List<Action<Entity>> list;
-            if (!entityExtender.TryGetValue(type, out list))
+            if (!entityExtender.TryGetValue(type, out List<Action<Entity>> list))
             {
                 list = new List<Action<Entity>>();
                 entityExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
-
+        /// <summary>
+        /// Register default for Entity of type T/>
+        /// </summary>
+        /// <typeparam name="T">Type of the Entity.</typeparam>
         public void RegisterDefaultEntityExtender<T>() where T : Entity 
             => RegisterEntityExtender<T>((e) => e.RegisterDefault());
 
@@ -190,7 +190,7 @@ namespace OctoAwesome.Runtime
         /// Adds a new Extender for the simulation.
         /// </summary>
         /// <param name="extenderDelegate"></param>
-        public void RegisterSimulationExtender(Action<Simulation> extenderDelegate)
+        public void RegisterSimulationExtender(Func<IEnumerable<SimulationComponent>> extenderDelegate)
         {
             simulationExtender.Add(extenderDelegate);
         }
@@ -203,13 +203,14 @@ namespace OctoAwesome.Runtime
             // TODO: Checks
             mapGenerators.Add(generator);
         }
-
+        /// <summary>
+        /// Adds a new Map Populator.
+        /// </summary>
+        /// <param name="populator"></param>
         public void RegisterMapPopulator(IMapPopulator populator)
         {
             mapPopulators.Add(populator);
         }
-
-
 
         /// <summary>
         /// Removes an existing Entity Type.
@@ -229,6 +230,10 @@ namespace OctoAwesome.Runtime
             mapGenerators.Remove(item);
         }
 
+        /// <summary>
+        /// Removes the eixsting Map Populator.
+        /// </summary>
+        /// <typeparam name="T">Populator Type</typeparam>
         public void RemoveMapPopulator<T>(T item) where T : IMapPopulator
         {
             mapPopulators.Remove(item);
@@ -245,7 +250,8 @@ namespace OctoAwesome.Runtime
         public void ExtendSimulation(Simulation simulation)
         {
             foreach (var extender in simulationExtender)
-                extender(simulation);
+                foreach (SimulationComponent comp in extender())
+                    simulation.Components.AddComponent(comp);
         }
 
         /// <summary>
@@ -267,8 +273,7 @@ namespace OctoAwesome.Runtime
 
             foreach (var type in stack)
             {
-                List<Action<Entity>> list;
-                if (!entityExtender.TryGetValue(type, out list))
+                if (!entityExtender.TryGetValue(type, out List<Action<Entity>> list))
                     continue;
 
                 foreach (var item in list)

@@ -12,18 +12,18 @@ namespace OctoAwesome
 
     public sealed class Extension : IExtension
     {
-        public string Description => "OctoAwesome";
+        public string Description => "OctoAwesome default Extions.";
 
-        public string Name => "OctoAwesome";
+        public string Name => "OctoAwesome Extension";
 
         public void Register(IExtensionLoader extensionLoader)
         {
             extensionLoader.RegisterEntityExtender<Player>((p) =>
             {
-                p.Components.AddComponent(new ControllableComponent());
-                p.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
-                p.Components.AddComponent(new InventoryComponent());
-                p.Components.AddComponent(new ToolBarComponent());
+                p.Components.AddComponent(new ControllerComponent(p));
+                p.Components.AddComponent(new HeadComponent(p) { Offset = new Vector3(0, 0, 3.2f) });
+                p.Components.AddComponent(new InventoryComponent(p));
+                p.Components.AddComponent(new ToolBarComponent(p));
             });
         }
     }

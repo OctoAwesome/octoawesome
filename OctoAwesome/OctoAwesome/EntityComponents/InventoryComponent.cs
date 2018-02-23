@@ -13,8 +13,11 @@ namespace OctoAwesome.EntityComponents
         /// Das Inventar der Entity
         /// </summary>
         public List<InventorySlot> Inventory { get; set; }
-
-        public InventoryComponent()
+        /// <summary>
+        /// Contstructor.
+        /// </summary>
+        /// <param name="entity"></param>
+        public InventoryComponent(Entity entity) : base(entity)
         {
             Inventory = new List<InventorySlot>();
         }

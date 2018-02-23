@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctoAwesome</RootNamespace>
     <AssemblyName>OctoAwesome</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -58,6 +58,9 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\engenious.0.1.16\lib\net40\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -75,11 +78,12 @@
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="Entity\EntityComponent.cs" />
+    <Compile Include="EntityComponents\MoveableComponent.cs" />
     <Compile Include="EntityComponents\RenderComponent.cs" />
-    <Compile Include="EntityList.cs" />
-    <Compile Include="EntityComponent.cs" />
+    <Compile Include="Entity\EntityList.cs" />
     <Compile Include="EntityComponents\BodyComponent.cs" />
-    <Compile Include="EntityComponents\ControllableComponent.cs" />
+    <Compile Include="EntityComponents\ControllerComponent.cs" />
     <Compile Include="EntityComponents\HeadComponent.cs" />
     <Compile Include="EntityComponents\InventoryComponent.cs" />
     <Compile Include="EntityComponents\PositionComponent.cs" />
@@ -91,7 +95,7 @@
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkColumn.cs" />
     <Compile Include="IDefinition.cs" />
-    <Compile Include="IEntityList.cs" />
+    <Compile Include="Entity\IEntityList.cs" />
     <Compile Include="IExtensionLoader.cs" />
     <Compile Include="IExtensionResolver.cs" />
     <Compile Include="IInventoryableDefinition.cs" />
@@ -110,7 +114,7 @@
     <Compile Include="ILocalChunkCache.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceManager.cs" />
-    <Compile Include="Entity.cs" />
+    <Compile Include="Entity\Entity.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
@@ -124,12 +128,12 @@
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializBase.cs" />
     <Compile Include="Simulation.cs" />
     <Compile Include="SimulationComponent.cs" />
     <Compile Include="SimulationState.cs" />
     <Compile Include="Wall.cs" />
     <Compile Include="Universe.cs" />
-    <Compile Include="UpdateableEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

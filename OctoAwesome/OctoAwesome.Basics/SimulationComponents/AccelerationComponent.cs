@@ -7,84 +7,84 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(MoveableComponent), typeof(BodyComponent))]
-    public sealed class AccelerationComponent : SimulationComponent
-    {
-        private List<AcceleratedEntity> acceleratedEntities = new List<AcceleratedEntity>();
+    #region Obsolet
+    //[EntityFilter(typeof(MoveableComponent), typeof(BodyComponent))]
+    //public sealed class AccelerationComponent : SimulationComponent
+    //{
+    //    private List<AcceleratedEntity> acceleratedEntities = new List<AcceleratedEntity>();
 
-        public override void Update(GameTime gameTime)
-        {
-            foreach (var entity in acceleratedEntities)
-            {
-                // Convert external Forces to Powers
-                Vector3 power = ((entity.Move.ExternalForces * entity.Move.ExternalForces) / (2 * entity.Body.Mass)) * 
-                    (float)gameTime.ElapsedGameTime.TotalSeconds;
+    //    public override void Update(GameTime gameTime)
+    //    {
+    //        foreach (var entity in acceleratedEntities)
+    //        {
+    //            // Convert external Forces to Powers
+    //            Vector3 power = ((entity.Move.ExternalForces * entity.Move.ExternalForces) / (2 * entity.Body.Mass)) * 
+    //                (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                // Take care of direction
-                power *= new Vector3(
-                    Math.Sign(entity.Move.ExternalForces.X), 
-                    Math.Sign(entity.Move.ExternalForces.Y), 
-                    Math.Sign(entity.Move.ExternalForces.Z));
+    //            // Take care of direction
+    //            power *= new Vector3(
+    //                Math.Sign(entity.Move.ExternalForces.X), 
+    //                Math.Sign(entity.Move.ExternalForces.Y), 
+    //                Math.Sign(entity.Move.ExternalForces.Z));
 
-                // Add external Power
-                power += entity.Move.ExternalPowers;
+    //            // Add external Power
+    //            power += entity.Move.ExternalPowers;
 
-                // Friction Power
-                power -= new Vector3(60F,60f,0.1f) * entity.Move.Velocity;
+    //            // Friction Power
+    //            power -= new Vector3(60F,60f,0.1f) * entity.Move.Velocity;
 
-                //DEBUGGING
-                var a1 = 2.0f / entity.Body.Mass;
-                var b = 2 / entity.Body.Mass;
-                var a2 = a1 * power;
-                var c = new Vector3(a1 * power.X, a1 * power.Y, a1 * power.Z);
+    //            //DEBUGGING
+    //            var a1 = 2.0f / entity.Body.Mass;
+    //            var b = 2 / entity.Body.Mass;
+    //            var a2 = a1 * power;
+    //            var c = new Vector3(a1 * power.X, a1 * power.Y, a1 * power.Z);
 
-                var a3 = a2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                
-                //DEBUGGING
+    //            var a3 = a2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+    //            //DEBUGGING
 
 
-                // Calculate Velocity change
-                Vector3 velocityChange = ((2.0f / entity.Body.Mass) * power) *
-                    (float)gameTime.ElapsedGameTime.TotalSeconds;
+    //            // Calculate Velocity change
+    //            Vector3 velocityChange = ((2.0f / entity.Body.Mass) * power) *
+    //                (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                // Take care of direction
-                entity.Move.Velocity += new Vector3(
-                    (float)(velocityChange.X < 0 ? -Math.Sqrt(-velocityChange.X) : Math.Sqrt(velocityChange.X)),
-                    (float)(velocityChange.Y < 0 ? -Math.Sqrt(-velocityChange.Y) : Math.Sqrt(velocityChange.Y)),
-                    (float)(velocityChange.Z < 0 ? -Math.Sqrt(-velocityChange.Z) : Math.Sqrt(velocityChange.Z)));
+    //            // Take care of direction
+    //            entity.Move.Velocity += new Vector3(
+    //                (float)(velocityChange.X < 0 ? -Math.Sqrt(-velocityChange.X) : Math.Sqrt(velocityChange.X)),
+    //                (float)(velocityChange.Y < 0 ? -Math.Sqrt(-velocityChange.Y) : Math.Sqrt(velocityChange.Y)),
+    //                (float)(velocityChange.Z < 0 ? -Math.Sqrt(-velocityChange.Z) : Math.Sqrt(velocityChange.Z)));
 
-                // Calculate Move Vector for the upcoming frame
-                entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-        }
+    //            // Calculate Move Vector for the upcoming frame
+    //            entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+    //        }
+    //    }
 
-        protected override bool AddEntity(Entity entity)
-        {
-            AcceleratedEntity acceleratedEntity = new AcceleratedEntity()
-            {
-                Entity = entity,
-                Move = entity.Components.GetComponent<MoveableComponent>(),
-                Body = entity.Components.GetComponent<BodyComponent>()
-            };
+    //    protected override bool AddEntity(Entity entity)
+    //    {
+    //        AcceleratedEntity acceleratedEntity = new AcceleratedEntity()
+    //        {
+    //            Entity = entity,
+    //            Move = entity.Components.GetComponent<MoveableComponent>(),
+    //            Body = entity.Components.GetComponent<BodyComponent>()
+    //        };
 
-            acceleratedEntities.Add(acceleratedEntity);
-            return true;
-        }
+    //        acceleratedEntities.Add(acceleratedEntity);
+    //        return true;
+    //    }
 
-        protected override void RemoveEntity(Entity entity)
-        {
-            AcceleratedEntity acceleratedEntity = acceleratedEntities.FirstOrDefault(e => e.Entity == entity);
-            if (acceleratedEntity != null)
-                acceleratedEntities.Remove(acceleratedEntity);
-        }
+    //    protected override void RemoveEntity(Entity entity)
+    //    {
+    //        AcceleratedEntity acceleratedEntity = acceleratedEntities.FirstOrDefault(e => e.Entity == entity);
+    //        if (acceleratedEntity != null)
+    //            acceleratedEntities.Remove(acceleratedEntity);
+    //    }
 
-        private class AcceleratedEntity
-        {
-            public Entity Entity { get; set; }
-
-            public MoveableComponent Move { get; set; }
-
-            public BodyComponent Body { get; set; }
-        }
-    }
+    //    private class AcceleratedEntity
+    //    {
+    //        public Entity Entity { get; set; }
+    //        public MoveableComponent Move { get; set; }
+    //        public BodyComponent Body { get; set; }
+    //    }
+    //}
+    #endregion
 }
