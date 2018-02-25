@@ -43,7 +43,7 @@ namespace OctoAwesome.Basics.Entities
         public WauziEntity() : base(true)
         {
             Register( new WauziController());
-            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, true);
+            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, false);
         }
         protected override void OnInitialize(IResourceManager manager)
         {

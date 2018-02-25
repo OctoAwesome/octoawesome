@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.Entities;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
@@ -36,8 +31,8 @@ namespace OctoAwesome.Basics
             var y = r.Next(0, Chunk.CHUNKSIZE_Y/2);
 
             // TODO: der code wird immer redundanter :D
-            PositionComponent position = new PositionComponent() { Position = new Coordinate(0, new Index3(x+column00.Index.X*Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), new Vector3(0, 0, 0)) };
-            wauzi.Components.AddComponent(position);
+
+            wauzi.SetPosition(new Coordinate(0, new Index3(x + column00.Index.X * Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), new Vector3(0, 0, 0)));
             // TODO: warum wird das wauzi nicht direkt auf dem planeten gespritz...
             // und findet dann seinen weg über die postion zum chunck ?
             // oder noch besser in die simulation

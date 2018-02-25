@@ -8,6 +8,9 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        /// <summary>
+        /// Manager for Object definitions.
+        /// </summary>
         IDefinitionManager DefinitionManager { get; }
 
         /// <summary>

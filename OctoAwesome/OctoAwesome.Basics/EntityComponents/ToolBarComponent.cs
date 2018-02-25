@@ -1,6 +1,6 @@
 ﻿using OctoAwesome.Entities;
 
-namespace OctoAwesome.EntityComponents
+namespace OctoAwesome.Baiscs.EntityComponents
 {
     /// <summary>
     /// EntityComponent, die eine Werkzeug-Toolbar für den Apieler bereitstellt.

@@ -12,17 +12,36 @@ namespace OctoAwesome
         /// Die Reichweite des Spielers, in der er mit Spielelementen wie <see cref="Block"/> und <see cref="Entity"/> interagieren kann
         /// </summary>
         public const int SELECTIONRANGE = 8;
-        private IController currentcontroller;
-
+        /// <summary>
+        /// Current controller of the Player.
+        /// </summary>
         public IController Controller => currentcontroller;
-
+        private IController currentcontroller;
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
         public Player() : base(false)
         {
         }
-
+        /// <summary>
+        /// Register a Controller.
+        /// </summary>
+        /// <param name="controller"></param>
+        public void Register(IController controller)
+        {
+            currentcontroller = controller;
+        }
+        /// <summary>
+        /// Reset the controller to deault.
+        /// </summary>
+        public void Reset()
+        {
+            currentcontroller = null;
+        }
+        /// <summary>
+        /// Called during initialize.
+        /// </summary>
+        /// <param name="manager">ResourceManager</param>
         protected override void OnInitialize(IResourceManager manager)
             => Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
 
@@ -41,15 +60,5 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
             => base.Deserialize(reader, definitionManager); // Entity
-
-        public void Register(IController controller)
-        {
-            currentcontroller = controller;
-        }
-
-        public void Reset()
-        {
-            currentcontroller = null;
-        }
     }
 }

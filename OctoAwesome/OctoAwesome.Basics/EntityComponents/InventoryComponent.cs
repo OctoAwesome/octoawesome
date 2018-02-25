@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace OctoAwesome.EntityComponents
+namespace OctoAwesome.Basisc.EntityComponents
 {
     public class InventoryComponent : EntityComponent
     {

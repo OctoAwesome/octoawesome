@@ -15,9 +15,13 @@ namespace OctoAwesome
         /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
         public IPlanet Planet { get; private set; }
-
+        /// <summary>
+        /// Indicates that the LocalChunkCache is Passive (not loading Chunks)
+        /// </summary>
         public bool IsPassive { get; private set; }
-
+        /// <summary>
+        /// The Center Chucnkcolumn of the LocalCach
+        /// </summary>
         public Index2 CenterPosition { get; set; }
 
         /// <summary>
@@ -150,8 +154,7 @@ namespace OctoAwesome
             }
 
             foreach (var chunkColumnIndex in requiredChunkColumns
-                                                .OrderBy(c => index.ShortestDistanceXY(c, new Index2(planet.Size))
-                                                .LengthSquared()))
+                .OrderBy(c => index.ShortestDistanceXY(c, new Index2(planet.Size)).LengthSquared()))
             {
                 int localX = chunkColumnIndex.X & mask;
                 int localY = chunkColumnIndex.Y & mask;

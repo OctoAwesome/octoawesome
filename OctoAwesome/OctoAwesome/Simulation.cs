@@ -176,6 +176,7 @@ namespace OctoAwesome
 
             extensionResolver.ExtendEntity(entity);
             entity.Initialize(ResourceManager);
+            //entity.SetPosition(entity.Position);
             //entity.Simulation = this;
             entity.Id = nextId++;
             entities.Add(entity);

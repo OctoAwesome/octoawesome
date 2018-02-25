@@ -5,7 +5,7 @@ using engenious;
 using engenious.Helper;
 using OctoAwesome.CodeExtensions;
 using OctoAwesome.Entities;
-namespace OctoAwesome.Basics.SimComponents
+namespace OctoAwesome.Basics.SimulationComponents
 {
     class StatespaceComponent : EntityComponent
     {
@@ -49,6 +49,9 @@ namespace OctoAwesome.Basics.SimComponents
         }
         public override void Register(Entity entity)
         {
+            IPlanet planet = entity.Cache.GetPlanet(entity.Position.Planet);
+            entity.Position.NormalizeChunkIndexXY(planet.Size);
+            entity.Cache.SetCenter(planet, new Index2(entity.Position.ChunkIndex));
             if (entity is IControllable controllable)
             {
                 if(!entity.Components.ContainsComponent(statespacekey))
@@ -114,7 +117,7 @@ namespace OctoAwesome.Basics.SimComponents
         {
             // TODO: check if valid ids > 0
             //if (entity.Position.Planet == 0) return;
-            float gravity = entity.Cache.GetPlanet(entity.Position.Planet).Gravity;
+            float gravity = entity.Cache.Planet.Gravity;
             statespace.Forces.Add(new Vector3(0, 0, -statespace.DefaultMass * gravity));
         }
         private void CalcAggregator(GameTime gameTime, IControllable con, StatespaceComponent statespace)
@@ -228,17 +231,20 @@ namespace OctoAwesome.Basics.SimComponents
                             float vy;
                             float vz;
 
-                            if (plane.BlockPlane.normal.X != 0 && (statespace.Velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 || statespace.Velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
+                            if (plane.BlockPlane.normal.X != 0 && (statespace.Velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 || 
+                                statespace.Velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
                                 vx = subvelocity.X;
                             else
                                 vx = statespace.Velocity.X;
 
-                            if (plane.BlockPlane.normal.Y != 0 && (statespace.Velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 || statespace.Velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
+                            if (plane.BlockPlane.normal.Y != 0 && (statespace.Velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 || 
+                                statespace.Velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
                                 vy = subvelocity.Y;
                             else
                                 vy = statespace.Velocity.Y;
 
-                            if (plane.BlockPlane.normal.Z != 0 && (statespace.Velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 || statespace.Velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
+                            if (plane.BlockPlane.normal.Z != 0 && (statespace.Velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 || 
+                                statespace.Velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
                                 vz = subvelocity.Z;
                             else
                                 vz = statespace.Velocity.Z;

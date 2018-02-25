@@ -77,11 +77,16 @@
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="Entities\IControllable.cs" />
+    <Compile Include="Entities\IController.cs" />
     <Compile Include="Entities\IDrawable.cs" />
     <Compile Include="Entities\EntityList.cs" />
     <Compile Include="Entities\EntityComponent.cs" />
     <Compile Include="Entities\EntityFilterAttribute.cs" />
     <Compile Include="Entities\IEntityDefinition.cs" />
+    <Compile Include="Entities\IGraphicsdevice.cs" />
+    <Compile Include="Entities\IInteractable.cs" />
+    <Compile Include="Entities\InputTrigger.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
@@ -90,6 +95,7 @@
     <Compile Include="Entities\IEntityList.cs" />
     <Compile Include="IExtensionLoader.cs" />
     <Compile Include="IExtensionResolver.cs" />
+    <Compile Include="IExtensionResourceManager.cs" />
     <Compile Include="IInventoryableDefinition.cs" />
     <Compile Include="IPersistenceManager.cs" />
     <Compile Include="IClimateMap.cs" />

@@ -1,11 +1,7 @@
-﻿using OctoAwesome;
-using OctoAwesome.Client.Components;
+﻿using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
-using System.Configuration;
-using System.Linq;
-using MonoGameUi;
 using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
