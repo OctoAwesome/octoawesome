@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(GravityComponent),typeof(BodyComponent))]
-    public class NewtonGravitatorComponent : SimulationComponent
+    public class NewtonGravitatorComponent : OSimulationComponent
     {
         class GravityEntity
         {

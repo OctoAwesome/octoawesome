@@ -36,7 +36,7 @@ namespace OctoAwesome
         /// <returns>Instanz des Chunks</returns>
         IChunk GetChunk(int x, int y, int z);
 
-        IPlanet LoadPlanet(int id);
+        IPlanet GetPlanet(int id);
 
         /// <summary>
         /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
@@ -50,6 +50,24 @@ namespace OctoAwesome
         /// Leert den Cache und gibt sie beim GlobalChunkCache wieder frei
         /// </summary>
         void Flush();
+
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="index">Block Index</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        /// <param name="removeblock">Entfernt den Block.</param>
+        ushort GetBlock(Index3 index, bool removeblock);
+
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
+        /// <param name="removeblock">Entfernt den Block.</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        ushort GetBlock(int x, int y, int z, bool removeblock);
 
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
@@ -73,7 +91,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Die neue Block-ID.</param>
-        void SetBlock(Index3 index, ushort block);
+        /// <param name="meta">Die neuen Blockmetadatan</param>
+        void SetBlock(Index3 index, ushort block, int meta = 0);
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Koordinate.
@@ -82,7 +101,8 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Die neue Block-ID.</param>
-        void SetBlock(int x, int y, int z, ushort block);
+        /// <param name="meta">Die neuen Blockmetadatan</param>
+        void SetBlock(int x, int y, int z, ushort block, int meta = 0);
 
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.

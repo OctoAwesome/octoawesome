@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
-    public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
+    public class BlockInteractionComponent : OSimulationComponent<ControllableComponent, InventoryComponent>
     {
         private Simulation simulation;
 
@@ -32,25 +33,26 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
 
+            // take block
             if (controller.InteractBlock.HasValue)
             {
-                ushort lastBlock = entity.Cache.GetBlock(controller.InteractBlock.Value);
-                entity.Cache.SetBlock(controller.InteractBlock.Value, 0);
+                ushort lastBlock = entity.Cache.GetBlock(controller.InteractBlock.Value, true);
+                //entity.Cache.SetBlock(controller.InteractBlock.Value, 0);
 
                 if (lastBlock != 0)
                 {
                     var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
-                    if (blockDefinition is IInventoryableDefinition invDef)
-                        inventory.AddUnit(invDef);
+                    if (blockDefinition is IInventoryableDefinition invDef) inventory.AddUnit(invDef);
                 }
                 controller.InteractBlock = null;
             }
 
+            // set or interact with tool
             if (toolbar != null && controller.ApplyBlock.HasValue)
             {
                 if (toolbar.ActiveTool != null)
                 {
-                    Index3 add = new Index3();
+                    Index3 add;
                     switch (controller.ApplySide)
                     {
                         case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
@@ -59,12 +61,11 @@ namespace OctoAwesome.Basics.SimulationComponents
                         case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
                         case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
+                        default: add = new Index3(); break;
                     }
 
-                    if (toolbar.ActiveTool.Definition is IBlockDefinition)
+                    if (toolbar.ActiveTool.Definition is IBlockDefinition definition)
                     {
-                        IBlockDefinition definition = toolbar.ActiveTool.Definition as IBlockDefinition;
-
                         Index3 idx = controller.ApplyBlock.Value + add;
                         var boxes = definition.GetCollisionBoxes(entity.Cache, idx.X, idx.Y, idx.Z);
 

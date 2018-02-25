@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(PowerComponent), typeof(MoveableComponent))]
-    public sealed class PowerAggregatorComponent : SimulationComponent
+    public sealed class PowerAggregatorComponent : OSimulationComponent
     {
         private List<PoweredEntity> poweredEntities = new List<PoweredEntity>();
 

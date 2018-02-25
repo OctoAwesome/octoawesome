@@ -7,11 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using engenious;
 using engenious.Helper;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(ControllableComponent), typeof(BodyPowerComponent))]
-    public class WattMoverComponent : SimulationComponent<ControllableComponent, BodyPowerComponent>
+    public class WattMoverComponent : OSimulationComponent<ControllableComponent, BodyPowerComponent>
     {
         protected override bool AddEntity(Entity entity)
         {
@@ -32,7 +33,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 float lookX = (float)Math.Cos(head.Angle);
                 float lookY = -(float)Math.Sin(head.Angle);
-                var velocitydirection = new Vector3(lookX, lookY, 0) * controller.MoveInput.Y;
+                var velocitydirection = new Vector3(lookX, lookY, 0) * controller.MoveInput.Y;                
 
                 float stafeX = (float)Math.Cos(head.Angle + MathHelper.PiOver2);
                 float stafeY = -(float)Math.Sin(head.Angle + MathHelper.PiOver2);
@@ -43,7 +44,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
             else
             {
-                powercomp.Direction = new Vector3(controller.MoveInput.X,controller.MoveInput.Y);
+                powercomp.Direction = new Vector3(controller.MoveInput.X, controller.MoveInput.Y);
             }
 
             //Jump

@@ -1,3 +1,4 @@
+using OctoAwesome.Entities;
 using System;
 
 namespace OctoAwesome

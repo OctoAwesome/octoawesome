@@ -2,11 +2,12 @@
 using System.Linq;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(ForceComponent), typeof(MoveableComponent))]
-    public sealed class ForceAggregatorComponent : SimulationComponent
+    public sealed class ForceAggregatorComponent : OSimulationComponent
     {
         private List<ForcedEntity> forcedEntities = new List<ForcedEntity>();
 

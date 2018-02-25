@@ -98,12 +98,37 @@ namespace OctoAwesome
         /// Liefet den Block an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
+        /// <param name="removeblock">The block will be removed</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        public ushort GetBlock(Index3 index, bool removeblock)
+        {
+            return GetBlock(index.X, index.Y, index.Z, removeblock);
+        }
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
         /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         public ushort GetBlock(Index3 index)
         {
             return GetBlock(index.X, index.Y, index.Z);
         }
 
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <param name="removeblock">The block will be removed</param>
+        /// <returns>Block-ID der angegebenen Koordinate</returns>
+        public ushort GetBlock(int x, int y, int z, bool removeblock)
+        {
+            int flatindex = GetFlatIndex(x, y, z);
+            ushort block = Blocks[flatindex];
+            if (removeblock) SetBlock(flatindex, 0);
+            return block;
+        }
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
         /// </summary>
@@ -124,7 +149,7 @@ namespace OctoAwesome
         /// <param name="meta">(Optional) Metainformationen für den Block</param>
         public void SetBlock(Index3 index, ushort block, int meta = 0)
         {
-            SetBlock(index.X, index.Y, index.Z, block);
+            SetBlock(index.X, index.Y, index.Z, block, meta);
         }
 
         /// <summary>
@@ -137,13 +162,15 @@ namespace OctoAwesome
         /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
-            int index = GetFlatIndex(x, y, z);
-            Blocks[index] = block;
-            MetaData[index] = meta;
+            SetBlock(GetFlatIndex(x, y, z), block, meta);
+        }
+        private void SetBlock(int flatindex, ushort block, int meta = 0)
+        {
+            Blocks[flatindex] = block;
+            MetaData[flatindex] = meta;
             ChangeCounter++;
             Changed?.Invoke(this, ChangeCounter);
         }
-
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>

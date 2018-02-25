@@ -1,9 +1,7 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {

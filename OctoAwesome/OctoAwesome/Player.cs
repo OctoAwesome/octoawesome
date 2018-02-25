@@ -1,26 +1,25 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
-using engenious;
-using System.IO;
-using System.Linq;
-using OctoAwesome.EntityComponents;
+﻿using System.IO;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Entität, die der menschliche Spieler mittels Eingabegeräte steuern kann.
     /// </summary>
-    public sealed class Player : Entity
+    public sealed class Player : Entity, IControllable
     {
         /// <summary>
         /// Die Reichweite des Spielers, in der er mit Spielelementen wie <see cref="Block"/> und <see cref="Entity"/> interagieren kann
         /// </summary>
         public const int SELECTIONRANGE = 8;
+        private IController currentcontroller;
+
+        public IController Controller => currentcontroller;
 
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
-        public Player() : base()
+        public Player() : base(false)
         {
         }
 
@@ -42,5 +41,15 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
             => base.Deserialize(reader, definitionManager); // Entity
+
+        public void Register(IController controller)
+        {
+            currentcontroller = controller;
+        }
+
+        public void Reset()
+        {
+            currentcontroller = null;
+        }
     }
 }

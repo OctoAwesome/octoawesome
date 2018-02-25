@@ -5,7 +5,6 @@ using engenious.Input;
 using System.Collections.Generic;
 using OctoAwesome.Client.Controls;
 using engenious;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -101,13 +100,19 @@ namespace OctoAwesome.Client.Screens
             };
 
             toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+
+            //TODO: aus der componenten später selber ziehen.
+            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (int i = 0; i < 10; i++)
                 toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
             toolbar.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
 
-            images = new Image[ToolBarComponent.TOOLCOUNT];
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            images = new Image[10];
+            //TODO: aus der componenten später selber ziehen.
+            //images = new Image[ToolBarComponent.TOOLCOUNT];
+            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Image image = images[i] = new Image(manager)
                 {
@@ -119,17 +124,18 @@ namespace OctoAwesome.Client.Screens
                     Padding = Border.All(2),
                 };
 
-                image.StartDrag += (e) =>
-                {
-                    InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
-                    if (slot != null)
-                    {
-                        e.Handled = true;
-                        e.Icon = toolTextures[slot.Definition.GetType().FullName];
-                        e.Content = slot;
-                        e.Sender = toolbar;
-                    }
-                };
+                //TODO: wieder hinzufügen, oder anders lösen
+                //image.StartDrag += (e) =>
+                //{
+                //    InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
+                //    if (slot != null)
+                //    {
+                //        e.Handled = true;
+                //        e.Icon = toolTextures[slot.Definition.GetType().FullName];
+                //        e.Content = slot;
+                //        e.Sender = toolbar;
+                //    }
+                //};
 
                 image.DropEnter += (e) => { image.Background = hoverBrush; };
                 image.DropLeave += (e) => { image.Background = backgroundBrush; };
@@ -137,24 +143,25 @@ namespace OctoAwesome.Client.Screens
                 {
                     e.Handled = true;
 
-                    if (e.Sender is Grid) // && ShiftPressed
-                    {
-                        // Swap
-                        int targetIndex = (int)image.Tag;
-                        InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
+                    //TODO: wieder hinzufügen, oder anders lösen
+                    //if (e.Sender is Grid) // && ShiftPressed
+                    //{
+                    //    // Swap
+                    //    int targetIndex = (int)image.Tag;
+                    //    InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
 
-                        InventorySlot sourceSlot = e.Content as InventorySlot;
-                        int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
+                    //    InventorySlot sourceSlot = e.Content as InventorySlot;
+                    //    int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
 
-                        player.Toolbar.SetTool(sourceSlot, targetIndex);
-                        player.Toolbar.SetTool(targetSlot, sourceIndex);
-                    }
-                    else
-                    {
-                        // Inventory Drop
-                        InventorySlot slot = e.Content as InventorySlot;
-                        player.Toolbar.SetTool(slot, (int)image.Tag);
-                    }
+                    //    player.Toolbar.SetTool(sourceSlot, targetIndex);
+                    //    player.Toolbar.SetTool(targetSlot, sourceIndex);
+                    //}
+                    //else
+                    //{
+                    //    // Inventory Drop
+                    //    InventorySlot slot = e.Content as InventorySlot;
+                    //    player.Toolbar.SetTool(slot, (int)image.Tag);
+                    //}
                 };
 
                 toolbar.AddControl(image, i + 1, 0);
@@ -168,22 +175,24 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnEndDrop(args);
 
-            if (args.Sender is Grid)
-            {
-                InventorySlot slot = args.Content as InventorySlot;
-                player.Toolbar.RemoveSlot(slot);
-            }
+            //TODO: wieder hinzufügen, oder anders lösen
+            //if (args.Sender is Grid)
+            //{
+            //    InventorySlot slot = args.Content as InventorySlot;
+            //    player.Toolbar.RemoveSlot(slot);
+            //}
         }
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
+            //TODO: wieder hinzufügen, oder anders lösen
             // Tool neu zuweisen
-            if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
-            {
-                int offset = (int)args.Key - (int)Keys.D0;
-                player.Toolbar.SetTool(inventory.HoveredSlot, offset);
-                args.Handled = true;
-            }
+            //if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
+            //{
+            //    int offset = (int)args.Key - (int)Keys.D0;
+            //    player.Toolbar.SetTool(inventory.HoveredSlot, offset);
+            //    args.Handled = true;
+            //}
 
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
@@ -202,20 +211,24 @@ namespace OctoAwesome.Client.Screens
             massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
             // Aktualisierung des aktiven Buttons
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            {
-                if (player.Toolbar.Tools != null &&
-                    player.Toolbar.Tools.Length > i &&
-                    player.Toolbar.Tools[i] != null &&
-                    player.Toolbar.Tools[i].Definition != null)
-                {
-                    images[i].Texture = toolTextures[player.Toolbar.Tools[i].Definition.GetType().FullName];
-                }
-                else
-                {
-                    images[i].Texture = null;
-                }
-            }
+            //TODO: aus der componenten später selber ziehen.
+            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+
+            //TODO: wieder hinzufügen, oder anders lösen
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    if (player.Toolbar.Tools != null &&
+            //        player.Toolbar.Tools.Length > i &&
+            //        player.Toolbar.Tools[i] != null &&
+            //        player.Toolbar.Tools[i].Definition != null)
+            //    {
+            //        images[i].Texture = toolTextures[player.Toolbar.Tools[i].Definition.GetType().FullName];
+            //    }
+            //    else
+            //    {
+            //        images[i].Texture = null;
+            //    }
+            //}
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)

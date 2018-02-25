@@ -10,6 +10,10 @@
         /// </summary>
         public int Order { get; protected set; }
 
+        // TODO: initialisieren? -> bessere skalierung der population
+        // enviromente parameter können besser einbezogen werden (plante ist zu kalt für lebewesen etc...)
+        //public abstract void Initialize(IPlanet plante, IDefinitionManager definitions);
+
         /// <summary>
         /// Versieht einen Chunk mit Items
         /// </summary>

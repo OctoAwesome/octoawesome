@@ -1,8 +1,5 @@
 ﻿using MonoGameUi;
-using System.Collections.Generic;
-using OctoAwesome.Runtime;
 using OctoAwesome.Client.Components;
-using System;
 using engenious;
 using engenious.Graphics;
 using System.Linq;
@@ -153,14 +150,14 @@ namespace OctoAwesome.Client.Controls
             controlInfo.Text = Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
 
             //Draw Position
-            string pos = "pos: " + Player.Position.Position.ToString();
+            string pos = "pos: " + Player.CurrentEntity.Position.ToString();
             position.Text = pos;
 
             //Draw Rotation
-            float grad = (Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.HeadYaw / MathHelper.TwoPi) * 360;
             string rot = "rot: " +
-                (((Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.CurrentEntityHead.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.HeadYaw / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.HeadTilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
 
             //Draw Fps
@@ -193,12 +190,12 @@ namespace OctoAwesome.Client.Controls
             //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
             //else flyInfo.Text = "";
 
-            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet);
+            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.CurrentEntity.Position.Planet);
             // Temperature Info
-            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.Position.Position.GlobalBlockIndex);
+            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             // Precipitation Info
-            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.Position.Position.GlobalBlockIndex);
+            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)

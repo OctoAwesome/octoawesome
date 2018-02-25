@@ -31,7 +31,7 @@ namespace OctoAwesome.Client.Controls
             if (Player == null || Player.CurrentEntity == null || !assets.Ready)
                 return;
 
-            float compassValue = Player.CurrentEntityHead.Angle / (float)(2 * Math.PI);
+            float compassValue = Player.HeadYaw / (float)(2 * Math.PI);
             compassValue %= 1f;
             if (compassValue < 0)
                 compassValue += 1f;

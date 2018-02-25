@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome

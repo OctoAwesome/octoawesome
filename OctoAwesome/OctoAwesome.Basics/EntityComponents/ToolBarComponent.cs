@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OctoAwesome.Entities;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -13,7 +8,7 @@ namespace OctoAwesome.EntityComponents
     public class ToolBarComponent : EntityComponent
     {
         /// <summary>
-        /// Gibt die Anzahl Tools in der Toolbar an.
+        /// Gibt die Anzahl der Tools in der Toolbar an.
         /// </summary>
         public const int TOOLCOUNT = 10;
 

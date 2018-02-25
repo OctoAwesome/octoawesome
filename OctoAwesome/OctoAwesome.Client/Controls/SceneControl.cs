@@ -106,10 +106,10 @@ namespace OctoAwesome.Client.Controls
                 }
             }
 
+            // TODO: valid planet id should be > 0
             planet = Manager.Game.ResourceManager.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
-
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
             localChunkCache = new LocalChunkCache(Manager.Game.ResourceManager.GlobalChunkCache,false, VIEWRANGE, range);
 
@@ -238,8 +238,8 @@ namespace OctoAwesome.Client.Controls
             
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
 
-            Index3 centerblock = player.Position.Position.GlobalBlockIndex;
-            Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
+            Index3 centerblock = player.CurrentEntity.Position.GlobalBlockIndex;
+            Index3 renderOffset = player.CurrentEntity.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
             Index3? selected = null;
             Axis? selectedAxis = null;
@@ -332,7 +332,7 @@ namespace OctoAwesome.Client.Controls
                 player.SelectedCorner = OrientationFlags.None;
             }
 
-            Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);
+            Index2 destinationChunk = new Index2(player.CurrentEntity.Position.ChunkIndex);
 
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
@@ -359,8 +359,8 @@ namespace OctoAwesome.Client.Controls
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
-            float playerPosX = ((float)player.Position.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
-            float playerPosY = ((float)player.Position.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
+            float playerPosX = ((float)player.CurrentEntity.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
+            float playerPosY = ((float)player.CurrentEntity.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y)) * MathHelper.TwoPi;
 
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
@@ -424,7 +424,7 @@ namespace OctoAwesome.Client.Controls
             // GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             sunEffect.Texture = sunTexture;
             Matrix billboard = Matrix.Invert(camera.View);
-            billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
+            billboard.Translation = player.CurrentEntity.Position.LocalPosition + (sunDirection * -10);
             sunEffect.World = billboard;
             sunEffect.View = camera.View;
             sunEffect.Projection = camera.Projection;
@@ -499,14 +499,13 @@ namespace OctoAwesome.Client.Controls
             if (player.CurrentEntity == null)
                 return;
 
-            Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);
+            Index2 destinationChunk = new Index2(player.CurrentEntity.Position.ChunkIndex);
 
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
-                localChunkCache.SetCenter(
-                    planet,
-                    new Index2(player.Position.Position.ChunkIndex),
+                localChunkCache.SetCenter( planet,
+                    new Index2(player.CurrentEntity.Position.ChunkIndex),
                     b => {
                         if (b)
                         {
@@ -534,7 +533,7 @@ namespace OctoAwesome.Client.Controls
                     }
                 }
 
-                Index3 comparationIndex = player.Position.Position.ChunkIndex;
+                Index3 comparationIndex = player.CurrentEntity.Position.ChunkIndex;
                 orderedChunkRenderer.Sort((x, y) =>
                 {
                     if (!x.ChunkPosition.HasValue) return 1;

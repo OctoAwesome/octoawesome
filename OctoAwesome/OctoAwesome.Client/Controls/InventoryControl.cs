@@ -16,7 +16,6 @@ namespace OctoAwesome.Client.Controls
 
         public InventoryControl(ScreenComponent manager, int columns = COLUMNS) : base(manager)
         {
-            
 
             ScrollContainer scroll = new ScrollContainer(manager)
             {
@@ -32,41 +31,41 @@ namespace OctoAwesome.Client.Controls
             };
             for (int i = 0; i < columns; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            int rows = (int)System.Math.Ceiling((float)manager.Game.Player.Inventory.Inventory.Count / columns);
-            for (int i = 0; i < rows; i++)
-                grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
+            // TODO: wieder einfügen 
+            //int rows = (int)System.Math.Ceiling((float)manager.Game.Player.Inventory.Inventory.Count / columns);
+            //for (int i = 0; i < rows; i++)
+            //    grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
             int column = 0;
             int row = 0;
-            foreach (var item in manager.Game.Player.Inventory.Inventory)
-            {
-                Texture2D texture = manager.Game.Assets.LoadTexture(item.Definition.GetType(), item.Definition.Icon);
+            // TODO: wieder einfügen
+            //foreach (var item in manager.Game.Player.Inventory.Inventory)
+            //{
+            //    Texture2D texture = manager.Game.Assets.LoadTexture(item.Definition.GetType(), item.Definition.Icon);
 
-                var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-                image.MouseEnter += (s, e) => { HoveredSlot = item; };
-                image.MouseLeave += (s, e) => { HoveredSlot = null; };
-                image.StartDrag += (e) =>
-                {
-                    e.Handled = true;
-                    e.Icon = texture;
-                    e.Content = item;
-                    e.Sender = image;
-                };
-                var label = new Label(manager) { Text = item.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
-                grid.AddControl(image, column, row);
-                grid.AddControl(label, column, row);
+            //    var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+            //    image.MouseEnter += (s, e) => { HoveredSlot = item; };
+            //    image.MouseLeave += (s, e) => { HoveredSlot = null; };
+            //    image.StartDrag += (e) =>
+            //    {
+            //        e.Handled = true;
+            //        e.Icon = texture;
+            //        e.Content = item;
+            //        e.Sender = image;
+            //    };
+            //    var label = new Label(manager) { Text = item.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
+            //    grid.AddControl(image, column, row);
+            //    grid.AddControl(label, column, row);
 
-                column++;
-                if (column >= columns)
-                {
-                    row++;
-                    column = 0;
-                }
-            }
+            //    column++;
+            //    if (column >= columns)
+            //    {
+            //        row++;
+            //        column = 0;
+            //    }
+            //}
 
             scroll.Content = grid;
-
-
         }
     }
 }

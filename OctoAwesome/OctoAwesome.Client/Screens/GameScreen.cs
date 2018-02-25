@@ -4,6 +4,7 @@ using OctoAwesome.Client.Components;
 using System;
 using engenious;
 using engenious.Input;
+using engenious.Helper;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -47,6 +48,7 @@ namespace OctoAwesome.Client.Screens
             compass.Height = 50;
             Controls.Add(compass);
 
+            //TODO: dynamische einbindugn aus extensions
             toolbar = new ToolbarControl(manager);
             toolbar.HorizontalAlignment = HorizontalAlignment.Stretch;
             toolbar.VerticalAlignment = VerticalAlignment.Bottom;
@@ -85,15 +87,20 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 1f);
-            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-1f, 0f);
-            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -1f);
-            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(1f, 0f);
-            if (pressedHeadUp) Manager.Player.HeadInput += new Vector2(0f, 1f);
-            if (pressedHeadDown) Manager.Player.HeadInput += new Vector2(0f, -1f);
-            if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
-            if (pressedHeadRight) Manager.Player.HeadInput += new Vector2(1f, 0f);
+            Vector2 move = Vector2.Zero;
+            if (pressedMoveUp) move += new Vector2(0f, 1f);
+            if (pressedMoveLeft) move += new Vector2(-1f, 0f);
+            if (pressedMoveDown) move += new Vector2(0f, -1f);
+            if (pressedMoveRight) move += new Vector2(1f, 0f);
+            Manager.Player.MoveValue = move;
 
+            Vector2 head = Vector2.Zero;
+            if (pressedHeadUp) head += new Vector2(0f, 1f);
+            if (pressedHeadDown) head += new Vector2(0f, -1f);
+            if (pressedHeadLeft) head += new Vector2(-1f, 0f);
+            if (pressedHeadRight) head += new Vector2(1f, 0f);
+            Manager.Player.HeadValue = head;
+            
             HandleGamePad();
 
             base.OnUpdate(gameTime);
@@ -105,7 +112,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (!IsActiveScreen) return;
 
-            Manager.Player.ApplyInput = true;
+            Manager.Player.ApplyInput.Set(true);
             args.Handled = true;
         }
 
@@ -113,7 +120,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (!IsActiveScreen) return;
 
-            Manager.Player.InteractInput = true;
+            Manager.Player.InteractInput.Set(true);
             args.Handled = true;
         }
 
@@ -123,7 +130,7 @@ namespace OctoAwesome.Client.Screens
 
             if (args.MouseMode == MouseMode.Captured && IsActiveScreen)
             {
-                Manager.Player.HeadInput = args.GlobalPosition.ToVector2() * mouseSpeed * new Vector2(1f, -1f);
+                Manager.Player.HeadValue = args.GlobalPosition.ToVector2() * mouseSpeed * new Vector2(1f, -1f);
                 args.Handled = true;
             }
         }
@@ -203,22 +210,22 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:interact", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.InteractInput = true;
+                Manager.Player.InteractInput.Set(true);
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:apply", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.ApplyInput = true;
+                Manager.Player.ApplyInput.Set(true);
+            });
+            Manager.Game.KeyMapper.AddAction("octoawesome:jump", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+                Manager.Player.JumpInput.Set(true);
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:flymode", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.Player.FlymodeInput = true;
-            });
-            Manager.Game.KeyMapper.AddAction("octoawesome:jump", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.JumpInput = true;
             });
             for (int i = 0; i < 10; i++)
             {
@@ -269,10 +276,12 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:teleport", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
-                        Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
-                        Manager.NavigateBack();
-                    }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
+                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => 
+                {
+                    Manager.Game.Player.CurrentEntity.SetPosition(new Coordinate(0, new Index3(x, y, 300), new Vector3()));
+                    Manager.NavigateBack();
+                }, 
+                    Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.X, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.Y));
             });
         }
 
@@ -303,19 +312,19 @@ namespace OctoAwesome.Client.Screens
 
             if (succeeded)
             {
-                Manager.Player.MoveInput += gamePadState.ThumbSticks.Left;
-                Manager.Player.HeadInput += gamePadState.ThumbSticks.Right;
+                Manager.Player.MoveValue += gamePadState.ThumbSticks.Left;
+                Manager.Player.HeadValue += gamePadState.ThumbSticks.Right;
 
                 if (gamePadState.Buttons.X == ButtonState.Pressed && !pressedGamepadInteract)
-                    Manager.Player.InteractInput = true;
+                    Manager.Player.InteractInput.Set(true);
                 pressedGamepadInteract = gamePadState.Buttons.X == ButtonState.Pressed;
 
                 if (gamePadState.Buttons.A == ButtonState.Pressed && !pressedGamepadApply)
-                    Manager.Player.ApplyInput = true;
+                    Manager.Player.ApplyInput.Set(true);
                 pressedGamepadApply = gamePadState.Buttons.A == ButtonState.Pressed;
 
                 if (gamePadState.Buttons.Y == ButtonState.Pressed && !pressedGamepadJump)
-                    Manager.Player.JumpInput = true;
+                    Manager.Player.JumpInput.Set(true);
                 pressedGamepadJump = gamePadState.Buttons.Y == ButtonState.Pressed;
 
                 if (gamePadState.Buttons.LeftStick == ButtonState.Pressed && !pressedGamepadFlymode)

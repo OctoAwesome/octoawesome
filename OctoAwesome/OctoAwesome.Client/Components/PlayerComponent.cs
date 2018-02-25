@@ -1,31 +1,42 @@
-﻿using OctoAwesome.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using engenious;
-using OctoAwesome.EntityComponents;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class PlayerComponent : GameComponent
+    internal sealed class PlayerComponent : GameComponent, IController
     {
         private new OctoGame Game;
 
         private IResourceManager resourceManager;
 
-        #region External Input
+        public Vector3 HeadOffset { get; set; }
 
-        public Vector2 HeadInput { get; set; }
+        #region IController Interface
 
-        public Vector2 MoveInput { get; set; }
+        public float HeadTilt { get; set; }
 
-        public bool InteractInput { get; set; }
+        public float HeadYaw { get; set; }
 
-        public bool ApplyInput { get; set; }
+        public InputTrigger<bool> InteractInput { get; }
 
-        public bool JumpInput { get; set; }
+        public InputTrigger<bool> ApplyInput { get; }
 
+        public InputTrigger<bool> JumpInput { get; }
+
+        public Vector2 HeadValue { get; set; }
+
+        public Vector2 MoveValue { get; set; }
+
+        public Index3? InteractBlock { get; set; }
+
+        public Index3? ApplyBlock { get; set; }
+
+        public OrientationFlags? ApplySide { get; set; }
+
+        #endregion
+
+        #region External Inputs
         public bool FlymodeInput { get; set; }
 
         public bool[] SlotInput { get; private set; } = new bool[10];
@@ -33,22 +44,13 @@ namespace OctoAwesome.Client.Components
         public bool SlotLeftInput { get; set; }
 
         public bool SlotRightInput { get; set; }
-
         #endregion
 
         public Entity CurrentEntity { get; private set; }
 
-        public HeadComponent CurrentEntityHead { get; private set; }
-
-        public ControllableComponent CurrentController { get; private set; }
-
-        public InventoryComponent Inventory { get; private set; }
-
-        public ToolBarComponent Toolbar { get; private set; }
-
-        public PositionComponent Position { get; private set; }
-
-        // public ActorHost ActorHost { get; private set; }
+        //TODO: wieder hinzufügen, oder anders lösen
+        //public InventoryComponent Inventory { get; private set; }
+        //public ToolBarComponent Toolbar { get; private set; }
 
         public Index3? SelectedBox { get; set; }
 
@@ -60,127 +62,119 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
-        public PlayerComponent(OctoGame game, IResourceManager resourceManager)
-            : base(game)
+        public PlayerComponent(OctoGame game, IResourceManager resourceManager) : base(game)
         {
             this.resourceManager = resourceManager;
+            ApplyInput = new InputTrigger<bool>();
+            InteractInput = new InputTrigger<bool>();
+            JumpInput = new InputTrigger<bool>();
             Game = game;
         }
 
         public void SetEntity(Entity entity)
         {
             CurrentEntity = entity;
+            if (CurrentEntity != null && CurrentEntity is IControllable current)
+                current.Reset();
+            if (entity is IControllable controllable)
+                controllable.Register(this);
+            if (CurrentEntity is Entities.IDrawable draw)
+                HeadOffset = draw.Body;
+            else HeadOffset = new Vector3(0, 0, 3.2f);
 
+            //CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
+            //CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
+            //CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
 
-
-            if (CurrentEntity == null)
+            if (CurrentEntity != null)
             {
-                CurrentEntityHead = null;
-            }
-            else
-            {
-                // Map other Components
+                // Map other Components                
+                //CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
+                //if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
 
-                CurrentController = entity.Components.GetComponent<ControllableComponent>();
-
-                CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
-
-                Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-                if (Inventory == null) Inventory = new InventoryComponent();
-
-                Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar == null) Toolbar = new ToolBarComponent();
-
-                Position = CurrentEntity.Components.GetComponent<PositionComponent>();
-                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
+                // TODO: toolbar und inventory wieder hinzufügen, oder anders lösen
+                //Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+                //if (Inventory == null) Inventory = new InventoryComponent();
+                //Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
+                //if (Toolbar == null) Toolbar = new ToolBarComponent();
             }
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (!Enabled)
+            if (!Enabled || CurrentEntity == null)
                 return;
 
-            if (CurrentEntity == null)
-                return;
+            HeadYaw += (float) gameTime.ElapsedGameTime.TotalSeconds * HeadValue.X;
+            HeadTilt = Math.Min(1.5f, Math.Max(-1.5f, HeadTilt + (float) gameTime.ElapsedGameTime.TotalSeconds * HeadValue.X));
 
-            CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
-            CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
-            CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
-            HeadInput = Vector2.Zero;
-
-            CurrentController.MoveInput = MoveInput;
-            MoveInput = Vector2.Zero;
-
-            CurrentController.JumpInput = JumpInput;
-            JumpInput = false;
-
-            if (InteractInput && SelectedBox.HasValue)
-                CurrentController.InteractBlock = SelectedBox.Value;
-            InteractInput = false;
-
-            if (ApplyInput && SelectedBox.HasValue)
+            if (InteractInput.Value && SelectedBox.HasValue)
             {
-                CurrentController.ApplyBlock = SelectedBox.Value;
-                CurrentController.ApplySide = SelectedSide;
+                InteractBlock = SelectedBox.Value;
             }
 
-            ApplyInput = false;
+            if (ApplyInput.Value && SelectedBox.HasValue)
+            {
+                ApplyBlock = SelectedBox.Value;
+                ApplySide = SelectedSide;
+            }
 
+            //TODO: was ist damit
             //if (FlymodeInput)
             //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             //FlymodeInput = false;
-
-            if (Toolbar.Tools != null && Toolbar.Tools.Length > 0)
-            {
-                if (Toolbar.ActiveTool == null) Toolbar.ActiveTool = Toolbar.Tools[0];
-                for (int i = 0; i < Math.Min(Toolbar.Tools.Length, SlotInput.Length); i++)
-                {
-                    if (SlotInput[i])
-                        Toolbar.ActiveTool = Toolbar.Tools[i];
-                    SlotInput[i] = false;
-                }
-            }
+            #region Toolbar
+            //TODO: wieder hinzufügen, oder anders lösen
+            //if (Toolbar.Tools != null && Toolbar.Tools.Length > 0)
+            //{
+            //    if (Toolbar.ActiveTool == null) Toolbar.ActiveTool = Toolbar.Tools[0];
+            //    for (int i = 0; i < Math.Min(Toolbar.Tools.Length, SlotInput.Length); i++)
+            //    {
+            //        if (SlotInput[i])
+            //            Toolbar.ActiveTool = Toolbar.Tools[i];
+            //        SlotInput[i] = false;
+            //    }
+            //}
 
             //Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            List<int> toolIndices = new List<int>();
-            if (Toolbar.Tools != null)
-            {
-                for (int i = 0; i < Toolbar.Tools.Length; i++)
-                {
-                    if (Toolbar.Tools[i] != null)
-                        toolIndices.Add(i);
+            //int activeTool = -1;
+            //List<int> toolIndices = new List<int>();
+            //if (Toolbar.Tools != null)
+            //{
+            //    for (int i = 0; i < Toolbar.Tools.Length; i++)
+            //    {
+            //        if (Toolbar.Tools[i] != null)
+            //            toolIndices.Add(i);
 
-                    if (Toolbar.Tools[i] == Toolbar.ActiveTool)
-                        activeTool = toolIndices.Count - 1;
-                }
-            }
+            //        if (Toolbar.Tools[i] == Toolbar.ActiveTool)
+            //            activeTool = toolIndices.Count - 1;
+            //    }
+            //}
 
-            if (SlotLeftInput)
-            {
-                if (activeTool > -1)
-                    activeTool--;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[toolIndices.Count - 1];
-            }
-            SlotLeftInput = false;
+            //if (SlotLeftInput)
+            //{
+            //    if (activeTool > -1)
+            //        activeTool--;
+            //    else if (toolIndices.Count > 0)
+            //        activeTool = toolIndices[toolIndices.Count - 1];
+            //}
+            //SlotLeftInput = false;
 
-            if (SlotRightInput)
-            {
-                if (activeTool > -1)
-                    activeTool++;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[0];
-            }
-            SlotRightInput = false;
+            //if (SlotRightInput)
+            //{
+            //    if (activeTool > -1)
+            //        activeTool++;
+            //    else if (toolIndices.Count > 0)
+            //        activeTool = toolIndices[0];
+            //}
+            //SlotRightInput = false;
 
-            if (activeTool > -1)
-            {
-                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
-            }
+            //if (activeTool > -1)
+            //{
+            //    activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
+            //    Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
+            //}
+            #endregion
         }
 
         /// <summary>
@@ -188,17 +182,17 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         internal void AllBlocksDebug()
         {
-            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-            if (inventory == null)
-                return;
+            //var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            //if (inventory == null)
+            //    return;
 
-            var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
-            foreach (var blockDefinition in blockDefinitions)
-                inventory.AddUnit(blockDefinition);
+            //var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
+            //foreach (var blockDefinition in blockDefinitions)
+            //    inventory.AddUnit(blockDefinition);
 
-            var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
-            foreach (var itemDefinition in itemDefinitions)
-                inventory.AddUnit(itemDefinition);
+            //var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
+            //foreach (var itemDefinition in itemDefinitions)
+            //    inventory.AddUnit(itemDefinition);
         }
     }
 }

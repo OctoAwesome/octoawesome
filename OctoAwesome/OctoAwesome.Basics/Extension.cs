@@ -18,30 +18,31 @@ namespace OctoAwesome.Basics
 
         public void Register(IExtensionLoader extensionLoader)
         {
-
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(
                 t => !t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t)))
             {
-                extensionLoader.RegisterDefinition((IDefinition)Activator.CreateInstance(t));
+                extensionLoader.RegisterDefinition((IDefinition) Activator.CreateInstance(t));
             }
-
             extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
-
             extensionLoader.RegisterMapPopulator(new TreePopulator());
             extensionLoader.RegisterMapPopulator(new WauziPopulator());
-
             extensionLoader.RegisterEntity<WauziEntity>();
             extensionLoader.RegisterDefaultEntityExtender<WauziEntity>();
 
             extensionLoader.RegisterEntityExtender<Player>((p) =>
             {
-                p.Components.AddComponent(new GravityComponent());
-                p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
-                p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
-                p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                p.Components.AddComponent(new MoveableComponent());
-                p.Components.AddComponent(new BoxCollisionComponent());
-                p.Components.AddComponent(new EntityCollisionComponent());
+                p.SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, true);
+                //p.Components.AddComponent(new ControllableComponent());
+                //p.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
+                //p.Components.AddComponent(new InventoryComponent()); // -> sinvoll
+                //p.Components.AddComponent(new ToolBarComponent());   // -> sinvoll
+                //p.Components.AddComponent(new GravityComponent());
+                //p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
+                //p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
+                //p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+                //p.Components.AddComponent(new MoveableComponent());
+                //p.Components.AddComponent(new BoxCollisionComponent());
+                //p.Components.AddComponent(new EntityCollisionComponent());
             });
 
             extensionLoader.RegisterSimulationExtender((s) =>

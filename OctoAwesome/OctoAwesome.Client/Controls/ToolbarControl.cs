@@ -1,24 +1,21 @@
 ﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
-using OctoAwesome.Runtime;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using engenious;
 using engenious.Graphics;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.Controls
 {
     internal class ToolbarControl : Panel
     {
         private Dictionary<string, Texture2D> toolTextures;
+        // TODO: dynamisch aus der aktuellen toolbar generieren
+        //private Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
+        private Button[] buttons = new Button[10];
 
-        private Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
-
-        private Image[] images = new Image[ToolBarComponent.TOOLCOUNT];
+        // TODO: dynamisch aus der aktuellen toolbar generieren
+        //private Image[] images = new Image[ToolBarComponent.TOOLCOUNT];
+        private Image[] images = new Image[10];
 
         private Brush buttonBackgroud;
 
@@ -28,8 +25,7 @@ namespace OctoAwesome.Client.Controls
 
         public Label activeToolLabel;
 
-        public ToolbarControl(ScreenComponent screenManager)
-            : base(screenManager)
+        public ToolbarControl(ScreenComponent screenManager) : base(screenManager)
         {
             Player = screenManager.Player;
             toolTextures = new Dictionary<string, Texture2D>();
@@ -54,7 +50,9 @@ namespace OctoAwesome.Client.Controls
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            // TODO: dynamisch aus der aktuellen toolbar generieren
+            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (int i = 0; i < 10; i++)
             {
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
@@ -64,9 +62,13 @@ namespace OctoAwesome.Client.Controls
             activeToolLabel.HorizontalAlignment = HorizontalAlignment.Center;
             activeToolLabel.Background = new BorderBrush(Color.Black * 0.3f);
             activeToolLabel.TextColor = Color.White;
-            grid.AddControl(activeToolLabel, 0, 0, ToolBarComponent.TOOLCOUNT);
+            // TODO: dynamisch aus der aktuellen toolbar generieren
+            //grid.AddControl(activeToolLabel, 0, 0, ToolBarComponent.TOOLCOUNT);
+            // TODO: bezieht sich die rowspan auf die anzahl der tools ?
+            grid.AddControl(activeToolLabel, 0, 0, 10);
 
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (int i = 0; i < 10; i++)
             {
                 buttons[i] = new Button(screenManager)
                 {
@@ -92,32 +94,36 @@ namespace OctoAwesome.Client.Controls
 
             if (Player.CurrentEntity == null) return;
 
-           // Aktualisierung des aktiven Buttons
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            {
-                if (Player.Toolbar.Tools != null &&
-                    Player.Toolbar.Tools.Length > i &&
-                    Player.Toolbar.Tools[i] != null &&
-                    Player.Toolbar.Tools[i].Definition != null)
-                {
-                    images[i].Texture = toolTextures[Player.Toolbar.Tools[i].Definition.GetType().FullName];
+            //TODO: wieder hinzufügen, oder anders lösen
+            // Aktualisierung des aktiven Buttons
+            // TODO: dynamisch aus der aktuellen toolbar generieren
+            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    if (Player.Toolbar.Tools != null &&
+            //        Player.Toolbar.Tools.Length > i &&
+            //        Player.Toolbar.Tools[i] != null &&
+            //        Player.Toolbar.Tools[i].Definition != null)
+            //    {
+            //        images[i].Texture = toolTextures[Player.Toolbar.Tools[i].Definition.GetType().FullName];
 
-                    if (Player.Toolbar.ActiveTool == Player.Toolbar.Tools[i])
-                        buttons[i].Background = activeBackground;
-                    else
-                        buttons[i].Background = buttonBackgroud;
-                }
-                else
-                {
-                    images[i].Texture = null;
-                    buttons[i].Background = buttonBackgroud;
-                }
-            }
+            //        if (Player.Toolbar.ActiveTool == Player.Toolbar.Tools[i])
+            //            buttons[i].Background = activeBackground;
+            //        else
+            //            buttons[i].Background = buttonBackgroud;
+            //    }
+            //    else
+            //    {
+            //        images[i].Texture = null;
+            //        buttons[i].Background = buttonBackgroud;
+            //    }
+            //}
 
+            //TODO: wieder hinzufügen, oder anders lösen
             // Aktualisierung des ActiveTool Labels
-            activeToolLabel.Text = Player.Toolbar.ActiveTool != null ?
-                string.Format("{0} ({1})", Player.Toolbar.ActiveTool.Definition.Name, Player.Toolbar.ActiveTool.Amount) :
-                string.Empty;
+            //activeToolLabel.Text = Player.Toolbar.ActiveTool != null ?
+            //    string.Format("{0} ({1})", Player.Toolbar.ActiveTool.Definition.Name, Player.Toolbar.ActiveTool.Amount) :
+            //    string.Empty;
 
             activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
 

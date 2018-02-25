@@ -244,10 +244,30 @@ namespace OctoAwesome
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
         /// </summary>
         /// <param name="index">Block Index</param>
+        /// <param name="removeblock">The block will be removed</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        public ushort GetBlock(Index3 index, bool removeblock)
+            => GetBlock(index.X, index.Y, index.Z, removeblock);
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="index">Block Index</param>
         /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         public ushort GetBlock(Index3 index) 
             => GetBlock(index.X, index.Y, index.Z);
-
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <param name="removeblock">The block will be removed</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        public ushort GetBlock(int x, int y, int z, bool removeblock)
+        {
+            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            return chunk?.GetBlock(x, y, z, removeblock) ?? 0;
+        }
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
         /// </summary>
@@ -258,11 +278,7 @@ namespace OctoAwesome
         public ushort GetBlock(int x, int y, int z)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
-
-            if (chunk != null)
-                return chunk.GetBlock(x, y, z);
-
-            return 0;
+            return chunk?.GetBlock(x, y, z) ?? 0;
         }
 
         /// <summary>
@@ -270,8 +286,9 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="block">Die neue Block-ID.</param>
-        public void SetBlock(Index3 index, ushort block) 
-            => SetBlock(index.X, index.Y, index.Z, block);
+        /// <param name="meta">Die neuen Metadatan</param>
+        public void SetBlock(Index3 index, ushort block, int meta = 0) 
+            => SetBlock(index.X, index.Y, index.Z, block, meta);
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Koordinate.
@@ -280,12 +297,11 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="block">Die neue Block-ID</param>
-        public void SetBlock(int x, int y, int z, ushort block)
+        /// <param name="meta">Die neuen Metadatan</param>
+        public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
             IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
-
-            if (chunk != null)
-                chunk.SetBlock(x, y, z, block);
+            chunk?.SetBlock(x, y, z, block, meta);
         }
 
         /// <summary>
@@ -359,10 +375,13 @@ namespace OctoAwesome
         /// <param name="x">Die X-Koordinate</param>
         /// <param name="y">Die Y-Koordinate</param>
         /// <returns>Der Abgeflachte index</returns>
-        private int FlatIndex(int x, int y) 
-            => (((y & (mask)) << limit) | ((x & (mask))));
+        private int FlatIndex(int x, int y) => (((y & (mask)) << limit) | ((x & (mask))));
 
-        public IPlanet LoadPlanet(int id) 
-            => globalCache.GetPlanet(id);
+        /// <summary>
+        /// Get the <see cref="IPlanet"/> from <see cref="IGlobalChunkCache"/>.
+        /// </summary>
+        /// <param name="id">Id of the planet.</param>
+        /// <returns></returns>
+        public IPlanet GetPlanet(int id) => globalCache.GetPlanet(id);
     }
 }

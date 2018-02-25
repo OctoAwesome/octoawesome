@@ -4,13 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OctoAwesome.Entities;
+using System.IO;
 
 namespace OctoAwesome
 {
+    public abstract class SimulationComponent
+    {
+        public abstract void Update(GameTime gameTime);
+        public abstract void Register(Entity entity);
+    }
+
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent : Component
+    public abstract class OSimulationComponent : Component
     {
         /// <summary>
         /// Entities die durch diese Simulationkomponete simuliert werden
@@ -22,7 +30,7 @@ namespace OctoAwesome
         /// <summary>
         /// Konstruktor
         /// </summary>
-        public SimulationComponent()
+        public OSimulationComponent()
         {
             // TODO: Refelct Attributes
             foreach (EntityFilterAttribute attribute in GetType().GetCustomAttributes(typeof(EntityFilterAttribute), false))
@@ -102,7 +110,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<C1> : SimulationComponent where C1 : EntityComponent
+    public abstract class OSimulationComponent<C1> : OSimulationComponent where C1 : EntityComponent
     {
         /// <summary>
         /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
@@ -134,7 +142,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<C1, C2> : SimulationComponent
+    public abstract class OSimulationComponent<C1, C2> : OSimulationComponent
         where C1 : EntityComponent
         where C2 : EntityComponent
     {
@@ -171,7 +179,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<C1, C2, C3> : SimulationComponent
+    public abstract class OSimulationComponent<C1, C2, C3> : OSimulationComponent
         where C1 : EntityComponent
         where C2 : EntityComponent
         where C3 : EntityComponent
