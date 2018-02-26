@@ -74,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Biomes\BiomeBase.cs" />
-    <Compile Include="CollisionPlane.cs" />
     <Compile Include="Controls\InventoryControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
     <Compile Include="Definitions\Items\WauziEggDefinition.cs" />

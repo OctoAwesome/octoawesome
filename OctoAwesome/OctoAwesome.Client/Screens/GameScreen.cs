@@ -4,8 +4,6 @@ using OctoAwesome.Client.Components;
 using System;
 using engenious;
 using engenious.Input;
-using engenious.Helper;
-
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class GameScreen : Screen
@@ -14,12 +12,12 @@ namespace OctoAwesome.Client.Screens
 
         private new ScreenComponent Manager { get; set; }
 
-        DebugControl debug;
-        SceneControl scene;
-        CompassControl compass;
-        MinimapControl minimap;
-        CrosshairControl crosshair;
-        HealthBarControl healthbar;
+        private DebugControl debug;
+        private SceneControl scene;
+        private CompassControl compass;
+        private MinimapControl minimap;
+        private CrosshairControl crosshair;
+        private HealthBarControl healthbar;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -53,15 +51,6 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(compass);
 
-            //TODO: dynamische einbindugn aus extensions
-            //toolbar = new ToolbarControl(manager)
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    VerticalAlignment = VerticalAlignment.Bottom,
-            //    Height = 100
-            //};
-            //Controls.Add(toolbar);
-
             minimap = new MinimapControl(manager, scene)
             {
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -93,7 +82,19 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(crosshair);
 
+            foreach (Func<Control> creater in manager.Game.Player.GameScreenExtension)
+                Controls.Add(creater());
+
             Title = Languages.OctoClient.Game;
+            
+            //TODO: dynamische einbindugn aus extensions
+            //toolbar = new ToolbarControl(manager)
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Bottom,
+            //    Height = 100
+            //};
+            //Controls.Add(toolbar);
 
             RegisterKeyActions();
         }
@@ -105,10 +106,6 @@ namespace OctoAwesome.Client.Screens
             if (pressedMoveLeft) move += new Vector2(-1f, 0f);
             if (pressedMoveDown) move += new Vector2(0f, -1f);
             if (pressedMoveRight) move += new Vector2(1f, 0f);
-            if(move.LengthSquared > 0)
-            {
-
-            }
             Manager.Player.MoveInput = move;
 
             Vector2 head = Vector2.Zero;

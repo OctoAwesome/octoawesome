@@ -6,6 +6,7 @@ using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client
 {
@@ -40,26 +41,20 @@ namespace OctoAwesome.Client
 
         public OctoGame()
         {
-            //graphics = new GraphicsDeviceManager(this);
-            //graphics.PreferredBackBufferWidth = 1080;
-            //graphics.PreferredBackBufferHeight = 720;
-
-            //Content.RootDirectory = "Content";
             Title = "OctoAwesome";
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
 
-            //Window.AllowUserResizing = true;
             Settings = new Settings();
-
+            
             ExtensionLoader extensionLoader = new ExtensionLoader(Settings);
-            extensionLoader.LoadExtensions();
             ExtensionLoader = extensionLoader;
+            extensionLoader.LoadExtensions();
 
             DefinitionManager = new DefinitionManager(extensionLoader);
             ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings);
+            extensionLoader.Service = new GameService(DefinitionManager);
 
-            //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);
             int height = Settings.Get("Height", 720);
@@ -80,8 +75,7 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new Components.SimulationComponent(this,
-                extensionLoader, ResourceManager);
+            Simulation = new Components.SimulationComponent(this, extensionLoader, ResourceManager);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 
@@ -115,6 +109,9 @@ namespace OctoAwesome.Client
                 //graphics.ApplyChanges();
             };*/
             SetKeyBindings();
+
+            // TODO: bessern platz suchen -> eventuell erst wenn das ui tatsächlich erstellt wird.
+            extensionLoader.LoadUserInterfaces(Screen);
         }
 
         private void SetKeyBindings()

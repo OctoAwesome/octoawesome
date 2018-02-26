@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Entities;
+﻿using MonoGameUi;
+using OctoAwesome.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +19,7 @@ namespace OctoAwesome.Runtime
 
         private List<Type> entities;
 
-        private Dictionary<Type, List<Action<Entity>>> entityExtender;
+        private Dictionary<Type, List<Action<Entity, IGameService>>> entityExtender;
 
         private List<Action<Simulation>> simulationExtender;
 
@@ -36,6 +37,11 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public List<IExtension> ActiveExtensions { get; private set; }
 
+        /// <summary>
+        /// Common servics for game Extensions
+        /// </summary>
+        public IGameService Service { get; set; }
+
         private ISettings settings;
 
         /// <summary>
@@ -47,7 +53,7 @@ namespace OctoAwesome.Runtime
             this.settings = settings;
             definitions = new List<IDefinition>();
             entities = new List<Type>();
-            entityExtender = new Dictionary<Type, List<Action<Entity>>>();
+            entityExtender = new Dictionary<Type, List<Action<Entity, IGameService>>>();
             simulationExtender = new List<Action<Simulation>>();
             mapGenerators = new List<IMapGenerator>();
             mapPopulators = new List<IMapPopulator>();
@@ -76,7 +82,8 @@ namespace OctoAwesome.Runtime
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if (!typeof(IExtension).IsAssignableFrom(type))
+                    // added isabstract check...
+                    if (type.IsAbstract || !typeof(IExtension).IsAssignableFrom(type))
                         continue;
 
                     try
@@ -123,6 +130,14 @@ namespace OctoAwesome.Runtime
         {
             var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
             settings.Set(SETTINGSKEY, types);
+        }
+
+        /// <summary>
+        /// Load UserInterfaces from Extensions.
+        /// </summary>
+        public void LoadUserInterfaces(BaseScreenComponent manager)
+        {
+
         }
 
         #region Loader Methods
@@ -172,20 +187,20 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        public void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity
+        public void RegisterEntityExtender<T>(Action<Entity, IGameService> extenderDelegate) where T : Entity
         {
             Type type = typeof(T);
-            List<Action<Entity>> list;
+            List<Action<Entity, IGameService>> list;
             if (!entityExtender.TryGetValue(type, out list))
             {
-                list = new List<Action<Entity>>();
+                list = new List<Action<Entity, IGameService>>();
                 entityExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
 
         public void RegisterDefaultEntityExtender<T>() where T : Entity 
-            => RegisterEntityExtender<T>((e) => e.RegisterDefault());
+            => RegisterEntityExtender<T>((e, s) => e.RegisterDefault());
 
         /// <summary>
         /// Adds a new Extender for the simulation.
@@ -268,12 +283,12 @@ namespace OctoAwesome.Runtime
 
             foreach (var type in stack)
             {
-                List<Action<Entity>> list;
+                List<Action<Entity, IGameService>> list;
                 if (!entityExtender.TryGetValue(type, out list))
                     continue;
 
                 foreach (var item in list)
-                    item(entity);
+                    item(entity, Service);
             }
         }
 

@@ -25,20 +25,16 @@ namespace OctoAwesome.Basics
             //extensionLoader.RegisterMapPopulator(new WauziPopulator());
             extensionLoader.RegisterEntity<WauziEntity>();
             extensionLoader.RegisterDefaultEntityExtender<WauziEntity>();
-            extensionLoader.RegisterEntityExtender<Entity>((p) =>
+            extensionLoader.RegisterEntityExtender<Player>((player, service) =>
             {
-                p.Components.AddComponent(new GroundPhysicComponent(p));
-                //p.Components.AddComponent(new ControllableComponent());
-                //p.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
-                //p.Components.AddComponent(new InventoryComponent()); // -> sinvoll
-                //p.Components.AddComponent(new ToolBarComponent());   // -> sinvoll
-                //p.Components.AddComponent(new GravityComponent());
-                //p.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
-                //p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
-                //p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                //p.Components.AddComponent(new MoveableComponent());
-                //p.Components.AddComponent(new BoxCollisionComponent());
-                //p.Components.AddComponent(new EntityCollisionComponent());
+                player.Components.AddComponent(new GroundPhysicComponent(player, service, 60f, 400f, 0.8f, 3.5f));
+                InventoryComponent inventory = new InventoryComponent(player, service);
+                player.Components.AddComponent(inventory); // -> sinvoll
+                player.Components.AddComponent(new ToolBarComponent(player, service));   // -> sinvoll
+            });
+            extensionLoader.RegisterEntityExtender<WauziEntity>((p, service) =>
+            {
+                p.Components.AddComponent(new GroundPhysicComponent(p, service, 30f, 300f, 1.2f, 1.6f));
             });
 
             extensionLoader.RegisterSimulationExtender((s) =>

@@ -16,9 +16,6 @@ namespace OctoAwesome.Client.Screens
 
         private AssetComponent assets;
 
-        //TODO: dynamisch einbinden
-        //private InventoryControl inventory;
-
         private Label nameLabel;
 
         private Label massLabel;
@@ -64,16 +61,6 @@ namespace OctoAwesome.Client.Screens
 
             Controls.Add(grid);
 
-            //TODO: dynamisch einbinden
-            //inventory = new InventoryControl(manager)
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    VerticalAlignment = VerticalAlignment.Stretch,
-            //    Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-            //    Padding = Border.All(20),
-            //};
-            //grid.AddControl(inventory, 0, 0);
-
             StackPanel infoPanel = new StackPanel(manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -91,84 +78,93 @@ namespace OctoAwesome.Client.Screens
             infoPanel.Controls.Add(volumeLabel);
             grid.AddControl(infoPanel, 1, 0);
 
-            Grid toolbar = new Grid(manager)
-            {
-                Margin = Border.All(0, 10, 0, 0),
-                Height = 100,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-            };
+            //TODO: dynamisch einbinden
+            //inventory = new InventoryControl(manager)
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //    Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+            //    Padding = Border.All(20),
+            //};
+            //grid.AddControl(inventory, 0, 0);
 
-            toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+            //Grid toolbar = new Grid(manager)
+            //{
+            //    Margin = Border.All(0, 10, 0, 0),
+            //    Height = 100,
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //    Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+            //};
 
-            //TODO: aus der componenten später selber ziehen.
-            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            for (int i = 0; i < 10; i++)
-                toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
-            toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            toolbar.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
+            //toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+
+            ////TODO: aus der componenten später selber ziehen.
+            ////for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            //for (int i = 0; i < 10; i++)
+            //    toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
+            //toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+            //toolbar.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
 
             images = new Image[10];
             //TODO: aus der componenten später selber ziehen.
             //images = new Image[ToolBarComponent.TOOLCOUNT];
-            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            for (int i = 0; i < 10; i++)
-            {
-                Image image = images[i] = new Image(manager)
-                {
-                    Width = 42,
-                    Height = 42,
-                    Background = backgroundBrush,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Tag = i,
-                    Padding = Border.All(2),
-                };
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Image image = images[i] = new Image(manager)
+            //    {
+            //        Width = 42,
+            //        Height = 42,
+            //        Background = backgroundBrush,
+            //        HorizontalAlignment = HorizontalAlignment.Center,
+            //        Tag = i,
+            //        Padding = Border.All(2),
+            //    };
 
-                //TODO: wieder hinzufügen, oder anders lösen
-                //image.StartDrag += (e) =>
-                //{
-                //    InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
-                //    if (slot != null)
-                //    {
-                //        e.Handled = true;
-                //        e.Icon = toolTextures[slot.Definition.GetType().FullName];
-                //        e.Content = slot;
-                //        e.Sender = toolbar;
-                //    }
-                //};
+            //    TODO: wieder hinzufügen, oder anders lösen
+            //    image.StartDrag += (e) =>
+            //    {
+            //        InventorySlot slot = player.Toolbar.Tools[(int) image.Tag];
+            //        if (slot != null)
+            //        {
+            //            e.Handled = true;
+            //            e.Icon = toolTextures[slot.Definition.GetType().FullName];
+            //            e.Content = slot;
+            //            e.Sender = toolbar;
+            //        }
+            //    };
 
-                image.DropEnter += (e) => { image.Background = hoverBrush; };
-                image.DropLeave += (e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (e) =>
-                {
-                    e.Handled = true;
+            //    image.DropEnter += (e) => { image.Background = hoverBrush; };
+            //    image.DropLeave += (e) => { image.Background = backgroundBrush; };
+            //    image.EndDrop += (e) =>
+            //    {
+            //        e.Handled = true;
 
-                    //TODO: wieder hinzufügen, oder anders lösen
-                    //if (e.Sender is Grid) // && ShiftPressed
-                    //{
-                    //    // Swap
-                    //    int targetIndex = (int)image.Tag;
-                    //    InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
+            //        TODO: wieder hinzufügen, oder anders lösen
+            //        if (e.Sender is Grid) // && ShiftPressed
+            //        {
+            //            // Swap
+            //            int targetIndex = (int) image.Tag;
+            //            InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
 
-                    //    InventorySlot sourceSlot = e.Content as InventorySlot;
-                    //    int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
+            //            InventorySlot sourceSlot = e.Content as InventorySlot;
+            //            int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
 
-                    //    player.Toolbar.SetTool(sourceSlot, targetIndex);
-                    //    player.Toolbar.SetTool(targetSlot, sourceIndex);
-                    //}
-                    //else
-                    //{
-                    //    // Inventory Drop
-                    //    InventorySlot slot = e.Content as InventorySlot;
-                    //    player.Toolbar.SetTool(slot, (int)image.Tag);
-                    //}
-                };
+            //            player.Toolbar.SetTool(sourceSlot, targetIndex);
+            //            player.Toolbar.SetTool(targetSlot, sourceIndex);
+            //        }
+            //        else
+            //        {
+            //            // Inventory Drop
+            //            InventorySlot slot = e.Content as InventorySlot;
+            //            player.Toolbar.SetTool(slot, (int) image.Tag);
+            //        }
+            //    };
 
-                toolbar.AddControl(image, i + 1, 0);
-            }
+            //    toolbar.AddControl(image, i + 1, 0);
+            //}
 
-            grid.AddControl(toolbar, 0, 1, 2);
+            //grid.AddControl(toolbar, 0, 1, 2);
             Title = Languages.OctoClient.Inventory;
         }
 

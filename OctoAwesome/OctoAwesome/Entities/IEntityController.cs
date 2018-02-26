@@ -9,6 +9,18 @@ namespace OctoAwesome.Entities
     {
         // TODO: more buttons ... ?
         /// <summary>
+        /// 
+        /// </summary>
+        bool[] SlotInput { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        bool SlotLeftInput { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        bool SlotRightInput { get; set; }
+        /// <summary>
         /// Input for interaction
         /// </summary>
         bool InteractInput { get; set; }

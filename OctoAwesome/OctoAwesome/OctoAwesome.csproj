@@ -74,6 +74,7 @@
     <Compile Include="ChunkColumn.cs" />
     <Compile Include="CodeExtensions\Vector2Extension.cs" />
     <Compile Include="CodeExtensions\Vector3Extension.cs" />
+    <Compile Include="CollisionPlane.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Entities\IEntityDefinition.cs" />
     <Compile Include="Entities\IGraphicsdevice.cs" />
     <Compile Include="Entities\IInteractable.cs" />
+    <Compile Include="Entities\IInventory.cs" />
     <Compile Include="Entities\IUserInterface.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
@@ -95,7 +97,7 @@
     <Compile Include="Entities\IEntityList.cs" />
     <Compile Include="IExtensionLoader.cs" />
     <Compile Include="IExtensionResolver.cs" />
-    <Compile Include="IExtensionResourceManager.cs" />
+    <Compile Include="IGameService.cs" />
     <Compile Include="IInventoryableDefinition.cs" />
     <Compile Include="IPersistenceManager.cs" />
     <Compile Include="IClimateMap.cs" />

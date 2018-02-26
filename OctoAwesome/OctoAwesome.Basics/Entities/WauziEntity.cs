@@ -1,26 +1,32 @@
 ﻿using engenious;
 using OctoAwesome.Entities;
-
 namespace OctoAwesome.Basics.Entities
 {
     public class WauziEntity : Entity, IControllable, OctoAwesome.Entities.IDrawable
     {
-        class WauziController : IEntityController
+        class WauziTestController : IEntityController
         {
             public float Tilt { get; set; }
             public float Yaw { get; set; }
             public Vector3 Direction { get; set; }
             public Index3? SelectedBlock { get; set; }
-            public Index3? SelectedBlock { get; set; }
-            public OrientationFlags? ApplySide { get; set; }
-            public InputTrigger<bool> JumpInput { get; }
-            public InputTrigger<bool> ApplyInput { get; }
-            public InputTrigger<bool> InteractInput { get; }
-            public WauziController()
+            public Vector2? SelectedPoint { get; set; }
+
+            public OrientationFlags SelectedSide => OrientationFlags.None;
+            public OrientationFlags SelectedEdge => OrientationFlags.None;
+            public OrientationFlags SelectedCorner => OrientationFlags.None;
+
+            public bool InteractInput { get; set; }
+            public bool ApplyInput { get; set; }
+            public bool JumpInput { get; set; }
+
+            public bool[] SlotInput{ get; } = new bool[10];
+
+            public bool SlotLeftInput { get; set; }
+            public bool SlotRightInput { get; set; }
+
+            public WauziTestController()
             {
-                JumpInput = new InputTrigger<bool>();
-                ApplyInput = new InputTrigger<bool>();
-                InteractInput = new InputTrigger<bool>();
             }
         }
 
@@ -38,7 +44,7 @@ namespace OctoAwesome.Basics.Entities
         private float jumptime;
         public WauziEntity() : base(true)
         {
-            currentcontroller = new WauziController();
+            currentcontroller = new WauziTestController();
             SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, false);
         }
         protected override void OnInitialize(IResourceManager manager)
@@ -49,7 +55,7 @@ namespace OctoAwesome.Basics.Entities
         {            
             if (currentcontroller != null && jumptime <= 0)
             {
-                currentcontroller.JumpInput.Set(true);
+                currentcontroller.JumpInput = true;
                 jumptime = 10000;
             }
             else

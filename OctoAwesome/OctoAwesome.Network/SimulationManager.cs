@@ -20,8 +20,8 @@ namespace OctoAwesome.Network
             settings = new Settings(); //TODO: Where are the settings?
 
             ExtensionLoader extensionLoader = new ExtensionLoader(settings);
-            extensionLoader.LoadExtensions();
             ExtensionLoader = extensionLoader;
+            extensionLoader.LoadExtensions();
 
             DefinitionManager = new DefinitionManager(extensionLoader);
             ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, settings);

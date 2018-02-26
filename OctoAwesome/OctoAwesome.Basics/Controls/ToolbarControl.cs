@@ -2,40 +2,45 @@
 using System.Collections.Generic;
 using engenious;
 using engenious.Graphics;
-using OctoAwesome.Baiscs.EntityComponents;
+using OctoAwesome.Entities;
+using System;
+using OctoAwesome.Basics.EntityComponents;
 
-namespace OctoAwesome.Client.Controls
+namespace OctoAwesome.Basics.Controls
 {
     internal class ToolbarControl : Panel
     {
-        private Dictionary<string, Texture2D> toolTextures;
-        // TODO: dynamisch aus der aktuellen toolbar generieren
-        //private Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
-        private Button[] buttons = new Button[10];
+        private Button[] buttons;
 
-        // TODO: dynamisch aus der aktuellen toolbar generieren
-        //private Image[] images = new Image[ToolBarComponent.TOOLCOUNT];
-        private Image[] images = new Image[10];
+        private Image[] images;
 
         private Brush buttonBackgroud;
 
         private Brush activeBackground;
 
-        //public PlayerComponent Player { get; set; }
+        private ToolBarComponent toolbar;
 
         public Label activeToolLabel;
 
-        public ToolbarControl(BaseScreenComponent screenManager, IDefinitionManager definitions, ToolBarComponent toolbar) : base(screenManager)
-        {
-            //Player = screenManager.Player;
-            toolTextures = new Dictionary<string, Texture2D>();
+        private Dictionary<string, Texture2D> toolTextures;
 
+        public ToolbarControl(BaseScreenComponent screenManager, IUserInterfaceManager manager, ToolBarComponent bar) : 
+            base(screenManager)
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Bottom;
+            Height = 100;
+            toolbar = bar;
             buttonBackgroud = new BorderBrush(Color.Black);
             activeBackground = new BorderBrush(Color.Red);
+            buttons = new Button[toolbar.Tools.Length];
+            images = new Image[toolbar.Tools.Length];
 
-            foreach (var item in screenManager.Game.DefinitionManager.GetDefinitions())
+            toolTextures = new Dictionary<string, Texture2D>();
+
+            foreach (var item in bar.Service.DefinitionManager.GetDefinitions())
             {
-                Texture2D texture = screenManager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
+                Texture2D texture = manager.LoadTextures(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
             }
 
@@ -49,10 +54,8 @@ namespace OctoAwesome.Client.Controls
 
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
-
-            // TODO: dynamisch aus der aktuellen toolbar generieren
-            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            for (int i = 0; i < 10; i++)
+            
+            for (int i = 0; i < toolbar.Tools.Length; i++)
             {
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
@@ -62,13 +65,9 @@ namespace OctoAwesome.Client.Controls
             activeToolLabel.HorizontalAlignment = HorizontalAlignment.Center;
             activeToolLabel.Background = new BorderBrush(Color.Black * 0.3f);
             activeToolLabel.TextColor = Color.White;
-            // TODO: dynamisch aus der aktuellen toolbar generieren
-            //grid.AddControl(activeToolLabel, 0, 0, ToolBarComponent.TOOLCOUNT);
-            // TODO: bezieht sich die rowspan auf die anzahl der tools ?
             grid.AddControl(activeToolLabel, 0, 0, 10);
 
-            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < toolbar.Tools.Length; i++)
             {
                 buttons[i] = new Button(screenManager)
                 {
@@ -86,44 +85,89 @@ namespace OctoAwesome.Client.Controls
                 grid.AddControl(buttons[i], i, 1);
             }
         }
-
         protected override void OnUpdate(GameTime gameTime)
         {
             if (!Visible || !Enabled)
                 return;
+            if(!(toolbar.Entity is IControllable con) || con.Controller == null)
+                return;
+            #region Toolbar Update
+            //TODO: validate - source playercomponent, vllt in die toolbarComponent
+            if (toolbar.Tools != null && toolbar.Tools.Length > 0)
+            {
+                if (toolbar.ActiveTool == null) toolbar.ActiveTool = toolbar.Tools[0];
+                for (int i = 0; i < Math.Min(toolbar.Tools.Length, con.Controller.SlotInput.Length); i++)
+                {
+                    if (con.Controller.SlotInput[i]) toolbar.ActiveTool = toolbar.Tools[i];
+                    con.Controller.SlotInput[i] = false;
+                }
+            }
 
-            if (Player.CurrentEntity == null) return;
+            //Index des aktiven Werkzeugs ermitteln
+            int activeTool = -1;
+            List<int> toolIndices = new List<int>();
+            for (int i = 0; i < toolbar.Tools.Length; i++)
+            {
+                //TODO: validate - source blockinteractioncomponent
+                if (toolbar.ActiveTool != null && toolbar.ActiveTool.Amount <= 0)
+                    toolbar.RemoveSlot(toolbar.ActiveTool);
 
-            //TODO: wieder hinzufügen, oder anders lösen
+                if (toolbar.Tools[i] != null)
+                    toolIndices.Add(i);
+
+                if (toolbar.Tools[i] == toolbar.ActiveTool)
+                    activeTool = toolIndices.Count - 1;
+            }
+
+            if (con.Controller.SlotLeftInput)
+            {
+                if (activeTool > -1)
+                    activeTool--;
+                else if (toolIndices.Count > 0)
+                    activeTool = toolIndices[toolIndices.Count - 1];
+            }
+            con.Controller.SlotLeftInput = false;
+
+            if (con.Controller.SlotRightInput)
+            {
+                if (activeTool > -1)
+                    activeTool++;
+                else if (toolIndices.Count > 0)
+                    activeTool = toolIndices[0];
+            }
+            con.Controller.SlotRightInput = false;
+
+            if (activeTool > -1)
+            {
+                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
+                toolbar.ActiveTool = toolbar.Tools[toolIndices[activeTool]];
+            }
+            #endregion
             // Aktualisierung des aktiven Buttons
-            // TODO: dynamisch aus der aktuellen toolbar generieren
-            //for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    if (Player.Toolbar.Tools != null &&
-            //        Player.Toolbar.Tools.Length > i &&
-            //        Player.Toolbar.Tools[i] != null &&
-            //        Player.Toolbar.Tools[i].Definition != null)
-            //    {
-            //        images[i].Texture = toolTextures[Player.Toolbar.Tools[i].Definition.GetType().FullName];
-
-            //        if (Player.Toolbar.ActiveTool == Player.Toolbar.Tools[i])
-            //            buttons[i].Background = activeBackground;
-            //        else
-            //            buttons[i].Background = buttonBackgroud;
-            //    }
-            //    else
-            //    {
-            //        images[i].Texture = null;
-            //        buttons[i].Background = buttonBackgroud;
-            //    }
-            //}
-
-            //TODO: wieder hinzufügen, oder anders lösen
-            // Aktualisierung des ActiveTool Labels
-            //activeToolLabel.Text = Player.Toolbar.ActiveTool != null ?
-            //    string.Format("{0} ({1})", Player.Toolbar.ActiveTool.Definition.Name, Player.Toolbar.ActiveTool.Amount) :
-            //    string.Empty;
+            for (int i = 0; i < toolbar.Tools.Length; i++)
+            {
+                if (toolbar.Tools != null &&
+                    toolbar.Tools.Length > i &&
+                    toolbar.Tools[i] != null &&
+                    toolbar.Tools[i].Definition != null)
+                {
+                    images[i].Texture = toolTextures[toolbar.Tools[i].Definition.GetType().FullName];
+                    if (toolbar.ActiveTool == toolbar.Tools[i])
+                        buttons[i].Background = activeBackground;
+                    else
+                        buttons[i].Background = buttonBackgroud;
+                }
+                else
+                {
+                    images[i].Texture = null;
+                    buttons[i].Background = buttonBackgroud;
+                }
+            }
+            
+            //Aktualisierung des ActiveTool Labels
+            activeToolLabel.Text = toolbar.ActiveTool != null ?
+                string.Format("{0} ({1})", toolbar.ActiveTool.Definition.Name, toolbar.ActiveTool.Amount) :
+                string.Empty;
 
             activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
 

@@ -1,7 +1,6 @@
 ﻿using OctoAwesome.Entities;
 using System;
 using System.Collections.Generic;
-
 namespace OctoAwesome
 {
     /// <summary>
@@ -54,7 +53,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity;
+        void RegisterEntityExtender<T>(Action<Entity, IGameService> extenderDelegate) where T : Entity;
 
         /// <summary>
         /// Adds the Default Extender for the given Entity Type.
@@ -79,8 +78,17 @@ namespace OctoAwesome
         /// <typeparam name="T">Map Generator Type</typeparam>
         void RemoveMapGenerator<T>(T item) where T : IMapGenerator;
 
+        /// <summary>
+        /// Adds an new <see cref="IMapPopulator"/>.
+        /// </summary>
+        /// <param name="populator">Populator to register</param>
         void RegisterMapPopulator(IMapPopulator populator);
 
+        /// <summary>
+        /// Removes an existing <see cref="IMapPopulator"/>
+        /// </summary>
+        /// <typeparam name="T">Type of Populator</typeparam>
+        /// <param name="item">Pupulator whit type T</param>
         void RemoveMapPopulator<T>(T item) where T : IMapPopulator;
     }
 }

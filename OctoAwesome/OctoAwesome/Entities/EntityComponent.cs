@@ -9,6 +9,10 @@ namespace OctoAwesome.Entities
     public abstract class EntityComponent : Component
     {
         /// <summary>
+        /// Common Service.
+        /// </summary>
+        public IGameService Service { get; }
+        /// <summary>
         /// Indicates if the <see cref="EntityComponent"/> need Updates
         /// </summary>
         public bool NeedUpdate { get; }
@@ -19,8 +23,12 @@ namespace OctoAwesome.Entities
         /// <summary>
         /// Constructor of <see cref="EntityComponent"/>
         /// </summary>
-        public EntityComponent(Entity entity, bool needupdate)
+        /// <param name="entity">Entity</param>
+        /// <param name="service">Service</param>
+        /// <param name="needupdate">Indicates if the <see cref="EntityComponent"/> need updates</param>
+        public EntityComponent(Entity entity, IGameService service, bool needupdate)
         {
+            Service = service;
             NeedUpdate = needupdate;
             Entity = entity;
         }

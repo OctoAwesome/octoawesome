@@ -63,6 +63,7 @@ namespace OctoAwesome
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
         /// <param name="range">Gibt die Range in alle Richtungen an.</param>
+        /// <param name="passive">Indicats that the Cache is passive (no active load)</param>
         public LocalChunkCache(IGlobalChunkCache globalCache, bool passive, int dimensions, int range)
         {
             IsPassive = passive;

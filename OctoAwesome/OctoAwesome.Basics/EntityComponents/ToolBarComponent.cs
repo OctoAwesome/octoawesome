@@ -1,36 +1,35 @@
-﻿using engenious;
+﻿using System.Collections.Generic;
+using engenious;
+using engenious.Graphics;
+using MonoGameUi;
+using OctoAwesome.Basics.Controls;
 using OctoAwesome.Entities;
-
-namespace OctoAwesome.Baiscs.EntityComponents
+namespace OctoAwesome.Basics.EntityComponents
 {
     /// <summary>
-    /// EntityComponent, die eine Werkzeug-Toolbar für den Apieler bereitstellt.
+    /// EntityComponent, die eine Werkzeug-Toolbar für den Spieler bereitstellt.
     /// </summary>
-    public class ToolBarComponent : EntityComponent
+    public class ToolBarComponent : EntityComponent, IUserInterfaceExtension
     {
         /// <summary>
         /// Gibt die Anzahl der Tools in der Toolbar an.
         /// </summary>
         public const int TOOLCOUNT = 10;
-
         /// <summary>
         /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
         /// </summary>
-        public InventorySlot[] Tools { get; set; }
-
+        public InventorySlot[] Tools { get; }
         /// <summary>
         /// Derzeit aktives Werkzeug des Spielers
         /// </summary>
         public InventorySlot ActiveTool { get; set; }
-
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
         /// </summary>
-        public ToolBarComponent(Entity entity) : base(entity, false)
+        public ToolBarComponent(Entity entity, IGameService service) : base(entity, service, true)
         {
             Tools = new InventorySlot[TOOLCOUNT];
         }
-
         /// <summary>
         /// Entfernt einen InventorySlot aus der Toolbar
         /// </summary>
@@ -45,7 +44,6 @@ namespace OctoAwesome.Baiscs.EntityComponents
             if (ActiveTool == slot)
                 ActiveTool = null;
         }
-
         /// <summary>
         /// Setzt einen InventorySlot an eine Stelle in der Toolbar und löscht ggf. vorher den Slot aus alten Positionen.
         /// </summary>
@@ -57,7 +55,6 @@ namespace OctoAwesome.Baiscs.EntityComponents
 
             Tools[index] = slot;
         }
-
         /// <summary>
         /// Gibt den Index eines InventorySlots in der Toolbar zurück.
         /// </summary>
@@ -71,7 +68,6 @@ namespace OctoAwesome.Baiscs.EntityComponents
 
             return -1;
         }
-
         /// <summary>
         /// Fügt einen neuen InventorySlot an der ersten freien Stelle hinzu.
         /// </summary>
@@ -89,7 +85,26 @@ namespace OctoAwesome.Baiscs.EntityComponents
         }
         public override void Update(GameTime gameTime)
         {
-            throw new System.NotImplementedException();
+            IEntityController controller = (Entity as IControllable)?.Controller;
+            if (controller == null) return;
+            else if(controller.InteractInput)
+            {
+                if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
+                    Service.TakeBlock(controller, Entity.Cache, inventory);
+                else if (Service.TakeBlock(controller, Entity.Cache, out IInventoryableDefinition item))
+                {
+                    // TODO: und jetzt ?
+                }
+            }
+            else if(controller.ApplyInput)
+            {
+                if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
+                    Service.InteractBlock(Entity.Position, 0, 0, controller, Entity.Cache, ActiveTool, inventory);
+            }
+        }
+        public void Register(IUserInterfaceManager manager)
+        {
+            manager.RegisterOnGameScreen(typeof(ToolbarControl), this);
         }
     }
 }
