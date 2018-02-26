@@ -48,12 +48,10 @@ namespace OctoAwesome.Client.Components
                     //    continue;
                     //}
                     //var rendercomp = entity.Components.GetComponent<RenderComponent>();
-
                     var drawable = entity as Entities.IDrawable;
+                    if (!drawable.DrawUpdate) continue;
 
-                    ModelInfo modelinfo;
-
-                    if (!models.TryGetValue(drawable.Name, out modelinfo))
+                    if (!models.TryGetValue(drawable.Name, out ModelInfo modelinfo))
                     {
                         modelinfo = new ModelInfo()
                         {
@@ -63,8 +61,7 @@ namespace OctoAwesome.Client.Components
                         };
                     }
 
-                    if (!modelinfo.render)
-                        continue;
+                    if (!modelinfo.render) continue;
                     
                     Coordinate position = entity.Position;
                     //var body = entity.Components.GetComponent<BodyComponent>();
@@ -78,7 +75,7 @@ namespace OctoAwesome.Client.Components
                         shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
                         shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
                         shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * 
-                        Matrix.CreateScaling(drawable.Body.X, drawable.Body.Y, drawable.Body.Z) *
+                        Matrix.CreateScaling(drawable.Radius, drawable.Radius, drawable.Height) *
                         Matrix.CreateRotationZ(rotation);
                     effect.World = world;
                     modelinfo.model.Transform = world;

@@ -8,10 +8,6 @@ namespace OctoAwesome.Entities
     public interface IEntityDefinition : IDefinition
     {
         /// <summary>
-        /// Name of the <see cref="Entity"/>
-        /// </summary>
-        string Name { get; }
-        /// <summary>
         /// Modelname of <see cref="Entity"/>
         /// </summary>
         string ModelName { get; }

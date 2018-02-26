@@ -1,7 +1,4 @@
-﻿using engenious;
-using engenious.Graphics;
-using MonoGameUi;
-using OctoAwesome.Client.Components;
+﻿using MonoGameUi;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -14,7 +11,7 @@ namespace OctoAwesome.Client.Controls
         /// </summary>
         public InventorySlot HoveredSlot { get; private set; }
 
-        public InventoryControl(ScreenComponent manager, int columns = COLUMNS) : base(manager)
+        public InventoryControl(BaseScreenComponent manager, int columns = COLUMNS) : base(manager)
         {
 
             ScrollContainer scroll = new ScrollContainer(manager)

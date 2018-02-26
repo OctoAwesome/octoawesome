@@ -9,6 +9,9 @@ namespace OctoAwesome.Entities
 {
     public interface IDrawable
     {
+        /// <summary>
+        /// TODO: remove
+        /// </summary>
         #region Temporary
         string Name { get; }
         string ModelName { get; }
@@ -16,10 +19,11 @@ namespace OctoAwesome.Entities
         float BaseRotationZ { get; }
         #endregion
 
+        bool DrawUpdate { get; }
         float Azimuth { get; }
-        Vector3 Body { get; }
+        float Height { get; }
+        float Radius { get; }
         Coordinate Position { get; }
-        bool NeedUpdate { get; }
         void Initialize(IGraphicsDevice device);
         void Draw(IGraphicsDevice graphicsDevice, GameTime gameTime);
     }    

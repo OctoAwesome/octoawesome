@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using engenious;
 using OctoAwesome.Entities;
 
 namespace OctoAwesome
@@ -15,19 +16,20 @@ namespace OctoAwesome
         /// <summary>
         /// Current controller of the Player.
         /// </summary>
-        public IController Controller => currentcontroller;
-        private IController currentcontroller;
+        public IEntityController Controller => currentcontroller;
+        private IEntityController currentcontroller;
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
         public Player() : base(false)
         {
+            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, false);
         }
         /// <summary>
         /// Register a Controller.
         /// </summary>
         /// <param name="controller"></param>
-        public void Register(IController controller)
+        public void Register(IEntityController controller)
         {
             currentcontroller = controller;
         }

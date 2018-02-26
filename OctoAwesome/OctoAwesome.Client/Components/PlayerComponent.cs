@@ -1,58 +1,26 @@
 ﻿using System;
 using engenious;
+using engenious.Helper;
 using OctoAwesome.Entities;
-
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class PlayerComponent : GameComponent, IController
+    internal sealed class PlayerComponent : GameComponent, IEntityController
     {
-        private new OctoGame Game;
+        #region IEntityController Interface
 
-        private IResourceManager resourceManager;
+        public bool InteractInput { get; set; }
 
-        public Vector3 HeadOffset { get; set; }
+        public bool ApplyInput { get; set; }
 
-        #region IController Interface
+        public bool JumpInput { get; set; }
 
-        public float HeadTilt { get; set; }
+        public float Tilt { get; set; }
 
-        public float HeadYaw { get; set; }
+        public float Yaw { get; set; }
+        
+        public Vector3 Direction { get; set; }
 
-        public InputTrigger<bool> InteractInput { get; }
-
-        public InputTrigger<bool> ApplyInput { get; }
-
-        public InputTrigger<bool> JumpInput { get; }
-
-        public Vector2 HeadValue { get; set; }
-
-        public Vector2 MoveValue { get; set; }
-
-        public Index3? InteractBlock { get; set; }
-
-        public Index3? ApplyBlock { get; set; }
-
-        public OrientationFlags? ApplySide { get; set; }
-
-        #endregion
-
-        #region External Inputs
-        public bool FlymodeInput { get; set; }
-
-        public bool[] SlotInput { get; private set; } = new bool[10];
-
-        public bool SlotLeftInput { get; set; }
-
-        public bool SlotRightInput { get; set; }
-        #endregion
-
-        public Entity CurrentEntity { get; private set; }
-
-        //TODO: wieder hinzufügen, oder anders lösen
-        //public InventoryComponent Inventory { get; private set; }
-        //public ToolBarComponent Toolbar { get; private set; }
-
-        public Index3? SelectedBox { get; set; }
+        public Index3? SelectedBlock { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
 
@@ -62,12 +30,38 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
+        #endregion
+
+        #region External Inputs
+        public Vector2 HeadInput { get; set; }
+
+        public Vector2 MoveInput { get; set; }
+
+        public bool FlymodeInput { get; set; }
+
+        public bool[] SlotInput { get; private set; } = new bool[10];
+
+        public bool SlotLeftInput { get; set; }
+
+        public bool SlotRightInput { get; set; }
+        #endregion
+
+        public Vector3 HeadOffset { get; private set; }
+
+        private new OctoGame Game;
+
+        private IResourceManager resourceManager;
+
+
+        public Entity CurrentEntity { get; private set; }
+
+        //TODO: wieder hinzufügen, oder anders lösen
+        //public InventoryComponent Inventory { get; private set; }
+        //public ToolBarComponent Toolbar { get; private set; }
+        
         public PlayerComponent(OctoGame game, IResourceManager resourceManager) : base(game)
         {
             this.resourceManager = resourceManager;
-            ApplyInput = new InputTrigger<bool>();
-            InteractInput = new InputTrigger<bool>();
-            JumpInput = new InputTrigger<bool>();
             Game = game;
         }
 
@@ -79,25 +73,21 @@ namespace OctoAwesome.Client.Components
             if (entity is IControllable controllable)
                 controllable.Register(this);
             if (CurrentEntity is Entities.IDrawable draw)
-                HeadOffset = draw.Body;
+                HeadOffset = new Vector3(0, 0, draw.Height - 0.3f);
             else HeadOffset = new Vector3(0, 0, 3.2f);
 
-            //CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
-            //CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
-            //CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
+            //if (CurrentEntity != null)
+            //{
+            //    // Map other Components                
+            //    //CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
+            //    //if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
 
-            if (CurrentEntity != null)
-            {
-                // Map other Components                
-                //CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
-                //if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
-
-                // TODO: toolbar und inventory wieder hinzufügen, oder anders lösen
-                //Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-                //if (Inventory == null) Inventory = new InventoryComponent();
-                //Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
-                //if (Toolbar == null) Toolbar = new ToolBarComponent();
-            }
+            //    // TODO: toolbar und inventory wieder hinzufügen, oder anders lösen
+            //    //Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            //    //if (Inventory == null) Inventory = new InventoryComponent();
+            //    //Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
+            //    //if (Toolbar == null) Toolbar = new ToolBarComponent();
+            //}
         }
 
         public override void Update(GameTime gameTime)
@@ -105,19 +95,20 @@ namespace OctoAwesome.Client.Components
             if (!Enabled || CurrentEntity == null)
                 return;
 
-            HeadYaw += (float) gameTime.ElapsedGameTime.TotalSeconds * HeadValue.X;
-            HeadTilt = Math.Min(1.5f, Math.Max(-1.5f, HeadTilt + (float) gameTime.ElapsedGameTime.TotalSeconds * HeadValue.X));
+            Yaw += (float) gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
+            Tilt = Math.Min(1.5f, Math.Max(-1.5f, Tilt + (float) gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y));
 
-            if (InteractInput.Value && SelectedBox.HasValue)
-            {
-                InteractBlock = SelectedBox.Value;
-            }
+            // calculation of motion direction
+            float lookX = (float) Math.Cos(Yaw);
+            float lookY = -(float) Math.Sin(Yaw);
+            Direction = new Vector3(lookX, lookY, 0) * MoveInput.Y;
 
-            if (ApplyInput.Value && SelectedBox.HasValue)
-            {
-                ApplyBlock = SelectedBox.Value;
-                ApplySide = SelectedSide;
-            }
+            float stafeX = (float) Math.Cos(Yaw + MathHelper.PiOver2);
+            float stafeY = -(float) Math.Sin(Yaw + MathHelper.PiOver2);
+            Direction += new Vector3(stafeX, stafeY, 0) * MoveInput.X;
+
+            MoveInput = Vector2.Zero;
+            HeadInput = Vector2.Zero;
 
             //TODO: was ist damit
             //if (FlymodeInput)

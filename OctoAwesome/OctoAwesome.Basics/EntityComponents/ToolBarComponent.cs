@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Entities;
+﻿using engenious;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Baiscs.EntityComponents
 {
@@ -25,7 +26,7 @@ namespace OctoAwesome.Baiscs.EntityComponents
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
         /// </summary>
-        public ToolBarComponent()
+        public ToolBarComponent(Entity entity) : base(entity, false)
         {
             Tools = new InventorySlot[TOOLCOUNT];
         }
@@ -85,6 +86,10 @@ namespace OctoAwesome.Baiscs.EntityComponents
                     break;
                 }
             }
+        }
+        public override void Update(GameTime gameTime)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

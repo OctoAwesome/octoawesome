@@ -80,6 +80,10 @@ namespace OctoAwesome
         /// </summary>
         IGlobalChunkCache GlobalChunkCache { get; }
 
+        /// <summary>
+        /// Save an <see cref="Entity"/>
+        /// </summary>
+        /// <param name="entity"></param>
         void SaveEntity(Entity entity);
     }
 }

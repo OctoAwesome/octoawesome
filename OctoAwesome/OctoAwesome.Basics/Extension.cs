@@ -2,6 +2,8 @@
 using System.Reflection;
 using System.Linq;
 using System;
+using OctoAwesome.Entities;
+using OctoAwesome.Basics.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
@@ -20,11 +22,12 @@ namespace OctoAwesome.Basics
             }
             extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
             extensionLoader.RegisterMapPopulator(new TreePopulator());
-            extensionLoader.RegisterMapPopulator(new WauziPopulator());
+            //extensionLoader.RegisterMapPopulator(new WauziPopulator());
             extensionLoader.RegisterEntity<WauziEntity>();
             extensionLoader.RegisterDefaultEntityExtender<WauziEntity>();
-            extensionLoader.RegisterEntityExtender<Player>((p) =>
+            extensionLoader.RegisterEntityExtender<Entity>((p) =>
             {
+                p.Components.AddComponent(new GroundPhysicComponent(p));
                 //p.Components.AddComponent(new ControllableComponent());
                 //p.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
                 //p.Components.AddComponent(new InventoryComponent()); // -> sinvoll
@@ -40,6 +43,7 @@ namespace OctoAwesome.Basics
 
             extensionLoader.RegisterSimulationExtender((s) =>
             {
+                //s.Components.AddComponent(new GroundPhysicComponent(s.ResourceManager.DefinitionManager));
                 //s.Components.AddComponent(new WattMoverComponent());
                 //s.Components.AddComponent(new NewtonGravitatorComponent());
                 //s.Components.AddComponent(new ForceAggregatorComponent());

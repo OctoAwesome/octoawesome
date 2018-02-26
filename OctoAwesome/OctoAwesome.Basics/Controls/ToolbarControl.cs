@@ -1,8 +1,8 @@
 ﻿using MonoGameUi;
-using OctoAwesome.Client.Components;
 using System.Collections.Generic;
 using engenious;
 using engenious.Graphics;
+using OctoAwesome.Baiscs.EntityComponents;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -21,13 +21,13 @@ namespace OctoAwesome.Client.Controls
 
         private Brush activeBackground;
 
-        public PlayerComponent Player { get; set; }
+        //public PlayerComponent Player { get; set; }
 
         public Label activeToolLabel;
 
-        public ToolbarControl(ScreenComponent screenManager) : base(screenManager)
+        public ToolbarControl(BaseScreenComponent screenManager, IDefinitionManager definitions, ToolBarComponent toolbar) : base(screenManager)
         {
-            Player = screenManager.Player;
+            //Player = screenManager.Player;
             toolTextures = new Dictionary<string, Texture2D>();
 
             buttonBackgroud = new BorderBrush(Color.Black);

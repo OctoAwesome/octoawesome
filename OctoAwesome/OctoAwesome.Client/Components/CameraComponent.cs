@@ -41,37 +41,26 @@ namespace OctoAwesome.Client.Components
             CameraChunk = position.ChunkIndex;
 
             CameraPosition = position.LocalPosition + player.HeadOffset;
-            // TODO: braucht man das ?
-            CameraUpVector = new Vector3(0, 0, 1f);
 
-            float height = (float)Math.Sin(player.HeadTilt);
-            float distance = (float)Math.Cos(player.HeadTilt);
+            float height = (float)Math.Sin(player.Tilt);
+            float distance = (float)Math.Cos(player.Tilt);
 
-            float lookX = (float)Math.Cos(player.HeadYaw) * distance;
-            float lookY = -(float)Math.Sin(player.HeadYaw) * distance;
+            float lookX = (float)Math.Cos(player.Yaw) * distance;
+            float lookY = -(float)Math.Sin(player.Yaw) * distance;
 
-            float strafeX = (float)Math.Cos(player.HeadYaw + MathHelper.PiOver2);
-            float strafeY = -(float)Math.Sin(player.HeadYaw + MathHelper.PiOver2);
+            float strafeX = (float)Math.Cos(player.Yaw + MathHelper.PiOver2);
+            float strafeY = -(float)Math.Sin(player.Yaw + MathHelper.PiOver2);
 
             CameraUpVector = Vector3.Cross(new Vector3(strafeX, strafeY, 0), new Vector3(lookX, lookY, height));
 
-            View = Matrix.CreateLookAt(
-                CameraPosition,
-                new Vector3(
-                    CameraPosition.X + lookX,
-                    CameraPosition.Y + lookY,
-                    CameraPosition.Z + height),
+            View = Matrix.CreateLookAt(CameraPosition, 
+                new Vector3(CameraPosition.X + lookX, CameraPosition.Y + lookY, CameraPosition.Z + height), 
                 CameraUpVector);
 
             MinimapView = Matrix.CreateLookAt(
                 new Vector3(CameraPosition.X, CameraPosition.Y, 100),
-                new Vector3(
-                    position.LocalPosition.X,
-                    position.LocalPosition.Y,
-                    0f),
-                new Vector3(
-                    (float)Math.Cos(player.HeadYaw), 
-                    (float)Math.Sin(-player.HeadYaw), 0f));
+                new Vector3(position.LocalPosition.X, position.LocalPosition.Y, 0f),
+                new Vector3((float)Math.Cos(player.Yaw), (float)Math.Sin(-player.Yaw), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;

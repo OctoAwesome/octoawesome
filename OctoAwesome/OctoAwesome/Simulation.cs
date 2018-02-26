@@ -21,7 +21,7 @@ namespace OctoAwesome
         /// <summary>
         /// List of all Simulation Components.
         /// </summary>
-        public ComponentList<OSimulationComponent> Components { get; private set; }
+        public ComponentList<SimulationComponent> Components { get; private set; }
 
         /// <summary>
         /// Der aktuelle Status der Simulation.
@@ -55,18 +55,18 @@ namespace OctoAwesome
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
 
-            Components = new ComponentList<OSimulationComponent>(ValidateAddComponent, ValidateRemoveComponent);
+            Components = new ComponentList<SimulationComponent>(ValidateAddComponent, ValidateRemoveComponent);
 
             extensionResolver.ExtendSimulation(this);
         }
 
-        private void ValidateAddComponent(OSimulationComponent component)
+        private void ValidateAddComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)
                 throw new NotSupportedException("Simulation needs to be in Ready mode to add Components");
         }
 
-        private void ValidateRemoveComponent(OSimulationComponent component)
+        private void ValidateRemoveComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)
                 throw new NotSupportedException("Simulation needs to be in Ready mode to remove Components");
@@ -122,8 +122,12 @@ namespace OctoAwesome
                 ResourceManager.GlobalChunkCache.BeforeSimulationUpdate(this);
 
                 //Update all Entities
-                foreach (var entity in Entities.Where(e => e.NeedUpdate))
-                    entity.Update(gameTime);
+                foreach (var entity in Entities)
+                {
+                    if(entity.NeedUpdate) entity.Update(gameTime);
+                    foreach (EntityComponent component in entity.Components)
+                        if (component.NeedUpdate) component.Update(gameTime);
+                }
                 //foreach (var entity in Entities.OfType<UpdateableEntity>())
                 //    entity.Update(gameTime);
 
@@ -162,8 +166,7 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void AddEntity(Entity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
@@ -174,15 +177,15 @@ namespace OctoAwesome
             if (entities.Contains(entity))
                 return;
 
-            extensionResolver.ExtendEntity(entity);
             entity.Initialize(ResourceManager);
+            extensionResolver.ExtendEntity(entity);
             //entity.SetPosition(entity.Position);
             //entity.Simulation = this;
             entity.Id = nextId++;
             entities.Add(entity);
 
             foreach (var component in Components)
-                component.Add(entity);
+                component.Register(entity);
         }
 
         /// <summary>

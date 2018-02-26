@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.CodeExtensions
 {
+    /// <summary>
+    /// Extensions for <see cref="Vector3"/>
+    /// </summary>
     public static class Vector3Extension
     {
         /// <summary>
@@ -14,9 +17,9 @@ namespace OctoAwesome.CodeExtensions
         /// </summary>
         /// <param name="vector">Vector to check</param>
         /// <returns></returns>
-        public static bool IsZero(this Vector3 vector)
+        public static bool IsEmtpy(this Vector3 vector)
         {
-            return vector.X > 0 && vector.Y > 0 && vector.Z > 0;
+            return vector.X == 0 && vector.Y == 0 && vector.Z == 0;
         }
     }
 }

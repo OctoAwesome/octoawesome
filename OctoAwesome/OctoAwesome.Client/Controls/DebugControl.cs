@@ -26,8 +26,7 @@ namespace OctoAwesome.Client.Controls
         StackPanel leftView, rightView;
         Label devText, position, rotation, fps, box, controlInfo, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo;
 
-        public DebugControl(ScreenComponent screenManager)
-            : base(screenManager)
+        public DebugControl(ScreenComponent screenManager) : base(screenManager)
         {
             framebuffer = new float[buffersize];
             Player = screenManager.Player;
@@ -154,10 +153,10 @@ namespace OctoAwesome.Client.Controls
             position.Text = pos;
 
             //Draw Rotation
-            float grad = (Player.HeadYaw / MathHelper.TwoPi) * 360;
+            float grad = (Player.Yaw / MathHelper.TwoPi) * 360;
             string rot = "rot: " +
-                (((Player.HeadYaw / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.HeadTilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.Yaw / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
 
             //Draw Fps
@@ -198,10 +197,10 @@ namespace OctoAwesome.Client.Controls
             precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             //Draw Box Information
-            if (Player.SelectedBox.HasValue)
+            if (Player.SelectedBlock.HasValue)
             {
                 string selection = "box: " +
-                    Player.SelectedBox.Value.ToString() + " on " +
+                    Player.SelectedBlock.Value.ToString() + " on " +
                     Player.SelectedSide.ToString() + " (" +
                     Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
                     Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +

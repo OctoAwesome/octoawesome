@@ -276,7 +276,7 @@ namespace OctoAwesome.Client.Controls
 
             if (selected.HasValue)
             {
-                player.SelectedBox = selected;
+                player.SelectedBlock = selected;
                 switch (selectedAxis)
                 {
                     case Axis.X: player.SelectedSide = (camera.PickRay.Direction.X > 0 ? OrientationFlags.SideWest : OrientationFlags.SideEast); break;
@@ -325,7 +325,7 @@ namespace OctoAwesome.Client.Controls
             }
             else
             {
-                player.SelectedBox = null;
+                player.SelectedBlock = null;
                 player.SelectedPoint = null;
                 player.SelectedSide = OrientationFlags.None;
                 player.SelectedEdge = OrientationFlags.None;
@@ -462,20 +462,20 @@ namespace OctoAwesome.Client.Controls
 
             entities.Draw(camera.View, camera.Projection,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
 
-            if (player.SelectedBox.HasValue)
+            if (player.SelectedBlock.HasValue)
             {
                 // Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
                 Index3 offset = camera.CameraChunk * Chunk.CHUNKSIZE;
                 Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
                 Index3 relativePosition = new Index3(
-                    Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBox.Value.X, planetSize.X),
-                    Index2.ShortestDistanceOnAxis(offset.Y, player.SelectedBox.Value.Y, planetSize.Y),
-                    player.SelectedBox.Value.Z - offset.Z);
+                    Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBlock.Value.X, planetSize.X),
+                    Index2.ShortestDistanceOnAxis(offset.Y, player.SelectedBlock.Value.Y, planetSize.Y),
+                    player.SelectedBlock.Value.Z - offset.Z);
 
                 Vector3 selectedBoxPosition = new Vector3(
-                    player.SelectedBox.Value.X - (chunkOffset.X * Chunk.CHUNKSIZE_X),
-                    player.SelectedBox.Value.Y - (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
-                    player.SelectedBox.Value.Z - (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
+                    player.SelectedBlock.Value.X - (chunkOffset.X * Chunk.CHUNKSIZE_X),
+                    player.SelectedBlock.Value.Y - (chunkOffset.Y * Chunk.CHUNKSIZE_Y),
+                    player.SelectedBlock.Value.Z - (chunkOffset.Z * Chunk.CHUNKSIZE_Z));
                 // selectionEffect.World = Matrix.CreateTranslation(selectedBoxPosition);
                 selectionEffect.World = Matrix.CreateTranslation(relativePosition);
                 selectionEffect.View = camera.View;

@@ -78,7 +78,7 @@
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Entities\IControllable.cs" />
-    <Compile Include="Entities\IController.cs" />
+    <Compile Include="Entities\IEntityController.cs" />
     <Compile Include="Entities\IDrawable.cs" />
     <Compile Include="Entities\EntityList.cs" />
     <Compile Include="Entities\EntityComponent.cs" />
@@ -86,7 +86,7 @@
     <Compile Include="Entities\IEntityDefinition.cs" />
     <Compile Include="Entities\IGraphicsdevice.cs" />
     <Compile Include="Entities\IInteractable.cs" />
-    <Compile Include="Entities\InputTrigger.cs" />
+    <Compile Include="Entities\IUserInterface.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />

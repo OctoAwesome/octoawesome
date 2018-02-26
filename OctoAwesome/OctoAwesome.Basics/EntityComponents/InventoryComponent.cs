@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Entities;
+﻿using engenious;
+using OctoAwesome.Entities;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace OctoAwesome.Basisc.EntityComponents
         /// </summary>
         public List<InventorySlot> Inventory { get; set; }
 
-        public InventoryComponent()
+        public InventoryComponent(Entity entity) : base(entity, false)
         {
             Inventory = new List<InventorySlot>();
         }
@@ -93,6 +94,11 @@ namespace OctoAwesome.Basisc.EntityComponents
                 return true;
             }
             return false;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

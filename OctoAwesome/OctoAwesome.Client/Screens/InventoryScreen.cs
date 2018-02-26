@@ -16,7 +16,8 @@ namespace OctoAwesome.Client.Screens
 
         private AssetComponent assets;
 
-        private InventoryControl inventory;
+        //TODO: dynamisch einbinden
+        //private InventoryControl inventory;
 
         private Label nameLabel;
 
@@ -63,15 +64,15 @@ namespace OctoAwesome.Client.Screens
 
             Controls.Add(grid);
 
-            inventory = new InventoryControl(manager)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-                Padding = Border.All(20),
-            };
-
-            grid.AddControl(inventory, 0, 0);
+            //TODO: dynamisch einbinden
+            //inventory = new InventoryControl(manager)
+            //{
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //    Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+            //    Padding = Border.All(20),
+            //};
+            //grid.AddControl(inventory, 0, 0);
 
             StackPanel infoPanel = new StackPanel(manager)
             {
@@ -207,8 +208,9 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnUpdate(gameTime);
 
-            nameLabel.Text = inventory.HoveredSlot?.Definition.Name ?? "";
-            massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
+            // TODO: inprogress -> dynmaic ui load over extension
+            //nameLabel.Text = inventory.HoveredSlot?.Definition.Name ?? "";
+            //massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
             // Aktualisierung des aktiven Buttons
             //TODO: aus der componenten später selber ziehen.

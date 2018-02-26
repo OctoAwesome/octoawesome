@@ -9,10 +9,11 @@ using System.IO;
 
 namespace OctoAwesome
 {
-    public abstract class SimulationComponent
+    public abstract class SimulationComponent : Component
     {
         public abstract void Update(GameTime gameTime);
         public abstract void Register(Entity entity);
+        public abstract void Remove(Entity entity);
     }
 
     /// <summary>

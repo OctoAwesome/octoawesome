@@ -1,4 +1,5 @@
-﻿using System;
+﻿using engenious;
+using System;
 
 namespace OctoAwesome.Entities
 {
@@ -8,23 +9,28 @@ namespace OctoAwesome.Entities
     public abstract class EntityComponent : Component
     {
         /// <summary>
+        /// Indicates if the <see cref="EntityComponent"/> need Updates
+        /// </summary>
+        public bool NeedUpdate { get; }
+        /// <summary>
+        /// <see cref="Entities.Entity"/> of this <see cref="EntityComponent"/>
+        /// </summary>
+        public Entity Entity { get; }
+        /// <summary>
         /// Constructor of <see cref="EntityComponent"/>
         /// </summary>
-        public EntityComponent()
+        public EntityComponent(Entity entity, bool needupdate)
         {
+            NeedUpdate = needupdate;
+            Entity = entity;
         }
-        // TODO: validiate -> braucht man das wirklich ? :D
-        //public void SetEntity(Entity entity)
-        //{
-        //    if (Entity != null)
-        //        throw new NotSupportedException("Can not change the Entity");
+        /// <summary>
+        /// Update method.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public abstract void Update(GameTime gameTime);
+        
 
-        //    Entity = entity;
-        //    OnSetEntity();
-        //}
-        //protected virtual void OnSetEntity()
-        //{
 
-        //}
     }
 }

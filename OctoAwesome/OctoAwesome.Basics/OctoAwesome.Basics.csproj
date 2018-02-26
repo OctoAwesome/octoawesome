@@ -46,6 +46,10 @@
     <Reference Include="engenious, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.11\lib\net40\engenious.dll</HintPath>
     </Reference>
+    <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\MonoGameUi.dll</HintPath>
+    </Reference>
     <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.11\lib\net40\NVorbis.dll</HintPath>
       <Private>True</Private>
@@ -71,8 +75,11 @@
   <ItemGroup>
     <Compile Include="Biomes\BiomeBase.cs" />
     <Compile Include="CollisionPlane.cs" />
+    <Compile Include="Controls\InventoryControl.cs" />
+    <Compile Include="Controls\ToolbarControl.cs" />
     <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
     <Compile Include="Entities\WauziEntity.cs" />
+    <Compile Include="EntityComponents\GroundPhysicComponent.cs" />
     <Compile Include="EntityComponents\InventoryComponent.cs" />
     <Compile Include="EntityComponents\ToolBarComponent.cs" />
     <Compile Include="Extension.cs" />
@@ -131,7 +138,6 @@
     <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
-    <Compile Include="SimulationComponents\PhysicEngineComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
     <Compile Include="Definitions\Items\PickAxeDefinition.cs" />
