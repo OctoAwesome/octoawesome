@@ -17,6 +17,8 @@ namespace OctoAwesome.Client
     {
         //GraphicsDeviceManager graphics;
 
+        public new GameComponentCollection Components { get; private set; }
+
         public CameraComponent Camera { get; private set; }
 
         public PlayerComponent Player { get; private set; }
@@ -35,11 +37,11 @@ namespace OctoAwesome.Client
 
         public IResourceManager ResourceManager { get; private set; }
 
-        public IExtensionLoader ExtensionLoader { get; private set; }
+        public ExtensionLoader ExtensionLoader { get; private set; }
 
         public Components.EntityComponent Entity { get; private set; }
 
-        public OctoGame()
+        public OctoGame() : base()
         {
             Title = "OctoAwesome";
             IsMouseVisible = true;
@@ -90,11 +92,12 @@ namespace OctoAwesome.Client
             Camera = new CameraComponent(this);
             Camera.UpdateOrder = 3;
             Components.Add(Camera);
-
+            
             Screen = new ScreenComponent(this);
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
             Components.Add(Screen);
+
 
             KeyMapper = new KeyMapper(Screen, Settings);
 
@@ -109,6 +112,39 @@ namespace OctoAwesome.Client
                 //graphics.ApplyChanges();
             };*/
             SetKeyBindings();
+
+        }
+
+        public void InitializeLocal()
+        {
+            DefinitionManager = new DefinitionManager(ExtensionLoader);
+
+            var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
+            ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
+
+            var tmpComponents = new GameComponentCollection();
+
+            foreach (var component in Components)
+                tmpComponents.Add(component);
+
+            Player = new PlayerComponent(this, ResourceManager);
+            Player.UpdateOrder = 2;
+            tmpComponents.Add(Player);
+
+            Entity = new Components.EntityComponent(this, Simulation);
+            Entity.UpdateOrder = 2;
+            tmpComponents.Add(Entity);
+
+            Camera = new CameraComponent(this);
+            Camera.UpdateOrder = 3;
+            tmpComponents.Add(Camera);
+
+            Simulation = new Components.SimulationComponent(this,
+              ExtensionLoader, ResourceManager);
+            Simulation.UpdateOrder = 4;
+            tmpComponents.Add(Simulation);
+
+            Components = tmpComponents;
         }
 
         private void SetKeyBindings()

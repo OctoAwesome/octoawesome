@@ -40,11 +40,11 @@ namespace OctoAwesome.Runtime
         /// <param name="extensionResolver">ExetnsionResolver</param>
         /// <param name="definitionManager">DefinitionManager</param>
         /// <param name="settings">Einstellungen</param>
-        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
+        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager)
         {
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
-            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, this, settings);
+            this.persistenceManager = persistenceManager;
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
@@ -274,8 +274,8 @@ namespace OctoAwesome.Runtime
 
         public void SaveEntity(Entity entity)
         {
-            if (entity is Player)
-                SavePlayer((Player)entity);
+            if (entity is Player player)
+                SavePlayer(player);
         }
     }
 }

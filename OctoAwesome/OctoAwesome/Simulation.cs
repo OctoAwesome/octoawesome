@@ -29,11 +29,6 @@ namespace OctoAwesome
         public SimulationState State { get; private set; }
 
         /// <summary>
-        /// Die Guid des aktuell geladenen Universums.
-        /// </summary>
-        public Guid UniverseId { get; private set; }
-
-        /// <summary>
         /// List of all Entities.
         /// </summary>
         public List<Entity> Entities => entities.ToList();
@@ -53,7 +48,6 @@ namespace OctoAwesome
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
-            UniverseId = Guid.Empty;
 
             Components = new ComponentList<SimulationComponent>(ValidateAddComponent, ValidateRemoveComponent);
 
