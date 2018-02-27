@@ -55,7 +55,7 @@ namespace OctoAwesome.Basics.Controls
                 toolbar.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
             images = new Image[bar.Tools.Length];
-            for (int i = 0; i < bar.Tools.Length; i++)
+            for (int i = 0; i < images.Length; i++)
             {
                 Image image = images[i] = new Image(screenmanager)
                 {
@@ -112,7 +112,7 @@ namespace OctoAwesome.Basics.Controls
         protected override void OnUpdate(GameTime gameTime)
         {
             //Aktualisierung des aktiven Buttons
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (int i = 0; i < bar.Tools.Length; i++)
             {
                 if (bar.Tools != null &&
                     bar.Tools.Length > i &&
@@ -135,18 +135,17 @@ namespace OctoAwesome.Basics.Controls
                 bar.RemoveSlot(slot);
             }
         }
-        protected override void OnKeyDown(KeyEventArgs args)
-        {
-            // TODO: lösung finden
-            //Tool neu zuweisen
-            //if ((int) args.Key >= (int) Keys.D0 && (int) args.Key <= (int) Keys.D9)
-            //{
-            //    int offset = (int) args.Key - (int) Keys.D0;
-            //    player.Toolbar.SetTool(inventory.HoveredSlot, offset);
-            //    args.Handled = true;
-            //}
-
-        }
+        //protected override void OnKeyDown(KeyEventArgs args)
+        //{
+        //    // TODO: lösung finden
+        //    //Tool neu zuweisen
+        //    //if ((int) args.Key >= (int) Keys.D0 && (int) args.Key <= (int) Keys.D9)
+        //    //{
+        //    //    int offset = (int) args.Key - (int) Keys.D0;
+        //    //    player.Toolbar.SetTool(inventory.HoveredSlot, offset);
+        //    //    args.Handled = true;
+        //    //}
+        //}
         public override string ToString()
         {
             // TODO: resx

@@ -109,9 +109,6 @@ namespace OctoAwesome.Client
                 //graphics.ApplyChanges();
             };*/
             SetKeyBindings();
-
-            // TODO: bessern platz suchen -> eventuell erst wenn das ui tatsächlich erstellt wird.
-            extensionLoader.LoadUserInterfaces(Screen);
         }
 
         private void SetKeyBindings()

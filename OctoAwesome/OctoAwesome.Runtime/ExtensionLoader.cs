@@ -131,15 +131,7 @@ namespace OctoAwesome.Runtime
             var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
             settings.Set(SETTINGSKEY, types);
         }
-
-        /// <summary>
-        /// Load UserInterfaces from Extensions.
-        /// </summary>
-        public void LoadUserInterfaces(BaseScreenComponent manager)
-        {
-
-        }
-
+        
         #region Loader Methods
 
         /// <summary>
