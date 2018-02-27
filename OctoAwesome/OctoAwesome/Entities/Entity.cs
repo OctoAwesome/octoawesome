@@ -54,7 +54,9 @@ namespace OctoAwesome.Entities
         {
 
         }
-        // TODO: remove this method again
+        /// <summary>
+        /// Register default for this entity
+        /// </summary>
         public void RegisterDefault()
         {
 

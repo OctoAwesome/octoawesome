@@ -15,7 +15,9 @@ namespace OctoAwesome
         // private List<ActorHost> actorHosts = new List<ActorHost>();
         // private Stopwatch watch = new Stopwatch();
         // private Thread thread;
-
+        /// <summary>
+        /// Manager for Resources
+        /// </summary>
         public IResourceManager ResourceManager { get; private set; }
 
         /// <summary>
@@ -118,7 +120,9 @@ namespace OctoAwesome
                 //Update all Entities
                 foreach (var entity in Entities)
                 {
-                    if(entity.NeedUpdate) entity.Update(gameTime);
+                    if(entity.NeedUpdate)
+                        entity.Update(gameTime);
+
                     foreach (EntityComponent component in entity.Components)
                         if (component.NeedUpdate) component.Update(gameTime);
                 }
@@ -145,8 +149,6 @@ namespace OctoAwesome
 
             //TODO: unschön
             Entities.ForEach(entity => RemoveEntity(entity));
-            //while (entites.Count > 0)
-            //    RemoveEntity(Entities.First());
 
             State = SimulationState.Finished;
             // thread.Join();
@@ -160,7 +162,8 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void AddEntity(Entity entity)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
@@ -188,9 +191,11 @@ namespace OctoAwesome
         /// <param name="entity">Entity die entfert werden soll</param>
         public void RemoveEntity(Entity entity)
         {
-            if (entity.Id == 0) return;
+            if (entity.Id == 0)
+                return;
 
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
             //if (entity.Simulation != this)
             //{

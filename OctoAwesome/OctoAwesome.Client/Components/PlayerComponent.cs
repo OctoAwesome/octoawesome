@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using engenious;
-using engenious.Graphics;
 using engenious.Helper;
-using MonoGameUi;
 using OctoAwesome.Entities;
 namespace OctoAwesome.Client.Components
 {

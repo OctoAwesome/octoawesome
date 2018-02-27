@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
 
 namespace OctoAwesome.Runtime
 {
@@ -26,7 +25,12 @@ namespace OctoAwesome.Runtime
 
         private IDefinitionManager definitionManager;
         private IExtensionResolver extensionResolver;
-
+        /// <summary>
+        /// Manager for persistance at lokal Disk.
+        /// </summary>
+        /// <param name="extensionResolver">Resolver or extensions</param>
+        /// <param name="definitionManager">Manager for definitions</param>
+        /// <param name="Settings">Game settings</param>
         public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
@@ -199,7 +203,7 @@ namespace OctoAwesome.Runtime
 
             if (generator == null)
                 throw new Exception("Unknown Generator");
-            
+
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {

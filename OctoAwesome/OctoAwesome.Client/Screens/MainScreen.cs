@@ -1,7 +1,6 @@
 ﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
 using System.Diagnostics;
-
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class MainScreen : BaseScreen
@@ -24,20 +23,9 @@ namespace OctoAwesome.Client.Screens
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
             {
-                manager.Game.InitializeLocal();
                 manager.NavigateToScreen(new LoadScreen(manager));
             };
             stack.Controls.Add(startButton);
-
-            Button multiplayerButton = Button.TextButton(manager, Languages.OctoClient.Multiplayer);
-            multiplayerButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            multiplayerButton.Margin = new Border(0, 0, 0, 10);
-            multiplayerButton.LeftMouseClick += (s, e) =>
-            {
-                manager.Game.InitializeLocal();
-                manager.NavigateToScreen(new LoadScreen(manager));
-            };
-            stack.Controls.Add(multiplayerButton);
 
             Button optionButton = Button.TextButton(manager, Languages.OctoClient.Options);
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;

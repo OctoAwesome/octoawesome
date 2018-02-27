@@ -89,58 +89,60 @@ namespace OctoAwesome.Basics.Controls
         {
             if (!Visible || !Enabled)
                 return;
-            if(!(toolbar.Entity is IControllable con) || con.Controller == null)
-                return;
+
             #region Toolbar Update
-
-            if (toolbar.Tools != null && toolbar.Tools.Length > 0)
+            if (toolbar.Entity is IControllable con && con.Controller != null)
             {
-                if (toolbar.ActiveTool == null) toolbar.ActiveTool = toolbar.Tools[0];
-                for (int i = 0; i < Math.Min(toolbar.Tools.Length, con.Controller.SlotInput.Length); i++)
+
+                if (toolbar.Tools != null && toolbar.Tools.Length > 0)
                 {
-                    if (con.Controller.SlotInput[i]) toolbar.ActiveTool = toolbar.Tools[i];
-                    con.Controller.SlotInput[i] = false;
+                    if (toolbar.ActiveTool == null) toolbar.ActiveTool = toolbar.Tools[0];
+                    for (int i = 0; i < Math.Min(toolbar.Tools.Length, con.Controller.SlotInput.Length); i++)
+                    {
+                        if (con.Controller.SlotInput[i]) toolbar.ActiveTool = toolbar.Tools[i];
+                        con.Controller.SlotInput[i] = false;
+                    }
                 }
-            }
 
-            //Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            List<int> toolIndices = new List<int>();
-            for (int i = 0; i < toolbar.Tools.Length; i++)
-            {
+                //Index des aktiven Werkzeugs ermitteln
+                int activeTool = -1;
+                List<int> toolIndices = new List<int>();
+                for (int i = 0; i < toolbar.Tools.Length; i++)
+                {
 
-                if (toolbar.ActiveTool != null && toolbar.ActiveTool.Amount <= 0)
-                    toolbar.RemoveSlot(toolbar.ActiveTool);
+                    if (toolbar.ActiveTool != null && toolbar.ActiveTool.Amount <= 0)
+                        toolbar.RemoveSlot(toolbar.ActiveTool);
 
-                if (toolbar.Tools[i] != null)
-                    toolIndices.Add(i);
+                    if (toolbar.Tools[i] != null)
+                        toolIndices.Add(i);
 
-                if (toolbar.Tools[i] == toolbar.ActiveTool)
-                    activeTool = toolIndices.Count - 1;
-            }
+                    if (toolbar.Tools[i] == toolbar.ActiveTool)
+                        activeTool = toolIndices.Count - 1;
+                }
 
-            if (con.Controller.SlotLeftInput)
-            {
+                if (con.Controller.SlotLeftInput)
+                {
+                    if (activeTool > -1)
+                        activeTool--;
+                    else if (toolIndices.Count > 0)
+                        activeTool = toolIndices[toolIndices.Count - 1];
+                }
+                con.Controller.SlotLeftInput = false;
+
+                if (con.Controller.SlotRightInput)
+                {
+                    if (activeTool > -1)
+                        activeTool++;
+                    else if (toolIndices.Count > 0)
+                        activeTool = toolIndices[0];
+                }
+                con.Controller.SlotRightInput = false;
+
                 if (activeTool > -1)
-                    activeTool--;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[toolIndices.Count - 1];
-            }
-            con.Controller.SlotLeftInput = false;
-
-            if (con.Controller.SlotRightInput)
-            {
-                if (activeTool > -1)
-                    activeTool++;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[0];
-            }
-            con.Controller.SlotRightInput = false;
-
-            if (activeTool > -1)
-            {
-                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                toolbar.ActiveTool = toolbar.Tools[toolIndices[activeTool]];
+                {
+                    activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
+                    toolbar.ActiveTool = toolbar.Tools[toolIndices[activeTool]];
+                }
             }
             #endregion
 
