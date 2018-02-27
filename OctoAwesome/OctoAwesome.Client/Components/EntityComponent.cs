@@ -43,11 +43,6 @@ namespace OctoAwesome.Client.Components
 
                 foreach (var entity in entities)
                 {
-                    //if (!entity.Components.ContainsComponent<RenderComponent>())
-                    //{
-                    //    continue;
-                    //}
-                    //var rendercomp = entity.Components.GetComponent<RenderComponent>();
                     var drawable = entity as Entities.IDrawable;
                     if (!drawable.DrawUpdate) continue;
 
@@ -64,11 +59,8 @@ namespace OctoAwesome.Client.Components
                     if (!modelinfo.render) continue;
                     
                     Coordinate position = entity.Position;
-                    //var body = entity.Components.GetComponent<BodyComponent>();
 
                     Index3 shift = chunkOffset.ShortestDistanceXY(position.ChunkIndex, planetSize);
-                    // TODO: direct aus der bewegung berechnen
-                    // MathHelper.WrapAngle((float) Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
                     var rotation = MathHelper.WrapAngle(drawable.Azimuth + MathHelper.ToRadians(drawable.BaseRotationZ));
 
                     Matrix world = Matrix.CreateTranslation(

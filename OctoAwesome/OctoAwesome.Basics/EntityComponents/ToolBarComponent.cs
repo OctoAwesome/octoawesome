@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using engenious;
 using engenious.Graphics;
 using MonoGameUi;
@@ -90,21 +92,34 @@ namespace OctoAwesome.Basics.EntityComponents
             else if(controller.InteractInput)
             {
                 if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
+                {
                     Service.TakeBlock(controller, Entity.Cache, inventory);
+                }
                 else if (Service.TakeBlock(controller, Entity.Cache, out IInventoryableDefinition item))
                 {
                     // TODO: und jetzt ?
                 }
+                UpdateToolbar(inventory);
             }
             else if(controller.ApplyInput)
             {
                 if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
                     Service.InteractBlock(Entity.Position, 0, 0, controller, Entity.Cache, ActiveTool, inventory);
+                UpdateToolbar(inventory);
             }
         }
         public void Register(IUserInterfaceManager manager)
         {
             manager.RegisterOnGameScreen(typeof(ToolbarControl), this);
+        }
+        private void UpdateToolbar(InventoryComponent inventory)
+        {
+            foreach (InventorySlot slot in inventory.Inventory)
+            {
+                if (Tools.Any(s => s != null && s.Definition.Name == slot.Definition.Name))
+                    continue;
+                else AddNewSlot(slot);
+            }
         }
     }
 }

@@ -85,10 +85,9 @@
     <Compile Include="Entities\EntityComponent.cs" />
     <Compile Include="Entities\EntityFilterAttribute.cs" />
     <Compile Include="Entities\IEntityDefinition.cs" />
-    <Compile Include="Entities\IGraphicsdevice.cs" />
     <Compile Include="Entities\IInteractable.cs" />
-    <Compile Include="Entities\IInventory.cs" />
-    <Compile Include="Entities\IUserInterface.cs" />
+    <Compile Include="IInventory.cs" />
+    <Compile Include="IUserInterfaceExtension.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
@@ -120,6 +119,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="IExtension.cs" />
+    <Compile Include="IUserInterfaceManager.cs" />
     <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />

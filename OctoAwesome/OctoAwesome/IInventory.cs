@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Entities
+namespace OctoAwesome
 {
+    /// <summary>
+    /// Interface for storage of game elements
+    /// </summary>
     public interface IInventory
     {
         /// <summary>

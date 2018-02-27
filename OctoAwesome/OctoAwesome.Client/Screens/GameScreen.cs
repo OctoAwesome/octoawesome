@@ -86,15 +86,6 @@ namespace OctoAwesome.Client.Screens
                 Controls.Add(creater());
 
             Title = Languages.OctoClient.Game;
-            
-            //TODO: dynamische einbindugn aus extensions
-            //toolbar = new ToolbarControl(manager)
-            //{
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    VerticalAlignment = VerticalAlignment.Bottom,
-            //    Height = 100
-            //};
-            //Controls.Add(toolbar);
 
             RegisterKeyActions();
         }

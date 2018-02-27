@@ -71,11 +71,5 @@ namespace OctoAwesome.Basics.Entities
         {
 
         }
-        public void Initialize(IGraphicsDevice device)
-        {
-        }
-        public void Draw(IGraphicsDevice graphicsDevice, GameTime gameTime)
-        {
-        }
     }
 }
