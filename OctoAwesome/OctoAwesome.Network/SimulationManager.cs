@@ -25,6 +25,8 @@ namespace OctoAwesome.Network
 
             DefinitionManager = new DefinitionManager(extensionLoader);
             ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, settings);
+            extensionLoader.Service = new GameService(DefinitionManager);
+
 
             simulation = new Simulation(ResourceManager, extensionLoader);
         }

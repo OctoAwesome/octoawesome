@@ -105,8 +105,7 @@ namespace OctoAwesome.Client.Controls
                     layer++;
                 }
             }
-
-            // TODO: valid planet id should be > 0
+            
             planet = Manager.Game.ResourceManager.GetPlanet(0);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1

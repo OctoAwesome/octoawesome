@@ -7,17 +7,17 @@ namespace OctoAwesome.Entities
     /// </summary>
     public interface IEntityController
     {
-        // TODO: more buttons ... ?
+        // TODO: more ui inputs and data from the user.
         /// <summary>
-        /// 
+        /// Pressed numbers on Keyboard (0 to 9)
         /// </summary>
         bool[] SlotInput { get; }
         /// <summary>
-        /// 
+        /// Indicates that Slots have to be shifted left
         /// </summary>
         bool SlotLeftInput { get; set; }
         /// <summary>
-        /// 
+        /// Indicates that Slots have to be shifted right
         /// </summary>
         bool SlotRightInput { get; set; }
         /// <summary>

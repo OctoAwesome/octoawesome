@@ -76,14 +76,13 @@ namespace OctoAwesome.Basics.Controls
             };
             for (int i = 0; i < COLUMNS; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            // TODO: wieder einfügen 
+
             int rows = (int) System.Math.Ceiling((float) inventory.Inventory.Count / COLUMNS);
             for (int i = 0; i < rows; i++)
                 grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
             int column = 0;
             int row = 0;
-            // TODO: wieder einfügen
             foreach (var item in inventory.Inventory)
             {
                 Texture2D texture = interfacemanager.LoadTextures(item.Definition.GetType(), item.Definition.Icon);
@@ -118,7 +117,7 @@ namespace OctoAwesome.Basics.Controls
         }
         public override string ToString()
         {
-            // TODO: resx
+            // TODO: resx ->  Languages.OctoBasics.Inventory or what ever...
             return "Inventar";
         }
     }

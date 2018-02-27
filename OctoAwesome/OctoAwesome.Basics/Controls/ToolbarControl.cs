@@ -20,7 +20,7 @@ namespace OctoAwesome.Basics.Controls
 
         private ToolBarComponent toolbar;
 
-        public Label activeToolLabel;
+        private Label activeToolLabel;
 
         private Dictionary<string, Texture2D> toolTextures;
 
@@ -92,7 +92,7 @@ namespace OctoAwesome.Basics.Controls
             if(!(toolbar.Entity is IControllable con) || con.Controller == null)
                 return;
             #region Toolbar Update
-            //TODO: validate - source playercomponent, vllt in die toolbarComponent
+
             if (toolbar.Tools != null && toolbar.Tools.Length > 0)
             {
                 if (toolbar.ActiveTool == null) toolbar.ActiveTool = toolbar.Tools[0];
@@ -108,7 +108,7 @@ namespace OctoAwesome.Basics.Controls
             List<int> toolIndices = new List<int>();
             for (int i = 0; i < toolbar.Tools.Length; i++)
             {
-                //TODO: validate - source blockinteractioncomponent
+
                 if (toolbar.ActiveTool != null && toolbar.ActiveTool.Amount <= 0)
                     toolbar.RemoveSlot(toolbar.ActiveTool);
 
@@ -143,6 +143,7 @@ namespace OctoAwesome.Basics.Controls
                 toolbar.ActiveTool = toolbar.Tools[toolIndices[activeTool]];
             }
             #endregion
+
             // Aktualisierung des aktiven Buttons
             for (int i = 0; i < toolbar.Tools.Length; i++)
             {
@@ -175,6 +176,7 @@ namespace OctoAwesome.Basics.Controls
         }
         public override string ToString()
         {
+            // TODO: resx ->  Languages.OctoBasics.Tool or what ever...
             return "Werkzeuge";
         }
     }
