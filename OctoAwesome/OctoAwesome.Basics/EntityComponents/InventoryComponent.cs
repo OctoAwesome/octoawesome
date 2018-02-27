@@ -1,24 +1,24 @@
-﻿using System;
+﻿using engenious;
+using engenious.Graphics;
+using MonoGameUi;
+using OctoAwesome.Basics.Controls;
+using OctoAwesome.Entities;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OctoAwesome.EntityComponents
+namespace OctoAwesome.Basics.EntityComponents
 {
-    public class InventoryComponent : EntityComponent
+    public class InventoryComponent : EntityComponent, IUserInterfaceExtension, IInventory
     {
         /// <summary>
         /// Das Inventar der Entity
         /// </summary>
         public List<InventorySlot> Inventory { get; set; }
-
-        public InventoryComponent()
+        public InventoryComponent(Entity entity, IGameService service) : base(entity, service, false)
         {
             Inventory = new List<InventorySlot>();
         }
-
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             base.Deserialize(reader, definitionManager);
@@ -42,7 +42,6 @@ namespace OctoAwesome.EntityComponents
                 Inventory.Add(slot);
             }
         }
-
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             base.Serialize(writer, definitionManager);
@@ -54,7 +53,6 @@ namespace OctoAwesome.EntityComponents
                 writer.Write(slot.Amount);
             }
         }
-
         /// <summary>
         /// Fügt ein Element des angegebenen Definitionstyps hinzu.
         /// </summary>
@@ -76,7 +74,6 @@ namespace OctoAwesome.EntityComponents
             }
             slot.Amount += definition.VolumePerUnit;
         }
-
         /// <summary>
         /// Entfernt eine Einheit vom angegebenen Slot.
         /// </summary>
@@ -90,11 +87,17 @@ namespace OctoAwesome.EntityComponents
             if (slot.Amount >= definition.VolumePerUnit) // Wir können noch einen Block setzen
             {
                 slot.Amount -= definition.VolumePerUnit;
-                if (slot.Amount <= 0)
-                    Inventory.Remove(slot);
+                if (slot.Amount <= 0) Inventory.Remove(slot);
                 return true;
             }
             return false;
+        }
+        public override void Update(GameTime gameTime)
+        {
+        }
+        public void Register(IUserInterfaceExtensionManager manager)
+        {
+            manager.RegisterOnInventoryScreen(typeof(InventoryControl), this);
         }
     }
 }

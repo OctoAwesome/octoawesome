@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    public sealed class CollisionComponent : SimulationComponent
+    public sealed class CollisionComponent : OSimulationComponent
     {
         protected override bool AddEntity(Entity entity)
         {

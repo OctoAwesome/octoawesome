@@ -1,59 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using engenious;
-using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.EntityComponents;
-
+﻿using engenious;
+using OctoAwesome.Entities;
 namespace OctoAwesome.Basics.Entities
 {
-    public class WauziEntity : UpdateableEntity
+    public class WauziEntity : Entity, IControllable, OctoAwesome.Entities.IDrawable
     {
-        public int JumpTime { get; set; }
-
-        public WauziEntity() : base()
+        class WauziTestController : IEntityController
         {
+            public float Tilt { get; set; }
+            public float Yaw { get; set; }
+            public Vector3 Direction { get; set; }
+            public Index3? SelectedBlock { get; set; }
+            public Vector2? SelectedPoint { get; set; }
+
+            public OrientationFlags SelectedSide => OrientationFlags.None;
+            public OrientationFlags SelectedEdge => OrientationFlags.None;
+            public OrientationFlags SelectedCorner => OrientationFlags.None;
+
+            public bool InteractInput { get; set; }
+            public bool ApplyInput { get; set; }
+            public bool JumpInput { get; set; }
+
+            public bool[] SlotInput{ get; } = new bool[10];
+
+            public bool SlotLeftInput { get; set; }
+            public bool SlotRightInput { get; set; }
+
+            public WauziTestController()
+            {
+            }
         }
 
+        public IEntityController Controller => currentcontroller;
+        public bool DrawUpdate => true;
+        // TODO: Auslagern in die Definition
+        public string Name => "Wauzi";
+        public string ModelName => "dog";
+        public string TextureName => "texdog";
+        public float BaseRotationZ => -90f;
+
+        public float Height => 1;
+        public float Radius => 1;
+        private IEntityController currentcontroller;
+        private float jumptime;
+        public WauziEntity() : base(true)
+        {
+            currentcontroller = new WauziTestController();
+            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, false);
+        }
         protected override void OnInitialize(IResourceManager manager)
         {
             Cache = new LocalChunkCache(manager.GlobalChunkCache, true, 2, 1);
         }
-
         public override void Update(GameTime gameTime)
-        {
-            BodyPowerComponent body = Components.GetComponent<BodyPowerComponent>();
-            ControllableComponent controller = Components.GetComponent<ControllableComponent>();
-            controller.MoveInput = new Vector2(0.5f, 0.5f) ;
-            
-            if (JumpTime <= 0)
+        {            
+            if (currentcontroller != null && jumptime <= 0)
             {
-                controller.JumpInput = true;
-                JumpTime = 10000;
+                currentcontroller.JumpInput = true;
+                jumptime = 10000;
             }
             else
             {
-                JumpTime -= gameTime.ElapsedGameTime.Milliseconds;
-            }
-
-            if (controller.JumpActive)
-            {
-                controller.JumpInput = false;
+                jumptime -= gameTime.ElapsedGameTime.Milliseconds;
             }
         }
-
-        public override void RegisterDefault()
+        public void Register(IEntityController controller)
         {
-            Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
-            Components.AddComponent(new GravityComponent());
-            Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-            Components.AddComponent(new MoveableComponent());
-            Components.AddComponent(new BoxCollisionComponent());
-            Components.AddComponent(new ControllableComponent());
-            Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            this.currentcontroller = controller;
+        }
+        public void Reset()
+        {
+
         }
     }
 }

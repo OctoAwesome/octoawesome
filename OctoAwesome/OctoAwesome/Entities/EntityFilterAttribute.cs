@@ -1,10 +1,11 @@
-﻿using System;
+﻿using engenious.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome
+namespace OctoAwesome.Entities
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public sealed class EntityFilterAttribute : Attribute

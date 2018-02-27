@@ -10,6 +10,7 @@
         /// </summary>
         int Order { get; }
 
+        //TODO: Kommentieren xD
         /// <summary>
         /// Versieht einen Chunk mit Items
         /// </summary>

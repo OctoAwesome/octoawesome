@@ -55,6 +55,9 @@ namespace OctoAwesome
         {
             Id = id;
             Universe = universe;
+            // TODO: was ist die size in km ? ;O
+            // müssen die gravity berechnen
+            Gravity = 9.81f;
             Size = new Index3(
                 (int)Math.Pow(2, size.X),
                 (int)Math.Pow(2, size.Y),

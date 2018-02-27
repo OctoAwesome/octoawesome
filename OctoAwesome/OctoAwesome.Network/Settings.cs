@@ -1,10 +1,6 @@
-﻿using OpenTK;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace OctoAwesome.Network
 {

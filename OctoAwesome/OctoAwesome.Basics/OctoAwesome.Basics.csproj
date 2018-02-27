@@ -46,6 +46,10 @@
     <Reference Include="engenious, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.11\lib\net40\engenious.dll</HintPath>
     </Reference>
+    <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\MonoGameUi.dll</HintPath>
+    </Reference>
     <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.11\lib\net40\NVorbis.dll</HintPath>
       <Private>True</Private>
@@ -59,6 +63,9 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\engenious.0.1.11\lib\net40\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,19 +74,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Biomes\BiomeBase.cs" />
-    <Compile Include="CollisionPlane.cs" />
+    <Compile Include="Controls\InventoryControl.cs" />
+    <Compile Include="Controls\ToolbarControl.cs" />
+    <Compile Include="Controls\ToolbarInventoryControl.cs" />
     <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
     <Compile Include="Entities\WauziEntity.cs" />
+    <Compile Include="EntityComponents\GroundPhysicComponent.cs" />
+    <Compile Include="EntityComponents\InventoryComponent.cs" />
+    <Compile Include="EntityComponents\ToolBarComponent.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="Biomes\FlatlandBiome.cs" />
     <Compile Include="Biomes\HighMountainBiome.cs" />
     <Compile Include="Biomes\HillsBiome.cs" />
     <Compile Include="Biomes\IBiome.cs" />
-    <Compile Include="EntityComponents\BodyPowerComponent.cs" />
-    <Compile Include="EntityComponents\CollisionComponent.cs" />
-    <Compile Include="EntityComponents\MassComponent.cs" />
-    <Compile Include="EntityComponents\BoxCollisionComponent.cs" />
-    <Compile Include="EntityComponents\EntityCollisionComponent.cs" />
     <Compile Include="Definitions\Blocks\BirchWoodBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\CactusBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\GravelBlockDefinition.cs" />
@@ -90,10 +97,6 @@
     <Compile Include="Definitions\Blocks\PlankBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\BirchTreeDefinition.cs" />
     <Compile Include="Definitions\Trees\CactusTreeDefinition.cs" />
-    <Compile Include="EntityComponents\ForceComponent.cs" />
-    <Compile Include="EntityComponents\GravityComponent.cs" />
-    <Compile Include="EntityComponents\MoveableComponent.cs" />
-    <Compile Include="EntityComponents\PowerComponent.cs" />
     <Compile Include="ITreeDefinition.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Biomes\LandBiomeGenerator.cs" />
@@ -135,14 +138,6 @@
     <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
-    <Compile Include="SimulationComponents\BlockInteractionComponent.cs" />
-    <Compile Include="SimulationComponents\CollisionComponent.cs" />
-    <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
-    <Compile Include="SimulationComponents\MoveComponent.cs" />
-    <Compile Include="SimulationComponents\AccelerationComponent.cs" />
-    <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
-    <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
-    <Compile Include="SimulationComponents\WattMoverComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
     <Compile Include="Definitions\Items\PickAxeDefinition.cs" />

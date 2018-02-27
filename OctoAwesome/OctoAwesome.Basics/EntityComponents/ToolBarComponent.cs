@@ -1,40 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome.EntityComponents
+using engenious;
+using engenious.Graphics;
+using MonoGameUi;
+using OctoAwesome.Basics.Controls;
+using OctoAwesome.Entities;
+namespace OctoAwesome.Basics.EntityComponents
 {
     /// <summary>
-    /// EntityComponent, die eine Werkzeug-Toolbar für den Apieler bereitstellt.
+    /// EntityComponent, die eine Werkzeug-Toolbar für den Spieler bereitstellt.
     /// </summary>
-    public class ToolBarComponent : EntityComponent
+    public class ToolBarComponent : EntityComponent, IUserInterfaceExtension
     {
         /// <summary>
-        /// Gibt die Anzahl Tools in der Toolbar an.
+        /// Gibt die Anzahl der Tools in der Toolbar an.
         /// </summary>
         public const int TOOLCOUNT = 10;
-
         /// <summary>
         /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
         /// </summary>
-        public InventorySlot[] Tools { get; set; }
-
+        public InventorySlot[] Tools { get; }
         /// <summary>
         /// Derzeit aktives Werkzeug des Spielers
         /// </summary>
         public InventorySlot ActiveTool { get; set; }
-
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
         /// </summary>
-        public ToolBarComponent()
+        public ToolBarComponent(Entity entity, IGameService service) : base(entity, service, true)
         {
             Tools = new InventorySlot[TOOLCOUNT];
         }
-
         /// <summary>
         /// Entfernt einen InventorySlot aus der Toolbar
         /// </summary>
@@ -49,7 +46,6 @@ namespace OctoAwesome.EntityComponents
             if (ActiveTool == slot)
                 ActiveTool = null;
         }
-
         /// <summary>
         /// Setzt einen InventorySlot an eine Stelle in der Toolbar und löscht ggf. vorher den Slot aus alten Positionen.
         /// </summary>
@@ -61,7 +57,6 @@ namespace OctoAwesome.EntityComponents
 
             Tools[index] = slot;
         }
-
         /// <summary>
         /// Gibt den Index eines InventorySlots in der Toolbar zurück.
         /// </summary>
@@ -75,7 +70,6 @@ namespace OctoAwesome.EntityComponents
 
             return -1;
         }
-
         /// <summary>
         /// Fügt einen neuen InventorySlot an der ersten freien Stelle hinzu.
         /// </summary>
@@ -89,6 +83,41 @@ namespace OctoAwesome.EntityComponents
                     Tools[i] = slot;
                     break;
                 }
+            }
+        }
+        public override void Update(GameTime gameTime)
+        {
+            IEntityController controller = (Entity as IControllable)?.Controller;
+            if (controller == null) return;
+            else if(controller.InteractInput)
+            {
+                if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
+                {
+                    Service.TakeBlock(controller, Entity.Cache, inventory);
+                }
+                else if (Service.TakeBlock(controller, Entity.Cache, out IInventoryableDefinition item))
+                {
+                    // TODO: und jetzt ?
+                }
+            }
+            else if(controller.ApplyInput)
+            {
+                if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
+                    Service.InteractBlock(Entity.Position, 0, 0, controller, Entity.Cache, ActiveTool, inventory);
+            }
+        }
+        public void Register(IUserInterfaceExtensionManager manager)
+        {
+            manager.RegisterOnGameScreen(typeof(ToolbarControl), this);
+            manager.RegisterOnInventoryScreen(typeof(ToolbarInventoryControl), this);
+        }
+        private void UpdateToolbar(InventoryComponent inventory)
+        {
+            foreach (InventorySlot slot in inventory.Inventory)
+            {
+                if (Tools.Any(s => s != null && s.Definition.Name == slot.Definition.Name))
+                    continue;
+                else AddNewSlot(slot);
             }
         }
     }

@@ -5,217 +5,125 @@ using engenious.Input;
 using System.Collections.Generic;
 using OctoAwesome.Client.Controls;
 using engenious;
-using OctoAwesome.EntityComponents;
+using System;
 
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class InventoryScreen : Screen
     {
-        private Dictionary<string, Texture2D> toolTextures = new Dictionary<string, Texture2D>();
-
-        private PlayerComponent player;
-
         private AssetComponent assets;
 
-        private InventoryControl inventory;
+        private Combobox<Control> comboboxLeft;
+        private Panel panelleft;
 
-        private Label nameLabel;
-
-        private Label massLabel;
-
-        private Label volumeLabel;
-
-        private Image[] images;
-
-        private Brush backgroundBrush;
-
-        private Brush hoverBrush;
+        private Combobox<Control> comboboxRight;
+        private Panel panelright;        
 
         public InventoryScreen(ScreenComponent manager) : base(manager)
         {
             assets = manager.Game.Assets;
 
-            foreach (var item in manager.Game.DefinitionManager.GetDefinitions())
-            {
-                Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
-                toolTextures.Add(item.GetType().FullName, texture);
-            }
-
-            player = manager.Player;
-
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.3f);
 
-            backgroundBrush = new BorderBrush(Color.Black);
-            hoverBrush = new BorderBrush(Color.Brown);
-
             Texture2D panelBackground = assets.LoadTexture(typeof(ScreenComponent), "panel");
 
-            Grid grid = new Grid(manager)
-            {
-                Width = 800,
-                Height = 500,
-            };
+            Grid grid = new Grid(manager);
 
-            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 600 });
-            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 200 });
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 40, });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 100 });
+            grid.Padding = Border.All(30);
 
             Controls.Add(grid);
 
-            inventory = new InventoryControl(manager)
+            comboboxLeft = new Combobox<Control>(manager)
+            {
+                Height = 30,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 15),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                TemplateGenerator = s => new Label(manager) { Text = s.ToString(), HorizontalAlignment = HorizontalAlignment.Stretch },
+                Margin = new Border(0, 0, 10, 0),
+            };
+            comboboxLeft.SelectedItemChanged += (s, e) => HandleItemChanged(s, e, 0);
+            grid.AddControl(comboboxLeft, 0, 0);
+
+            panelleft = new Panel(manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-                Padding = Border.All(20),
+                Margin = new Border(0, 5, 10, 5),
             };
+            grid.AddControl(panelleft, 0, 1);
 
-            grid.AddControl(inventory, 0, 0);
+            comboboxRight = new Combobox<Control>(manager)
+            {
+                Height = 30,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 15),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                TemplateGenerator = s => new Label(manager) { Text = s.ToString(), HorizontalAlignment = HorizontalAlignment.Stretch },
+                Margin = new Border(10, 0, 0, 0),
+            };
+            comboboxRight.SelectedItemChanged += (s, e) => HandleItemChanged(s, e, 1);
+            grid.AddControl(comboboxRight, 1, 0);
 
-            StackPanel infoPanel = new StackPanel(manager)
+            panelright = new Panel(manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-                Padding = Border.All(20),
-                Margin = Border.All(10, 0, 0, 0),
+                Margin = new Border(10, 5, 0, 5),
             };
+            grid.AddControl(panelright, 1, 1);
 
-            nameLabel = new Label(manager);
-            infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label(manager);
-            infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label(manager);
-            infoPanel.Controls.Add(volumeLabel);
-            grid.AddControl(infoPanel, 1, 0);
-
-            Grid toolbar = new Grid(manager)
+            foreach (Func<Control> creator in manager.Game.Player.InventoryScreenExtension)
             {
-                Margin = Border.All(0, 10, 0, 0),
-                Height = 100,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-            };
-
-            toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-                toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
-            toolbar.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            toolbar.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
-
-            images = new Image[ToolBarComponent.TOOLCOUNT];
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
-            {
-                Image image = images[i] = new Image(manager)
+                Control con = creator.Invoke();
+                if (con != null)
                 {
-                    Width = 42,
-                    Height = 42,
-                    Background = backgroundBrush,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Tag = i,
-                    Padding = Border.All(2),
-                };
-
-                image.StartDrag += (e) =>
-                {
-                    InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
-                    if (slot != null)
-                    {
-                        e.Handled = true;
-                        e.Icon = toolTextures[slot.Definition.GetType().FullName];
-                        e.Content = slot;
-                        e.Sender = toolbar;
-                    }
-                };
-
-                image.DropEnter += (e) => { image.Background = hoverBrush; };
-                image.DropLeave += (e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (e) =>
-                {
-                    e.Handled = true;
-
-                    if (e.Sender is Grid) // && ShiftPressed
-                    {
-                        // Swap
-                        int targetIndex = (int)image.Tag;
-                        InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
-
-                        InventorySlot sourceSlot = e.Content as InventorySlot;
-                        int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
-
-                        player.Toolbar.SetTool(sourceSlot, targetIndex);
-                        player.Toolbar.SetTool(targetSlot, sourceIndex);
-                    }
-                    else
-                    {
-                        // Inventory Drop
-                        InventorySlot slot = e.Content as InventorySlot;
-                        player.Toolbar.SetTool(slot, (int)image.Tag);
-                    }
-                };
-
-                toolbar.AddControl(image, i + 1, 0);
+                    comboboxLeft.Items.Add(con);
+                    comboboxRight.Items.Add(con);
+                }
             }
+            if (comboboxLeft.Items.Count > 0)
+                comboboxLeft.SelectedItem = comboboxLeft.Items[0];
+            if (comboboxRight.Items.Count > 1)
+                comboboxRight.SelectedItem = comboboxRight.Items[1];
 
-            grid.AddControl(toolbar, 0, 1, 2);
             Title = Languages.OctoClient.Inventory;
-        }
-
-        protected override void OnEndDrop(DragEventArgs args)
-        {
-            base.OnEndDrop(args);
-
-            if (args.Sender is Grid)
-            {
-                InventorySlot slot = args.Content as InventorySlot;
-                player.Toolbar.RemoveSlot(slot);
-            }
         }
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            // Tool neu zuweisen
-            if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
-            {
-                int offset = (int)args.Key - (int)Keys.D0;
-                player.Toolbar.SetTool(inventory.HoveredSlot, offset);
-                args.Handled = true;
-            }
-
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
                 args.Handled = true;
                 Manager.NavigateBack();
             }
-
             base.OnKeyDown(args);
         }
-
-        protected override void OnUpdate(GameTime gameTime)
+        
+        private void HandleItemChanged(Control sender, SelectionEventArgs<Control> args, int i)
         {
-            base.OnUpdate(gameTime);
-
-            nameLabel.Text = inventory.HoveredSlot?.Definition.Name ?? "";
-            massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
-
-            // Aktualisierung des aktiven Buttons
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            if (i == 0) // left
             {
-                if (player.Toolbar.Tools != null &&
-                    player.Toolbar.Tools.Length > i &&
-                    player.Toolbar.Tools[i] != null &&
-                    player.Toolbar.Tools[i].Definition != null)
+                panelleft.Controls.Clear();
+                if (!Equals(comboboxRight.SelectedItem, args.NewItem))
                 {
-                    images[i].Texture = toolTextures[player.Toolbar.Tools[i].Definition.GetType().FullName];
-                }
-                else
-                {
-                    images[i].Texture = null;
+                    panelleft.Controls.Add(args.NewItem);
                 }
             }
+            else if(i == 1) // right
+            {
+                panelright.Controls.Clear();
+                if (!Equals(comboboxLeft.SelectedItem, args.NewItem))
+                {
+                    panelright.Controls.Add(args.NewItem);
+                }
+            }
+            args.Handled = true;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)

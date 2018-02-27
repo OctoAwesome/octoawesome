@@ -1,15 +1,12 @@
-﻿using OctoAwesome;
-using OctoAwesome.Client.Components;
+﻿using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
-using System.Configuration;
-using System.Linq;
-using MonoGameUi;
 using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client
 {
@@ -46,25 +43,20 @@ namespace OctoAwesome.Client
 
         public OctoGame() : base()
         {
-            //graphics = new GraphicsDeviceManager(this);
-            //graphics.PreferredBackBufferWidth = 1080;
-            //graphics.PreferredBackBufferHeight = 720;
-
-            //Content.RootDirectory = "Content";
-            
-            Components = base.Components;
-
             Title = "OctoAwesome";
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
 
-            //Window.AllowUserResizing = true;
             Settings = new Settings();
             
-            ExtensionLoader = new ExtensionLoader(Settings);
-            ExtensionLoader.LoadExtensions();
+            ExtensionLoader extensionLoader = new ExtensionLoader(Settings);
+            ExtensionLoader = extensionLoader;
+            extensionLoader.LoadExtensions();
 
-            //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
+            DefinitionManager = new DefinitionManager(extensionLoader);
+            ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings, null);
+            extensionLoader.Service = new GameService(DefinitionManager);
+
 
             int width = Settings.Get("Width", 1080);
             int height = Settings.Get("Height", 720);
@@ -84,8 +76,23 @@ namespace OctoAwesome.Client
 
             Assets = new AssetComponent(this);
             Components.Add(Assets);
-            
 
+            Simulation = new Components.SimulationComponent(this, extensionLoader, ResourceManager);
+            Simulation.UpdateOrder = 4;
+            Components.Add(Simulation);
+
+            Player = new PlayerComponent(this, ResourceManager);
+            Player.UpdateOrder = 2;
+            Components.Add(Player);
+
+            Entity = new Components.EntityComponent(this,Simulation);
+            Entity.UpdateOrder = 2;
+            Components.Add(Entity);
+
+            Camera = new CameraComponent(this);
+            Camera.UpdateOrder = 3;
+            Components.Add(Camera);
+            
             Screen = new ScreenComponent(this);
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;

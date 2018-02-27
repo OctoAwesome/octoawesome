@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.IO;
-
+using OctoAwesome.Entities;
 namespace OctoAwesome
 {
     /// <summary>
@@ -24,6 +24,9 @@ namespace OctoAwesome
         /// </summary>
         Index2 Index { get; }
 
+        /// <summary>
+        /// Gibt die anzahl der Änderungen an die an dieser Instance vorgenommen wurden.
+        /// </summary>
         int ChangeCounter { get; set; }
 
         /// <summary>
@@ -57,6 +60,9 @@ namespace OctoAwesome
         /// <returns>Block-ID der angegebenen Koordinate</returns>
         ushort GetBlock(int x, int y, int z);
 
+        /// <summary>
+        /// Wird ausgelöst wenn sich die IChunkColumn ändert.
+        /// </summary>
         event Action<IChunkColumn, IChunk, int> Changed;
 
         /// <summary>
@@ -95,6 +101,8 @@ namespace OctoAwesome
         /// <param name="meta">(Optional) Metainformationen für den Block</param>
         void SetBlockMeta(int x, int y, int z, int meta);
 
+        // TODO: überlegen ob der Block die Ressourcen wissen muss.
+        // Die Ressourcen könnten auch erst ermittelt werden wenn der Block verarbeitet wurde.
         /// <summary>
         /// Liefert alle Ressourcen im Block an der angegebenen Koordinate zurück.
         /// </summary>
@@ -104,6 +112,8 @@ namespace OctoAwesome
         /// <returns>Ein Array aller Ressourcen des Blocks</returns>
         ushort[] GetBlockResources(int x, int y, int z);
 
+        // TODO: überlegen ob der Block die Ressourcen wissen muss.
+        // Die Ressourcen könnten auch erst ermittelt werden wenn der Block verarbeitet wurde.
         /// <summary>
         /// Ändert die Ressourcen des Blocks an der angegebenen Koordinate
         /// </summary>

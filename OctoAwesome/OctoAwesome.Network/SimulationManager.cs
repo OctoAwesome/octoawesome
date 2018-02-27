@@ -42,8 +42,8 @@ namespace OctoAwesome.Network
             mainLock = new object();
 
             settings = new Settings(); //TODO: Where are the settings?
-            
-            extensionLoader = new ExtensionLoader(settings);
+          
+            ExtensionLoader extensionLoader = new ExtensionLoader(settings);
             extensionLoader.LoadExtensions();
 
             definitionManager = new DefinitionManager(extensionLoader);
@@ -51,7 +51,8 @@ namespace OctoAwesome.Network
             var persistenceManager = new DiskPersistenceManager(extensionLoader, definitionManager, settings);
 
             resourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
-
+            extensionLoader.Service = new GameService(definitionManager);
+          
             simulation = new Simulation(resourceManager, extensionLoader);
             backgroundThread = new Thread(SimulationLoop)
             {

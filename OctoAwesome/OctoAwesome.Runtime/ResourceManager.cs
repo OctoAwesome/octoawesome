@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +27,9 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public IUniverse CurrentUniverse { get; private set; }
 
+        /// <summary>
+        /// Manager for Objeckt definitis.
+        /// </summary>
         public IDefinitionManager DefinitionManager { get; private set; }
 
         private IExtensionResolver extensionResolver;
@@ -184,10 +188,7 @@ namespace OctoAwesome.Runtime
                 throw new Exception("No Universe loaded");
 
             Player player = persistenceManager.LoadPlayer(CurrentUniverse.Id, playername);
-            if (player == null)
-            {
-                player = new Player();
-            }
+            if (player == null) player = new Player();
             return player;
         }
 
