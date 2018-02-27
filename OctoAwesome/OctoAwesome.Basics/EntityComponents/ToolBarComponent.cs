@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using engenious;
-using engenious.Graphics;
-using MonoGameUi;
 using OctoAwesome.Basics.Controls;
 using OctoAwesome.Entities;
 namespace OctoAwesome.Basics.EntityComponents

@@ -183,10 +183,10 @@ namespace OctoAwesome.Client.Controls
             //Additional Play Information
 
             //Active Tool
-            if (Player.Toolbar.ActiveTool != null)
-                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.Name + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
+            //if (Player.Toolbar.ActiveTool != null)
+            //    activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.Name + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
 
-            toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.Toolbar.Tools.Count(slot => slot != null);
+            //toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.Toolbar.Tools.Count(slot => slot != null);
 
             ////Fly Info
             //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;

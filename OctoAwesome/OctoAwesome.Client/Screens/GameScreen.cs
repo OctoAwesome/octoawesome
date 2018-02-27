@@ -82,7 +82,7 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(crosshair);
 
-            foreach (Func<Control> creater in manager.Game.Player.GameScreenExtension)
+            foreach (Func<Control> creater in manager.GameScreenExtension)
                 Controls.Add(creater());
 
             Title = Languages.OctoClient.Game;

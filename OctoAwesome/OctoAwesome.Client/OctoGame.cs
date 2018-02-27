@@ -43,6 +43,9 @@ namespace OctoAwesome.Client
 
         public OctoGame() : base()
         {
+
+            Components = base.Components;
+
             Title = "OctoAwesome";
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;

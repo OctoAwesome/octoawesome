@@ -25,7 +25,7 @@ namespace OctoAwesome.Basics
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
         /// <param name="averageDensity">Durchschnittliche Dichte des Planeten zur Berechnung der Gravitation in kg/m³. Erd- und Standardwert: 5510</param>
-        public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed, int averageDensity = 5510)
+        public ComplexPlanet(int id, Guid universe, Index3 size, int seed, int averageDensity = 5510)
             : base(id, universe, size, seed)
         {
             // Berechnung der Gravitation auf Basis des Newton'schen Grundgesetzes und
@@ -33,7 +33,7 @@ namespace OctoAwesome.Basics
             var radius = Math.Sqrt((Size.X * Size.Y) / (16 * Math.PI));
             Gravity = (float)((4f / 3f) * Math.PI * GravitationalConstant * averageDensity * radius);
 
-            Initalize();
+            //Initalize();
         }
 
         public ComplexPlanet() : base()

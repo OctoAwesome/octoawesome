@@ -78,7 +78,7 @@ namespace OctoAwesome.Client.Screens
             };
             grid.AddControl(panelright, 1, 1);
 
-            foreach (Func<Control> creator in manager.Game.Player.InventoryScreenExtension)
+            foreach (Func<Control> creator in manager.InventoryScreenExtension)
             {
                 Control con = creator.Invoke();
                 if (con != null)
