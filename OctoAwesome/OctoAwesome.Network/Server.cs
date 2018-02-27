@@ -12,6 +12,7 @@ namespace OctoAwesome.Network
     class Server
     {
         public event EventHandler<ConnectedClient> OnClientConnected;
+        public SimulationManager SimulationManager { get; set; }
 
         private Socket socket;
         private List<ConnectedClient> connectedClients;
@@ -21,6 +22,8 @@ namespace OctoAwesome.Network
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             lockObj = new object();
+
+            SimulationManager = new SimulationManager();
         }
 
         public void Start(IPAddress address, int port)

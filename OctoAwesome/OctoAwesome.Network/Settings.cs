@@ -10,7 +10,14 @@ namespace OctoAwesome.Network
 
         public Settings()
         {
-            dictionary = new Dictionary<string, string>();
+            //TODO: should more generic
+            dictionary = new Dictionary<string, string>()
+            {
+                ["ChunkRoot"] = "OctoMap",
+                ["Viewrange"] = "4",
+                ["DisablePersistence"] = "false",
+                ["LastUniverse"] = ""
+            };
         }
 
         public void Delete(string key) => dictionary.Remove(key);
