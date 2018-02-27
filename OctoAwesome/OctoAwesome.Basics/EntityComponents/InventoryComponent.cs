@@ -95,7 +95,7 @@ namespace OctoAwesome.Basics.EntityComponents
         public override void Update(GameTime gameTime)
         {
         }
-        public void Register(IUserInterfaceManager manager)
+        public void Register(IUserInterfaceExtensionManager manager)
         {
             manager.RegisterOnInventoryScreen(typeof(InventoryControl), this);
         }

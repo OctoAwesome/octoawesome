@@ -11,6 +11,6 @@ namespace OctoAwesome
         /// Register the extending UI.
         /// </summary>
         /// <param name="manager">UI-Manager</param>
-        void Register(IUserInterfaceManager manager);
+        void Register(IUserInterfaceExtensionManager manager);
     }
 }

@@ -24,7 +24,7 @@ namespace OctoAwesome.Basics.Controls
 
         private Dictionary<string, Texture2D> toolTextures;
 
-        public ToolbarControl(BaseScreenComponent screenManager, IUserInterfaceManager manager, ToolBarComponent bar) : 
+        public ToolbarControl(BaseScreenComponent screenManager, IUserInterfaceExtensionManager manager, ToolBarComponent bar) : 
             base(screenManager)
         {
             HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -172,6 +172,10 @@ namespace OctoAwesome.Basics.Controls
             activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
 
             base.OnUpdate(gameTime);
+        }
+        public override string ToString()
+        {
+            return "Werkzeuge";
         }
     }
 }

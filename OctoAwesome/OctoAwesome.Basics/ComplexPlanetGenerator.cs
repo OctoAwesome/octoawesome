@@ -12,6 +12,7 @@ namespace OctoAwesome.Basics
         {
             Index3 size = new Index3(12, 12, 3);
             ComplexPlanet planet = new ComplexPlanet(id, universe, size, seed);
+            planet.Generator = this;
             return planet;
         }
 

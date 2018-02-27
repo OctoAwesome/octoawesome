@@ -7,7 +7,7 @@ using MonoGameUi;
 using OctoAwesome.Entities;
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class PlayerComponent : GameComponent, IEntityController, IUserInterfaceManager
+    internal sealed class PlayerComponent : GameComponent, IEntityController, IUserInterfaceExtensionManager
     {
         #region IEntityController Interface
 
@@ -174,8 +174,9 @@ namespace OctoAwesome.Client.Components
             {
                 return (Control) Activator.CreateInstance(controltype, constructorargs);
             }
-            catch
+            catch(Exception exception)
             {
+                //TODO: Loggen
                 return null;
             }
         }

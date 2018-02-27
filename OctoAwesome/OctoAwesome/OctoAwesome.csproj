@@ -119,7 +119,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="IExtension.cs" />
-    <Compile Include="IUserInterfaceManager.cs" />
+    <Compile Include="IUserInterfaceExtensionManager.cs" />
     <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />

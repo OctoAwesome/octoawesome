@@ -76,6 +76,7 @@
     <Compile Include="Biomes\BiomeBase.cs" />
     <Compile Include="Controls\InventoryControl.cs" />
     <Compile Include="Controls\ToolbarControl.cs" />
+    <Compile Include="Controls\ToolbarInventoryControl.cs" />
     <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
     <Compile Include="Entities\WauziEntity.cs" />
     <Compile Include="EntityComponents\GroundPhysicComponent.cs" />

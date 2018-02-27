@@ -18,19 +18,57 @@ namespace OctoAwesome.Basics.Controls
         public InventorySlot HoveredSlot { get; private set; }
 
         private InventoryComponent inventory;
+        private Label volumeLabel;
+        private Label massLabel;
+        private Label nameLabel;
 
-        public InventoryControl(BaseScreenComponent manager, IUserInterfaceManager interfacemanager, InventoryComponent inventory) : 
-            base(manager)
+        public InventoryControl(BaseScreenComponent manager, IUserInterfaceExtensionManager interfacemanager, 
+            InventoryComponent inventory) : base(manager)
         {
             this.inventory = inventory;
 
+            Texture2D panelBackground = interfacemanager.LoadTextures(manager.GetType(), "panel");
+            Margin = new Border(0, 0, 0, 0);
+            HorizontalAlignment = HorizontalAlignment.Stretch;
+            VerticalAlignment = VerticalAlignment.Stretch;
+
+            Grid parentgrid = new Grid(manager);
+            parentgrid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1, });
+            parentgrid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1, });
+            parentgrid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 100, });
+            Controls.Add(parentgrid);
+
+            Panel panel = new Panel(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30)
+            };
+            parentgrid.AddControl(panel, 0, 0);
+
             ScrollContainer scroll = new ScrollContainer(manager)
             {
-                Margin = new Border(0, 0, 0, 0),
+                Margin = Border.All(0, 5, 5, 5),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
-            Controls.Add(scroll);
+            panel.Controls.Add(scroll);
+
+            StackPanel infoPanel = new StackPanel(manager)
+            {
+                Margin = new Border(0, 10, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
+            };
+
+            nameLabel = new Label(manager);
+            infoPanel.Controls.Add(nameLabel);
+            massLabel = new Label(manager);
+            infoPanel.Controls.Add(massLabel);
+            volumeLabel = new Label(manager);
+            infoPanel.Controls.Add(volumeLabel);
+            parentgrid.AddControl(infoPanel, 0, 1);
 
             Grid grid = new Grid(manager)
             {
@@ -72,6 +110,16 @@ namespace OctoAwesome.Basics.Controls
                 }
             }
             scroll.Content = grid;
+        }
+        protected override void OnUpdate(GameTime gameTime)
+        {
+            nameLabel.Text = HoveredSlot?.Definition.Name ?? "";
+            massLabel.Text = volumeLabel.Text = HoveredSlot?.Amount.ToString() ?? "";
+        }
+        public override string ToString()
+        {
+            // TODO: resx
+            return "Inventar";
         }
     }
 }

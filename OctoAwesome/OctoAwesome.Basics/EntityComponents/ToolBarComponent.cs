@@ -99,18 +99,17 @@ namespace OctoAwesome.Basics.EntityComponents
                 {
                     // TODO: und jetzt ?
                 }
-                UpdateToolbar(inventory);
             }
             else if(controller.ApplyInput)
             {
                 if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
                     Service.InteractBlock(Entity.Position, 0, 0, controller, Entity.Cache, ActiveTool, inventory);
-                UpdateToolbar(inventory);
             }
         }
-        public void Register(IUserInterfaceManager manager)
+        public void Register(IUserInterfaceExtensionManager manager)
         {
             manager.RegisterOnGameScreen(typeof(ToolbarControl), this);
+            manager.RegisterOnInventoryScreen(typeof(ToolbarInventoryControl), this);
         }
         private void UpdateToolbar(InventoryComponent inventory)
         {

@@ -10,7 +10,7 @@ namespace OctoAwesome
     /// <summary>
     /// UserInterfaceManager
     /// </summary>
-    public interface IUserInterfaceManager
+    public interface IUserInterfaceExtensionManager
     {
         /// <summary>
         /// Register an <see cref="IUserInterfaceExtension"/> to Gamescreen
