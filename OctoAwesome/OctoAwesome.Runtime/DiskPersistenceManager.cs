@@ -26,16 +26,12 @@ namespace OctoAwesome.Runtime
 
         private IDefinitionManager definitionManager;
         private IExtensionResolver extensionResolver;
-        private IResourceManager manager;
 
-
-
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, IResourceManager manager, ISettings Settings)
+        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
             this.Settings = Settings;
-            this.manager = manager;
         }
 
         private string GetRoot()

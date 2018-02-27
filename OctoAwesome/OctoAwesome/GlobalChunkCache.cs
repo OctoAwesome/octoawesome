@@ -267,8 +267,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="id">ID des Planeten</param>
         /// <returns>Planet</returns>
-        public IPlanet GetPlanet(int id)
-            => loadPlanetDelagte(id);
+        public IPlanet GetPlanet(int id) => loadPlanetDelagte(id);
 
         public void BeforeSimulationUpdate(Simulation simulation)
         {

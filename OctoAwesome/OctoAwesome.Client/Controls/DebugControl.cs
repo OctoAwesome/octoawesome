@@ -1,8 +1,5 @@
 ﻿using MonoGameUi;
-using System.Collections.Generic;
-using OctoAwesome.Runtime;
 using OctoAwesome.Client.Components;
-using System;
 using engenious;
 using engenious.Graphics;
 using System.Linq;
@@ -29,8 +26,7 @@ namespace OctoAwesome.Client.Controls
         StackPanel leftView, rightView;
         Label devText, position, rotation, fps, box, controlInfo, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo, gravityInfo;
 
-        public DebugControl(ScreenComponent screenManager)
-            : base(screenManager)
+        public DebugControl(ScreenComponent screenManager) : base(screenManager)
         {
             framebuffer = new float[buffersize];
             Player = screenManager.Player;
@@ -156,14 +152,14 @@ namespace OctoAwesome.Client.Controls
             controlInfo.Text = Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
 
             //Draw Position
-            string pos = "pos: " + Player.Position.Position.ToString();
+            string pos = "pos: " + Player.CurrentEntity.Position.ToString();
             position.Text = pos;
 
             //Draw Rotation
-            float grad = (Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360;
+            float grad = (Player.Yaw / MathHelper.TwoPi) * 360;
             string rot = "rot: " +
-                (((Player.CurrentEntityHead.Angle / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
-                ((Player.CurrentEntityHead.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
+                (((Player.Yaw / MathHelper.TwoPi) * 360) % 360).ToString("0.00") + " / " +
+                ((Player.Tilt / MathHelper.TwoPi) * 360).ToString("0.00");
             rotation.Text = rot;
 
             //Draw Fps
@@ -196,21 +192,21 @@ namespace OctoAwesome.Client.Controls
             //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
             //else flyInfo.Text = "";
 
-            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet);
+            IPlanet planet = manager.Game.ResourceManager.GetPlanet(Player.CurrentEntity.Position.Planet);
             // Temperature Info
-            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.Position.Position.GlobalBlockIndex);
+            temperatureInfo.Text = Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             // Precipitation Info
-            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.Position.Position.GlobalBlockIndex);
+            precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.CurrentEntity.Position.GlobalBlockIndex);
 
             // Gravity Info
             gravityInfo.Text = "Gravity" + ": " + planet.Gravity;
 
             //Draw Box Information
-            if (Player.SelectedBox.HasValue)
+            if (Player.SelectedBlock.HasValue)
             {
                 string selection = "box: " +
-                    Player.SelectedBox.Value.ToString() + " on " +
+                    Player.SelectedBlock.Value.ToString() + " on " +
                     Player.SelectedSide.ToString() + " (" +
                     Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
                     Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +

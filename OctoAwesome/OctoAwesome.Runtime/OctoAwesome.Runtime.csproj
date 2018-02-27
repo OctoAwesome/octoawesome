@@ -49,6 +49,10 @@
     <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\engenious.0.1.16\lib\net40\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\MonoGameUi.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -66,7 +70,9 @@
     <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionLoader.cs" />
+    <Compile Include="GameService.cs" />
     <Compile Include="IPlayerController.cs" />
+    <Compile Include="NetworkPersistenceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManager.cs" />
   </ItemGroup>

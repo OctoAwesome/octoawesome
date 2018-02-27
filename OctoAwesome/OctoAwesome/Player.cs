@@ -1,29 +1,49 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.IO;
 using engenious;
-using System.IO;
-using System.Linq;
-using OctoAwesome.EntityComponents;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Entität, die der menschliche Spieler mittels Eingabegeräte steuern kann.
     /// </summary>
-    public sealed class Player : Entity
+    public sealed class Player : Entity, IControllable
     {
         /// <summary>
         /// Die Reichweite des Spielers, in der er mit Spielelementen wie <see cref="Block"/> und <see cref="Entity"/> interagieren kann
         /// </summary>
         public const int SELECTIONRANGE = 8;
-
+        /// <summary>
+        /// Current controller of the Player.
+        /// </summary>
+        public IEntityController Controller => currentcontroller;
+        private IEntityController currentcontroller;
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
-        public Player() : base()
+        public Player() : base(false)
         {
+            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, false);
         }
-
+        /// <summary>
+        /// Register a Controller.
+        /// </summary>
+        /// <param name="controller"></param>
+        public void Register(IEntityController controller)
+        {
+            currentcontroller = controller;
+        }
+        /// <summary>
+        /// Reset the controller to deault.
+        /// </summary>
+        public void Reset()
+        {
+            currentcontroller = null;
+        }
+        /// <summary>
+        /// Called during initialize.
+        /// </summary>
+        /// <param name="manager">ResourceManager</param>
         protected override void OnInitialize(IResourceManager manager)
             => Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
 

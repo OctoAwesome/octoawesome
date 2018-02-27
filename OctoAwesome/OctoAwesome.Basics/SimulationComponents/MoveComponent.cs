@@ -4,17 +4,18 @@ using OctoAwesome.Basics.EntityComponents;
 using System.Linq;
 using OctoAwesome.EntityComponents;
 using engenious.Helper;
+using OctoAwesome.Entities;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(MoveableComponent), typeof(PositionComponent))]
-    public sealed class MoveComponent : SimulationComponent<MoveableComponent,PositionComponent>
+    public sealed class MoveComponent : OSimulationComponent<MoveableComponent,PositionComponent>
     {
         protected override bool AddEntity(Entity entity)
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
 
-            var planet = entity.Cache.LoadPlanet(poscomp.Position.Planet);
+            var planet = entity.Cache.GetPlanet(poscomp.Position.Planet);
             poscomp.Position.NormalizeChunkIndexXY(planet.Size);
             entity.Cache.SetCenter(planet, new Index2(poscomp.Position.ChunkIndex));
             return true;
@@ -41,8 +42,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
             var result = e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
-            if (result)
-                poscomp.Position = newposition;
+            if (result) poscomp.Position = newposition;
+
 
             //Direction
             if (movecomp.PositionMove.LengthSquared != 0)
@@ -52,7 +53,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
         }
 
-        private void CheckBoxCollision(GameTime gameTime,Entity e,MoveableComponent movecomp,PositionComponent poscomp)
+        private void CheckBoxCollision(GameTime gameTime, Entity e, MoveableComponent movecomp, PositionComponent poscomp)
         {
             BodyComponent bc = new BodyComponent();
             if (e.Components.ContainsComponent<BodyComponent>())
@@ -64,27 +65,27 @@ namespace OctoAwesome.Basics.SimulationComponents
             Vector3 move = movecomp.PositionMove;
 
             //Blocks finden die eine Kollision verursachen könnten
-            int minx = (int)Math.Floor(Math.Min(
+            int minx = (int) Math.Floor(Math.Min(
                 position.BlockPosition.X - bc.Radius,
-                position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));            
-            int maxx = (int)Math.Ceiling(Math.Max(
+                position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));
+            int maxx = (int) Math.Ceiling(Math.Max(
                 position.BlockPosition.X + bc.Radius,
                 position.BlockPosition.X + bc.Radius + movecomp.PositionMove.X));
-            int miny = (int)Math.Floor(Math.Min(
+            int miny = (int) Math.Floor(Math.Min(
                 position.BlockPosition.Y - bc.Radius,
                 position.BlockPosition.Y - bc.Radius + movecomp.PositionMove.Y));
-            int maxy = (int)Math.Ceiling(Math.Max(
+            int maxy = (int) Math.Ceiling(Math.Max(
                 position.BlockPosition.Y + bc.Radius,
                 position.BlockPosition.Y + bc.Radius + movecomp.PositionMove.Y));
-            int minz = (int)Math.Floor(Math.Min(
+            int minz = (int) Math.Floor(Math.Min(
                 position.BlockPosition.Z,
                 position.BlockPosition.Z + movecomp.PositionMove.Z));
-            int maxz = (int)Math.Ceiling(Math.Max(
+            int maxz = (int) Math.Ceiling(Math.Max(
                 position.BlockPosition.Z + bc.Height,
                 position.BlockPosition.Z + bc.Height + movecomp.PositionMove.Z));
 
             //Beteiligte Flächen des Spielers
-            var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(bc, movecomp, poscomp).ToList();
+            var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(bc.Radius, bc.Height, movecomp.Velocity, poscomp.Position);
 
             bool abort = false;
 
@@ -94,7 +95,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 {
                     for (int x = minx; x <= maxx && !abort; x++)
                     {
-                        move = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        move = movecomp.Velocity * (float) gameTime.ElapsedGameTime.TotalSeconds;
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + position.GlobalBlockIndex;
@@ -116,7 +117,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         foreach (var plane in planes)
                         {
 
-                            var subvelocity = (plane.Distance / (float)gameTime.ElapsedGameTime.TotalSeconds);
+                            var subvelocity = (plane.Distance / (float) gameTime.ElapsedGameTime.TotalSeconds);
                             var diff = movecomp.Velocity - subvelocity;
 
                             float vx;
@@ -153,7 +154,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             // TODO: Was ist für den Fall Gravitation = 0 oder im Scheitelpunkt des Sprungs?
             //movecomp.OnGround = Player.Velocity.Z == 0f;
 
-            movecomp.PositionMove = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            movecomp.PositionMove = movecomp.Velocity * (float) gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

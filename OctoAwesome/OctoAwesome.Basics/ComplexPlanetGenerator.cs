@@ -11,8 +11,7 @@ namespace OctoAwesome.Basics
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
             Index3 size = new Index3(12, 12, 3);
-            //TODO: Ist es gewollt, das hier der Generator zwei mal reingegeben wird?
-            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed)
+            ComplexPlanet planet = new ComplexPlanet(id, universe, size, seed)
             {
                 Generator = this
             };

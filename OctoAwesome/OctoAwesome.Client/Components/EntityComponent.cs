@@ -1,17 +1,16 @@
 ﻿using engenious;
 using engenious.Graphics;
 using engenious.Helper;
-using OctoAwesome.EntityComponents;
-using System;
+using OctoAwesome.Entities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class EntityComponent : GameComponent
     {
+        public SimulationComponent Simulation { get; private set; }
+        public IEnumerable<Entity> Entities { get { return entities; } }
         private struct ModelInfo
         {
             public bool render;
@@ -20,25 +19,20 @@ namespace OctoAwesome.Client.Components
         }
         private GraphicsDevice graphicsDevice;
         private BasicEffect effect;
-        public SimulationComponent Simulation { get; private set; }
-
-
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
-
-
-        public List<Entity> Entities { get; set; }
-
+        private List<Entity> entities;
         public EntityComponent(Game game, SimulationComponent simulation) : base(game)
         {
             Simulation = simulation;
 
-            Entities = new List<Entity>();
+            entities = new List<Entity>();
             graphicsDevice = game.GraphicsDevice;
 
             effect = new BasicEffect(graphicsDevice);
         }
         public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
+            if (entities.Count() == 0) return;
             effect.Projection = projection;
             effect.View = view;
             effect.TextureEnabled = true;
@@ -47,47 +41,34 @@ namespace OctoAwesome.Client.Components
             {
                 pass.Apply();
 
-                foreach (var entity in Entities)
+                foreach (var entity in entities)
                 {
-                    if (!entity.Components.ContainsComponent<RenderComponent>())
-                    {
-                        continue;
-                    }
+                    var drawable = entity as Entities.IDrawable;
+                    if (!drawable.DrawUpdate) continue;
 
-                    var rendercomp = entity.Components.GetComponent<RenderComponent>();
-
-                    ModelInfo modelinfo;
-
-                    if (!models.TryGetValue(rendercomp.Name,out modelinfo))
+                    if (!models.TryGetValue(drawable.Name, out ModelInfo modelinfo))
                     {
                         modelinfo = new ModelInfo()
                         {
+                            model = Game.Content.Load<Model>(drawable.ModelName),
+                            texture = Game.Content.Load<Texture2D>(drawable.TextureName),
                             render = true,
-                            model = Game.Content.Load<Model>(rendercomp.ModelName),
-                            texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
-                    };
+                        };
                     }
 
-                    if (!modelinfo.render)
-                        continue;
+                    if (!modelinfo.render) continue;
+                    
+                    Coordinate position = entity.Position;
 
-                    var positioncomp = entity.Components.GetComponent<PositionComponent>();
-                    var position = positioncomp.Position;
-                    var body = entity.Components.GetComponent<BodyComponent>();
-
-                    HeadComponent head = new HeadComponent();
-                    if (entity.Components.ContainsComponent<HeadComponent>())
-                        head = entity.Components.GetComponent<HeadComponent>();
-
-                    Index3 shift = chunkOffset.ShortestDistanceXY(
-                   position.ChunkIndex, planetSize);
-
-                    var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+                    Index3 shift = chunkOffset.ShortestDistanceXY(position.ChunkIndex, planetSize);
+                    var rotation = MathHelper.WrapAngle(drawable.Azimuth + MathHelper.ToRadians(drawable.BaseRotationZ));
 
                     Matrix world = Matrix.CreateTranslation(
                         shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
                         shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height)*Matrix.CreateRotationZ(rotation);
+                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * 
+                        Matrix.CreateScaling(drawable.Radius, drawable.Radius, drawable.Height) *
+                        Matrix.CreateRotationZ(rotation);
                     effect.World = world;
                     modelinfo.model.Transform = world;
                     modelinfo.model.Draw(effect, modelinfo.texture);
@@ -97,15 +78,12 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (Simulation.Simulation == null)
-                return;
-
             var simulation = Simulation.Simulation;
 
-            if (!(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
+            if (simulation == null || !(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
                 return;
 
-            Entities = simulation.Entities.Where(i => i.Components.ContainsComponent<PositionComponent>()).ToList();
+            entities = simulation.Entities.Where(i => i is Entities.IDrawable).ToList();
 
             //base.Update(gameTime);
         }

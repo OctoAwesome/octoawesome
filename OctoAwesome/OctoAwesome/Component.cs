@@ -1,19 +1,22 @@
 ﻿using System.IO;
-
 namespace OctoAwesome
 {
     /// <summary>
     /// Base Class for all Components.
     /// </summary>
-    public abstract class Component
+    public abstract class Component : ISerializable
     {
+        /// <summary>
+        /// Indicates that the Component is enabled or disabled.
+        /// </summary>
         public bool Enabled { get; set; }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Component()
         {
             Enabled = true;
         }
-
         /// <summary>
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
@@ -23,7 +26,6 @@ namespace OctoAwesome
         {
             writer.Write(Enabled);
         }
-
         /// <summary>
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>

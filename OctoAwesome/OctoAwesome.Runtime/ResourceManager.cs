@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +27,9 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public IUniverse CurrentUniverse { get; private set; }
 
+        /// <summary>
+        /// Manager for Objeckt definitis.
+        /// </summary>
         public IDefinitionManager DefinitionManager { get; private set; }
 
         private IExtensionResolver extensionResolver;
@@ -36,11 +40,11 @@ namespace OctoAwesome.Runtime
         /// <param name="extensionResolver">ExetnsionResolver</param>
         /// <param name="definitionManager">DefinitionManager</param>
         /// <param name="settings">Einstellungen</param>
-        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
+        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager)
         {
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
-            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, this, settings);
+            this.persistenceManager = persistenceManager;
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
@@ -184,10 +188,7 @@ namespace OctoAwesome.Runtime
                 throw new Exception("No Universe loaded");
 
             Player player = persistenceManager.LoadPlayer(CurrentUniverse.Id, playername);
-            if (player == null)
-            {
-                player = new Player();
-            }
+            if (player == null) player = new Player();
             return player;
         }
 
@@ -273,8 +274,8 @@ namespace OctoAwesome.Runtime
 
         public void SaveEntity(Entity entity)
         {
-            if (entity is Player)
-                SavePlayer((Player)entity);
+            if (entity is Player player)
+                SavePlayer(player);
         }
     }
 }

@@ -23,7 +23,6 @@ namespace OctoAwesome.Basics
         /// <param name="id">ID des Planeten</param>
         /// <param name="universe">ID des Universums</param>
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
-        /// <param name="generator">Instanz des Map-Generators</param>
         /// <param name="seed">Seed des Zufallsgenerators</param>
         /// <param name="averageDensity">Durchschnittliche Dichte des Planeten zur Berechnung der Gravitation in kg/m³. Erd- und Standardwert: 5510</param>
         public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed, int averageDensity = 5510)
@@ -45,11 +44,6 @@ namespace OctoAwesome.Basics
         public override void Deserialize(Stream stream)
         {
             base.Deserialize(stream);
-            Initalize();
-        }
-
-        private void Initalize()
-        {
             BiomeGenerator = new SurfaceBiomeGenerator(this, 40);
             ClimateMap = new Climate.ComplexClimateMap(this);
         }

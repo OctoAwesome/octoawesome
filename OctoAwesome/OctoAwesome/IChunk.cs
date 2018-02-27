@@ -44,6 +44,24 @@ namespace OctoAwesome
         /// Liefet den Block an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
+        /// <param name="removeblock">Entfernt den Block.</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        ushort GetBlock(Index3 index, bool removeblock);
+
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
+        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
+        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
+        /// <param name="removeblock">Entfernt den Block.</param>
+        /// <returns>Block-ID der angegebenen Koordinate</returns>
+        ushort GetBlock(int x, int y, int z, bool removeblock);
+
+        /// <summary>
+        /// Liefet den Block an der angegebenen Koordinate zurück.
+        /// </summary>
+        /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
         /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
         ushort GetBlock(Index3 index);
 

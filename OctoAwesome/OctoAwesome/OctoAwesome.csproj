@@ -52,6 +52,12 @@
     <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\engenious.0.1.16\lib\net40\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\engenious.0.1.11\lib\net40\NVorbis.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\engenious.0.1.11\lib\net40\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -72,28 +78,31 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkColumn.cs" />
+    <Compile Include="CodeExtensions\Vector2Extension.cs" />
+    <Compile Include="CodeExtensions\Vector3Extension.cs" />
+    <Compile Include="CollisionPlane.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
-    <Compile Include="EntityComponents\RenderComponent.cs" />
-    <Compile Include="EntityList.cs" />
-    <Compile Include="EntityComponent.cs" />
-    <Compile Include="EntityComponents\BodyComponent.cs" />
-    <Compile Include="EntityComponents\ControllableComponent.cs" />
-    <Compile Include="EntityComponents\HeadComponent.cs" />
-    <Compile Include="EntityComponents\InventoryComponent.cs" />
-    <Compile Include="EntityComponents\PositionComponent.cs" />
-    <Compile Include="EntityComponents\ToolBarComponent.cs" />
-    <Compile Include="EntityFilterAttribute.cs" />
-    <Compile Include="Extension.cs" />
+    <Compile Include="Entities\IControllable.cs" />
+    <Compile Include="Entities\IEntityController.cs" />
+    <Compile Include="Entities\IDrawable.cs" />
+    <Compile Include="Entities\EntityList.cs" />
+    <Compile Include="Entities\EntityComponent.cs" />
+    <Compile Include="Entities\EntityFilterAttribute.cs" />
+    <Compile Include="Entities\IEntityDefinition.cs" />
+    <Compile Include="Entities\IInteractable.cs" />
+    <Compile Include="IInventory.cs" />
+    <Compile Include="IUserInterfaceExtension.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkColumn.cs" />
     <Compile Include="IDefinition.cs" />
-    <Compile Include="IEntityList.cs" />
+    <Compile Include="Entities\IEntityList.cs" />
     <Compile Include="IExtensionLoader.cs" />
     <Compile Include="IExtensionResolver.cs" />
+    <Compile Include="IGameService.cs" />
     <Compile Include="IInventoryableDefinition.cs" />
     <Compile Include="IPersistenceManager.cs" />
     <Compile Include="IClimateMap.cs" />
@@ -110,11 +119,13 @@
     <Compile Include="ILocalChunkCache.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceManager.cs" />
-    <Compile Include="Entity.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="ISerializable.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
     <Compile Include="IExtension.cs" />
+    <Compile Include="IUserInterfaceExtensionManager.cs" />
     <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />
@@ -129,7 +140,9 @@
     <Compile Include="SimulationState.cs" />
     <Compile Include="Wall.cs" />
     <Compile Include="Universe.cs" />
-    <Compile Include="UpdateableEntity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
