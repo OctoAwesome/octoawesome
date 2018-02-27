@@ -54,7 +54,7 @@ namespace OctoAwesome.Client
             extensionLoader.LoadExtensions();
 
             DefinitionManager = new DefinitionManager(extensionLoader);
-            ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings);
+            ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings, null);
             extensionLoader.Service = new GameService(DefinitionManager);
 
 
