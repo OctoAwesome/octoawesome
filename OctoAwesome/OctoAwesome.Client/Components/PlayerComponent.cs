@@ -50,10 +50,10 @@ namespace OctoAwesome.Client.Components
 
         #endregion
 
-        #region External Inputs
-        
+        #region External Inputs        
 
         public bool FlymodeInput { get; set; }
+
         #endregion
 
         public Vector3 HeadOffset { get; private set; }
@@ -92,8 +92,7 @@ namespace OctoAwesome.Client.Components
             {
                 Game.Screen.CleanExtensions();
             }
-        }
-        
+        }        
 
         //public override void Update(GameTime gameTime)
         //{
@@ -109,7 +108,7 @@ namespace OctoAwesome.Client.Components
         /// <summary>
         /// DEBUG METHODE: NICHT FÜR VERWENDUNG IM SPIEL!
         /// </summary>
-        [Obsolete("Is Empty right now... TODO: implementieren")]
+        [Obsolete("Is Empty right now... TODO: implementieren, but how")]
         internal void AllBlocksDebug()
         {
             //var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();

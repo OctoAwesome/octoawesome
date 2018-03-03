@@ -109,14 +109,14 @@ namespace OctoAwesome.Client.Controls
             controlInfo = new Label(ScreenManager);
             leftView.Controls.Add(controlInfo);
 
+            fps = new Label(ScreenManager);
+            leftView.Controls.Add(fps);
+
             position = new Label(ScreenManager);
             rightView.Controls.Add(position);
 
             rotation = new Label(ScreenManager);
             rightView.Controls.Add(rotation);
-
-            fps = new Label(ScreenManager);
-            rightView.Controls.Add(fps);
 
             temperatureInfo = new Label(ScreenManager);
             rightView.Controls.Add(temperatureInfo);
@@ -273,20 +273,19 @@ namespace OctoAwesome.Client.Controls
             else
                 box.Text = "";
 
-            int indextoremove = -1;
+            int index = 0;
             try
             {
-                for (int i = 0; i < updatefunctions.Count; i++)
+                for (; index < updatefunctions.Count; index++)
                 {
-                    indextoremove = i;
-                    updatefunctions[i].Invoke();
+                    updatefunctions[index].Invoke();
                 }
             }
             catch (Exception)
             {
                 //TODO: loggen
-                if (indextoremove < updatefunctions.Count && indextoremove >= 0)
-                    updatefunctions.RemoveAt(indextoremove);
+                if (index < updatefunctions.Count && index >= 0)
+                    updatefunctions.RemoveAt(index);
             }
 
         }

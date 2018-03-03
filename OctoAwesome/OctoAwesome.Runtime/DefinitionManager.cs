@@ -40,7 +40,7 @@ namespace OctoAwesome.Runtime
         {
             this.extensionResolver = extensionResolver;
 
-            definitions = extensionResolver.GetDefinitions<IDefinition>().ToList();
+            definitions = extensionResolver.GetDefinitions<IDefinition>().OrderBy(d => Order(d)).ToList();
             typeddefinitions = new Dictionary<Type, List<IDefinition>>();
             nameddefinitions = new Dictionary<string, IDefinition>();
             blockDefinitions = new List<IBlockDefinition>();
@@ -104,6 +104,11 @@ namespace OctoAwesome.Runtime
                 stream.Dispose();
                 stream.Close();
             }
+        }
+        private int Order(IDefinition d)
+        {
+            if (d is IBlockDefinition) return 0;
+            else return 1;
         }
         /// <summary>
         /// Liefert eine Liste von Defintions.

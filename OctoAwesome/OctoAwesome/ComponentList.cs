@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using engenious;
+using OctoAwesome.Common;
 using OctoAwesome.Entities;
 
 namespace OctoAwesome
@@ -117,9 +118,10 @@ namespace OctoAwesome
         /// Update all updatealbe components in this <see cref="ComponentList{T}"/>
         /// </summary>
         /// <param name="gameTime">Simulation time.</param>
-        internal void Update(GameTime gameTime)
+        /// <param name="service">Game Service</param>
+        public void Update(GameTime gameTime, IGameService service)
         {
-            updateable.ForEach(c => c.Update(gameTime));
+            updateable.ForEach(c => c.Update(gameTime, service));
         }
         /// <summary>
         /// Checks if the <see cref="Component"/> is included.
@@ -128,7 +130,6 @@ namespace OctoAwesome
         /// <returns></returns>
         public bool ContainsComponent(Type type)
         {
-            if (!type.IsClass) return false;
             return components.ContainsKey(type);
         }
         /// <summary>
@@ -213,8 +214,8 @@ namespace OctoAwesome
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        /// <param name="definition">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definition)
         {
             writer.Write(components.Count);
             foreach (var componente in components)
@@ -227,7 +228,7 @@ namespace OctoAwesome
                     {
                         try
                         {
-                            componente.Value.Serialize(componentbinarystream, definitionManager);
+                            componente.Value.Serialize(componentbinarystream, definition);
                             writer.Write((int)memorystream.Length);
                             memorystream.WriteTo(writer.BaseStream);
 
@@ -245,8 +246,8 @@ namespace OctoAwesome
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        /// <param name="definition">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definition)
         {
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -262,13 +263,11 @@ namespace OctoAwesome
 
                     if (type == null)
                         continue;
-
-                    T component;
-
-                    if (!components.TryGetValue(type, out component))
+                    
+                    if (!components.TryGetValue(type, out T component))
                     {
-                        component = (T)Activator.CreateInstance(type);
-                        components.Add(type, component);
+                        component = (T) Activator.CreateInstance(type);
+                        AddComponent(type, component, false);                        
                     }
 
                     byte[] buffer = new byte[length];
@@ -278,7 +277,7 @@ namespace OctoAwesome
                     {
                         using (BinaryReader componentBinaryStream = new BinaryReader(memoryStream))
                         {
-                            component.Deserialize(componentBinaryStream, definitionManager);
+                            component.Deserialize(componentBinaryStream, definition);
                         }
                     }
                 }

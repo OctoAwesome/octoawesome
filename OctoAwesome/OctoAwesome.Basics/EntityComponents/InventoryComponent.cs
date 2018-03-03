@@ -16,36 +16,36 @@ namespace OctoAwesome.Basics.EntityComponents
         /// Das Inventar der Entity
         /// </summary>
         public List<InventorySlot> Inventory { get; set; }
-        public InventoryComponent(Entity entity, IGameService service) : base(entity, service, false)
+        public InventoryComponent() : base(false)
         {
             Inventory = new List<InventorySlot>();
         }
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader, IDefinitionManager definition)
         {
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader, definition);
 
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
                 string name = reader.ReadString();
-                var definition = definitionManager.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
+                var def = definition.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
                 var amount = reader.ReadDecimal();
 
-                if (definition == null || !(definition is IInventoryableDefinition))
+                if (definition == null || !(def is IInventoryableDefinition))
                     continue;
 
                 var slot = new InventorySlot()
                 {
                     Amount = amount,
-                    Definition = (IInventoryableDefinition)definition,
+                    Definition = (IInventoryableDefinition)def,
                 };
 
                 Inventory.Add(slot);
             }
         }
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public override void Serialize(BinaryWriter writer, IDefinitionManager definition)
         {
-            base.Serialize(writer, definitionManager);
+            base.Serialize(writer, definition);
 
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)
@@ -92,9 +92,6 @@ namespace OctoAwesome.Basics.EntityComponents
                 return true;
             }
             return false;
-        }
-        public override void Update(GameTime gameTime)
-        {
         }
         public void Register(IUserInterfaceExtensionManager manager)
         {

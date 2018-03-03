@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.Common;
 using System.IO;
 namespace OctoAwesome.Entities
 {
@@ -10,7 +11,7 @@ namespace OctoAwesome.Entities
         /// <summary>
         /// Indicates that the <see cref="Entity"/> need an Update.
         /// </summary>
-        public bool NeedUpdate { get; }
+        public bool NeedUpdate { get; private set; }
         /// <summary>
         /// Horizontaler winkel.
         /// </summary>
@@ -32,6 +33,13 @@ namespace OctoAwesome.Entities
         /// </summary>
         public ILocalChunkCache Cache { get; protected set; }
         /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public Entity() : this(false)
+        {
+
+        }
+        /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
         /// <param name="needUpdate">Indicates that <see cref="Entity"/> need an Update.</param>
@@ -44,15 +52,17 @@ namespace OctoAwesome.Entities
         /// Updatemethod for the <see cref="Entity"/>
         /// </summary>
         /// <param name="gameTime">Time of the Simulation.</param>
-        internal void Update(GameTime gameTime)
+        /// <param name="service">Game services</param>
+        internal void Update(GameTime gameTime, IGameService service)
         {
-            OnUpdate(gameTime);
+            OnUpdate(gameTime, service);
         }
         /// <summary>
         /// Called dirung Update of the <see cref="Entity"/>
         /// </summary>
         /// <param name="gameTime">Time of the Simulation.</param>
-        protected virtual void OnUpdate(GameTime gameTime)
+        /// <param name="service">Game services</param>
+        protected virtual void OnUpdate(GameTime gameTime, IGameService service)
         {
 
         }
@@ -82,26 +92,27 @@ namespace OctoAwesome.Entities
         /// <summary>
         /// Initialize the Entity.
         /// </summary>
-        /// <param name="mananger"></param>
-        public void Initialize(IResourceManager mananger)
+        /// <param name="service">Game Service</param>
+        public void Initialize(IGameService service)
         {
-            OnInitialize(mananger);
+            OnInitialize(service);
         }
         /// <summary>
-        /// Called during initialization.
+        /// Called during initialize.
         /// </summary>
-        /// <param name="manager"></param>
-        protected virtual void OnInitialize(IResourceManager manager)
+        /// <param name="service"><see cref="IGameService"/></param>
+        protected virtual void OnInitialize(IGameService service)
         {
         }
         /// <summary>
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        /// <param name="definition">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definition)
         {
-            Components.Serialize(writer, definitionManager);
+            writer.Write(NeedUpdate);
+            writer.Write(Azimuth);
             writer.Write(Position.Planet);
             writer.Write(Position.GlobalBlockIndex.X);
             writer.Write(Position.GlobalBlockIndex.Y);
@@ -109,21 +120,21 @@ namespace OctoAwesome.Entities
             writer.Write(Position.BlockPosition.X);
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
-            writer.Write(Position.ChunkIndex.X);
-            writer.Write(Position.ChunkIndex.Y);
-            writer.Write(Position.ChunkIndex.Z);
+            Components.Serialize(writer, definition);
         }
         /// <summary>
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        /// <param name="definition">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definition)
         {
-            Components.Deserialize(reader, definitionManager);
+            NeedUpdate = reader.ReadBoolean();
+            Azimuth = reader.ReadSingle();
             Position = new Coordinate(reader.ReadInt32(),
                 new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32()),
                 new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()));
+            Components.Deserialize(reader, definition);
         }
         private void OnRemoveComponent(EntityComponent component)
         {
@@ -135,6 +146,7 @@ namespace OctoAwesome.Entities
         {
             //if (Simulation != null)
             //    throw new NotSupportedException("Can't add components during simulation");
+            component.SetEntity(this);
         }
     }
 }

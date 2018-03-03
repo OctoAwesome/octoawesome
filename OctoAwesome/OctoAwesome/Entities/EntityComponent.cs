@@ -16,43 +16,41 @@ namespace OctoAwesome.Entities
     public abstract class EntityComponent : Component
     {
         /// <summary>
-        /// Eventhandler for released Componets.
-        /// </summary>
-        public event ReleaseEvent Released;
-        /// <summary>
-        /// Common Service.
-        /// </summary>
-        public IGameService Service { get; }
-        /// <summary>
         /// <see cref="Entities.Entity"/> of this <see cref="EntityComponent"/>
         /// </summary>
-        public Entity Entity { get; }
+        public Entity Entity { get; private set; }
         /// <summary>
         /// Constructor of <see cref="EntityComponent"/>
         /// </summary>
-        /// <param name="entity">Entity</param>
-        /// <param name="service">Service</param>
-        /// <param name="needupdate">Indicates if the <see cref="EntityComponent"/> need updates</param>
-        public EntityComponent(Entity entity, IGameService service, bool needupdate) : base(needupdate)
+        /// <param name="needupdate">Indicates that the <see cref="EntityComponent"/> need updates</param>
+        public EntityComponent(bool needupdate) : base(needupdate)
         {
-            Service = service;
-            Entity = entity;
         }
         /// <summary>
-        /// Constructor of <see cref="EntityComponent"/>
+        /// Default Constructor
         /// </summary>
-        /// <param name="entity">Entity</param>
-        /// <param name="service">Service</param>
-        public EntityComponent(Entity entity, IGameService service) : this(entity, service, true)
+        public EntityComponent() : base()
         {
 
         }
         /// <summary>
-        /// Announce that this Component is released.
+        /// Set the Entity for this Component
         /// </summary>
-        protected virtual void Release()
+        /// <param name="entity"></param>
+        public void SetEntity(Entity entity)
         {
-            Released?.Invoke(Entity, this);
+            if (entity == null) return;
+            if (Entity != null) return;
+            OnSetEntity(entity);
+            Entity = entity;
+        }
+        /// <summary>
+        /// Called during SetEntity
+        /// </summary>
+        /// <param name="entity"></param>
+        protected virtual void OnSetEntity(Entity entity)
+        {
+
         }
     }
 }

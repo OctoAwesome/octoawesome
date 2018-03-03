@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using OctoAwesome.Entities;
+using OctoAwesome.Common;
+
 namespace OctoAwesome
 {
     /// <summary>
@@ -127,14 +129,14 @@ namespace OctoAwesome
         /// Serialisiert die Chunksäule in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
+        /// <param name="definitionManager">Der verwendete <see cref="IDefinitionManager"/></param>
         void Serialize(Stream stream, IDefinitionManager definitionManager);
 
         /// <summary>
         /// Deserialisiert die Chunksäule aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
+        /// <param name="definitionManager">Der verwendete <see cref="IDefinitionManager"/></param>
         /// <param name="columnIndex">Die Position der Säule</param>
         /// <param name="planetId">Der Index des Planeten</param>
         void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using engenious;
+using OctoAwesome.Common;
 using OctoAwesome.Entities;
 
 namespace OctoAwesome
@@ -57,25 +58,25 @@ namespace OctoAwesome
         /// <summary>
         /// Called during initialize.
         /// </summary>
-        /// <param name="manager">ResourceManager</param>
-        protected override void OnInitialize(IResourceManager manager)
+        /// <param name="service"><see cref="IGameService"/></param>
+        protected override void OnInitialize(IGameService service)
         {
-            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0);
+            Cache = service.GetLocalCache(false, 2, 1);
+            //SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0);
         }
         /// <summary>
         /// Serialisiert den Player mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
-            => base.Serialize(writer, definitionManager); // Entity
+        /// <param name="definition">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public override void Serialize(BinaryWriter writer, IDefinitionManager definition)
+            => base.Serialize(writer, definition); // Entity
         /// <summary>
         /// Deserialisiert den Player aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
-            => base.Deserialize(reader, definitionManager); // Entity
+        /// <param name="definition">Der aktuell verwendete <see cref="IGameService"/>.</param>
+        public override void Deserialize(BinaryReader reader, IDefinitionManager definition)
+            => base.Deserialize(reader, definition); // Entity
     }
 }

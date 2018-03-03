@@ -12,17 +12,32 @@ namespace OctoAwesome.Runtime
     public sealed class GameService : IGameService
     {
         /// <summary>
-        /// <see cref="IDefinitionManager"/>
+        /// <see cref="IDefinitionManager"/> der lokalen Daten.
         /// </summary>
-        public IDefinitionManager DefinitionManager { get; }
-        private const float GAP = 0.01f;
+        public IDefinitionManager DefinitionManager => manager.DefinitionManager;
+        /// <summary>
+        /// Gap value for precision compansation.
+        /// </summary>
+        public const float GAP = 0.01f;
+        private IResourceManager manager;
         /// <summary>
         /// Default Construktor.
         /// </summary>
-        /// <param name="manager"></param>
-        public GameService(IDefinitionManager manager)
+        /// <param name="resourceManager">ResourceManger</param>
+        public GameService(IResourceManager resourceManager)
         {
-            DefinitionManager = manager;
+            manager = resourceManager;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="passive"></param>
+        /// <param name="dimensions"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public ILocalChunkCache GetLocalCache(bool passive, int dimensions, int range)
+        {
+            return new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
         }
         /// <summary>
         /// Take a Block from the World.
@@ -150,16 +165,20 @@ namespace OctoAwesome.Runtime
         /// Calculates the collison between an <see cref="Entity"/> and the world.
         /// </summary>
         /// <param name="gameTime">Simulation time</param>
-        /// <param name="entity">Entity</param>
+        /// <param name="position">Position of the <see cref="Entity"/></param>
+        /// <param name="cache"><see cref="ILocalChunkCache"/> as workspace</param>
         /// <param name="radius">radius of the <see cref="Entity"/></param>
         /// <param name="height">height of the <see cref="Entity"/></param>
         /// <param name="deltaPosition">Calculated delta position for this cycle</param>
         /// <param name="velocity">claculated velocity for this cycle</param>
+        /// <exception cref="ArgumentNullException">Cache</exception>
         /// <returns>the velocity of the <see cref="Entity"/> after collision checks</returns>
-        public Vector3 WorldCollision(GameTime gameTime, Entity entity, float radius, float height, 
+        public Vector3 WorldCollision(GameTime gameTime, Coordinate position, ILocalChunkCache cache, float radius, float height, 
             Vector3 deltaPosition, Vector3 velocity)
         {
-            Coordinate position = entity.Position;
+            if (cache == null)
+                throw new ArgumentNullException(nameof(cache));
+
             Vector3 move = deltaPosition;
 
             //Blocks finden die eine Kollision verursachen könnten
@@ -197,7 +216,7 @@ namespace OctoAwesome.Runtime
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + position.GlobalBlockIndex;
-                        ushort block = entity.Cache.GetBlock(blockPos);
+                        ushort block = cache.GetBlock(blockPos);
                         if (block == 0) continue;
 
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, velocity);
@@ -249,6 +268,15 @@ namespace OctoAwesome.Runtime
                 }
             }
             return velocity;
+        }
+        /// <summary>
+        /// Provides other Services.
+        /// </summary>
+        /// <param name="serviceType">Type of Service</param>
+        /// <returns></returns>
+        public object GetService(Type serviceType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

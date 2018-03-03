@@ -13,16 +13,15 @@ namespace OctoAwesome.Basics.Extensions
         }
         public void Extend(IExtensionLoader extensionLoader)
         {
-            extensionLoader.RegisterEntityExtender<Player>((player, service) =>
+            extensionLoader.RegisterEntityExtender<Player>((player) =>
             {
-                player.Components.AddComponent(new GroundPhysicComponent(player, service, 60f, 400f, 0.8f, 3.5f));
-                InventoryComponent inventory = new InventoryComponent(player, service);
-                player.Components.AddComponent(inventory);
-                player.Components.AddComponent(new ToolBarComponent(player, service));
+                player.Components.AddComponent(new GroundPhysicComponent(60f, 400f, 0.8f, 3.5f));
+                player.Components.AddComponent(new InventoryComponent());
+                player.Components.AddComponent(new ToolBarComponent());
             });
-            extensionLoader.RegisterEntityExtender<WauziEntity>((entity, service) =>
+            extensionLoader.RegisterEntityExtender<WauziEntity>((entity) =>
             {
-                entity.Components.AddComponent(new GroundPhysicComponent(entity, service, 30f, 300f, 1.2f, 1.6f));
+                entity.Components.AddComponent(new GroundPhysicComponent(30f, 300f, 1.2f, 1.6f));
             });
         }
     }

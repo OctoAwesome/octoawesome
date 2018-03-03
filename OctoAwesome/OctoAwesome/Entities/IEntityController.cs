@@ -29,19 +29,19 @@ namespace OctoAwesome.Entities
         /// </summary>
         bool ApplyInput { get; set; }
         /// <summary>
-        /// input for Jump
+        /// Input for Jump
         /// </summary>
         bool JumpInput { get; set; }
         /// <summary>
-        /// tilt in world coordinatesystem
+        /// Tilt feedback in world coordinatesystem
         /// </summary>
         float Tilt { get; set; }
         /// <summary>
-        /// Yaw in wolrd coordinatesystem
+        /// Yaw feedback in wolrd coordinatesystem
         /// </summary>
         float Yaw { get; set; }
         /// <summary>
-        /// Roll in wolrd coordinatesystem
+        /// Roll feedback in wolrd coordinatesystem
         /// </summary>
         float Roll { get; set; }
         /// <summary>

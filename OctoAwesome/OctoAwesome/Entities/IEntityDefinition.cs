@@ -11,7 +11,7 @@ namespace OctoAwesome.Entities
         /// <summary>
         /// Runtime type of the Entity.
         /// </summary>
-        Type EntityType { get; }
+        Type AssosiatedType { get; }
         /// <summary>
         /// Indicats that this definition can be stored in an inventory.
         /// </summary>

@@ -17,11 +17,11 @@ namespace OctoAwesome.Client.Components
         public PlayerComponent Player { get { return Game.Player; } }
 
         public CameraComponent Camera { get { return Game.Camera; } }
-        
+
+        public IDefinitionManager DefinitionManager => Game.DefinitionManager;
+
         public IEnumerable<Func<Control>> GameScreenExtension { get { return gamescreenextension; } }
-
         public IEnumerable<Func<Control>> InventoryScreenExtension { get { return inventoryscreenextension; } }
-
         public IEnumerable<(bool right, Func<string> updatefunc)> DebugControlExtensions { get { return debugscreenextensions; } }
 
         private List<Func<Control>> gamescreenextension;

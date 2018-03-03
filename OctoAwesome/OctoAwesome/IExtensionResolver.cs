@@ -21,8 +21,7 @@ namespace OctoAwesome
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        /// <param name="service">Common game services</param>
-        void ExtendEntity(Entity entity, IGameService service);
+        void ExtendEntity(Entity entity);
 
         /// <summary>
         /// Return a List of Definitions

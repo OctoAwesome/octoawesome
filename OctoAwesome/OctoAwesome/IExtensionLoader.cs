@@ -62,7 +62,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        void RegisterEntityExtender<T>(Action<Entity, IGameService> extenderDelegate) where T : Entity;
+        void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity;
 
         /// <summary>
         /// Adds a new Extender for the simulation.

@@ -198,6 +198,8 @@ namespace OctoAwesome
                 {
                     if (!passive)
                     {
+                        //TODO: muss das eine exception sein ?
+                        // passiert eigentlich nichts schlimmes wenn etwas entfernt wird das nicht da ist.
                         throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
                     }
 

@@ -152,7 +152,6 @@ namespace OctoAwesome.Client.Components
             if (!ChunkPosition.HasValue)
                 return false;
 
-
             // Chunk nachladen
             if (this.chunk == null)
             {
@@ -169,7 +168,7 @@ namespace OctoAwesome.Client.Components
             }
             var chunk = this.chunk;
             ChangeStart = chunk.ChangeCounter;
-            List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>();
+            List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>(4096);
             List<int> index = new List<int>();
             int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
             float textureWidth = 1f / textureColumns;
@@ -188,9 +187,8 @@ namespace OctoAwesome.Client.Components
                 definitionIndex += textureCount;
             }
 
-
-
-            Vector2[] uvOffsets = new[] {
+            Vector2[] uvOffsets = new[] 
+            {
                 new Vector2(0, 0),
                 new Vector2(1, 0),
                 new Vector2(1, 1),
@@ -210,14 +208,12 @@ namespace OctoAwesome.Client.Components
                         if (blockDefinition == null)
                             continue;
 
-                        int textureIndex;
-                        if (!textureOffsets.TryGetValue(blockDefinition, out textureIndex))
+                        if (!textureOffsets.TryGetValue(blockDefinition, out int textureIndex))
                             continue;
 
                         // Textur-Koordinate "berechnen"
                         Vector2 textureOffset = new Vector2();
                         //Vector2 textureSize = new Vector2(textureWidth - textureSizeGap, textureWidth - textureSizeGap);
-
 
                         ushort topBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z + 1));
                         IBlockDefinition topBlockDefintion = definitionManager.GetDefinitionByIndex<IBlockDefinition>(topBlock);
@@ -270,7 +266,6 @@ namespace OctoAwesome.Client.Components
 
                         ushort bottomBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z - 1));
                         IBlockDefinition bottomBlockDefintion = definitionManager.GetDefinitionByIndex<IBlockDefinition>(bottomBlock);
-
 
                         // Unten
                         if (bottomBlock == 0 || (!bottomBlockDefintion.IsSolidWall (Wall.Top) && bottomBlock != block))
@@ -535,7 +530,7 @@ namespace OctoAwesome.Client.Components
                     if (vertexCount + 2 > vb.VertexCount)
                         vb.Resize(vertexCount + 2);
                     //vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
-                    vb.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
+                    vb.SetData(vertices.ToArray());
 
                     //if (indexCount > ib.IndexCount)
                     //    ib.Resize(indexCount);

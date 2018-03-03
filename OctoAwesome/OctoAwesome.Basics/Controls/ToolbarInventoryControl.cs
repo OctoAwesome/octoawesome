@@ -24,8 +24,7 @@ namespace OctoAwesome.Basics.Controls
 
         private ToolBarComponent bar;
 
-        public ToolbarInventoryControl(BaseScreenComponent screenmanager, IUserInterfaceExtensionManager manager,
-            ToolBarComponent bar) : base(screenmanager)
+        public ToolbarInventoryControl(BaseScreenComponent screenmanager, IUserInterfaceExtensionManager manager, ToolBarComponent bar) : base(screenmanager)
         {
             Texture2D panelBackground = manager.LoadTextures(manager.GetType(), "panel");
             Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30);
@@ -37,7 +36,7 @@ namespace OctoAwesome.Basics.Controls
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
 
-            foreach (var item in bar.Service.DefinitionManager.GetDefinitions())
+            foreach (var item in manager.DefinitionManager.GetDefinitions())
             {
                 Texture2D texture = manager.LoadTextures(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);

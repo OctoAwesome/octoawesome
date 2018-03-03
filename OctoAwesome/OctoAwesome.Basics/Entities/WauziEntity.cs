@@ -1,6 +1,7 @@
 ﻿using System;
 using engenious;
 using engenious.Helper;
+using OctoAwesome.Common;
 using OctoAwesome.Entities;
 namespace OctoAwesome.Basics.Entities
 {
@@ -77,7 +78,7 @@ namespace OctoAwesome.Basics.Entities
         public string ModelName => "dog";
         public string TextureName => "texdog";
         public float BaseRotationZ => -90f;
-
+        
         public float Height => 1;
         public float Radius => 1;
         private WauziTestController defaultcontroller;
@@ -85,13 +86,13 @@ namespace OctoAwesome.Basics.Entities
         public WauziEntity() : base(true)
         {
         }
-        protected override void OnUpdate(GameTime gameTime)
+        protected override void OnUpdate(GameTime gameTime, IGameService service)
         {
             defaultcontroller.Update(gameTime);
         }
-        protected override void OnInitialize(IResourceManager manager)
+        protected override void OnInitialize(IGameService service)
         {
-            Cache = new LocalChunkCache(manager.GlobalChunkCache, true, 2, 1);
+            Cache = service.GetLocalCache(true, 2, 1);
             defaultcontroller = new WauziTestController();
             currentcontroller = defaultcontroller;
         }

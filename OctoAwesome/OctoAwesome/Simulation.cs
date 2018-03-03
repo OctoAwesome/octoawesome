@@ -124,18 +124,17 @@ namespace OctoAwesome
                 foreach (var entity in Entities)
                 {
                     if(entity.NeedUpdate)
-                        entity.Update(gameTime);
-                    entity.Components.Update(gameTime);
+                        entity.Update(gameTime, service);
+                    entity.Components.Update(gameTime, service);
                 }
 
                 // Update all Components
                 foreach (var component in Components.Where(c => c.Enabled))
-                    component.Update(gameTime);
+                    component.Update(gameTime, service);
 
                 ResourceManager.GlobalChunkCache.AfterSimulationUpdate(this);
             }
         }
-
         /// <summary>
         /// Beendet das aktuelle Spiel (nicht die Applikation)
         /// </summary>
@@ -170,11 +169,8 @@ namespace OctoAwesome
             if(entities.Contains(entity))
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
-            if (entities.Contains(entity))
-                return;
-
-            entity.Initialize(ResourceManager);
-            extensionResolver.ExtendEntity(entity, service);
+            entity.Initialize(service);
+            extensionResolver.ExtendEntity(entity);
             entity.SetPosition(entity.Position, entity.Azimuth);
             entity.Id = nextId++;
             entities.Add(entity);

@@ -1,3 +1,4 @@
+using OctoAwesome.Common;
 using OctoAwesome.Entities;
 using System;
 
@@ -9,7 +10,7 @@ namespace OctoAwesome
     public interface IResourceManager
     {
         /// <summary>
-        /// Manager for Object definitions.
+        /// Game Services.
         /// </summary>
         IDefinitionManager DefinitionManager { get; }
         /// <summary>

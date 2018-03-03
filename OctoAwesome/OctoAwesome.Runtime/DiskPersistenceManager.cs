@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -21,21 +22,20 @@ namespace OctoAwesome.Runtime
         private const string ColumnFilename = "column_{0}_{1}.dat";
 
         private DirectoryInfo root;
-        private ISettings Settings;
-
-        private IDefinitionManager definitionManager;
+        private ISettings Settings;        
         private IExtensionResolver extensionResolver;
+        private IDefinitionManager definitionmanager;
         /// <summary>
         /// Manager for persistance at lokal Disk.
         /// </summary>
         /// <param name="extensionResolver">Resolver or extensions</param>
-        /// <param name="definitionManager">Manager for definitions</param>
+        /// <param name="definition">Game services</param>
         /// <param name="Settings">Game settings</param>
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings Settings)
+        public DiskPersistenceManager(IDefinitionManager definition, IExtensionResolver extensionResolver, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
-            this.definitionManager = definitionManager;
             this.Settings = Settings;
+            this.definitionmanager = definition;
         }
 
         private string GetRoot()
@@ -133,7 +133,7 @@ namespace OctoAwesome.Runtime
             {
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
                 {
-                    column.Serialize(zip, definitionManager);
+                    column.Serialize(zip, definitionmanager);
                 }
             }
         }
@@ -233,7 +233,7 @@ namespace OctoAwesome.Runtime
                 {
                     using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
                     {
-                        return planet.Generator.GenerateColumn(zip, definitionManager, planet.Id, columnIndex);
+                        return planet.Generator.GenerateColumn(zip, definitionmanager, planet.Id, columnIndex);
                     }
                 }
             }
@@ -268,7 +268,8 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         Player player = new Player();
-                        player.Deserialize(reader, definitionManager);
+                        //extensionResolver.ExtendEntity(player);
+                        player.Deserialize(reader, definitionmanager);
                         return player;
                     }
                     catch (Exception)
@@ -297,7 +298,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    player.Serialize(writer, definitionManager);
+                    player.Serialize(writer, definitionmanager);
                 }
             }
         }

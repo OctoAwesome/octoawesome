@@ -26,7 +26,7 @@ namespace OctoAwesome.Basics.EntityComponents
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
         /// </summary>
-        public ToolBarComponent(Entity entity, IGameService service) : base(entity, service, true)
+        public ToolBarComponent() : base(true)
         {
             Tools = new InventorySlot[TOOLCOUNT];
         }
@@ -83,7 +83,7 @@ namespace OctoAwesome.Basics.EntityComponents
                 }
             }
         }
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, IGameService service)
         {
             IEntityController controller = (Entity as IControllable)?.Controller;
             if (controller == null) return;
@@ -91,9 +91,9 @@ namespace OctoAwesome.Basics.EntityComponents
             {
                 if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
                 {
-                    Service.TakeBlock(controller, Entity.Cache, inventory);
+                    service.TakeBlock(controller, Entity.Cache, inventory);
                 }
-                else if (Service.TakeBlock(controller, Entity.Cache, out IInventoryableDefinition item))
+                else if (service.TakeBlock(controller, Entity.Cache, out IInventoryableDefinition item))
                 {
                     // TODO: und jetzt ?
                 }
@@ -101,7 +101,7 @@ namespace OctoAwesome.Basics.EntityComponents
             else if(controller.ApplyInput)
             {
                 if (Entity.Components.TryGetComponent(out InventoryComponent inventory))
-                    Service.InteractBlock(Entity.Position, 0, 0, controller, Entity.Cache, ActiveTool, inventory);
+                    service.InteractBlock(Entity.Position, 0, 0, controller, Entity.Cache, ActiveTool, inventory);
             }
         }
         public void Register(IUserInterfaceExtensionManager manager)

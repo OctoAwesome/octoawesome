@@ -13,6 +13,10 @@ namespace OctoAwesome.Common
     public interface IUserInterfaceExtensionManager
     {
         /// <summary>
+        /// Definitionmanager
+        /// </summary>
+        IDefinitionManager DefinitionManager { get; }
+        /// <summary>
         /// Register an <see cref="IUserInterfaceExtension"/> to Gamescreen
         /// </summary>
         /// <param name="controltype">Type of the Control</param>

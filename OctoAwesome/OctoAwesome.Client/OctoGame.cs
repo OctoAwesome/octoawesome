@@ -240,7 +240,6 @@ namespace OctoAwesome.Client
             ExtensionLoader extensionLoader = new ExtensionLoader(Settings);
             extensionLoader.LoadExtensions();
             ExtensionLoader = extensionLoader;
-
             DefinitionManager = new DefinitionManager(extensionLoader);
             ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings);
 

@@ -27,7 +27,7 @@ namespace OctoAwesome.Client.Components
 
         public SimulationComponent(OctoGame game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
         {
-            service = new GameService(resourceManager.DefinitionManager);
+            service = new GameService(resourceManager);
             this.extensionResolver = extensionResolver;
             this.resourceManager = resourceManager;
         }

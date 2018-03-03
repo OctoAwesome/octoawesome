@@ -22,20 +22,20 @@ namespace OctoAwesome.Basics.EntityComponents
         public Vector3 Acceleration { get; private set; }
         public Vector3 Velocity { get; private set; }
         public Vector3 DeltaPosition { get; private set; }
-        public GroundPhysicComponent(Entity entity, IGameService service, float mass, float force, float radius, float height) : 
-            base(entity, service, true)
+        public GroundPhysicComponent(float mass, float force, float radius, float height) : base(true)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
             Mass = mass;
             Force = force;
             Radius = radius;
             Height = height;
+        }
+        protected override void OnSetEntity(Entity entity)
+        {
             IPlanet planet = entity.Cache.GetPlanet(entity.Position.Planet);
             entity.Position.NormalizeChunkIndexXY(planet.Size);
             entity.Cache.SetCenter(planet, new Index2(entity.Position.ChunkIndex));
         }
-
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, IGameService service)
         {
             IEntityController controller = (Entity as IControllable)?.Controller;
             if (controller != null)
@@ -43,7 +43,7 @@ namespace OctoAwesome.Basics.EntityComponents
             else Inputforce = Vector3.Zero;
             //TODO: entity colliosion
             CalcMotion(gameTime);
-            Velocity = Service.WorldCollision(gameTime, Entity, Radius, Height, DeltaPosition, Velocity);
+            Velocity = service.WorldCollision(gameTime, Entity.Position, Entity.Cache, Radius, Height, DeltaPosition, Velocity);
             // TODO: Was ist für den Fall Gravitation = 0 oder im Scheitelpunkt des Sprungs?
             OnGround = Velocity.Z == 0;
             if (Velocity.IsEmtpy()) DeltaPosition = Vector3.Zero;
@@ -136,7 +136,6 @@ namespace OctoAwesome.Basics.EntityComponents
             Velocity += Acceleration * (float) gameTime.ElapsedGameTime.TotalSeconds;
             DeltaPosition = Velocity * (float) gameTime.ElapsedGameTime.TotalSeconds;
         }
-
         public void Register(IUserInterfaceExtensionManager manager)
         {
             manager.RegisterOnGameScreen(typeof(HealthBarControl), "");

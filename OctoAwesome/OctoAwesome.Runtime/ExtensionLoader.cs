@@ -20,7 +20,7 @@ namespace OctoAwesome.Runtime
 
         private List<Type> entities;
 
-        private Dictionary<Type, List<Action<Entity, IGameService>>> entityExtender;
+        private Dictionary<Type, List<Action<Entity>>> entityExtender;
 
         private List<Action<Simulation>> simulationExtender;
 
@@ -49,7 +49,7 @@ namespace OctoAwesome.Runtime
             this.settings = settings;
             definitions = new List<IDefinition>();
             entities = new List<Type>();
-            entityExtender = new Dictionary<Type, List<Action<Entity, IGameService>>>();
+            entityExtender = new Dictionary<Type, List<Action<Entity>>>();
             simulationExtender = new List<Action<Simulation>>();
             mapGenerators = new List<IMapGenerator>();
             mapPopulators = new List<IMapPopulator>();
@@ -208,12 +208,12 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        public void RegisterEntityExtender<T>(Action<Entity, IGameService> extenderDelegate) where T : Entity
+        public void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity
         {
             Type type = typeof(T);
-            if (!entityExtender.TryGetValue(type, out List<Action<Entity, IGameService>> list))
+            if (!entityExtender.TryGetValue(type, out List<Action<Entity>> list))
             {
-                list = new List<Action<Entity, IGameService>>();
+                list = new List<Action<Entity>>();
                 entityExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
@@ -293,8 +293,7 @@ namespace OctoAwesome.Runtime
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        /// <param name="service">Game services</param>
-        public void ExtendEntity(Entity entity, IGameService service)
+        public void ExtendEntity(Entity entity)
         {
             List<Type> stack = new List<Type>();
             Type t = entity.GetType();
@@ -309,8 +308,8 @@ namespace OctoAwesome.Runtime
 
             foreach (var type in stack)
             {
-                if (entityExtender.TryGetValue(type, out List<Action<Entity, IGameService>> list))
-                    list.ForEach(a => a.Invoke(entity, service));
+                if (entityExtender.TryGetValue(type, out List<Action<Entity>> list))
+                    list.ForEach(a => a.Invoke(entity));
 
             }
         }

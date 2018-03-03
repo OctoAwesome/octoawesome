@@ -39,7 +39,7 @@ namespace OctoAwesome.Basics.Controls
 
             toolTextures = new Dictionary<string, Texture2D>();
 
-            foreach (var item in bar.Service.DefinitionManager.GetDefinitions())
+            foreach (var item in manager.DefinitionManager.GetDefinitions())
             {
                 Texture2D texture = manager.LoadTextures(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
