@@ -2,6 +2,8 @@
 using engenious;
 using OctoAwesome.Basics.Controls;
 using OctoAwesome.Entities;
+using OctoAwesome.Common;
+
 namespace OctoAwesome.Basics.EntityComponents
 {
     /// <summary>
@@ -104,8 +106,8 @@ namespace OctoAwesome.Basics.EntityComponents
         }
         public void Register(IUserInterfaceExtensionManager manager)
         {
-            manager.RegisterOnGameScreen(typeof(ToolbarControl), this);
-            manager.RegisterOnInventoryScreen(typeof(ToolbarInventoryControl), this);
+            manager.RegisterOnGameScreen(typeof(ToolbarControl), manager, this);
+            manager.RegisterOnInventoryScreen(typeof(ToolbarInventoryControl), manager, this);
         }
         private void UpdateToolbar(InventoryComponent inventory)
         {

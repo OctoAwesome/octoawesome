@@ -32,8 +32,8 @@ namespace OctoAwesome.Basics.Definitions.Trees
 
         public override void Init(IDefinitionManager definitionManager)
         {
-            cactus = definitionManager.GetDefinitionIndex<CactusBlockDefinition>();
-            water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
+            cactus = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Cactus);
+            water = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Water);
         }
 
         public override void PlantTree(IDefinitionManager definitionManager, IPlanet planet, Index3 index, LocalBuilder builder, int seed)

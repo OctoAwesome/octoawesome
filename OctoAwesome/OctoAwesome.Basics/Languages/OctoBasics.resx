@@ -129,12 +129,6 @@
   <data name="Cactus" xml:space="preserve">
     <value>Cactus</value>
   </data>
-  <data name="ExtensionDescription" xml:space="preserve">
-    <value>Basic Extension with all important stuff</value>
-  </data>
-  <data name="ExtensionName" xml:space="preserve">
-    <value>Basics</value>
-  </data>
   <data name="Grass" xml:space="preserve">
     <value>Grass</value>
   </data>
@@ -164,6 +158,12 @@
   </data>
   <data name="Oven" xml:space="preserve">
     <value>Oven</value>
+  </data>
+  <data name="PhysicExtensionDescription" xml:space="preserve">
+    <value>Basic Physic Extesnion</value>
+  </data>
+  <data name="PhysicExtensionName" xml:space="preserve">
+    <value>Physics Basiscs</value>
   </data>
   <data name="Plank" xml:space="preserve">
     <value>Plank</value>
@@ -200,5 +200,11 @@
   </data>
   <data name="Wood" xml:space="preserve">
     <value>Wood</value>
+  </data>
+  <data name="WorldExtensionDescription" xml:space="preserve">
+    <value>Basic World Extension with all important stuff</value>
+  </data>
+  <data name="WorldExtensionName" xml:space="preserve">
+    <value>World Basics</value>
   </data>
 </root>

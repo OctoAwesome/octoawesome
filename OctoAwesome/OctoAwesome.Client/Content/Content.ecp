@@ -2,7 +2,7 @@
 <Content>
   <Name>Content</Name>
   <Configuration>Debug</Configuration>
-  <OutputDir>bin/{Configuration}/</OutputDir>
+  <OutputDir>C:\Users\Klaus A\Source\Repos\octoawesome\OctoAwesome\OctoAwesome.Client\Content\bin\Debug</OutputDir>
   <Contents>
     <ContentFile>
       <Name>BoldFont.fnt</Name>

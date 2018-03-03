@@ -30,7 +30,6 @@ namespace OctoAwesome.Entities
         /// </summary>
         float BaseRotationZ { get; }
         #endregion
-
         /// <summary>
         /// Indicates if the element need draw updates
         /// </summary>

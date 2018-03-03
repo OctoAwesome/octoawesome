@@ -3,6 +3,7 @@ using engenious.Graphics;
 using MonoGameUi;
 using OctoAwesome.Basics.Controls;
 using OctoAwesome.Entities;
+using OctoAwesome.Common;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -97,7 +98,7 @@ namespace OctoAwesome.Basics.EntityComponents
         }
         public void Register(IUserInterfaceExtensionManager manager)
         {
-            manager.RegisterOnInventoryScreen(typeof(InventoryControl), this);
+            manager.RegisterOnInventoryScreen(typeof(InventoryControl), manager, this);
         }
     }
 }

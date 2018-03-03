@@ -37,14 +37,13 @@ namespace OctoAwesome.Client.Components
             effect.View = view;
             effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            foreach (var pass in effect.CurrentTechnique.Passes)
+            foreach (var pass in effect.CurrentTechnique.Passes.PassesList)
             {
                 pass.Apply();
 
                 foreach (var entity in entities)
                 {
                     var drawable = entity as Entities.IDrawable;
-                    if (!drawable.DrawUpdate) continue;
 
                     if (!models.TryGetValue(drawable.Name, out ModelInfo modelinfo))
                     {
@@ -83,7 +82,7 @@ namespace OctoAwesome.Client.Components
             if (simulation == null || !(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
                 return;
 
-            entities = simulation.Entities.Where(i => i is Entities.IDrawable).ToList();
+            entities = simulation.Entities.Where(i => i is Entities.IDrawable ent && ent.DrawUpdate).ToList();
 
             //base.Update(gameTime);
         }

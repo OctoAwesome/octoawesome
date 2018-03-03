@@ -243,7 +243,7 @@ namespace OctoAwesome
                     {
                         if (chunk.Blocks[i] != 0)
                         {
-                            IBlockDefinition definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
+                            IBlockDefinition definition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(chunk.Blocks[i]);
                             if (!definitions.Contains(definition))
                                 definitions.Add(definition);
                         }
@@ -290,7 +290,7 @@ namespace OctoAwesome
                         else
                         {
                             // Definition Index
-                            IBlockDefinition definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
+                            IBlockDefinition definition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(chunk.Blocks[i]);
 
                             if (longIndex)
                                 bw.Write((ushort)(definitions.IndexOf(definition) + 1));
@@ -391,7 +391,7 @@ namespace OctoAwesome
                         {
                             chunk.Blocks[i] = map[typeIndex];
 
-                            var definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(map[typeIndex]);
+                            var definition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(map[typeIndex]);
 
                             if (definition.HasMetaData)
                                 chunk.MetaData[i] = br.ReadInt32();

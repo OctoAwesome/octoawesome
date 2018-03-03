@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Entities;
+using OctoAwesome.Common;
 using System.Collections.Generic;
+using System;
 
 namespace OctoAwesome
 {
@@ -12,13 +14,15 @@ namespace OctoAwesome
         /// Extend a Simulation
         /// </summary>
         /// <param name="simulation">Simulation</param>
+        [Obsolete]
         void ExtendSimulation(Simulation simulation);
 
         /// <summary>
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        void ExtendEntity(Entity entity);
+        /// <param name="service">Common game services</param>
+        void ExtendEntity(Entity entity, IGameService service);
 
         /// <summary>
         /// Return a List of Definitions

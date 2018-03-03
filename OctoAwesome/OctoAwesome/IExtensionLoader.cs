@@ -1,6 +1,9 @@
 ﻿using OctoAwesome.Entities;
+using OctoAwesome.Common;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+
 namespace OctoAwesome
 {
     /// <summary>
@@ -31,6 +34,12 @@ namespace OctoAwesome
         void RegisterDefinition(IDefinition definition);
 
         /// <summary>
+        /// Load definitions from resouce
+        /// </summary>
+        /// <param name="embeddedresource">Path of resource file -> [Assembly.Namespace.name.txt|.xml]</param>
+        void LoadDefinitionsFromResource(string embeddedresource);
+
+        /// <summary>
         /// Removes an existing Definition Type.
         /// </summary>
         /// <typeparam name="T">Definition Type</typeparam>
@@ -54,12 +63,6 @@ namespace OctoAwesome
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
         void RegisterEntityExtender<T>(Action<Entity, IGameService> extenderDelegate) where T : Entity;
-
-        /// <summary>
-        /// Adds the Default Extender for the given Entity Type.
-        /// </summary>
-        /// <typeparam name="T">Entity Type</typeparam>
-        void RegisterDefaultEntityExtender<T>() where T : Entity;
 
         /// <summary>
         /// Adds a new Extender for the simulation.

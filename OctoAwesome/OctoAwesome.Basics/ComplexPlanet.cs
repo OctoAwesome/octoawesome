@@ -33,19 +33,19 @@ namespace OctoAwesome.Basics
             var radius = Math.Sqrt((Size.X * Size.Y) / (16 * Math.PI));
             Gravity = (float)((4f / 3f) * Math.PI * GravitationalConstant * averageDensity * radius);
 
-            //Initalize();
+            BiomeGenerator = new SurfaceBiomeGenerator(this, 40);
+            ClimateMap = new Climate.ComplexClimateMap(this);
         }
 
         public ComplexPlanet() : base()
         {
-            //Initalize();
+            BiomeGenerator = new SurfaceBiomeGenerator(this, 40);
+            ClimateMap = new Climate.ComplexClimateMap(this);
         }
 
         public override void Deserialize(Stream stream)
         {
             base.Deserialize(stream);
-            BiomeGenerator = new SurfaceBiomeGenerator(this, 40);
-            ClimateMap = new Climate.ComplexClimateMap(this);
         }
     }
 }

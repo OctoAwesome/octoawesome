@@ -1,6 +1,6 @@
 ﻿using OctoAwesome.Entities;
 
-namespace OctoAwesome
+namespace OctoAwesome.Common
 {
     /// <summary>
     /// Interface for UI dependend <see cref="EntityComponent"/>

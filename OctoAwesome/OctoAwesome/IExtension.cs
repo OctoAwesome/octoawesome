@@ -15,16 +15,20 @@ namespace OctoAwesome
         /// Gets the Extension Name.
         /// </summary>
         string Name { get; }
-
         /// <summary>
         /// Gets the Extension Description.
         /// </summary>
         string Description { get; }
-
+        /// <summary>
+        /// Load needed Definitions
+        /// </summary>
+        /// <param name="extensionloader">ExtensionsLoader</param>
+        void LoadDefinitions(IExtensionLoader extensionloader);
         /// <summary>
         /// Register the Components in the ExtensionsLoader
         /// </summary>
-        /// <param name="extensionLoader">ExtensionsLoader</param>
-        void Register(IExtensionLoader extensionLoader);
+        /// <param name="extensionloader">ExtensionsLoader</param>
+        void Extend(IExtensionLoader extensionloader);
+        
     }
 }

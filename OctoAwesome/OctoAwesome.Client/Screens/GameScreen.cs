@@ -17,7 +17,6 @@ namespace OctoAwesome.Client.Screens
         private CompassControl compass;
         private MinimapControl minimap;
         private CrosshairControl crosshair;
-        private HealthBarControl healthbar;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -60,19 +59,7 @@ namespace OctoAwesome.Client.Screens
                 Margin = Border.All(5)
             };
             Controls.Add(minimap);
-
-            healthbar = new HealthBarControl(manager)
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                Width = 240,
-                Height = 78,
-                Maximum = 100,
-                Value = 40,
-                Margin = Border.All(20, 30)
-            };
-            Controls.Add(healthbar);
-
+            
             crosshair = new CrosshairControl(manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -83,13 +70,18 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(crosshair);
 
             foreach (Func<Control> creater in manager.GameScreenExtension)
-                Controls.Add(creater());
+            {
+                Control control = creater();
+                if(control != null)
+                {
+                    Controls.Add(control);
+                }
+            }
 
             Title = Languages.OctoClient.Game;
 
             RegisterKeyActions();
         }
-
         protected override void OnUpdate(GameTime gameTime)
         {
             Vector2 move = Vector2.Zero;
@@ -259,12 +251,8 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:hidecontrols", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                compass.Visible = !compass.Visible;
-
-                //toolbar.Visible = !toolbar.Visible;
-                minimap.Visible = !minimap.Visible;
-                crosshair.Visible = !crosshair.Visible;
-                debug.Visible = !debug.Visible;
+                foreach (Control control in Controls)
+                    control.Visible = !control.Visible;
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:exit", type =>
             {
@@ -284,7 +272,8 @@ namespace OctoAwesome.Client.Screens
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => 
                 {
-                    Manager.Game.Player.CurrentEntity.SetPosition(new Coordinate(0, new Index3(x, y, 300), new Vector3()));
+                    Manager.Game.Player.CurrentEntity?.SetPosition(new Coordinate(0, new Index3(x, y, 300), new Vector3()),
+                        Manager.Player.CurrentEntity?.Azimuth ?? 0);
                     Manager.NavigateBack();
                 }, 
                     Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.X, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.Y));

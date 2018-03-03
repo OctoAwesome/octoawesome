@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome
+namespace OctoAwesome.Common
 {
     /// <summary>
     /// UserInterfaceManager
@@ -16,16 +16,23 @@ namespace OctoAwesome
         /// Register an <see cref="IUserInterfaceExtension"/> to Gamescreen
         /// </summary>
         /// <param name="controltype">Type of the Control</param>
-        /// <param name="args">contructor parameter</param>
+        /// <param name="args">contructor parameter, [reserved parameter] + args</param>
         /// <returns></returns>
         bool RegisterOnGameScreen(Type controltype, params object[] args);
         /// <summary>
         /// Register an <see cref="IUserInterfaceExtension"/> to InvertoryScreen
         /// </summary>
         /// <param name="controltype">Type of the Control</param>
-        /// <param name="args">contructor parameter</param>
+        /// <param name="args">contructor parameter, [reserved parameter] + args</param>
         /// <returns></returns>
         bool RegisterOnInventoryScreen(Type controltype, params object[] args);
+        /// <summary>
+        /// Register an Debug label to the Game debug Control
+        /// </summary>
+        /// <param name="right"></param>
+        /// <param name="updatefunc"></param>
+        /// <returns></returns>
+        bool RegisterOnDebugScreen(bool right, Func<string> updatefunc);
         /// <summary>
         /// Load Textures for UI
         /// </summary>

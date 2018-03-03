@@ -43,9 +43,9 @@ namespace OctoAwesome.Basics.Definitions.Trees
 
         public override void Init(IDefinitionManager definitionManager)
         {
-            wood = definitionManager.GetDefinitionIndex<BirchWoodBlockDefinition>();
-            leave = definitionManager.GetDefinitionIndex<LeavesBlockDefinition>();
-            water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
+            wood = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.BirchWood);
+            leave = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Leaves);
+            water = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Water);
         }
 
         public override void PlantTree(IDefinitionManager definitionManager, IPlanet planet, Index3 index, LocalBuilder builder, int seed)

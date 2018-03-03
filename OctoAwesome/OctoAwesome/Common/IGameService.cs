@@ -1,10 +1,10 @@
 ﻿using engenious;
 using OctoAwesome.Entities;
 
-namespace OctoAwesome
+namespace OctoAwesome.Common
 {
     /// <summary>
-    /// Diese Berechnungen sollten nicht der Extension überlassen werden.
+    /// Common Services for Extensions
     /// </summary>
     public interface IGameService
     {

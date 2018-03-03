@@ -33,17 +33,25 @@ namespace OctoAwesome.Entities
         /// </summary>
         bool JumpInput { get; set; }
         /// <summary>
-        /// Tilt (Neigung des Kopfes)
+        /// tilt in world coordinatesystem
         /// </summary>
-        float Tilt { get; }
+        float Tilt { get; set; }
         /// <summary>
-        /// Yaw (Horizontale Drehung)
+        /// Yaw in wolrd coordinatesystem
         /// </summary>
-        float Yaw { get; }
+        float Yaw { get; set; }
         /// <summary>
-        /// Direction of Motion
+        /// Roll in wolrd coordinatesystem
         /// </summary>
-        Vector3 Direction { get; }
+        float Roll { get; set; }
+        /// <summary>
+        /// Move direction in Enttiy coordinatesystem
+        /// </summary>
+        Vector2 MoveInput { get; }
+        /// <summary>
+        /// Head input in Entity coordinatesystem
+        /// </summary>
+        Vector2 HeadInput { get; }
         /// <summary>
         /// Index of Block to interact
         /// </summary>
@@ -64,5 +72,13 @@ namespace OctoAwesome.Entities
         /// Selected corner of the block
         /// </summary>
         OrientationFlags SelectedCorner { get; }
+        /// <summary>
+        /// Indicats that the controller can be freezed
+        /// </summary>
+        bool CanFreeze { get; }
+        /// <summary>
+        /// Indicates that the controller is freezed or freez the controller
+        /// </summary>
+        bool Freezed { get; set; }
     }
 }

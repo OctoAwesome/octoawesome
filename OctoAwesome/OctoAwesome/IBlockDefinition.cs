@@ -45,6 +45,15 @@ namespace OctoAwesome
         /// <returns>Die physikalischen Parameter</returns>
         PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);*/
 
+        /// <summary>
+        /// Returns the Texture index of given Side (Wall)
+        /// </summary>
+        /// <param name="wall">Side of the Block</param>
+        /// <param name="manager"><see cref="ILocalChunkCache"/></param>
+        /// <param name="x">X Cooridnate in the Chunk</param>
+        /// <param name="y">Y Coordinate in the Chunk</param>
+        /// <param name="z">Z Coordinate in the Chunk</param>
+        /// <returns></returns>
         int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z);
 
         /// <summary>

@@ -1,6 +1,4 @@
 ﻿using engenious;
-using engenious.Helper;
-using System;
 using System.IO;
 namespace OctoAwesome.Entities
 {
@@ -29,10 +27,6 @@ namespace OctoAwesome.Entities
         /// Temp Id
         /// </summary>
         public int Id { get; internal set; }
-        ///// <summary>
-        ///// Reference to the active Simulation.
-        ///// </summary>
-        //public Simulation Simulation { get; internal set; }
         /// <summary>
         /// LocalChunkCache für die Entity
         /// </summary>
@@ -50,47 +44,38 @@ namespace OctoAwesome.Entities
         /// Updatemethod for the <see cref="Entity"/>
         /// </summary>
         /// <param name="gameTime">Time of the Simulation.</param>
-        public virtual void Update(GameTime gameTime)
+        internal void Update(GameTime gameTime)
         {
-
+            OnUpdate(gameTime);
         }
         /// <summary>
-        /// Register default for this entity
+        /// Called dirung Update of the <see cref="Entity"/>
         /// </summary>
-        public void RegisterDefault()
+        /// <param name="gameTime">Time of the Simulation.</param>
+        protected virtual void OnUpdate(GameTime gameTime)
         {
 
-        }
-        /// <summary>
-        /// Move the <see cref="Entity"/>
-        /// </summary>
-        /// <param name="moved">Value of position change</param>
-        /// <param name="azimuth">Horizontal angle</param>
-        public void Move(Vector3 moved, float azimuth = 0)
-        {
-            Coordinate position = Position + moved;
-            position.NormalizeChunkIndexXY(Cache.Planet.Size);
-            SetPosition(position, azimuth);
         }
         /// <summary>
         /// Set the Postion of the <see cref="Entity"/>
         /// </summary>
         /// <param name="position">The new Position</param>
-        /// <param name="ignorecenter">Ignore SetCenter call on localcache</param>
         /// <param name="azimuth">Horizontal angle</param>
-        public void SetPosition(Coordinate position, float azimuth = 0, bool ignorecenter = false)
+        public void SetPosition(Coordinate position, float azimuth = 0)
         {
-            if (ignorecenter || Cache != null && Cache.SetCenter(Cache.Planet, new Index2(Position.ChunkIndex)))
-            {
-                OnSetPosition(position);
-                Position = position;
-            }
+            if(Cache != null)
+                Cache.SetCenter(Cache.Planet, new Index2(Position.ChunkIndex));
+
+            OnSetPosition(position, azimuth);
+            Position = position;
+            Azimuth = azimuth;
         }
         /// <summary>
         /// Called during SetPosition (before Position is set)
         /// </summary>
         /// <param name="position">New Position</param>
-        protected virtual void OnSetPosition(Coordinate position)
+        /// <param name="azimuth">Horizontal angle</param>
+        protected virtual void OnSetPosition(Coordinate position, float azimuth)
         {
 
         }

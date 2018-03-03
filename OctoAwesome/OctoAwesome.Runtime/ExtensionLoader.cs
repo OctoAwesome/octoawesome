@@ -1,10 +1,11 @@
-﻿using MonoGameUi;
-using OctoAwesome.Entities;
+﻿using OctoAwesome.Entities;
+using OctoAwesome.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using OctoAwesome.CodeExtensions;
 
 namespace OctoAwesome.Runtime
 {
@@ -36,11 +37,6 @@ namespace OctoAwesome.Runtime
         /// List of active Extensions
         /// </summary>
         public List<IExtension> ActiveExtensions { get; private set; }
-
-        /// <summary>
-        /// Common servics for game Extensions
-        /// </summary>
-        public IGameService Service { get; set; }
 
         private ISettings settings;
 
@@ -81,32 +77,48 @@ namespace OctoAwesome.Runtime
                 assemblies.AddRange(LoadAssemblies(plugins));
 
             var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : new string[0];
-
-            List<Type> result = new List<Type>();
+            
             foreach (var assembly in assemblies)
             {
-                foreach (var type in assembly.GetTypes())
+                try
                 {
-                    // added isabstract check...
-                    if (type.IsAbstract || !typeof(IExtension).IsAssignableFrom(type))
-                        continue;
-
-                    try
+                    foreach (var type in assembly.GetTypes())
                     {
-                        IExtension extension = (IExtension)Activator.CreateInstance(type);
-                        extension.Register(this);
+                        try
+                        {
+                            // added isabstract check...
+                            if (type.IsAbstract || !typeof(IExtension).IsAssignableFrom(type))
+                                continue;
+                            IExtension extension = (IExtension) Activator.CreateInstance(type);
+                            extension.LoadDefinitions(this);
+                            extension.Extend(this);
 
-                        if (disabledExtensions.Contains(type.FullName))
-                            LoadedExtensions.Add(extension);
-                        else
-                            ActiveExtensions.Add(extension);
-                    }
-                    catch (Exception)
-                    {
-                        // TODO: Logging
+                            if (disabledExtensions.Contains(type.FullName))
+                                LoadedExtensions.Add(extension);
+                            else
+                                ActiveExtensions.Add(extension);
+                        }
+                        catch (Exception)
+                        {
+                            // TODO: Logging
+                        }
                     }
                 }
+                catch(Exception)
+                {
+
+                }
             }
+        }
+
+        /// <summary>
+        /// Activate the Extenisons
+        /// </summary>
+        /// <param name="disabledExtensions">List of Extensions</param>
+        public void ApplyExtensions(IList<IExtension> disabledExtensions)
+        {
+            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
+            settings.Set(SETTINGSKEY, types);
         }
 
         private IEnumerable<Assembly> LoadAssemblies(DirectoryInfo directory)
@@ -127,17 +139,29 @@ namespace OctoAwesome.Runtime
             return assemblies;
         }
 
-        /// <summary>
-        /// Activate the Extenisons
-        /// </summary>
-        /// <param name="disabledExtensions">List of Extensions</param>
-        public void ApplyExtensions(IList<IExtension> disabledExtensions)
-        {
-            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
-            settings.Set(SETTINGSKEY, types);
-        }
-        
         #region Loader Methods
+
+        /// <summary>
+        /// Load definitions from resouce
+        /// </summary>
+        /// <param name="embeddedresource">Path of resource file -> [Assembly.Namespace.name.txt|.xml]</param>
+        public void LoadDefinitionsFromResource(string embeddedresource)
+        {
+            //try
+            //{
+            //    string[] splitted = embeddedresource.Split(StringSplitOptions.RemoveEmptyEntries, '.');
+            //    if (splitted.Last().Equals("xml"))
+            //    {
+            //        Stream stream = Assembly.GetCallingAssembly().GetManifestResourceStream(embeddedresource);
+            //        DefinitionResolverXML resolver = new DefinitionResolverXML();
+            //        resolver.Resolve(stream, this);
+            //    }
+            //}
+            //catch (Exception exception)
+            //{
+            //    //TODO: loggen
+            //}
+        }
 
         /// <summary>
         /// Registers a new Definition.
@@ -187,17 +211,13 @@ namespace OctoAwesome.Runtime
         public void RegisterEntityExtender<T>(Action<Entity, IGameService> extenderDelegate) where T : Entity
         {
             Type type = typeof(T);
-            List<Action<Entity, IGameService>> list;
-            if (!entityExtender.TryGetValue(type, out list))
+            if (!entityExtender.TryGetValue(type, out List<Action<Entity, IGameService>> list))
             {
                 list = new List<Action<Entity, IGameService>>();
                 entityExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
-
-        public void RegisterDefaultEntityExtender<T>() where T : Entity 
-            => RegisterEntityExtender<T>((e, s) => e.RegisterDefault());
 
         /// <summary>
         /// Adds a new Extender for the simulation.
@@ -217,6 +237,10 @@ namespace OctoAwesome.Runtime
             mapGenerators.Add(generator);
         }
 
+        /// <summary>
+        /// Register an <see cref="IMapPopulator"/>
+        /// </summary>
+        /// <param name="populator"></param>
         public void RegisterMapPopulator(IMapPopulator populator)
         {
             mapPopulators.Add(populator);
@@ -242,6 +266,10 @@ namespace OctoAwesome.Runtime
             mapGenerators.Remove(item);
         }
 
+        /// <summary>
+        /// Removes an existing Map Populater.
+        /// </summary>
+        /// <typeparam name="T">Populater Type</typeparam>
         public void RemoveMapPopulator<T>(T item) where T : IMapPopulator
         {
             mapPopulators.Remove(item);
@@ -265,7 +293,8 @@ namespace OctoAwesome.Runtime
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public void ExtendEntity(Entity entity)
+        /// <param name="service">Game services</param>
+        public void ExtendEntity(Entity entity, IGameService service)
         {
             List<Type> stack = new List<Type>();
             Type t = entity.GetType();
@@ -280,12 +309,9 @@ namespace OctoAwesome.Runtime
 
             foreach (var type in stack)
             {
-                List<Action<Entity, IGameService>> list;
-                if (!entityExtender.TryGetValue(type, out list))
-                    continue;
+                if (entityExtender.TryGetValue(type, out List<Action<Entity, IGameService>> list))
+                    list.ForEach(a => a.Invoke(entity, service));
 
-                foreach (var item in list)
-                    item(entity, Service);
             }
         }
 

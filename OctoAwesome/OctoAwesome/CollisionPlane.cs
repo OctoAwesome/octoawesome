@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.CodeExtensions;
 using OctoAwesome.Entities;
 using System.Collections.Generic;
 
@@ -22,7 +23,7 @@ namespace OctoAwesome
         /// </summary>
         public Vector3 edgepos1;
         /// <summary>
-        /// Zweite Fläche der Ecke
+        /// Zweite Ecke der Fläche
         /// </summary>
         public Vector3 edgepos2;
 
@@ -109,11 +110,11 @@ namespace OctoAwesome
         /// <param name="coordinate"><see cref="Coordinate"/> ot the <see cref="Entity"/></param>
         /// <param name="invertvelocity">Gibt an ob die geschwindigkeit invertiert werden soll</param>
         /// <returns></returns>
-        public static IEnumerable<CollisionPlane> GetPlayerCollisionPlanes(float radius, float height, Vector3 velocity, 
+        public static IEnumerable<CollisionPlane> GetEntityCollisionPlanes(float radius, float height, Vector3 velocity, 
             Coordinate coordinate, bool invertvelocity = true)
         {
             var pos = coordinate.BlockPosition;
-            var vel =  invertvelocity ? -1 * velocity : velocity;
+            Vector3 vel =  invertvelocity ? velocity * -1f : velocity;
 
             //Ebene X
             if (vel.X > 0)

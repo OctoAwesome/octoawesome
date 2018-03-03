@@ -110,7 +110,13 @@ namespace OctoAwesome.Client.Screens
             if (i == 0) // left
             {
                 panelleft.Controls.Clear();
-                if (!Equals(comboboxRight.SelectedItem, args.NewItem))
+                if(panelright.Controls.Count == 0)
+                {
+                    if (comboboxRight.SelectedItem != null)
+                        panelright.Controls.Add(comboboxRight.SelectedItem);
+                    panelleft.Controls.Add(args.NewItem);
+                }
+                else if (!Equals(comboboxRight.SelectedItem, args.NewItem))
                 {
                     panelleft.Controls.Add(args.NewItem);
                 }
@@ -118,6 +124,13 @@ namespace OctoAwesome.Client.Screens
             else if(i == 1) // right
             {
                 panelright.Controls.Clear();
+                if (panelleft.Controls.Count == 0)
+                {
+                    if (comboboxLeft.SelectedItem != null)
+                        panelleft.Controls.Add(comboboxLeft.SelectedItem);
+                    panelright.Controls.Add(args.NewItem);
+                }
+                else
                 if (!Equals(comboboxLeft.SelectedItem, args.NewItem))
                 {
                     panelright.Controls.Add(args.NewItem);

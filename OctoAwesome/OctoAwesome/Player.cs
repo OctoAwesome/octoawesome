@@ -7,7 +7,7 @@ namespace OctoAwesome
     /// <summary>
     /// Entität, die der menschliche Spieler mittels Eingabegeräte steuern kann.
     /// </summary>
-    public sealed class Player : Entity, IControllable
+    public sealed class Player : Entity, IControllable, Entities.IDrawable
     {
         /// <summary>
         /// Die Reichweite des Spielers, in der er mit Spielelementen wie <see cref="Block"/> und <see cref="Entity"/> interagieren kann
@@ -16,14 +16,28 @@ namespace OctoAwesome
         /// <summary>
         /// Current controller of the Player.
         /// </summary>
-        public IEntityController Controller => currentcontroller;
-        private IEntityController currentcontroller;
+        public IEntityController Controller { get; private set; }
+
+        public string Name { get; set; }
+
+        public string ModelName { get; set; }
+
+        public string TextureName { get; set; }
+
+        public float BaseRotationZ { get; set; }
+
+        public float Height { get; set; }
+
+        public float Radius { get; set; }
+
+        public bool DrawUpdate { get; set; }
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
         public Player() : base(false)
         {
-            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0, false);
+            Height = 3.5f;
+            Radius = 0.8f;
         }
         /// <summary>
         /// Register a Controller.
@@ -31,22 +45,24 @@ namespace OctoAwesome
         /// <param name="controller"></param>
         public void Register(IEntityController controller)
         {
-            currentcontroller = controller;
+            Controller = controller;
         }
         /// <summary>
         /// Reset the controller to deault.
         /// </summary>
         public void Reset()
         {
-            currentcontroller = null;
+            Controller = null;
         }
         /// <summary>
         /// Called during initialize.
         /// </summary>
         /// <param name="manager">ResourceManager</param>
         protected override void OnInitialize(IResourceManager manager)
-            => Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-
+        {
+            Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
+            SetPosition(new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)), 0);
+        }
         /// <summary>
         /// Serialisiert den Player mit dem angegebenen BinaryWriter.
         /// </summary>
@@ -54,7 +70,6 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
             => base.Serialize(writer, definitionManager); // Entity
-
         /// <summary>
         /// Deserialisiert den Player aus dem angegebenen BinaryReader.
         /// </summary>

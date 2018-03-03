@@ -324,7 +324,7 @@ namespace OctoAwesome.Runtime
         {
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
-            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, this, settings);
+            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, settings);
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
@@ -434,8 +434,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            IPlanet planet;
-            if (!planets.TryGetValue(id, out planet))
+            if (!planets.TryGetValue(id, out IPlanet planet))
             {
                 // Versuch vorhandenen Planeten zu laden
                 planet = persistenceManager.LoadPlanet(CurrentUniverse.Id, id);
@@ -449,8 +448,7 @@ namespace OctoAwesome.Runtime
                     planet = generator.GeneratePlanet(CurrentUniverse.Id, id, CurrentUniverse.Seed + id);
                     // persistenceManager.SavePlanet(universe.Id, planet);
                 }
-
-
+                
                 planets.Add(id, planet);
             }
 

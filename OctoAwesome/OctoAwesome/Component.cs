@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using engenious;
+using System.IO;
 namespace OctoAwesome
 {
     /// <summary>
@@ -9,13 +10,13 @@ namespace OctoAwesome
         /// <summary>
         /// Indicates that the Component is enabled or disabled.
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled { get; protected set; }
         /// <summary>
         /// Constructor
         /// </summary>
-        public Component()
+        public Component(bool enabled)
         {
-            Enabled = true;
+            Enabled = enabled;
         }
         /// <summary>
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
@@ -34,6 +35,14 @@ namespace OctoAwesome
         public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             Enabled = reader.ReadBoolean();
+        }
+        /// <summary>
+        /// Upadate the component
+        /// </summary>
+        /// <param name="gameTime">Simulation time</param>
+        public virtual void Update(GameTime gameTime)
+        {
+
         }
     }
 }

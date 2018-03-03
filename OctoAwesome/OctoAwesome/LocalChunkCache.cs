@@ -96,6 +96,7 @@ namespace OctoAwesome
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         public bool SetCenter(IPlanet planet, Index2 index, Action<bool> successCallback = null)
         {
+            //if (planet == null) return false;
             if (IsPassive && !globalCache.IsChunkLoaded(planet.Id, index))
                 return false;
 

@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using engenious;
+using OctoAwesome.Entities;
+
 namespace OctoAwesome
 {
     /// <summary>
@@ -12,6 +15,7 @@ namespace OctoAwesome
     {
         private Action<T> onAdder;
         private Action<T> onRemover;
+        private List<T> updateable;
         private readonly Dictionary<Type, T> components = new Dictionary<Type, T>();
         /// <summary>
         /// Return an <see cref="Component"/> of the <see cref="ComponentList{T}"/>.
@@ -32,13 +36,14 @@ namespace OctoAwesome
         /// </summary>
         public ComponentList()
         {
+            updateable = new List<T>();
         }
         /// <summary>
         /// Default Constructor of <see cref="ComponentList{T}"/>.
         /// </summary>
         /// <param name="onAdd">On <see cref="{T}"/> add delegate.</param>
         /// <param name="onRemove">On <see cref="{T}"/> remove delegate.</param>
-        public ComponentList(Action<T> onAdd, Action<T> onRemove)
+        public ComponentList(Action<T> onAdd, Action<T> onRemove) : this()
         {
             onAdder = onAdd;
             onRemover = onRemove;
@@ -69,7 +74,7 @@ namespace OctoAwesome
         /// <param name="replace">Replace i already inclueded.</param>
         public void AddComponent<V>(V component, bool replace) where V : T
         {
-            AddComponent<V>(typeof(V), component, replace);
+            AddComponent(typeof(V), component, replace);
         }
         /// <summary>
         /// Adds a new <see cref="Component"/> to the List and replace Items with the same Key.
@@ -84,7 +89,10 @@ namespace OctoAwesome
             {
                 if (replace)
                 {
-                    RemoveComponent<V>();
+                    if(TryGetComponent(type, out V comp))
+                    {
+                        RemoveComponent(type);
+                    }
                 }
                 else
                 {
@@ -93,15 +101,25 @@ namespace OctoAwesome
             }
             onAdder?.Invoke(component);
             components.Add(type, component);
+            if (component.Enabled)
+                updateable.Add(component);
         }
         /// <summary>
         /// Checks if the <see cref="Component"/> is included.
         /// </summary>
         /// <typeparam name="V"><see cref="Type"/> of the <see cref="Component"/>.</typeparam>
         /// <returns></returns>
-        public bool ContainsComponent<V>() where V : T
+        public bool ContainsComponent<V>() where V : class
         {
             return components.ContainsKey(typeof(V));
+        }
+        /// <summary>
+        /// Update all updatealbe components in this <see cref="ComponentList{T}"/>
+        /// </summary>
+        /// <param name="gameTime">Simulation time.</param>
+        internal void Update(GameTime gameTime)
+        {
+            updateable.ForEach(c => c.Update(gameTime));
         }
         /// <summary>
         /// Checks if the <see cref="Component"/> is included.
@@ -110,6 +128,7 @@ namespace OctoAwesome
         /// <returns></returns>
         public bool ContainsComponent(Type type)
         {
+            if (!type.IsClass) return false;
             return components.ContainsKey(type);
         }
         /// <summary>
@@ -117,7 +136,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>Component</returns>
-        public V GetComponent<V>() where V : T
+        public V GetComponent<V>() where V : class
         {
             return GetComponent<V>(typeof(V));
         }
@@ -127,10 +146,10 @@ namespace OctoAwesome
         /// <typeparam name="V">Component Type</typeparam>
         /// <param name="type">Type.</param>
         /// <returns></returns>
-        public V GetComponent<V>(Type type) where V : T
+        public V GetComponent<V>(Type type) where V : class
         {
             if (components.TryGetValue(type, out T result))
-                return (V) result;
+                return result as V;
             return null;
         }
         /// <summary>
@@ -139,9 +158,9 @@ namespace OctoAwesome
         /// <typeparam name="V"><see cref="Type"/> of <see cref="Component"/></typeparam>
         /// <param name="component"></param>
         /// <returns></returns>
-        public bool TryGetComponent<V>(out V component) where V : T
+        public bool TryGetComponent<V>(out V component) where V : class
         {
-            return TryGetComponent<V>(typeof(V), out component);
+            return TryGetComponent(typeof(V), out component);
         }
         /// <summary>
         /// Try to get a <see cref="Component"/>.
@@ -150,25 +169,45 @@ namespace OctoAwesome
         /// <param name="type">Type</param>
         /// <param name="component">Component</param>
         /// <returns></returns>
-        public bool TryGetComponent<V>(Type type, out V component) where V : T
+        public bool TryGetComponent<V>(Type type, out V component) where V : class
         {
-            T comp;
-            components.TryGetValue(type, out comp);
+            components.TryGetValue(type, out T comp);
             component = comp as V;
             return component != null;
         }
         /// <summary>
-        /// Removes the <see cref="Component"/> of the given Type.
+        /// Removes the <see cref="Component"/> of the given generic Type.
         /// </summary>
-        /// <typeparam name="V">Component Type</typeparam>
+        /// <typeparam name="V">Generic <see cref="Component"/> Type</typeparam>
         /// <returns></returns>
         public bool RemoveComponent<V>() where V : T
         {
-            T component;
-            if (!components.TryGetValue(typeof(V), out component))
-                return false;
-            else onRemover?.Invoke(component);
-            return components.Remove(typeof(V));
+            return RemoveComponent(typeof(V));
+        }
+        /// <summary>
+        /// Removes the <see cref="Component"/> of the given Type.
+        /// </summary>
+        /// <param name="type"><see cref="Type"/> of the <see cref="Component"/></param>
+        /// <returns></returns>
+        public bool RemoveComponent(Type type)
+        {
+            if (components.TryGetValue(type, out T component))
+            {
+                onRemover?.Invoke(component);
+                updateable.Remove(component);
+                return components.Remove(type);
+            }
+            return false;
+        }
+        /// <summary>
+        /// Removes the <see cref="Component"/> from the list
+        /// </summary>
+        /// <typeparam name="V">Generic <see cref="Type"/> of the <see cref="Component"/></typeparam>
+        /// <param name="component">The instance of the Component.</param>
+        /// <returns></returns>
+        public bool RemoveComponent<V>(V component) where V : T
+        {
+            return RemoveComponent(component.GetType());
         }
         /// <summary>
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.

@@ -1,9 +1,11 @@
 ﻿using engenious;
 using OctoAwesome.Entities;
+using OctoAwesome.Common;
 using System;
 using System.Linq;
 namespace OctoAwesome.Runtime
 {
+    // sealed -> prevent abuse of third party´s
     /// <summary>
     /// Diese Berechnungen sollten nicht der Extension überlassen werden.
     /// </summary>
@@ -37,8 +39,7 @@ namespace OctoAwesome.Runtime
                 ushort lastBlock = cache.GetBlock(controller.SelectedBlock.Value, true);
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = DefinitionManager.GetDefinitionByIndex(lastBlock);
-                    block = blockDefinition as IInventoryableDefinition;
+                    block = DefinitionManager.GetDefinitionByIndex<IInventoryableDefinition>(lastBlock);
                 }
                 controller.InteractInput = false;
             }
@@ -58,9 +59,9 @@ namespace OctoAwesome.Runtime
                 ushort lastBlock = cache.GetBlock(controller.SelectedBlock.Value, true);
                 if (lastBlock != 0)
                 {
-                    var blockDefinition = DefinitionManager.GetDefinitionByIndex(lastBlock);
-                    if (blockDefinition is IInventoryableDefinition definition)
-                        inventory.AddUnit(definition);
+                    var blockDefinition = DefinitionManager.GetDefinitionByIndex<IInventoryableDefinition>(lastBlock);
+                    if (blockDefinition != null)
+                        inventory.AddUnit(blockDefinition);
 
                 }
                 controller.InteractInput = false;
@@ -155,7 +156,8 @@ namespace OctoAwesome.Runtime
         /// <param name="deltaPosition">Calculated delta position for this cycle</param>
         /// <param name="velocity">claculated velocity for this cycle</param>
         /// <returns>the velocity of the <see cref="Entity"/> after collision checks</returns>
-        public Vector3 WorldCollision(GameTime gameTime, Entity entity, float radius, float height, Vector3 deltaPosition, Vector3 velocity)
+        public Vector3 WorldCollision(GameTime gameTime, Entity entity, float radius, float height, 
+            Vector3 deltaPosition, Vector3 velocity)
         {
             Coordinate position = entity.Position;
             Vector3 move = deltaPosition;
@@ -181,7 +183,7 @@ namespace OctoAwesome.Runtime
                 position.BlockPosition.Z + height + deltaPosition.Z));
 
             //Beteiligte Flächen des Spielers
-            var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(radius, height, velocity, position);
+            var playerplanes = CollisionPlane.GetEntityCollisionPlanes(radius, height, velocity, position);
 
             bool abort = false;
 
