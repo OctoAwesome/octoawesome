@@ -27,13 +27,13 @@ namespace OctoAwesome.Basics
             IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
             //TODO More Generic, überdenken der Planetgeneration im allgemeinen (Heapmap + Highmap + Biome + Modding)
             // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-            ushort sandIndex = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Sand);
-            ushort snowIndex = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Snow);
-            ushort groundIndex = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Ground);
-            ushort stoneIndex = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Stone);
-            ushort waterIndex = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Water);
-            ushort grassIndex = definitionManager.GetDefinitionIndexByName(Languages.OctoBasics.Grass);
+            
+            ushort sandIndex = definitionManager.GetDefinitionIndex<SandBlockDefinition>().FirstOrDefault();
+            ushort snowIndex = definitionManager.GetDefinitionIndex<SnowBlockDefinition>().FirstOrDefault();
+            ushort groundIndex = definitionManager.GetDefinitionIndex<GroundBlockDefinition>().FirstOrDefault();
+            ushort stoneIndex = definitionManager.GetDefinitionIndex<StoneBlockDefinition>().FirstOrDefault();
+            ushort waterIndex = definitionManager.GetDefinitionIndex<WaterBlockDefinition>().FirstOrDefault();
+            ushort grassIndex = definitionManager.GetDefinitionIndex<GrassBlockDefinition>().FirstOrDefault();
 
             ComplexPlanet localPlanet = (ComplexPlanet)planet;
 

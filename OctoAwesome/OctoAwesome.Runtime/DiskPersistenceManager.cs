@@ -26,11 +26,11 @@ namespace OctoAwesome.Runtime
         private IExtensionResolver extensionResolver;
         private IDefinitionManager definitionmanager;
         /// <summary>
-        /// Manager for persistance at lokal Disk.
+        /// Manager für Persistierung auf der Festplatte.
         /// </summary>
-        /// <param name="extensionResolver">Resolver or extensions</param>
-        /// <param name="definition">Game services</param>
-        /// <param name="Settings">Game settings</param>
+        /// <param name="extensionResolver">Handhabt Erweiterungen im der der Simulation.</param>
+        /// <param name="definition">Spiel Dienste</param>
+        /// <param name="Settings">Spiel Dienste</param>
         public DiskPersistenceManager(IDefinitionManager definition, IExtensionResolver extensionResolver, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;

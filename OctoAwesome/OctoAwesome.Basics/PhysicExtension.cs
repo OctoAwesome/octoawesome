@@ -16,8 +16,6 @@ namespace OctoAwesome.Basics.Extensions
             extensionLoader.RegisterEntityExtender<Player>((player) =>
             {
                 player.Components.AddComponent(new GroundPhysicComponent(60f, 400f, 0.8f, 3.5f));
-                player.Components.AddComponent(new InventoryComponent());
-                player.Components.AddComponent(new ToolBarComponent());
             });
             extensionLoader.RegisterEntityExtender<WauziEntity>((entity) =>
             {

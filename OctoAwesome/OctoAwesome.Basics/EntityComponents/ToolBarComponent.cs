@@ -115,7 +115,8 @@ namespace OctoAwesome.Basics.EntityComponents
             {
                 if (Tools.Any(s => s != null && s.Definition.Name == slot.Definition.Name))
                     continue;
-                else AddNewSlot(slot);
+
+                AddNewSlot(slot);
             }
         }
     }

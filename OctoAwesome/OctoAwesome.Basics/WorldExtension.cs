@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Entities;
+using OctoAwesome.Basics.EntityComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,11 @@ namespace OctoAwesome.Basics.Extensions
             extensionloader.RegisterMapPopulator(new TreePopulator());
             //extensionloader.RegisterMapPopulator(new WauziPopulator());
             extensionloader.RegisterEntity<WauziEntity>();
+            extensionloader.RegisterEntityExtender<Player>(player =>
+            {
+                player.Components.AddComponent(new InventoryComponent());
+                player.Components.AddComponent(new ToolBarComponent());
+            });
         }
     }
 }

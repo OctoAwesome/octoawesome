@@ -20,32 +20,32 @@ namespace OctoAwesome.Basics.EntityComponents
         {
             Inventory = new List<InventorySlot>();
         }
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definition)
+        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionmanager)
         {
-            base.Deserialize(reader, definition);
+            base.Deserialize(reader, definitionmanager);
 
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
                 string name = reader.ReadString();
-                var def = definition.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
+                var definition = definitionmanager.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
                 var amount = reader.ReadDecimal();
 
-                if (definition == null || !(def is IInventoryableDefinition))
+                if (definitionmanager == null || !(definition is IInventoryableDefinition))
                     continue;
 
                 var slot = new InventorySlot()
                 {
                     Amount = amount,
-                    Definition = (IInventoryableDefinition)def,
+                    Definition = (IInventoryableDefinition)definition,
                 };
 
                 Inventory.Add(slot);
             }
         }
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definition)
+        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionmanager)
         {
-            base.Serialize(writer, definition);
+            base.Serialize(writer, definitionmanager);
 
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)
@@ -88,7 +88,9 @@ namespace OctoAwesome.Basics.EntityComponents
             if (slot.Amount >= definition.VolumePerUnit) // Wir können noch einen Block setzen
             {
                 slot.Amount -= definition.VolumePerUnit;
-                if (slot.Amount <= 0) Inventory.Remove(slot);
+                if (slot.Amount <= 0)
+                    Inventory.Remove(slot);
+
                 return true;
             }
             return false;
