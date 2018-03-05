@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.Languages {
     // -Klasse über ein Tool wie ResGen oder Visual Studio automatisch generiert.
     // Um einen Member hinzuzufügen oder zu entfernen, bearbeiten Sie die .ResX-Datei und führen dann ResGen
     // mit der /str-Option erneut aus, oder Sie erstellen Ihr VS-Projekt neu.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class OctoBasics {
@@ -93,24 +93,6 @@ namespace OctoAwesome.Basics.Languages {
         internal static string Cactus {
             get {
                 return ResourceManager.GetString("Cactus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Basic Extension with all important stuff ähnelt.
-        /// </summary>
-        internal static string ExtensionDescription {
-            get {
-                return ResourceManager.GetString("ExtensionDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Basics ähnelt.
-        /// </summary>
-        internal static string ExtensionName {
-            get {
-                return ResourceManager.GetString("ExtensionName", resourceCulture);
             }
         }
         
@@ -201,6 +183,24 @@ namespace OctoAwesome.Basics.Languages {
         internal static string Oven {
             get {
                 return ResourceManager.GetString("Oven", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Basic Physic Extesnion ähnelt.
+        /// </summary>
+        internal static string PhysicExtensionDescription {
+            get {
+                return ResourceManager.GetString("PhysicExtensionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Physics Basiscs ähnelt.
+        /// </summary>
+        internal static string PhysicExtensionName {
+            get {
+                return ResourceManager.GetString("PhysicExtensionName", resourceCulture);
             }
         }
         
@@ -309,6 +309,24 @@ namespace OctoAwesome.Basics.Languages {
         internal static string Wood {
             get {
                 return ResourceManager.GetString("Wood", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Basic World Extension with all important stuff ähnelt.
+        /// </summary>
+        internal static string WorldExtensionDescription {
+            get {
+                return ResourceManager.GetString("WorldExtensionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die World Basics ähnelt.
+        /// </summary>
+        internal static string WorldExtensionName {
+            get {
+                return ResourceManager.GetString("WorldExtensionName", resourceCulture);
             }
         }
     }

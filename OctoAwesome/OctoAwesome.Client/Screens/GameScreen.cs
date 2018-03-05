@@ -4,7 +4,6 @@ using OctoAwesome.Client.Components;
 using System;
 using engenious;
 using engenious.Input;
-
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class GameScreen : Screen
@@ -13,13 +12,11 @@ namespace OctoAwesome.Client.Screens
 
         private new ScreenComponent Manager { get; set; }
 
-        DebugControl debug;
-        SceneControl scene;
-        CompassControl compass;
-        ToolbarControl toolbar;
-        MinimapControl minimap;
-        CrosshairControl crosshair;
-        HealthBarControl healthbar;
+        private DebugControl debug;
+        private SceneControl scene;
+        private CompassControl compass;
+        private MinimapControl minimap;
+        private CrosshairControl crosshair;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -28,72 +25,97 @@ namespace OctoAwesome.Client.Screens
             Manager = manager;
             Padding = Border.All(0);
 
-            scene = new SceneControl(manager);
-            scene.HorizontalAlignment = HorizontalAlignment.Stretch;
-            scene.VerticalAlignment = VerticalAlignment.Stretch;
+            scene = new SceneControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
             Controls.Add(scene);
 
-            debug = new DebugControl(manager);
-            debug.HorizontalAlignment = HorizontalAlignment.Stretch;
-            debug.VerticalAlignment = VerticalAlignment.Stretch;
-            debug.Visible = false;
+            debug = new DebugControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Visible = false
+            };
             Controls.Add(debug);
 
-            compass = new CompassControl(manager);
-            compass.HorizontalAlignment = HorizontalAlignment.Center;
-            compass.VerticalAlignment = VerticalAlignment.Top;
-            compass.Margin = Border.All(10);
-            compass.Width = 300;
-            compass.Height = 50;
+            compass = new CompassControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = Border.All(10),
+                Width = 300,
+                Height = 50
+            };
             Controls.Add(compass);
 
-            toolbar = new ToolbarControl(manager);
-            toolbar.HorizontalAlignment = HorizontalAlignment.Stretch;
-            toolbar.VerticalAlignment = VerticalAlignment.Bottom;
-            toolbar.Height = 100;
-            Controls.Add(toolbar);
-
-            minimap = new MinimapControl(manager, scene);
-            minimap.HorizontalAlignment = HorizontalAlignment.Right;
-            minimap.VerticalAlignment = VerticalAlignment.Bottom;
-            minimap.Width = 128;
-            minimap.Height = 128;
-            minimap.Margin = Border.All(5);
+            minimap = new MinimapControl(manager, scene)
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Width = 128,
+                Height = 128,
+                Margin = Border.All(5)
+            };
             Controls.Add(minimap);
-
-            healthbar = new HealthBarControl(manager);
-            healthbar.HorizontalAlignment = HorizontalAlignment.Left;
-            healthbar.VerticalAlignment = VerticalAlignment.Bottom;
-            healthbar.Width = 240;
-            healthbar.Height = 78;
-            healthbar.Maximum = 100;
-            healthbar.Value = 40;
-            healthbar.Margin = Border.All(20, 30);
-            Controls.Add(healthbar);
-
-            crosshair = new CrosshairControl(manager);
-            crosshair.HorizontalAlignment = HorizontalAlignment.Center;
-            crosshair.VerticalAlignment = VerticalAlignment.Center;
-            crosshair.Width = 8;
-            crosshair.Height = 8;
+            
+            crosshair = new CrosshairControl(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Width = 8,
+                Height = 8
+            };
             Controls.Add(crosshair);
+
+            foreach (Func<Control> creater in manager.GameScreenExtension)
+            {
+                Control control = creater();
+                if(control != null)
+                {
+                    Controls.Add(control);
+                }
+            }
 
             Title = Languages.OctoClient.Game;
 
             RegisterKeyActions();
         }
-
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 1f);
-            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-1f, 0f);
-            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -1f);
-            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(1f, 0f);
-            if (pressedHeadUp) Manager.Player.HeadInput += new Vector2(0f, 1f);
-            if (pressedHeadDown) Manager.Player.HeadInput += new Vector2(0f, -1f);
-            if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
-            if (pressedHeadRight) Manager.Player.HeadInput += new Vector2(1f, 0f);
+            Vector2 move = Vector2.Zero;
 
+            if (pressedMoveUp)
+                move += new Vector2(0f, 1f);
+
+            if (pressedMoveLeft)
+                move += new Vector2(-1f, 0f);
+
+            if (pressedMoveDown)
+                move += new Vector2(0f, -1f);
+
+            if (pressedMoveRight)
+                move += new Vector2(1f, 0f);
+
+            Manager.Player.MoveInput = move;
+
+            Vector2 head = Vector2.Zero;
+
+            if (pressedHeadUp)
+                head += new Vector2(0f, 1f);
+
+            if (pressedHeadDown)
+                head += new Vector2(0f, -1f);
+
+            if (pressedHeadLeft)
+                head += new Vector2(-1f, 0f);
+
+            if (pressedHeadRight)
+                head += new Vector2(1f, 0f);
+
+            Manager.Player.HeadInput += head;
+            
             HandleGamePad();
 
             base.OnUpdate(gameTime);
@@ -103,7 +125,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnLeftMouseDown(MouseEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             Manager.Player.ApplyInput = true;
             args.Handled = true;
@@ -111,7 +134,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnRightMouseDown(MouseEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             Manager.Player.InteractInput = true;
             args.Handled = true;
@@ -119,7 +143,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnMouseMove(MouseEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             if (args.MouseMode == MouseMode.Captured && IsActiveScreen)
             {
@@ -130,7 +155,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnMouseScroll(MouseScrollEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             Manager.Player.SlotLeftInput = args.Steps > 0;
             Manager.Player.SlotRightInput = args.Steps < 0;
@@ -210,15 +236,15 @@ namespace OctoAwesome.Client.Screens
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.Player.ApplyInput = true;
             });
-            Manager.Game.KeyMapper.AddAction("octoawesome:flymode", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.FlymodeInput = true;
-            });
             Manager.Game.KeyMapper.AddAction("octoawesome:jump", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
                 Manager.Player.JumpInput = true;
+            });
+            Manager.Game.KeyMapper.AddAction("octoawesome:flymode", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
+                Manager.Player.FlymodeInput = true;
             });
             for (int i = 0; i < 10; i++)
             {
@@ -247,11 +273,8 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:hidecontrols", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                compass.Visible = !compass.Visible;
-                toolbar.Visible = !toolbar.Visible;
-                minimap.Visible = !minimap.Visible;
-                crosshair.Visible = !crosshair.Visible;
-                debug.Visible = !debug.Visible;
+                foreach (Control control in Controls)
+                    control.Visible = !control.Visible;
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:exit", type =>
             {
@@ -269,10 +292,13 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:teleport", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => {
-                        Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
-                        Manager.NavigateBack();
-                    }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
+                Manager.NavigateToScreen(new TargetScreen(Manager, (x, y) => 
+                {
+                    Manager.Game.Player.CurrentEntity?.SetPosition(new Coordinate(0, new Index3(x, y, 300), new Vector3()),
+                        Manager.Player.CurrentEntity?.Azimuth ?? 0);
+                    Manager.NavigateBack();
+                }, 
+                    Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.X, Manager.Game.Player.CurrentEntity.Position.GlobalBlockIndex.Y));
             });
         }
 
@@ -290,7 +316,8 @@ namespace OctoAwesome.Client.Screens
 
         private void HandleGamePad()
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             bool succeeded = false;
             GamePadState gamePadState = new GamePadState();

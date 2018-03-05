@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Common;
+using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,7 +27,9 @@ namespace OctoAwesome.Runtime
         /// Das aktuell geladene Universum.
         /// </summary>
         public IUniverse CurrentUniverse { get; private set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public IDefinitionManager DefinitionManager { get; private set; }
 
         private IExtensionResolver extensionResolver;
@@ -34,13 +38,13 @@ namespace OctoAwesome.Runtime
         /// Konstruktor
         /// </summary>
         /// <param name="extensionResolver">ExetnsionResolver</param>
-        /// <param name="definitionManager">DefinitionManager</param>
+        /// <param name="definitionManager">Game Services</param>
         /// <param name="settings">Einstellungen</param>
         public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
-            persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, this, settings);
+            persistenceManager = new DiskPersistenceManager(definitionManager, extensionResolver, settings);
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
@@ -115,7 +119,9 @@ namespace OctoAwesome.Runtime
             }
             planets.Clear();
 
-            CurrentUniverse = null;
+            //TODO: löst exception aus wenn das universum entladen wird und 
+            // noch nicht alle chunkcolumn gespeichert wurden.
+            //CurrentUniverse = null;
             GC.Collect();
         }
 
@@ -150,8 +156,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            IPlanet planet;
-            if (!planets.TryGetValue(id, out planet))
+            if (!planets.TryGetValue(id, out IPlanet planet))
             {
                 // Versuch vorhandenen Planeten zu laden
                 planet = persistenceManager.LoadPlanet(CurrentUniverse.Id, id);
@@ -165,8 +170,7 @@ namespace OctoAwesome.Runtime
                     planet = generator.GeneratePlanet(CurrentUniverse.Id, id, CurrentUniverse.Seed + id);
                     // persistenceManager.SavePlanet(universe.Id, planet);
                 }
-
-
+                
                 planets.Add(id, planet);
             }
 
@@ -274,7 +278,7 @@ namespace OctoAwesome.Runtime
         public void SaveEntity(Entity entity)
         {
             if (entity is Player)
-                SavePlayer((Player)entity);
+                SavePlayer((Player) entity);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -61,7 +62,12 @@ namespace OctoAwesome.Runtime
         public void LoadExtensions()
         {
             List<Assembly> assemblies = new List<Assembly>();
-            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            var tempAssembly = Assembly.GetEntryAssembly();
+
+            if (tempAssembly == null)
+                tempAssembly = Assembly.GetAssembly(GetType());
+
+            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(tempAssembly.Location));
             assemblies.AddRange(LoadAssemblies(dir));
 
             DirectoryInfo plugins = new DirectoryInfo(Path.Combine(dir.FullName, "plugins"));
@@ -69,31 +75,48 @@ namespace OctoAwesome.Runtime
                 assemblies.AddRange(LoadAssemblies(plugins));
 
             var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : new string[0];
-
-            List<Type> result = new List<Type>();
+            
             foreach (var assembly in assemblies)
             {
-                foreach (var type in assembly.GetTypes())
+                try
                 {
-                    if (!typeof(IExtension).IsAssignableFrom(type))
-                        continue;
-
-                    try
+                    foreach (var type in assembly.GetTypes())
                     {
-                        IExtension extension = (IExtension)Activator.CreateInstance(type);
-                        extension.Register(this);
+                        try
+                        {
+                            // added isabstract check...
+                            if (type.IsAbstract || !typeof(IExtension).IsAssignableFrom(type))
+                                continue;
+                            IExtension extension = (IExtension) Activator.CreateInstance(type);
+                            extension.LoadDefinitions(this);
+                            extension.Extend(this);
 
-                        if (disabledExtensions.Contains(type.FullName))
-                            LoadedExtensions.Add(extension);
-                        else
-                            ActiveExtensions.Add(extension);
-                    }
-                    catch (Exception)
-                    {
-                        // TODO: Logging
+                            if (disabledExtensions.Contains(type.FullName))
+                                LoadedExtensions.Add(extension);
+                            else
+                                ActiveExtensions.Add(extension);
+                        }
+                        catch (Exception)
+                        {
+                            // TODO: Logging
+                        }
                     }
                 }
+                catch(Exception)
+                {
+
+                }
             }
+        }
+
+        /// <summary>
+        /// Activate the Extenisons
+        /// </summary>
+        /// <param name="disabledExtensions">List of Extensions</param>
+        public void ApplyExtensions(IList<IExtension> disabledExtensions)
+        {
+            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
+            settings.Set(SETTINGSKEY, types);
         }
 
         private IEnumerable<Assembly> LoadAssemblies(DirectoryInfo directory)
@@ -114,17 +137,16 @@ namespace OctoAwesome.Runtime
             return assemblies;
         }
 
-        /// <summary>
-        /// Activate the Extenisons
-        /// </summary>
-        /// <param name="disabledExtensions">List of Extensions</param>
-        public void ApplyExtensions(IList<IExtension> disabledExtensions)
-        {
-            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
-            settings.Set(SETTINGSKEY, types);
-        }
-
         #region Loader Methods
+
+        /// <summary>
+        /// Load definitions from resouce
+        /// </summary>
+        /// <param name="embeddedresource">Path of resource file -> [Assembly.Namespace.name.txt|.xml]</param>
+        public void LoadDefinitionsFromResource(string embeddedresource)
+        {
+            // coming soon
+        }
 
         /// <summary>
         /// Registers a new Definition.
@@ -174,17 +196,13 @@ namespace OctoAwesome.Runtime
         public void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity
         {
             Type type = typeof(T);
-            List<Action<Entity>> list;
-            if (!entityExtender.TryGetValue(type, out list))
+            if (!entityExtender.TryGetValue(type, out List<Action<Entity>> list))
             {
                 list = new List<Action<Entity>>();
                 entityExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
-
-        public void RegisterDefaultEntityExtender<T>() where T : Entity 
-            => RegisterEntityExtender<T>((e) => e.RegisterDefault());
 
         /// <summary>
         /// Adds a new Extender for the simulation.
@@ -204,6 +222,10 @@ namespace OctoAwesome.Runtime
             mapGenerators.Add(generator);
         }
 
+        /// <summary>
+        /// Register an <see cref="IMapPopulator"/>
+        /// </summary>
+        /// <param name="populator"></param>
         public void RegisterMapPopulator(IMapPopulator populator)
         {
             mapPopulators.Add(populator);
@@ -229,6 +251,10 @@ namespace OctoAwesome.Runtime
             mapGenerators.Remove(item);
         }
 
+        /// <summary>
+        /// Removes an existing Map Populater.
+        /// </summary>
+        /// <typeparam name="T">Populater Type</typeparam>
         public void RemoveMapPopulator<T>(T item) where T : IMapPopulator
         {
             mapPopulators.Remove(item);
@@ -267,12 +293,9 @@ namespace OctoAwesome.Runtime
 
             foreach (var type in stack)
             {
-                List<Action<Entity>> list;
-                if (!entityExtender.TryGetValue(type, out list))
-                    continue;
+                if (entityExtender.TryGetValue(type, out List<Action<Entity>> list))
+                    list.ForEach(a => a.Invoke(entity));
 
-                foreach (var item in list)
-                    item(entity);
             }
         }
 

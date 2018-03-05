@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<definitions xmlns:ext="assembly:OctoAwesome.Basics;namespace:OctoAwesome.Basics.Entities">
+  <ext:WauziEntity IsInventoryable="false" Name="Wauzi" Mass="1" Radius="1.5" Height="1" Icon="" StackLimit="" ValumePerUnit="">
+    <int Key ="" Value=""/>
+    <string Key ="modelname" Value="dog"/>
+    <string Key ="texturename" Value="texdog"/>
+    <float Key="rotationz" Value="-90"/> 
+  </ext:WauziEntity>
+</definitions>

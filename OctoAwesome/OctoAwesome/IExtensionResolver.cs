@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using OctoAwesome.Entities;
+using OctoAwesome.Common;
+using System.Collections.Generic;
+using System;
 
 namespace OctoAwesome
 {
@@ -11,6 +14,7 @@ namespace OctoAwesome
         /// Extend a Simulation
         /// </summary>
         /// <param name="simulation">Simulation</param>
+        [Obsolete]
         void ExtendSimulation(Simulation simulation);
 
         /// <summary>

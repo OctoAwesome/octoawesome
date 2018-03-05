@@ -1,10 +1,10 @@
-﻿using System;
+﻿using OctoAwesome.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Serialization;
 
 namespace OctoAwesome.Runtime
 {
@@ -22,20 +22,20 @@ namespace OctoAwesome.Runtime
         private const string ColumnFilename = "column_{0}_{1}.dat";
 
         private DirectoryInfo root;
-        private ISettings Settings;
-
-        private IDefinitionManager definitionManager;
+        private ISettings Settings;        
         private IExtensionResolver extensionResolver;
-        private IResourceManager manager;
-
-
-
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, IResourceManager manager, ISettings Settings)
+        private IDefinitionManager definitionmanager;
+        /// <summary>
+        /// Manager für Persistierung auf der Festplatte.
+        /// </summary>
+        /// <param name="extensionResolver">Handhabt Erweiterungen im der der Simulation.</param>
+        /// <param name="definition">Spiel Dienste</param>
+        /// <param name="Settings">Spiel Dienste</param>
+        public DiskPersistenceManager(IDefinitionManager definition, IExtensionResolver extensionResolver, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
-            this.definitionManager = definitionManager;
             this.Settings = Settings;
-            this.manager = manager;
+            this.definitionmanager = definition;
         }
 
         private string GetRoot()
@@ -133,7 +133,7 @@ namespace OctoAwesome.Runtime
             {
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
                 {
-                    column.Serialize(zip, definitionManager);
+                    column.Serialize(zip, definitionmanager);
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace OctoAwesome.Runtime
 
             if (generator == null)
                 throw new Exception("Unknown Generator");
-            
+
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
@@ -233,7 +233,7 @@ namespace OctoAwesome.Runtime
                 {
                     using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
                     {
-                        return planet.Generator.GenerateColumn(zip, definitionManager, planet.Id, columnIndex);
+                        return planet.Generator.GenerateColumn(zip, definitionmanager, planet.Id, columnIndex);
                     }
                 }
             }
@@ -268,7 +268,8 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         Player player = new Player();
-                        player.Deserialize(reader, definitionManager);
+                        //extensionResolver.ExtendEntity(player);
+                        player.Deserialize(reader, definitionmanager);
                         return player;
                     }
                     catch (Exception)
@@ -297,7 +298,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    player.Serialize(writer, definitionManager);
+                    player.Serialize(writer, definitionmanager);
                 }
             }
         }

@@ -1,32 +1,13 @@
-﻿using OctoAwesome.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using engenious;
-using OctoAwesome.EntityComponents;
-
+using engenious.Helper;
+using OctoAwesome.Common;
+using OctoAwesome.Entities;
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class PlayerComponent : GameComponent
+    internal sealed class PlayerComponent : GameComponent, IEntityController
     {
-        private new OctoGame Game;
-
-        private IResourceManager resourceManager;
-
-        #region External Input
-
-        public Vector2 HeadInput { get; set; }
-
-        public Vector2 MoveInput { get; set; }
-
-        public bool InteractInput { get; set; }
-
-        public bool ApplyInput { get; set; }
-
-        public bool JumpInput { get; set; }
-
-        public bool FlymodeInput { get; set; }
+        #region IEntityController Interface
 
         public bool[] SlotInput { get; private set; } = new bool[10];
 
@@ -34,23 +15,25 @@ namespace OctoAwesome.Client.Components
 
         public bool SlotRightInput { get; set; }
 
-        #endregion
+        public bool InteractInput { get; set; }
 
-        public Entity CurrentEntity { get; private set; }
+        public bool ApplyInput { get; set; }
 
-        public HeadComponent CurrentEntityHead { get; private set; }
+        public bool JumpInput { get; set; }
 
-        public ControllableComponent CurrentController { get; private set; }
+        public float Tilt { get; set; }
 
-        public InventoryComponent Inventory { get; private set; }
+        public float Yaw { get; set; }
 
-        public ToolBarComponent Toolbar { get; private set; }
+        public float Roll { get; set; }
 
-        public PositionComponent Position { get; private set; }
+        public Vector2 HeadInput { get; set; }
 
-        // public ActorHost ActorHost { get; private set; }
+        public Vector2 MoveInput { get; set; }
 
-        public Index3? SelectedBox { get; set; }
+        public Vector3 Direction { get; set; }
+
+        public Index3? SelectedBlock { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
 
@@ -60,8 +43,29 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
-        public PlayerComponent(OctoGame game, IResourceManager resourceManager)
-            : base(game)
+        // suggestion: kamere freezen -> sodass sie nicht mehr bewegt werden kann.
+        public bool CanFreeze => false;
+
+        public bool Freezed { get; set; }
+
+        #endregion
+
+        #region External Inputs        
+
+        public bool FlymodeInput { get; set; }
+
+        #endregion
+
+        public Vector3 HeadOffset { get; private set; }
+
+        public Entity CurrentEntity { get; private set; }
+        
+        private new OctoGame Game;
+
+        private IResourceManager resourceManager;
+
+
+        public PlayerComponent(OctoGame game, IResourceManager resourceManager) : base(game)
         {
             this.resourceManager = resourceManager;
             Game = game;
@@ -70,135 +74,54 @@ namespace OctoAwesome.Client.Components
         public void SetEntity(Entity entity)
         {
             CurrentEntity = entity;
+            if (CurrentEntity != null && CurrentEntity is IControllable current)
+                current.Reset();
+            if (entity is IControllable controllable)
+                controllable.Register(this);
+            if (CurrentEntity is Entities.IDrawable draw)
+                HeadOffset = new Vector3(0, 0, draw.Height - 0.3f);
+            else HeadOffset = new Vector3(0, 0, 3.2f);
 
-
-
-            if (CurrentEntity == null)
+            if (CurrentEntity != null)
             {
-                CurrentEntityHead = null;
+                foreach(Entities.EntityComponent comp in entity.Components)
+                    if (comp is IUserInterfaceExtension extension)
+                        extension.Register(Game.Screen);
             }
             else
             {
-                // Map other Components
-
-                CurrentController = entity.Components.GetComponent<ControllableComponent>();
-
-                CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
-
-                Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-                if (Inventory == null) Inventory = new InventoryComponent();
-
-                Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar == null) Toolbar = new ToolBarComponent();
-
-                Position = CurrentEntity.Components.GetComponent<PositionComponent>();
-                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
+                Game.Screen.CleanExtensions();
             }
-        }
+        }        
 
-        public override void Update(GameTime gameTime)
-        {
-            if (!Enabled)
-                return;
-
-            if (CurrentEntity == null)
-                return;
-
-            CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
-            CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
-            CurrentEntityHead.Tilt = Math.Min(1.5f, Math.Max(-1.5f, CurrentEntityHead.Tilt));
-            HeadInput = Vector2.Zero;
-
-            CurrentController.MoveInput = MoveInput;
-            MoveInput = Vector2.Zero;
-
-            CurrentController.JumpInput = JumpInput;
-            JumpInput = false;
-
-            if (InteractInput && SelectedBox.HasValue)
-                CurrentController.InteractBlock = SelectedBox.Value;
-            InteractInput = false;
-
-            if (ApplyInput && SelectedBox.HasValue)
-            {
-                CurrentController.ApplyBlock = SelectedBox.Value;
-                CurrentController.ApplySide = SelectedSide;
-            }
-
-            ApplyInput = false;
-
-            //if (FlymodeInput)
-            //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
-            //FlymodeInput = false;
-
-            if (Toolbar.Tools != null && Toolbar.Tools.Length > 0)
-            {
-                if (Toolbar.ActiveTool == null) Toolbar.ActiveTool = Toolbar.Tools[0];
-                for (int i = 0; i < Math.Min(Toolbar.Tools.Length, SlotInput.Length); i++)
-                {
-                    if (SlotInput[i])
-                        Toolbar.ActiveTool = Toolbar.Tools[i];
-                    SlotInput[i] = false;
-                }
-            }
-
-            //Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            List<int> toolIndices = new List<int>();
-            if (Toolbar.Tools != null)
-            {
-                for (int i = 0; i < Toolbar.Tools.Length; i++)
-                {
-                    if (Toolbar.Tools[i] != null)
-                        toolIndices.Add(i);
-
-                    if (Toolbar.Tools[i] == Toolbar.ActiveTool)
-                        activeTool = toolIndices.Count - 1;
-                }
-            }
-
-            if (SlotLeftInput)
-            {
-                if (activeTool > -1)
-                    activeTool--;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[toolIndices.Count - 1];
-            }
-            SlotLeftInput = false;
-
-            if (SlotRightInput)
-            {
-                if (activeTool > -1)
-                    activeTool++;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[0];
-            }
-            SlotRightInput = false;
-
-            if (activeTool > -1)
-            {
-                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
-            }
-        }
+        //public override void Update(GameTime gameTime)
+        //{
+        //    if (!Enabled || CurrentEntity == null)
+        //        return;
+            
+        //    //TODO: was ist damit
+        //    //if (FlymodeInput)
+        //    //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
+        //    //FlymodeInput = false;
+        //}
 
         /// <summary>
         /// DEBUG METHODE: NICHT FÜR VERWENDUNG IM SPIEL!
         /// </summary>
+        [Obsolete("Is Empty right now... TODO: implementieren, but how")]
         internal void AllBlocksDebug()
         {
-            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-            if (inventory == null)
-                return;
+            //var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            //if (inventory == null)
+            //    return;
 
-            var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
-            foreach (var blockDefinition in blockDefinitions)
-                inventory.AddUnit(blockDefinition);
+            //var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
+            //foreach (var blockDefinition in blockDefinitions)
+            //    inventory.AddUnit(blockDefinition);
 
-            var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
-            foreach (var itemDefinition in itemDefinitions)
-                inventory.AddUnit(itemDefinition);
+            //var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
+            //foreach (var itemDefinition in itemDefinitions)
+            //    inventory.AddUnit(itemDefinition);
         }
     }
 }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.Entities;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
+    // TODO: populator system überarbeiten?
     public class WauziPopulator : IMapPopulator
     {
 
@@ -34,8 +30,12 @@ namespace OctoAwesome.Basics
             var x = r.Next(0, Chunk.CHUNKSIZE_X/2);
             var y = r.Next(0, Chunk.CHUNKSIZE_Y/2);
 
-            PositionComponent position = new PositionComponent() { Position = new Coordinate(0, new Index3(x+column00.Index.X*Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), new Vector3(0, 0, 0)) };
-            wauzi.Components.AddComponent(position);
+            wauzi.SetPosition(new Coordinate(planet.Id, 
+                new Index3(x + column00.Index.X * Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), 
+                new Vector3(0, 0, 0)), 0f);
+            // TODO: warum wird das wauzi nicht direkt auf dem planeten gespawnt...
+            // oder noch besser in die simulation
+            // und findet dann seinen weg über die postion zum chunck ?
             column00.Entities.Add(wauzi);
         }
 

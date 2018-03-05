@@ -180,7 +180,7 @@ namespace OctoAwesome.Client
                 tArray[i] = (T)Convert.ChangeType(partsString[i], typeof(T));
 
             return tArray;
-            }
+        }
 
         /// <summary>
         /// Löscht eine Eigenschaft aus den Einstellungen

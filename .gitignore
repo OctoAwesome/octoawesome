@@ -262,3 +262,5 @@ __pycache__/
 
 #Customize
 .idea
+/OctoAwesome/OctoAwesome.Client/Content/engenious.CreatedContent.Content.dll
+/OctoAwesome/OctoAwesome.Runtime/Common

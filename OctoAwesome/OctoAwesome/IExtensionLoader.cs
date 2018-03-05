@@ -1,5 +1,8 @@
-﻿using System;
+﻿using OctoAwesome.Entities;
+using OctoAwesome.Common;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace OctoAwesome
 {
@@ -31,6 +34,12 @@ namespace OctoAwesome
         void RegisterDefinition(IDefinition definition);
 
         /// <summary>
+        /// Load definitions from resouce
+        /// </summary>
+        /// <param name="embeddedresource">Path of resource file -> [Assembly.Namespace.name.txt|.xml]</param>
+        void LoadDefinitionsFromResource(string embeddedresource);
+
+        /// <summary>
         /// Removes an existing Definition Type.
         /// </summary>
         /// <typeparam name="T">Definition Type</typeparam>
@@ -56,12 +65,6 @@ namespace OctoAwesome
         void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity;
 
         /// <summary>
-        /// Adds the Default Extender for the given Entity Type.
-        /// </summary>
-        /// <typeparam name="T">Entity Type</typeparam>
-        void RegisterDefaultEntityExtender<T>() where T : Entity;
-
-        /// <summary>
         /// Adds a new Extender for the simulation.
         /// </summary>
         /// <param name="extenderDelegate"></param>
@@ -78,8 +81,17 @@ namespace OctoAwesome
         /// <typeparam name="T">Map Generator Type</typeparam>
         void RemoveMapGenerator<T>(T item) where T : IMapGenerator;
 
+        /// <summary>
+        /// Adds an new <see cref="IMapPopulator"/>.
+        /// </summary>
+        /// <param name="populator">Populator to register</param>
         void RegisterMapPopulator(IMapPopulator populator);
 
+        /// <summary>
+        /// Removes an existing <see cref="IMapPopulator"/>
+        /// </summary>
+        /// <typeparam name="T">Type of Populator</typeparam>
+        /// <param name="item">Pupulator whit type T</param>
         void RemoveMapPopulator<T>(T item) where T : IMapPopulator;
     }
 }

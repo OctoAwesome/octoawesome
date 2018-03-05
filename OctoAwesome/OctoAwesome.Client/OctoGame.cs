@@ -1,11 +1,7 @@
-﻿using OctoAwesome;
-using OctoAwesome.Client.Components;
+﻿using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
-using System.Configuration;
-using System.Linq;
-using MonoGameUi;
 using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
@@ -44,26 +40,17 @@ namespace OctoAwesome.Client
 
         public OctoGame()
         {
-            //graphics = new GraphicsDeviceManager(this);
-            //graphics.PreferredBackBufferWidth = 1080;
-            //graphics.PreferredBackBufferHeight = 720;
-
-            //Content.RootDirectory = "Content";
             Title = "OctoAwesome";
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
-
-            //Window.AllowUserResizing = true;
+            
             Settings = new Settings();
 
             ExtensionLoader extensionLoader = new ExtensionLoader(Settings);
             extensionLoader.LoadExtensions();
             ExtensionLoader = extensionLoader;
-
             DefinitionManager = new DefinitionManager(extensionLoader);
             ResourceManager = new ResourceManager(extensionLoader, DefinitionManager, Settings);
-
-            //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);
             int height = Settings.Get("Height", 720);
@@ -84,40 +71,37 @@ namespace OctoAwesome.Client
             Assets = new AssetComponent(this);
             Components.Add(Assets);
 
-            Simulation = new Components.SimulationComponent(this,
-                extensionLoader, ResourceManager);
-            Simulation.UpdateOrder = 4;
+            Simulation = new Components.SimulationComponent(this, extensionLoader, ResourceManager)
+            {
+                UpdateOrder = 4
+            };
             Components.Add(Simulation);
 
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
             Components.Add(Player);
 
-            Entity = new Client.Components.EntityComponent(this,Simulation);
-            Entity.UpdateOrder = 2;
+            Entity = new EntityComponent(this, Simulation)
+            {
+                UpdateOrder = 2
+            };
             Components.Add(Entity);
 
-            Camera = new CameraComponent(this);
-            Camera.UpdateOrder = 3;
+            Camera = new CameraComponent(this)
+            {
+                UpdateOrder = 3
+            };
             Components.Add(Camera);
 
-            Screen = new ScreenComponent(this);
-            Screen.UpdateOrder = 1;
-            Screen.DrawOrder = 1;
+            Screen = new ScreenComponent(this)
+            {
+                UpdateOrder = 1,
+                DrawOrder = 1
+            };
             Components.Add(Screen);
 
             KeyMapper = new KeyMapper(Screen, Settings);
-
-            /*Resize += (s, e) =>
-            {
-                //if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
-                //   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
-                //    return;
-
-                //graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                //graphics.ApplyChanges();
-            };*/
+            
             SetKeyBindings();
         }
 
@@ -198,3 +182,4 @@ namespace OctoAwesome.Client
         }
     }
 }
+

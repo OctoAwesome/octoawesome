@@ -15,9 +15,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData => true;
 
-        public override string[] Textures => new[] {
+        public override string[] Textures => new[] 
+        {
                 "birch_wood_top",
-                "birch_wood_side" };
+                "birch_wood_side"
+        };
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
             => new PhysicalProperties()
@@ -27,14 +29,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 Granularity = 0.9f,
                 Hardness = 0.1f
             };
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
-            int x, int y, int z)
+        public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
             OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
 
@@ -98,10 +93,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             // Assert here
             return -1;
         }
-
         public override int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags) manager.GetBlockMeta(x, y, z);
             switch (wall)
             {
                 case Wall.Top:
@@ -137,6 +131,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 default:
                     return base.GetTextureRotation(wall, manager, x, y, z); //should never ever happen
             }
+        }
+        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+        {
+            throw new NotImplementedException();
         }
     }
 }

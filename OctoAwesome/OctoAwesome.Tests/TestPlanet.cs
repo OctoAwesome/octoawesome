@@ -27,7 +27,7 @@ namespace OctoAwesome.Tests
 
         public Guid Universe { get; private set; }
 
-        public float Gravity => throw new NotImplementedException();
+        public float Gravity => 9.81f;
 
         IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

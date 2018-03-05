@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using engenious;
-using OctoAwesome.EntityComponents;
+using OctoAwesome.Entities;
+using OctoAwesome.Common;
 
 namespace OctoAwesome
 {
@@ -15,7 +16,9 @@ namespace OctoAwesome
         // private List<ActorHost> actorHosts = new List<ActorHost>();
         // private Stopwatch watch = new Stopwatch();
         // private Thread thread;
-
+        /// <summary>
+        /// Manager for Resources
+        /// </summary>
         public IResourceManager ResourceManager { get; private set; }
 
         /// <summary>
@@ -29,11 +32,6 @@ namespace OctoAwesome
         public SimulationState State { get; private set; }
 
         /// <summary>
-        /// Die Guid des aktuell geladenen Universums.
-        /// </summary>
-        public Guid UniverseId { get; private set; }
-
-        /// <summary>
         /// List of all Entities.
         /// </summary>
         public List<Entity> Entities => entities.ToList();
@@ -43,20 +41,19 @@ namespace OctoAwesome
         private readonly IExtensionResolver extensionResolver;
 
         private HashSet<Entity> entities = new HashSet<Entity>();
+        private IGameService service;
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
         /// </summary>
-        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
+        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
         {
             ResourceManager = resourceManager;
-
+            this.service = service;
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
-            UniverseId = Guid.Empty;
 
-            Components = new ComponentList<SimulationComponent>(
-                ValidateAddComponent, ValidateRemoveComponent, null, null);
+            Components = new ComponentList<SimulationComponent>(ValidateAddComponent, ValidateRemoveComponent);
 
             extensionResolver.ExtendSimulation(this);
         }
@@ -122,18 +119,22 @@ namespace OctoAwesome
             {
                 ResourceManager.GlobalChunkCache.BeforeSimulationUpdate(this);
 
+                // TODO: Seperate updatealbe entities.
                 //Update all Entities
-                foreach (var entity in Entities.OfType<UpdateableEntity>())
-                    entity.Update(gameTime);
+                foreach (var entity in Entities)
+                {
+                    if(entity.NeedUpdate)
+                        entity.Update(gameTime, service);
+                    entity.Components.Update(gameTime, service);
+                }
 
                 // Update all Components
                 foreach (var component in Components.Where(c => c.Enabled))
-                    component.Update(gameTime);
+                    component.Update(gameTime, service);
 
                 ResourceManager.GlobalChunkCache.AfterSimulationUpdate(this);
             }
         }
-
         /// <summary>
         /// Beendet das aktuelle Spiel (nicht die Applikation)
         /// </summary>
@@ -146,8 +147,6 @@ namespace OctoAwesome
 
             //TODO: unschön
             Entities.ForEach(entity => RemoveEntity(entity));
-            //while (entites.Count > 0)
-            //    RemoveEntity(Entities.First());
 
             State = SimulationState.Finished;
             // thread.Join();
@@ -167,20 +166,18 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
-            if (entity.Simulation != null)
+            if(entities.Contains(entity))
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
-            if (entities.Contains(entity))
-                return;
-
+            entity.Initialize(service);
             extensionResolver.ExtendEntity(entity);
-            entity.Initialize(ResourceManager);
-            entity.Simulation = this;
+            entity.SetPosition(entity.Position, entity.Azimuth);
             entity.Id = nextId++;
             entities.Add(entity);
 
+            // TODO: wegschmeisen
             foreach (var component in Components)
-                component.Add(entity);
+                component.Register(entity);
         }
 
         /// <summary>
@@ -195,14 +192,6 @@ namespace OctoAwesome
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            if (entity.Simulation != this)
-            {
-                if (entity.Simulation == null)
-                    return;
-
-                throw new NotSupportedException("Entity can't be removed from a foreign simulation");
-            }
-
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
@@ -211,7 +200,6 @@ namespace OctoAwesome
 
             entities.Remove(entity);
             entity.Id = 0;
-            entity.Simulation = null;
 
             ResourceManager.SaveEntity(entity);
         }

@@ -1,66 +1,63 @@
-﻿<Content>
-  <References />
-  <Configuration>Debug</Configuration>
-  <OutputDir>bin/{Configuration}/</OutputDir>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Content>
   <Name>Content</Name>
+  <Configuration>Debug</Configuration>
+  <OutputDir>C:\Users\Klaus A\Source\Repos\octoawesome\OctoAwesome\OctoAwesome.Client\Content\bin\Debug</OutputDir>
   <Contents>
     <ContentFile>
       <Name>BoldFont.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>GameFont.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>HeadlineFont.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>Hud.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>simple.glsl</Name>
       <Processor>EffectProcessor</Processor>
-      <Importer />
+      <Importer>EffectImporter</Importer>
+      <CreateUserEffect>True</CreateUserEffect>
     </ContentFile>
     <ContentFile>
       <Name>texdog.png</Name>
       <Processor>BitmapProcessor</Processor>
-      <Importer />
-      <Settings>
-        <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
-        <MipMapCount>1</MipMapCount>
-        <Format>0</Format>
-      </Settings>
+      <Importer>BitmapImporter</Importer>
+      <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+      <MipMapCount>1</MipMapCount>
+      <Format>0</Format>
     </ContentFile>
     <ContentFile>
       <Name>dog.fbx</Name>
       <Processor>ModelProcessor</Processor>
-      <Importer />
-      <Settings>
-        <Scale>
-          <X>1</X>
-          <Y>1</Y>
-          <Z>1</Z>
-        </Scale>
-        <Translate>
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Translate>
-        <Rotation>
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Rotation>
-        <TransformMesh>True</TransformMesh>
-      </Settings>
+      <Importer>FbxImporter</Importer>
+      <Scale>
+        <X>1</X>
+        <Y>1</Y>
+        <Z>1</Z>
+      </Scale>
+      <Translate>
+        <X>0</X>
+        <Y>0</Y>
+        <Z>0</Z>
+      </Translate>
+      <Rotation>
+        <X>0</X>
+        <Y>0</Y>
+        <Z>0</Z>
+      </Rotation>
+      <TransformMesh>True</TransformMesh>
     </ContentFile>
   </Contents>
 </Content>

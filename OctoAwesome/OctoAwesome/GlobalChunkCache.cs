@@ -198,6 +198,8 @@ namespace OctoAwesome
                 {
                     if (!passive)
                     {
+                        //TODO: muss das eine exception sein ?
+                        // passiert eigentlich nichts schlimmes wenn etwas entfernt wird das nicht da ist.
                         throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
                     }
 
@@ -267,8 +269,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="id">ID des Planeten</param>
         /// <returns>Planet</returns>
-        public IPlanet GetPlanet(int id)
-            => loadPlanetDelagte(id);
+        public IPlanet GetPlanet(int id) => loadPlanetDelagte(id);
 
         public void BeforeSimulationUpdate(Simulation simulation)
         {
