@@ -9,8 +9,7 @@
         /// Gibt die Rangposition des Populators an [0...99]
         /// </summary>
         int Order { get; }
-
-        //TODO: Kommentieren xD
+        
         /// <summary>
         /// Versieht einen Chunk mit Items
         /// </summary>

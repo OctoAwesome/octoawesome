@@ -1,6 +1,6 @@
 ﻿using engenious;
-using OctoAwesome.CodeExtensions;
 using OctoAwesome.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome
@@ -114,10 +114,13 @@ namespace OctoAwesome
             Coordinate coordinate, bool invertvelocity = true)
         {
             var pos = coordinate.BlockPosition;
-            Vector3 vel =  invertvelocity ? velocity * -1f : velocity;
+            Vector3 vel =  invertvelocity ? new Vector3(-velocity.X, -velocity.Y, - velocity.Z) : velocity;
+
+            if (invertvelocity && (velocity.X != -vel.X || velocity.Y != -vel.Y || velocity.Z != -vel.Z))
+                throw new InvalidProgramException("wtf...");
 
             //Ebene X
-            if (vel.X > 0)
+                if (vel.X > 0)
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X - radius, pos.Y - radius, pos.Z),

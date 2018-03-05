@@ -69,7 +69,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="T">BlockDefinition Type</typeparam>
         /// <returns>Index der Block Definition</returns>
-        IList<ushort> GetDefinitionIndex<T>() where T : IDefinition;
+        ushort GetDefinitionIndex<T>() where T : IDefinition;
         /// <summary>
         /// Gibt die Liste von Instanzen des angegebenen Definition Interfaces zurück.
         /// </summary>

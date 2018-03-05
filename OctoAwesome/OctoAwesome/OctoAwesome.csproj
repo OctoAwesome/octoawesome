@@ -72,9 +72,6 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkColumn.cs" />
-    <Compile Include="CodeExtensions\StringExtensions.cs" />
-    <Compile Include="CodeExtensions\Vector2Extension.cs" />
-    <Compile Include="CodeExtensions\Vector3Extension.cs" />
     <Compile Include="CollisionPlane.cs" />
     <Compile Include="Common\IParsedDefinition.cs" />
     <Compile Include="Common\IDefinitionResolverHelper.cs" />
@@ -82,6 +79,7 @@
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="Entities\EntityFilterAttribute.cs" />
+    <Compile Include="Entities\FailChunkArgs.cs" />
     <Compile Include="Entities\IControllable.cs" />
     <Compile Include="Entities\IEntityController.cs" />
     <Compile Include="Entities\IDrawable.cs" />

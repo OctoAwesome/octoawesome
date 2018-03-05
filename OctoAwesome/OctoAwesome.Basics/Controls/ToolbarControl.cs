@@ -86,6 +86,7 @@ namespace OctoAwesome.Basics.Controls
                 grid.AddControl(buttons[i], i, 1);
             }
         }
+
         protected override void OnUpdate(GameTime gameTime)
         {
             if (!Visible || !Enabled)
@@ -177,10 +178,7 @@ namespace OctoAwesome.Basics.Controls
 
             base.OnUpdate(gameTime);
         }
-        public override string ToString()
-        {
-            // TODO: resx ->  Languages.OctoBasics.Tool or what ever...
-            return "Werkzeuge";
-        }
+
+        public override string ToString() => "Werkzeuge";
     }
 }

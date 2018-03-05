@@ -21,9 +21,7 @@ namespace OctoAwesome.Basics.Controls
             Value = 40;
             Margin = Border.All(20, 30);
         }
-        public override string ToString()
-        {
-            return "Health";
-        }
+
+        public override string ToString() => "Gesundheit";
     }
 }

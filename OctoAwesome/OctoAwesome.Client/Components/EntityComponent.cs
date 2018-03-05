@@ -10,7 +10,7 @@ namespace OctoAwesome.Client.Components
     internal sealed class EntityComponent : GameComponent
     {
         public SimulationComponent Simulation { get; private set; }
-        public IEnumerable<Entity> Entities { get { return entities; } }
+        public IEnumerable<Entity> Entities => entities;
         private struct ModelInfo
         {
             public bool render;
@@ -32,11 +32,14 @@ namespace OctoAwesome.Client.Components
         }
         public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
-            if (entities.Count() == 0) return;
+            if (entities.Count() == 0)
+                return;
+
             effect.Projection = projection;
             effect.View = view;
             effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+
             foreach (var pass in effect.CurrentTechnique.Passes.PassesList)
             {
                 pass.Apply();
@@ -55,7 +58,8 @@ namespace OctoAwesome.Client.Components
                         };
                     }
 
-                    if (!modelinfo.render) continue;
+                    if (!modelinfo.render)
+                        continue;
                     
                     Coordinate position = entity.Position;
 

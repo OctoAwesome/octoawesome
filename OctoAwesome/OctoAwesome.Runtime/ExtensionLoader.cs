@@ -1,11 +1,9 @@
 ﻿using OctoAwesome.Entities;
-using OctoAwesome.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using OctoAwesome.CodeExtensions;
 
 namespace OctoAwesome.Runtime
 {
@@ -147,20 +145,7 @@ namespace OctoAwesome.Runtime
         /// <param name="embeddedresource">Path of resource file -> [Assembly.Namespace.name.txt|.xml]</param>
         public void LoadDefinitionsFromResource(string embeddedresource)
         {
-            //try
-            //{
-            //    string[] splitted = embeddedresource.Split(StringSplitOptions.RemoveEmptyEntries, '.');
-            //    if (splitted.Last().Equals("xml"))
-            //    {
-            //        Stream stream = Assembly.GetCallingAssembly().GetManifestResourceStream(embeddedresource);
-            //        DefinitionResolverXML resolver = new DefinitionResolverXML();
-            //        resolver.Resolve(stream, this);
-            //    }
-            //}
-            //catch (Exception exception)
-            //{
-            //    //TODO: loggen
-            //}
+            // coming soon
         }
 
         /// <summary>

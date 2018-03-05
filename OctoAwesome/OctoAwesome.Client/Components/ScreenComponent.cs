@@ -14,15 +14,15 @@ namespace OctoAwesome.Client.Components
     {
         public new OctoGame Game { get; private set; }
 
-        public PlayerComponent Player { get { return Game.Player; } }
+        public PlayerComponent Player => Game.Player;
 
-        public CameraComponent Camera { get { return Game.Camera; } }
+        public CameraComponent Camera => Game.Camera;
 
         public IDefinitionManager DefinitionManager => Game.DefinitionManager;
 
-        public IEnumerable<Func<Control>> GameScreenExtension { get { return gamescreenextension; } }
-        public IEnumerable<Func<Control>> InventoryScreenExtension { get { return inventoryscreenextension; } }
-        public IEnumerable<(bool right, Func<string> updatefunc)> DebugControlExtensions { get { return debugscreenextensions; } }
+        public IEnumerable<Func<Control>> GameScreenExtension => gamescreenextension;
+        public IEnumerable<Func<Control>> InventoryScreenExtension => inventoryscreenextension;
+        public IEnumerable<(bool right, Func<string> updatefunc)> DebugControlExtensions => debugscreenextensions;
 
         private List<Func<Control>> gamescreenextension;
         private List<Func<Control>> inventoryscreenextension;

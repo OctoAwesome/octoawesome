@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
-    // TODO: implementieren -> egal was oder wie xD
     // placeholder for further content
     /// <summary>
     /// Definition for ingame Resources.

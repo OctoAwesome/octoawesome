@@ -1,5 +1,4 @@
-﻿using OctoAwesome.CodeExtensions;
-using OctoAwesome.Common;
+﻿using OctoAwesome.Common;
 using OctoAwesome.Entities;
 using System;
 using System.Collections.Generic;
@@ -40,7 +39,7 @@ namespace OctoAwesome.Runtime
         {
             this.extensionResolver = extensionResolver;
 
-            definitions = extensionResolver.GetDefinitions<IDefinition>().OrderBy(d => Order(d)).ToList();
+            definitions = extensionResolver.GetDefinitions<IDefinition>().OrderBy(d => d is IBlockDefinition ? 0 : 1).ToList();
             typeddefinitions = new Dictionary<Type, List<IDefinition>>();
             nameddefinitions = new Dictionary<string, IDefinition>();
             blockDefinitions = new List<IBlockDefinition>();
@@ -70,7 +69,7 @@ namespace OctoAwesome.Runtime
                 int namecounter = 0;
                 string name = definition.Name;
                 // TODO: throw exception ?
-                if (name.IsNullOrEmpty()) name = $"noname[{unnameddefinitionsCounter++}]";
+                if (string.IsNullOrWhiteSpace(name)) name = $"noname[{unnameddefinitionsCounter++}]";
                 while (nameddefinitions.ContainsKey(name))
                     name = $"{definition.Name}[{namecounter++}]";
                 names.Add(name);
@@ -105,59 +104,42 @@ namespace OctoAwesome.Runtime
                 stream.Close();
             }
         }
-        private int Order(IDefinition d)
-        {
-            if (d is IBlockDefinition) return 0;
-            else return 1;
-        }
         /// <summary>
         /// Liefert eine Liste von Defintions.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IDefinition> GetDefinitions()
-        {
-            return definitions;
-        }
+            => definitions;
         /// <summary>
         /// Liefert eine Liste aller bekannten Item Definitions (inkl. Blocks, Resources, Tools)
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IItemDefinition> GetItemDefinitions()
-        {
-            return itemDefinitions;
-        }
+            => itemDefinitions;
         /// <summary>
         /// Returns all <see cref="IResourceDefinition"/>
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IResourceDefinition> GetResourceDefinitions()
-        {
-            throw new NotImplementedException();
-        }
+            => resourceDefinitions;
         /// <summary>
         /// Liefert eine Liste der bekannten Blocktypen.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IBlockDefinition> GetBlockDefinitions()
-        {
-            return blockDefinitions;
-        }
+            => blockDefinitions;
         /// <summary>
         /// Return all <see cref="IEntityDefinition"/>
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IEntityDefinition> GetEntityDefinitions()
-        {
-            return entityDefinitions;
-        }
+            => entityDefinitions;
         /// <summary>
         /// Return all <see cref="IInventoryableDefinition"/>
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IInventoryableDefinition> GetInventoryableDefinitions()
-        {
-            return inventoryableDefinitions;
-        }
+            => inventoryableDefinitions;
         /// <summary>
         /// Return definiton or null by index
         /// </summary>
@@ -181,6 +163,7 @@ namespace OctoAwesome.Runtime
         {
             if (nameddefinitions.TryGetValue(name, out IDefinition definition))
                 return definition as T;
+
             return null;
         }
         /// <summary>
@@ -190,7 +173,9 @@ namespace OctoAwesome.Runtime
         /// <returns>Index der Block Definition</returns>
         public ushort GetDefinitionIndex(IDefinition definition)
         {
-            if (definition == null) return 0;
+            if (definition == null)
+                return 0;
+
             return (ushort)(definitions.IndexOf(definition) + 1);
         }
         /// <summary>
@@ -198,12 +183,13 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">BlockDefinition Type</typeparam>
         /// <returns>Index der Block Definition</returns>
-        public IList<ushort> GetDefinitionIndex<T>() where T : IDefinition
+        public ushort GetDefinitionIndex<T>() where T : IDefinition
         {
             //TODO: methode ist nicht robust... ->
             if (typeddefinitions.TryGetValue(typeof(T), out List<IDefinition> definitions))
-                return definitions.Select(d => GetDefinitionIndex(d)).ToList();
-            else return new List<ushort>() { 0 };
+                return definitions.Select(d => GetDefinitionIndex(d)).FirstOrDefault();
+
+            return 0;
         }
         /// <summary>
         /// Returns the index of a definition by name
@@ -211,9 +197,7 @@ namespace OctoAwesome.Runtime
         /// <param name="name">Name of <see cref="IDefinition"/></param>
         /// <returns></returns>
         public ushort GetDefinitionIndexByName(string name)
-        {
-            return GetDefinitionIndex(GetDefinitionByName<IDefinition>(name));
-        }
+            => GetDefinitionIndex(GetDefinitionByName<IDefinition>(name));
         /// <summary>
         /// Gibt die Liste von Instanzen des angegebenen Definition Interfaces zurück.
         /// </summary>
@@ -223,6 +207,7 @@ namespace OctoAwesome.Runtime
         {
             if (typeddefinitions.TryGetValue(typeof(T), out List<IDefinition> definitions))
                 return definitions.Cast<T>();
+
             return new List<T>();
         }
     }

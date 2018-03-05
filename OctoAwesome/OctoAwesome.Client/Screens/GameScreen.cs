@@ -85,17 +85,35 @@ namespace OctoAwesome.Client.Screens
         protected override void OnUpdate(GameTime gameTime)
         {
             Vector2 move = Vector2.Zero;
-            if (pressedMoveUp) move += new Vector2(0f, 1f);
-            if (pressedMoveLeft) move += new Vector2(-1f, 0f);
-            if (pressedMoveDown) move += new Vector2(0f, -1f);
-            if (pressedMoveRight) move += new Vector2(1f, 0f);
+
+            if (pressedMoveUp)
+                move += new Vector2(0f, 1f);
+
+            if (pressedMoveLeft)
+                move += new Vector2(-1f, 0f);
+
+            if (pressedMoveDown)
+                move += new Vector2(0f, -1f);
+
+            if (pressedMoveRight)
+                move += new Vector2(1f, 0f);
+
             Manager.Player.MoveInput = move;
 
             Vector2 head = Vector2.Zero;
-            if (pressedHeadUp) head += new Vector2(0f, 1f);
-            if (pressedHeadDown) head += new Vector2(0f, -1f);
-            if (pressedHeadLeft) head += new Vector2(-1f, 0f);
-            if (pressedHeadRight) head += new Vector2(1f, 0f);
+
+            if (pressedHeadUp)
+                head += new Vector2(0f, 1f);
+
+            if (pressedHeadDown)
+                head += new Vector2(0f, -1f);
+
+            if (pressedHeadLeft)
+                head += new Vector2(-1f, 0f);
+
+            if (pressedHeadRight)
+                head += new Vector2(1f, 0f);
+
             Manager.Player.HeadInput += head;
             
             HandleGamePad();
@@ -107,7 +125,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnLeftMouseDown(MouseEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             Manager.Player.ApplyInput = true;
             args.Handled = true;
@@ -115,7 +134,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnRightMouseDown(MouseEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             Manager.Player.InteractInput = true;
             args.Handled = true;
@@ -123,7 +143,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnMouseMove(MouseEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             if (args.MouseMode == MouseMode.Captured && IsActiveScreen)
             {
@@ -134,7 +155,8 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnMouseScroll(MouseScrollEventArgs args)
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             Manager.Player.SlotLeftInput = args.Steps > 0;
             Manager.Player.SlotRightInput = args.Steps < 0;
@@ -294,7 +316,8 @@ namespace OctoAwesome.Client.Screens
 
         private void HandleGamePad()
         {
-            if (!IsActiveScreen) return;
+            if (!IsActiveScreen)
+                return;
 
             bool succeeded = false;
             GamePadState gamePadState = new GamePadState();

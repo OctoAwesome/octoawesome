@@ -111,15 +111,13 @@ namespace OctoAwesome.Basics.Controls
             }
             scroll.Content = grid;
         }
+
         protected override void OnUpdate(GameTime gameTime)
         {
             nameLabel.Text = HoveredSlot?.Definition.Name ?? "";
             massLabel.Text = volumeLabel.Text = HoveredSlot?.Amount.ToString() ?? "";
         }
-        public override string ToString()
-        {
-            // TODO: resx ->  Languages.OctoBasics.Inventory or what ever...
-            return "Inventar";
-        }
+
+        public override string ToString() => "Inventar";
     }
 }

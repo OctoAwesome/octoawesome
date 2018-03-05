@@ -109,6 +109,7 @@ namespace OctoAwesome.Basics.Controls
                 toolbar.AddControl(image, 0, i);
             }
         }
+
         protected override void OnUpdate(GameTime gameTime)
         {
             //Aktualisierung des aktiven Buttons
@@ -127,6 +128,7 @@ namespace OctoAwesome.Basics.Controls
                 }
             }
         }
+
         protected override void OnEndDrop(DragEventArgs args)
         {
             if (args.Content is InventorySlot slot)
@@ -135,21 +137,7 @@ namespace OctoAwesome.Basics.Controls
                 bar.RemoveSlot(slot);
             }
         }
-        //protected override void OnKeyDown(KeyEventArgs args)
-        //{
-        //    // TODO: lösung finden
-        //    //Tool neu zuweisen
-        //    //if ((int) args.Key >= (int) Keys.D0 && (int) args.Key <= (int) Keys.D9)
-        //    //{
-        //    //    int offset = (int) args.Key - (int) Keys.D0;
-        //    //    player.Toolbar.SetTool(inventory.HoveredSlot, offset);
-        //    //    args.Handled = true;
-        //    //}
-        //}
-        public override string ToString()
-        {
-            // TODO: resx
-            return "Werkzeuge";
-        }
+
+        public override string ToString() => "Werkzeuge";
     }
 }

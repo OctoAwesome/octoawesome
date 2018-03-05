@@ -38,9 +38,9 @@ namespace OctoAwesome.Basics.Definitions.Trees
 
         public override void Init(IDefinitionManager definitionManager)
         {
-            wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>().FirstOrDefault();
-            leave = definitionManager.GetDefinitionIndex<LeavesBlockDefinition>().FirstOrDefault();
-            water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>().FirstOrDefault();
+            wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>();
+            leave = definitionManager.GetDefinitionIndex<LeavesBlockDefinition>();
+            water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
         }
 
         public override int GetDensity(IPlanet planet, Index3 index)

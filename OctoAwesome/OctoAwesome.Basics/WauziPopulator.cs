@@ -33,9 +33,9 @@ namespace OctoAwesome.Basics
             wauzi.SetPosition(new Coordinate(planet.Id, 
                 new Index3(x + column00.Index.X * Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), 
                 new Vector3(0, 0, 0)), 0f);
-            // TODO: warum wird das wauzi nicht direkt auf dem planeten gespritz...
-            // und findet dann seinen weg über die postion zum chunck ?
+            // TODO: warum wird das wauzi nicht direkt auf dem planeten gespawnt...
             // oder noch besser in die simulation
+            // und findet dann seinen weg über die postion zum chunck ?
             column00.Entities.Add(wauzi);
         }
 

@@ -28,12 +28,12 @@ namespace OctoAwesome.Basics
             //TODO More Generic, überdenken der Planetgeneration im allgemeinen (Heapmap + Highmap + Biome + Modding)
             // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             
-            ushort sandIndex = definitionManager.GetDefinitionIndex<SandBlockDefinition>().FirstOrDefault();
-            ushort snowIndex = definitionManager.GetDefinitionIndex<SnowBlockDefinition>().FirstOrDefault();
-            ushort groundIndex = definitionManager.GetDefinitionIndex<GroundBlockDefinition>().FirstOrDefault();
-            ushort stoneIndex = definitionManager.GetDefinitionIndex<StoneBlockDefinition>().FirstOrDefault();
-            ushort waterIndex = definitionManager.GetDefinitionIndex<WaterBlockDefinition>().FirstOrDefault();
-            ushort grassIndex = definitionManager.GetDefinitionIndex<GrassBlockDefinition>().FirstOrDefault();
+            ushort sandIndex = definitionManager.GetDefinitionIndex<SandBlockDefinition>();
+            ushort snowIndex = definitionManager.GetDefinitionIndex<SnowBlockDefinition>();
+            ushort groundIndex = definitionManager.GetDefinitionIndex<GroundBlockDefinition>();
+            ushort stoneIndex = definitionManager.GetDefinitionIndex<StoneBlockDefinition>();
+            ushort waterIndex = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
+            ushort grassIndex = definitionManager.GetDefinitionIndex<GrassBlockDefinition>();
 
             ComplexPlanet localPlanet = (ComplexPlanet)planet;
 
