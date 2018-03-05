@@ -36,9 +36,7 @@ namespace OctoAwesome.Runtime
         /// <param name="range">Ausdehnung des Caches</param>
         /// <returns></returns>
         public ILocalChunkCache GetLocalCache(bool passive, int dimensions, int range)
-        {
-            return new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-        }
+            => new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
         /// <summary>
         /// Nimmt einen Block aus der Welt.
         /// </summary>
@@ -162,7 +160,7 @@ namespace OctoAwesome.Runtime
             return result;
         }
         /// <summary>
-        /// Berechnet die Geschwindigkeit einer <see cref="Entity"/> nach der Kollision mit der Welt.
+        /// Berechnet die Geschwindigkeit einer <see cref="Entity"/> nach der Kollision mit der Welt. (Original Lassi)
         /// </summary>
         /// <param name="gameTime">Simulation time</param>
         /// <param name="position">Position der <see cref="Entity"/></param>
