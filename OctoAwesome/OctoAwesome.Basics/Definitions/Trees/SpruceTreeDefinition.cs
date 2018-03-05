@@ -44,7 +44,7 @@ namespace OctoAwesome.Basics.Definitions.Trees
         public override void Init(IDefinitionManager definitionManager)
         {
             wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>();
-            leave = definitionManager.GetDefinitionIndex<LeavesBlockDefinition>();
+            leave = definitionManager.GetDefinitionIndex<OrangeLeavesBlockDefinition>();
             water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
         }
 
