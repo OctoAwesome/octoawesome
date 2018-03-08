@@ -32,16 +32,16 @@ namespace OctoAwesome.Network
         private ExtensionLoader extensionLoader;
         private DefinitionManager definitionManager;
         private ResourceManager resourceManager;
-        private Settings settings;
+        private ISettings settings;
 
         private Thread backgroundThread;
         private object mainLock;
 
-        public SimulationManager()
+        public SimulationManager(ISettings settings)
         {
             mainLock = new object();
 
-            settings = new Settings(); //TODO: Where are the settings?
+            this.settings = settings; //TODO: Where are the settings?
             
             extensionLoader = new ExtensionLoader(settings);
             extensionLoader.LoadExtensions();

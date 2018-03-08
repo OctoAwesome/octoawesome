@@ -1,13 +1,21 @@
-﻿using System;
+﻿using OctoAwesome.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Runtime
+namespace OctoAwesome.Network
 {
     public class NetworkPersistenceManager : IPersistenceManager
     {
+        private Client client;
+
+        public NetworkPersistenceManager(string host, int port)
+        {
+            client.Connect(host, port);
+        }
+
         public void DeleteUniverse(Guid universeGuid)
         {
             throw new NotImplementedException();

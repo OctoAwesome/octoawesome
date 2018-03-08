@@ -18,12 +18,12 @@ namespace OctoAwesome.Network
         private List<ConnectedClient> connectedClients;
         private readonly object lockObj;
 
-        public Server() : base()
+        public Server()
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             lockObj = new object();
 
-            SimulationManager = new SimulationManager();
+            SimulationManager = new SimulationManager(new Settings());
         }
 
         public void Start(IPAddress address, int port)

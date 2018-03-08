@@ -284,4 +284,7 @@
   <data name="Multiplayer" xml:space="preserve">
     <value>Multiplayer</value>
   </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
 </root>

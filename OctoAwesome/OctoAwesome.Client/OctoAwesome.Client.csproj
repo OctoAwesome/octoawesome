@@ -57,6 +57,7 @@
     <Compile Include="Components\SimulationComponent.cs" />
     <Compile Include="Components\VertexPositionNormalTextureLight.cs" />
     <Compile Include="Components\VertexPositionNormalTexturePacked.cs" />
+    <Compile Include="ContainerResourceManager.cs" />
     <Compile Include="Controls\BindingsOptionControl.cs" />
     <Compile Include="Controls\CompassControl.cs" />
     <Compile Include="Controls\CrosshairControl.cs" />
@@ -90,6 +91,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Screens\BaseScreen.cs" />
+    <Compile Include="Screens\ConnectionScreen.cs" />
     <Compile Include="Screens\CreateUniverseScreen.cs" />
     <Compile Include="Screens\CreditsScreen.cs" />
     <Compile Include="Screens\CrewMemberScreen.cs" />
@@ -148,6 +150,10 @@
     <Content Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj">
+      <Project>{b1f4d7bb-7f56-4e96-87dd-ebebae9cf336}</Project>
+      <Name>OctoAwesome.Network</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
       <Project>{31D774C6-E5D9-40B7-8D63-942E28FE1D94}</Project>
       <Name>OctoAwesome.Runtime</Name>

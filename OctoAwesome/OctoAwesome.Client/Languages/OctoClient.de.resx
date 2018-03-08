@@ -282,4 +282,7 @@
   <data name="Multiplayer" xml:space="preserve">
     <value>Mehrspieler</value>
   </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Verbinden</value>
+  </data>
 </root>

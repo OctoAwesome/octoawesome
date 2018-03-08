@@ -94,27 +94,12 @@ namespace OctoAwesome.Client
 
             KeyMapper = new KeyMapper(Screen, Settings);
 
-            /*Resize += (s, e) =>
-            {
-                //if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
-                //   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
-                //    return;
-
-                //graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                //graphics.ApplyChanges();
-            };*/
-            SetKeyBindings();
-
-        }
-
-        public void InitializeLocal()
-        {
+            #region GameComponents
             DefinitionManager = new DefinitionManager(ExtensionLoader);
 
-            var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
-            ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
-
+            //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
+            //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
+            ResourceManager = new ContainerResourceManager();
             var tmpComponents = new GameComponentCollection();
 
             foreach (var component in Components)
@@ -138,8 +123,22 @@ namespace OctoAwesome.Client
             tmpComponents.Add(Simulation);
 
             Components = tmpComponents;
-        }
+            #endregion GameComponents
 
+            /*Resize += (s, e) =>
+            {
+                //if (Window.ClientBounds.Height == graphics.PreferredBackBufferHeight &&
+                //   Window.ClientBounds.Width == graphics.PreferredBackBufferWidth)
+                //    return;
+
+                //graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                //graphics.ApplyChanges();
+            };*/
+            SetKeyBindings();
+
+        }
+        
         private void SetKeyBindings()
         {
             KeyMapper.RegisterBinding("octoawesome:forward", Languages.OctoKeys.forward);
