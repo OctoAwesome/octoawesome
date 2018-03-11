@@ -437,15 +437,15 @@ namespace OctoAwesome.Client.Controls
 
             var up = Vector3.UnitZ;
             var sunView = Matrix.CreateLookAt(camera.CameraPosition+ sunDirection * -1,
-                player.Position.Position.LocalPosition, up);
-            
-            
-            var sunProj = Matrix.CreateOrthographicOffCenter(-32,32,32,-32, -400f, 400f);
+                camera.CameraPosition, up);
+
+
+            var sunProj = Matrix.CreateOrthographicOffCenter(-32,32,32,-32,-400 ,400);
             
             
             //Shadow
             Manager.GraphicsDevice.SetRenderTarget(ShadowMap);
-            Manager.GraphicsDevice.Clear(Color.Black);
+            Manager.GraphicsDevice.Clear(Color.White);
 
             Matrix shadowViewProj = sunProj * sunView;
             
