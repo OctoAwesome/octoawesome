@@ -444,7 +444,7 @@ namespace OctoAwesome.Client.Controls
             }
 
             var up = Vector3.UnitZ;
-            var sunView = Matrix.CreateLookAt(player.Position.Position.LocalPosition + sunDirection * -1,
+            var sunView = Matrix.CreateLookAt(camera.CameraPosition+ sunDirection * -1,
                 player.Position.Position.LocalPosition, up);
             
             //var sunView = Matrix.CreateLookAt(new Vector3(100,100,100), 
@@ -479,22 +479,24 @@ namespace OctoAwesome.Client.Controls
 
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
             //Texture2D.ToBitmap(ShadowMap).Save("shadow.bmp",ImageFormat.Bmp);
-            Manager.GraphicsDevice.Clear(Color.White);
+            Manager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             Manager.GraphicsDevice.BlendState = BlendState.Opaque;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
             
-            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             
             //Draw Skybox
             var skyTechnique =skyEffect.SkyBox;
             skyTechnique.Pass1.Apply();
             skyTechnique.Pass1.DiffuseDirection = sunDirection;
             skyTechnique.Pass1.NightSky = skyMap;
-            skyTechnique.Pass1.WorldViewProj = camera.Projection*camera.View*(Matrix.CreateTranslation(player.Position.Position.LocalPosition)
-                                                                                          * Matrix.CreateScaling(10, 10, 10)
-                                                                                          * Matrix.CreateRotationX(inclination) 
-                                                                                          * Matrix.CreateRotationY(sunrotation));
+            skyTechnique.Pass1.WorldViewProj = camera.Projection
+                                               *camera.View
+                                               *(Matrix.CreateTranslation(camera.CameraPosition)
+                                               * Matrix.CreateScaling(1, 1, 1)
+                                               * Matrix.CreateRotationX(inclination) 
+                                               * Matrix.CreateRotationY(sunrotation));
             
 
             skyBox.Draw();
@@ -508,7 +510,7 @@ namespace OctoAwesome.Client.Controls
                 sunEffect.TextureEnabled = true;
                 sunEffect.Texture = sunTexture;
                 Matrix billboard = Matrix.Invert(camera.View);
-                billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
+                billboard.Translation = camera.CameraPosition + (sunDirection * -10);
                 sunEffect.World = billboard;
                 sunEffect.View = camera.View;
                 sunEffect.Projection = camera.Projection;

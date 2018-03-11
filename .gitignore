@@ -267,5 +267,5 @@ __pycache__/
 engenious.CreatedContent.Content.dll
 
 #Blender
-*.blend[0-9]+
+*.blend[0-9]
 
