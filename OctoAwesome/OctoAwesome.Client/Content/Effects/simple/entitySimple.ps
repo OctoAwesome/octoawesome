@@ -6,6 +6,7 @@ uniform vec3 DiffuseDirection;
 uniform sampler2D text;
 
 uniform sampler2D ShadowMap;
+uniform int ShadowEnabled;
 
 in vec3 psNormal;
 in vec4 psColor;
@@ -20,16 +21,20 @@ void main()
     float DiffuseIntensity = clamp(-DiffuseDirection.z * 0.6,0.0,1.0);
     float AmbientIntensity = 0.2f + clamp(-DiffuseDirection.z *0.5f,0.0,0.8);
     float lighted = 1.0f;
-    float cosTheta = clamp(dot(psNormal,DiffuseDirection),0,1);
     
-    float bias = 0.00002*tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
-    bias = clamp(bias, 0.00002,0.0001);
-
-    if (shadowPosition.x >-1 && shadowPosition.x <1 &&  
-        shadowPosition.y > -1 && shadowPosition.y <1 && 
-        texture( ShadowMap,  shadowPosition.xy).z  <  (shadowPosition.z - bias)){
-        float nightOpacity = clamp(DiffuseDirection.z+0.3,0.0,1.0);
-        lighted = DiffuseIntensity + nightOpacity;
+    if(ShadowEnabled > 0)
+    {
+        float cosTheta = clamp(dot(psNormal,DiffuseDirection),0,1);
+        
+        float bias = 0.00002*tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+        bias = clamp(bias, 0.00002,0.0001);
+    
+        if (shadowPosition.x >-1 && shadowPosition.x <1 &&  
+            shadowPosition.y > -1 && shadowPosition.y <1 && 
+            texture( ShadowMap,  shadowPosition.xy).z  <  (shadowPosition.z - bias)){
+            float nightOpacity = clamp(DiffuseDirection.z+0.3,0.0,1.0);
+            lighted = DiffuseIntensity + nightOpacity;
+        }
     }
     
 

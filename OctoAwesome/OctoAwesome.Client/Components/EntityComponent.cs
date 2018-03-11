@@ -154,8 +154,20 @@ namespace OctoAwesome.Client.Components
                     effect.Parameters["WorldViewProj"].SetValue(worldViewProj);
                     effect.Parameters["text"].SetValue(modelinfo.texture);
                     
+                    
+                    
                     effect.Parameters["shadowWorldViewProj"].SetValue(shadowworldViewProj);
-                    effect.Parameters["ShadowMap"].SetValue(shadowMap);
+
+                    if (shadowMap != null)
+                    {
+                        effect.Parameters["ShadowMap"].SetValue(shadowMap);
+                        effect.Parameters["ShadowEnabled"].SetValue(1);
+                    }
+                    else
+                    {
+                        effect.Parameters["ShadowEnabled"].SetValue(0);
+                    }
+                    
                     
                     modelinfo.model.Transform = world;
                     modelinfo.model.Draw();

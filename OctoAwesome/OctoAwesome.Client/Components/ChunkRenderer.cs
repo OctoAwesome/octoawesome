@@ -130,18 +130,25 @@ namespace OctoAwesome.Client.Components
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
             
+            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
+            simple.Parameters["BlockTextures"].SetValue(textures);
+     
             Matrix shadowworldViewProj = shadowViewProjection * Matrix.CreateTranslation(
                                              shift.X * Chunk.CHUNKSIZE_X,
                                              shift.Y * Chunk.CHUNKSIZE_Y,
                                              shift.Z * Chunk.CHUNKSIZE_Z);
-
             
-
-            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
-            simple.Parameters["BlockTextures"].SetValue(textures);
-     
             simple.Parameters["shadowWorldViewProj"].SetValue(shadowworldViewProj);
-            simple.Parameters["ShadowMap"].SetValue(shadowMap);
+            if (shadowMap != null)
+            {
+                simple.Parameters["ShadowMap"].SetValue(shadowMap);
+                simple.Parameters["ShadowEnabled"].SetValue(1);
+            }
+            else
+            {
+                simple.Parameters["ShadowEnabled"].SetValue(0);
+            }
+            
 
             lock (this)
             {

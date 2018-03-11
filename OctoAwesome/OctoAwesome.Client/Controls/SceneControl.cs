@@ -436,19 +436,17 @@ namespace OctoAwesome.Client.Controls
                     (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 int range = 3;
-                /*
+                
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
-                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix,, shift);
-                */
+                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix,Matrix.Identity, null, shift);
+                
             }
 
             var up = Vector3.UnitZ;
             var sunView = Matrix.CreateLookAt(camera.CameraPosition+ sunDirection * -1,
                 player.Position.Position.LocalPosition, up);
             
-            //var sunView = Matrix.CreateLookAt(new Vector3(100,100,100), 
-            //    Vector3.Zero, Vector3.UnitZ);
             
             var sunProj = Matrix.CreateOrthographicOffCenter(-32,32,32,-32, -400f, 400f);
             

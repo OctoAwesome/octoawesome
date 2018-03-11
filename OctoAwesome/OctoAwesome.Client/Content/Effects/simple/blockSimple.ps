@@ -3,8 +3,10 @@
 uniform vec4 AmbientColor;
 uniform vec4 DiffuseColor;
 uniform vec3 DiffuseDirection;
+
 uniform sampler2DArray BlockTextures;
 uniform sampler2D ShadowMap;
+uniform int ShadowEnabled;
 
 
 in vec3 psNormal;
@@ -47,22 +49,24 @@ void main()
     float lighted = 1.0f;
     float cosTheta = clamp(dot(psNormal,DiffuseDirection),0,1);
     
-    float bias = 0.00002*tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
-    bias = clamp(bias, 0.00002,0.0001);
-
-    if (shadowPosition.x >-1 && shadowPosition.x <1 &&  
-        shadowPosition.y > -1 && shadowPosition.y <1 &&
-        texture( ShadowMap,  shadowPosition.xy).z  <  (shadowPosition.z - bias)){
-        float nightOpacity = clamp(DiffuseDirection.z+0.3,0.0,1.0);
-        lighted = DiffuseIntensity + nightOpacity;
-        for (int i=0;i<4;i++){
-            int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
-            if (texture( ShadowMap, shadowPosition.xy + poissonDisk[index]/700.0).z < (shadowPosition.z - bias))
-              lighted -= 0.2;
-        }
-        lighted = clamp(lighted,0.0,1.0);
-    }
+    if(ShadowEnabled> 0)
+    {
+        float bias = 0.00002*tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+        bias = clamp(bias, 0.00002,0.0001);
     
+        if (shadowPosition.x >-1 && shadowPosition.x <1 &&  
+            shadowPosition.y > -1 && shadowPosition.y <1 &&
+            texture( ShadowMap,  shadowPosition.xy).z  <  (shadowPosition.z - bias)){
+            float nightOpacity = clamp(DiffuseDirection.z+0.3,0.0,1.0);
+            lighted = DiffuseIntensity + nightOpacity;
+            for (int i=0;i<4;i++){
+                int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
+                if (texture( ShadowMap, shadowPosition.xy + poissonDisk[index]/700.0).z < (shadowPosition.z - bias))
+                  lighted -= 0.2;
+            }
+            lighted = clamp(lighted,0.0,1.0);
+        }
+    }
 
 	vec4 texColor = texture(BlockTextures,vec3(psTexcoord,psTexIndex));
 	vec4 ambient = AmbientColor * AmbientIntensity;
