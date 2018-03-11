@@ -388,26 +388,18 @@ namespace OctoAwesome.Client.Controls
             float sunrotation = (float) (MathHelper.TwoPi -
                                          ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) %
                                           MathHelper.TwoPi));
-            //Console.WriteLine("Stand: " + (MathHelper.Pi + playerPosX) + " Neigung: " + inclination);
+            
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) *
-                //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
                 Matrix.CreateRotationY(sunrotation);
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
-
-            //sunDirection = new Vector3(-0.5f,-0.5f,-1);
-
-
 
             
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
             simpleShader.Parameters["AmbientColor"].SetValue(Color.White);
             
-            // Console.WriteLine(sunDirection);
-
-            // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
             Index3 chunkOffset = camera.CameraChunk;
 
             
@@ -476,13 +468,12 @@ namespace OctoAwesome.Client.Controls
             entities.DrawShadow(shadowViewProj, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
 
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
-            //Texture2D.ToBitmap(ShadowMap).Save("shadow.bmp",ImageFormat.Bmp);
             Manager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             Manager.GraphicsDevice.BlendState = BlendState.Opaque;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
             
-            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             
             //Draw Skybox
             var skyTechnique =skyEffect.SkyBox;
@@ -501,8 +492,6 @@ namespace OctoAwesome.Client.Controls
             
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             
-            // Draw Sun
-            //Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             if (sunDirection.Z < 0)
             {
                 sunEffect.TextureEnabled = true;
@@ -576,7 +565,7 @@ namespace OctoAwesome.Client.Controls
                 {
                     pass.Apply();
                     Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);
-                    //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    
                 }
             }
 
