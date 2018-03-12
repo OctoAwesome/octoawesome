@@ -32,29 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="engenious, Version=0.1.19.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\engenious.0.1.19\lib\net40\engenious.dll</HintPath>
-    </Reference>
     <Reference Include="engenious, Version=0.1.23.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\engenious.0.1.23\lib\net40\engenious.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis, Version=0.8.5.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\engenious.0.1.19\lib\net40\NVorbis.dll</HintPath>
-    </Reference>
-    <Reference Include="NVorbis, Version=0.8.5.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\engenious.0.1.23\lib\net40\NVorbis.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <HintPath>..\packages\engenious.0.1.19\lib\net40\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\packages\engenious.0.1.23\lib\net40\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\engenious.0.1.19\lib\net40\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
     <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\engenious.0.1.23\lib\net40\System.Numerics.Vectors.dll</HintPath>
     </Reference>
