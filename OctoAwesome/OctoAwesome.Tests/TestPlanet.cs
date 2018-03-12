@@ -15,35 +15,20 @@ namespace OctoAwesome.Tests
             Size = size;
         }
 
-        public IClimateMap ClimateMap
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public IClimateMap ClimateMap => throw new NotImplementedException();
 
-        public IMapGenerator Generator
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public IMapGenerator Generator => throw new NotImplementedException();
 
         public int Id { get; private set; }
 
-        public int Seed
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int Seed => throw new NotImplementedException();
 
         public Index3 Size { get; private set; }
 
         public Guid Universe { get; private set; }
+
+        public float Gravity => throw new NotImplementedException();
+
         IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void Deserialize(Stream stream)

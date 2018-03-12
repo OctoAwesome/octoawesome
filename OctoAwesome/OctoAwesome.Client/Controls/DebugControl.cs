@@ -27,7 +27,7 @@ namespace OctoAwesome.Client.Controls
         private readonly ScreenComponent manager;
 
         StackPanel leftView, rightView;
-        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo;
+        Label devText, position, rotation, fps, box, controlInfo, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo, gravityInfo;
 
         public DebugControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -40,7 +40,7 @@ namespace OctoAwesome.Client.Controls
             //Brush for Debug Background
             BorderBrush bg = new BorderBrush(Color.Black * 0.2f);
 
-            //The left side of the Screen 
+            //The left side of the Screen
             leftView = new StackPanel(ScreenManager)
             {
                 Background = bg,
@@ -81,12 +81,15 @@ namespace OctoAwesome.Client.Controls
 
             controlInfo = new Label(ScreenManager);
             leftView.Controls.Add(controlInfo);
-          
+
             temperatureInfo = new Label(ScreenManager);
             rightView.Controls.Add(temperatureInfo);
 
             precipitationInfo = new Label(ScreenManager);
             rightView.Controls.Add(precipitationInfo);
+
+            gravityInfo = new Label(ScreenManager);
+            rightView.Controls.Add(gravityInfo);
 
             activeTool = new Label(ScreenManager);
             rightView.Controls.Add(activeTool);
@@ -168,8 +171,8 @@ namespace OctoAwesome.Client.Controls
             fps.Text = fpsString;
 
             //Draw Loaded Chunks
-            loadedChunks.Text = string.Format("{0}: {1}/{2}", 
-                Languages.OctoClient.LoadedChunks, 
+            loadedChunks.Text = string.Format("{0}: {1}/{2}",
+                Languages.OctoClient.LoadedChunks,
                 manager.Game.ResourceManager.GlobalChunkCache.DirtyChunkColumn,
                 manager.Game.ResourceManager.GlobalChunkCache.LoadedChunkColumns);
 
@@ -183,11 +186,11 @@ namespace OctoAwesome.Client.Controls
 
             //Additional Play Information
 
-            ////Active Tool
-            //if (Player.ActorHost.ActiveTool != null)
-            //    activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.ActorHost.ActiveTool.Definition.Name + " | " + Array.FindIndex(Player.ActorHost.Player.Tools, (i => i.Definition == Player.ActorHost.ActiveTool.Definition));
+            //Active Tool
+            if (Player.Toolbar.ActiveTool != null)
+                activeTool.Text = Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.Name + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
 
-            // toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.ActorHost.Player.Tools.Length;
+            toolCount.Text = Languages.OctoClient.ToolCount + ": " + Player.Toolbar.Tools.Count(slot => slot != null);
 
             ////Fly Info
             //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = Languages.OctoClient.FlymodeEnabled;
@@ -199,6 +202,9 @@ namespace OctoAwesome.Client.Controls
 
             // Precipitation Info
             precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.Position.Position.GlobalBlockIndex);
+
+            // Gravity Info
+            gravityInfo.Text = "Gravity" + ": " + planet.Gravity;
 
             //Draw Box Information
             if (Player.SelectedBox.HasValue)

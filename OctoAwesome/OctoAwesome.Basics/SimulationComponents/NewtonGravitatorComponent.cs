@@ -9,7 +9,7 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(GravityComponent),typeof(BodyComponent))]
+    [EntityFilter(typeof(GravityComponent), typeof(BodyComponent))]
     public class NewtonGravitatorComponent : SimulationComponent
     {
         class GravityEntity
@@ -25,7 +25,17 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             foreach (var entity in entities)
             {
-                entity.GravityComponent.Force = new Vector3(0, 0, -entity.BodyComponent.Mass * 10);
+                var gravity = 10f;
+
+                var positionComponent = entity.Entity.Components.GetComponent<PositionComponent>();
+                if (positionComponent != null)
+                {
+                    var id = positionComponent.Position.Planet;
+                    var planet = entity.Entity.Simulation.ResourceManager.GetPlanet(id);
+                    gravity = planet.Gravity;
+                }
+
+                entity.GravityComponent.Force = new Vector3(0, 0, -entity.BodyComponent.Mass * gravity);
             }
         }
 
