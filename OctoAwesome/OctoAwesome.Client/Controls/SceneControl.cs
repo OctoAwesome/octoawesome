@@ -11,6 +11,7 @@ using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
 using engenious.Helper;
+using engenious.UserDefined.Effects;
 using Color = engenious.Color;
 using Rectangle = engenious.Rectangle;
 
@@ -34,21 +35,17 @@ namespace OctoAwesome.Client.Controls
 
         private IPlanet planet;
 
-        // private List<Index3> distances = new List<Index3>();
 
         private BasicEffect sunEffect;
         private BasicEffect selectionEffect;
         private Matrix miniMapProjectionMatrix;
 
-        //private Texture2D blockTextures;
         private Texture2DArray blockTextures;
         private Texture2D sunTexture;
 
         private IndexBuffer selectionIndexBuffer;
         private VertexBuffer selectionLines;
         private VertexBuffer billboardVertexbuffer;
-        //private VertexPositionColor[] selectionLines;
-        //private VertexPositionTexture[] billboardVertices;
 
         private Index2 currentChunk = new Index2(-1, -1);
 
@@ -62,7 +59,7 @@ namespace OctoAwesome.Client.Controls
         private Model skyBox;
         private Texture2D skyMap;
         
-        private Thread[] _additionalRegenerationThreads;
+        private readonly Thread[] additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
         public RenderTarget2D ShadowMap { get; set; }
@@ -71,7 +68,7 @@ namespace OctoAwesome.Client.Controls
         private float sunPosition = 0f;
 
         private ScreenComponent Manager { get; set; }
-        private int _fillIncrement;
+        private readonly int fillIncrement;
         public SceneControl(ScreenComponent manager, string style = "") :
             base(manager, style)
         {
@@ -153,9 +150,9 @@ namespace OctoAwesome.Client.Controls
 
             var additional = Environment.ProcessorCount / 3;
             additional = additional == 0 ? 1 : additional;
-            _fillIncrement = additional + 1;
+            fillIncrement = additional + 1;
             _additionalFillResetEvents = new AutoResetEvent[additional];
-            _additionalRegenerationThreads = new Thread[additional];
+            additionalRegenerationThreads = new Thread[additional];
             for (int i = 0; i < additional; i++)
             {
                 var t  = new Thread(AdditionalFillerBackgroundLoop)
@@ -166,7 +163,7 @@ namespace OctoAwesome.Client.Controls
                 var are = new AutoResetEvent(false);
                 t.Start(new object[] { are, i });
                 _additionalFillResetEvents[i] = are;
-                _additionalRegenerationThreads[i] = t;
+                additionalRegenerationThreads[i] = t;
 
             }
 
@@ -476,7 +473,7 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             
             //Draw Skybox
-            var skyTechnique =skyEffect.SkyBox;
+            skybox.SkyBoxImpl skyTechnique =skyEffect.SkyBox;
             skyTechnique.Pass1.Apply();
             skyTechnique.Pass1.DiffuseDirection = sunDirection;
             skyTechnique.Pass1.NightSky = skyMap;
@@ -635,7 +632,7 @@ namespace OctoAwesome.Client.Controls
 
         private void RegenerateAll(int start)
         {
-            for (var index = start; index < orderedChunkRenderer.Count; index+=_fillIncrement)
+            for (var index = start; index < orderedChunkRenderer.Count; index+=fillIncrement)
             {
                 var renderer = orderedChunkRenderer[index];
                 if (renderer.NeedsUpdate)

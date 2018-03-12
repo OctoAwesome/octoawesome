@@ -107,22 +107,20 @@ namespace OctoAwesome.Client.Components
                 foreach (var entity in Entities)
                 {
                     if (!entity.Components.ContainsComponent<RenderComponent>())
-                    {
                         continue;
-                    }
 
                     var rendercomp = entity.Components.GetComponent<RenderComponent>();
 
                     ModelInfo modelinfo;
 
-                    if (!models.TryGetValue(rendercomp.Name,out modelinfo))
+                    if (!models.TryGetValue(rendercomp.Name, out modelinfo))
                     {
                         modelinfo = new ModelInfo()
                         {
                             render = true,
                             model = Game.Content.Load<Model>(rendercomp.ModelName),
                             texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
-                    };
+                        };
                     }
 
                     if (!modelinfo.render)
