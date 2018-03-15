@@ -27,15 +27,23 @@ namespace OctoAwesome.Client.Screens
 
             SetDefaultBackground();
 
-            //Panel panel = new Panel(manager)
-            //{
-            //    VerticalAlignment = VerticalAlignment.Stretch,
-            //    HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    Margin = Border.All(50),
-            //    Background = new BorderBrush(Color.White * 0.5f),
-            //    Padding = Border.All(10)
-            //};
-            //Controls.Add(panel);
+            var panel = new StackPanel(manager)
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = Border.All(50),
+                Background = new BorderBrush(Color.White * 0.5f),
+                Padding = Border.All(10)
+            };
+            Controls.Add(panel);
+
+            var input = new Textbox(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                //VerticalAlignment = VerticalAlignment.Stretch,
+                Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black)
+            };
+            panel.Controls.Add(input);
 
             var createButton = Button.TextButton(manager, Languages.OctoClient.Connect);
             createButton.HorizontalAlignment = HorizontalAlignment.Center;
@@ -43,12 +51,14 @@ namespace OctoAwesome.Client.Screens
             createButton.Visible = true;
             createButton.LeftMouseClick += (s, e) =>
             {
+                game.Settings.Set("server", input.Text);
                 ((ContainerResourceManager)game.ResourceManager)
                     .CreateManager(game.ExtensionLoader, game.DefinitionManager, game.Settings, true);
 
                 manager.NavigateToScreen(new GameScreen(manager));
             };
-            Controls.Add(createButton);
+            panel.Controls.Add(createButton);
+            
         }
     }
 }

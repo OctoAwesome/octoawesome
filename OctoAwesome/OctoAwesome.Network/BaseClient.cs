@@ -126,7 +126,7 @@ namespace OctoAwesome.Network
         {
             ProcessInternal(e.Buffer, e.BytesTransferred);
 
-            while (true)
+            while (Socket.Connected)
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
                     return;

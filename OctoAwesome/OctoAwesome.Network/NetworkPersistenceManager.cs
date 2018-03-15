@@ -11,7 +11,11 @@ namespace OctoAwesome.Network
     {
         private Client client;
 
-        public NetworkPersistenceManager(string host, int port)
+        public NetworkPersistenceManager()
+        {
+            client = new Client();
+        }
+        public NetworkPersistenceManager(string host, ushort port) : this()
         {
             client.Connect(host, port);
         }
@@ -38,6 +42,7 @@ namespace OctoAwesome.Network
 
         public Player LoadPlayer(Guid universeGuid, string playername)
         {
+            client.Send()
             throw new NotImplementedException();
         }
 

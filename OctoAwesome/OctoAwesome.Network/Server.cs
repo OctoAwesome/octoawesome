@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    class Server
+    public class Server //TODO: Should use a base class or interface
     {
         public event EventHandler<ConnectedClient> OnClientConnected;
-        public SimulationManager SimulationManager { get; set; }
 
         private Socket socket;
         private List<ConnectedClient> connectedClients;
@@ -23,17 +22,16 @@ namespace OctoAwesome.Network
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             lockObj = new object();
 
-            SimulationManager = new SimulationManager(new Settings());
         }
 
-        public void Start(IPAddress address, int port)
+        public void Start(IPAddress address, ushort port)
         {
             connectedClients = new List<ConnectedClient>();
             socket.Bind(new IPEndPoint(address, port));
             socket.Listen(1024);
             socket.BeginAccept(OnClientAccepted, null);
         }
-        public void Start(string host, int port)
+        public void Start(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).FirstOrDefault(
                 a => a.AddressFamily == socket.AddressFamily);

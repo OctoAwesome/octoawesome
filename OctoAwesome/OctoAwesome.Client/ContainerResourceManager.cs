@@ -20,7 +20,7 @@ namespace OctoAwesome.Client
         public bool IsMultiplayer { get; private set; }
 
         private ResourceManager resourceManager;
-        
+
         public void CreateManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager,
             ISettings settings, bool multiplayer)
         {
@@ -34,8 +34,10 @@ namespace OctoAwesome.Client
                 resourceManager = null;
             }
 
+            var host = settings.Get<string>("server").Trim().Split(':');
+
             if (multiplayer)
-                persistenceManager = new NetworkPersistenceManager("localhost", 8888);
+                persistenceManager = new NetworkPersistenceManager(host[0], host.Length > 1 ? ushort.Parse(host[1]) : (ushort)8888);
             else
                 persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, settings);
 

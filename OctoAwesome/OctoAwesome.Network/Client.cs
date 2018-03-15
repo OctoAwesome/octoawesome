@@ -31,7 +31,7 @@ namespace OctoAwesome.Network
             Send(buffer, 4);
         }
 
-        public void Connect(string host, int port)
+        public void Connect(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).FirstOrDefault(
                 a => a.AddressFamily == Socket.AddressFamily);

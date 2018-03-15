@@ -6,9 +6,12 @@ using System.Threading;
 
 namespace OctoAwesome.Network
 {
-    class ConnectedClient : BaseClient
+    public class ConnectedClient : BaseClient
     {
+        public event EventHandler<(byte[] Data, int Count)> OnMessageRecive;
+
         private static int received;
+        
 
         public ConnectedClient(Socket socket) : base(socket)
         {
@@ -17,6 +20,8 @@ namespace OctoAwesome.Network
 
         protected override void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount)
         {
+            OnMessageRecive?.Invoke(this, (receiveArgsBuffer, receiveArgsCount));
+
             var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
             var increment = Interlocked.Increment(ref received);
             if (increment > 0 && increment % 10000 == 0)
