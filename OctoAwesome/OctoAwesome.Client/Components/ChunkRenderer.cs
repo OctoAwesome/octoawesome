@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using engenious;
 using engenious.Graphics;
+using OpenTK.Input;
 
 namespace OctoAwesome.Client.Components
 {
@@ -96,6 +97,7 @@ namespace OctoAwesome.Client.Components
                 return;
 
 
+            var x = Mouse.GetState();
             
             Matrix worldViewProj = viewProjection * Matrix.CreateTranslation(
                                        shift.X * Chunk.CHUNKSIZE_X,
