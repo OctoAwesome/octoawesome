@@ -171,6 +171,7 @@ namespace OctoAwesome.Client.Components
                     modelinfo.model.Draw();
                 }
             }
+            
         }
 
         public override void Update(GameTime gameTime)

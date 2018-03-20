@@ -24,8 +24,8 @@ namespace OctoAwesome.Client.Components
 
         private VertexBuffer vb;
         private static IndexBuffer ib;
-        private int vertexCount;
-        private int indexCount;
+        private int vertexCount = 0;
+        private int indexCount = 0;
         private ILocalChunkCache manager;
 
         private readonly SceneControl sceneControl;
@@ -115,6 +115,8 @@ namespace OctoAwesome.Client.Components
 
                 foreach (var pass in simple.Techniques["BlockShadow"].Passes)
                 {
+                    if (vertexCount == 0 || indexCount == 0)
+                        continue;
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
                 }
@@ -161,6 +163,8 @@ namespace OctoAwesome.Client.Components
 
                 foreach (var pass in simple.Techniques["BlockBasic"].Passes)
                 {
+                    if (vertexCount == 0 || indexCount == 0)
+                        continue;
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
                 }
@@ -538,7 +542,7 @@ namespace OctoAwesome.Client.Components
             {
                 try
                 {
-                    if (vb == null || ib == null)
+                    if (vb == null)
                         vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount + 2);
 
                     if (vertexCount + 2 > vb.VertexCount)
@@ -556,7 +560,7 @@ namespace OctoAwesome.Client.Components
             }
             else
             {
-                vertexCount = 0;
+                this.vertexCount = 0;
                 this.indexCount = 0;
             }
 
