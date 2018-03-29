@@ -110,7 +110,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\engenious.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGameUi">
+    <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\MonoGameUi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
