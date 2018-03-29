@@ -10,6 +10,8 @@ namespace OctoAwesome.Network
 {
     public abstract class BaseClient
     {
+        public event EventHandler<(byte[] Data, int Count)> OnMessageRecived;
+
         protected readonly Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
 
@@ -21,7 +23,7 @@ namespace OctoAwesome.Network
 
         private readonly (byte[] data, int len)[] sendQueue;
         private readonly object sendLock;
-        
+
         protected BaseClient(Socket socket)
         {
             sendQueue = new(byte[] data, int len)[256];
@@ -36,7 +38,7 @@ namespace OctoAwesome.Network
 
             sendArgs = new SocketAsyncEventArgs();
             sendArgs.Completed += OnSent;
-            
+
         }
 
         public void Start()
@@ -66,8 +68,17 @@ namespace OctoAwesome.Network
             SendInternal(data, len);
 
         }
-        
+        public void Send(Package package)
+        {
+            var buffer = new byte[1024];
+            var len = package.Read(buffer, buffer.Length);
+            Send(buffer, len);
+        }
+
         protected abstract void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount);
+
+        protected void OnMessageReceivedInvoke(byte[] receiveArgsBuffer, int receiveArgsCount)
+            => OnMessageRecived?.Invoke(this, (receiveArgsBuffer, receiveArgsCount));
 
         private void SendInternal(byte[] data, int len)
         {

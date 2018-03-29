@@ -41,6 +41,8 @@ namespace OctoAwesome.Network
 
         protected override void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount)
         {
+            OnMessageReceivedInvoke(receiveArgsBuffer, receiveArgsCount);
+
             var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
 
             var increment = Interlocked.Increment(ref clientReceived);

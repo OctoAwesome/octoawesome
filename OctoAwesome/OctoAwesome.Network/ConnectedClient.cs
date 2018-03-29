@@ -8,8 +8,6 @@ namespace OctoAwesome.Network
 {
     public class ConnectedClient : BaseClient
     {
-        public event EventHandler<(byte[] Data, int Count)> OnMessageRecive;
-
         private static int received;
         
 
@@ -20,7 +18,7 @@ namespace OctoAwesome.Network
 
         protected override void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount)
         {
-            OnMessageRecive?.Invoke(this, (receiveArgsBuffer, receiveArgsCount));
+            OnMessageReceivedInvoke(receiveArgsBuffer, receiveArgsCount);
 
             var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
             var increment = Interlocked.Increment(ref received);

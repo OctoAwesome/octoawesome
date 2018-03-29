@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
@@ -42,8 +43,30 @@ namespace OctoAwesome.Network
 
         public Player LoadPlayer(Guid universeGuid, string playername)
         {
-            client.Send()
-            throw new NotImplementedException();
+            var package = new Package(100, 1);
+
+            var playernameBytes = Encoding.UTF8.GetBytes(playername);
+            package.Write(playernameBytes, playernameBytes.Length);
+
+
+            var mre = new ManualResetEvent(false);
+            var dele = new EventHandler<(byte[] Data, int Count)>((sender, eventArgs) =>
+            {
+                //TODO Datenverarbeitung
+
+                mre.Set();
+            });
+            client.OnMessageRecived += dele;
+
+            client.Send(package);
+            mre.WaitOne();
+
+            client.OnMessageRecived -= dele;
+
+            return new Player()
+            {
+
+            };
         }
 
         public IUniverse LoadUniverse(Guid universeGuid)
