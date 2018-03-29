@@ -20,8 +20,6 @@ namespace OctoAwesome.Client
     {
         //GraphicsDeviceManager graphics;
 
-        public new GameComponentCollection Components { get; private set; }
-
         public CameraComponent Camera { get; private set; }
 
         public PlayerComponent Player { get; private set; }
@@ -51,8 +49,7 @@ namespace OctoAwesome.Client
             //graphics.PreferredBackBufferHeight = 720;
 
             //Content.RootDirectory = "Content";
-            
-            Components = base.Components;
+
 
             Title = "OctoAwesome";
             IsMouseVisible = true;
@@ -60,7 +57,7 @@ namespace OctoAwesome.Client
 
             //Window.AllowUserResizing = true;
             Settings = new Settings();
-            
+
             ExtensionLoader = new ExtensionLoader(Settings);
             ExtensionLoader.LoadExtensions();
 
@@ -84,7 +81,7 @@ namespace OctoAwesome.Client
 
             Assets = new AssetComponent(this);
             Components.Add(Assets);
-            
+
 
             Screen = new ScreenComponent(this);
             Screen.UpdateOrder = 1;
@@ -100,29 +97,25 @@ namespace OctoAwesome.Client
             //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
             //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
             ResourceManager = new ContainerResourceManager();
-            var tmpComponents = new GameComponentCollection();
 
-            foreach (var component in Components)
-                tmpComponents.Add(component);
 
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
-            tmpComponents.Add(Player);
+            Components.Add(Player);
 
             Entity = new Components.EntityComponent(this, Simulation);
             Entity.UpdateOrder = 2;
-            tmpComponents.Add(Entity);
+            Components.Add(Entity);
 
             Camera = new CameraComponent(this);
             Camera.UpdateOrder = 3;
-            tmpComponents.Add(Camera);
+            Components.Add(Camera);
 
             Simulation = new Components.SimulationComponent(this,
               ExtensionLoader, ResourceManager);
             Simulation.UpdateOrder = 4;
-            tmpComponents.Add(Simulation);
+            Components.Add(Simulation);
 
-            Components = tmpComponents;
             #endregion GameComponents
 
             /*Resize += (s, e) =>
@@ -138,7 +131,7 @@ namespace OctoAwesome.Client
             SetKeyBindings();
 
         }
-        
+
         private void SetKeyBindings()
         {
             KeyMapper.RegisterBinding("octoawesome:forward", Languages.OctoKeys.forward);

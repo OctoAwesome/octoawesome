@@ -43,7 +43,7 @@ namespace OctoAwesome.Client.Components
             effect.View = view;
             effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            foreach (var pass in effect.CurrentTechnique.Passes.PassesList)
+            foreach (var pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 
@@ -97,7 +97,7 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (Simulation.Simulation == null)
+            if (Simulation?.Simulation == null)
                 return;
 
             var simulation = Simulation.Simulation;

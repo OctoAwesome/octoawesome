@@ -39,6 +39,7 @@ namespace OctoAwesome.Client.Screens
 
             var input = new Textbox(manager)
             {
+                Text = "localhost",
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 //VerticalAlignment = VerticalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black)

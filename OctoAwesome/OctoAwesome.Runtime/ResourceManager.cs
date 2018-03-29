@@ -9,17 +9,25 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class ResourceManager : IResourceManager
     {
+        public Player CurrentPlayer
+        {
+            get
+            {
+                if (player == null)
+                    player = LoadPlayer("");
+
+                return player;
+            }
+            private set => player = value;
+        }
+
         private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
-
         private bool disablePersistence = false;
-
         private IPersistenceManager persistenceManager = null;
-
         private GlobalChunkCache globalChunkCache = null;
-
         private List<IMapPopulator> populators = null;
-
         private Dictionary<int, IPlanet> planets;
+        private Player player;
 
         /// <summary>
         /// Das aktuell geladene Universum.

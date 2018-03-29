@@ -18,6 +18,7 @@ namespace OctoAwesome.Client
         public IGlobalChunkCache GlobalChunkCache => resourceManager.GlobalChunkCache;
 
         public bool IsMultiplayer { get; private set; }
+        public Player CurrentPlayer => resourceManager.CurrentPlayer;
 
         private ResourceManager resourceManager;
 
@@ -34,12 +35,16 @@ namespace OctoAwesome.Client
                 resourceManager = null;
             }
 
-            var host = settings.Get<string>("server").Trim().Split(':');
 
             if (multiplayer)
+            {
+                var host = settings.Get<string>("server").Trim().Split(':');
                 persistenceManager = new NetworkPersistenceManager(host[0], host.Length > 1 ? ushort.Parse(host[1]) : (ushort)8888);
+            }
             else
+            {
                 persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, settings);
+            }
 
             resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager);
             IsMultiplayer = multiplayer;
