@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using engenious;
 using engenious.Graphics;
-using OpenTK.Input;
 
 namespace OctoAwesome.Client.Components
 {
@@ -96,8 +95,6 @@ namespace OctoAwesome.Client.Components
             if (!loaded)
                 return;
 
-
-            var x = Mouse.GetState();
             
             Matrix worldViewProj = viewProjection * Matrix.CreateTranslation(
                                        shift.X * Chunk.CHUNKSIZE_X,
@@ -120,7 +117,7 @@ namespace OctoAwesome.Client.Components
                     if (vertexCount == 0 || indexCount == 0)
                         continue;
                     pass.Apply();
-                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
+                    //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
                 }
             }
         }
@@ -550,7 +547,7 @@ namespace OctoAwesome.Client.Components
                     if (vertexCount + 2 > vb.VertexCount)
                         vb.Resize(vertexCount + 2);
 
-                    vb.SetData<VertexPositionNormalTextureLight>(vertices.ToArray());
+                    vb.SetData(vertices.ToArray());
 
                     this.vertexCount = vertexCount;
                     this.indexCount = indexCount;
