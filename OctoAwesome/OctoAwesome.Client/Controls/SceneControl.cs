@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using OctoAwesome.Client.Components;
 using System.Drawing.Imaging;
@@ -10,6 +11,9 @@ using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
 using engenious.Helper;
+using engenious.UserDefined.Effects;
+using Color = engenious.Color;
+using Rectangle = engenious.Rectangle;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -31,21 +35,17 @@ namespace OctoAwesome.Client.Controls
 
         private IPlanet planet;
 
-        // private List<Index3> distances = new List<Index3>();
 
         private BasicEffect sunEffect;
         private BasicEffect selectionEffect;
         private Matrix miniMapProjectionMatrix;
 
-        //private Texture2D blockTextures;
         private Texture2DArray blockTextures;
         private Texture2D sunTexture;
 
         private IndexBuffer selectionIndexBuffer;
         private VertexBuffer selectionLines;
         private VertexBuffer billboardVertexbuffer;
-        //private VertexPositionColor[] selectionLines;
-        //private VertexPositionTexture[] billboardVertices;
 
         private Index2 currentChunk = new Index2(-1, -1);
 
@@ -54,15 +54,21 @@ namespace OctoAwesome.Client.Controls
         private ILocalChunkCache localChunkCache;
         private Effect simpleShader;
 
-        private Thread[] _additionalRegenerationThreads;
+        private engenious.UserDefined.Effects.skybox skyEffect;
+
+        private Model skyBox;
+        private Texture2D skyMap;
+        
+        private readonly Thread[] additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
+        public RenderTarget2D ShadowMap { get; set; }
         public RenderTarget2D ControlTexture { get; set; }
 
         private float sunPosition = 0f;
 
         private ScreenComponent Manager { get; set; }
-        private int _fillIncrement;
+        private readonly int fillIncrement;
         public SceneControl(ScreenComponent manager, string style = "") :
             base(manager, style)
         {
@@ -77,7 +83,7 @@ namespace OctoAwesome.Client.Controls
             Manager = manager;
 
 
-            simpleShader = manager.Game.Content.Load<Effect>("simple");
+            simpleShader = manager.Game.Content.Load<Effect>("Effects/simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
@@ -144,9 +150,9 @@ namespace OctoAwesome.Client.Controls
 
             var additional = Environment.ProcessorCount / 3;
             additional = additional == 0 ? 1 : additional;
-            _fillIncrement = additional + 1;
+            fillIncrement = additional + 1;
             _additionalFillResetEvents = new AutoResetEvent[additional];
-            _additionalRegenerationThreads = new Thread[additional];
+            additionalRegenerationThreads = new Thread[additional];
             for (int i = 0; i < additional; i++)
             {
                 var t  = new Thread(AdditionalFillerBackgroundLoop)
@@ -157,7 +163,7 @@ namespace OctoAwesome.Client.Controls
                 var are = new AutoResetEvent(false);
                 t.Start(new object[] { are, i });
                 _additionalFillResetEvents[i] = are;
-                _additionalRegenerationThreads[i] = t;
+                additionalRegenerationThreads[i] = t;
 
             }
 
@@ -180,9 +186,13 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                
+                
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
                 new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                
+                
             };
 
             var selectionIndices = new short[]
@@ -201,7 +211,6 @@ namespace OctoAwesome.Client.Controls
             billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice, VertexPositionTexture.VertexDeclaration, billboardVertices.Length);
             billboardVertexbuffer.SetData(billboardVertices);
 
-
             sunEffect = new BasicEffect(manager.GraphicsDevice);
             sunEffect.TextureEnabled = true;
 
@@ -210,6 +219,14 @@ namespace OctoAwesome.Client.Controls
 
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
+            
+            ShadowMap = new RenderTarget2D(manager.GraphicsDevice,1024*8,1024*8,PixelInternalFormat.DepthComponent32);
+            ShadowMap.SamplerState = SamplerState.LinearClamp;
+
+            skyBox = Manager.Content.Load<Model>("Models/skybox");
+            skyMap = Manager.Content.Load<Texture2D>("Textures/skymap");
+            skyEffect = Manager.Content.Load<engenious.UserDefined.Effects.skybox>("Effects/skybox");
+            skyMap.SamplerState = SamplerState.LinearWrap;
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -356,7 +373,7 @@ namespace OctoAwesome.Client.Controls
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
             }
 
-            float octoDaysPerEarthDay = 360f;
+            float octoDaysPerEarthDay = 800f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
             float playerPosX = ((float)player.Position.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X)) * MathHelper.TwoPi;
@@ -365,28 +382,27 @@ namespace OctoAwesome.Client.Controls
             TimeSpan diff = DateTime.UtcNow - new DateTime(1888, 8, 8);
 
             float inclination = ((float)Math.Sin(playerPosY) * inclinationVariance) + MathHelper.Pi / 6f;
-            //Console.WriteLine("Stand: " + (MathHelper.Pi + playerPosX) + " Neigung: " + inclination);
+            float sunrotation = (float) (MathHelper.TwoPi -
+                                         ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) %
+                                          MathHelper.TwoPi));
+            
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) *
-                //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
-                Matrix.CreateRotationY((float)(MathHelper.TwoPi - ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) % MathHelper.TwoPi)));
+                Matrix.CreateRotationY(sunrotation);
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
+            
             simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
-            simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
             simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
-
-            // Console.WriteLine(sunDirection);
-
-            // Index3 chunkOffset = player.ActorHost.Position.ChunkIndex;
+            simpleShader.Parameters["AmbientColor"].SetValue(Color.White);
+            
             Index3 chunkOffset = camera.CameraChunk;
-            Color background =
-                new Color(181, 224, 255);
 
+            
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            Manager.GraphicsDevice.Clear(background);
+            Manager.GraphicsDevice.Clear(Color.AliceBlue);
 
             foreach (var renderer in chunkRenderer)
             {
@@ -409,31 +425,91 @@ namespace OctoAwesome.Client.Controls
                     (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 int range = 3;
+                
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
-                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
+                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix,Matrix.Identity, null, shift);
+                
             }
+
+            var up = Vector3.UnitZ;
+            var sunView = Matrix.CreateLookAt(camera.CameraPosition+ sunDirection * -1,
+                camera.CameraPosition, up);
+
+
+            var sunProj = Matrix.CreateOrthographicOffCenter(-32,32,32,-32,-400 ,400);
             
+            
+            //Shadow
+            Manager.GraphicsDevice.SetRenderTarget(ShadowMap);
+            Manager.GraphicsDevice.Clear(Color.White);
+
+            Matrix shadowViewProj = sunProj * sunView;
+            
+
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue)
+                    continue;
+
+                Index3 shift = chunkOffset.ShortestDistanceXY(
+                    renderer.ChunkPosition.Value, new Index2(
+                        planet.Size.X,
+                        planet.Size.Y));
+
+                renderer.DrawShadow(shadowViewProj, shift);
+            }
+
+            entities.DrawShadow(shadowViewProj, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
+
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
-            Manager.GraphicsDevice.Clear(background);
+            Manager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            Manager.GraphicsDevice.BlendState = BlendState.Opaque;
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.None;
+            
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            
+            //Draw Skybox
+            skybox.SkyBoxImpl skyTechnique =skyEffect.SkyBox;
+            skyTechnique.Pass1.Apply();
+            skyTechnique.Pass1.DiffuseDirection = sunDirection;
+            skyTechnique.Pass1.NightSky = skyMap;
+            skyTechnique.Pass1.WorldViewProj = camera.Projection
+                                               *camera.View
+                                               *(Matrix.CreateTranslation(camera.CameraPosition)
+                                               * Matrix.CreateScaling(1, 1, 1)
+                                               * Matrix.CreateRotationX(inclination) 
+                                               * Matrix.CreateRotationY(sunrotation));
+            
 
-            // Draw Sun
-            // GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-            sunEffect.Texture = sunTexture;
-            Matrix billboard = Matrix.Invert(camera.View);
-            billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
-            sunEffect.World = billboard;
-            sunEffect.View = camera.View;
-            sunEffect.Projection = camera.Projection;
-            sunEffect.CurrentTechnique.Passes[0].Apply();
-            Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
-            Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
-
+            skyBox.Draw();
+            
+            Manager.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            
+            if (sunDirection.Z < 0)
+            {
+                sunEffect.TextureEnabled = true;
+                sunEffect.Texture = sunTexture;
+                Matrix billboard = Matrix.Invert(camera.View);
+                billboard.Translation = camera.CameraPosition + (sunDirection * -10);
+                sunEffect.World = billboard;
+                sunEffect.View = camera.View;
+                sunEffect.Projection = camera.Projection;
+                sunEffect.CurrentTechnique.Passes[0].Apply();
+                Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
+                Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 6);
+            }
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
+            Matrix bias = new Matrix(0.5f,0.0f,0.0f,0.5f,
+                0.0f,0.5f,0.0f,0.5f,
+                0.0f,0.0f,0.5f,0.5f,
+                0.0f,0.0f,0.0f,1.0f);
+            
+            shadowViewProj = bias*shadowViewProj;
+            //Normal
             foreach (var renderer in chunkRenderer)
             {
                 if (!renderer.ChunkPosition.HasValue)
@@ -455,12 +531,12 @@ namespace OctoAwesome.Client.Controls
                     (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
                 if (camera.Frustum.Intersects(chunkBox))
-                    renderer.Draw(camera.View, camera.Projection, shift);
+                    renderer.Draw(camera.View, camera.Projection,shadowViewProj,ShadowMap, shift);
             }
 
            
 
-            entities.Draw(camera.View, camera.Projection,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
+            entities.Draw(camera.View, camera.Projection,shadowViewProj,ShadowMap,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
 
             if (player.SelectedBox.HasValue)
             {
@@ -486,7 +562,7 @@ namespace OctoAwesome.Client.Controls
                 {
                     pass.Apply();
                     Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);
-                    //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    
                 }
             }
 
@@ -556,7 +632,7 @@ namespace OctoAwesome.Client.Controls
 
         private void RegenerateAll(int start)
         {
-            for (var index = start; index < orderedChunkRenderer.Count; index+=_fillIncrement)
+            for (var index = start; index < orderedChunkRenderer.Count; index+=fillIncrement)
             {
                 var renderer = orderedChunkRenderer[index];
                 if (renderer.NeedsUpdate)
@@ -592,7 +668,6 @@ namespace OctoAwesome.Client.Controls
             while (true)
             {
                 _forceResetEvent.WaitOne();
-
                 while(!_forcedRenders.IsEmpty)
                 {
                     ChunkRenderer r;

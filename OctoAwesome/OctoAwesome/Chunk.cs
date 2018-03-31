@@ -195,6 +195,14 @@ namespace OctoAwesome
             ChangeCounter++;
             Changed?.Invoke(this, ChangeCounter);
         }
+        /// <summary>
+        /// Invalidiert den Chunk, sodass er neu aufgebaut wird
+        /// </summary>
+        public void Invalidate()
+        {
+            ChangeCounter++;
+            Changed?.Invoke(this, ChangeCounter);
+        }
 
         /// <summary>
         /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb

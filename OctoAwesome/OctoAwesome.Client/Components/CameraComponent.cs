@@ -78,13 +78,17 @@ namespace OctoAwesome.Client.Components
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;
 
-            Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
-            Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View, Matrix.Identity);
-            Vector3 direction = farPoint - nearPoint;
+            NearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
+            FarPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View, Matrix.Identity);
+            Vector3 direction = FarPoint - NearPoint;
             direction.Normalize();
-            PickRay = new Ray(nearPoint, direction);
+            PickRay = new Ray(NearPoint, direction);
             Frustum = new BoundingFrustum(Projection*View);
         }
+
+        public Vector3 FarPoint { get; set; }
+
+        public Vector3 NearPoint { get; set; }
 
         public Index3 CameraChunk { get; private set; }
 

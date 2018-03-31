@@ -282,12 +282,49 @@ namespace OctoAwesome
         /// <param name="block">Die neue Block-ID</param>
         public void SetBlock(int x, int y, int z, ushort block)
         {
-            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            var chunkX = x >> Chunk.LimitX;
+            var chunkY = y >> Chunk.LimitY;
+            var chunkZ = z >> Chunk.LimitZ;
+            var chunk = GetChunk(chunkX, chunkY,chunkZ);
 
-            if (chunk != null)
-                chunk.SetBlock(x, y, z, block);
+            if (chunk == null)
+                return;
+            
+            InvalidateNeighbours(chunkX, chunkY, chunkZ, x, y, z);
+            chunk.SetBlock(x, y, z, block);
         }
 
+        private void InvalidateNeighbours(int chunkX,int chunkY,int chunkZ,int x,int y,int z)
+        {
+            switch (x % Chunk.CHUNKSIZE_X)
+            {
+                case 0:
+                    GetChunk(chunkX - 1, chunkY, chunkZ)?.Invalidate();
+                    break;
+                case Chunk.CHUNKSIZE_X - 1:
+                    GetChunk(chunkX + 1, chunkY, chunkZ)?.Invalidate();
+                    break;
+            }
+            switch (y % Chunk.CHUNKSIZE_Y)
+            {
+                case 0:
+                    GetChunk(chunkX, chunkY - 1, chunkZ)?.Invalidate();
+                    break;
+                case Chunk.CHUNKSIZE_Y - 1:
+                    GetChunk(chunkX, chunkY + 1, chunkZ)?.Invalidate();
+                    break;
+            }
+            switch (z % Chunk.CHUNKSIZE_Z)
+            {
+                case 0:
+                    if (z > 0)
+                        GetChunk(chunkX, chunkY, chunkZ - 1)?.Invalidate();
+                    break;
+                case Chunk.CHUNKSIZE_Z - 1:
+                    GetChunk(chunkX, chunkY, chunkZ + 1)?.Invalidate();
+                    break;
+            }
+        }
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>
@@ -297,12 +334,9 @@ namespace OctoAwesome
         /// <returns>Die Metadaten des angegebenen Blocks</returns>
         public int GetBlockMeta(int x, int y, int z)
         {
-            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            var chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
 
-            if (chunk != null)
-                return chunk.GetBlockMeta(x, y, z);
-
-            return 0;
+            return chunk?.GetBlockMeta(x, y, z) ?? 0;
         }
 
         /// <summary>
@@ -322,10 +356,16 @@ namespace OctoAwesome
         /// <param name="meta">Die neuen Metadaten</param>
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
-            IChunk chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
+            var chunkX = x >> Chunk.LimitX;
+            var chunkY = y >> Chunk.LimitY;
+            var chunkZ = z >> Chunk.LimitZ;
+            var chunk = GetChunk(chunkX, chunkY, chunkZ);
 
-            if (chunk != null)
-                chunk.SetBlockMeta(x, y, z, meta);
+            if (chunk == null)
+                return;
+            
+            InvalidateNeighbours(chunkX, chunkY, chunkZ, x, y, z);
+            chunk.SetBlockMeta(x, y, z, meta);
         }
 
         /// <summary>

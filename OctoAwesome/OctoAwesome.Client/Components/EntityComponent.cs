@@ -19,7 +19,7 @@ namespace OctoAwesome.Client.Components
             public Model model;
         }
         private GraphicsDevice graphicsDevice;
-        private BasicEffect effect;
+        private Effect effect;
         public SimulationComponent Simulation { get; private set; }
 
 
@@ -35,15 +35,13 @@ namespace OctoAwesome.Client.Components
             Entities = new List<Entity>();
             graphicsDevice = game.GraphicsDevice;
 
-            effect = new BasicEffect(graphicsDevice);
+            effect = Game.Content.Load<Effect>("Effects/simple");
         }
-        public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
+        
+        public void DrawShadow(Matrix viewProjection, Index3 chunkOffset, Index2 planetSize)
         {
-            effect.Projection = projection;
-            effect.View = view;
-            effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            foreach (var pass in effect.CurrentTechnique.Passes)
+            foreach (var pass in effect.Techniques["EntityShadow"].Passes)
             {
                 pass.Apply();
 
@@ -87,12 +85,93 @@ namespace OctoAwesome.Client.Components
                     Matrix world = Matrix.CreateTranslation(
                         shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
                         shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height)*Matrix.CreateRotationZ(rotation);
-                    effect.World = world;
+                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) 
+                                   * Matrix.CreateScaling(body.Radius /40, body.Radius /40, body.Height/80)
+                                   *Matrix.CreateRotationZ(rotation);
+                    
+                    effect.Parameters["WorldViewProj"].SetValue(viewProjection*world);
+                    
                     modelinfo.model.Transform = world;
-                    modelinfo.model.Draw(effect, modelinfo.texture);
+                    modelinfo.model.Draw();
                 }
             }
+        }
+        
+        public void Draw(Matrix view, Matrix projection, Matrix shadowViewProjection,RenderTarget2D shadowMap , Index3 chunkOffset, Index2 planetSize)
+        {
+            graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+            foreach (var pass in effect.Techniques["EntityBasic"].Passes)
+            {
+                pass.Apply();
+
+                foreach (var entity in Entities)
+                {
+                    if (!entity.Components.ContainsComponent<RenderComponent>())
+                        continue;
+
+                    var rendercomp = entity.Components.GetComponent<RenderComponent>();
+
+                    ModelInfo modelinfo;
+
+                    if (!models.TryGetValue(rendercomp.Name, out modelinfo))
+                    {
+                        modelinfo = new ModelInfo()
+                        {
+                            render = true,
+                            model = Game.Content.Load<Model>(rendercomp.ModelName),
+                            texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
+                        };
+                    }
+
+                    if (!modelinfo.render)
+                        continue;
+
+                    var positioncomp = entity.Components.GetComponent<PositionComponent>();
+                    var position = positioncomp.Position;
+                    var body = entity.Components.GetComponent<BodyComponent>();
+
+                    HeadComponent head = new HeadComponent();
+                    if (entity.Components.ContainsComponent<HeadComponent>())
+                        head = entity.Components.GetComponent<HeadComponent>();
+
+                    Index3 shift = chunkOffset.ShortestDistanceXY(
+                   position.ChunkIndex, planetSize);
+
+                    var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+
+                    Matrix world = Matrix.CreateTranslation(
+                        shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                        shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) 
+                                   * Matrix.CreateScaling(body.Radius /40, body.Radius /40, body.Height/80)
+                                   *Matrix.CreateRotationZ(rotation);
+
+                    Matrix worldViewProj = projection * view * world;
+                    Matrix shadowworldViewProj = shadowViewProjection * world;
+                    
+                    effect.Parameters["WorldViewProj"].SetValue(worldViewProj);
+                    effect.Parameters["text"].SetValue(modelinfo.texture);
+                    
+                    
+                    
+                    effect.Parameters["shadowWorldViewProj"].SetValue(shadowworldViewProj);
+
+                    if (shadowMap != null)
+                    {
+                        effect.Parameters["ShadowMap"].SetValue(shadowMap);
+                        effect.Parameters["ShadowEnabled"].SetValue(1);
+                    }
+                    else
+                    {
+                        effect.Parameters["ShadowEnabled"].SetValue(0);
+                    }
+                    
+                    
+                    modelinfo.model.Transform = world;
+                    modelinfo.model.Draw();
+                }
+            }
+            
         }
 
         public override void Update(GameTime gameTime)

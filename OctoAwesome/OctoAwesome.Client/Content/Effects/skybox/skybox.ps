@@ -1,0 +1,14 @@
+in vec2 psTexCoord;
+
+uniform vec3 DiffuseDirection;
+uniform sampler2D NightSky;
+
+void main()
+{
+    vec4 nightColor = texture2D(NightSky,psTexCoord);
+    vec4 dayColor = vec4(0.7,0.9,1.0,1.0);
+
+    float nightOpacity = clamp(DiffuseDirection.z,0.0,1.0);
+    
+    gl_FragColor = vec4(nightColor.rgb*(nightOpacity) + dayColor.rgb*(1.0-nightOpacity),1.0);
+}

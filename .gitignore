@@ -262,3 +262,10 @@ __pycache__/
 
 #Customize
 .idea
+
+#Engenious
+engenious.CreatedContent.Content.dll
+
+#Blender
+*.blend[0-9]
+
