@@ -65,7 +65,7 @@ namespace OctoAwesome.Network
 
             return new Player()
             {
-
+                
             };
         }
 
