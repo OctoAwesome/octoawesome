@@ -376,12 +376,15 @@ namespace OctoAwesome
             if (Planet == null)
                 return -1;
 
+            x = Index2.NormalizeAxis(x, Planet.Size.X);
+            y = Index2.NormalizeAxis(y, Planet.Size.Y);
+
             IChunkColumn column = chunkColumns[FlatIndex(x >> Chunk.LimitX, y >> Chunk.LimitY)];
 
             if (column == null)
                 return -1;
 
-            return column.Heights[((x & (Chunk.CHUNKSIZE_X - 1)) << Chunk.LimitX), ((y & (Chunk.CHUNKSIZE_Y - 1)) << Chunk.LimitY)];
+            return column.Heights[(x & (Chunk.CHUNKSIZE_X - 1)), (y & (Chunk.CHUNKSIZE_Y - 1))];
         }
     }
 }
