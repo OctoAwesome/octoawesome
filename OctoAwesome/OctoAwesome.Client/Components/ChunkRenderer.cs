@@ -1,11 +1,9 @@
 ﻿using OctoAwesome.Client.Controls;
-using OctoAwesome.Runtime;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using engenious;
 using engenious.Graphics;
+using System.Linq;
+using engenious;
+using System;
 
 namespace OctoAwesome.Client.Components
 {
@@ -114,7 +112,7 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.VertexBuffer = vb;
                 graphicsDevice.IndexBuffer = ib;
 
-                foreach (var pass in simple.CurrentTechnique.Passes)
+                foreach (var pass in simple.CurrentTechnique.Passes.PassesList)
                 {
                     pass.Apply();
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, vertexCount, 0, indexCount / 3);
@@ -210,8 +208,7 @@ namespace OctoAwesome.Client.Components
                         if (blockDefinition == null)
                             continue;
 
-                        int textureIndex;
-                        if (!textureOffsets.TryGetValue(blockDefinition, out textureIndex))
+                        if (!textureOffsets.TryGetValue(blockDefinition, out int textureIndex))
                             continue;
 
                         // Textur-Koordinate "berechnen"

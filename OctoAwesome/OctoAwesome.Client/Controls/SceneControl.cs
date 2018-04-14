@@ -202,11 +202,15 @@ namespace OctoAwesome.Client.Controls
             billboardVertexbuffer.SetData(billboardVertices);
 
 
-            sunEffect = new BasicEffect(manager.GraphicsDevice);
-            sunEffect.TextureEnabled = true;
+            sunEffect = new BasicEffect(manager.GraphicsDevice)
+            {
+                TextureEnabled = true
+            };
 
-            selectionEffect = new BasicEffect(manager.GraphicsDevice);
-            selectionEffect.VertexColorEnabled = true;
+            selectionEffect = new BasicEffect(manager.GraphicsDevice)
+            {
+                VertexColorEnabled = true
+            };
 
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
@@ -254,13 +258,11 @@ namespace OctoAwesome.Client.Controls
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
                         ushort block = localChunkCache.GetBlock(pos);
-                        if (block == 0)
-                            continue;
+                        if (block == 0) continue;
 
-                        IBlockDefinition blockDefinition = (IBlockDefinition)Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition) Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
 
-                        Axis? collisionAxis;
-                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out collisionAxis);
+                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 
                         if (distance.HasValue && distance.Value < bestDistance)
                         {
@@ -458,9 +460,7 @@ namespace OctoAwesome.Client.Controls
                     renderer.Draw(camera.View, camera.Projection, shift);
             }
 
-           
-
-            entities.Draw(camera.View, camera.Projection,chunkOffset,new Index2(planet.Size.X,planet.Size.Z));
+            entities.Draw(camera.View, camera.Projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
 
             if (player.SelectedBox.HasValue)
             {
@@ -482,7 +482,7 @@ namespace OctoAwesome.Client.Controls
                 selectionEffect.Projection = camera.Projection;
                 Manager.GraphicsDevice.VertexBuffer = selectionLines;
                 Manager.GraphicsDevice.IndexBuffer = selectionIndexBuffer;
-                foreach (var pass in selectionEffect.CurrentTechnique.Passes)
+                foreach (var pass in selectionEffect.CurrentTechnique.Passes.PassesList)
                 {
                     pass.Apply();
                     Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);
@@ -595,8 +595,7 @@ namespace OctoAwesome.Client.Controls
 
                 while(!_forcedRenders.IsEmpty)
                 {
-                    ChunkRenderer r;
-                    while (_forcedRenders.TryDequeue(out r))
+                    while (_forcedRenders.TryDequeue(out ChunkRenderer r))
                     {
                         r.RegenerateVertexBuffer();
                     }
@@ -636,8 +635,7 @@ namespace OctoAwesome.Client.Controls
 
         #endregion
 
-        private ConcurrentQueue<ChunkRenderer> _forcedRenders = new ConcurrentQueue<ChunkRenderer>();
-        
+        private ConcurrentQueue<ChunkRenderer> _forcedRenders = new ConcurrentQueue<ChunkRenderer>();        
 
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {
