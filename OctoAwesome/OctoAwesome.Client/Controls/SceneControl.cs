@@ -61,6 +61,33 @@ namespace OctoAwesome.Client.Controls
 
         private float sunPosition = 0f;
 
+        private readonly VertexPositionColor[] selectionVertices =
+        {
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Color.Black * 0.5f),
+                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
+        };
+        private readonly VertexPositionTexture[] billboardVertices =
+        {
+                new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
+                new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
+                new VertexPositionTexture(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
+                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+        };
+        private readonly ushort[] selectionIndices =
+        {
+                0, 1, 0, 2, 1, 3, 2, 3,
+                4, 5, 4, 6, 5, 7, 6, 7,
+                0, 4, 1, 5, 2, 6, 3, 7
+        };
+
         private ScreenComponent Manager { get; set; }
         private int _fillIncrement;
         public SceneControl(ScreenComponent manager, string style = "") :
@@ -145,7 +172,7 @@ namespace OctoAwesome.Client.Controls
             var additional = Environment.ProcessorCount / 3;
             additional = additional == 0 ? 1 : additional;
             _fillIncrement = additional + 1;
-            _additionalFillResetEvents = new AutoResetEvent[additional];
+            additionalFillResetEvents = new AutoResetEvent[additional];
             _additionalRegenerationThreads = new Thread[additional];
             for (int i = 0; i < additional; i++)
             {
@@ -156,41 +183,10 @@ namespace OctoAwesome.Client.Controls
                 };
                 var are = new AutoResetEvent(false);
                 t.Start(new object[] { are, i });
-                _additionalFillResetEvents[i] = are;
+                additionalFillResetEvents[i] = are;
                 _additionalRegenerationThreads[i] = t;
 
             }
-
-            
-
-            var selectionVertices = new[]
-            {
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
-            };
-
-            var billboardVertices = new[]
-            {
-                new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
-                new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
-                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
-                new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
-                new VertexPositionTexture(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
-                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
-            };
-
-            var selectionIndices = new short[]
-            {
-                0, 1, 0, 2, 1, 3, 2, 3,
-                4, 5, 4, 6, 5, 7, 6, 7,
-                0, 4, 1, 5, 2, 6, 3, 7
-            };
 
             selectionLines = new VertexBuffer(manager.GraphicsDevice, VertexPositionColor.VertexDeclaration, selectionVertices.Length);
             selectionLines.SetData(selectionVertices);
@@ -258,7 +254,8 @@ namespace OctoAwesome.Client.Controls
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
                         ushort block = localChunkCache.GetBlock(pos);
-                        if (block == 0) continue;
+                        if (block == 0)
+                            continue;
 
                         IBlockDefinition blockDefinition = (IBlockDefinition) Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
 
@@ -339,24 +336,24 @@ namespace OctoAwesome.Client.Controls
             // Nur ausführen wenn der Spieler den Chunk gewechselt hat
             if (destinationChunk != currentChunk)
             {
-                _fillResetEvent.Set();
+                fillResetEvent.Set();
             }
 
             base.OnUpdate(gameTime);
         }
 
-        private AutoResetEvent _fillResetEvent = new AutoResetEvent(false);
-        private AutoResetEvent[] _additionalFillResetEvents;
-        private AutoResetEvent _forceResetEvent = new AutoResetEvent(false);
+        private AutoResetEvent fillResetEvent = new AutoResetEvent(false);
+        private AutoResetEvent[] additionalFillResetEvents;
+        private AutoResetEvent forceResetEvent = new AutoResetEvent(false);
 
         protected override void OnPreDraw(GameTime gameTime)
         {
-            if (player.CurrentEntity == null) return;
+            if (player.CurrentEntity == null)
+                return;
 
             if (ControlTexture == null)
-            {
-                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
-            }
+                ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width,
+                    ActualClientArea.Height, PixelInternalFormat.Rgb8);
 
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
@@ -510,7 +507,7 @@ namespace OctoAwesome.Client.Controls
                     b => {
                         if (b)
                         {
-                            _fillResetEvent.Set(); 
+                            fillResetEvent.Set(); 
                         }
                     });
                 
@@ -548,7 +545,7 @@ namespace OctoAwesome.Client.Controls
                 currentChunk = destinationChunk;
             }
             
-            foreach (var e in _additionalFillResetEvents)
+            foreach (var e in additionalFillResetEvents)
                 e.Set();
 
             RegenerateAll(0);
@@ -570,7 +567,7 @@ namespace OctoAwesome.Client.Controls
         {
             while (true)
             {
-                _fillResetEvent.WaitOne();
+                fillResetEvent.WaitOne();
                 FillChunkRenderer();
             }
         }
@@ -591,7 +588,7 @@ namespace OctoAwesome.Client.Controls
         {
             while (true)
             {
-                _forceResetEvent.WaitOne();
+                forceResetEvent.WaitOne();
 
                 while(!_forcedRenders.IsEmpty)
                 {
@@ -640,7 +637,7 @@ namespace OctoAwesome.Client.Controls
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {
             _forcedRenders.Enqueue(chunkRenderer1);
-            _forceResetEvent.Set();
+            forceResetEvent.Set();
         }
     }
 }

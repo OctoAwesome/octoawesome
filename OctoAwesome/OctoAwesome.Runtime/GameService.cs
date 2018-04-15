@@ -1,6 +1,7 @@
 ﻿using engenious;
 using OctoAwesome.Common;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 namespace OctoAwesome.Runtime
 {
@@ -92,7 +93,9 @@ namespace OctoAwesome.Runtime
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + position.GlobalBlockIndex;
                         ushort block = cache.GetBlock(blockPos);
-                        if (block == 0) continue;
+
+                        if (block == 0)
+                            continue;
 
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, velocity);
 
@@ -149,9 +152,6 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="serviceType">Type of Service</param>
         /// <returns></returns>
-        public object GetService(Type serviceType)
-        {
-            throw new NotImplementedException();
-        }
+        public object GetService(Type serviceType) => throw new NotImplementedException();
     }
 }

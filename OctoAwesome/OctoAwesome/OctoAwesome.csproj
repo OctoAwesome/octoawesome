@@ -74,7 +74,6 @@
     <Compile Include="ChunkColumn.cs" />
     <Compile Include="CollisionPlane.cs" />
     <Compile Include="Common\IGameService.cs" />
-    <Compile Include="Common\IInventory.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
