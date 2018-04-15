@@ -66,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Biomes\BiomeBase.cs" />
-    <Compile Include="CollisionPlane.cs" />
     <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
     <Compile Include="Entities\WauziEntity.cs" />
     <Compile Include="Extension.cs" />

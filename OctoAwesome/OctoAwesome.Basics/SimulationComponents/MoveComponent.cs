@@ -84,7 +84,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 position.BlockPosition.Z + bc.Height + movecomp.PositionMove.Z));
 
             //Beteiligte Flächen des Spielers
-            var playerplanes = CollisionPlane.GetPlayerCollisionPlanes(bc, movecomp, poscomp).ToList();
+            var playerplanes = CollisionPlane.GetEntityCollisionPlanes(bc.Radius, bc.Height, movecomp.Velocity, poscomp.Position);
 
             bool abort = false;
 

@@ -66,6 +66,7 @@
     <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionLoader.cs" />
+    <Compile Include="GameService.cs" />
     <Compile Include="IPlayerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManager.cs" />

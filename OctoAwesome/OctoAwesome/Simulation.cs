@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using engenious;
+using OctoAwesome.Common;
 using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
@@ -34,6 +35,11 @@ namespace OctoAwesome
         public Guid UniverseId { get; private set; }
 
         /// <summary>
+        /// Dienste des Spiels.
+        /// </summary>
+        public IGameService Service { get; }
+
+        /// <summary>
         /// List of all Entities.
         /// </summary>
         public List<Entity> Entities => entities.ToList();
@@ -47,13 +53,14 @@ namespace OctoAwesome
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
         /// </summary>
-        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
+        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
         {
             ResourceManager = resourceManager;
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
+            Service = service;
 
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, null, null);
