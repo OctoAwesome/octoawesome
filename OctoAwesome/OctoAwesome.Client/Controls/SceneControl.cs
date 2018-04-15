@@ -590,9 +590,9 @@ namespace OctoAwesome.Client.Controls
             {
                 forceResetEvent.WaitOne();
 
-                while(!_forcedRenders.IsEmpty)
+                while(!forcedRenders.IsEmpty)
                 {
-                    while (_forcedRenders.TryDequeue(out ChunkRenderer r))
+                    while (forcedRenders.TryDequeue(out ChunkRenderer r))
                     {
                         r.RegenerateVertexBuffer();
                     }
@@ -632,11 +632,11 @@ namespace OctoAwesome.Client.Controls
 
         #endregion
 
-        private ConcurrentQueue<ChunkRenderer> _forcedRenders = new ConcurrentQueue<ChunkRenderer>();        
+        private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();        
 
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {
-            _forcedRenders.Enqueue(chunkRenderer1);
+            forcedRenders.Enqueue(chunkRenderer1);
             forceResetEvent.Set();
         }
     }
