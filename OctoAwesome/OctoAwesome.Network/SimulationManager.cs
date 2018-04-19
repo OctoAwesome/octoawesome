@@ -26,6 +26,7 @@ namespace OctoAwesome.Network
                     simulation = value;
             }
         }
+        
         public GameTime GameTime { get; private set; }
         
         private Simulation simulation;
@@ -52,6 +53,9 @@ namespace OctoAwesome.Network
 
             resourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
 
+            //For Release resourceManager.LoadUniverse(new Guid()); 
+            resourceManager.NewUniverse("test_universe", 043848723);
+
             simulation = new Simulation(resourceManager, extensionLoader);
             backgroundThread = new Thread(SimulationLoop)
             {
@@ -75,6 +79,13 @@ namespace OctoAwesome.Network
             IsRunning = false;
             simulation.ExitGame();
             backgroundThread.Abort();            
+        }
+
+        public IUniverse GetUniverse() => resourceManager.CurrentUniverse;
+
+        public IUniverse NewUniverse()
+        {
+            throw new NotImplementedException();
         }
 
         private void SimulationLoop()

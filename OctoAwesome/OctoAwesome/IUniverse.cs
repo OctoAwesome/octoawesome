@@ -24,13 +24,13 @@ namespace OctoAwesome
         int Seed { get; }
 
         /// <summary>
-        /// Serialisiert das Usinerse in den angegebenen Stream.
+        /// Serialisiert das Universum in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
         void Serialize(Stream stream);
 
         /// <summary>
-        /// Deserialisiert das Universe aus dem angegebenen Stream.
+        /// Deserialisiert das Universum aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
         void Deserialize(Stream stream);

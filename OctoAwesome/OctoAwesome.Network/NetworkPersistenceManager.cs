@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Network;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,30 +39,29 @@ namespace OctoAwesome.Network
 
         public IPlanet LoadPlanet(Guid universeGuid, int planetId)
         {
-            throw new NotImplementedException();
+            var package = new Package(13, 0);
+            package = client.SendAndReceive(package);
+
+            var planet = new Planet();
+
+            using (var memoryStream = new MemoryStream(package.Payload))
+                planet.Deserialize(memoryStream);
+
+            return planet;
         }
 
         public Player LoadPlayer(Guid universeGuid, string playername)
         {
             var playernameBytes = Encoding.UTF8.GetBytes(playername);
 
-            var package = new Package(11, playernameBytes.Length);
-            package.Write(playernameBytes);
-
-
-            var mre = new ManualResetEvent(false);
-            var dele = new EventHandler<(byte[] Data, int Count)>((sender, eventArgs) =>
+            var package = new Package(11, playernameBytes.Length)
             {
-                //TODO Datenverarbeitung
+                Payload = playernameBytes
+            };
+            //package.Write(playernameBytes);
 
-                mre.Set();
-            });
-            client.OnMessageRecived += dele;
 
-            client.Send(package);
-            mre.WaitOne();
-
-            client.OnMessageRecived -= dele;
+            package = client.SendAndReceive(package);
 
             return new Player()
             {
@@ -71,7 +71,15 @@ namespace OctoAwesome.Network
 
         public IUniverse LoadUniverse(Guid universeGuid)
         {
-            throw new NotImplementedException();
+            var package = new Package(12, 0);
+            package = client.SendAndReceive(package);
+
+            var universe = new Universe();
+
+            using (var memoryStream = new MemoryStream(package.Payload))
+                universe.Deserialize(memoryStream);
+
+            return universe;
         }
 
         public void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column)

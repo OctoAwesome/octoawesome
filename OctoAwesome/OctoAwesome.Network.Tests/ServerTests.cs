@@ -64,7 +64,7 @@ namespace OctoAwesome.Network.Tests
 
                 wait.WaitOne();
 
-                testClient.Send(new byte[] { 42 }, 1);
+                testClient.SendAsync(new byte[] { 42 }, 1);
 
             });
             resetEvent.WaitOne();

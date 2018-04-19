@@ -28,7 +28,7 @@ namespace OctoAwesome.Network
         {
             var buffer = ArrayPool<byte>.Shared.Rent(4);
             Encoding.UTF8.GetBytes("PING", 0, 4, buffer, 0);
-            Send(buffer, 4);
+            SendAsync(buffer, 4);
         }
 
         public void Connect(string host, ushort port)

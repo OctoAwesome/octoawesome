@@ -17,7 +17,7 @@ namespace OctoAwesome.Network
             Server.OnClientConnected += ServerOnClientConnected;
             SimulationManager = new SimulationManager(new Settings());
         }
-
+        
         private void ServerOnClientConnected(object sender, ConnectedClient e)
         {
             e.OnMessageRecived += OnMessageRecive;

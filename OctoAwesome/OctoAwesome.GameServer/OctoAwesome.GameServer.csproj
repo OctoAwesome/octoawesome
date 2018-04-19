@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\GeneralCommands.cs" />
     <Compile Include="Commands\PlayerCommands.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +60,10 @@
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj">
       <Project>{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}</Project>
       <Name>OctoAwesome.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
+      <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
+      <Name>OctoAwesome</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

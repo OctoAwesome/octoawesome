@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
@@ -52,7 +53,7 @@ namespace OctoAwesome.Network
             }
         }
 
-        public void Send(byte[] data, int len)
+        public void SendAsync(byte[] data, int len)
         {
             lock (sendLock)
             {
@@ -68,11 +69,31 @@ namespace OctoAwesome.Network
             SendInternal(data, len);
 
         }
-        public void Send(Package package)
+        public void SendAsync(Package package)
         {
             var buffer = new byte[1024];
             var len = package.Read(buffer);
-            Send(buffer, len);
+            SendAsync(buffer, len);
+        }
+
+        public Package SendAndReceive(Package package)
+        {
+            var manualResetEvent = new ManualResetEvent(false);
+            Package returnPackage = null;
+            var onDataReceive = new EventHandler<(byte[] Data, int Count)>((sender, eventArgs) =>
+            {
+                returnPackage = new Package(eventArgs.Data.Take(eventArgs.Count).ToArray());
+
+                manualResetEvent.Set();
+            });
+            OnMessageRecived += onDataReceive;
+
+            SendAsync(package);
+            manualResetEvent.WaitOne();
+
+            OnMessageRecived -= onDataReceive;
+
+            return returnPackage;
         }
 
         protected abstract void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount);
