@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Network;
+﻿using CommandManagementSystem;
+using OctoAwesome.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,11 @@ namespace OctoAwesome.GameServer
         public static Server Server { get; private set; }
 
         private static ManualResetEvent manualResetEvent;
+        private static DefaultCommandManager<ushort, byte[], byte[]> defaultManager;
 
         static void Main(string[] args)
         {
+            defaultManager = new DefaultCommandManager<ushort, byte[], byte[]>(typeof(Program).Namespace + ".Commands");
             manualResetEvent = new ManualResetEvent(false);
             Server = new Server();
             Server.OnClientConnected += ServerOnClientConnected;
@@ -29,6 +32,12 @@ namespace OctoAwesome.GameServer
         private static void ServerOnClientConnected(object sender, ConnectedClient e)
         {
             Console.WriteLine("Hurra ein neuer Spieler");
+
+            e.OnMessageRecived += (s, args) =>
+            {
+                var package = new Package(args.Data.Take(args.Count).ToArray());
+                defaultManager.DispatchAsync(package.Command, package.Payload);
+            };
         }
     }
 }

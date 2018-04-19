@@ -43,10 +43,10 @@ namespace OctoAwesome.Network
 
         public Player LoadPlayer(Guid universeGuid, string playername)
         {
-            var package = new Package(100, 1);
-
             var playernameBytes = Encoding.UTF8.GetBytes(playername);
-            package.Write(playernameBytes, playernameBytes.Length);
+
+            var package = new Package(11, playernameBytes.Length);
+            package.Write(playernameBytes);
 
 
             var mre = new ManualResetEvent(false);
@@ -65,7 +65,7 @@ namespace OctoAwesome.Network
 
             return new Player()
             {
-                
+
             };
         }
 

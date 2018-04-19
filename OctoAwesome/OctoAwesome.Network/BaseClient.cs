@@ -71,7 +71,7 @@ namespace OctoAwesome.Network
         public void Send(Package package)
         {
             var buffer = new byte[1024];
-            var len = package.Read(buffer, buffer.Length);
+            var len = package.Read(buffer);
             Send(buffer, len);
         }
 
