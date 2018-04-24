@@ -115,9 +115,6 @@ namespace OctoAwesome
             var pos = coordinate.BlockPosition;
             Vector3 vel =  invertvelocity ? new Vector3(-velocity.X, -velocity.Y, - velocity.Z) : velocity;
 
-            if (invertvelocity && (velocity.X != -vel.X || velocity.Y != -vel.Y || velocity.Z != -vel.Z))
-                throw new InvalidProgramException("wtf...");
-
             //Ebene X
                 if (vel.X > 0)
             {

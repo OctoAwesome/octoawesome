@@ -80,66 +80,62 @@ namespace OctoAwesome.Runtime
             //Beteiligte Flächen des Spielers
             var playerplanes = CollisionPlane.GetEntityCollisionPlanes(radius, height, velocity, position);
 
-            bool abort = false;
-
-            for (int z = minz; z <= maxz && !abort; z++)
+            for (int z = minz; z <= maxz; z++)
             {
-                for (int y = miny; y <= maxy && !abort; y++)
+                for (int y = miny; y <= maxy; y++)
                 {
-                    for (int x = minx; x <= maxx && !abort; x++)
+                    for (int x = minx; x <= maxx; x++)
                     {
-                        move = velocity * (float) gameTime.ElapsedGameTime.TotalSeconds;
+                        move = velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + position.GlobalBlockIndex;
                         ushort block = cache.GetBlock(blockPos);
+                        if (block == 0) continue;
 
-                        if (block == 0)
-                            continue;
-
-                        var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, velocity);
-
-                        var planes = from pp in playerplanes
-                                     from bp in blockplane
-                                     where CollisionPlane.Intersect(bp, pp)
-                                     let distance = CollisionPlane.GetDistance(bp, pp)
-                                     where CollisionPlane.CheckDistance(distance, move)
-                                     select new { BlockPlane = bp, PlayerPlane = pp, Distance = distance };
-
-                        foreach (var plane in planes)
+                        var blockplanes = CollisionPlane.GetBlockCollisionPlanes(pos, velocity);
+                        
+                        foreach (var playerPlane in playerplanes)
                         {
-
-                            var subvelocity = (plane.Distance / (float) gameTime.ElapsedGameTime.TotalSeconds);
-                            var diff = velocity - subvelocity;
-
-                            float vx;
-                            float vy;
-                            float vz;
-
-                            if (plane.BlockPlane.normal.X != 0 && (velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 ||
-                                velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
-                                vx = subvelocity.X;
-                            else
-                                vx = velocity.X;
-
-                            if (plane.BlockPlane.normal.Y != 0 && (velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 ||
-                                velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
-                                vy = subvelocity.Y;
-                            else
-                                vy = velocity.Y;
-
-                            if (plane.BlockPlane.normal.Z != 0 && (velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 ||
-                                velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
-                                vz = subvelocity.Z;
-                            else
-                                vz = velocity.Z;
-
-                            velocity = new Vector3(vx, vy, vz);
-
-                            if (vx == 0 && vy == 0 && vz == 0)
+                            foreach (var blockPlane in blockplanes)
                             {
-                                abort = true;
-                                break;
+                                if (!CollisionPlane.Intersect(blockPlane, playerPlane))
+                                    continue;
+
+                                var distance = CollisionPlane.GetDistance(blockPlane, playerPlane);
+                                if (!CollisionPlane.CheckDistance(distance, move))
+                                    continue;
+
+                                var subvelocity = (distance / (float)gameTime.ElapsedGameTime.TotalSeconds);
+                                var diff = velocity - subvelocity;
+
+                                float vx;
+                                float vy;
+                                float vz;
+
+                                if (blockPlane.normal.X != 0 && (velocity.X > 0 && diff.X >= 0 && subvelocity.X >= 0 ||
+                                    velocity.X < 0 && diff.X <= 0 && subvelocity.X <= 0))
+                                    vx = subvelocity.X;
+                                else
+                                    vx = velocity.X;
+
+                                if (blockPlane.normal.Y != 0 && (velocity.Y > 0 && diff.Y >= 0 && subvelocity.Y >= 0 ||
+                                    velocity.Y < 0 && diff.Y <= 0 && subvelocity.Y <= 0))
+                                    vy = subvelocity.Y;
+                                else
+                                    vy = velocity.Y;
+
+                                if (blockPlane.normal.Z != 0 && (velocity.Z > 0 && diff.Z >= 0 && subvelocity.Z >= 0 ||
+                                    velocity.Z < 0 && diff.Z <= 0 && subvelocity.Z <= 0))
+                                    vz = subvelocity.Z;
+                                else
+                                    vz = velocity.Z;
+
+                                velocity = new Vector3(vx, vy, vz);
+                                if (vx == 0 && vy == 0 && vz == 0)
+                                {
+                                    return velocity;
+                                }
                             }
                         }
                     }
