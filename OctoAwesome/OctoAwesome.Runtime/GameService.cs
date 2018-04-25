@@ -91,7 +91,9 @@ namespace OctoAwesome.Runtime
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + position.GlobalBlockIndex;
                         ushort block = cache.GetBlock(blockPos);
-                        if (block == 0) continue;
+
+                        if (block == 0)
+                            continue;
 
                         var blockplanes = CollisionPlane.GetBlockCollisionPlanes(pos, velocity);
                         
