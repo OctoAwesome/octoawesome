@@ -213,7 +213,7 @@ namespace OctoAwesome.Client.Components
                         if (blockDefinition == null)
                             continue;
 
-                        if (!textureOffsets.TryGetValue(blockDefinition, out int textureIndex))
+                        if (textureOffsets.TryGetValue(blockDefinition, out int textureIndex))
                         {
                             // Textur-Koordinate "berechnen"
                             Vector2 textureOffset = new Vector2();
