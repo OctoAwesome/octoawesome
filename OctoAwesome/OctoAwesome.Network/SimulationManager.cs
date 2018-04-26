@@ -26,13 +26,16 @@ namespace OctoAwesome.Network
                     simulation = value;
             }
         }
-        
+
         public GameTime GameTime { get; private set; }
-        
+
         private Simulation simulation;
         private ExtensionLoader extensionLoader;
         private DefinitionManager definitionManager;
         private ResourceManager resourceManager;
+
+
+
         private ISettings settings;
 
         private Thread backgroundThread;
@@ -43,7 +46,7 @@ namespace OctoAwesome.Network
             mainLock = new object();
 
             this.settings = settings; //TODO: Where are the settings?
-            
+
             extensionLoader = new ExtensionLoader(settings);
             extensionLoader.LoadExtensions();
 
@@ -70,15 +73,15 @@ namespace OctoAwesome.Network
             GameTime = new GameTime();
 
             simulation.NewGame("bla", 42);
-            
+
             backgroundThread.Start();
         }
-        
+
         public void Stop()
         {
             IsRunning = false;
             simulation.ExitGame();
-            backgroundThread.Abort();            
+            backgroundThread.Abort();
         }
 
         public IUniverse GetUniverse() => resourceManager.CurrentUniverse;
@@ -87,6 +90,9 @@ namespace OctoAwesome.Network
         {
             throw new NotImplementedException();
         }
+
+        public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
+
 
         private void SimulationLoop()
         {

@@ -26,14 +26,13 @@ namespace OctoAwesome.GameServer.Commands
         [Command((ushort)13)]
         public static byte[] GetPlanet(byte[] data)
         {
-            //var universe = Program.ServerHandler.SimulationManager.GetPlanet();
+            var planet = Program.ServerHandler.SimulationManager.GetPlanet(0);
 
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    universe.Serialize(memoryStream);
-            //    return memoryStream.ToArray();
-            //}
-            throw new NotImplementedException();
+            using (var memoryStream = new MemoryStream())
+            {
+                planet.Serialize(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
     }
 }
