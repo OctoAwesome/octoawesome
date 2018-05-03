@@ -57,9 +57,24 @@ namespace OctoAwesome.Client.Screens
                     .CreateManager(game.ExtensionLoader, game.DefinitionManager, game.Settings, true);
 
                 manager.NavigateToScreen(new GameScreen(manager));
+
+                PlayMultiplayer(manager);
             };
             panel.Controls.Add(createButton);
-            
+
+        }
+
+        private void PlayMultiplayer(ScreenComponent manager)
+        {
+            Manager.Player.SetEntity(null);
+
+            Manager.Game.Simulation.LoadGame(Guid.Empty);
+            //settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
+
+            Player player = Manager.Game.Simulation.LoginPlayer(Guid.Empty);
+            Manager.Game.Player.SetEntity(player);
+
+            Manager.NavigateToScreen(new GameScreen(manager));
         }
     }
 }

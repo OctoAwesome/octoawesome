@@ -12,6 +12,7 @@ namespace OctoAwesome.Network
     public class SimulationManager
     {
         public bool IsRunning { get; private set; }
+        public IDefinitionManager DefinitionManager => definitionManager;
 
         public Simulation Simulation
         {
@@ -32,6 +33,9 @@ namespace OctoAwesome.Network
         private Simulation simulation;
         private ExtensionLoader extensionLoader;
         private DefinitionManager definitionManager;
+
+
+
         private ResourceManager resourceManager;
 
 
@@ -93,6 +97,10 @@ namespace OctoAwesome.Network
 
         public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
 
+        public void LoadColumn(Guid guid, int planetId, Index2 index2)
+        {
+            //resourceManager.
+        }
 
         private void SimulationLoop()
         {

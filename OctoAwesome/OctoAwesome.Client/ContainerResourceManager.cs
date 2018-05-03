@@ -39,7 +39,7 @@ namespace OctoAwesome.Client
             if (multiplayer)
             {
                 var host = settings.Get<string>("server").Trim().Split(':');
-                persistenceManager = new NetworkPersistenceManager(host[0], host.Length > 1 ? ushort.Parse(host[1]) : (ushort)8888);
+                persistenceManager = new NetworkPersistenceManager(host[0], host.Length > 1 ? ushort.Parse(host[1]) : (ushort)8888, definitionManager);
             }
             else
             {
