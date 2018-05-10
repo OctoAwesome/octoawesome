@@ -211,7 +211,7 @@ namespace OctoAwesome.Runtime
             persistenceManager.SavePlayer(CurrentUniverse.Id, player);
         }
 
-        private IChunkColumn LoadChunkColumn(int planetId, Index2 index)
+        public IChunkColumn LoadChunkColumn(int planetId, Index2 index)
         {
             IPlanet planet = GetPlanet(planetId);
 

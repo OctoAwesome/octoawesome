@@ -97,10 +97,8 @@ namespace OctoAwesome.Network
 
         public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
 
-        public void LoadColumn(Guid guid, int planetId, Index2 index2)
-        {
-            //resourceManager.
-        }
+        public IChunkColumn LoadColumn(Guid guid, int planetId, Index2 index2) 
+            => resourceManager.LoadChunkColumn(planetId, index2);
 
         private void SimulationLoop()
         {

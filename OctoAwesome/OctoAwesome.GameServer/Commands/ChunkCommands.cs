@@ -24,7 +24,13 @@ namespace OctoAwesome.GameServer.Commands
                 planetId = reader.ReadInt32();
                 index2 = new Index2(reader.ReadInt32(), reader.ReadInt32());
             }
-            Program.ServerHandler.SimulationManager.LoadColumn(guid, planetId, index2);
+            var column = Program.ServerHandler.SimulationManager.LoadColumn(guid, planetId, index2);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                column.Serialize(memoryStream, Program.ServerHandler.SimulationManager.DefinitionManager);
+                return memoryStream.ToArray();
+            }
         }
     }
 }

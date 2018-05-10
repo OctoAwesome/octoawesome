@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Network;
+﻿using OctoAwesome.Basics;
+using OctoAwesome.Network;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,6 +51,13 @@ namespace OctoAwesome.Network
             }
 
             package = client.SendAndReceive(package);
+
+            using (var memoryStream = new MemoryStream(package.Payload))
+            {
+                var column = new ChunkColumn();
+                column.Deserialize(memoryStream, definitionManager, planet.Id, columnIndex);
+                return column;
+            }
         }
 
         public IPlanet LoadPlanet(Guid universeGuid, int planetId)
@@ -57,7 +65,7 @@ namespace OctoAwesome.Network
             var package = new Package((ushort)OfficialCommands.GetPlanet, 0);
             package = client.SendAndReceive(package);
 
-            var planet = new Planet();
+            var planet = new ComplexPlanet();
 
             using (var memoryStream = new MemoryStream(package.Payload))
                 planet.Deserialize(memoryStream);

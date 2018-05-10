@@ -68,6 +68,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj">
+      <Project>{739F0779-A605-49C9-A298-FE30DC628C9E}</Project>
+      <Name>OctoAwesome.Basics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
       <Project>{31d774c6-e5d9-40b7-8d63-942e28fe1d94}</Project>
       <Name>OctoAwesome.Runtime</Name>
