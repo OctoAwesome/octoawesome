@@ -72,10 +72,14 @@ namespace OctoAwesome.Network
         public void SendAsync(Package package)
         {
             var buffer = new byte[2048];
-            
-            var len = package.Read(buffer, package.Payload.Length > 2000);
+            int /*offset = 0,*/read = 0;
+            do
+            {
+                read = package.Read(buffer, 0, buffer.Length, package.Payload.Length > 2000);
+                //offset += read;
+                SendAsync(buffer, read);
 
-            SendAsync(buffer, len);
+            } while (read >= buffer.Length);          
         }
 
         public Package SendAndReceive(Package package)

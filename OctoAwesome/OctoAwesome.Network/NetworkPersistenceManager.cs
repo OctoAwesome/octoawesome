@@ -58,6 +58,8 @@ namespace OctoAwesome.Network
                 column.Deserialize(memoryStream, definitionManager, planet.Id, columnIndex);
                 return column;
             }
+
+
         }
 
         public IPlanet LoadPlanet(Guid universeGuid, int planetId)
@@ -100,6 +102,7 @@ namespace OctoAwesome.Network
         public IUniverse LoadUniverse(Guid universeGuid)
         {
             var package = new Package((ushort)OfficialCommands.GetUniverse, 0);
+            Thread.Sleep(60);
             package = client.SendAndReceive(package);
 
             var universe = new Universe();

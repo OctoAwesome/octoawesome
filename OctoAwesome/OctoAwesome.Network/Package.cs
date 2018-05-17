@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public class Package
+    public class Package : IDisposable
     {
+        /// <summary>
+        /// Bytesize of Header
+        /// </summary>
         public const int HEAD_LENGTH = 4;
 
         public byte Type { get; set; }
@@ -18,12 +21,17 @@ namespace OctoAwesome.Network
 
         public byte[] Payload { get; set; }
 
+        private MemoryStream memoryStream;
+        private GZipStream gzipStream;
 
         public Package(ushort command, int size, byte type = 0)
         {
             Type = type;
             Command = command;
             Payload = new byte[size];
+
+            memoryStream = new MemoryStream();
+            gzipStream = new GZipStream(memoryStream, CompressionMode.Compress);
         }
         public Package(byte[] data) : this(0, data.Length)
         {
@@ -54,33 +62,55 @@ namespace OctoAwesome.Network
 
         }
 
-        public int Read(byte[] buffer, bool zip = false)
+        private int position;
+        public int Read(byte[] buffer, int offset, int count, bool zip = false)
         {
-            buffer[0] = Type;
-            buffer[1] = (byte)(Command >> 8);
-            buffer[2] = (byte)(Command & 0xF);
-            buffer[3] = (byte)(zip ? 1 : 0);
+            int oldPosition = position;
+            if (position == 0)
+            {
+                if (count < HEAD_LENGTH)
+                    return 0;
+
+                buffer[offset++] = Type;
+
+                buffer[offset++] = (byte)(Command >> 8);
+
+                buffer[offset++] = (byte)(Command & 0xF);
+
+                buffer[offset++] = (byte)(zip ? 1 : 0);
+                position += HEAD_LENGTH;
+                count -= HEAD_LENGTH;
+            }
 
             if (zip)
             {
-                using (var memoryStream = new MemoryStream())
+                if (memoryStream.Length == 0)
                 {
-                    using (var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress))
+                    using (var gzipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                    {
                         gzipStream.Write(Payload, 0, Payload.Length);
-
-                    var tmpBuffer = memoryStream.ToArray();
-                    Array.Copy(tmpBuffer, 0, buffer, HEAD_LENGTH, tmpBuffer.Length);
-                    return tmpBuffer.Length + HEAD_LENGTH;
-
+                    }
+                    memoryStream.Position = 0;
                 }
+                position += memoryStream.Read(buffer, offset, count);
             }
             else
             {
-                Array.Copy(Payload, 0, buffer, HEAD_LENGTH, Payload.Length);
+                var toCopy = Math.Min(count, Payload.Length - (position - HEAD_LENGTH));
+                if (toCopy > 0)
+                {
+                    Array.Copy(Payload, position - HEAD_LENGTH, buffer, offset, toCopy);
+                    position += toCopy;
+                }
             }
 
-            return Payload.Length + HEAD_LENGTH;
+            return position - oldPosition;
         }
 
+        public void Dispose()
+        {
+            memoryStream.Flush();
+            memoryStream.Dispose();
+        }
     }
 }
