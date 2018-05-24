@@ -16,9 +16,9 @@ namespace OctoAwesome.Network
 
         }
 
-        protected override void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount)
+        protected override int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
         {
-            OnMessageReceivedInvoke(receiveArgsBuffer, receiveArgsCount);
+            int read = OnMessageReceivedInvoke(receiveArgsBuffer, receiveOffset, receiveArgsCount);
 
             var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
             var increment = Interlocked.Increment(ref received);
@@ -31,6 +31,7 @@ namespace OctoAwesome.Network
                 Encoding.UTF8.GetBytes("-PONG", 0, 4, buffer, 0);
                 SendAsync(buffer, 4);
             }
+            return read;
         }
     }
 }

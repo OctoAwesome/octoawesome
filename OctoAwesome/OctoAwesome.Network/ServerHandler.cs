@@ -23,9 +23,10 @@ namespace OctoAwesome.Network
             e.OnMessageRecived += OnMessageRecive;
         }
 
-        private void OnMessageRecive(object sender, (byte[] Data, int Count) eventArgs)
+        private int OnMessageRecive(object sender, (byte[] Data,int Offset, int Count) eventArgs)
         {
             var client = (ConnectedClient)sender;
+            return 0;
         }
     }
 }

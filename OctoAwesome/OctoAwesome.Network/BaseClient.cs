@@ -11,7 +11,8 @@ namespace OctoAwesome.Network
 {
     public abstract class BaseClient
     {
-        public event EventHandler<(byte[] Data, int Count)> OnMessageRecived;
+        public delegate int ReceiveDelegate(object sender, (byte[] Data, int Offset, int Count) eventArgs);
+        public event ReceiveDelegate OnMessageRecived;
 
         protected readonly Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
@@ -48,8 +49,8 @@ namespace OctoAwesome.Network
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
                     return;
-
-                ProcessInternal(ReceiveArgs.Buffer, ReceiveArgs.BytesTransferred);
+                int offset = 0;
+                offset += ProcessInternal(ReceiveArgs.Buffer,offset, ReceiveArgs.BytesTransferred);
             }
         }
 
@@ -75,22 +76,25 @@ namespace OctoAwesome.Network
             int /*offset = 0,*/read = 0;
             do
             {
-                read = package.Read(buffer, 0, buffer.Length, package.Payload.Length > 2000);
+                read = package.Read(buffer, 0, buffer.Length);
                 //offset += read;
                 SendAsync(buffer, read);
 
-            } while (read >= buffer.Length);          
+            } while (read >= buffer.Length);
         }
 
         public Package SendAndReceive(Package package)
         {
             var manualResetEvent = new ManualResetEvent(false);
-            Package returnPackage = null;
-            var onDataReceive = new EventHandler<(byte[] Data, int Count)>((sender, eventArgs) =>
+            Package returnPackage = new Package();
+            var onDataReceive = new ReceiveDelegate((sender, eventArgs) =>
             {
-                returnPackage = new Package(eventArgs.Data.Take(eventArgs.Count).ToArray());
+                int read = returnPackage.Write(eventArgs.Data, 0, eventArgs.Count);
 
-                manualResetEvent.Set();
+                if (read < eventArgs.Count)
+                    manualResetEvent.Set();
+
+                return read;
             });
             OnMessageRecived += onDataReceive;
 
@@ -102,10 +106,10 @@ namespace OctoAwesome.Network
             return returnPackage;
         }
 
-        protected abstract void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount);
+        protected abstract int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount);
 
-        protected void OnMessageReceivedInvoke(byte[] receiveArgsBuffer, int receiveArgsCount)
-            => OnMessageRecived?.Invoke(this, (receiveArgsBuffer, receiveArgsCount));
+        protected int OnMessageReceivedInvoke(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
+            => OnMessageRecived?.Invoke(this, (receiveArgsBuffer, receiveOffset, receiveArgsCount)) ?? 0;
 
         private void SendInternal(byte[] data, int len)
         {
@@ -162,14 +166,20 @@ namespace OctoAwesome.Network
 
         private void OnReceived(object sender, SocketAsyncEventArgs e)
         {
-            ProcessInternal(e.Buffer, e.BytesTransferred);
-
+            int offset = 0;
+            do
+            {
+                offset += ProcessInternal(e.Buffer, offset, e.BytesTransferred);
+            } while (offset < e.BytesTransferred);
             while (Socket.Connected)
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
                     return;
-
-                ProcessInternal(ReceiveArgs.Buffer, ReceiveArgs.BytesTransferred);
+                offset = 0;
+                do
+                {
+                    offset += ProcessInternal(ReceiveArgs.Buffer,offset, ReceiveArgs.BytesTransferred);
+                } while (offset < ReceiveArgs.BytesTransferred);
             }
         }
     }

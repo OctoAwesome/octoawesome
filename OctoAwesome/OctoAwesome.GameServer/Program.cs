@@ -38,7 +38,11 @@ namespace OctoAwesome.GameServer
 
             e.OnMessageRecived += (s, args) =>
             {
-                var package = new Package(args.Data.Take(args.Count).ToArray());
+                var package = new Package();
+                int read = package.Write(eventArgs.Data, 0, eventArgs.Count);
+
+                if (read < eventArgs.Count)
+                    manualResetEvent.Set();
                 package.Payload = defaultManager.Dispatch(package.Command, package.Payload);
                 e.SendAsync(package);
             };

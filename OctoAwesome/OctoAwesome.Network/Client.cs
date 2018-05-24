@@ -39,15 +39,16 @@ namespace OctoAwesome.Network
             Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
         }
 
-        protected override void ProcessInternal(byte[] receiveArgsBuffer, int receiveArgsCount)
+        protected override int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
         {
-            OnMessageReceivedInvoke(receiveArgsBuffer, receiveArgsCount);
+            int read = OnMessageReceivedInvoke(receiveArgsBuffer, receiveOffset, receiveArgsCount);
 
             var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
 
             var increment = Interlocked.Increment(ref clientReceived);
             if (increment > 0 && increment % 10000 == 0)
                 Console.WriteLine($"CLIENTS Received 10000 messages");
+            return read;
         }
 
         private void OnConnected(IAsyncResult ar)
@@ -58,8 +59,11 @@ namespace OctoAwesome.Network
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
                     return;
-
-                ProcessInternal(ReceiveArgs.Buffer, ReceiveArgs.BytesTransferred);
+                int offset = 0;
+                do
+                {
+                    offset += ProcessInternal(ReceiveArgs.Buffer, offset, ReceiveArgs.BytesTransferred);
+                } while (offset < ReceiveArgs.BytesTransferred);
             }
         }
     }
