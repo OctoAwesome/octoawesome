@@ -2,6 +2,7 @@
 using OctoAwesome.Network;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -36,14 +37,15 @@ namespace OctoAwesome.GameServer
         {
             Console.WriteLine("Hurra ein neuer Spieler");
 
-            e.OnMessageRecived += (s, args) =>
+            e.PackageReceived += (s, package) =>
             {
-                var package = new Package();
-                int read = package.Write(eventArgs.Data, 0, eventArgs.Count);
 
-                if (read < eventArgs.Count)
-                    manualResetEvent.Set();
                 package.Payload = defaultManager.Dispatch(package.Command, package.Payload);
+
+                Console.WriteLine(package.Command);
+                if (package.Command != 12)
+                    ;
+
                 e.SendAsync(package);
             };
         }

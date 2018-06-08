@@ -20,7 +20,7 @@ namespace OctoAwesome.Network
         
         private void ServerOnClientConnected(object sender, ConnectedClient e)
         {
-            e.OnMessageRecived += OnMessageRecive;
+            //e.OnMessageRecived += OnMessageRecive;
         }
 
         private int OnMessageRecive(object sender, (byte[] Data,int Offset, int Count) eventArgs)

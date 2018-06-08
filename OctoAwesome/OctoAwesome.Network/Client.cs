@@ -41,7 +41,7 @@ namespace OctoAwesome.Network
 
         protected override int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
         {
-            int read = OnMessageReceivedInvoke(receiveArgsBuffer, receiveOffset, receiveArgsCount);
+            int read = base.ProcessInternal(receiveArgsBuffer, receiveOffset, receiveArgsCount);
 
             var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
 
