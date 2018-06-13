@@ -48,7 +48,9 @@ namespace OctoAwesome.Network
         }
         public Package(byte[] data) : this(0, data.Length)
         {
-            Write(data, 0, data.Length);
+            throw new NotImplementedException();
+            //TODO: fix method not found exception
+            //Write(data, 0, data.Length);
         }
 
         public void Dispose()

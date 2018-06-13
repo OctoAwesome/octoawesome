@@ -76,15 +76,16 @@ namespace OctoAwesome.Network
         }
         public void SendAsync(Package package)
         {
-            var buffer = new byte[2048];
-            int /*offset = 0,*/read = 0;
-            do
-            {
-                read = package.Read(buffer, 0, buffer.Length);
-                //offset += read;
-                SendAsync(buffer, read);
+            throw new NotImplementedException(); //TODO fix method not found exception
+            //var buffer = new byte[2048];
+            //int /*offset = 0,*/read = 0;
+            //do
+            //{
+            //    read = package.Read(buffer, 0, buffer.Length);
+            //    //offset += read;
+            //    SendAsync(buffer, read);
 
-            } while (read >= buffer.Length);
+            //} while (read >= buffer.Length);
         }
 
         public Package SendAndReceive(Package package)
@@ -104,20 +105,20 @@ namespace OctoAwesome.Network
         private AutoResetEvent packageReceived = new AutoResetEvent(false);
         protected virtual int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
         {
-            int read = returnPackage.Write(receiveArgsBuffer, receiveOffset, receiveArgsCount);
+            throw new NotImplementedException(); //TODO: Fix method not found exceptions
+            //int read = returnPackage.Write(receiveArgsBuffer, receiveOffset, receiveArgsCount);
+            //if (read < receiveArgsBuffer.Length - receiveOffset)
+            //{
+            //    lock (receivedPackages)
+            //    {
+            //        receivedPackages.Enqueue(returnPackage);
+            //    }
+            //    PackageReceived?.Invoke(this, returnPackage);
+            //    packageReceived.Set();
+            //    returnPackage = new Package();
+            //}
 
-            if (read < receiveArgsBuffer.Length - receiveOffset)
-            {
-                lock (receivedPackages)
-                {
-                    receivedPackages.Enqueue(returnPackage);
-                }
-                PackageReceived?.Invoke(this, returnPackage);
-                packageReceived.Set();
-                returnPackage = new Package();
-            }
-
-            return read;
+            //return read;
         }
 
         //protected int OnMessageReceivedInvoke(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)

@@ -52,19 +52,31 @@ namespace OctoAwesome.Network
         {
             var tmpCount = count;
 
+            if (buffer.Length > offset + count)
+                throw new IndexOutOfRangeException();
+
             if (buffer.Length - offset < count)
                 tmpCount = buffer.Length - offset;
 
             if (readPosition + tmpCount > internalBuffer.Length)
             {
-                var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
-                ex.Data.Add("Internal Length", internalBuffer.Length);
-                ex.Data.Add("Count", tmpCount);
-                ex.Data.Add("Offset", offset);
-                throw ex;
+                tmpCount = internalBuffer.Length - readPosition;
+                Array.Copy(internalBuffer, readPosition, buffer, offset, tmpCount);
+                tmpCount = count - tmpCount;
+                readPosition = 0;
+
+                if (readPosition + tmpCount > writePosition)
+                {
+                    var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
+                    ex.Data.Add("Writepos", writePosition);
+                    ex.Data.Add("Count", count);
+                    ex.Data.Add("Offset", offset);
+                    throw ex;
+                }
             }
 
             Array.Copy(internalBuffer, readPosition, buffer, offset, tmpCount);
+
             Interlocked.Exchange(ref readPosition, readPosition + tmpCount);
 
             return count;
@@ -82,8 +94,7 @@ namespace OctoAwesome.Network
                 throw ex;
             }
 
-            int toWrite = count;
-            int bufferPostion = offset;
+            int toWrite = count, bufferPostion = offset;
 
             if (writePosition + toWrite > internalBuffer.Length)
                 toWrite = internalBuffer.Length - writePosition;
