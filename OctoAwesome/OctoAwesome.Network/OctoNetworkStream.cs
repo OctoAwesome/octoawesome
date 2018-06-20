@@ -10,27 +10,25 @@ namespace OctoAwesome.Network
 {
     public class OctoNetworkStream
     {
-        public bool CanRead => throw new NotImplementedException();
+        public bool CanRead => true;
 
         public bool CanSeek => false;
 
-        public bool CanWrite => throw new NotImplementedException();
+        public bool CanWrite => true;
 
-        public long Length => throw new NotImplementedException();
+        public long Length => internalBuffer.LongLength;
 
-        public long Position { get; set; }
+        public int WritePosition => writePosition;
+        public int ReadPosition => readPosition;
+
 
         private byte[] internalBuffer;
-        private int bufferIndex;
-        private int bufferSize;
         private int writePosition;
         private int readPosition;
 
-        public OctoNetworkStream()
+        public OctoNetworkStream(int capacity = 1024)
         {
-            bufferSize = 1000;
-            internalBuffer = new byte[1000];
-            bufferIndex = 0;
+            internalBuffer = new byte[capacity];
         }
 
         public void Flush()
@@ -43,10 +41,8 @@ namespace OctoAwesome.Network
             throw new NotImplementedException();
         }
 
-        public void SetLength(long value)
-        {
-            throw new NotImplementedException();
-        }
+        public void SetLength(int value)
+            => Array.Resize(ref internalBuffer, value);
 
         public int Read(byte[] buffer, int offset, int count)
         {
@@ -62,6 +58,7 @@ namespace OctoAwesome.Network
             {
                 tmpCount = internalBuffer.Length - readPosition;
                 Array.Copy(internalBuffer, readPosition, buffer, offset, tmpCount);
+                offset = tmpCount;
                 tmpCount = count - tmpCount;
                 readPosition = 0;
 
@@ -76,7 +73,6 @@ namespace OctoAwesome.Network
             }
 
             Array.Copy(internalBuffer, readPosition, buffer, offset, tmpCount);
-
             Interlocked.Exchange(ref readPosition, readPosition + tmpCount);
 
             return count;
@@ -101,7 +97,7 @@ namespace OctoAwesome.Network
 
             Array.Copy(buffer, bufferPostion, internalBuffer, writePosition, toWrite);
 
-            if (writePosition + toWrite > internalBuffer.Length)
+            if (writePosition + count > internalBuffer.Length)
             {
                 bufferPostion += toWrite;
                 toWrite = count - toWrite;

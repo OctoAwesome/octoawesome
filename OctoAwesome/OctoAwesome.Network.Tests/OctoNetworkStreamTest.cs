@@ -41,5 +41,26 @@ namespace OctoAwesome.Network.Tests
             Assert.AreEqual(buffer.Length, resultTest.Length);            
             Assert.IsTrue(buffer.SequenceEqual(resultTest));
         }
+
+        [TestMethod]
+        public void RingTest()
+        {
+            var buffer = new byte[500];
+            var resultTest = new byte[500];
+            rand.NextBytes(buffer);
+
+            testStream.Write(buffer, 0, buffer.Length);
+            testStream.Read(resultTest, 0, resultTest.Length);
+
+            buffer = new byte[600];
+            resultTest = new byte[600];
+            rand.NextBytes(buffer);
+
+            testStream.Write(buffer, 0, buffer.Length);
+            testStream.Read(resultTest, 0, resultTest.Length);
+
+            Assert.AreEqual(buffer.Length, resultTest.Length);
+            Assert.IsTrue(buffer.SequenceEqual(resultTest));
+        }
     }
 }
