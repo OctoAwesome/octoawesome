@@ -9,19 +9,27 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public class Package 
+    public class Package
     {
         /// <summary>
         /// Bytesize of Header
         /// </summary>
-        public const int HEAD_LENGTH = 8;
+        public const int HEAD_LENGTH = 3;
+        public const int SUB_HEAD_LENGTH = HEAD_LENGTH + 10;
+        public const int SUB_CONTENT_HEAD_LENGTH = 9;
 
+        public static ulong NextUid => nextUid++;
+
+        private static ulong nextUid;
 
         public PackageType Type { get; set; }
         public ushort Command { get; set; }
 
         public byte[] Payload { get; set; }
 
+        public ulong Uid { get; set; }
+
+        private byte[] header;
 
         public Package(ushort command, int size, PackageType type = 0) : this()
         {
@@ -38,27 +46,61 @@ namespace OctoAwesome.Network
         {
         }
 
-        public byte[] NextSubPackage()
+        public void SerializePackage(OctoNetworkStream stream)
         {
-
+            if (Type == PackageType.Normal || Type == PackageType.None)
+            {
+                WriteHead(ref header);
+                stream.Write(header, 0, header.Length);
+                stream.Write(Payload, 0, Payload.Length);
+            }
+            else
+            {
+                SerializeSubPackages(stream);
+            }
         }
 
-        public void WriteHead()
+        public void SerializeSubPackages(OctoNetworkStream stream)
         {
-            byte[] header = new byte[HEAD_LENGTH];
+            var firstPackage = stream.Length - SUB_HEAD_LENGTH;
+            var contentPackage = stream.Length - SUB_CONTENT_HEAD_LENGTH;
+
+            do
+            {
+                WriteHead(ref header);
+                header[8] = (byte)(count >> 8);
+                header[9] = (byte)(count & 0xFF);
+                stream.Write(header, 0, header.Length);
+            } while (true);
+        }
+
+        public void WriteHead(ref byte[] buffer, int offset = 0)
+        {
+            byte[] header, bytes;
+            int index = offset;
+            header = buffer;
 
             switch (Type)
             {
                 case PackageType.Normal:
-                    header[0] = (byte)Type;
-                    header[1] = (byte)(Command >> 8);
-                    header[2] = (byte)(Command & 0xFF);
-                    //fixed(var ptr = header)
-                    //(*(short*)(&ptr[1])) = Command;
+                    header = new byte[HEAD_LENGTH];
+                    header[index] = (byte)Type;
+                    header[index++] = (byte)(Command >> 8);
+                    header[index++] = (byte)(Command & 0xFF);
                     break;
                 case PackageType.Subhead:
+                    header = new byte[SUB_HEAD_LENGTH];
+                    header[index] = (byte)Type;
+                    header[index++] = (byte)(Command >> 8);
+                    header[index++] = (byte)(Command & 0xFF);
+                    bytes = BitConverter.GetBytes(NextUid);
+                    Array.Copy(bytes, 0, header, index++, bytes.Length);
                     break;
                 case PackageType.Subcontent:
+                    header = new byte[SUB_CONTENT_HEAD_LENGTH];
+                    header[index] = (byte)Type;
+                    bytes = BitConverter.GetBytes(Uid);
+                    Array.Copy(bytes, 0, header, index++, bytes.Length);
                     break;
                 case PackageType.None:
                 default:
