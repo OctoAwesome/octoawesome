@@ -61,15 +61,15 @@ namespace OctoAwesome.Network
 
         public void SerializePackage(OctoNetworkStream stream)
         {
-            if (Payload.Length + header.Length > stream.Length)
+            if (Payload.Length + HEAD_LENGTH > stream.Length)
             {
                 SerializeSubPackages(stream);
                 return;
             }
 
             Type = PackageType.Normal;
-            WriteHead(ref header);
-            stream.Write(header, 0, header.Length);
+            WriteHead(stream);
+            stream.Write(header, 0, header.Length); //TODO We already write into the stream, check other locations aswell 
             stream.Write(Payload, 0, Payload.Length);
         }
 
@@ -84,19 +84,23 @@ namespace OctoAwesome.Network
 
             Type = PackageType.Subcontent;
             var offset = firstPackage + contentPackage;
+            ulong uid;
 
             for (int i = 0; i < count - 1; i++)
             {
                 ReadHead(stream);
                 stream.Read(buffer, 0, 8);
-                var uid = BitConverter.ToUInt64(buffer, 0);
+                uid = BitConverter.ToUInt64(buffer, 0);
 
-                if (uid != Uid)
+                if (uid != Uid) //TODO Don't throw away that package
                     continue;
 
                 stream.Read(Payload, offset, contentPackage);
                 offset += contentPackage;
             }
+
+            stream.Read(buffer, 0, 8);
+            uid = BitConverter.ToUInt64(buffer, 0);
 
             stream.Read(Payload, offset, Payload.Length - offset);
         }
@@ -109,7 +113,8 @@ namespace OctoAwesome.Network
             var offset = firstPackage;
 
             Type = PackageType.Subhead;
-            WriteHead(ref header);
+            
+            WriteHead(stream);
             header[8] = (byte)(count >> 8);
             header[9] = (byte)(count & 0xFF);
             stream.Write(header, 0, header.Length);
@@ -118,49 +123,47 @@ namespace OctoAwesome.Network
 
             for (int i = 0; i < count - 1; i++)
             {
-                WriteHead(ref header);
+                WriteHead(stream);
                 stream.Write(header, 0, header.Length);
                 stream.Write(Payload, offset, contentPackage);
                 offset += contentPackage;
             }
 
-            WriteHead(ref header);
+            WriteHead(stream);
             stream.Write(header, 0, header.Length);
             stream.Write(Payload, offset, Payload.Length - offset);
         }
 
-        public void WriteHead(ref byte[] buffer, int offset = 0)
+        public void WriteHead(OctoNetworkStream stream)
         {
-            byte[] header, bytes;
-            int index = offset;
-            header = buffer;
+            byte[] bytes;
 
             switch (Type)
             {
                 case PackageType.Normal:
-                    header = new byte[HEAD_LENGTH];
-                    header[index] = (byte)Type;
-                    header[index++] = (byte)(Command >> 8);
-                    header[index++] = (byte)(Command & 0xFF);
+                    //header = new byte[HEAD_LENGTH];
+                    stream.Write((byte)Type);
+                    stream.Write((byte)(Command >> 8));
+                    stream.Write((byte)(Command & 0xFF));
                     bytes = BitConverter.GetBytes(Payload.LongLength);
-                    Array.Copy(bytes, 0, header, index++, bytes.Length);
+                    stream.Write(bytes, 0, bytes.Length);
                     break;
                 case PackageType.Subhead:
-                    header = new byte[SUB_HEAD_LENGTH];
-                    header[index] = (byte)Type;
-                    header[index++] = (byte)(Command >> 8);
-                    header[index++] = (byte)(Command & 0xFF);
+                    //buffer = new byte[SUB_HEAD_LENGTH];
+                    stream.Write((byte)Type);
+                    stream.Write((byte)(Command >> 8));
+                    stream.Write((byte)(Command & 0xFF));
+
                     bytes = BitConverter.GetBytes(Payload.LongLength);
-                    Array.Copy(bytes, 0, header, index, bytes.Length);
-                    index += bytes.Length;
+                    stream.Write(bytes, 0, bytes.Length);
                     bytes = BitConverter.GetBytes(NextUid);
-                    Array.Copy(bytes, 0, header, index++, bytes.Length);
+                    stream.Write(bytes, 0, bytes.Length);
                     break;
                 case PackageType.Subcontent:
-                    header = new byte[SUB_CONTENT_HEAD_LENGTH];
-                    header[index] = (byte)Type;
+                    //buffer = new byte[SUB_CONTENT_HEAD_LENGTH];
+                    stream.Write((byte)Type);
                     bytes = BitConverter.GetBytes(Uid);
-                    Array.Copy(bytes, 0, header, index++, bytes.Length);
+                    stream.Write(bytes, 0, bytes.Length);
                     break;
                 case PackageType.None:
                 default:

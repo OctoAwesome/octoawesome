@@ -55,6 +55,7 @@
     <Compile Include="ServerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulationManagerTests.cs" />
+    <Compile Include="OctoNetworkPackageTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
