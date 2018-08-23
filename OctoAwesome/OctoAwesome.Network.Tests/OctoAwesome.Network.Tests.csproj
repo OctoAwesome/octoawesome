@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncStreamExperiments.cs" />
     <Compile Include="OctoNetworkStreamTest.cs" />
     <Compile Include="ServerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -125,13 +125,13 @@ namespace OctoAwesome.Network
      
             int toWrite = 1;
 
-            if (writePosition + toWrite > readPosition)
-            {
-                var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
-                ex.Data.Add("Readpos", readPosition);
-                ex.Data.Add("Writepos", writePosition);
-                throw ex;
-            }
+            //if (writePosition + toWrite > readPosition)
+            //{
+            //    var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
+            //    ex.Data.Add("Readpos", readPosition);
+            //    ex.Data.Add("Writepos", writePosition);
+            //    throw ex;
+            //}
 
             if (writePosition + toWrite > internalBuffer.Length)
                 toWrite = internalBuffer.Length - writePosition;

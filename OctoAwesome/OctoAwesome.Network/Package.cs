@@ -69,7 +69,7 @@ namespace OctoAwesome.Network
 
             Type = PackageType.Normal;
             WriteHead(stream);
-            stream.Write(header, 0, header.Length); //TODO We already write into the stream, check other locations aswell 
+            //stream.Write(header, 0, header.Length); //TODO We already write into the stream, check other locations aswell 
             stream.Write(Payload, 0, Payload.Length);
         }
 
@@ -115,9 +115,9 @@ namespace OctoAwesome.Network
             Type = PackageType.Subhead;
             
             WriteHead(stream);
-            header[8] = (byte)(count >> 8);
-            header[9] = (byte)(count & 0xFF);
-            stream.Write(header, 0, header.Length);
+            //header[8] = (byte)(count >> 8);
+            //header[9] = (byte)(count & 0xFF);
+            //stream.Write(header, 0, header.Length);
             stream.Write(Payload, 0, firstPackage);
             Type = PackageType.Subcontent;
 

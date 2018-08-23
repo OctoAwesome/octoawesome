@@ -13,8 +13,29 @@ namespace OctoAwesome.Network.Tests
         [TestMethod]
         public void PackageNormal()
         {
+            package = new Package(0, 100);
+            Package packageDes = new Package(0, 100);
+
+            Random r = new Random();
+
+            networkStream = new OctoNetworkStream(200);
+            r.NextBytes(package.Payload);
+
+            package.SerializePackage(networkStream);
+
+            packageDes.DeserializePackage(networkStream);
+
+            Assert.IsTrue(packageDes.Payload.SequenceEqual(package.Payload));
+            Assert.AreEqual(packageDes.Command, package.Command);
+            Assert.AreEqual(packageDes.Uid, package.Uid);
+            Assert.AreEqual(packageDes.Type, package.Type);
+        }
+
+        [TestMethod]
+        public void PackageWithSubPackages()
+        {
             package = new Package(0, 1000);
-            Package packageDes = new Package(0,1000);
+            Package packageDes = new Package(0, 1000);
 
             Random r = new Random();
 
@@ -29,6 +50,12 @@ namespace OctoAwesome.Network.Tests
             Assert.AreEqual(packageDes.Command, package.Command);
             Assert.AreEqual(packageDes.Uid, package.Uid);
             Assert.AreEqual(packageDes.Type, package.Type);
+        }
+
+        [TestMethod]
+        public void TestReadWriteStream()
+        {
+
         }
     }
 }
