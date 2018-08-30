@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public class Package
+    public class Package 
     {
         /// <summary>
         /// Bytesize of Header
@@ -19,7 +12,6 @@ namespace OctoAwesome.Network
         public const int SUB_CONTENT_HEAD_LENGTH = 9;
 
         public static ulong NextUid => nextUid++;
-
         private static ulong nextUid;
 
         public PackageType Type { get; set; }
@@ -28,15 +20,14 @@ namespace OctoAwesome.Network
         public byte[] Payload { get; set; }
 
         public ulong Uid { get; set; }
+        public bool IsImportantData { get; set; }
 
-        private byte[] header;
-
-        public Package(ushort command, int size, PackageType type = 0) : this()
+        public Package(ushort command, int size, PackageType type = 0, bool isImportantData = false) : this()
         {
             Type = type;
             Command = command;
             Payload = new byte[size];
-
+            IsImportantData = isImportantData;
         }
 
         public Package()
@@ -75,8 +66,8 @@ namespace OctoAwesome.Network
 
         private void DeserializeSubpackages(OctoNetworkStream stream)
         {
-            var firstPackage = (int)stream.Length - SUB_HEAD_LENGTH;
-            var contentPackage = (int)stream.Length - SUB_CONTENT_HEAD_LENGTH;
+            var firstPackage = stream.Length - SUB_HEAD_LENGTH;
+            var contentPackage = stream.Length - SUB_CONTENT_HEAD_LENGTH;
             stream.Read(Payload, 0, 2);
             var count = Payload[0] << 8 | Payload[1];
             var buffer = new byte[8];
@@ -107,30 +98,27 @@ namespace OctoAwesome.Network
 
         public void SerializeSubPackages(OctoNetworkStream stream)
         {
-            var firstPackage = (int)stream.Length - SUB_HEAD_LENGTH;
-            var contentPackage = (int)stream.Length - SUB_CONTENT_HEAD_LENGTH;
+            var firstPackage = stream.Length - SUB_HEAD_LENGTH;
+            var contentPackage = stream.Length - SUB_CONTENT_HEAD_LENGTH;
             var count = (int)Math.Round((double)((Payload.Length - firstPackage) / contentPackage), MidpointRounding.AwayFromZero);
             var offset = firstPackage;
 
             Type = PackageType.Subhead;
-            
+
             WriteHead(stream);
             //header[8] = (byte)(count >> 8);
             //header[9] = (byte)(count & 0xFF);
-            //stream.Write(header, 0, header.Length);
             stream.Write(Payload, 0, firstPackage);
             Type = PackageType.Subcontent;
 
             for (int i = 0; i < count - 1; i++)
             {
                 WriteHead(stream);
-                stream.Write(header, 0, header.Length);
                 stream.Write(Payload, offset, contentPackage);
                 offset += contentPackage;
             }
 
             WriteHead(stream);
-            stream.Write(header, 0, header.Length);
             stream.Write(Payload, offset, Payload.Length - offset);
         }
 
@@ -181,7 +169,6 @@ namespace OctoAwesome.Network
             {
                 case PackageType.Normal:
                     buffer = new byte[HEAD_LENGTH - 1];
-
                     stream.Read(buffer, 0, buffer.Length);
                     Command = (ushort)(buffer[0] << 8 | buffer[1]);
                     Payload = new byte[BitConverter.ToUInt64(buffer, 2)];

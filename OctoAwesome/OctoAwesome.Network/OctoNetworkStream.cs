@@ -1,146 +1,116 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
     public class OctoNetworkStream
     {
-        public bool CanRead => true;
+        public int Length => writeBuffer.Length;
 
-        public bool CanSeek => false;
+        private byte[] readBuffer;
+        private byte[] writeBuffer;
 
-        public bool CanWrite => true;
+        private readonly byte[] bufferA;
+        private readonly byte[] bufferB;
 
-        public long Length => internalBuffer.LongLength;
+        private readonly object readLock;
+        private readonly object writeLock;
 
-        public int WritePosition => writePosition;
-        public int ReadPosition => readPosition;
+        private readonly int writeLength;
+        private readonly int readLength;
 
+        private int maxReadCount;
 
-        private byte[] internalBuffer;
-        private int writePosition;
         private int readPosition;
+        private int writePosition;
+
+        private bool writingProcess;
 
         public OctoNetworkStream(int capacity = 1024)
         {
-            internalBuffer = new byte[capacity];
+            bufferA = new byte[capacity];
+            bufferB = new byte[capacity];
+            readBuffer = bufferA;
+            writeBuffer = bufferB;
+            readLength = capacity;
+            writeLength = capacity;
+            readPosition = 0;
+            writePosition = 0;
+            readLock = new object();
+            writeLock = new object();
         }
 
-        public void Flush()
+        public int Write(byte[] buffer, int offset, int count)
         {
-            throw new NotImplementedException();
-        }
+            writingProcess = true;
 
-        public long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
+            SwapBuffer();
 
-        public void SetLength(int value)
-            => Array.Resize(ref internalBuffer, value);
+            var maxCopy = writeLength - writePosition;
 
-        public int Read(byte[] buffer, int offset, int count)
-        {
-            var tmpCount = count;
+            if (maxCopy < count)
+                count = maxCopy;
 
-            if (buffer.Length > offset + count)
-                throw new IndexOutOfRangeException();
+            lock (writeLock)
+                Buffer.BlockCopy(buffer, offset, writeBuffer, writePosition, count);
 
-            if (buffer.Length - offset < count)
-                tmpCount = buffer.Length - offset;
+            writePosition += count;
 
-            if (readPosition + tmpCount > internalBuffer.Length)
-            {
-                tmpCount = internalBuffer.Length - readPosition;
-                Array.Copy(internalBuffer, readPosition, buffer, offset, tmpCount);
-                offset = tmpCount;
-                tmpCount = count - tmpCount;
-                readPosition = 0;
-
-                if (readPosition + tmpCount > writePosition)
-                {
-                    var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
-                    ex.Data.Add("Writepos", writePosition);
-                    ex.Data.Add("Count", count);
-                    ex.Data.Add("Offset", offset);
-                    throw ex;
-                }
-            }
-
-            Array.Copy(internalBuffer, readPosition, buffer, offset, tmpCount);
-            Interlocked.Exchange(ref readPosition, readPosition + tmpCount);
+            writingProcess = false;
 
             return count;
         }
 
-
-        public void Write(byte[] buffer, int offset, int count)
+        public int Write(byte data)
         {
-            if (buffer.Length < count + offset)
-            {
-                var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
-                ex.Data.Add("Buffer Length", buffer.Length);
-                ex.Data.Add("Count", count);
-                ex.Data.Add("Offset", offset);
-                throw ex;
-            }
+            writingProcess = true;
 
-            int toWrite = count, bufferPostion = offset;
+            SwapBuffer();
 
-            if (writePosition + toWrite > internalBuffer.Length)
-                toWrite = internalBuffer.Length - writePosition;
+            if (writeLength == writePosition)
+                return 0;
 
-            Array.Copy(buffer, bufferPostion, internalBuffer, writePosition, toWrite);
+            lock (writeLock)
+                writeBuffer[writePosition++] = data;
 
-            if (writePosition + count > internalBuffer.Length)
-            {
-                bufferPostion += toWrite;
-                toWrite = count - toWrite;
-                writePosition = 0;
+            writingProcess = false;
 
-                if (writePosition + toWrite > readPosition)
-                {
-                    var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
-                    ex.Data.Add("Buffer Length", buffer.Length);
-                    ex.Data.Add("Count", count);
-                    ex.Data.Add("Offset", offset);
-                    ex.Data.Add("Readpos", readPosition);
-                    ex.Data.Add("Writepos", writePosition);
-                    throw ex;
-                }
-
-                Array.Copy(buffer, bufferPostion, internalBuffer, writePosition, toWrite);
-            }
-
-            Interlocked.Exchange(ref writePosition, writePosition + toWrite);
+            return 1;
         }
 
-        public void Write(byte data)
+        public int Read(byte[] buffer, int offset, int count)
         {
-     
-            int toWrite = 1;
+            if (!writingProcess)
+                SwapBuffer();
 
-            //if (writePosition + toWrite > readPosition)
-            //{
-            //    var ex = new IndexOutOfRangeException("Dont't worry, Shit happens");
-            //    ex.Data.Add("Readpos", readPosition);
-            //    ex.Data.Add("Writepos", writePosition);
-            //    throw ex;
-            //}
+            var maxCopy = maxReadCount - readPosition;
 
-            if (writePosition + toWrite > internalBuffer.Length)
-                toWrite = internalBuffer.Length - writePosition;
+            if (maxCopy < count)
+                count = maxCopy;
 
-            if(toWrite == 0)
-                writePosition %= internalBuffer.Length;
+            lock (readLock)
+                Array.Copy(readBuffer, readPosition, buffer, offset, count);
 
-            internalBuffer[writePosition++] = data;
-           //Interlocked.Exchange(ref writePosition, writePosition + toWrite);
+            readPosition += count;
+
+            return count;
+        }
+
+        private void SwapBuffer()
+        {
+            lock (readLock)
+                lock (writeLock)
+                {
+                    if (maxReadCount != readPosition)
+                        return;
+
+                    writingProcess = true;
+                    var refBuf = writeBuffer;
+                    writeBuffer = readBuffer;
+                    readBuffer = refBuf;
+                    maxReadCount = writePosition;
+                    writePosition = 0;
+                    readPosition = 0;
+                }
         }
     }
 }
