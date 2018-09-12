@@ -50,6 +50,9 @@ namespace OctoAwesome.Network
             if (maxCopy < count)
                 count = maxCopy;
 
+            if (maxCopy < 1)
+                return maxCopy;
+
             lock (writeLock)
                 Buffer.BlockCopy(buffer, offset, writeBuffer, writePosition, count);
 
@@ -84,12 +87,15 @@ namespace OctoAwesome.Network
 
             var maxCopy = maxReadCount - readPosition;
 
+            if (maxCopy < 1)
+                return maxCopy;
+
             if (maxCopy < count)
                 count = maxCopy;
 
             lock (readLock)
-                Array.Copy(readBuffer, readPosition, buffer, offset, count);
-
+                Buffer.BlockCopy(readBuffer, readPosition, buffer, offset, count);
+            
             readPosition += count;
 
             return count;
@@ -100,7 +106,9 @@ namespace OctoAwesome.Network
             lock (readLock)
                 lock (writeLock)
                 {
-                    if (maxReadCount != readPosition)
+                    if (readPosition > maxReadCount)
+                        throw new IndexOutOfRangeException("ReadPositin is greater than MaxReadCount in OctoNetworkStream");
+                    else if (readPosition < maxReadCount)
                         return;
 
                     writingProcess = true;
@@ -112,5 +120,6 @@ namespace OctoAwesome.Network
                     readPosition = 0;
                 }
         }
+        
     }
 }
