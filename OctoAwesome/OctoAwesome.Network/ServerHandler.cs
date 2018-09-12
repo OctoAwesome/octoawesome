@@ -10,16 +10,21 @@ namespace OctoAwesome.Network
     {
         public Server Server { get; }
         public SimulationManager SimulationManager { get; set; }
+
+        public PackageManager PackageManager { get; set; }
+
         //TODO: Should use a base class or interface
         public ServerHandler(Server server)
         {
             Server = server;
             Server.OnClientConnected += ServerOnClientConnected;
             SimulationManager = new SimulationManager(new Settings());
+            PackageManager = new PackageManager();
         }
         
         private void ServerOnClientConnected(object sender, ConnectedClient e)
         {
+            PackageManager.ConnectedClients.Add(e);
             //e.OnMessageRecived += OnMessageRecive;
         }
 

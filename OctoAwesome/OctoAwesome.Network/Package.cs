@@ -42,9 +42,6 @@ namespace OctoAwesome.Network
             Buffer.BlockCopy(Payload, 0, buffer, HEAD_LENGTH, Payload.Length); //Payload.Serialize();
             return Payload.Length + HEAD_LENGTH;
         }
-
-
-
-
+        
     }
 }

@@ -15,23 +15,5 @@ namespace OctoAwesome.Network
         {
 
         }
-
-        protected override int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
-        {
-            int read = base.ProcessInternal(receiveArgsBuffer, receiveOffset, receiveArgsCount);
-
-            var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
-            var increment = Interlocked.Increment(ref received);
-            if (increment > 0 && increment % 10000 == 0)
-                Console.WriteLine("SERVER RECEIVED 10000 msgs");
-
-            if (tmpString.StartsWith("+PING"))
-            {
-                var buffer = ArrayPool<byte>.Shared.Rent(4);
-                Encoding.UTF8.GetBytes("-PONG", 0, 4, buffer, 0);
-                SendAsync(buffer, 4);
-            }
-            return read;
-        }
     }
 }
