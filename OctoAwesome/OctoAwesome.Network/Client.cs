@@ -16,12 +16,15 @@ namespace OctoAwesome.Network
     public class Client : BaseClient
     {
         public bool IsClient { get; set; }
+        public event EventHandler<Package> PackageAvailable;
 
+        private Package currentPackage;
         private static int clientReceived;
 
         public Client() :
             base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
+            DataAvailable += ClientDataAvailable;
         }
 
         public void SendPing()
@@ -39,17 +42,6 @@ namespace OctoAwesome.Network
             Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
         }
 
-        protected override int ProcessInternal(byte[] receiveArgsBuffer,int receiveOffset, int receiveArgsCount)
-        {
-            int read = base.ProcessInternal(receiveArgsBuffer, receiveOffset, receiveArgsCount);
-
-            var tmpString = Encoding.UTF8.GetString(receiveArgsBuffer, 0, receiveArgsCount);
-
-            var increment = Interlocked.Increment(ref clientReceived);
-            if (increment > 0 && increment % 10000 == 0)
-                Console.WriteLine($"CLIENTS Received 10000 messages");
-            return read;
-        }
 
         private void OnConnected(IAsyncResult ar)
         {
@@ -58,12 +50,40 @@ namespace OctoAwesome.Network
             while (true)
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
-                    return;
-                int offset = 0;
-                do
+                    return; 
+
+                Receive(ReceiveArgs);
+            }
+        }
+
+        internal void SendPackage(Package package)
+        {
+            byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
+            package.SerializePackage(bytes);
+            SendAsync(bytes, bytes.Length);
+        }
+
+        private void ClientDataAvailable(object sender, OctoNetworkEventArgs e)
+        {
+            byte[] bytes = new byte[e.DataCount];
+            if (currentPackage == null)
+            {
+                currentPackage = new Package();
+                if (e.DataCount >= Package.HEAD_LENGTH)
                 {
-                    offset += ProcessInternal(ReceiveArgs.Buffer, offset, ReceiveArgs.BytesTransferred);
-                } while (offset < ReceiveArgs.BytesTransferred);
+                    e.NetworkStream.Read(bytes, 0, Package.HEAD_LENGTH);
+                    currentPackage.TryDeserializeHeader(bytes);
+                    e.DataCount -= Package.HEAD_LENGTH;
+                }
+            }
+
+            e.NetworkStream.Read(bytes, 0, e.DataCount);
+            currentPackage.DeserialzePayload(bytes, 0, e.DataCount);
+
+            if (currentPackage.IsComplete)
+            {
+                PackageAvailable?.Invoke(this, currentPackage);
+                currentPackage = null;
             }
         }
     }

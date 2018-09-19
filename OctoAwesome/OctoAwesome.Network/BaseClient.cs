@@ -69,13 +69,8 @@ namespace OctoAwesome.Network
             }
 
             SendInternal(data, len);
-
         }
-
-        public void BeginSend(out OctoNetworkStream stream) => stream = internalSendStream;
-
-        public void BeginRecived(out OctoNetworkStream stream) => stream = internalRecivedStream;
-
+        
         private void SendInternal(byte[] data, int len)
         {
             while (true)
@@ -129,7 +124,7 @@ namespace OctoAwesome.Network
             SendInternal(data, len);
         }
 
-        private void Receive(SocketAsyncEventArgs e)
+        protected void Receive(SocketAsyncEventArgs e)
         {
             int offset = 0;
             int count = 0;

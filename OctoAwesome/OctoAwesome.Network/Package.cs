@@ -13,6 +13,10 @@ namespace OctoAwesome.Network
 
         public byte[] Payload { get; set; }
 
+        public bool IsComplete => internalOffset == Payload.Length;
+
+        private int internalOffset;
+
         public Package(ushort command, int size) : this()
         {
             Command = command;
@@ -26,11 +30,27 @@ namespace OctoAwesome.Network
         {
         }
 
-        public void DeserializePackage(byte[] buffer)
+        public bool TryDeserializeHeader(byte[] buffer)
         {
+            if (buffer.Length <= HEAD_LENGTH)
+                return false;
+
             Command = (ushort)((buffer[0] << 8) | buffer[1]);
             Payload = new byte[BitConverter.ToInt32(buffer, 2)];
-            Buffer.BlockCopy(buffer, HEAD_LENGTH, Payload, 0, Payload.Length); //Payload.Deserialize()
+            internalOffset = 0;
+            return true;
+        }
+
+        public void DeserialzePayload(byte[] buffer, int offset, int count)
+        {
+            Buffer.BlockCopy(buffer, offset, Payload, internalOffset, count);
+            internalOffset += count;
+        }
+        public void DeserializePackage(byte[] buffer)
+        {
+            TryDeserializeHeader(buffer);
+            Buffer.BlockCopy(buffer, HEAD_LENGTH, Payload, 0, Payload.Length);
+            internalOffset = Payload.Length;
         }
 
         public int SerializePackage(byte[] buffer)

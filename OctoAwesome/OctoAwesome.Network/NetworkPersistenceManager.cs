@@ -18,8 +18,11 @@ namespace OctoAwesome.Network
         public NetworkPersistenceManager(IDefinitionManager definitionManager)
         {
             client = new Client();
+            client.PackageAvailable += ClientPackageAvailable;
             this.definitionManager = definitionManager;
         }
+
+
         public NetworkPersistenceManager(string host, ushort port, IDefinitionManager definitionManager) : this(definitionManager)
         {
             client.Connect(host, port);
@@ -49,6 +52,7 @@ namespace OctoAwesome.Network
 
                 package.Payload = memoryStream.ToArray();
             }
+            client.SendPackage(package);
 
             package = client.SendAndReceive(package);
 
@@ -132,5 +136,11 @@ namespace OctoAwesome.Network
         {
             //throw new NotImplementedException();
         }
+
+        private void ClientPackageAvailable(object sender, Package e)
+        {
+            e.Command
+        }
+
     }
 }
