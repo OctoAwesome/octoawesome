@@ -27,8 +27,9 @@ namespace OctoAwesome.GameServer.Commands
             var column = Program.ServerHandler.SimulationManager.LoadColumn(guid, planetId, index2);
 
             using (var memoryStream = new MemoryStream())
+            using (var writer = new BinaryWriter(memoryStream))
             {
-                column.Serialize(memoryStream, Program.ServerHandler.SimulationManager.DefinitionManager);
+                column.Serialize(writer, Program.ServerHandler.SimulationManager.DefinitionManager);
                 return memoryStream.ToArray();
             }
         }

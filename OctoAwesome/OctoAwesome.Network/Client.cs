@@ -78,7 +78,7 @@ namespace OctoAwesome.Network
             }
 
             e.NetworkStream.Read(bytes, 0, e.DataCount);
-            currentPackage.DeserialzePayload(bytes, 0, e.DataCount);
+            currentPackage.DeserializePayload(bytes, 0, e.DataCount);
 
             if (currentPackage.IsComplete)
             {

@@ -1,44 +1,40 @@
-﻿using OctoAwesome.Basics;
-using OctoAwesome.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using OctoAwesome.Basics;
 
 namespace OctoAwesome.Network
 {
     public class NetworkPersistenceManager : IPersistenceManager
     {
         private Client client;
-        private IDefinitionManager definitionManager;
+        private readonly IDefinitionManager definitionManager;
+
+        private Dictionary<uint, TaskCompletionSource<ISerializable>> packages;
 
         public NetworkPersistenceManager(IDefinitionManager definitionManager)
         {
             client = new Client();
             client.PackageAvailable += ClientPackageAvailable;
+            packages = new Dictionary<uint, TaskCompletionSource<ISerializable>>();
             this.definitionManager = definitionManager;
         }
 
 
-        public NetworkPersistenceManager(string host, ushort port, IDefinitionManager definitionManager) : this(definitionManager)
-        {
-            client.Connect(host, port);
-        }
+        public NetworkPersistenceManager(string host, ushort port, IDefinitionManager definitionManager) : this(definitionManager) => client.Connect(host, port);
 
         public void DeleteUniverse(Guid universeGuid)
         {
             //throw new NotImplementedException();
         }
 
-        public IUniverse[] ListUniverses()
-        {
-            throw new NotImplementedException();
-        }
+        public Task<IUniverse[]> ListUniverses() => throw new NotImplementedException();
 
-        public IChunkColumn LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex)
+        public Task<IChunkColumn> LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
             var package = new Package((ushort)OfficialCommands.LoadColumn, 0);
 
@@ -54,32 +50,33 @@ namespace OctoAwesome.Network
             }
             client.SendPackage(package);
 
-            package = client.SendAndReceive(package);
-
             using (var memoryStream = new MemoryStream(package.Payload))
+            using (var reader = new BinaryReader(memoryStream))
             {
                 var column = new ChunkColumn();
-                column.Deserialize(memoryStream, definitionManager, planet.Id, columnIndex);
-                return column;
+                column.Deserialize(reader, definitionManager);
+                var tcs = new TaskCompletionSource<IChunkColumn>();
+                packages.Add(package.UId, tcs);
+                return tcs.Task;
             }
-
-
         }
 
-        public IPlanet LoadPlanet(Guid universeGuid, int planetId)
+        public Task<IPlanet> LoadPlanet(Guid universeGuid, int planetId)
         {
             var package = new Package((ushort)OfficialCommands.GetPlanet, 0);
-            package = client.SendAndReceive(package);
+            package = client.SendPackage(package);
 
             var planet = new ComplexPlanet();
 
             using (var memoryStream = new MemoryStream(package.Payload))
-                planet.Deserialize(memoryStream);
+            using (var reader = new BinaryReader(memoryStream))
+                planet.Deserialize(reader, null);
 
-            return planet;
+            var tcs = new TaskCompletionSource<IPlanet>();
+            return tcs.Task;
         }
 
-        public Player LoadPlayer(Guid universeGuid, string playername)
+        public Task<Player> LoadPlayer(Guid universeGuid, string playername)
         {
             var playernameBytes = Encoding.UTF8.GetBytes(playername);
 
@@ -99,11 +96,11 @@ namespace OctoAwesome.Network
             {
                 player.Deserialize(br, definitionManager);
             }
-
-            return player;
+            var tcs = new TaskCompletionSource<Player>();
+            return tcs.Task;
         }
 
-        public IUniverse LoadUniverse(Guid universeGuid)
+        public Task<IUniverse> LoadUniverse(Guid universeGuid)
         {
             var package = new Package((ushort)OfficialCommands.GetUniverse, 0);
             Thread.Sleep(60);
@@ -112,9 +109,11 @@ namespace OctoAwesome.Network
             var universe = new Universe();
 
             using (var memoryStream = new MemoryStream(package.Payload))
-                universe.Deserialize(memoryStream);
+            using (var reader = new BinaryReader(memoryStream))
+                universe.Deserialize(reader, null);
 
-            return universe;
+            var tcs = new TaskCompletionSource<IUniverse>();
+            return tcs.Task;
         }
 
         public void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column)
@@ -139,7 +138,6 @@ namespace OctoAwesome.Network
 
         private void ClientPackageAvailable(object sender, Package e)
         {
-            e.Command
         }
 
     }

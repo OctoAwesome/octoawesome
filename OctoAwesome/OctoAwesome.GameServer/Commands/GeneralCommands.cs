@@ -17,8 +17,9 @@ namespace OctoAwesome.GameServer.Commands
             var universe = Program.ServerHandler.SimulationManager.GetUniverse();
             
             using (var memoryStream = new MemoryStream())
-            {                
-                universe.Serialize(memoryStream);
+            using (var writer = new BinaryWriter(memoryStream))
+            {
+                universe.Serialize(writer, null);
                 return memoryStream.ToArray();
             }
         }
@@ -29,8 +30,9 @@ namespace OctoAwesome.GameServer.Commands
             var planet = Program.ServerHandler.SimulationManager.GetPlanet(0);
 
             using (var memoryStream = new MemoryStream())
+            using (var writer = new BinaryWriter(memoryStream))
             {
-                planet.Serialize(memoryStream);
+                planet.Serialize(writer, null);
                 return memoryStream.ToArray();
             }
         }

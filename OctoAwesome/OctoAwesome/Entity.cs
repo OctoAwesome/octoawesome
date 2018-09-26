@@ -8,7 +8,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity
+    public abstract class Entity : ISerializable
     {
         /// <summary>
         /// Contains all Components.

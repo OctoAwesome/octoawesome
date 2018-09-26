@@ -87,7 +87,7 @@ namespace OctoAwesome.Runtime
         /// <returns>Die Liste der Universen.</returns>
         public IUniverse[] ListUniverses()
         {
-            return persistenceManager.ListUniverses();
+            return persistenceManager.ListUniverses().Result;
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace OctoAwesome.Runtime
                 UnloadUniverse();
 
             // Neuen Daten loaden/generieren
-            CurrentUniverse = persistenceManager.LoadUniverse(universeId);
+            CurrentUniverse = persistenceManager.LoadUniverse(universeId).Result;
             if (CurrentUniverse == null)
                 throw new Exception();
         }
@@ -162,7 +162,7 @@ namespace OctoAwesome.Runtime
             if (!planets.TryGetValue(id, out planet))
             {
                 // Versuch vorhandenen Planeten zu laden
-                planet = persistenceManager.LoadPlanet(CurrentUniverse.Id, id);
+                planet = persistenceManager.LoadPlanet(CurrentUniverse.Id, id).Result;
                 if (planet == null)
                 {
                     // Keiner da -> neu erzeugen
@@ -191,7 +191,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            Player player = persistenceManager.LoadPlayer(CurrentUniverse.Id, playername);
+            Player player = persistenceManager.LoadPlayer(CurrentUniverse.Id, playername).Result;
             if (player == null)
             {
                 player = new Player();
@@ -216,7 +216,7 @@ namespace OctoAwesome.Runtime
             IPlanet planet = GetPlanet(planetId);
 
             // Load from disk
-            IChunkColumn column11 = persistenceManager.LoadColumn(CurrentUniverse.Id, planet, index);
+            IChunkColumn column11 = persistenceManager.LoadColumn(CurrentUniverse.Id, planet, index).Result;
             if (column11 == null)
             {
                 IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));

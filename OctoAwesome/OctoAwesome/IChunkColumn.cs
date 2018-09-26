@@ -7,7 +7,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisinterface für Eine Chunksäule
     /// </summary>
-    public interface IChunkColumn
+    public interface IChunkColumn : ISerializable
     {
         /// <summary>
         /// Gibt an, ob die IChunkColumn schon von einem <see cref="IMapPopulator"/> bearbeitet wurde.
@@ -113,20 +113,5 @@ namespace OctoAwesome
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
 
-        /// <summary>
-        /// Serialisiert die Chunksäule in den angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Zielstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        void Serialize(Stream stream, IDefinitionManager definitionManager);
-
-        /// <summary>
-        /// Deserialisiert die Chunksäule aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Quellstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        /// <param name="columnIndex">Die Position der Säule</param>
-        /// <param name="planetId">Der Index des Planeten</param>
-        void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);
     }
 }

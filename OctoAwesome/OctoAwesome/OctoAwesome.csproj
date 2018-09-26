@@ -66,6 +66,7 @@
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="CustomAwaiter.cs" />
     <Compile Include="EntityComponents\RenderComponent.cs" />
     <Compile Include="EntityList.cs" />
     <Compile Include="EntityComponent.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="ISerializable.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
