@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace OctoAwesome.Network
         public PackageManager()
         {
             packages = new Dictionary<BaseClient, Package>();
+            ConnectedClients = new List<BaseClient>();
         }
 
         public void AddConnectedClient(BaseClient client)

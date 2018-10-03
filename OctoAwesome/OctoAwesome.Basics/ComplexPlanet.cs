@@ -30,7 +30,7 @@ namespace OctoAwesome.Basics
 
         public ComplexPlanet() : base()
         {
-            //Initalize();
+            Initalize();
         }
 
         public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)

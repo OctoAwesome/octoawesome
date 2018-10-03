@@ -80,8 +80,6 @@ namespace OctoAwesome.Network
                 if (Socket.SendAsync(sendArgs))
                     return;
 
-                ArrayPool<byte>.Shared.Return(data);
-
                 lock (sendLock)
                 {
                     if (readSendQueueIndex < nextSendQueueWriteIndex)
@@ -103,9 +101,7 @@ namespace OctoAwesome.Network
         {
             byte[] data;
             int len;
-
-            ArrayPool<byte>.Shared.Return(e.Buffer);
-
+            
             lock (sendLock)
             {
                 if (readSendQueueIndex < nextSendQueueWriteIndex)

@@ -12,14 +12,14 @@ namespace OctoAwesome
         /// Gibt alle Universen zurück, die geladen werden können.
         /// </summary>
         /// <returns>Die Liste der Universen.</returns>
-        Task<IUniverse[]> ListUniverses();
+        Awaiter Load(out SerializableCollection<IUniverse> universes);
 
         /// <summary>
         /// Lädt das Universum mit der angegebenen Guid.
         /// </summary>
         /// <param name="universeGuid">Die Guid des Universums.</param>
         /// <returns>Das geladene Universum.</returns>
-        Task<IUniverse> LoadUniverse(Guid universeGuid);
+        Awaiter Load(out IUniverse universe, Guid universeGuid);
 
         /// <summary>
         /// Speichert das Universum.
@@ -39,7 +39,7 @@ namespace OctoAwesome
         /// <param name="universeGuid">Guid des Universums</param>
         /// <param name="planetId">Index des Planeten</param>
         /// <returns></returns>
-        Task<IPlanet> LoadPlanet(Guid universeGuid, int planetId);
+        Awaiter Load(out IPlanet planet, Guid universeGuid, int planetId);
 
         /// <summary>
         /// Speichert einen Planeten.
@@ -55,7 +55,7 @@ namespace OctoAwesome
         /// <param name="planet">Index des Planeten.</param>
         /// <param name="columnIndex">Zu serialisierende ChunkColumn.</param>
         /// <returns>Die neu geladene ChunkColumn.</returns>
-        Task<IChunkColumn> LoadColumn(Guid universeGuid, IPlanet planet, Index2 columnIndex);
+        Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex);
 
         /// <summary>
         /// Speichert eine <see cref="IChunkColumn"/>.
@@ -71,7 +71,7 @@ namespace OctoAwesome
         /// <param name="universeGuid">Die Guid des Universums.</param>
         /// <param name="playername">Der Name des Spielers.</param>
         /// <returns></returns>
-        Task<Player> LoadPlayer(Guid universeGuid, string playername);
+        Awaiter Load(out Player player, Guid universeGuid, string playername);
 
         /// <summary>
         /// Speichert einen Player

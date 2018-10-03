@@ -30,13 +30,12 @@ namespace OctoAwesome.Network
 
         public GameTime GameTime { get; private set; }
 
+        public ResourceManager ResourceManager { get; private set; }
+
         private Simulation simulation;
         private ExtensionLoader extensionLoader;
         private DefinitionManager definitionManager;
 
-
-
-        private ResourceManager resourceManager;
 
 
 
@@ -58,12 +57,12 @@ namespace OctoAwesome.Network
 
             var persistenceManager = new DiskPersistenceManager(extensionLoader, definitionManager, settings);
 
-            resourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
+            ResourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
 
             //For Release resourceManager.LoadUniverse(new Guid()); 
-            resourceManager.NewUniverse("test_universe", 043848723);
+            ResourceManager.NewUniverse("test_universe", 043848723);
 
-            simulation = new Simulation(resourceManager, extensionLoader);
+            simulation = new Simulation(ResourceManager, extensionLoader);
             backgroundThread = new Thread(SimulationLoop)
             {
                 Name = "Simulation Loop",
@@ -88,17 +87,17 @@ namespace OctoAwesome.Network
             backgroundThread.Abort();
         }
 
-        public IUniverse GetUniverse() => resourceManager.CurrentUniverse;
+        public IUniverse GetUniverse() => ResourceManager.CurrentUniverse;
 
         public IUniverse NewUniverse()
         {
             throw new NotImplementedException();
         }
 
-        public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
+        public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
 
         public IChunkColumn LoadColumn(Guid guid, int planetId, Index2 index2) 
-            => resourceManager.LoadChunkColumn(planetId, index2);
+            => ResourceManager.LoadChunkColumn(planetId, index2);
 
         private void SimulationLoop()
         {

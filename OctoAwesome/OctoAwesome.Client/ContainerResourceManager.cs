@@ -50,10 +50,10 @@ namespace OctoAwesome.Client
 
             IsMultiplayer = multiplayer;
 
-            if (multiplayer)
-            {
-                resourceManager.LoadUniverse(new Guid());
-            }
+            //if (multiplayer)
+            //{
+            //    resourceManager.LoadUniverse(new Guid());
+            //}
         }
 
         public void DeleteUniverse(Guid id) => resourceManager.DeleteUniverse(id);

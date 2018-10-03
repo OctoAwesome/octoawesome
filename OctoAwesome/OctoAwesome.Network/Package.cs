@@ -36,7 +36,7 @@ namespace OctoAwesome.Network
 
         public bool TryDeserializeHeader(byte[] buffer)
         {
-            if (buffer.Length <= HEAD_LENGTH)
+            if (buffer.Length < HEAD_LENGTH)
                 return false;
 
             Command = (ushort)((buffer[0] << 8) | buffer[1]);

@@ -55,9 +55,7 @@ namespace OctoAwesome.Client.Screens
                 game.Settings.Set("server", input.Text);
                 ((ContainerResourceManager)game.ResourceManager)
                     .CreateManager(game.ExtensionLoader, game.DefinitionManager, game.Settings, true);
-
-                manager.NavigateToScreen(new GameScreen(manager));
-
+                
                 PlayMultiplayer(manager);
             };
             panel.Controls.Add(createButton);
