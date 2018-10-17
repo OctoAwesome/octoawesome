@@ -50,10 +50,13 @@ namespace OctoAwesome.Client
 
             IsMultiplayer = multiplayer;
 
-            //if (multiplayer)
-            //{
-            //    resourceManager.LoadUniverse(new Guid());
-            //}
+            if (multiplayer)
+            {
+                resourceManager.GlobalChunkCache.ChunkColumnChanged += (s,c) => {
+                    var networkPersistence = (NetworkPersistenceManager)persistenceManager;
+                    networkPersistence.SendChangedChunkColumn(c);
+                };
+            }
         }
 
         public void DeleteUniverse(Guid id) => resourceManager.DeleteUniverse(id);
@@ -75,5 +78,6 @@ namespace OctoAwesome.Client
         public void SavePlayer(Player player) => resourceManager.SavePlayer(player);
 
         public void UnloadUniverse() => resourceManager.UnloadUniverse();
+        public void SaveChunkColumn(IChunkColumn chunkColumn) => resourceManager.SaveChunkColumn(chunkColumn);
     }
 }

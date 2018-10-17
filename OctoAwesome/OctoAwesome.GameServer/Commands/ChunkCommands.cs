@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommandManagementSystem.Attributes;
+using OctoAwesome.Network;
 
 namespace OctoAwesome.GameServer.Commands
 {
@@ -32,6 +33,22 @@ namespace OctoAwesome.GameServer.Commands
                 column.Serialize(writer, Program.ServerHandler.SimulationManager.DefinitionManager);
                 return memoryStream.ToArray();
             }
+        }
+
+        [Command((ushort)OfficialCommands.SaveColumn)]
+        public static byte[] SaveColumn(byte[] data)
+        {
+            ChunkColumn chunkColumn = new ChunkColumn();
+
+            using (var memoryStream = new MemoryStream(data))
+            using (var reader = new BinaryReader(memoryStream))
+            {
+                chunkColumn.Deserialize(reader, Program.ServerHandler.SimulationManager.DefinitionManager);
+            }
+
+            Program.ServerHandler.SimulationManager.Simulation.ResourceManager.SaveChunkColumn(chunkColumn);
+
+            return null;
         }
     }
 }

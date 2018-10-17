@@ -70,7 +70,7 @@ namespace OctoAwesome.Network
 
             SendInternal(data, len);
         }
-        
+
         private void SendInternal(byte[] data, int len)
         {
             while (true)
@@ -101,7 +101,7 @@ namespace OctoAwesome.Network
         {
             byte[] data;
             int len;
-            
+
             lock (sendLock)
             {
                 if (readSendQueueIndex < nextSendQueueWriteIndex)
@@ -122,12 +122,18 @@ namespace OctoAwesome.Network
 
         protected void Receive(SocketAsyncEventArgs e)
         {
+            if (e.BytesTransferred < 1)
+                return;
+
             int offset = 0;
             int count = 0;
             do
             {
                 count = internalRecivedStream.Write(e.Buffer, offset, e.BytesTransferred - offset);
-                DataAvailable?.Invoke(this, new OctoNetworkEventArgs { NetworkStream = internalRecivedStream, DataCount = count });
+
+                if (count > 0)
+                    DataAvailable?.Invoke(this, new OctoNetworkEventArgs { NetworkStream = internalRecivedStream, DataCount = count });
+
                 offset += count;
             } while (offset < e.BytesTransferred);
         }

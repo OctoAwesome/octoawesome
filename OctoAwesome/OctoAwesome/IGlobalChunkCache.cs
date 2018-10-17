@@ -7,6 +7,7 @@ namespace OctoAwesome
     /// </summary>
     public interface IGlobalChunkCache
     {
+        event EventHandler<IChunkColumn> ChunkColumnChanged;
 
         /// <summary>
         /// Die Zahl der geladenen Chunks zurück

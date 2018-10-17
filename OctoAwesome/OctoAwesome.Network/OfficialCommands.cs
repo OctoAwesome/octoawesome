@@ -11,6 +11,7 @@ namespace OctoAwesome.Network
         Whoami = 11,
         GetUniverse = 12,
         GetPlanet = 13,
-        LoadColumn = 14
+        LoadColumn = 14,
+        SaveColumn = 15
     }
 }

@@ -78,6 +78,6 @@ namespace OctoAwesome
         Player CurrentPlayer { get; }
 
         void SaveEntity(Entity entity);
-        
+        void SaveChunkColumn(IChunkColumn value);
     }
 }

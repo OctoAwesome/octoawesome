@@ -57,6 +57,7 @@ namespace OctoAwesome.Runtime
                 (i) => GetPlanet(i),
                 (p, i, c) => SaveChunkColumn(p, i, c));
 
+
             planets = new Dictionary<int, IPlanet>();
 
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
@@ -281,6 +282,8 @@ namespace OctoAwesome.Runtime
 
             return column11;
         }
+        public void SaveChunkColumn(IChunkColumn chunkColumn) 
+            => SaveChunkColumn(chunkColumn.Planet, chunkColumn.Index, chunkColumn);
 
         private void SaveChunkColumn(int planetId, Index2 index, IChunkColumn value)
         {

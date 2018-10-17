@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using OctoAwesome.Basics;
 
 namespace OctoAwesome.Network
@@ -124,6 +123,21 @@ namespace OctoAwesome.Network
         public void SaveUniverse(IUniverse universe)
         {
             //throw new NotImplementedException();
+        }
+
+        public void SendChangedChunkColumn(IChunkColumn chunkColumn)
+        {
+            var package = new Package((ushort)OfficialCommands.SaveColumn, 0);
+
+            using (var ms = new MemoryStream())
+            using (var bw = new BinaryWriter(ms))
+            {
+                chunkColumn.Serialize(bw, definitionManager);
+                package.Payload = ms.ToArray();
+            }
+            
+
+            client.SendPackage(package); 
         }
 
         private void ClientPackageAvailable(object sender, Package e)
