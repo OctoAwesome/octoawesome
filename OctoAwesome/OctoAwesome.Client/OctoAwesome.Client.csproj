@@ -211,7 +211,7 @@
     <Error Condition="!Exists('..\packages\engenious.0.2.0-alpha\build\engenious.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\engenious.0.2.0-alpha\build\engenious.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)bin\engenious.dll" "$(TargetDir)\engenious.dll"</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)libs\engenious.dll" "$(TargetDir)\engenious.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
