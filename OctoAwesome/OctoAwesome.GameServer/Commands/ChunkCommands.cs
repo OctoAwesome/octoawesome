@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CommandManagementSystem.Attributes;
+using OctoAwesome.Network;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommandManagementSystem.Attributes;
-using OctoAwesome.Network;
 
 namespace OctoAwesome.GameServer.Commands
 {
@@ -38,7 +38,7 @@ namespace OctoAwesome.GameServer.Commands
         [Command((ushort)OfficialCommands.SaveColumn)]
         public static byte[] SaveColumn(byte[] data)
         {
-            ChunkColumn chunkColumn = new ChunkColumn();
+            var chunkColumn = new ChunkColumn();
 
             using (var memoryStream = new MemoryStream(data))
             using (var reader = new BinaryReader(memoryStream))

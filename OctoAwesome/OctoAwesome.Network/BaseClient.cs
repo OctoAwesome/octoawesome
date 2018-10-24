@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
@@ -132,7 +133,7 @@ namespace OctoAwesome.Network
                 count = internalRecivedStream.Write(e.Buffer, offset, e.BytesTransferred - offset);
 
                 if (count > 0)
-                    DataAvailable?.Invoke(this, new OctoNetworkEventArgs { NetworkStream = internalRecivedStream, DataCount = count });
+                   DataAvailable?.Invoke(this, new OctoNetworkEventArgs { NetworkStream = internalRecivedStream, DataCount = count });
 
                 offset += count;
             } while (offset < e.BytesTransferred);
