@@ -106,9 +106,6 @@
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="engenious, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\engenious.0.2.0-alpha\lib\net40\engenious.dll</HintPath>
-    </Reference>
     <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\MonoGameUi.dll</HintPath>
@@ -183,7 +180,6 @@
     </None>
     <None Include="Content\simple\simple.ps" />
     <None Include="Content\simple\simple.vs" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\OctoClient.de.resx" />
@@ -201,15 +197,12 @@
       <LastGenOutput>OctoKeys.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="engenious">
+      <Version>0.2.0-alpha</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\engenious.0.2.0-alpha\build\engenious.targets" Condition="Exists('..\packages\engenious.0.2.0-alpha\build\engenious.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\engenious.0.2.0-alpha\build\engenious.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\engenious.0.2.0-alpha\build\engenious.targets'))" />
-  </Target>
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)libs\engenious.dll" "$(TargetDir)\engenious.dll"</PostBuildEvent>
   </PropertyGroup>

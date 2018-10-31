@@ -24,7 +24,6 @@ namespace OctoAwesome.Network
         public Client() :
             base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
-            DataAvailable += ClientDataAvailable;
         }
 
         public void SendPing()
@@ -42,6 +41,10 @@ namespace OctoAwesome.Network
             Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
         }
 
+        protected override void Notify(OctoNetworkEventArgs args)
+        {
+            ClientDataAvailable(args);
+        }
 
         private void OnConnected(IAsyncResult ar)
         {
@@ -63,7 +66,7 @@ namespace OctoAwesome.Network
             SendAsync(bytes, bytes.Length);
         }
 
-        private void ClientDataAvailable(object sender, OctoNetworkEventArgs e)
+        private void ClientDataAvailable(OctoNetworkEventArgs e)
         {
             byte[] bytes = new byte[e.DataCount];
             if (currentPackage == null)

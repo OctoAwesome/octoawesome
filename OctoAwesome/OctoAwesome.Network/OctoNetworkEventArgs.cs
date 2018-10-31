@@ -10,6 +10,6 @@ namespace OctoAwesome.Network
     {
         public OctoNetworkStream NetworkStream { get; set; }
         public int DataCount { get; set; }
-
+        public BaseClient Client { get; internal set; }
     }
 }
