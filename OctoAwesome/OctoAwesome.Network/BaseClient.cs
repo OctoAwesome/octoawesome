@@ -2,13 +2,11 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public abstract class BaseClient : ObservableBase<OctoNetworkEventArgs>
+    public abstract class BaseClient : IObservable<OctoNetworkEventArgs>
     {
         //public delegate int ReceiveDelegate(object sender, (byte[] Data, int Offset, int Count) eventArgs);
         //public event ReceiveDelegate OnMessageRecived;
@@ -77,10 +75,10 @@ namespace OctoAwesome.Network
         }
 
 
-        protected override IDisposable SubscribeCore(IObserver<OctoNetworkEventArgs> observer)
+        public IDisposable Subscribe(IObserver<OctoNetworkEventArgs> observer)
         {
             observers.Add(observer);
-            return observer as IDisposable;
+            return new Subscription<OctoNetworkEventArgs>(this, observer);
         }
 
         private void SendInternal(byte[] data, int len)
@@ -151,6 +149,11 @@ namespace OctoAwesome.Network
             } while (offset < e.BytesTransferred);
         }
 
+        protected virtual void Notify(OctoNetworkEventArgs octoNetworkEventArgs)
+        {
+            observers.ForEach(o => o.OnNext(octoNetworkEventArgs));
+        }
+
         private void OnReceived(object sender, SocketAsyncEventArgs e)
         {
             Receive(e);
@@ -163,13 +166,6 @@ namespace OctoAwesome.Network
                 Receive(ReceiveArgs);
             }
         }
-
-        protected virtual void Notify(OctoNetworkEventArgs args)
-        {
-            Parallel.ForEach(observers, (o) => o.OnNext(args));
-            //observers.ForEach(o => o.OnNext(args));
-        }
-
 
     }
 }

@@ -107,6 +107,22 @@ namespace OctoAwesome.Network
             return count;
         }
 
+        public int DataAvailable(int count)
+        {
+            if (!writingProcess)
+                SwapBuffer();
+
+            var maxCopy = maxReadCount - readPosition;
+
+            if (maxCopy < 1)
+                return maxCopy;
+
+            if (maxCopy < count)
+                count = maxCopy;
+
+            return count;
+        }
+
         private void SwapBuffer()
         {
             lock (readLock)
@@ -125,6 +141,7 @@ namespace OctoAwesome.Network
                     readPosition = 0;
                 }
         }
+
 
     }
 }

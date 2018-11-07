@@ -31,8 +31,10 @@ namespace OctoAwesome.GameServer
 
         public void Start()
         {
-            server.Start(IPAddress.Any, 8888);
             packageManager.PackageAvailable += PackageManagerPackageAvailable;
+            packageManager.Start();
+
+            server.Start(IPAddress.Any, 8888);
             server.OnClientConnected += ServerOnClientConnected;
         }
 
