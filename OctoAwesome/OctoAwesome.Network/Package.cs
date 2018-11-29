@@ -10,7 +10,10 @@ namespace OctoAwesome.Network
         public const int HEAD_LENGTH = sizeof(ushort) + sizeof(int) + sizeof(uint);
 
         public static uint NextUId => nextUid++;
-        private static uint nextUid; 
+        private static uint nextUid;
+
+        public BaseClient BaseClient { get; set; }
+
         public ushort Command { get; set; }
 
         public byte[] Payload { get; set; }
@@ -41,14 +44,14 @@ namespace OctoAwesome.Network
         {
         }
 
-        public bool TryDeserializeHeader(byte[] buffer)
+        public bool TryDeserializeHeader(byte[] buffer, int offset)
         {
             if (buffer.Length < HEAD_LENGTH)
                 return false;
 
-            Command = (ushort)((buffer[0] << 8) | buffer[1]);
-            Payload = new byte[BitConverter.ToInt32(buffer, 2)];
-            UId = BitConverter.ToUInt32(buffer, 6);
+            Command = (ushort)((buffer[offset] << 8) | buffer[offset + 1]);
+            Payload = new byte[BitConverter.ToInt32(buffer, offset + 2)];
+            UId = BitConverter.ToUInt32(buffer, offset + 6);
             internalOffset = 0;
             return true;
         }
@@ -63,24 +66,24 @@ namespace OctoAwesome.Network
 
             return count;
         }
-        public void DeserializePackage(byte[] buffer)
+        public void DeserializePackage(byte[] buffer, int offset)
         {
-            TryDeserializeHeader(buffer);
-            Buffer.BlockCopy(buffer, HEAD_LENGTH, Payload, 0, Payload.Length);
+            TryDeserializeHeader(buffer, offset);
+            Buffer.BlockCopy(buffer, offset + HEAD_LENGTH, Payload, 0, Payload.Length);
             internalOffset = Payload.Length;
         }
 
-        public int SerializePackage(byte[] buffer)
+        public int SerializePackage(byte[] buffer, int offset)
         {
-            buffer[0] = (byte)(Command >> 8);
-            buffer[1] = (byte)(Command & 0xFF);
+            buffer[offset] = (byte)(Command >> 8);
+            buffer[offset + 1] = (byte)(Command & 0xFF);
             var bytes = BitConverter.GetBytes(Payload.Length);
-            Buffer.BlockCopy(bytes, 0, buffer, 2, 4);
+            Buffer.BlockCopy(bytes, 0, buffer, offset + 2, 4);
             bytes = BitConverter.GetBytes(UId);
-            Buffer.BlockCopy(bytes, 0, buffer, 6, 4);
-            Buffer.BlockCopy(Payload, 0, buffer, HEAD_LENGTH, Payload.Length); //Payload.Serialize();
+            Buffer.BlockCopy(bytes, 0, buffer, offset + 6, 4);
+            Buffer.BlockCopy(Payload, 0, buffer, offset + HEAD_LENGTH, Payload.Length);
             return Payload.Length + HEAD_LENGTH;
         }
-        
+
     }
 }

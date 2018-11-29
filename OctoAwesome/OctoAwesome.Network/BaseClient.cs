@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public abstract class BaseClient : IObservable<OctoNetworkEventArgs>
+    public abstract class BaseClient : IObservable<Package>
     {
-        //public delegate int ReceiveDelegate(object sender, (byte[] Data, int Offset, int Count) eventArgs);
-        //public event ReceiveDelegate OnMessageRecived;
-
         protected readonly Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
-
-        protected readonly OctoNetworkStream internalSendStream;
-        protected readonly OctoNetworkStream internalRecivedStream;
 
         private byte readSendQueueIndex;
         private byte nextSendQueueWriteIndex;
         private bool sending;
-        private readonly List<IObserver<OctoNetworkEventArgs>> observers;
+        private Package currentPackage;
+        private readonly ConcurrentBag<IObserver<Package>> observers;
+
         private readonly SocketAsyncEventArgs sendArgs;
 
         private readonly (byte[] data, int len)[] sendQueue;
         private readonly object sendLock;
+        private readonly CancellationTokenSource cancellationTokenSource;
 
         protected BaseClient(Socket socket)
         {
@@ -36,26 +35,34 @@ namespace OctoAwesome.Network
 
             ReceiveArgs = new SocketAsyncEventArgs();
             ReceiveArgs.Completed += OnReceived;
-            ReceiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(2048), 0, 2048);
+            ReceiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(1024 * 1024), 0, 1024 * 1024);
 
             sendArgs = new SocketAsyncEventArgs();
             sendArgs.Completed += OnSent;
 
-            internalSendStream = new OctoNetworkStream();
-            internalRecivedStream = new OctoNetworkStream();
-
-            observers = new List<IObserver<OctoNetworkEventArgs>>();
-
+            observers = new ConcurrentBag<IObserver<Package>>();
+            cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public void Start()
+        public Task Start()
         {
-            while (true)
+            return Task.Run(() =>
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
                     return;
+
                 Receive(ReceiveArgs);
+            }, cancellationTokenSource.Token);
+        }
+
+        public void Stop()
+        {
+            foreach (var observer in observers)
+            {
+                observer.OnCompleted();
             }
+
+            cancellationTokenSource.Cancel();
         }
 
         public void SendAsync(byte[] data, int len)
@@ -74,11 +81,17 @@ namespace OctoAwesome.Network
             SendInternal(data, len);
         }
 
+        public void SendPackage(Package package)
+        {
+            byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
+            package.SerializePackage(bytes, 0);
+            SendAsync(bytes, bytes.Length);
+        }
 
-        public IDisposable Subscribe(IObserver<OctoNetworkEventArgs> observer)
+        public IDisposable Subscribe(IObserver<Package> observer)
         {
             observers.Add(observer);
-            return new Subscription<OctoNetworkEventArgs>(this, observer);
+            return new Subscription<Package>(this, observer);
         }
 
         private void SendInternal(byte[] data, int len)
@@ -130,42 +143,68 @@ namespace OctoAwesome.Network
             SendInternal(data, len);
         }
 
-        protected void Receive(SocketAsyncEventArgs e)
-        {
-            if (e.BytesTransferred < 1)
-                return;
-
-            int offset = 0;
-            int count = 0;
-            do
-            {
-                count = internalRecivedStream.Write(e.Buffer, offset, e.BytesTransferred - offset);
-
-                if (count > 0)
-                    Notify(new OctoNetworkEventArgs { Client = this, NetworkStream = internalRecivedStream, DataCount = count });
-
-
-                offset += count;
-            } while (offset < e.BytesTransferred);
-        }
-
-        protected virtual void Notify(OctoNetworkEventArgs octoNetworkEventArgs)
-        {
-            observers.ForEach(o => o.OnNext(octoNetworkEventArgs));
-        }
-
         private void OnReceived(object sender, SocketAsyncEventArgs e)
         {
             Receive(e);
-
-            while (Socket.Connected)
-            {
-                if (Socket.ReceiveAsync(ReceiveArgs))
-                    return;
-
-                Receive(ReceiveArgs);
-            }
         }
 
+        protected void Receive(SocketAsyncEventArgs e)
+        {
+            do
+            {
+                if (e.BytesTransferred < 1)
+                    return;
+
+                int offset = 0;
+
+                do
+                {
+                    offset += DataReceived(e.Buffer, e.BytesTransferred, offset);
+
+                } while (offset < e.BytesTransferred);
+
+            } while (!Socket.ReceiveAsync(e));
+        }
+
+        private int DataReceived(byte[] buffer, int length, int bufferOffset)
+        {
+            int offset = 0;
+
+            if (currentPackage == null)
+            {
+                currentPackage = new Package(false)
+                {
+                    BaseClient = this
+                };
+
+                if (length - bufferOffset < Package.HEAD_LENGTH)
+                {
+                    throw new Exception("buffer is not enough for package");
+                }
+                else
+                {
+                    if (currentPackage.TryDeserializeHeader(buffer, bufferOffset))
+                    {
+                        offset += Package.HEAD_LENGTH;
+                    }
+                    else
+                    {
+                        throw new InvalidCastException("Can not deserialize header with these bytes :(");
+                    }
+                }
+            }
+
+            offset += currentPackage.DeserializePayload(buffer, bufferOffset + offset, length - (bufferOffset + offset));
+
+            if (currentPackage.IsComplete)
+            {
+                foreach (var observer in observers)
+                    observer.OnNext(currentPackage);
+
+                currentPackage = null;
+            }
+
+            return offset;
+        }
     }
 }

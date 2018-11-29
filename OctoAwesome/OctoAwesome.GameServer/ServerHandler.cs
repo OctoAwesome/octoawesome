@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.GameServer
 {
-    public class ServerHandler
+    public class ServerHandler : IObserver<Package>
     {
         public SimulationManager SimulationManager { get; set; }
 
         private readonly Logger logger;
         private readonly Server server;
-        private readonly PackageManager packageManager;
         private readonly DefaultCommandManager<ushort, byte[], byte[]> defaultManager;
                 
         public ServerHandler()
@@ -25,46 +24,51 @@ namespace OctoAwesome.GameServer
 
             server = new Server();
             SimulationManager = new SimulationManager(new Settings());
-            packageManager = new PackageManager();
             defaultManager = new DefaultCommandManager<ushort, byte[], byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
 
         public void Start()
         {
-            packageManager.PackageAvailable += PackageManagerPackageAvailable;
-            packageManager.Start();
-
             server.Start(IPAddress.Any, 8888);
             server.OnClientConnected += ServerOnClientConnected;
         }
-
-        private void PackageManagerPackageAvailable(object sender, OctoPackageAvailableEventArgs e)
-        {
-            if (e.Package.Command == 0 && e.Package.Payload.Length == 0)
-            {
-                logger.Debug("Received null package");
-                return;
-            }
-            logger.Trace("Received a new Package with ID: " + e.Package.UId);
-            try
-            {
-                e.Package.Payload = defaultManager.Dispatch(e.Package.Command, e.Package.Payload) ?? new byte[0];
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Dispatch failed in Command " + e.Package.Command);
-                return;
-            }
-
-            logger.Trace(e.Package.Command);
-            packageManager.SendPackage(e.Package, e.BaseClient);
-        }
-
+        
         private void ServerOnClientConnected(object sender, ConnectedClient e)
         {
             logger.Debug("Hurra ein neuer Spieler");
-            packageManager.AddConnectedClient(e);
+            e.Subscribe(this);
         }
 
+        public void OnNext(Package value)
+        {
+            Task.Run(() =>
+            {
+                if (value.Command == 0 && value.Payload.Length == 0)
+                {
+                    logger.Debug("Received null package");
+                    return;
+                }
+                logger.Trace("Received a new Package with ID: " + value.UId);
+                try
+                {
+                    value.Payload = defaultManager.Dispatch(value.Command, value.Payload) ?? new byte[0];
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Dispatch failed in Command " + value.Command);
+                    return;
+                }
+
+                logger.Trace(value.Command);
+                value.BaseClient.SendPackage(value);
+            });
+        }
+
+        public void OnError(Exception error) 
+            => throw error;
+
+        public void OnCompleted()
+        {
+        }
     }
 }

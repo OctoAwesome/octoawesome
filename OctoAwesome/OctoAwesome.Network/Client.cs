@@ -40,13 +40,5 @@ namespace OctoAwesome.Network
                 Receive(ReceiveArgs);
             }
         }
-
-        internal void SendPackage(Package package)
-        {
-            byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
-            package.SerializePackage(bytes);
-            SendAsync(bytes, bytes.Length);
-        }
-
     }
 }

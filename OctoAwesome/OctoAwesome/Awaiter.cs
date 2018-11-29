@@ -11,8 +11,10 @@ namespace OctoAwesome
     public class Awaiter
     {
         public ISerializable Serializable { get; set; }
+        public bool Timeouted { get; private set; }
         private readonly ManualResetEventSlim manualReset;
         private bool alreadyDeserialized;
+
 
         public Awaiter()
         {
@@ -22,7 +24,7 @@ namespace OctoAwesome
         public ISerializable WaitOn()
         {
             if (!alreadyDeserialized)
-                manualReset.Wait();
+                Timeouted = !manualReset.Wait(10000);
 
             return Serializable;
         }
