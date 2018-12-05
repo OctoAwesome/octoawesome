@@ -1,9 +1,9 @@
-﻿using System;
+﻿using engenious;
+using OctoAwesome.EntityComponents;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using engenious;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
 {
@@ -12,10 +12,6 @@ namespace OctoAwesome
     /// </summary>
     public sealed class Simulation
     {
-        // private List<ActorHost> actorHosts = new List<ActorHost>();
-        // private Stopwatch watch = new Stopwatch();
-        // private Thread thread;
-
         public IResourceManager ResourceManager { get; private set; }
 
         /// <summary>

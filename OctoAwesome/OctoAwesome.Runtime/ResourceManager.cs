@@ -22,10 +22,10 @@ namespace OctoAwesome.Runtime
         }
 
         private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
-        private bool disablePersistence = false;
+        private readonly bool disablePersistence = false;
         private IPersistenceManager persistenceManager = null;
         private GlobalChunkCache globalChunkCache = null;
-        private List<IMapPopulator> populators = null;
+        private readonly List<IMapPopulator> populators = null;
         private Dictionary<int, IPlanet> planets;
         private Player player;
 
@@ -162,12 +162,11 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            IPlanet planet;
-            if (!planets.TryGetValue(id, out planet))
+            if (!planets.TryGetValue(id, out IPlanet planet))
             {
                 // Versuch vorhandenen Planeten zu laden
                 var awaiter = persistenceManager.Load(out planet, CurrentUniverse.Id, id);
-                
+
                 if (awaiter == null)
                 {
                     // Keiner da -> neu erzeugen
@@ -199,11 +198,13 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            persistenceManager.Load(out Player player, CurrentUniverse.Id, playername).WaitOn();
-            if (player == null)
-            {
+            var awaiter = persistenceManager.Load(out Player player, CurrentUniverse.Id, playername);
+
+            if (awaiter == null)
                 player = new Player();
-            }
+            else
+                awaiter.WaitOn();
+
             return player;
         }
 
@@ -282,7 +283,7 @@ namespace OctoAwesome.Runtime
 
             return column11;
         }
-        public void SaveChunkColumn(IChunkColumn chunkColumn) 
+        public void SaveChunkColumn(IChunkColumn chunkColumn)
             => SaveChunkColumn(chunkColumn.Planet, chunkColumn.Index, chunkColumn);
 
         private void SaveChunkColumn(int planetId, Index2 index, IChunkColumn value)

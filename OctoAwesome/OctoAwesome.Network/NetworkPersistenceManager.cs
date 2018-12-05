@@ -15,20 +15,13 @@ namespace OctoAwesome.Network
 
         private Dictionary<uint, Awaiter> packages;
 
-        public NetworkPersistenceManager(IDefinitionManager definitionManager)
+        public NetworkPersistenceManager(Client client, IDefinitionManager definitionManager)
         {
-            client = new Client();
+            this.client = client;
             subscription = client.Subscribe(this);
 
             packages = new Dictionary<uint, Awaiter>();
             this.definitionManager = definitionManager;
-        }
-
-
-        public NetworkPersistenceManager(string host, ushort port, IDefinitionManager definitionManager) 
-            : this(definitionManager)
-        {
-            client.Connect(host, port);
         }
 
         public void DeleteUniverse(Guid universeGuid)
@@ -146,11 +139,11 @@ namespace OctoAwesome.Network
             client.SendPackage(package); 
         }
 
-        public void OnNext(Package value)
+        public void OnNext(Package package)
         {
-            if (packages.TryGetValue(value.UId, out var awaiter))
+            if (packages.TryGetValue(package.UId, out var awaiter))
             {
-                awaiter.SetResult(value.Payload, definitionManager);
+                awaiter.SetResult(package.Payload, definitionManager);
             }
         }
 
