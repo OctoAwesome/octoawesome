@@ -109,6 +109,12 @@
     <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />
+    <Compile Include="Notifications\EntityNotification.cs" />
+    <Compile Include="Notifications\IUpdateHub.cs" />
+    <Compile Include="Notifications\IUpdateProvider.cs" />
+    <Compile Include="Notifications\IUpdateSubscriber.cs" />
+    <Compile Include="Notifications\Notification.cs" />
+    <Compile Include="Notifications\NotificationSubscription.cs" />
     <Compile Include="OrientationFlags.cs" />
     <Compile Include="PhysicalProperties.cs" />
     <Compile Include="Planet.cs" />

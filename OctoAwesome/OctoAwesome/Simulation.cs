@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ namespace OctoAwesome
     /// <summary>
     /// Schnittstelle zwischen Applikation und Welt-Modell.
     /// </summary>
-    public sealed class Simulation
+    public sealed class Simulation : IUpdateSubscriber
     {
         public IResourceManager ResourceManager { get; private set; }
 
@@ -33,7 +34,8 @@ namespace OctoAwesome
 
         private readonly IExtensionResolver extensionResolver;
 
-        private HashSet<Entity> entities = new HashSet<Entity>();
+        private readonly HashSet<Entity> entities = new HashSet<Entity>();
+        private IDisposable subscription;
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
@@ -41,6 +43,7 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
         {
             ResourceManager = resourceManager;
+            subscription = resourceManager.UpdateProvider.Subscribe(this);
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
@@ -179,11 +182,11 @@ namespace OctoAwesome
         /// <param name="entity">Entity die entfert werden soll</param>
         public void RemoveEntity(Entity entity)
         {
-            if (entity.Id == 0)
-                return;
-
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
+
+            if (entity.Id == 0)
+                return;
 
             if (entity.Simulation != this)
             {
@@ -204,6 +207,32 @@ namespace OctoAwesome
             entity.Simulation = null;
 
             ResourceManager.SaveEntity(entity);
+        }
+
+        public void OnNext(Notification value)
+        {
+            switch (value)
+            {
+                case EntityNotification entityNotification:
+                    if (entityNotification.Type == EntityNotification.ActionType.Remove)
+                        RemoveEntity(entityNotification.Entity);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Add)
+                        AddEntity(entityNotification.Entity);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnError(Exception error)
+        {
+            throw error;
+        }
+
+        public void OnCompleted()
+        {
+            subscription.Dispose();
+            subscription = null;
         }
     }
 }
