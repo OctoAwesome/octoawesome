@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using OctoAwesome.Basics;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Network
 {
@@ -33,7 +34,7 @@ namespace OctoAwesome.Network
 
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
-            var package = new Package((ushort)OfficialCommands.LoadColumn, 0);
+            var package = new Package((ushort)OfficialCommand.LoadColumn, 0);
 
             using (var memoryStream = new MemoryStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
@@ -55,7 +56,7 @@ namespace OctoAwesome.Network
 
         public Awaiter Load(out IPlanet planet, Guid universeGuid, int planetId)
         {
-            var package = new Package((ushort)OfficialCommands.GetPlanet, 0);
+            var package = new Package((ushort)OfficialCommand.GetPlanet, 0);
             planet = new ComplexPlanet();
             var awaiter = GetAwaiter(planet, package.UId);
             client.SendPackage(package);
@@ -68,7 +69,7 @@ namespace OctoAwesome.Network
         {
             var playernameBytes = Encoding.UTF8.GetBytes(playername);
 
-            var package = new Package((ushort)OfficialCommands.Whoami, playernameBytes.Length)
+            var package = new Package((ushort)OfficialCommand.Whoami, playernameBytes.Length)
             {
                 Payload = playernameBytes
             };
@@ -82,7 +83,7 @@ namespace OctoAwesome.Network
 
         public Awaiter Load(out IUniverse universe, Guid universeGuid)
         {
-            var package = new Package((ushort)OfficialCommands.GetUniverse, 0);
+            var package = new Package((ushort)OfficialCommand.GetUniverse, 0);
             Thread.Sleep(60);
 
             universe = new Universe();
@@ -126,7 +127,7 @@ namespace OctoAwesome.Network
 
         public void SendChangedChunkColumn(IChunkColumn chunkColumn)
         {
-            var package = new Package((ushort)OfficialCommands.SaveColumn, 0);
+            var package = new Package((ushort)OfficialCommand.SaveColumn, 0);
 
             using (var ms = new MemoryStream())
             using (var bw = new BinaryWriter(ms))

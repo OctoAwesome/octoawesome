@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Serialization;
 using System;
 using System.IO;
 

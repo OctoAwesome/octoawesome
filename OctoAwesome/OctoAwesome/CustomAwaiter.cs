@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using OctoAwesome.Serialization;
+using System.Threading;
 
 namespace OctoAwesome
 {

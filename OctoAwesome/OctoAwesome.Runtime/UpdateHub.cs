@@ -16,7 +16,7 @@ namespace OctoAwesome.Runtime
         public UpdateHub()
         {
             observers = new HashSet<IObserver<Notification>>();
-            observerSemaphore = new SemaphoreSlim(0, 1);
+            observerSemaphore = new SemaphoreSlim(1, 1);
         }
 
         public IDisposable Subscribe(IObserver<Notification> observer)

@@ -11,7 +11,7 @@ namespace OctoAwesome.GameServer.Commands
 {
     public static class GeneralCommands
     {
-        [Command((ushort)OfficialCommands.GetUniverse)]
+        [Command((ushort)OfficialCommand.GetUniverse)]
         public static byte[] GetUniverse(byte[] data)
         {
             var universe = Program.ServerHandler.SimulationManager.GetUniverse();
@@ -24,7 +24,7 @@ namespace OctoAwesome.GameServer.Commands
             }
         }
 
-        [Command((ushort)OfficialCommands.GetPlanet)]
+        [Command((ushort)OfficialCommand.GetPlanet)]
         public static byte[] GetPlanet(byte[] data)
         {
             var planet = Program.ServerHandler.SimulationManager.GetPlanet(0);

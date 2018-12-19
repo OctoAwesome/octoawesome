@@ -11,7 +11,7 @@ namespace OctoAwesome.GameServer.Commands
 {
     public class ChunkCommands
     {
-        [Command((ushort)OfficialCommands.LoadColumn)]
+        [Command((ushort)OfficialCommand.LoadColumn)]
         public static byte[] LoadColumn(byte[] data)
         {
             Guid guid;
@@ -35,7 +35,7 @@ namespace OctoAwesome.GameServer.Commands
             }
         }
 
-        [Command((ushort)OfficialCommands.SaveColumn)]
+        [Command((ushort)OfficialCommand.SaveColumn)]
         public static byte[] SaveColumn(byte[] data)
         {
             var chunkColumn = new ChunkColumn();

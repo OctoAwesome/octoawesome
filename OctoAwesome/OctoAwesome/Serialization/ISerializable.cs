@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace OctoAwesome
+namespace OctoAwesome.Serialization
 {
     public interface ISerializable
     {

@@ -55,7 +55,7 @@ namespace OctoAwesome.Client
                 var client = new Network.Client();
                 client.Connect(host[0], host.Length > 1 ? ushort.Parse(host[1]) : (ushort)8888);
                 persistenceManager = new NetworkPersistenceManager(client, definitionManager);
-                networkUpdateManager = new NetworkUpdateManager(client, UpdateHub);
+                networkUpdateManager = new NetworkUpdateManager(client, UpdateHub, definitionManager);
             }
             else
             {
