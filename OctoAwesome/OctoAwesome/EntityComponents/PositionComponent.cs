@@ -14,6 +14,11 @@ namespace OctoAwesome.EntityComponents
 
         public float Direction { get; set; }
 
+        public PositionComponent()
+        {
+            Sendable = true;
+        }
+
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             base.Serialize(writer, definitionManager);

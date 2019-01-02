@@ -221,7 +221,7 @@ namespace OctoAwesome
         /// <summary>
         /// Serialisiert die Chunksäule in den angegebenen Stream.
         /// </summary>
-        /// <param name="stream">Zielstream</param>
+        /// <param name="writer">Zielschreiber</param>
         /// <param name="definitionManager">Der verwendete DefinitionManager</param>
         public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {

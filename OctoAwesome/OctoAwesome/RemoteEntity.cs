@@ -11,16 +11,27 @@ namespace OctoAwesome
     {
         public int RemoteID { get; set; }
 
+        public RemoteEntity()
+        {
+
+        }
+
+        public RemoteEntity(Entity originEntity)
+        {
+            var sendableComponents = Components.Where(c => c.Sendable);
+            foreach (var component in sendableComponents)
+                Components.AddComponent(component);
+        }
 
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
-            writer.Write(RemoteID);
+            Components.Serialize(writer, definitionManager);
             base.Serialize(writer, definitionManager);
         }
 
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            RemoteID = reader.ReadInt32();
+            Components.Deserialize(reader, definitionManager);
             base.Deserialize(reader, definitionManager);
         }
     }

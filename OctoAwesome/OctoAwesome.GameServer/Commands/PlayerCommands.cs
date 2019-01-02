@@ -27,9 +27,11 @@ namespace OctoAwesome.GameServer.Commands
         public static byte[] Whoami(byte[] data)
         {
             string playername = Encoding.UTF8.GetString(data);
-            var player = new Player();
+            var player = new RemoteEntity(new Player());
 
             player.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) });
+            player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            
 
             using (var ms = new MemoryStream())
             using (var bw = new BinaryWriter(ms))
