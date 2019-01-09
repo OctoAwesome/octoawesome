@@ -31,12 +31,13 @@ namespace OctoAwesome.GameServer
             UpdateProvider = updateHub;
 
             server = new Server();
-            SimulationManager = new SimulationManager(new Settings());
+            SimulationManager = new SimulationManager(new Settings(), updateHub);
             defaultManager = new DefaultCommandManager<ushort, byte[], byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
 
         public void Start()
         {
+            SimulationManager.Start(); //Temp
             server.Start(IPAddress.Any, 8888);
             server.OnClientConnected += ServerOnClientConnected;
         }

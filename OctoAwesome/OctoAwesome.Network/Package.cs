@@ -14,6 +14,7 @@ namespace OctoAwesome.Network
 
         public BaseClient BaseClient { get; set; }
 
+        public OfficialCommand OfficialCommand => (OfficialCommand)Command;
         public ushort Command { get; set; }
 
         public byte[] Payload { get; set; }

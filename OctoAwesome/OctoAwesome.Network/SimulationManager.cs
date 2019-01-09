@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace OctoAwesome.Network
         private Thread backgroundThread;
         private object mainLock;
 
-        public SimulationManager(ISettings settings)
+        public SimulationManager(ISettings settings, UpdateHub updateHub)
         {
             mainLock = new object();
 
@@ -58,7 +59,7 @@ namespace OctoAwesome.Network
             var persistenceManager = new DiskPersistenceManager(extensionLoader, definitionManager, settings);
 
             ResourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
-
+            ResourceManager.InsertUpdateHub(updateHub);
             //For Release resourceManager.LoadUniverse(new Guid()); 
             ResourceManager.NewUniverse("test_universe", 043848723);
 

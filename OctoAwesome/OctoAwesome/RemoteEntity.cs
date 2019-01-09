@@ -9,8 +9,6 @@ namespace OctoAwesome
 {
     public class RemoteEntity : Entity
     {
-        public int RemoteID { get; set; }
-
         public RemoteEntity()
         {
 
@@ -21,6 +19,7 @@ namespace OctoAwesome
             var sendableComponents = Components.Where(c => c.Sendable);
             foreach (var component in sendableComponents)
                 Components.AddComponent(component);
+            Id = originEntity.Id;
         }
 
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)

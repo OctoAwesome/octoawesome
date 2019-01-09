@@ -52,7 +52,8 @@ namespace OctoAwesome
         /// <param name="stream"></param>
         public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            Id = new Guid(reader.ReadString());
+            var tmpGuid = reader.ReadString();
+            Id = new Guid(tmpGuid);
             Name = reader.ReadString();
             Seed = reader.ReadInt32();
         }

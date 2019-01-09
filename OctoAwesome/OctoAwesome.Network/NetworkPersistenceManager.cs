@@ -135,23 +135,35 @@ namespace OctoAwesome.Network
                 chunkColumn.Serialize(bw, definitionManager);
                 package.Payload = ms.ToArray();
             }
-            
 
-            client.SendPackage(package); 
+
+            client.SendPackage(package);
         }
 
         public void OnNext(Package package)
         {
-            if (packages.TryGetValue(package.UId, out var awaiter))
+            switch (package.OfficialCommand)
             {
-                awaiter.SetResult(package.Payload, definitionManager);
+                case OfficialCommand.Whoami:
+                case OfficialCommand.GetUniverse:
+                case OfficialCommand.GetPlanet:
+                case OfficialCommand.LoadColumn:
+                case OfficialCommand.SaveColumn:
+                    if (packages.TryGetValue(package.UId, out var awaiter))
+                    {
+                        awaiter.SetResult(package.Payload, definitionManager);
+                        packages.Remove(package.UId);
+                    }
+                    break;
+                default:
+                    return;
             }
         }
 
-        public void OnError(Exception error) 
+        public void OnError(Exception error)
             => throw error;
 
-        public void OnCompleted() 
+        public void OnCompleted()
             => subscription.Dispose();
     }
 }

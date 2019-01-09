@@ -103,6 +103,9 @@ namespace OctoAwesome.Client
             Player.UpdateOrder = 2;
             Components.Add(Player);
 
+            Simulation = new Components.SimulationComponent(this,
+              ExtensionLoader, ResourceManager);
+
             Entity = new Components.EntityComponent(this, Simulation);
             Entity.UpdateOrder = 2;
             Components.Add(Entity);
@@ -111,8 +114,6 @@ namespace OctoAwesome.Client
             Camera.UpdateOrder = 3;
             Components.Add(Camera);
 
-            Simulation = new Components.SimulationComponent(this,
-              ExtensionLoader, ResourceManager);
             Simulation.UpdateOrder = 4;
             Components.Add(Simulation);
 

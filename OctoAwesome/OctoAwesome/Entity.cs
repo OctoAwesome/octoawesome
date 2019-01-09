@@ -74,20 +74,36 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager) 
-            => Components.Serialize(writer, definitionManager);
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        {
+            writer.Write(Id);
+            Components.Serialize(writer, definitionManager);
+        }
 
         /// <summary>
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager) 
-            => Components.Deserialize(reader, definitionManager);
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        {
+            Id = reader.ReadInt32();
+            Components.Deserialize(reader, definitionManager);
+        }
 
         public virtual void RegisterDefault()
         {
 
+        }
+
+        public override int GetHashCode() => Id;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Entity entity)
+                return entity.Id == Id;
+
+            return base.Equals(obj);
         }
     }
 }

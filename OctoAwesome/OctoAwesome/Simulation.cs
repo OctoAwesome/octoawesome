@@ -169,7 +169,12 @@ namespace OctoAwesome
             extensionResolver.ExtendEntity(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
-            entity.Id = nextId++;
+
+            if (entity.Id == 0)
+                entity.Id = nextId++;
+            else
+                nextId++;
+
             entities.Add(entity);
 
             foreach (var component in Components)
