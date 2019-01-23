@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
-    public interface IUpdateHub
+    public interface IUpdateHub : INotificationObservable
     {
+        void Push(Notification notification, string channel);
         void Push(Notification notification);
     }
 }

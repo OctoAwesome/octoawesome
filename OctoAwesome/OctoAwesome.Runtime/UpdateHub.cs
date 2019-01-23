@@ -8,30 +8,37 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Runtime
 {
-    public class UpdateHub : IUpdateProvider, IUpdateHub, IDisposable
+    public class UpdateHub : IUpdateHub, IDisposable
     {
-        private readonly HashSet<IObserver<Notification>> observers;
+        private readonly NotificationChannelCollection observers;
         private readonly SemaphoreSlim observerSemaphore;
 
         public UpdateHub()
         {
-            observers = new HashSet<IObserver<Notification>>();
+            observers = new NotificationChannelCollection();
             observerSemaphore = new SemaphoreSlim(1, 1);
         }
 
-        public IDisposable Subscribe(IObserver<Notification> observer)
+        public IDisposable Subscribe(INotificationObserver observer, string channel = "none")
         {
             observerSemaphore.Wait();
-            observers.Add(observer);
+            observers.Add(channel, observer);
             observerSemaphore.Release();
 
-            return new NotificationSubscription(this, observer);
+            return new NotificationSubscription(this, observer, channel);
         }
 
-        public void Unsubscribe(IObserver<Notification> subscriber)
+        public void Unsubscribe(INotificationObserver observer)
         {
             observerSemaphore.Wait();
-            observers.Remove(subscriber);
+            observers.Remove(observer);
+            observerSemaphore.Release();
+        }
+
+        public void Unsubscribe(INotificationObserver observer, string channel)
+        {
+            observerSemaphore.Wait();
+            observers.Remove(channel, observer);
             observerSemaphore.Release();
         }
 
@@ -39,8 +46,21 @@ namespace OctoAwesome.Runtime
         {
             observerSemaphore.Wait();
 
-            foreach (var observer in observers)
-                observer.OnNext(notification);
+            foreach (var observerSet in observers)
+                foreach (var observer in observerSet.Value)
+                    observer.OnNext(notification);
+
+            observerSemaphore.Release();
+        }
+        public void Push(Notification notification, string channel)
+        {
+            observerSemaphore.Wait();
+
+            if (observers.TryGetValue(channel, out var observerSet))
+            {
+                foreach (var observer in observerSet)
+                    observer.OnNext(notification);
+            }
 
             observerSemaphore.Release();
         }
@@ -49,11 +69,14 @@ namespace OctoAwesome.Runtime
         {
             observerSemaphore.Wait();
 
-            foreach (var observer in observers)
-                observer.OnCompleted();
+            foreach (var observerSet in observers)
+                foreach (var observer in observerSet.Value)
+                    observer.OnCompleted();
 
             observers.Clear();
-            observerSemaphore.Release();            
+            observerSemaphore.Release();
         }
+
+
     }
 }

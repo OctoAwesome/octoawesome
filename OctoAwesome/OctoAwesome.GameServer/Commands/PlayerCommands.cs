@@ -32,7 +32,7 @@ namespace OctoAwesome.GameServer.Commands
             {
                 Entity = player,
                 Type = EntityNotification.ActionType.Add
-            });
+            }, "simulation");
 
             var remotePlayer = new RemoteEntity(player);
 
@@ -51,7 +51,7 @@ namespace OctoAwesome.GameServer.Commands
                 {
                     Data = array,
                     OfficialCommand = OfficialCommand.NewEntity
-                });
+                }, "network");
 
             }
             using (var ms = new MemoryStream())

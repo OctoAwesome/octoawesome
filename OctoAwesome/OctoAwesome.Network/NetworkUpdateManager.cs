@@ -30,7 +30,7 @@ namespace OctoAwesome.Network
                     {
                         Entity = remoteEntity,
                         Type = EntityNotification.ActionType.Add
-                    });
+                    }, "network");
                     break;
                 case (ushort)OfficialCommand.RemoveEntity:
                     break;

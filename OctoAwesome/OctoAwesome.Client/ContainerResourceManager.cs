@@ -20,9 +20,7 @@ namespace OctoAwesome.Client
 
         public bool IsMultiplayer { get; private set; }
         public Player CurrentPlayer => resourceManager.CurrentPlayer;
-
-        public IUpdateProvider UpdateProvider { get; }
-
+        
         public IUpdateHub UpdateHub { get; }
 
         private ResourceManager resourceManager;
@@ -30,9 +28,7 @@ namespace OctoAwesome.Client
 
         public ContainerResourceManager()
         {
-            var updateHub = new UpdateHub();
-            UpdateHub = updateHub;
-            UpdateProvider = updateHub;
+            UpdateHub = new UpdateHub();
         }
 
         public void CreateManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager,

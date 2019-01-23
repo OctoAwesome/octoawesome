@@ -101,6 +101,9 @@
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Notifications\INotificationObservable.cs" />
+    <Compile Include="Notifications\INotificationObserver.cs" />
+    <Compile Include="Notifications\NotificationChannelCollection.cs" />
     <Compile Include="RemoteEntity.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="ISettings.cs" />
@@ -112,8 +115,6 @@
     <Compile Include="MapPopulator.cs" />
     <Compile Include="Notifications\EntityNotification.cs" />
     <Compile Include="Notifications\IUpdateHub.cs" />
-    <Compile Include="Notifications\IUpdateProvider.cs" />
-    <Compile Include="Notifications\IUpdateSubscriber.cs" />
     <Compile Include="Notifications\Notification.cs" />
     <Compile Include="Notifications\NotificationSubscription.cs" />
     <Compile Include="OrientationFlags.cs" />

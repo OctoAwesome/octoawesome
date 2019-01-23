@@ -11,7 +11,7 @@ namespace OctoAwesome
     /// <summary>
     /// Schnittstelle zwischen Applikation und Welt-Modell.
     /// </summary>
-    public sealed class Simulation : IUpdateSubscriber
+    public sealed class Simulation : INotificationObserver
     {
         public IResourceManager ResourceManager { get; private set; }
 
@@ -35,7 +35,8 @@ namespace OctoAwesome
         private readonly IExtensionResolver extensionResolver;
 
         private readonly HashSet<Entity> entities = new HashSet<Entity>();
-        private IDisposable subscription;
+        private IDisposable networkSubscription;
+        private readonly IDisposable simmulationSubscription;
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
@@ -43,7 +44,8 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
         {
             ResourceManager = resourceManager;
-            subscription = resourceManager.UpdateProvider.Subscribe(this);
+            networkSubscription = resourceManager.UpdateHub.Subscribe(this, "network");
+            simmulationSubscription = resourceManager.UpdateHub.Subscribe(this, "simulation");
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
@@ -236,8 +238,8 @@ namespace OctoAwesome
 
         public void OnCompleted()
         {
-            subscription.Dispose();
-            subscription = null;
+            networkSubscription.Dispose();
+            networkSubscription = null;
         }
     }
 }

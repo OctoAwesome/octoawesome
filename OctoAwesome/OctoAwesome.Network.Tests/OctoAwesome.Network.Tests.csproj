@@ -56,6 +56,10 @@
       <Project>{b1f4d7bb-7f56-4e96-87dd-ebebae9cf336}</Project>
       <Name>OctoAwesome.Network</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
+      <Project>{31D774C6-E5D9-40B7-8D63-942E28FE1D94}</Project>
+      <Name>OctoAwesome.Runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
       <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
       <Name>OctoAwesome</Name>

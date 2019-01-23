@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ namespace OctoAwesome.Network.Tests
 
         public SimulationManagerTests()
         {
-            simulationManager = new SimulationManager(new Settings());
+            simulationManager = new SimulationManager(new Settings(), new UpdateHub());
         }
 
         [TestMethod]

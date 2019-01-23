@@ -16,7 +16,6 @@ namespace OctoAwesome.GameServer
     {
         public SimulationManager SimulationManager { get; set; }
         public IUpdateHub UpdateHub { get; private set; }
-        public IUpdateProvider UpdateProvider { get; set; }
 
         private readonly Logger logger;
         private readonly Server server;
@@ -28,7 +27,6 @@ namespace OctoAwesome.GameServer
 
             var updateHub = new UpdateHub();
             UpdateHub = updateHub;
-            UpdateProvider = updateHub;
 
             server = new Server();
             SimulationManager = new SimulationManager(new Settings(), updateHub);
@@ -46,7 +44,7 @@ namespace OctoAwesome.GameServer
         {
             logger.Debug("Hurra ein neuer Spieler");
             e.ServerSubscription = e.Subscribe(this);
-            e.ProviderSubscription = UpdateProvider.Subscribe(e);
+            e.NetworkChannelSubscription = UpdateHub.Subscribe(e, "network");
         }
 
         public void OnNext(Package value)

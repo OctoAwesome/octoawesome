@@ -8,9 +8,9 @@ using System.Threading;
 
 namespace OctoAwesome.Network
 {
-    public class ConnectedClient : BaseClient, IUpdateSubscriber
+    public class ConnectedClient : BaseClient, INotificationObserver
     {
-        public IDisposable ProviderSubscription { get; set; }
+        public IDisposable NetworkChannelSubscription { get; set; }
         public IDisposable ServerSubscription { get; set; }
 
         public ConnectedClient(Socket socket) : base(socket)

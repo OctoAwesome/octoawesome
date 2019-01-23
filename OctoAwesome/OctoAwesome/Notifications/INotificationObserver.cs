@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
-    public interface IUpdateProvider : IObservable<Notification>
+    public interface INotificationObserver
     {
-        void Unsubscribe(IObserver<Notification> subscriber);
-        
+        void OnCompleted();
+        void OnError(Exception error);
+        void OnNext(Notification value);
     }
 }
