@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using System;
 using System.IO;
@@ -26,6 +27,8 @@ namespace OctoAwesome
         /// </summary>
         public Simulation Simulation { get; internal set; }
 
+       
+
         /// <summary>
         /// LocalChunkCache für die Entity
         /// </summary>
@@ -45,8 +48,10 @@ namespace OctoAwesome
             
         }
 
-        private void OnAddComponent(EntityComponent component) 
-            => component.SetEntity(this);
+        private void OnAddComponent(EntityComponent component)
+        {
+            component.SetEntity(this);
+        }
 
         private void ValidateAddComponent(EntityComponent component)
         {
@@ -105,5 +110,17 @@ namespace OctoAwesome
 
             return base.Equals(obj);
         }
+
+        public virtual void OnUpdate(Notification notification)
+        {
+        }
+
+
+        public virtual void Update(Notification notification)
+        {
+            foreach (var component in Components)
+                component?.OnUpdate(notification);
+        }
+        
     }
 }

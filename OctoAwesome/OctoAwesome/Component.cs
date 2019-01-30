@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Serialization;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace OctoAwesome
 {
@@ -35,6 +36,24 @@ namespace OctoAwesome
         public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
             Enabled = reader.ReadBoolean();
+        }
+
+        protected virtual void OnPropertyChanged<T>(T value, string callerName)
+        {
+
+        }
+
+        protected void SetValue<T>(ref T field, T value, [CallerMemberName]string callerName = "")
+        {
+            if (field != null)
+            {
+                if (field.Equals(value))
+                    return;
+            }
+
+            field = value;
+
+            OnPropertyChanged(field, callerName);
         }
     }
 }

@@ -104,6 +104,8 @@
     <Compile Include="Notifications\INotificationObservable.cs" />
     <Compile Include="Notifications\INotificationObserver.cs" />
     <Compile Include="Notifications\NotificationChannelCollection.cs" />
+    <Compile Include="Notifications\ObserverHashSet.cs" />
+    <Compile Include="Notifications\PropertyChangedNotification.cs" />
     <Compile Include="RemoteEntity.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="ISettings.cs" />

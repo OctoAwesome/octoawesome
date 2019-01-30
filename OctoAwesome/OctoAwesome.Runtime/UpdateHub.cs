@@ -11,70 +11,60 @@ namespace OctoAwesome.Runtime
     public class UpdateHub : IUpdateHub, IDisposable
     {
         private readonly NotificationChannelCollection observers;
-        private readonly SemaphoreSlim observerSemaphore;
 
-        public UpdateHub()
-        {
-            observers = new NotificationChannelCollection();
-            observerSemaphore = new SemaphoreSlim(1, 1);
-        }
+        public UpdateHub() 
+            => observers = new NotificationChannelCollection();
 
         public IDisposable Subscribe(INotificationObserver observer, string channel = "none")
         {
-            observerSemaphore.Wait();
             observers.Add(channel, observer);
-            observerSemaphore.Release();
-
             return new NotificationSubscription(this, observer, channel);
         }
 
-        public void Unsubscribe(INotificationObserver observer)
-        {
-            observerSemaphore.Wait();
-            observers.Remove(observer);
-            observerSemaphore.Release();
-        }
+        public void Unsubscribe(INotificationObserver observer) 
+            => observers.Remove(observer);
 
-        public void Unsubscribe(INotificationObserver observer, string channel)
-        {
-            observerSemaphore.Wait();
-            observers.Remove(channel, observer);
-            observerSemaphore.Release();
-        }
+        public void Unsubscribe(INotificationObserver observer, string channel) 
+            => observers.Remove(channel, observer);
 
         public void Push(Notification notification)
         {
-            observerSemaphore.Wait();
+            foreach (KeyValuePair<string, ObserverHashSet> observerSet in observers)
+            {
+                observerSet.Value.Wait();
 
-            foreach (var observerSet in observers)
-                foreach (var observer in observerSet.Value)
+                foreach (INotificationObserver observer in observerSet.Value)
                     observer.OnNext(notification);
 
-            observerSemaphore.Release();
+                observerSet.Value.Release();
+            }
         }
         public void Push(Notification notification, string channel)
         {
-            observerSemaphore.Wait();
 
-            if (observers.TryGetValue(channel, out var observerSet))
+            if (observers.TryGetValue(channel, out ObserverHashSet observerSet))
             {
-                foreach (var observer in observerSet)
+                observerSet.Wait();
+                foreach (INotificationObserver observer in observerSet)
                     observer.OnNext(notification);
+                observerSet.Release();
             }
 
-            observerSemaphore.Release();
         }
 
         public void Dispose()
         {
-            observerSemaphore.Wait();
 
-            foreach (var observerSet in observers)
-                foreach (var observer in observerSet.Value)
+            foreach (KeyValuePair<string, ObserverHashSet> observerSet in observers)
+            {
+                observerSet.Value.Wait();
+
+                foreach (INotificationObserver observer in observerSet.Value)
                     observer.OnCompleted();
 
+                observerSet.Value.Release();
+            }
             observers.Clear();
-            observerSemaphore.Release();
         }
 
 

@@ -1,8 +1,10 @@
 ﻿using engenious;
+using OctoAwesome.Notifications;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +12,11 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class PositionComponent : EntityComponent
     {
-        public Coordinate Position { get; set; }
+        public Coordinate Position { get => position; set => SetValue(ref position, value); }
 
         public float Direction { get; set; }
+
+        private Coordinate position;
 
         public PositionComponent()
         {
@@ -51,8 +55,51 @@ namespace OctoAwesome.EntityComponents
             int chunkIndexY = reader.ReadInt32();
             int chunkIndexZ = reader.ReadInt32();
 
-            Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+            position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
             //Position.ChunkIndex = new Index3(chunkIndexX, chunkIndexY, chunkIndexX);
+        }
+
+        protected override void OnPropertyChanged<T>(T value, string callerName)
+        {
+            base.OnPropertyChanged(value, callerName);
+
+            if(callerName == nameof(Position))
+            {
+                var updateNotification = new PropertyChangedNotification
+                {
+                    Issuer = nameof(PositionComponent),
+                    Property = callerName
+                };
+
+                using(var stream = new MemoryStream())
+                using (var writer = new BinaryWriter(stream))
+                {
+                    Serialize(writer, null);
+                    updateNotification.Value = stream.ToArray();
+                }
+
+                Update(updateNotification);
+            }
+        }
+
+        public override void OnUpdate(Notification notification)
+        {
+            base.OnUpdate(notification);
+
+            if(notification is PropertyChangedNotification changedNotification)
+            {
+                if(changedNotification.Issuer == nameof(PositionComponent))
+                {
+                    if(changedNotification.Property == nameof(Position))
+                    {
+                        using(var stream = new MemoryStream(changedNotification.Value))
+                        using(var reader = new BinaryReader(stream))
+                        {
+                            Deserialize(reader, null);
+                        }
+                    }
+                }
+            }
         }
     }
 }

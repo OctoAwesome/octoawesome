@@ -11,11 +11,14 @@ namespace OctoAwesome.Notifications
         public ActionType Type { get; set; }
         public Entity Entity { get; set; }
 
+        public Notification Notification { get; set; }
+
         public enum ActionType
         {
             None,
             Add,
-            Remove
+            Remove,
+            Update
         }
     }
 }

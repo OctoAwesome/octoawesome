@@ -225,6 +225,8 @@ namespace OctoAwesome
                         RemoveEntity(entityNotification.Entity);
                     else if (entityNotification.Type == EntityNotification.ActionType.Add)
                         AddEntity(entityNotification.Entity);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Update)
+                        EntityUpdate(entityNotification);
                     break;
                 default:
                     break;
@@ -240,6 +242,16 @@ namespace OctoAwesome
         {
             networkSubscription.Dispose();
             networkSubscription = null;
+        }
+
+        public void OnUpdate(Notification notification)
+        {
+            ResourceManager.UpdateHub.Push(notification, "network");
+        }
+
+        private void EntityUpdate(EntityNotification notification)
+        {
+            notification.Entity?.Update(notification);
         }
     }
 }
