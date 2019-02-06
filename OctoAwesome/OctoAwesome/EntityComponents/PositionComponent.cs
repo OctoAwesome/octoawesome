@@ -82,7 +82,7 @@ namespace OctoAwesome.EntityComponents
             }
         }
 
-        public override void OnUpdate(Notification notification)
+        public override void OnUpdate(SerializableNotification notification)
         {
             base.OnUpdate(notification);
 

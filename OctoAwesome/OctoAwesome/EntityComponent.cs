@@ -22,7 +22,7 @@ namespace OctoAwesome
             OnSetEntity();
         }
 
-        public virtual void OnUpdate(Notification notification)
+        public virtual void OnUpdate(SerializableNotification notification)
         {
 
         }
@@ -32,7 +32,7 @@ namespace OctoAwesome
 
         }
 
-        protected virtual void Update(Notification notification)
+        protected virtual void Update(SerializableNotification notification)
         {
             Entity?.OnUpdate(notification);
         }

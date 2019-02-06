@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Commands\ChunkCommands.cs" />
     <Compile Include="Commands\GeneralCommands.cs" />
+    <Compile Include="Commands\NotificationCommands.cs" />
     <Compile Include="Commands\PlayerCommands.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

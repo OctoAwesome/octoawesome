@@ -44,7 +44,7 @@ namespace OctoAwesome
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
             => base.Deserialize(reader, definitionManager); // Entity
 
-        public override void OnUpdate(Notification notification)
+        public override void OnUpdate(SerializableNotification notification)
         {
             base.OnUpdate(notification);
 
@@ -52,7 +52,7 @@ namespace OctoAwesome
             {
                 Entity = this,
                 Type = EntityNotification.ActionType.Update,
-                Notification = notification
+                Notification = notification as PropertyChangedNotification
             };
 
             Simulation?.OnUpdate(entityNotification);

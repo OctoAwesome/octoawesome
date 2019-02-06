@@ -35,7 +35,6 @@ namespace OctoAwesome
         private readonly IExtensionResolver extensionResolver;
 
         private readonly HashSet<Entity> entities = new HashSet<Entity>();
-        private IDisposable networkSubscription;
         private readonly IDisposable simmulationSubscription;
 
         /// <summary>
@@ -44,8 +43,7 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
         {
             ResourceManager = resourceManager;
-            networkSubscription = resourceManager.UpdateHub.Subscribe(this, "network");
-            simmulationSubscription = resourceManager.UpdateHub.Subscribe(this, "simulation");
+            simmulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
@@ -215,6 +213,8 @@ namespace OctoAwesome
 
             ResourceManager.SaveEntity(entity);
         }
+        public void RemoveEntity(int entityId)
+            => RemoveEntity(entities.First(e => e.Id == entityId));
 
         public void OnNext(Notification value)
         {
@@ -222,7 +222,7 @@ namespace OctoAwesome
             {
                 case EntityNotification entityNotification:
                     if (entityNotification.Type == EntityNotification.ActionType.Remove)
-                        RemoveEntity(entityNotification.Entity);
+                        RemoveEntity(entityNotification.EntityId);
                     else if (entityNotification.Type == EntityNotification.ActionType.Add)
                         AddEntity(entityNotification.Entity);
                     else if (entityNotification.Type == EntityNotification.ActionType.Update)
@@ -240,18 +240,15 @@ namespace OctoAwesome
 
         public void OnCompleted()
         {
-            networkSubscription.Dispose();
-            networkSubscription = null;
         }
 
-        public void OnUpdate(Notification notification)
+        public void OnUpdate(SerializableNotification notification)
         {
-            ResourceManager.UpdateHub.Push(notification, "network");
+            ResourceManager.UpdateHub.Push(notification, DefaultChannels.Network);
         }
 
-        private void EntityUpdate(EntityNotification notification)
-        {
-            notification.Entity?.Update(notification);
-        }
+        private void EntityUpdate(EntityNotification notification) 
+            => entities.First(e => e.Id == notification.EntityId).Update(notification.Notification);
+
     }
 }

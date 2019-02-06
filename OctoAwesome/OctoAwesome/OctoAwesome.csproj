@@ -101,11 +101,13 @@
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Notifications\DefaultChannels.cs" />
     <Compile Include="Notifications\INotificationObservable.cs" />
     <Compile Include="Notifications\INotificationObserver.cs" />
     <Compile Include="Notifications\NotificationChannelCollection.cs" />
     <Compile Include="Notifications\ObserverHashSet.cs" />
     <Compile Include="Notifications\PropertyChangedNotification.cs" />
+    <Compile Include="Notifications\SerializableNotification.cs" />
     <Compile Include="RemoteEntity.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="ISettings.cs" />

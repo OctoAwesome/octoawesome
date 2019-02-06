@@ -82,6 +82,7 @@ namespace OctoAwesome
         public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
             writer.Write(Id);
+
             Components.Serialize(writer, definitionManager);
         }
 
@@ -111,12 +112,12 @@ namespace OctoAwesome
             return base.Equals(obj);
         }
 
-        public virtual void OnUpdate(Notification notification)
+        public virtual void OnUpdate(SerializableNotification notification)
         {
         }
 
 
-        public virtual void Update(Notification notification)
+        public virtual void Update(SerializableNotification notification)
         {
             foreach (var component in Components)
                 component?.OnUpdate(notification);

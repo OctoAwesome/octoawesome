@@ -16,8 +16,6 @@ namespace OctoAwesome.Network
         LoadColumn = 104,
         SaveColumn = 105,
         //400 - 500 Entity Updates
-        NewEntity = 401,
-        RemoveEntity = 402,
-        PositionUpdate = 403,
+        EntityNotification = 401
     }
 }

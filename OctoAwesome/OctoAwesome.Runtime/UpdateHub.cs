@@ -66,7 +66,6 @@ namespace OctoAwesome.Runtime
             }
             observers.Clear();
         }
-
-
+        
     }
 }
