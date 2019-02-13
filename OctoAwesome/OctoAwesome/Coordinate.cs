@@ -164,7 +164,7 @@ namespace OctoAwesome
                 (int)Math.Floor(position.Z));
 
             block += shift;
-            position = position - shift;
+            position -= shift;
         }
 
         /// <summary>
@@ -210,5 +210,22 @@ namespace OctoAwesome
                     {(block.X + position.X).ToString("0.00")}/
                     {(block.Y + position.Y).ToString("0.00")}/
                     {(block.Z + position.Z).ToString("0.00")})";
+
+        /// <summary>
+        /// Compare this object with an other object
+        /// </summary>
+        /// <param name="obj">a other object</param>
+        /// <returns>true if both objects are equal</returns>
+        public override bool Equals(object obj)
+        {
+            if(obj is Coordinate coordinate)
+                return base.Equals(obj) || 
+                   ( Planet == coordinate.Planet &&
+                     position == coordinate.position &&
+                     block == coordinate.block
+                   );
+
+            return base.Equals(obj);
+        }
     }
 }

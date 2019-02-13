@@ -12,7 +12,10 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class PositionComponent : EntityComponent
     {
-        public Coordinate Position { get => position; set => SetValue(ref position, value); }
+        public Coordinate Position
+        {
+            get => position; set => SetValue(ref position, value);
+        }
 
         public float Direction { get; set; }
 
@@ -63,15 +66,16 @@ namespace OctoAwesome.EntityComponents
         {
             base.OnPropertyChanged(value, callerName);
 
-            if(callerName == nameof(Position))
+            if (callerName == nameof(Position))
             {
+
                 var updateNotification = new PropertyChangedNotification
                 {
                     Issuer = nameof(PositionComponent),
                     Property = callerName
                 };
 
-                using(var stream = new MemoryStream())
+                using (var stream = new MemoryStream())
                 using (var writer = new BinaryWriter(stream))
                 {
                     Serialize(writer, null);
@@ -86,14 +90,14 @@ namespace OctoAwesome.EntityComponents
         {
             base.OnUpdate(notification);
 
-            if(notification is PropertyChangedNotification changedNotification)
+            if (notification is PropertyChangedNotification changedNotification)
             {
-                if(changedNotification.Issuer == nameof(PositionComponent))
+                if (changedNotification.Issuer == nameof(PositionComponent))
                 {
-                    if(changedNotification.Property == nameof(Position))
+                    if (changedNotification.Property == nameof(Position))
                     {
-                        using(var stream = new MemoryStream(changedNotification.Value))
-                        using(var reader = new BinaryReader(stream))
+                        using (var stream = new MemoryStream(changedNotification.Value))
+                        using (var reader = new BinaryReader(stream))
                         {
                             Deserialize(reader, null);
                         }

@@ -12,7 +12,7 @@ namespace OctoAwesome.GameServer.Commands
 {
     public static class NotificationCommands
     {
-        private static IUpdateHub updateHub;
+        private static readonly IUpdateHub updateHub;
 
         static NotificationCommands()
         {

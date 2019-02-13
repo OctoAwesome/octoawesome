@@ -218,6 +218,9 @@ namespace OctoAwesome
 
         public void OnNext(Notification value)
         {
+            if (entities.Count < 1)
+                return;
+
             switch (value)
             {
                 case EntityNotification entityNotification:

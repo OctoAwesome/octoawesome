@@ -49,7 +49,7 @@ namespace OctoAwesome.GameServer.Commands
                 Entity = remotePlayer,
                 Type = EntityNotification.ActionType.Add
             }, DefaultChannels.Network);
-            
+
 
             return Serializer.Serialize(player, Program.ServerHandler.SimulationManager.DefinitionManager);
         }

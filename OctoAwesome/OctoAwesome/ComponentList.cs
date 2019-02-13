@@ -152,7 +152,8 @@ namespace OctoAwesome
                 if (!components.TryGetValue(type, out component))
                 {
                     component = (T)Activator.CreateInstance(type);
-                    components.Add(type, component);
+                    //components.Add(type, component);
+                    AddComponent(component);
                 }
 
                 component.Deserialize(reader, definitionManager);

@@ -59,7 +59,7 @@ namespace OctoAwesome.GameServer
                 logger.Trace("Received a new Package with ID: " + value.UId);
                 try
                 {
-                    value.Payload = defaultManager.Dispatch(value.Command, value.Payload) ?? new byte[0];
+                    value.Payload = defaultManager.Dispatch(value.Command, value.Payload);
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +68,10 @@ namespace OctoAwesome.GameServer
                 }
 
                 logger.Trace(value.Command);
+
+                if (value.Payload == null)
+                    return;
+
                 value.BaseClient.SendPackage(value);
             });
         }
