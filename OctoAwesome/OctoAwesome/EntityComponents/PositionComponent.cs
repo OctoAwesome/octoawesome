@@ -14,12 +14,25 @@ namespace OctoAwesome.EntityComponents
     {
         public Coordinate Position
         {
-            get => position; set => SetValue(ref position, value);
+            get => position; set
+            {
+
+                var valueBlockX = ((int)(value.BlockPosition.X * 100)) / 100f;
+                var valueBlockY = ((int)(value.BlockPosition.Y * 100)) / 100f;
+                var positionBlockX = ((int)(position.BlockPosition.X * 100)) / 100f;
+                var positionBlockY = ((int)(position.BlockPosition.Y * 100)) / 100f;
+
+                posUpdate = valueBlockX != positionBlockX || valueBlockY != positionBlockY
+                    || position.BlockPosition.Z != value.BlockPosition.Z;
+
+                SetValue(ref position, value);
+            }
         }
 
         public float Direction { get; set; }
 
         private Coordinate position;
+        private bool posUpdate;
 
         public PositionComponent()
         {
@@ -37,9 +50,6 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.X);
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
-            writer.Write(Position.ChunkIndex.X);
-            writer.Write(Position.ChunkIndex.Y);
-            writer.Write(Position.ChunkIndex.Z);
         }
 
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
@@ -54,19 +64,15 @@ namespace OctoAwesome.EntityComponents
             float posX = reader.ReadSingle();
             float posY = reader.ReadSingle();
             float posZ = reader.ReadSingle();
-            int chunkIndexX = reader.ReadInt32();
-            int chunkIndexY = reader.ReadInt32();
-            int chunkIndexZ = reader.ReadInt32();
 
             position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
-            //Position.ChunkIndex = new Index3(chunkIndexX, chunkIndexY, chunkIndexX);
         }
 
         protected override void OnPropertyChanged<T>(T value, string callerName)
         {
             base.OnPropertyChanged(value, callerName);
 
-            if (callerName == nameof(Position))
+            if (callerName == nameof(Position) && posUpdate)
             {
 
                 var updateNotification = new PropertyChangedNotification

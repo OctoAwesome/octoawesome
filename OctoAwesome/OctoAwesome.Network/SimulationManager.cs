@@ -64,6 +64,7 @@ namespace OctoAwesome.Network
             ResourceManager.NewUniverse("test_universe", 043848723);
 
             simulation = new Simulation(ResourceManager, extensionLoader);
+            simulation.IsServerSide = true;
             backgroundThread = new Thread(SimulationLoop)
             {
                 Name = "Simulation Loop",

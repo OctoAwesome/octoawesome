@@ -38,9 +38,9 @@ namespace OctoAwesome.GameServer.Commands
 
             var remotePlayer = new RemoteEntity(player);
 
-            remotePlayer.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 41), new Vector3(0, 0, 0)) });
+            remotePlayer.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
             remotePlayer.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            remotePlayer.Components.AddComponent(new BodyComponent());
+            remotePlayer.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
 
             Console.WriteLine(playername);
 

@@ -21,7 +21,7 @@ namespace OctoAwesome.GameServer
             var config = new LoggingConfiguration();
 
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
-            config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
             {
                 FileName = $"./logs/server-{DateTime.Now.ToString("ddMMyy_hhmmss")}.log"
             });

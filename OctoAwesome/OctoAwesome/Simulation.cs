@@ -15,6 +15,8 @@ namespace OctoAwesome
     {
         public IResourceManager ResourceManager { get; private set; }
 
+        public bool IsServerSide { get; set; }
+
         /// <summary>
         /// List of all Simulation Components.
         /// </summary>
@@ -52,6 +54,7 @@ namespace OctoAwesome
                 ValidateAddComponent, ValidateRemoveComponent, null, null);
 
             extensionResolver.ExtendSimulation(this);
+
         }
 
         private void ValidateAddComponent(SimulationComponent component)
@@ -218,7 +221,7 @@ namespace OctoAwesome
 
         public void OnNext(Notification value)
         {
-            if (entities.Count < 1)
+            if (entities.Count < 1 && !IsServerSide)
                 return;
 
             switch (value)
