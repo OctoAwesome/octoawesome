@@ -18,9 +18,11 @@ namespace OctoAwesome.Client
         public IUniverse CurrentUniverse => resourceManager.CurrentUniverse;
         public IGlobalChunkCache GlobalChunkCache => resourceManager.GlobalChunkCache;
 
+        private IDisposable chunkSubscription;
+
         public bool IsMultiplayer { get; private set; }
         public Player CurrentPlayer => resourceManager.CurrentPlayer;
-        
+
         public IUpdateHub UpdateHub { get; }
 
         private ResourceManager resourceManager;
@@ -61,15 +63,21 @@ namespace OctoAwesome.Client
             resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager);
             resourceManager.InsertUpdateHub(UpdateHub as UpdateHub);
 
+            chunkSubscription = UpdateHub.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
+            GlobalChunkCache.InsertUpdateHub(UpdateHub);
+
             IsMultiplayer = multiplayer;
 
             if (multiplayer)
             {
-                resourceManager.GlobalChunkCache.ChunkColumnChanged += (s,c) => {
+                resourceManager.GlobalChunkCache.ChunkColumnChanged += (s, c) =>
+                {
                     var networkPersistence = (NetworkPersistenceManager)persistenceManager;
                     networkPersistence.SendChangedChunkColumn(c);
                 };
             }
+
+
         }
 
         public void DeleteUniverse(Guid id) => resourceManager.DeleteUniverse(id);

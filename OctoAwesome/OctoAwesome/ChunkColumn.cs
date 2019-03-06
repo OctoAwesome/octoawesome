@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace OctoAwesome
     /// </summary>
     public class ChunkColumn : IChunkColumn
     {
+        private IGlobalChunkCache globalChunkCache;
+
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
@@ -352,7 +355,7 @@ namespace OctoAwesome
 
             for (int i = 0; i < Chunks.Length; i++) // ChangeCounter
                 counter[i] = reader.ReadInt32();
-            
+
             // Phase 2 (Block Definitionen)
             List<IDefinition> types = new List<IDefinition>();
             Dictionary<ushort, ushort> map = new Dictionary<ushort, ushort>();
@@ -428,5 +431,27 @@ namespace OctoAwesome
         }
 
         public event Action<IChunkColumn, IChunk, int> Changed;
+
+        public void SetCache(IGlobalChunkCache globalChunkCache)
+            => this.globalChunkCache = globalChunkCache;
+
+        public void OnUpdate(SerializableNotification notification)
+        {
+            if (notification is ChunkNotification chunkNotification)
+            {
+                chunkNotification.ChunkColumnIndex = Index;
+                globalChunkCache.OnUpdate(notification);
+            }
+        }
+
+        public void Update(SerializableNotification notification)
+        {
+            if (notification is ChunkNotification chunkNotification)
+            {
+                Chunks
+                    .FirstOrDefault(c => c.Index == chunkNotification.ChunkPos)
+                    .Update(notification);
+            }
+        }
     }
 }

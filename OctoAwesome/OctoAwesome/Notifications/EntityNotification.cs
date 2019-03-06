@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
-    public class EntityNotification : SerializableNotification
+    public sealed class EntityNotification : SerializableNotification
     {
         public ActionType Type { get; set; }
         public int EntityId { get; private set; }

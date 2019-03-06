@@ -31,6 +31,10 @@ namespace OctoAwesome.Network
                     var entityNotification = Serializer.Deserialize<EntityNotification>(package.Payload, definitionManager);
                     updateHub.Push(entityNotification, DefaultChannels.Simulation);
                     break;
+                case (ushort)OfficialCommand.ChunkNotification:
+                    var chunkNotification = Serializer.Deserialize<ChunkNotification>(package.Payload, definitionManager);
+                    updateHub.Push(chunkNotification, DefaultChannels.Chunk);
+                    break;
                 default:
                     break;
             }
@@ -45,6 +49,10 @@ namespace OctoAwesome.Network
                 case EntityNotification entityNotification:
                     command = (ushort)OfficialCommand.EntityNotification;
                     payload = Serializer.Serialize(entityNotification, definitionManager);
+                    break;
+                case ChunkNotification chunkNotification:
+                    command = (ushort)OfficialCommand.ChunkNotification;
+                    payload = Serializer.Serialize(chunkNotification, definitionManager);
                     break;
                 default:
                     return;

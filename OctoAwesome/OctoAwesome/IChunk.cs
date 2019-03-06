@@ -74,6 +74,8 @@ namespace OctoAwesome
         /// <param name="block">Die neue Block-ID</param>
         void SetBlock(int x, int y, int z, ushort block, int meta = 0);
 
+        void SetBlock(int flatIndex, ushort block, int meta = 0);
+
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>
@@ -109,6 +111,10 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
+
+        void SetColumn(IChunkColumn chunkColumn);
+        void Update(Notifications.SerializableNotification notification);
+        void OnUpdate(Notifications.SerializableNotification notification);
 
         event Action<IChunk, int> Changed;
     }

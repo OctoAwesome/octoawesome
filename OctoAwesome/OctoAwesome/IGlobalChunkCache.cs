@@ -1,11 +1,12 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basisinterface für einen Globalen Chunkcache
     /// </summary>
-    public interface IGlobalChunkCache
+    public interface IGlobalChunkCache : INotificationObserver
     {
         event EventHandler<IChunkColumn> ChunkColumnChanged;
 
@@ -58,5 +59,9 @@ namespace OctoAwesome
 
         void BeforeSimulationUpdate(Simulation simulation);
         void AfterSimulationUpdate(Simulation simulation);
+
+        void OnUpdate(SerializableNotification notification);
+        void Update(SerializableNotification notification);
+        void InsertUpdateHub(IUpdateHub updateHub);
     }
 }

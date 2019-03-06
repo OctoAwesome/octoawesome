@@ -79,7 +79,7 @@ namespace OctoAwesome
         {
             if (seed == null)
             {
-                Random rand = new Random();
+                var rand = new Random();
                 seed = rand.Next(int.MaxValue);
             }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,7 @@ namespace OctoAwesome
 
         // TODO: Früher oder später nach draußen auslagern
         private Thread cleanupThread;
+        private IUpdateHub updateHub;
 
 
         /// <summary>
@@ -329,6 +331,39 @@ namespace OctoAwesome
 
             }
         }
+
+        public void OnCompleted() { }
+
+        public void OnError(Exception error)
+            => throw error;
+
+        public void OnNext(Notification value)
+        {
+            switch (value)
+            {
+                case ChunkNotification chunkNotification:
+                    Update(chunkNotification);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnUpdate(SerializableNotification notification) 
+            => updateHub?.Push(notification, DefaultChannels.Network);
+
+        public void Update(SerializableNotification notification)
+        {
+            if (notification is ChunkNotification chunkNotification &&
+                cache.TryGetValue(new Index3(chunkNotification.ChunkColumnIndex, chunkNotification.Planet),
+                out var cacheItem))
+            {
+                cacheItem.ChunkColumn.Update(notification);
+            }
+        }
+
+        public void InsertUpdateHub(IUpdateHub updateHub) 
+            => this.updateHub = updateHub;
 
         /// <summary>
         /// Element für den Cache

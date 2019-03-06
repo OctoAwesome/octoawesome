@@ -26,5 +26,13 @@ namespace OctoAwesome.GameServer.Commands
             updateHub.Push(entityNotification, DefaultChannels.Simulation);
             return null;
         }
+
+        [Command((ushort)OfficialCommand.ChunkNotification)]
+        public static byte[] ChunkNotification(byte[] data)
+        {
+            var chunkNotification = Serializer.Deserialize<ChunkNotification>(data, null);
+            updateHub.Push(chunkNotification, DefaultChannels.Chunk);
+            return null;
+        }
     }
 }

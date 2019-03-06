@@ -15,7 +15,8 @@ namespace OctoAwesome.Network
         GetPlanet = 103,
         LoadColumn = 104,
         SaveColumn = 105,
-        //400 - 500 Entity Updates
-        EntityNotification = 401
+        //400 - 500 Notifications
+        EntityNotification = 401,
+        ChunkNotification = 402
     }
 }

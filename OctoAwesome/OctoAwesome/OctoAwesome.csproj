@@ -101,6 +101,7 @@
     <Compile Include="IResource.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Notifications\ChunkNotification.cs" />
     <Compile Include="Notifications\DefaultChannels.cs" />
     <Compile Include="Notifications\INotificationObservable.cs" />
     <Compile Include="Notifications\INotificationObserver.cs" />
