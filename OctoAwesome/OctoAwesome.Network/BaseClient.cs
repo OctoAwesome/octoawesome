@@ -10,7 +10,7 @@ namespace OctoAwesome.Network
 {
     public abstract class BaseClient : IObservable<Package>
     {
-        protected readonly Socket Socket;
+        protected Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
 
         private byte readSendQueueIndex;
@@ -25,14 +25,10 @@ namespace OctoAwesome.Network
         private readonly object sendLock;
         private readonly CancellationTokenSource cancellationTokenSource;
 
-        protected BaseClient(Socket socket)
+        protected BaseClient()
         {
             sendQueue = new (byte[] data, int len)[256];
             sendLock = new object();
-
-            Socket = socket;
-            Socket.NoDelay = true;
-
             ReceiveArgs = new SocketAsyncEventArgs();
             ReceiveArgs.Completed += OnReceived;
             ReceiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(1024 * 1024), 0, 1024 * 1024);
@@ -42,6 +38,11 @@ namespace OctoAwesome.Network
 
             observers = new ConcurrentBag<IObserver<Package>>();
             cancellationTokenSource = new CancellationTokenSource();
+        }
+        protected BaseClient(Socket socket): this()
+        {
+            Socket = socket;
+            Socket.NoDelay = true; 
         }
 
         public Task Start()

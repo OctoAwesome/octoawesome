@@ -35,6 +35,7 @@ namespace OctoAwesome
             foreach (var chunk in chunks)
             {
                 chunk.Changed += OnChunkChanged;
+                chunk.SetColumn(this);
             }
         }
 
@@ -377,6 +378,7 @@ namespace OctoAwesome
             {
                 IChunk chunk = Chunks[c] = new Chunk(new Index3(Index, c), Planet);
                 chunk.Changed += OnChunkChanged;
+                chunk.SetColumn(this);
 
                 for (int i = 0; i < chunk.Blocks.Length; i++)
                 {

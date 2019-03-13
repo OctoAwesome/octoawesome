@@ -4,6 +4,7 @@ using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,9 +50,42 @@ namespace OctoAwesome.Client
 
             if (multiplayer)
             {
-                var host = settings.Get<string>("server").Trim().Split(':');
+                var rawIpAddress = settings.Get<string>("server").Trim();
+                string host;
+                IPAddress iPAddress;
+                int port = -1;
+                if (rawIpAddress[0] == '[' || !IPAddress.TryParse(rawIpAddress, out iPAddress)) //IPV4 || IPV6 without port
+                {
+                    string stringIpAddress;
+                    if (rawIpAddress[0] == '[') // IPV6 with Port
+                    {
+                        port = int.Parse(rawIpAddress.Split(':').Last());
+                        stringIpAddress = rawIpAddress.Substring(1, rawIpAddress.IndexOf(']') - 1);
+                    }
+                    else if (rawIpAddress.Contains(':') && 
+                        IPAddress.TryParse(rawIpAddress.Substring(0, rawIpAddress.IndexOf(':')), out iPAddress)) //IPV4 with Port
+                    {
+                        port = int.Parse(rawIpAddress.Split(':').Last());
+                        stringIpAddress = iPAddress.ToString();
+                    }
+                    else if (rawIpAddress.Contains(':')) //Domain with Port
+                    {
+                        port = int.Parse(rawIpAddress.Split(':').Last());
+                        stringIpAddress = rawIpAddress.Split(':').First();
+                    }
+                    else //Domain without Port
+                    {
+                        stringIpAddress = rawIpAddress;
+                    }
+                    host = stringIpAddress;
+                }
+                else
+                {
+                    host = rawIpAddress;
+                }
+
                 var client = new Network.Client();
-                client.Connect(host[0], host.Length > 1 ? ushort.Parse(host[1]) : (ushort)8888);
+                client.Connect(host, port > 0 ? (ushort)port : (ushort)8888);
                 persistenceManager = new NetworkPersistenceManager(client, definitionManager);
                 networkUpdateManager = new NetworkUpdateManager(client, UpdateHub, definitionManager);
             }

@@ -14,20 +14,14 @@ using System.Net.NetworkInformation;
 namespace OctoAwesome.Network
 {
     public class Client : BaseClient
-    {        
-        public Client() :
-            base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-        {
-        }
-
+    {
         public void Connect(string host, ushort port)
         {
-            var address = Dns.GetHostAddresses(host).FirstOrDefault(
-                a => a.AddressFamily == Socket.AddressFamily);
-
+            var address = Dns.GetHostAddresses(host).FirstOrDefault();
+            Socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
         }
-        
+
         private void OnConnected(IAsyncResult ar)
         {
             Socket.EndConnect(ar);
@@ -35,7 +29,7 @@ namespace OctoAwesome.Network
             while (true)
             {
                 if (Socket.ReceiveAsync(ReceiveArgs))
-                    return; 
+                    return;
 
                 Receive(ReceiveArgs);
             }

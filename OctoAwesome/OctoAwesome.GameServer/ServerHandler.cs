@@ -36,7 +36,7 @@ namespace OctoAwesome.GameServer
         public void Start()
         {
             SimulationManager.Start(); //Temp
-            server.Start(IPAddress.Any, 8888);
+            server.Start(new IPEndPoint(IPAddress.Any, 8888), new IPEndPoint(IPAddress.IPv6Any, 8888));
             server.OnClientConnected += ServerOnClientConnected;
         }
 
