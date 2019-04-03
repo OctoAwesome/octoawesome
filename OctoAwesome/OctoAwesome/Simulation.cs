@@ -233,6 +233,8 @@ namespace OctoAwesome
                         AddEntity(entityNotification.Entity);
                     else if (entityNotification.Type == EntityNotification.ActionType.Update)
                         EntityUpdate(entityNotification);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Request)
+                        RequestEntity(entityNotification);
                     break;
                 default:
                     break;
@@ -250,11 +252,46 @@ namespace OctoAwesome
 
         public void OnUpdate(SerializableNotification notification)
         {
-            ResourceManager.UpdateHub.Push(notification, DefaultChannels.Network);
+            if (!IsServerSide)
+                ResourceManager.UpdateHub.Push(notification, DefaultChannels.Network);
         }
 
-        private void EntityUpdate(EntityNotification notification) 
-            => entities.First(e => e.Id == notification.EntityId).Update(notification.Notification);
+        private void EntityUpdate(EntityNotification notification)
+        {
+            var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
+            if (entity == null)
+            {
+                ResourceManager.UpdateHub.Push(new EntityNotification(notification.EntityId)
+                {
+                    Type = EntityNotification.ActionType.Request
+                }, DefaultChannels.Network);
+            }
+            else
+            {
+                entity.Update(notification.Notification);
+            }
+        }
 
+        private void RequestEntity(EntityNotification entityNotification)
+        {
+            if (!IsServerSide)
+                return;
+
+            var entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
+
+            if (entity == null)
+                return;
+
+            var remoteEntity = new RemoteEntity(entity);
+            remoteEntity.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            remoteEntity.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+
+            ResourceManager.UpdateHub.Push(new EntityNotification()
+            {
+                Entity = remoteEntity,
+                Type = EntityNotification.ActionType.Add
+            }, DefaultChannels.Network);
+        }
     }
 }

@@ -21,6 +21,11 @@ namespace OctoAwesome.Runtime
             }
             private set => player = value;
         }
+        /// <summary>
+        /// Der <see cref="IGlobalChunkCache"/>, der im Spiel verwendet werden soll.
+        /// </summary>
+        public IGlobalChunkCache GlobalChunkCache => globalChunkCache;
+        public IUpdateHub UpdateHub { get; private set; }
 
         private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
         private readonly bool disablePersistence = false;
@@ -68,13 +73,6 @@ namespace OctoAwesome.Runtime
         {
             UpdateHub = updateHub;
         }
-
-        /// <summary>
-        /// Der <see cref="IGlobalChunkCache"/>, der im Spiel verwendet werden soll.
-        /// </summary>
-        public IGlobalChunkCache GlobalChunkCache => globalChunkCache;
-        
-        public IUpdateHub UpdateHub { get; private set; }
 
         /// <summary>
         /// Erzuegt ein neues Universum.

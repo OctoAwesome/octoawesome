@@ -137,7 +137,7 @@ namespace OctoAwesome
                 if (cacheItem.ChunkColumn == null)
                 {
                     cacheItem.ChunkColumn = loadDelegate(planet, position);
-
+                    cacheItem.ChunkColumn.SetCache(this);
                     lock (updateLockObject)
                     {
                         newChunks.Enqueue(cacheItem);

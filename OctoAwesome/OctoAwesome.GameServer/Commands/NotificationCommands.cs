@@ -24,6 +24,7 @@ namespace OctoAwesome.GameServer.Commands
         {
             var entityNotification = Serializer.Deserialize<EntityNotification>(data, null);
             updateHub.Push(entityNotification, DefaultChannels.Simulation);
+            updateHub.Push(entityNotification, DefaultChannels.Network);
             return null;
         }
 
@@ -32,6 +33,7 @@ namespace OctoAwesome.GameServer.Commands
         {
             var chunkNotification = Serializer.Deserialize<ChunkNotification>(data, null);
             updateHub.Push(chunkNotification, DefaultChannels.Chunk);
+            updateHub.Push(chunkNotification, DefaultChannels.Network);
             return null;
         }
     }

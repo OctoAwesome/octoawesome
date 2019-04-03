@@ -25,6 +25,16 @@ namespace OctoAwesome.Notifications
 
         private Entity entity;
 
+        public EntityNotification()
+        {
+
+        }
+
+        public EntityNotification(int id) : this()
+        {
+            EntityId = id;
+        }
+
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager = null)
         {
             Type = (ActionType)reader.ReadInt32();
@@ -70,7 +80,8 @@ namespace OctoAwesome.Notifications
             None,
             Add,
             Remove,
-            Update
+            Update,
+            Request
         }
     }
 }

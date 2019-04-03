@@ -39,10 +39,10 @@ namespace OctoAwesome.Network
             observers = new ConcurrentBag<IObserver<Package>>();
             cancellationTokenSource = new CancellationTokenSource();
         }
-        protected BaseClient(Socket socket): this()
+        protected BaseClient(Socket socket) : this()
         {
             Socket = socket;
-            Socket.NoDelay = true; 
+            Socket.NoDelay = true;
         }
 
         public Task Start()
@@ -180,7 +180,10 @@ namespace OctoAwesome.Network
 
                 if (length - bufferOffset < Package.HEAD_LENGTH)
                 {
-                    throw new Exception("buffer is not enough for package");
+                    var ex = new Exception($"Buffer is to small for package head deserialization [length: {length} | offset: {bufferOffset}]");
+                    ex.Data.Add(nameof(length), length);
+                    ex.Data.Add(nameof(bufferOffset), bufferOffset);
+                    throw ex;
                 }
                 else
                 {

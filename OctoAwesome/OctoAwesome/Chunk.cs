@@ -212,6 +212,8 @@ namespace OctoAwesome
             {
                 Blocks[chunkNotification.FlatIndex] = chunkNotification.Block;
                 MetaData[chunkNotification.FlatIndex] = chunkNotification.Meta;
+                ChangeCounter++;
+                Changed?.Invoke(this, ChangeCounter);
             }
         }
 
