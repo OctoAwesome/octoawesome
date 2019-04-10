@@ -10,7 +10,7 @@ namespace OctoAwesome.Network
 {
     public abstract class BaseClient : IObservable<Package>
     {
-        private static uint NextId => nextId++;
+        private static uint NextId => ++nextId;
         private static uint nextId;
 
         static BaseClient()
