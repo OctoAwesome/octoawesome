@@ -8,6 +8,7 @@ namespace OctoAwesome.Notifications
 {
     public abstract class Notification
     {
+        public uint SenderId { get; set; }
 
         public virtual bool Match<T>(T filter)
         {

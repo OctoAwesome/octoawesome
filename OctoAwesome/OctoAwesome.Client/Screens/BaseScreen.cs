@@ -1,16 +1,12 @@
-﻿using MonoGameUi;
+﻿using engenious.Input;
+using MonoGameUi;
 using OctoAwesome.Client.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using engenious.Input;
 
 namespace OctoAwesome.Client.Screens
 {
     internal abstract class BaseScreen : Screen
     {
-        private AssetComponent assets;
+        private readonly AssetComponent assets;
 
         protected Button BackButton;
 
@@ -50,6 +46,14 @@ namespace OctoAwesome.Client.Screens
             }
 
             base.OnKeyPress(args);
+        }
+
+        protected void AddLabeledControl(Grid grid, string name, Control c)
+        {
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto });
+            grid.AddControl(new Label(Manager) { Text = name }, 0, grid.Rows.Count - 1);
+            grid.AddControl(c, 1, grid.Rows.Count - 1);
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 10 });
         }
 
     }

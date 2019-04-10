@@ -12,13 +12,13 @@ namespace OctoAwesome.GameServer.Commands
     public class ChunkCommands
     {
         [Command((ushort)OfficialCommand.LoadColumn)]
-        public static byte[] LoadColumn(byte[] data)
+        public static byte[] LoadColumn(CommandParameter parameter)
         {
             Guid guid;
             int planetId;
             Index2 index2;
 
-            using (var memoryStream = new MemoryStream(data))
+            using (var memoryStream = new MemoryStream(parameter.Data))
             using (var reader = new BinaryReader(memoryStream))
             {
                 guid = new Guid(reader.ReadBytes(16));
@@ -36,11 +36,11 @@ namespace OctoAwesome.GameServer.Commands
         }
 
         [Command((ushort)OfficialCommand.SaveColumn)]
-        public static byte[] SaveColumn(byte[] data)
+        public static byte[] SaveColumn(CommandParameter parameter)
         {
             var chunkColumn = new ChunkColumn();
 
-            using (var memoryStream = new MemoryStream(data))
+            using (var memoryStream = new MemoryStream(parameter.Data))
             using (var reader = new BinaryReader(memoryStream))
             {
                 chunkColumn.Deserialize(reader, Program.ServerHandler.SimulationManager.DefinitionManager);

@@ -67,7 +67,7 @@ namespace OctoAwesome.Client.Components
             Simulation = null;
         }
 
-        public Player LoginPlayer(Guid id)
+        public Player LoginPlayer(string playerName)
         {
             if (Simulation == null)
                 throw new NotSupportedException();
@@ -76,17 +76,10 @@ namespace OctoAwesome.Client.Components
                 throw new NotSupportedException();
 
             //TODO: [Network] Anstelle von ID einen einstellbaren Playernamen implementieren
-            Player player = resourceManager.LoadPlayer(id.ToString());
+            Player player = resourceManager.LoadPlayer(playerName);
             player.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             Simulation.AddEntity(player);
 
-            //TODO: Only Debugging
-            //var remotePlayer = new RemoteEntity();
-
-            //remotePlayer.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 75), new Vector3(0, 0, 0)) });
-            //remotePlayer.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            //remotePlayer.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            //Simulation.AddEntity(remotePlayer);
 
             return player;
         }

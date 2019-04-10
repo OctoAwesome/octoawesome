@@ -10,14 +10,14 @@ using System.Threading;
 
 namespace OctoAwesome.Network
 {
-    public class ConnectedClient : BaseClient, INotificationObserver
+    public sealed class ConnectedClient : BaseClient, INotificationObserver
     {
         public IDisposable NetworkChannelSubscription { get; set; }
         public IDisposable ServerSubscription { get; set; }
 
         public ConnectedClient(Socket socket) : base(socket)
         {
-
+            
         }
 
         public void OnCompleted()
@@ -32,6 +32,9 @@ namespace OctoAwesome.Network
 
         public void OnNext(Notification value)
         {
+            if (value.SenderId == Id)
+                return;
+
             OfficialCommand command;
             byte[] payload;
             switch (value)

@@ -10,6 +10,15 @@ namespace OctoAwesome.Network
 {
     public abstract class BaseClient : IObservable<Package>
     {
+        private static uint NextId => nextId++;
+        private static uint nextId;
+
+        static BaseClient()
+        {
+            nextId = 0;
+        }
+        public uint Id { get; }
+
         protected Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
 
@@ -38,6 +47,8 @@ namespace OctoAwesome.Network
 
             observers = new ConcurrentBag<IObserver<Package>>();
             cancellationTokenSource = new CancellationTokenSource();
+
+            Id = NextId;
         }
         protected BaseClient(Socket socket) : this()
         {

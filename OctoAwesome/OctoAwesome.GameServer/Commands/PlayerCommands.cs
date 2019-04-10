@@ -25,9 +25,9 @@ namespace OctoAwesome.GameServer.Commands
 
 
         [Command((ushort)OfficialCommand.Whoami)]
-        public static byte[] Whoami(byte[] data)
+        public static byte[] Whoami(CommandParameter parameter)
         {
-            string playername = Encoding.UTF8.GetString(data);
+            string playername = Encoding.UTF8.GetString(parameter.Data);
             var player = new Player();
 
             updateHub.Push(new EntityNotification()

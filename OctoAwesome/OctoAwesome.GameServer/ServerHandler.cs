@@ -19,7 +19,7 @@ namespace OctoAwesome.GameServer
 
         private readonly Logger logger;
         private readonly Server server;
-        private readonly DefaultCommandManager<ushort, byte[], byte[]> defaultManager;
+        private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
 
         public ServerHandler()
         {
@@ -30,7 +30,7 @@ namespace OctoAwesome.GameServer
 
             server = new Server();
             SimulationManager = new SimulationManager(new Settings(), updateHub);
-            defaultManager = new DefaultCommandManager<ushort, byte[], byte[]>(typeof(ServerHandler).Namespace + ".Commands");
+            defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
 
         public void Start()
@@ -59,7 +59,7 @@ namespace OctoAwesome.GameServer
                 logger.Trace("Received a new Package with ID: " + value.UId);
                 try
                 {
-                    value.Payload = defaultManager.Dispatch(value.Command, value.Payload);
+                    value.Payload = defaultManager.Dispatch(value.Command,new CommandParameter(value.BaseClient.Id, value.Payload));
                 }
                 catch (Exception ex)
                 {

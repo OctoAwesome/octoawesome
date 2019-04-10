@@ -181,7 +181,7 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
             settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
 
-            Player player = Manager.Game.Simulation.LoginPlayer(Guid.Empty);
+            Player player = Manager.Game.Simulation.LoginPlayer("");
             Manager.Game.Player.SetEntity(player);
             
             Manager.NavigateToScreen(new GameScreen(Manager));
