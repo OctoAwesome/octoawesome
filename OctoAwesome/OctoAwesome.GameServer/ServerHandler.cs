@@ -21,7 +21,7 @@ namespace OctoAwesome.GameServer
         private readonly Server server;
         private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
 
-        public ServerHandler()
+        public ServerHandler(ISettings settings)
         {
             logger = LogManager.GetCurrentClassLogger();
 
@@ -29,7 +29,8 @@ namespace OctoAwesome.GameServer
             UpdateHub = updateHub;
 
             server = new Server();
-            SimulationManager = new SimulationManager(new Settings(), updateHub);
+
+            SimulationManager = new SimulationManager(settings, updateHub);
             defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
 

@@ -349,7 +349,7 @@ namespace OctoAwesome
             }
         }
 
-        public void OnUpdate(SerializableNotification notification) 
+        public void OnUpdate(SerializableNotification notification)
             => updateHub?.Push(notification, DefaultChannels.Network);
 
         public void Update(SerializableNotification notification)
@@ -362,7 +362,7 @@ namespace OctoAwesome
             }
         }
 
-        public void InsertUpdateHub(IUpdateHub updateHub) 
+        public void InsertUpdateHub(IUpdateHub updateHub)
             => this.updateHub = updateHub;
 
         /// <summary>

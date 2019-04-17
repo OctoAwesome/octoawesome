@@ -62,9 +62,6 @@ namespace OctoAwesome.Network
             chunkSubscription = updateHub.Subscribe(ResourceManager.GlobalChunkCache, DefaultChannels.Chunk);
             ResourceManager.GlobalChunkCache.InsertUpdateHub(updateHub);
 
-            //For Release resourceManager.LoadUniverse(new Guid()); 
-            ResourceManager.NewUniverse("test_universe", 043848723);
-
             simulation = new Simulation(ResourceManager, extensionLoader)
             {
                 IsServerSide = true
@@ -80,8 +77,18 @@ namespace OctoAwesome.Network
         {
             IsRunning = true;
             GameTime = new GameTime();
+            
+            var universe = settings.Get<string>("LastUniverse");
 
-            simulation.NewGame("bla", 42);
+            if (string.IsNullOrWhiteSpace(universe) || true) //TODO: If the load mechanism is repaired remove true
+            {
+                var guid = simulation.NewGame("melmak", new Random().Next());
+                settings.Set("LastUniverse", guid.ToString());
+            }
+            else
+            {
+                simulation.LoadGame(new Guid(universe));
+            }
 
             backgroundThread.Start();
         }
@@ -102,7 +109,7 @@ namespace OctoAwesome.Network
 
         public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
 
-        public IChunkColumn LoadColumn(Guid guid, int planetId, Index2 index2) 
+        public IChunkColumn LoadColumn(Guid guid, int planetId, Index2 index2)
             => ResourceManager.LoadChunkColumn(planetId, index2);
 
         private void SimulationLoop()
