@@ -32,6 +32,7 @@ namespace OctoAwesome.Network
         public GameTime GameTime { get; private set; }
 
         public ResourceManager ResourceManager { get; private set; }
+        public GameService Service { get; }
 
         private Simulation simulation;
         private ExtensionLoader extensionLoader;
@@ -61,8 +62,8 @@ namespace OctoAwesome.Network
 
             chunkSubscription = updateHub.Subscribe(ResourceManager.GlobalChunkCache, DefaultChannels.Chunk);
             ResourceManager.GlobalChunkCache.InsertUpdateHub(updateHub);
-
-            simulation = new Simulation(ResourceManager, extensionLoader)
+            Service = new GameService(ResourceManager);
+            simulation = new Simulation(ResourceManager, extensionLoader, Service)
             {
                 IsServerSide = true
             };

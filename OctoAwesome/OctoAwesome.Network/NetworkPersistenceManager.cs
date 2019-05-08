@@ -84,7 +84,7 @@ namespace OctoAwesome.Network
         public Awaiter Load(out IUniverse universe, Guid universeGuid)
         {
             var package = new Package((ushort)OfficialCommand.GetUniverse, 0);
-            Thread.Sleep(60);
+            //Thread.Sleep(60);
 
             universe = new Universe();
             var awaiter = GetAwaiter(universe, package.UId);

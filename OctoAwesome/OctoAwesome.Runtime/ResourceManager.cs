@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Runtime
@@ -34,6 +35,7 @@ namespace OctoAwesome.Runtime
         private readonly List<IMapPopulator> populators = null;
         private Dictionary<int, IPlanet> planets;
         private Player player;
+        private readonly SemaphoreSlim semaphoreSlim;
 
         /// <summary>
         /// Das aktuell geladene Universum.
@@ -52,6 +54,7 @@ namespace OctoAwesome.Runtime
         /// <param name="settings">Einstellungen</param>
         public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager)
         {
+            semaphoreSlim = new SemaphoreSlim(1, 1);
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
             this.persistenceManager = persistenceManager;
@@ -168,6 +171,8 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
+            semaphoreSlim.Wait();
+
             if (!planets.TryGetValue(id, out IPlanet planet))
             {
                 // Versuch vorhandenen Planeten zu laden
@@ -190,7 +195,7 @@ namespace OctoAwesome.Runtime
 
                 planets.Add(id, planet);
             }
-
+            semaphoreSlim.Release();
             return planet;
         }
 
