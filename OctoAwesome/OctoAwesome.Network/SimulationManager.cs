@@ -82,7 +82,7 @@ namespace OctoAwesome.Network
 
             if (string.IsNullOrWhiteSpace(universe) || true) //TODO: If the load mechanism is repaired remove true
             {
-                var guid = simulation.NewGame("melmak", new Random().Next());
+                var guid = simulation.NewGame("melmack", new Random().Next());
                 settings.Set("LastUniverse", guid.ToString());
             }
             else
