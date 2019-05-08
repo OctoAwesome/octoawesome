@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Serialization;
+using System;
 using System.IO;
 
 namespace OctoAwesome
@@ -6,7 +7,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisschnittstelle für die Universen in OctoAwesome. Ein Universum beinhaltet verschiedene Planeten und entspricht einem Speicherstand.
     /// </summary>
-    public interface IUniverse
+    public interface IUniverse : ISerializable
     {
         /// <summary>
         /// ID des Universums
@@ -22,17 +23,5 @@ namespace OctoAwesome
         /// Der Generierungsseed des Universums
         /// </summary>
         int Seed { get; }
-
-        /// <summary>
-        /// Serialisiert das Usinerse in den angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Zielstream</param>
-        void Serialize(Stream stream);
-
-        /// <summary>
-        /// Deserialisiert das Universe aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Quellstream</param>
-        void Deserialize(Stream stream);
     }
 }

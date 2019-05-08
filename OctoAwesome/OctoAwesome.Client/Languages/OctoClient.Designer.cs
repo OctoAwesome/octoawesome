@@ -19,7 +19,7 @@ namespace OctoAwesome.Client.Languages {
     // -Klasse über ein Tool wie ResGen oder Visual Studio automatisch generiert.
     // Um einen Member hinzuzufügen oder zu entfernen, bearbeiten Sie die .ResX-Datei und führen dann ResGen
     // mit der /str-Option erneut aus, oder Sie erstellen Ihr VS-Projekt neu.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class OctoClient {
@@ -147,6 +147,15 @@ namespace OctoAwesome.Client.Languages {
         internal static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Connect ähnelt.
+        /// </summary>
+        internal static string Connect {
+            get {
+                return ResourceManager.GetString("Connect", resourceCulture);
             }
         }
         
@@ -345,6 +354,15 @@ namespace OctoAwesome.Client.Languages {
         internal static string LoadedChunks {
             get {
                 return ResourceManager.GetString("LoadedChunks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Multiplayer ähnelt.
+        /// </summary>
+        internal static string Multiplayer {
+            get {
+                return ResourceManager.GetString("Multiplayer", resourceCulture);
             }
         }
         

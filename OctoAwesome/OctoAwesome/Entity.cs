@@ -1,5 +1,7 @@
 ﻿using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 using System;
 using System.IO;
 
@@ -8,7 +10,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity
+    public abstract class Entity : ISerializable
     {
         /// <summary>
         /// Contains all Components.
@@ -24,6 +26,8 @@ namespace OctoAwesome
         /// Reference to the active Simulation.
         /// </summary>
         public Simulation Simulation { get; internal set; }
+
+       
 
         /// <summary>
         /// LocalChunkCache für die Entity
@@ -44,8 +48,10 @@ namespace OctoAwesome
             
         }
 
-        private void OnAddComponent(EntityComponent component) 
-            => component.SetEntity(this);
+        private void OnAddComponent(EntityComponent component)
+        {
+            component.SetEntity(this);
+        }
 
         private void ValidateAddComponent(EntityComponent component)
         {
@@ -73,20 +79,49 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager) 
-            => Components.Serialize(writer, definitionManager);
+        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        {
+            writer.Write(Id);
+
+            Components.Serialize(writer, definitionManager);
+        }
 
         /// <summary>
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager) 
-            => Components.Deserialize(reader, definitionManager);
+        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        {
+            Id = reader.ReadInt32();
+            Components.Deserialize(reader, definitionManager);
+        }
 
         public virtual void RegisterDefault()
         {
 
         }
+
+        public override int GetHashCode() => Id;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Entity entity)
+                return entity.Id == Id;
+
+            return base.Equals(obj);
+        }
+
+        public virtual void OnUpdate(SerializableNotification notification)
+        {
+        }
+
+
+        public virtual void Update(SerializableNotification notification)
+        {
+            foreach (var component in Components)
+                component?.OnUpdate(notification);
+        }
+        
     }
 }

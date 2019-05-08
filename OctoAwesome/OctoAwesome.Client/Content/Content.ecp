@@ -1,38 +1,41 @@
-﻿<Content>
-  <References />
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Content>
+  <Name>Content</Name>
   <Configuration>Debug</Configuration>
   <OutputDir>bin/{Configuration}/</OutputDir>
-  <Name>Content</Name>
   <Contents>
     <ContentFile>
       <Name>BoldFont.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>GameFont.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>HeadlineFont.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>Hud.fnt</Name>
       <Processor>FontProcessor</Processor>
-      <Importer />
+      <Importer>FontImporter</Importer>
     </ContentFile>
     <ContentFile>
       <Name>simple.glsl</Name>
       <Processor>EffectProcessor</Processor>
-      <Importer />
+      <Importer>Effect Importer</Importer>
+      <Settings>
+        <CreateUserEffect>True</CreateUserEffect>
+      </Settings>
     </ContentFile>
     <ContentFile>
       <Name>texdog.png</Name>
       <Processor>BitmapProcessor</Processor>
-      <Importer />
+      <Importer>Bitmap Importer</Importer>
       <Settings>
         <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
         <MipMapCount>1</MipMapCount>
@@ -42,7 +45,7 @@
     <ContentFile>
       <Name>dog.fbx</Name>
       <Processor>ModelProcessor</Processor>
-      <Importer />
+      <Importer>Model Importer</Importer>
       <Settings>
         <Scale>
           <X>1</X>

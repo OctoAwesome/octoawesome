@@ -74,36 +74,29 @@ namespace OctoAwesome
         /// Serialisiert den Planeten in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
-        public virtual void Serialize(Stream stream)
+        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.Write(Id);
-                writer.Write(Seed);
-                writer.Write(Gravity);
-                writer.Write(Size.X);
-                writer.Write(Size.Y);
-                writer.Write(Size.Z);
-                writer.Write(Universe.ToByteArray());
-                //writer.Write(Generator.GetType().FullName);
-            }
+            writer.Write(Id);
+            writer.Write(Seed);
+            writer.Write(Gravity);
+            writer.Write(Size.X);
+            writer.Write(Size.Y);
+            writer.Write(Size.Z);
+            writer.Write(Universe.ToByteArray());
         }
 
         /// <summary>
         /// Deserialisiert den Planeten aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
-        public virtual void Deserialize(Stream stream)
+        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
-            {
-                Id = reader.ReadInt32();
-                Seed = reader.ReadInt32();
-                Gravity = reader.ReadSingle();
-                Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                Universe = new Guid(reader.ReadBytes(16));
-                //var name = reader.ReadString();
-            }
+            Id = reader.ReadInt32();
+            Seed = reader.ReadInt32();
+            Gravity = reader.ReadSingle();
+            Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            Universe = new Guid(reader.ReadBytes(16));
+            //var name = reader.ReadString();
         }
     }
 }

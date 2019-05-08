@@ -10,11 +10,16 @@ namespace OctoAwesome.Basics.SimulationComponents
     [EntityFilter(typeof(MoveableComponent), typeof(BodyComponent))]
     public sealed class AccelerationComponent : SimulationComponent
     {
-        private List<AcceleratedEntity> acceleratedEntities = new List<AcceleratedEntity>();
+        private readonly List<AcceleratedEntity> acceleratedEntities;
+
+        public AccelerationComponent()
+        {
+            acceleratedEntities = new List<AcceleratedEntity>();
+        }
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var entity in acceleratedEntities)
+            foreach (var entity in acceleratedEntities.ToArray())
             {
                 // Convert external Forces to Powers
                 Vector3 power = ((entity.Move.ExternalForces * entity.Move.ExternalForces) / (2 * entity.Body.Mass)) * 

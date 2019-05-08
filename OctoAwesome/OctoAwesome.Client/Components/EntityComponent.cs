@@ -4,6 +4,7 @@ using engenious.Helper;
 using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace OctoAwesome.Client.Components
 
         public List<Entity> Entities { get; set; }
 
-        public EntityComponent(Game game, SimulationComponent simulation) : base(game)
+        public EntityComponent(OctoGame game, SimulationComponent simulation) : base(game)
         {
             Simulation = simulation;
 
@@ -37,67 +38,70 @@ namespace OctoAwesome.Client.Components
 
             effect = new BasicEffect(graphicsDevice);
         }
+
+        private int i = 0;
         public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
             effect.Projection = projection;
             effect.View = view;
             effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            foreach (var pass in effect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-
-                foreach (var entity in Entities)
+            using (var writer = File.AppendText(Path.Combine(".", "render.log")))
+                foreach (var pass in effect.CurrentTechnique.Passes)
                 {
-                    if (!entity.Components.ContainsComponent<RenderComponent>())
+                    pass.Apply();
+                    i++;
+                    foreach (var entity in Entities)
                     {
-                        continue;
-                    }
-
-                    var rendercomp = entity.Components.GetComponent<RenderComponent>();
-
-                    ModelInfo modelinfo;
-
-                    if (!models.TryGetValue(rendercomp.Name,out modelinfo))
-                    {
-                        modelinfo = new ModelInfo()
+                        if (!entity.Components.ContainsComponent<RenderComponent>())
                         {
-                            render = true,
-                            model = Game.Content.Load<Model>(rendercomp.ModelName),
-                            texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
-                    };
+                            continue;
+                        }
+
+                        var rendercomp = entity.Components.GetComponent<RenderComponent>();
+
+
+                        if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
+                        {
+                            modelinfo = new ModelInfo()
+                            {
+                                render = true,
+                                model = Game.Content.Load<Model>(rendercomp.ModelName),
+                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
+                            };
+                        }
+
+                        if (!modelinfo.render)
+                            continue;
+
+                        var positioncomp = entity.Components.GetComponent<PositionComponent>();
+                        var position = positioncomp.Position;
+                        var body = entity.Components.GetComponent<BodyComponent>();
+
+                        HeadComponent head = new HeadComponent();
+                        if (entity.Components.ContainsComponent<HeadComponent>())
+                            head = entity.Components.GetComponent<HeadComponent>();
+
+                        Index3 shift = chunkOffset.ShortestDistanceXY(
+                       position.ChunkIndex, planetSize);
+
+                        var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+
+                        Matrix world = Matrix.CreateTranslation(
+                            shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                            shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
+                        effect.World = world;
+                        modelinfo.model.Transform = world;
+
+                        modelinfo.model.Draw(effect, modelinfo.texture);
                     }
-
-                    if (!modelinfo.render)
-                        continue;
-
-                    var positioncomp = entity.Components.GetComponent<PositionComponent>();
-                    var position = positioncomp.Position;
-                    var body = entity.Components.GetComponent<BodyComponent>();
-
-                    HeadComponent head = new HeadComponent();
-                    if (entity.Components.ContainsComponent<HeadComponent>())
-                        head = entity.Components.GetComponent<HeadComponent>();
-
-                    Index3 shift = chunkOffset.ShortestDistanceXY(
-                   position.ChunkIndex, planetSize);
-
-                    var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
-
-                    Matrix world = Matrix.CreateTranslation(
-                        shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
-                        shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                        shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height)*Matrix.CreateRotationZ(rotation);
-                    effect.World = world;
-                    modelinfo.model.Transform = world;
-                    modelinfo.model.Draw(effect, modelinfo.texture);
                 }
-            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (Simulation.Simulation == null)
+            if (Simulation?.Simulation == null)
                 return;
 
             var simulation = Simulation.Simulation;

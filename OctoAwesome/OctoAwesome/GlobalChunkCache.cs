@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,9 @@ namespace OctoAwesome
     /// </summary>
     public sealed class GlobalChunkCache : IGlobalChunkCache
     {
+
+        public event EventHandler<IChunkColumn> ChunkColumnChanged;
+
         private readonly ConcurrentQueue<CacheItem> _dirtyItems = new ConcurrentQueue<CacheItem>();
         private readonly ConcurrentQueue<CacheItem> _unreferencedItems = new ConcurrentQueue<CacheItem>();
         private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
@@ -21,7 +25,7 @@ namespace OctoAwesome
         private Queue<CacheItem> newChunks;
         private Queue<CacheItem> oldChunks;
 
-        private object updateLockObject = new object();
+        private readonly object updateLockObject = new object();
 
         /// <summary>
         /// Funktion, die für das Laden der Chunks verwendet wird
@@ -42,6 +46,7 @@ namespace OctoAwesome
 
         // TODO: Früher oder später nach draußen auslagern
         private Thread cleanupThread;
+        private IUpdateHub updateHub;
 
 
         /// <summary>
@@ -132,7 +137,7 @@ namespace OctoAwesome
                 if (cacheItem.ChunkColumn == null)
                 {
                     cacheItem.ChunkColumn = loadDelegate(planet, position);
-
+                    cacheItem.ChunkColumn.SetCache(this);
                     lock (updateLockObject)
                     {
                         newChunks.Enqueue(cacheItem);
@@ -146,10 +151,11 @@ namespace OctoAwesome
         public bool IsChunkLoaded(int planet, Index2 position)
             => cache.ContainsKey(new Index3(position, planet));
 
-        private void ItemChanged(CacheItem obj)
+        private void ItemChanged(CacheItem obj, IChunkColumn chunkColumn)
         {
             _dirtyItems.Enqueue(obj);
             _autoResetEvent.Set();
+            ChunkColumnChanged?.Invoke(this, chunkColumn);
         }
 
         /// <summary>
@@ -191,10 +197,9 @@ namespace OctoAwesome
         /// <param name="position">Die Position des freizugebenden Chunks</param>
         public void Release(int planet, Index2 position, bool passive)
         {
-            CacheItem cacheItem;
             lock (lockObject)
             {
-                if (!cache.TryGetValue(new Index3(position, planet), out cacheItem))
+                if (!cache.TryGetValue(new Index3(position, planet), out CacheItem cacheItem))
                 {
                     if (!passive)
                     {
@@ -327,6 +332,39 @@ namespace OctoAwesome
             }
         }
 
+        public void OnCompleted() { }
+
+        public void OnError(Exception error)
+            => throw error;
+
+        public void OnNext(Notification value)
+        {
+            switch (value)
+            {
+                case ChunkNotification chunkNotification:
+                    Update(chunkNotification);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnUpdate(SerializableNotification notification)
+            => updateHub?.Push(notification, DefaultChannels.Network);
+
+        public void Update(SerializableNotification notification)
+        {
+            if (notification is ChunkNotification chunkNotification &&
+                cache.TryGetValue(new Index3(chunkNotification.ChunkColumnIndex, chunkNotification.Planet),
+                out var cacheItem))
+            {
+                cacheItem.ChunkColumn.Update(notification);
+            }
+        }
+
+        public void InsertUpdateHub(IUpdateHub updateHub)
+            => this.updateHub = updateHub;
+
         /// <summary>
         /// Element für den Cache
         /// </summary>
@@ -362,10 +400,10 @@ namespace OctoAwesome
                 }
             }
 
-            public event Action<CacheItem> Changed;
+            public event Action<CacheItem, IChunkColumn> Changed;
 
-            private void OnChanged(IChunkColumn arg1, IChunk arg2, int arg3)
-                => Changed?.Invoke(this);
+            private void OnChanged(IChunkColumn chunkColumn, IChunk chunk, int changeCounter)
+                => Changed?.Invoke(this, chunkColumn);
         }
     }
 }

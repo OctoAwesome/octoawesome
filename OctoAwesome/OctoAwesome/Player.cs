@@ -4,6 +4,7 @@ using engenious;
 using System.IO;
 using System.Linq;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -42,5 +43,20 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
             => base.Deserialize(reader, definitionManager); // Entity
+
+        public override void OnUpdate(SerializableNotification notification)
+        {
+            base.OnUpdate(notification);
+
+            var entityNotification = new EntityNotification
+            {
+                Entity = this,
+                Type = EntityNotification.ActionType.Update,
+                Notification = notification as PropertyChangedNotification
+            };
+
+            Simulation?.OnUpdate(entityNotification);
+        }
+        
     }
 }

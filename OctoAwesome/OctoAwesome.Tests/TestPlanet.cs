@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Tests
 {
-    class TestPlanet : IPlanet
+    internal class TestPlanet : IPlanet
     {
         public TestPlanet(Guid universe, int id, Index3 size)
         {
@@ -31,14 +28,7 @@ namespace OctoAwesome.Tests
 
         IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public void Deserialize(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Serialize(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
+        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager) => throw new NotImplementedException();
+        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager) => throw new NotImplementedException();
     }
 }

@@ -26,6 +26,9 @@ namespace OctoAwesome.Basics
 
         public void Populate(IResourceManager resourcemanager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11)
         {
+
+            return;
+
             if (ispop-- <= 0)
                 return;
 

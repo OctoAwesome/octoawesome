@@ -11,7 +11,7 @@ namespace OctoAwesome.Client.Components
 
         public PlayerComponent Player { get { return Game.Player; } }
 
-        public CameraComponent Camera { get { return Game.Camera; } }
+        public CameraComponent Camera => Game.Camera;
 
         public ScreenComponent(OctoGame game) : base(game)
         {

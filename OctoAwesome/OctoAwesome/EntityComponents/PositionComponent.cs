@@ -1,8 +1,10 @@
 ﻿using engenious;
+using OctoAwesome.Notifications;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +12,32 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class PositionComponent : EntityComponent
     {
-        public Coordinate Position { get; set; }
+        public Coordinate Position
+        {
+            get => position; set
+            {
+
+                var valueBlockX = ((int)(value.BlockPosition.X * 100)) / 100f;
+                var valueBlockY = ((int)(value.BlockPosition.Y * 100)) / 100f;
+                var positionBlockX = ((int)(position.BlockPosition.X * 100)) / 100f;
+                var positionBlockY = ((int)(position.BlockPosition.Y * 100)) / 100f;
+
+                posUpdate = valueBlockX != positionBlockX || valueBlockY != positionBlockY
+                    || position.BlockPosition.Z != value.BlockPosition.Z;
+
+                SetValue(ref position, value);
+            }
+        }
 
         public float Direction { get; set; }
+
+        private Coordinate position;
+        private bool posUpdate;
+
+        public PositionComponent()
+        {
+            Sendable = true;
+        }
 
         public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
@@ -25,9 +50,6 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.X);
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
-            writer.Write(Position.ChunkIndex.X);
-            writer.Write(Position.ChunkIndex.Y);
-            writer.Write(Position.ChunkIndex.Z);
         }
 
         public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
@@ -43,7 +65,51 @@ namespace OctoAwesome.EntityComponents
             float posY = reader.ReadSingle();
             float posZ = reader.ReadSingle();
 
-            Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+            position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+        }
+
+        protected override void OnPropertyChanged<T>(T value, string callerName)
+        {
+            base.OnPropertyChanged(value, callerName);
+
+            if (callerName == nameof(Position) && posUpdate)
+            {
+
+                var updateNotification = new PropertyChangedNotification
+                {
+                    Issuer = nameof(PositionComponent),
+                    Property = callerName
+                };
+
+                using (var stream = new MemoryStream())
+                using (var writer = new BinaryWriter(stream))
+                {
+                    Serialize(writer, null);
+                    updateNotification.Value = stream.ToArray();
+                }
+
+                Update(updateNotification);
+            }
+        }
+
+        public override void OnUpdate(SerializableNotification notification)
+        {
+            base.OnUpdate(notification);
+
+            if (notification is PropertyChangedNotification changedNotification)
+            {
+                if (changedNotification.Issuer == nameof(PositionComponent))
+                {
+                    if (changedNotification.Property == nameof(Position))
+                    {
+                        using (var stream = new MemoryStream(changedNotification.Value))
+                        using (var reader = new BinaryReader(stream))
+                        {
+                            Deserialize(reader, null);
+                        }
+                    }
+                }
+            }
         }
     }
 }

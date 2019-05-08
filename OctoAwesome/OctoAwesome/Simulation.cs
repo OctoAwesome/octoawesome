@@ -1,23 +1,21 @@
-﻿using System;
+﻿using engenious;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using engenious;
-using OctoAwesome.Common;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Schnittstelle zwischen Applikation und Welt-Modell.
     /// </summary>
-    public sealed class Simulation
+    public sealed class Simulation : INotificationObserver
     {
-        // private List<ActorHost> actorHosts = new List<ActorHost>();
-        // private Stopwatch watch = new Stopwatch();
-        // private Thread thread;
-
         public IResourceManager ResourceManager { get; private set; }
+
+        public bool IsServerSide { get; set; }
 
         /// <summary>
         /// List of all Simulation Components.
@@ -48,7 +46,8 @@ namespace OctoAwesome
 
         private readonly IExtensionResolver extensionResolver;
 
-        private HashSet<Entity> entities = new HashSet<Entity>();
+        private readonly HashSet<Entity> entities = new HashSet<Entity>();
+        private readonly IDisposable simmulationSubscription;
 
         /// <summary>
         /// Erzeugt eine neue Instaz der Klasse Simulation.
@@ -56,6 +55,7 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
         {
             ResourceManager = resourceManager;
+            simmulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
@@ -66,6 +66,7 @@ namespace OctoAwesome
                 ValidateAddComponent, ValidateRemoveComponent, null, null);
 
             extensionResolver.ExtendSimulation(this);
+
         }
 
         private void ValidateAddComponent(SimulationComponent component)
@@ -90,7 +91,7 @@ namespace OctoAwesome
         {
             if (seed == null)
             {
-                Random rand = new Random();
+                var rand = new Random();
                 seed = rand.Next(int.MaxValue);
             }
 
@@ -183,7 +184,12 @@ namespace OctoAwesome
             extensionResolver.ExtendEntity(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
-            entity.Id = nextId++;
+
+            if (entity.Id == 0)
+                entity.Id = nextId++;
+            else
+                nextId++;
+
             entities.Add(entity);
 
             foreach (var component in Components)
@@ -196,11 +202,11 @@ namespace OctoAwesome
         /// <param name="entity">Entity die entfert werden soll</param>
         public void RemoveEntity(Entity entity)
         {
-            if (entity.Id == 0)
-                return;
-
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
+
+            if (entity.Id == 0)
+                return;
 
             if (entity.Simulation != this)
             {
@@ -221,6 +227,83 @@ namespace OctoAwesome
             entity.Simulation = null;
 
             ResourceManager.SaveEntity(entity);
+        }
+        public void RemoveEntity(int entityId)
+            => RemoveEntity(entities.First(e => e.Id == entityId));
+
+        public void OnNext(Notification value)
+        {
+            if (entities.Count < 1 && !IsServerSide)
+                return;
+
+            switch (value)
+            {
+                case EntityNotification entityNotification:
+                    if (entityNotification.Type == EntityNotification.ActionType.Remove)
+                        RemoveEntity(entityNotification.EntityId);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Add)
+                        AddEntity(entityNotification.Entity);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Update)
+                        EntityUpdate(entityNotification);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Request)
+                        RequestEntity(entityNotification);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void OnError(Exception error)
+        {
+            throw error;
+        }
+
+        public void OnCompleted()
+        {
+        }
+
+        public void OnUpdate(SerializableNotification notification)
+        {
+            if (!IsServerSide)
+                ResourceManager.UpdateHub.Push(notification, DefaultChannels.Network);
+        }
+
+        private void EntityUpdate(EntityNotification notification)
+        {
+            var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
+            if (entity == null)
+            {
+                ResourceManager.UpdateHub.Push(new EntityNotification(notification.EntityId)
+                {
+                    Type = EntityNotification.ActionType.Request
+                }, DefaultChannels.Network);
+            }
+            else
+            {
+                entity.Update(notification.Notification);
+            }
+        }
+
+        private void RequestEntity(EntityNotification entityNotification)
+        {
+            if (!IsServerSide)
+                return;
+
+            var entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
+
+            if (entity == null)
+                return;
+
+            var remoteEntity = new RemoteEntity(entity);
+            remoteEntity.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            remoteEntity.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+
+            ResourceManager.UpdateHub.Push(new EntityNotification()
+            {
+                Entity = remoteEntity,
+                Type = EntityNotification.ActionType.Add
+            }, DefaultChannels.Network);
         }
     }
 }

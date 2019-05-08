@@ -1,12 +1,14 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basisinterface für einen Globalen Chunkcache
     /// </summary>
-    public interface IGlobalChunkCache
+    public interface IGlobalChunkCache : INotificationObserver
     {
+        event EventHandler<IChunkColumn> ChunkColumnChanged;
 
         /// <summary>
         /// Die Zahl der geladenen Chunks zurück
@@ -49,7 +51,7 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
         void Release(int planet, Index2 position, bool passive);
-
+        
         /// <summary>
         /// Löscht den gesamten Inhalt des Caches.
         /// </summary>
@@ -57,5 +59,9 @@ namespace OctoAwesome
 
         void BeforeSimulationUpdate(Simulation simulation);
         void AfterSimulationUpdate(Simulation simulation);
+
+        void OnUpdate(SerializableNotification notification);
+        void Update(SerializableNotification notification);
+        void InsertUpdateHub(IUpdateHub updateHub);
     }
 }

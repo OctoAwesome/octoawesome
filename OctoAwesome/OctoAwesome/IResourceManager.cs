@@ -1,3 +1,4 @@
+using OctoAwesome.Notifications;
 using System;
 
 namespace OctoAwesome
@@ -75,7 +76,12 @@ namespace OctoAwesome
         /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.
         /// </summary>
         IGlobalChunkCache GlobalChunkCache { get; }
+        
+        IUpdateHub UpdateHub { get; }
+
+        Player CurrentPlayer { get; }
 
         void SaveEntity(Entity entity);
+        void SaveChunkColumn(IChunkColumn value);
     }
 }

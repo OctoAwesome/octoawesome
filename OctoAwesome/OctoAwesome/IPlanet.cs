@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Serialization;
+using System;
 using System.IO;
 
 namespace OctoAwesome
@@ -6,7 +7,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basis Schnittstelle für alle Implementierungen von Planeten.
     /// </summary>
-    public interface IPlanet
+    public interface IPlanet : ISerializable
     {
         /// <summary>
         /// ID des Planeten.
@@ -43,16 +44,5 @@ namespace OctoAwesome
         /// </summary>
         IMapGenerator Generator { get; set; }
 
-        /// <summary>
-        /// Serialisiert den Chunk in den angegebenen Stream
-        /// </summary>
-        /// <param name="stream">Zielstream</param>
-        void Serialize(Stream stream);
-
-        /// <summary>
-        /// Deserialisiert den Chunk aus dem angegebenen Stream
-        /// </summary>
-        /// <param name="stream">Quellstream</param>
-        void Deserialize(Stream stream);
     }
 }

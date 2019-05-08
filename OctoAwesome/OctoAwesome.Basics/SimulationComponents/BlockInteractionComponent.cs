@@ -102,6 +102,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             if (inventory.RemoveUnit(toolbar.ActiveTool))
                             {
                                 entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                entity.Cache.SetBlockMeta(idx, (int)controller.ApplySide);
                                 if (toolbar.ActiveTool.Amount <= 0)
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
                             }

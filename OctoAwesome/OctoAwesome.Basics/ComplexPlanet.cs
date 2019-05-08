@@ -39,12 +39,12 @@ namespace OctoAwesome.Basics
 
         public ComplexPlanet() : base()
         {
-            //Initalize();
+            Initalize();
         }
 
-        public override void Deserialize(Stream stream)
+        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            base.Deserialize(stream);
+            base.Deserialize(reader, definitionManager);
             Initalize();
         }
 
