@@ -9,3 +9,7 @@ Angefangen mit einem Zelda-ähnlichen 2D-Spiel im Comic-Stil (ca. Folge 1-30) ha
 Die Branches `master` und `develop` werden hier dokumentiert. Der master-Branch ist der letzte stabile Stand, der develop-Branch ist die aktuelle Entwicklungsversion. Feature-Branches werden nicht dokumentiert.
 
 **Hinweis**: Die Dokumentation des develop-Branches ist möglicherweise nicht aktuell.
+
+## Weitere Informationen
+Weitere Informationen zu OctoAwsome findet man auf der [Projekthomepage](http://www.octoawesome.net/) und im [Projektwiki](http://wiki.octoawesome.net/). Dort finden sich auf Informationen zu den wöchentlichen Entwicklungs-Livestreams.
+

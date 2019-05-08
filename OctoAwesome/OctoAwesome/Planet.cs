@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace OctoAwesome
 {
@@ -34,23 +35,28 @@ namespace OctoAwesome
         public Index3 Size { get; private set; }
 
         /// <summary>
+        /// Gravitation des Planeten.
+        /// </summary>
+        public float Gravity { get; protected set; }
+
+        /// <summary>
         /// Der Generator des Planeten.
         /// </summary>
         public IMapGenerator Generator { get; set; }
 
         /// <summary>
-        /// Initialisierung des Planeten
+        /// Initialisierung des Planeten.
         /// </summary>
-        /// <param name="id">ID des Planeten</param>
-        /// <param name="universe">ID des Universums</param>
-        /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
-        /// <param name="seed">Seed des Zufallsgenerators</param>
+        /// <param name="id">ID des Planeten.</param>
+        /// <param name="universe">ID des Universums.</param>
+        /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
+        /// <param name="seed">Seed des Zufallsgenerators.</param>
         public Planet(int id, Guid universe, Index3 size, int seed)
         {
             Id = id;
             Universe = universe;
             Size = new Index3(
-                (int)Math.Pow(2, size.X), 
+                (int)Math.Pow(2, size.X),
                 (int)Math.Pow(2, size.Y),
                 (int)Math.Pow(2, size.Z));
             Seed = seed;
@@ -68,18 +74,29 @@ namespace OctoAwesome
         /// Serialisiert den Planeten in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
-        public virtual void Serialize(Stream stream)
+        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
-            throw new NotImplementedException();
+            writer.Write(Id);
+            writer.Write(Seed);
+            writer.Write(Gravity);
+            writer.Write(Size.X);
+            writer.Write(Size.Y);
+            writer.Write(Size.Z);
+            writer.Write(Universe.ToByteArray());
         }
 
         /// <summary>
         /// Deserialisiert den Planeten aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
-        public virtual void Deserialize(Stream stream)
+        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            throw new NotImplementedException();
+            Id = reader.ReadInt32();
+            Seed = reader.ReadInt32();
+            Gravity = reader.ReadSingle();
+            Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            Universe = new Guid(reader.ReadBytes(16));
+            //var name = reader.ReadString();
         }
     }
 }

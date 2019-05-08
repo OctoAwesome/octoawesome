@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,12 +9,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctoAwesome.Basics</RootNamespace>
     <AssemblyName>OctoAwesome.Basics</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,6 +29,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <DocumentationFile>..\bin\Debug\OctoAwesome.Basics.XML</DocumentationFile>
     <NoWarn>CS1591,1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,12 +40,9 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\bin\Release\OctoAwesome.Basics.XML</DocumentationFile>
     <NoWarn>CS1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -53,10 +53,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Biomes\BiomeBase.cs" />
+    <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
+    <Compile Include="Entities\WauziEntity.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="Biomes\FlatlandBiome.cs" />
     <Compile Include="Biomes\HighMountainBiome.cs" />
     <Compile Include="Biomes\HillsBiome.cs" />
     <Compile Include="Biomes\IBiome.cs" />
+    <Compile Include="EntityComponents\BodyPowerComponent.cs" />
+    <Compile Include="EntityComponents\CollisionComponent.cs" />
+    <Compile Include="EntityComponents\MassComponent.cs" />
+    <Compile Include="EntityComponents\BoxCollisionComponent.cs" />
+    <Compile Include="EntityComponents\EntityCollisionComponent.cs" />
     <Compile Include="Definitions\Blocks\BirchWoodBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\CactusBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\GravelBlockDefinition.cs" />
@@ -67,13 +76,17 @@
     <Compile Include="Definitions\Blocks\PlankBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\BirchTreeDefinition.cs" />
     <Compile Include="Definitions\Trees\CactusTreeDefinition.cs" />
+    <Compile Include="EntityComponents\ForceComponent.cs" />
+    <Compile Include="EntityComponents\GravityComponent.cs" />
+    <Compile Include="EntityComponents\MoveableComponent.cs" />
+    <Compile Include="EntityComponents\PowerComponent.cs" />
     <Compile Include="ITreeDefinition.cs" />
     <Compile Include="Noise\INoise.cs" />
     <Compile Include="Biomes\LandBiomeGenerator.cs" />
     <Compile Include="Noise\PerlinNoiseGenerator.cs" />
     <Compile Include="Noise\SimplexNoiseGenerator.cs" />
     <Compile Include="Biomes\OceanBiomeGenerator.cs" />
-    <Compile Include="Biomes\SuperBiomeBase.cs" />
+    <Compile Include="Biomes\LargeBiomeBase.cs" />
     <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
     <Compile Include="Definitions\Blocks\IceBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\LeavesBlockDefinition.cs" />
@@ -89,10 +102,7 @@
     <Compile Include="DebugMapGenerator.cs" />
     <Compile Include="Definitions\Blocks\GrassBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\GroundBlockDefinition.cs" />
-    <Compile Include="IronOre.cs" />
-    <Compile Include="IronOreDefinition.cs" />
     <Compile Include="Definitions\Items\Pickaxe.cs" />
-    <Compile Include="Definitions\Items\PickaxeDefinition.cs" />
     <Compile Include="Languages\OctoBasics.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -111,12 +121,22 @@
     <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
     <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
     <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
+    <Compile Include="SimulationComponents\BlockInteractionComponent.cs" />
+    <Compile Include="SimulationComponents\CollisionComponent.cs" />
+    <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
+    <Compile Include="SimulationComponents\MoveComponent.cs" />
+    <Compile Include="SimulationComponents\AccelerationComponent.cs" />
+    <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
+    <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
+    <Compile Include="SimulationComponents\WattMoverComponent.cs" />
     <Compile Include="TreeDefinition.cs" />
     <Compile Include="TreePopulator.cs" />
+    <Compile Include="Definitions\Items\PickAxeDefinition.cs" />
+    <Compile Include="WauziPopulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
+      <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
       <Name>OctoAwesome</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -133,102 +153,53 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\brick_grey.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\brick_red.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cactus_inside.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cactus_side.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cactus_top.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_blue.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_green.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_red.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\cotton_tan.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt_grass.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\dirt_snow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\grass_top.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\gravel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\greystone.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\ice.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\leaves.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\leaves_orange.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\birch_wood_side.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\birch_wood_top.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\planks.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\planks_red.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\redstone.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Items\pick_iron.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\sand.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\snow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\stone.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\water.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\wood_side.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\OctoAwesome.Basics\Blocks\wood_top.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="Assets\Definitions\Blocks\dirt.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\brick_grey.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\brick_red.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cactus_inside.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cactus_side.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cactus_top.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_blue.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_green.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_red.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_tan.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\dirt_grass.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\dirt_snow.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\grass_top.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\gravel.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\greystone.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\ice.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\leaves.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\leaves_orange.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\birch_wood_side.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\birch_wood_top.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\planks.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\planks_red.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\redstone.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\pick_iron.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\sand.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\snow.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\stone.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\water.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\wood_side.png" />
+    <EmbeddedResource Include="Assets\Definitions\Blocks\wood_top.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Biomes\Noise\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
+      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
+      <Name>OctoAwesome</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Definitions\Items\wauziegg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="engenious">
+      <Version>0.2.0-alpha</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

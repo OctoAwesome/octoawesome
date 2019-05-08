@@ -20,14 +20,14 @@ namespace OctoAwesome.Client
         static void Main()
         {
             using (game = new OctoGame())
-                game.Run();
+                game.Run(60,60);
         }
 
         public static void Restart()
         {
             game.Exit();
             using (game = new OctoGame())
-                game.Run();
+                game.Run(60,60);
         }
     }
 #endif

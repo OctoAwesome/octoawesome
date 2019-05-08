@@ -28,11 +28,11 @@ namespace OctoAwesome
         /// <summary>
         /// Generiert eine Säule von Chunks in der Höhe des Planeten.
         /// </summary>
-        /// <param name="blockDefinitions">Alle im Spiel verfügbaren Bläcke</param>
+        /// <param name="definitionManager">Referenz auf den Definition Manager</param>
         /// <param name="planet">Der Planet für den der Chunk generiert wird</param>
         /// <param name="index">Die Position des neu generierten Chunks</param>
         /// <returns>Eine Säule von neu generierten Chunks</returns>
-        IChunkColumn GenerateColumn(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index);
+        IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index);
 
         /// <summary>
         /// Generiert eine Säule von Chunks in der Höhe des Planeten aus dem angegebenen Stream.

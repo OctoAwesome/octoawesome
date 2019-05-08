@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Xml.Serialization;
+using engenious;
 
 namespace OctoAwesome
 {
@@ -64,8 +64,8 @@ namespace OctoAwesome
         /// </summary>
         public Index3 GlobalBlockIndex
         {
-            get { return block; }
-            set { block = value; }
+            get => block;
+            set => block = value;
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace OctoAwesome
                 (int)Math.Floor(position.Z));
 
             block += shift;
-            position = position - shift;
+            position -= shift;
         }
 
         /// <summary>
@@ -200,21 +200,32 @@ namespace OctoAwesome
         /// <param name="i2"></param>
         /// <returns>Das Ergebnis der Addition</returns>
         public static Coordinate operator +(Coordinate i1, Vector3 i2)
-        {
-            return new Coordinate(i1.Planet, i1.block, i1.position + i2);
-        }
+            => new Coordinate(i1.Planet, i1.block, i1.position + i2);
 
         /// <summary>
         /// Stellt die Coordinate-Instanz als string dar.
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString() => $@"({ Planet }/
+                    {(block.X + position.X).ToString("0.00")}/
+                    {(block.Y + position.Y).ToString("0.00")}/
+                    {(block.Z + position.Z).ToString("0.00")})";
+
+        /// <summary>
+        /// Compare this object with an other object
+        /// </summary>
+        /// <param name="obj">a other object</param>
+        /// <returns>true if both objects are equal</returns>
+        public override bool Equals(object obj)
         {
-            return
-                "(" + Planet + "/" +
-                (block.X + position.X).ToString("0.00") + "/" +
-                (block.Y + position.Y).ToString("0.00") + "/" +
-                (block.Z + position.Z).ToString("0.00") + ")";
+            if(obj is Coordinate coordinate)
+                return base.Equals(obj) || 
+                   ( Planet == coordinate.Planet &&
+                     position == coordinate.position &&
+                     block == coordinate.block
+                   );
+
+            return base.Equals(obj);
         }
     }
 }

@@ -3,16 +3,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Ein Universum von OctoAwesome. Ein Universum beinhaltet verschiedene Planeten und entspricht einem Speicherstand.
     /// </summary>
-    [Serializable]
     public class Universe : IUniverse
     {
+        /// <summary>
+        /// ID des Universums
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Der Name des Universums
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Universe Seed
+        /// </summary>
+        public int Seed { get; set; }
+
         /// <summary>
         /// Erzeugt eine neue Instanz eines Universums
         /// </summary>
@@ -34,44 +47,28 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// ID des Universums
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Der Name des Universums
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Universe Seed
-        /// </summary>
-        public int Seed { get; set; }
-
-        /// <summary>
         /// Deserialisiert ein Universum aus dem angegebenen Stream
         /// </summary>
         /// <param name="stream"></param>
-        public void Deserialize(Stream stream)
+        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Universe));
-            IUniverse restored = serializer.Deserialize(stream) as IUniverse;
-            if (restored == null)
-                throw new Exception();
-
-            Id = restored.Id;
-            Name = restored.Name;
-            Seed = restored.Seed;
+            var tmpGuid = reader.ReadString();
+            Id = new Guid(tmpGuid);
+            Name = reader.ReadString();
+            Seed = reader.ReadInt32();
         }
 
         /// <summary>
         /// Serialisiert das Universum in den angegebenen Stream
         /// </summary>
         /// <param name="stream"></param>
-        public void Serialize(Stream stream)
+        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
         {
-            XmlSerializer serializer = new XmlSerializer(GetType());
-            serializer.Serialize(stream, this);
+             writer.Write(Id.ToString());
+             writer.Write(Name);
+             writer.Write(Seed);
         }
+
+ 
     }
 }

@@ -234,4 +234,57 @@
   <data name="Pixels" xml:space="preserve">
     <value>Pixels</value>
   </data>
+  <data name="KeyBindings" xml:space="preserve">
+    <value>Key Bindings</value>
+  </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Disable</value>
+    <comment>de</comment>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Enable</value>
+    <comment>de</comment>
+  </data>
+  <data name="Extensions" xml:space="preserve">
+    <value>Extensions</value>
+  </data>
+  <data name="PressKey" xml:space="preserve">
+    <value>Press key...</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="ResourcePacks" xml:space="preserve">
+    <value>Resource Packs</value>
+  </data>
+  <data name="SelectTarget" xml:space="preserve">
+    <value>Select Target</value>
+  </data>
+  <data name="Teleport" xml:space="preserve">
+    <value>Teleport</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="Multiplayer" xml:space="preserve">
+    <value>Multiplayer</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
 </root>

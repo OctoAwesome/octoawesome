@@ -1,0 +1,13 @@
+# Forces git CRLF->LF behaviour
+* text=auto
+
+# Files that git should treat as binary
+*.dll binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ego binary
+*.exe binary
+*.ogg binary
+*.wav binary
+*.obj binary

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using OctoAwesome.Basics.Definitions.Blocks;
 
 namespace OctoAwesome.Basics
 {
@@ -16,10 +17,12 @@ namespace OctoAwesome.Basics
             return planet;
         }
 
-        public IChunkColumn GenerateColumn(IEnumerable<IBlockDefinition> blockDefinitions, IPlanet planet, Index2 index)
+        public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IBlockDefinition sandDefinition = blockDefinitions.FirstOrDefault(d => typeof(SandBlockDefinition) == d.GetType());
-            ushort sandIndex = (ushort)(Array.IndexOf(blockDefinitions.ToArray(), sandDefinition) + 1);
+            IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
+
+            IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().First();
+            ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
@@ -44,7 +47,7 @@ namespace OctoAwesome.Basics
                         if (z < (int)(height + part))
                         {
                             int block = z % (Chunk.CHUNKSIZE_Z);
-                            int layer = (int)(z / Chunk.CHUNKSIZE_Z);
+                            int layer = z / Chunk.CHUNKSIZE_Z;
                             result[layer].SetBlock(x, y, block, sandIndex);
                         }
                     }
@@ -58,16 +61,18 @@ namespace OctoAwesome.Basics
         public IPlanet GeneratePlanet(Stream stream)
         {
             IPlanet planet = new Planet();
-            planet.Deserialize(stream);
+            using (var reader = new BinaryReader(stream))
+                planet.Deserialize(reader, null);
             return planet;
         }
 
-        
+
 
         public IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index)
         {
             IChunkColumn column = new ChunkColumn();
-            column.Deserialize(stream, definitionManager, planetId, index);
+            using (var reader = new BinaryReader(stream))
+                column.Deserialize(reader, definitionManager);
             return column;
         }
     }

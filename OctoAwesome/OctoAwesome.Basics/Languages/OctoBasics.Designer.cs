@@ -97,6 +97,24 @@ namespace OctoAwesome.Basics.Languages {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Basic Extension with all important stuff ähnelt.
+        /// </summary>
+        internal static string ExtensionDescription {
+            get {
+                return ResourceManager.GetString("ExtensionDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Basics ähnelt.
+        /// </summary>
+        internal static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Grass ähnelt.
         /// </summary>
         internal static string Grass {

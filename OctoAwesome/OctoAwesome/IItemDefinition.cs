@@ -1,27 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Interface für die Definition eînes Items
     /// </summary>
-    public interface IItemDefinition
+    public interface IItemDefinition : IDefinition, IInventoryableDefinition
     {
-        /// <summary>
-        /// Der Name des Items
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Bild, das das Item repräsentiert
-        /// </summary>
-        Bitmap Icon { get; }
-
-        /// <summary>
-        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können
-        /// </summary>
-        int StackLimit { get; }
-
         /*/// <summary>
         /// Liefert die Physikalischen Paramerter, wie härte, dichte und bruchzähigkeit
         /// </summary>

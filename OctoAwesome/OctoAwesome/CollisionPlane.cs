@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using engenious;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome
 {
@@ -25,7 +22,7 @@ namespace OctoAwesome
         /// </summary>
         public Vector3 edgepos1;
         /// <summary>
-        /// Zweite Fläche der Ecke
+        /// Zweite Ecke der Fläche
         /// </summary>
         public Vector3 edgepos2;
 
@@ -106,27 +103,31 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt alle Flächen eines Spielers zurück
         /// </summary>
-        /// <param name="player">Spieler</param>
+        /// <param name="radius">radius of the <see cref="Entity"/></param>
+        /// <param name="height">height of the <see cref="Entity"/></param>
+        /// <param name="velocity">velocity of the <see cref="Entity"/></param>
+        /// <param name="coordinate"><see cref="Coordinate"/> ot the <see cref="Entity"/></param>
         /// <param name="invertvelocity">Gibt an ob die geschwindigkeit invertiert werden soll</param>
-        /// <returns>Alle beteiligten Flächen des Spielers</returns>
-        public static IEnumerable<CollisionPlane> GetPlayerCollisionPlanes(Player player,bool invertvelocity = true)
+        /// <returns></returns>
+        public static IEnumerable<CollisionPlane> GetEntityCollisionPlanes(float radius, float height, Vector3 velocity, 
+            Coordinate coordinate, bool invertvelocity = true)
         {
-            var pos = player.Position.BlockPosition;
-            var vel = invertvelocity ? -1 * player.Velocity : player.Velocity;
+            var pos = coordinate.BlockPosition;
+            Vector3 vel =  invertvelocity ? new Vector3(-velocity.X, -velocity.Y, - velocity.Z) : velocity;
 
             //Ebene X
-            if (vel.X > 0)
+                if (vel.X > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - player.Radius, pos.Y - player.Radius, pos.Z),
-                    new Vector3(pos.X - player.Radius, pos.Y + player.Radius, pos.Z + player.Height),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z),
+                    new Vector3(pos.X - radius, pos.Y + radius, pos.Z + height),
                     new Vector3(-1, 0, 0));
             }
             else if (vel.X < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X + player.Radius, pos.Y - player.Radius, pos.Z),
-                    new Vector3(pos.X + player.Radius, pos.Y + player.Radius, pos.Z + player.Height),
+                    new Vector3(pos.X + radius, pos.Y - radius, pos.Z),
+                    new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
                     new Vector3(1, 0, 0));
             }
 
@@ -134,15 +135,15 @@ namespace OctoAwesome
             if (vel.Y > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - player.Radius, pos.Y - player.Radius, pos.Z ),
-                    new Vector3(pos.X + player.Radius, pos.Y - player.Radius, pos.Z + player.Height),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z ),
+                    new Vector3(pos.X + radius, pos.Y - radius, pos.Z + height),
                     new Vector3(0, -1, 0));
             }
             else if (vel.Y < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - player.Radius, pos.Y + player.Radius, pos.Z ),
-                    new Vector3(pos.X + player.Radius, pos.Y + player.Radius, pos.Z + player.Height),
+                    new Vector3(pos.X - radius, pos.Y + radius, pos.Z ),
+                    new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
                     new Vector3(0, 1, 0));
             }
 
@@ -150,15 +151,15 @@ namespace OctoAwesome
             if (vel.Z > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - player.Radius, pos.Y - player.Radius, pos.Z),
-                    new Vector3(pos.X + player.Radius, pos.Y + player.Radius, pos.Z),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z),
+                    new Vector3(pos.X + radius, pos.Y + radius, pos.Z),
                     new Vector3(0, 0, -1));
             }
             else if (vel.Z < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - player.Radius, pos.Y - player.Radius , pos.Z + player.Height),
-                    new Vector3(pos.X + player.Radius, pos.Y + player.Radius, pos.Z + player.Height),
+                    new Vector3(pos.X - radius, pos.Y - radius , pos.Z + height),
+                    new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
                     new Vector3(0, 0, 1));
             }
         }

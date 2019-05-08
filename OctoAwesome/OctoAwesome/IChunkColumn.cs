@@ -1,11 +1,14 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System;
+using System.IO;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basisinterface für Eine Chunksäule
     /// </summary>
-    public interface IChunkColumn
+    public interface IChunkColumn : ISerializable
     {
         /// <summary>
         /// Gibt an, ob die IChunkColumn schon von einem <see cref="IMapPopulator"/> bearbeitet wurde.
@@ -22,6 +25,8 @@ namespace OctoAwesome
         /// </summary>
         Index2 Index { get; }
 
+        int ChangeCounter { get; set; }
+
         /// <summary>
         /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
         /// </summary>
@@ -31,6 +36,11 @@ namespace OctoAwesome
         /// Die Chunks der Säule.
         /// </summary>
         IChunk[] Chunks { get; }
+
+        /// <summary>
+        /// Auflistung aller sich in dieser Column befindenden Entitäten.
+        /// </summary>
+        IEntityList Entities { get; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -47,6 +57,8 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>Block-ID der angegebenen Koordinate</returns>
         ushort GetBlock(int x, int y, int z);
+
+        event Action<IChunkColumn, IChunk, int> Changed;
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.
@@ -101,21 +113,8 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
-
-        /// <summary>
-        /// Serialisiert die Chunksäule in den angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Zielstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        void Serialize(Stream stream, IDefinitionManager definitionManager);
-
-        /// <summary>
-        /// Deserialisiert die Chunksäule aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Quellstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        /// <param name="columnIndex">Die Position der Säule</param>
-        /// <param name="planetId">Der Index des Planeten</param>
-        void Deserialize(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 columnIndex);
+        void SetCache(IGlobalChunkCache globalChunkCache);
+        void OnUpdate(Notifications.SerializableNotification notification);
+        void Update(Notifications.SerializableNotification notification);
     }
 }

@@ -234,4 +234,55 @@
   <data name="Pixels" xml:space="preserve">
     <value>Pixel</value>
   </data>
+  <data name="KeyBindings" xml:space="preserve">
+    <value>Tastaturbelegung</value>
+  </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>Nach unten</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="Extensions" xml:space="preserve">
+    <value>Erweiterungen</value>
+  </data>
+  <data name="PressKey" xml:space="preserve">
+    <value>Bitte eine Taste drücken...</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="ResourcePacks" xml:space="preserve">
+    <value>Resource Packs</value>
+  </data>
+  <data name="SelectTarget" xml:space="preserve">
+    <value>Ziel auswählen</value>
+  </data>
+  <data name="Teleport" xml:space="preserve">
+    <value>Teleportieren</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>Nach oben</value>
+  </data>
+  <data name="Multiplayer" xml:space="preserve">
+    <value>Mehrspieler</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Verbinden</value>
+  </data>
 </root>

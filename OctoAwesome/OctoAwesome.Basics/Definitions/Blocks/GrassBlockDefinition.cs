@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class GrassBlockDefinition : BlockDefinition
     {
@@ -10,21 +10,21 @@ namespace OctoAwesome.Basics
             get { return Languages.OctoBasics.Grass; }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
-            get { return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"); }
+            get { return "grass_top"; }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 
 
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/grass_top.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_grass.png"),
+                    "grass_top",
+                    "dirt",
+                    "dirt_grass",
                 };
             }
         }
@@ -45,31 +45,19 @@ namespace OctoAwesome.Basics
             throw new NotImplementedException();
         }
 
-        public override int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
+        public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
-            return 1;
+            if (wall == Wall.Top)
+            {
+                return 0;
+            } else if (wall == Wall.Bottom)
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
         }
-
-        public override int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        
     }
 }

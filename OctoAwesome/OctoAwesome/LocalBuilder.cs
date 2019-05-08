@@ -44,6 +44,7 @@
         public static IChunkColumn GetColumn(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
         {
             IChunkColumn column;
+
             if (x >= Chunk.CHUNKSIZE_X && y >= Chunk.CHUNKSIZE_Y)
                 column = column11;
             else if (x < Chunk.CHUNKSIZE_X && y >= Chunk.CHUNKSIZE_Y)

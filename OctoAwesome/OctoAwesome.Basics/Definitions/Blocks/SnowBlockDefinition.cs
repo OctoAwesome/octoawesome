@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public class SnowBlockDefinition : BlockDefinition
     {
@@ -16,22 +16,22 @@ namespace OctoAwesome.Basics
             }
         }
 
-        public override Bitmap Icon
+        public override string Icon
         {
             get
             {
-                return (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"); 
+                return "snow"; 
             }
         }
 
-        public override Bitmap[] Textures
+        public override string[] Textures
         {
             get
             {
                 return new[] {
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/snow.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt.png"),
-                    (Bitmap)Bitmap.FromFile("./Assets/OctoAwesome.Basics/Blocks/dirt_snow.png"),
+                    "snow",
+                    "dirt",
+                    "dirt_snow",
                 };
             }
         }
@@ -52,29 +52,20 @@ namespace OctoAwesome.Basics
             throw new NotImplementedException();
         }
 
-        public override int GetBottomTextureIndex(ILocalChunkCache manager, int x, int y, int z)
+        public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
-            return 1;
-        }
-
-        public override int GetNorthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetSouthTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetWestTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
-        }
-
-        public override int GetEastTextureIndex(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return 2;
+            if (wall == Wall.Top)
+            {
+                return 0;
+            }
+            else if (wall == Wall.Bottom)
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
         }
     }
 }

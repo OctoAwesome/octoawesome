@@ -1,9 +1,10 @@
-﻿using System;
+﻿using OctoAwesome.Basics.Definitions.Blocks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Trees
 {
     public class SpruceTreeDefinition : TreeDefinition
     {
@@ -42,9 +43,9 @@ namespace OctoAwesome.Basics
 
         public override void Init(IDefinitionManager definitionManager)
         {
-            wood = definitionManager.GetBlockDefinitionIndex<WoodBlockDefinition>();
-            leave = definitionManager.GetBlockDefinitionIndex<OrangeLeavesBlockDefinition>();
-            water = definitionManager.GetBlockDefinitionIndex<WaterBlockDefinition>();
+            wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>();
+            leave = definitionManager.GetDefinitionIndex<OrangeLeavesBlockDefinition>();
+            water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
         }
 
         public override void PlantTree(IDefinitionManager definitionManager, IPlanet planet, Index3 index, LocalBuilder builder, int seed)

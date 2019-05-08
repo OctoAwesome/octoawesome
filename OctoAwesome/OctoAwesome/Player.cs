@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
+using engenious;
+using System.IO;
+using System.Linq;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -15,83 +19,44 @@ namespace OctoAwesome
         public const int SELECTIONRANGE = 8;
 
         /// <summary>
-        /// Die Kraft, die der Spieler hat, um sich fortzubewegen
-        /// </summary>
-        public const float POWER = 600f;
-
-        /// <summary>
-        /// Die Kraft, die der Spieler hat, um in die Luft zu springen
-        /// </summary>
-        public const float JUMPPOWER = 400000f;
-
-        /// <summary>
-        /// Die Reibung die der Spieler mit der Umwelt hat
-        /// </summary>
-        public const float FRICTION = 60f;
-
-        /// <summary>
-        /// Der Radius des Spielers in Blocks.
-        /// </summary>
-        public float Radius { get; set; }
-
-        private float angle = 0f;
-
-        /// <summary>
-        /// Blickwinkel in der horizontalen Achse
-        /// </summary>
-        public float Angle
-        {
-            get { return angle; }
-            set { angle = MathHelper.WrapAngle(value); }
-        }
-
-        /// <summary>
-        /// Die Körperhöhe des Spielers in Blocks
-        /// </summary>
-        public float Height { get; set; }
-
-        /// <summary>
-        /// Gibt an, ob der Spieler an Boden ist
-        /// </summary>
-        [XmlIgnore]
-        public bool OnGround { get; set; }
-
-        /// <summary>
-        /// Blickwinkel in der vertikalen Achse
-        /// </summary>
-        public float Tilt { get; set; }
-
-        /// <summary>
-        /// Zurzeit nicht benutzt
-        /// TODO: Ist das Nötig?
-        /// </summary>
-        public int InventorySlots { get; set; }
-
-        /// <summary>
-        /// Gibt an, ob der Flugmodus aktiviert ist.
-        /// </summary>
-        public bool FlyMode { get; set; }
-
-        /// <summary>
-        /// Das Inventar des Spielers.
-        /// TODO: Persistieren...
-        /// </summary>
-        [XmlIgnore]
-        public List<InventorySlot> Inventory { get; set; }
-
-        /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
-        public Player()
+        public Player() : base()
         {
-            Position = new Coordinate(0, new Index3(0, 0, 100), Vector3.Zero);
-            Velocity = new Vector3(0, 0, 0);
-            Inventory = new List<InventorySlot>();
-            Radius = 0.75f;
-            Angle = 0f;
-            Height = 3.5f;
-            Mass = 100;
-            FlyMode = false;
         }
+
+        protected override void OnInitialize(IResourceManager manager)
+            => Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
+
+        /// <summary>
+        /// Serialisiert den Player mit dem angegebenen BinaryWriter.
+        /// </summary>
+        /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+            => base.Serialize(writer, definitionManager); // Entity
+
+        /// <summary>
+        /// Deserialisiert den Player aus dem angegebenen BinaryReader.
+        /// </summary>
+        /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
+        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
+        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+            => base.Deserialize(reader, definitionManager); // Entity
+
+        public override void OnUpdate(SerializableNotification notification)
+        {
+            base.OnUpdate(notification);
+
+            var entityNotification = new EntityNotification
+            {
+                Entity = this,
+                Type = EntityNotification.ActionType.Update,
+                Notification = notification as PropertyChangedNotification
+            };
+
+            Simulation?.OnUpdate(entityNotification);
+        }
+        
     }
 }

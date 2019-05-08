@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,13 +9,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctoAwesome</RootNamespace>
     <AssemblyName>OctoAwesome</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,6 +29,8 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <DocumentationFile>..\bin\Debug\OctoAwesome.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,14 +40,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\bin\Release\OctoAwesome.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -51,8 +51,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Awaiter.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="BlockDefinition.cs" />
@@ -60,12 +62,31 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkColumn.cs" />
     <Compile Include="CollisionPlane.cs" />
-    <Compile Include="ContentHelper.cs" />
+    <Compile Include="Common\IGameService.cs" />
+    <Compile Include="Component.cs" />
+    <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
+    <Compile Include="CustomAwaiter.cs" />
+    <Compile Include="EntityComponents\RenderComponent.cs" />
+    <Compile Include="EntityList.cs" />
+    <Compile Include="EntityComponent.cs" />
+    <Compile Include="EntityComponents\BodyComponent.cs" />
+    <Compile Include="EntityComponents\ControllableComponent.cs" />
+    <Compile Include="EntityComponents\HeadComponent.cs" />
+    <Compile Include="EntityComponents\InventoryComponent.cs" />
+    <Compile Include="EntityComponents\PositionComponent.cs" />
+    <Compile Include="EntityComponents\ToolBarComponent.cs" />
+    <Compile Include="EntityFilterAttribute.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />
     <Compile Include="IChunkColumn.cs" />
+    <Compile Include="IDefinition.cs" />
+    <Compile Include="IEntityList.cs" />
+    <Compile Include="IExtensionLoader.cs" />
+    <Compile Include="IExtensionResolver.cs" />
+    <Compile Include="IInventoryableDefinition.cs" />
     <Compile Include="IPersistenceManager.cs" />
     <Compile Include="IClimateMap.cs" />
     <Compile Include="IDefinitionManager.cs" />
@@ -80,26 +101,50 @@
     <Compile Include="IPlanet.cs" />
     <Compile Include="ILocalChunkCache.cs" />
     <Compile Include="IResource.cs" />
-    <Compile Include="IResourceDefinition.cs" />
     <Compile Include="IResourceManager.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Notifications\ChunkNotification.cs" />
+    <Compile Include="Notifications\DefaultChannels.cs" />
+    <Compile Include="Notifications\INotificationObservable.cs" />
+    <Compile Include="Notifications\INotificationObserver.cs" />
+    <Compile Include="Notifications\NotificationChannelCollection.cs" />
+    <Compile Include="Notifications\ObserverHashSet.cs" />
+    <Compile Include="Notifications\PropertyChangedNotification.cs" />
+    <Compile Include="Notifications\SerializableNotification.cs" />
+    <Compile Include="RemoteEntity.cs" />
+    <Compile Include="Serialization\ISerializable.cs" />
+    <Compile Include="ISettings.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="IUniverse.cs" />
+    <Compile Include="IExtension.cs" />
     <Compile Include="LocalBuilder.cs" />
     <Compile Include="LocalChunkCache.cs" />
     <Compile Include="MapPopulator.cs" />
+    <Compile Include="Notifications\EntityNotification.cs" />
+    <Compile Include="Notifications\IUpdateHub.cs" />
+    <Compile Include="Notifications\Notification.cs" />
+    <Compile Include="Notifications\NotificationSubscription.cs" />
     <Compile Include="OrientationFlags.cs" />
     <Compile Include="PhysicalProperties.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsManager.cs" />
+    <Compile Include="SerializableCollection.cs" />
+    <Compile Include="Serialization\Serializer.cs" />
+    <Compile Include="Simulation.cs" />
+    <Compile Include="SimulationComponent.cs" />
+    <Compile Include="SimulationState.cs" />
+    <Compile Include="Wall.cs" />
     <Compile Include="Universe.cs" />
+    <Compile Include="UpdateableEntity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="engenious">
+      <Version>0.2.0-alpha</Version>
+    </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,17 +1,21 @@
 ﻿using MonoGameUi;
 using OctoAwesome.Client.Components;
-using Microsoft.Xna.Framework.Graphics;
+using OctoAwesome.Runtime;
 using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
     internal sealed class MainScreen : BaseScreen
     {
+        private AssetComponent assets;
+
         public MainScreen(ScreenComponent manager) : base(manager)
         {
+            assets = manager.Game.Assets;
+
             Padding = new Border(0,0,0,0);
 
-            Background = new TextureBrush(manager.Content.LoadTexture2DFromFile("./Assets/OctoAwesome.Client/background.png", manager.GraphicsDevice), TextureBrushMode.Stretch);
+            Background = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "background"), TextureBrushMode.Stretch);
 
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
@@ -21,9 +25,21 @@ namespace OctoAwesome.Client.Screens
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
             {
+                ((ContainerResourceManager)manager.Game.ResourceManager)
+                .CreateManager(manager.Game.ExtensionLoader,
+                    manager.Game.DefinitionManager, manager.Game.Settings, false);
                 manager.NavigateToScreen(new LoadScreen(manager));
             };
             stack.Controls.Add(startButton);
+
+            Button multiplayerButton = Button.TextButton(manager, Languages.OctoClient.Multiplayer);
+            multiplayerButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            multiplayerButton.Margin = new Border(0, 0, 0, 10);
+            multiplayerButton.LeftMouseClick += (s, e) =>
+            {
+                manager.NavigateToScreen(new ConnectionScreen(manager));
+            };
+            stack.Controls.Add(multiplayerButton);
 
             Button optionButton = Button.TextButton(manager, Languages.OctoClient.Options);
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;

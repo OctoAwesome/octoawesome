@@ -1,3 +1,4 @@
+using OctoAwesome.Notifications;
 using System;
 
 namespace OctoAwesome
@@ -7,6 +8,16 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        IDefinitionManager DefinitionManager { get; }
+
+        /// <summary>
+        /// Erzuegt ein neues Universum.
+        /// </summary>
+        /// <param name="name">Name des neuen Universums.</param>
+        /// <param name="seed">Weltgenerator-Seed für das neue Universum.</param>
+        /// <returns>Die Guid des neuen Universums.</returns>
+        Guid NewUniverse(string name, int seed);
+
         /// <summary>
         /// Lädt das Universum für die angegebene GUID.
         /// </summary>
@@ -14,9 +25,20 @@ namespace OctoAwesome
         void LoadUniverse(Guid universeId);
 
         /// <summary>
+        /// Das aktuell geladene Universum.
+        /// </summary>
+        IUniverse CurrentUniverse { get; }
+
+        /// <summary>
         /// Entlädt das aktuelle Universum.
         /// </summary>
         void UnloadUniverse();
+
+        /// <summary>
+        /// Gibt alle Universen zurück, die geladen werden können.
+        /// </summary>
+        /// <returns>Die Liste der Universen.</returns>
+        IUniverse[] ListUniverses();
 
         /// <summary>
         /// Löscht ein Universum.
@@ -42,7 +64,7 @@ namespace OctoAwesome
         /// </summary>
         /// <returns>Das gewünschte Universum, falls es existiert</returns>
         IUniverse GetUniverse();
-        
+
         /// <summary>
         /// Gibt den Planeten mit der angegebenen ID zurück
         /// </summary>
@@ -54,5 +76,12 @@ namespace OctoAwesome
         /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.
         /// </summary>
         IGlobalChunkCache GlobalChunkCache { get; }
+        
+        IUpdateHub UpdateHub { get; }
+
+        Player CurrentPlayer { get; }
+
+        void SaveEntity(Entity entity);
+        void SaveChunkColumn(IChunkColumn value);
     }
 }
