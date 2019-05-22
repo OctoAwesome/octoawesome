@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Tests
 {
@@ -51,7 +52,7 @@ namespace OctoAwesome.Tests
         public IChunkColumn Subscribe(int planet, Index2 position,bool passiv)
         {
             LoadCounter++;
-            return new ChunkColumn(new IChunk[] {new Chunk(new Index3(position,0),planet),new Chunk(new Index3(position,1),planet),new Chunk(new Index3(position,2),planet) },planet, position);
+            return new ChunkColumn(new IChunk[] {new Chunk(new Index3(position,0),planet),new Chunk(new Index3(position,1),planet),new Chunk(new Index3(position,2),planet) },planet, position, null);
         }
 
         public IChunkColumn Peek(int planet, Index2 position)
@@ -83,5 +84,12 @@ namespace OctoAwesome.Tests
         {
             throw new NotImplementedException();
         }
+
+        public void OnUpdate(SerializableNotification notification) => throw new NotImplementedException();
+        public void Update(SerializableNotification notification) => throw new NotImplementedException();
+        public void InsertUpdateHub(IUpdateHub updateHub) => throw new NotImplementedException();
+        public void OnCompleted() => throw new NotImplementedException();
+        public void OnError(Exception error) => throw new NotImplementedException();
+        public void OnNext(Notification value) => throw new NotImplementedException();
     }
 }

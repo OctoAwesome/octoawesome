@@ -26,7 +26,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
-            ChunkColumn column = new ChunkColumn(result, planet.Id, index);
+            ChunkColumn column = new ChunkColumn(result, planet.Id, index, definitionManager);
 
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
@@ -62,17 +62,17 @@ namespace OctoAwesome.Basics
         {
             IPlanet planet = new Planet();
             using (var reader = new BinaryReader(stream))
-                planet.Deserialize(reader, null);
+                planet.Deserialize(reader);
             return planet;
         }
 
 
 
-        public IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index)
+        public IChunkColumn GenerateColumn(Stream stream, int planetId, Index2 index)
         {
             IChunkColumn column = new ChunkColumn();
             using (var reader = new BinaryReader(stream))
-                column.Deserialize(reader, definitionManager);
+                column.Deserialize(reader);
             return column;
         }
     }

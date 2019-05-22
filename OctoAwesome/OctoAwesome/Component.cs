@@ -22,8 +22,7 @@ namespace OctoAwesome
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(Enabled); 
         }
@@ -32,8 +31,7 @@ namespace OctoAwesome
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public virtual void Deserialize(BinaryReader reader)
         {
             Enabled = reader.ReadBoolean();
         }

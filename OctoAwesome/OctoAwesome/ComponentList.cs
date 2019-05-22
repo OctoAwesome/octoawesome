@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ namespace OctoAwesome
     /// Base Class for all Component based Entities.
     /// </summary>
     /// <typeparam name="T">Type of Component</typeparam>
-    public class ComponentList<T> : IEnumerable<T> where T : Component
+    public class ComponentList<T> : IEnumerable<T> where T : Component, ISerializable
     {
         private readonly Action<T> insertValidator;
         private readonly Action<T> removeValidator;
@@ -121,14 +122,13 @@ namespace OctoAwesome
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(components.Count);
             foreach (var componente in components)
             {
                 writer.Write(componente.Key.AssemblyQualifiedName);
-                componente.Value.Serialize(writer, definitionManager);
+                componente.Value.Serialize(writer);
 
             }
         }
@@ -137,8 +137,7 @@ namespace OctoAwesome
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public virtual void Deserialize(BinaryReader reader)
         {
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -156,7 +155,7 @@ namespace OctoAwesome
                     AddComponent(component);
                 }
 
-                component.Deserialize(reader, definitionManager);
+                component.Deserialize(reader);
             }
         }
     }

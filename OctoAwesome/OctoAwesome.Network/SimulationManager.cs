@@ -55,7 +55,7 @@ namespace OctoAwesome.Network
 
             definitionManager = new DefinitionManager(extensionLoader);
 
-            var persistenceManager = new DiskPersistenceManager(extensionLoader, definitionManager, settings);
+            var persistenceManager = new DiskPersistenceManager(extensionLoader, settings);
 
             ResourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
             ResourceManager.InsertUpdateHub(updateHub);

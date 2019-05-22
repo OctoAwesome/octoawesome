@@ -14,7 +14,7 @@ namespace OctoAwesome.Notifications
 
         public byte[] Value { get; set; }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager = null)
+        public override void Deserialize(BinaryReader reader)
         {
             Issuer = reader.ReadString();
             Property = reader.ReadString();
@@ -22,7 +22,7 @@ namespace OctoAwesome.Notifications
             Value = reader.ReadBytes(count);
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager = null)
+        public override void Serialize(BinaryWriter writer)
         {
             writer.Write(Issuer);
             writer.Write(Property);

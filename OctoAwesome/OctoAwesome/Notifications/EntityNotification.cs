@@ -35,28 +35,28 @@ namespace OctoAwesome.Notifications
             EntityId = id;
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager = null)
+        public override void Deserialize(BinaryReader reader)
         {
             Type = (ActionType)reader.ReadInt32();
 
 
             if (Type == ActionType.Add)
-                Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()), definitionManager);
+                Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
             else
                 EntityId = reader.ReadInt32();
 
             var isNotification = reader.ReadBoolean();
             if (isNotification)
-                Notification = Serializer.Deserialize<PropertyChangedNotification>(reader.ReadBytes(reader.ReadInt32()), definitionManager);
+                Notification = Serializer.Deserialize<PropertyChangedNotification>(reader.ReadBytes(reader.ReadInt32()));
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager = null)
+        public override void Serialize(BinaryWriter writer)
         {
             writer.Write((int)Type);
 
             if (Type == ActionType.Add)
             {
-                var bytes = Serializer.Serialize(Entity, definitionManager);
+                var bytes = Serializer.Serialize(Entity);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }
@@ -69,7 +69,7 @@ namespace OctoAwesome.Notifications
             writer.Write(subNotification);
             if (subNotification)
             {                
-                var bytes = Serializer.Serialize(Notification, definitionManager);
+                var bytes = Serializer.Serialize(Notification);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }

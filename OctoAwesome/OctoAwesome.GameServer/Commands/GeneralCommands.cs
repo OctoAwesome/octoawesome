@@ -19,7 +19,7 @@ namespace OctoAwesome.GameServer.Commands
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
             {
-                universe.Serialize(writer, null);
+                universe.Serialize(writer);
                 return memoryStream.ToArray();
             }
         }
@@ -32,7 +32,7 @@ namespace OctoAwesome.GameServer.Commands
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
             {
-                planet.Serialize(writer, null);
+                planet.Serialize(writer);
                 return memoryStream.ToArray();
             }
         }

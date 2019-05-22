@@ -30,7 +30,7 @@ namespace OctoAwesome.GameServer.Commands
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
             {
-                column.Serialize(writer, Program.ServerHandler.SimulationManager.DefinitionManager);
+                column.Serialize(writer);
                 return memoryStream.ToArray();
             }
         }
@@ -43,7 +43,7 @@ namespace OctoAwesome.GameServer.Commands
             using (var memoryStream = new MemoryStream(parameter.Data))
             using (var reader = new BinaryReader(memoryStream))
             {
-                chunkColumn.Deserialize(reader, Program.ServerHandler.SimulationManager.DefinitionManager);
+                chunkColumn.Deserialize(reader);
             }
 
             Program.ServerHandler.SimulationManager.Simulation.ResourceManager.SaveChunkColumn(chunkColumn);

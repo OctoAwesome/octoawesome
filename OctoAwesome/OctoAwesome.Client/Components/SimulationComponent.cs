@@ -79,9 +79,8 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            //TODO: [Network] Anstelle von ID einen einstellbaren Playernamen implementieren
             Player player = resourceManager.LoadPlayer(playerName);
-            player.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            player.Components.AddComponent(new RenderComponent(resourceManager.DefinitionManager) { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             Simulation.AddEntity(player);
 
 

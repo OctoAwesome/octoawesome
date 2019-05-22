@@ -74,7 +74,7 @@ namespace OctoAwesome
         /// Serialisiert den Planeten in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public void Serialize(BinaryWriter writer)
         {
             writer.Write(Id);
             writer.Write(Seed);
@@ -89,7 +89,7 @@ namespace OctoAwesome
         /// Deserialisiert den Planeten aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public void Deserialize(BinaryReader reader)
         {
             Id = reader.ReadInt32();
             Seed = reader.ReadInt32();

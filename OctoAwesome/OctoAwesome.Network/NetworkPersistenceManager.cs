@@ -12,17 +12,15 @@ namespace OctoAwesome.Network
     {
         private Client client;
         private readonly IDisposable subscription;
-        private readonly IDefinitionManager definitionManager;
 
         private Dictionary<uint, Awaiter> packages;
 
-        public NetworkPersistenceManager(Client client, IDefinitionManager definitionManager)
+        public NetworkPersistenceManager(Client client)
         {
             this.client = client;
             subscription = client.Subscribe(this);
 
             packages = new Dictionary<uint, Awaiter>();
-            this.definitionManager = definitionManager;
         }
 
         public void DeleteUniverse(Guid universeGuid)
@@ -151,7 +149,7 @@ namespace OctoAwesome.Network
                 case OfficialCommand.SaveColumn:
                     if (packages.TryGetValue(package.UId, out var awaiter))
                     {
-                        awaiter.SetResult(package.Payload, definitionManager);
+                        awaiter.SetResult(package.Payload);
                         packages.Remove(package.UId);
                     }
                     break;

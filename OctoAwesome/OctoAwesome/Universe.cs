@@ -50,7 +50,7 @@ namespace OctoAwesome
         /// Deserialisiert ein Universum aus dem angegebenen Stream
         /// </summary>
         /// <param name="stream"></param>
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public void Deserialize(BinaryReader reader)
         {
             var tmpGuid = reader.ReadString();
             Id = new Guid(tmpGuid);
@@ -62,7 +62,7 @@ namespace OctoAwesome
         /// Serialisiert das Universum in den angegebenen Stream
         /// </summary>
         /// <param name="stream"></param>
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public void Serialize(BinaryWriter writer)
         {
              writer.Write(Id.ToString());
              writer.Write(Name);

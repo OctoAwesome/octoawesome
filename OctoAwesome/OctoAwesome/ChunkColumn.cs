@@ -17,6 +17,7 @@ namespace OctoAwesome
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
         public IEntityList Entities { get; private set; }
+        public IDefinitionManager DefinitionManager { get; }
 
         public int ChangeCounter { get; set; }
 
@@ -26,12 +27,13 @@ namespace OctoAwesome
         /// <param name="chunks">Die Chunks für die Säule</param>
         /// <param name="planet">Der Index des Planeten</param>
         /// <param name="columnIndex">Die Position der Säule</param>
-        public ChunkColumn(IChunk[] chunks, int planet, Index2 columnIndex) : this()
+        public ChunkColumn(IChunk[] chunks, int planet, Index2 columnIndex, IDefinitionManager definitionManager) : this()
         {
             Planet = planet;
             Chunks = chunks;
             Index = columnIndex;
             Entities = new EntityList(this);
+            DefinitionManager = definitionManager;
             foreach (var chunk in chunks)
             {
                 chunk.Changed += OnChunkChanged;
@@ -227,7 +229,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="writer">Zielschreiber</param>
         /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public void Serialize(BinaryWriter writer)
         {
             // Definitionen sammeln
             List<IBlockDefinition> definitions = new List<IBlockDefinition>();
@@ -238,7 +240,7 @@ namespace OctoAwesome
                 {
                     if (chunk.Blocks[i] != 0)
                     {
-                        IBlockDefinition definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
+                        IBlockDefinition definition = (IBlockDefinition)DefinitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
                         if (!definitions.Contains(definition))
                             definitions.Add(definition);
                     }
@@ -288,7 +290,7 @@ namespace OctoAwesome
                     else
                     {
                         // Definition Index
-                        IBlockDefinition definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
+                        IBlockDefinition definition = (IBlockDefinition)DefinitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
 
                         if (longIndex)
                             writer.Write((ushort)(definitions.IndexOf(definition) + 1));
@@ -314,7 +316,7 @@ namespace OctoAwesome
                     {
                         try
                         {
-                            entity.Serialize(componentbinarystream, definitionManager);
+                            entity.Serialize(componentbinarystream);
                             writer.Write((int)memorystream.Length);
                             memorystream.WriteTo(writer.BaseStream);
 
@@ -336,7 +338,7 @@ namespace OctoAwesome
         /// <param name="definitionManager">Der verwendete DefinitionManager</param>
         /// <param name="columnIndex">Die Position der Säule</param>
         /// <param name="planetId">Der Index des Planeten</param>
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public void Deserialize(BinaryReader reader)
         {
             bool longIndex = reader.ReadByte() > 0;
 
@@ -366,7 +368,7 @@ namespace OctoAwesome
             for (int i = 0; i < typecount; i++)
             {
                 string typeName = reader.ReadString();
-                IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
+                IDefinition[] definitions = DefinitionManager.GetDefinitions().ToArray();
                 var blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                 types.Add(blockDefinition);
 
@@ -388,7 +390,7 @@ namespace OctoAwesome
                     {
                         chunk.Blocks[i] = map[typeIndex];
 
-                        var definition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(map[typeIndex]);
+                        var definition = (IBlockDefinition)DefinitionManager.GetDefinitionByIndex(map[typeIndex]);
 
                         if (definition.HasMetaData)
                             chunk.MetaData[i] = reader.ReadInt32();
@@ -420,7 +422,7 @@ namespace OctoAwesome
                     {
                         using (BinaryReader componentbinarystream = new BinaryReader(memorystream))
                         {
-                            entity.Deserialize(componentbinarystream, definitionManager);
+                            entity.Deserialize(componentbinarystream);
                         }
                     }
 

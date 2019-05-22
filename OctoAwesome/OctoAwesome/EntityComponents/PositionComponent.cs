@@ -39,9 +39,9 @@ namespace OctoAwesome.EntityComponents
             Sendable = true;
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public override void Serialize(BinaryWriter writer)
         {
-            base.Serialize(writer, definitionManager);
+            base.Serialize(writer);
             // Position
             writer.Write(Position.Planet);
             writer.Write(Position.GlobalBlockIndex.X);
@@ -52,9 +52,9 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.Z);
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader);
 
             // Position
             int planet = reader.ReadInt32();
@@ -84,7 +84,7 @@ namespace OctoAwesome.EntityComponents
                 using (var stream = new MemoryStream())
                 using (var writer = new BinaryWriter(stream))
                 {
-                    Serialize(writer, null);
+                    Serialize(writer);
                     updateNotification.Value = stream.ToArray();
                 }
 
@@ -105,7 +105,7 @@ namespace OctoAwesome.EntityComponents
                         using (var stream = new MemoryStream(changedNotification.Value))
                         using (var reader = new BinaryReader(stream))
                         {
-                            Deserialize(reader, null);
+                            Deserialize(reader);
                         }
                     }
                 }

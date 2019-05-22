@@ -11,7 +11,7 @@ namespace OctoAwesome.Notifications
         public int Planet { get; internal set; }
         public Index2 ChunkColumnIndex { get; internal set; }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager = null)
+        public override void Deserialize(BinaryReader reader)
         {
             Meta = reader.ReadInt32();
             Block = reader.ReadUInt16();
@@ -27,7 +27,7 @@ namespace OctoAwesome.Notifications
                 reader.ReadInt32());
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager = null)
+        public override void Serialize(BinaryWriter writer)
         {
             writer.Write(Meta);
             writer.Write(Block);

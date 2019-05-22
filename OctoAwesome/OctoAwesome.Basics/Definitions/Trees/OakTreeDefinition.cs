@@ -48,7 +48,7 @@ namespace OctoAwesome.Basics.Definitions.Trees
             return 4;
         }
 
-        public override void PlantTree(IDefinitionManager definitionManager, IPlanet planet, Index3 index, LocalBuilder builder, int seed)
+        public override void PlantTree(IPlanet planet, Index3 index, LocalBuilder builder, int seed)
         {
             ushort ground = builder.GetBlock(0, 0, -1);
             if (ground == water) return;

@@ -24,13 +24,11 @@ namespace OctoAwesome.Runtime
         private DirectoryInfo root;
         private ISettings Settings;
 
-        private readonly IDefinitionManager definitionManager;
         private readonly IExtensionResolver extensionResolver;
 
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings Settings)
+        public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings Settings)
         {
             this.extensionResolver = extensionResolver;
-            this.definitionManager = definitionManager;
             this.Settings = Settings;
         }
 
@@ -69,7 +67,7 @@ namespace OctoAwesome.Runtime
             using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
             using (var writer = new BinaryWriter(zip))
             {
-                universe.Serialize(writer, null);
+                universe.Serialize(writer);
             }
         }
 
@@ -106,7 +104,7 @@ namespace OctoAwesome.Runtime
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
             using (BinaryWriter writer = new BinaryWriter(zip))
-                planet.Serialize(writer, null);
+                planet.Serialize(writer);
         }
 
         /// <summary>
@@ -124,7 +122,7 @@ namespace OctoAwesome.Runtime
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
             using (BinaryWriter writer = new BinaryWriter(zip))
-                column.Serialize(writer, definitionManager);
+                column.Serialize(writer);
         }
 
         /// <summary>
@@ -167,7 +165,7 @@ namespace OctoAwesome.Runtime
             {
                 var awaiter = new Awaiter();
                 awaiter.Serializable = universe;
-                universe.Deserialize(reader, null);
+                universe.Deserialize(reader);
                 awaiter.SetResult(universe);
                 return awaiter;
             }
@@ -236,7 +234,7 @@ namespace OctoAwesome.Runtime
                     {
                         var awaiter = new Awaiter();
                         awaiter.Serializable = column;
-                        awaiter.SetResult(planet.Generator.GenerateColumn(zip, definitionManager, planet.Id, columnIndex));
+                        awaiter.SetResult(planet.Generator.GenerateColumn(zip, planet.Id, columnIndex));
                         return awaiter;
                     }
                 }
@@ -274,7 +272,7 @@ namespace OctoAwesome.Runtime
                     {
                         var awaiter = new Awaiter();
                         awaiter.Serializable = player;
-                        player.Deserialize(reader, definitionManager);
+                        player.Deserialize(reader);
                         awaiter.SetResult(player);
                         return awaiter;
                     }
@@ -304,7 +302,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    player.Serialize(writer, definitionManager);
+                    player.Serialize(writer);
                 }
             }
         }

@@ -11,16 +11,17 @@ namespace OctoAwesome.Basics.EntityComponents
     {
         public int JumpTime { get; set; }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+
+        public override void Serialize(BinaryWriter writer)
         {
-            base.Serialize(writer, definitionManager);
+            base.Serialize(writer);
 
             writer.Write(JumpTime);
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader);
 
             JumpTime = reader.ReadInt32();
         }

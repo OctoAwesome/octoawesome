@@ -28,7 +28,7 @@ namespace OctoAwesome.Tests
 
         IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager) => throw new NotImplementedException();
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager) => throw new NotImplementedException();
+        public void Deserialize(BinaryReader reader) => throw new NotImplementedException();
+        public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
     }
 }

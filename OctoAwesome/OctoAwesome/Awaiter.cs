@@ -37,12 +37,12 @@ namespace OctoAwesome
             alreadyDeserialized = true;
         }
 
-        public void SetResult(byte[] bytes, IDefinitionManager definitionManager)
+        public void SetResult(byte[] bytes)
         {
             using (var stream = new MemoryStream(bytes))
             using (var reader = new BinaryReader(stream))
             {
-                Serializable.Deserialize(reader, definitionManager);
+                Serializable.Deserialize(reader);
             }
             manualReset.Set();
             alreadyDeserialized = true;

@@ -12,15 +12,13 @@ namespace OctoAwesome.Network
         private readonly IUpdateHub updateHub;
         private readonly IDisposable hubSubscription;
         private readonly IDisposable clientSubscription;
-        private readonly IDefinitionManager definitionManager;
 
-        public NetworkUpdateManager(Client client, IUpdateHub updateHub, IDefinitionManager manager)
+        public NetworkUpdateManager(Client client, IUpdateHub updateHub)
         {
             this.client = client;
             this.updateHub = updateHub;
             hubSubscription = updateHub.Subscribe(this, DefaultChannels.Network);
             clientSubscription = client.Subscribe(this);
-            definitionManager = manager;
         }
 
         public void OnNext(Package package)
@@ -28,11 +26,11 @@ namespace OctoAwesome.Network
             switch (package.Command)
             {
                 case (ushort)OfficialCommand.EntityNotification:
-                    var entityNotification = Serializer.Deserialize<EntityNotification>(package.Payload, definitionManager);
+                    var entityNotification = Serializer.Deserialize<EntityNotification>(package.Payload);
                     updateHub.Push(entityNotification, DefaultChannels.Simulation);
                     break;
                 case (ushort)OfficialCommand.ChunkNotification:
-                    var chunkNotification = Serializer.Deserialize<ChunkNotification>(package.Payload, definitionManager);
+                    var chunkNotification = Serializer.Deserialize<ChunkNotification>(package.Payload);
                     updateHub.Push(chunkNotification, DefaultChannels.Chunk);
                     break;
                 default:
@@ -48,11 +46,11 @@ namespace OctoAwesome.Network
             {
                 case EntityNotification entityNotification:
                     command = (ushort)OfficialCommand.EntityNotification;
-                    payload = Serializer.Serialize(entityNotification, definitionManager);
+                    payload = Serializer.Serialize(entityNotification);
                     break;
                 case ChunkNotification chunkNotification:
                     command = (ushort)OfficialCommand.ChunkNotification;
-                    payload = Serializer.Serialize(chunkNotification, definitionManager);
+                    payload = Serializer.Serialize(chunkNotification);
                     break;
                 default:
                     return;

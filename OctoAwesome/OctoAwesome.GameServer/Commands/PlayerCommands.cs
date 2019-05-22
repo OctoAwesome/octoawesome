@@ -37,10 +37,10 @@ namespace OctoAwesome.GameServer.Commands
             }, DefaultChannels.Simulation);
 
             var remotePlayer = new RemoteEntity(player);
-
-            remotePlayer.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
-            remotePlayer.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            remotePlayer.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            var definitionManager = Program.ServerHandler.SimulationManager.DefinitionManager;
+            remotePlayer.Components.AddComponent(new PositionComponent(definitionManager) { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            remotePlayer.Components.AddComponent(new RenderComponent(definitionManager) { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            remotePlayer.Components.AddComponent(new BodyComponent(definitionManager) { Mass = 50f, Height = 2f, Radius = 1.5f });
 
             Console.WriteLine(playername);
 
@@ -51,7 +51,7 @@ namespace OctoAwesome.GameServer.Commands
             }, DefaultChannels.Network);
 
 
-            return Serializer.Serialize(player, Program.ServerHandler.SimulationManager.DefinitionManager);
+            return Serializer.Serialize(player);
         }
     }
 }

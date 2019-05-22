@@ -41,11 +41,11 @@ namespace OctoAwesome.Network
             {
                 case EntityNotification entityNotification:
                     command = OfficialCommand.EntityNotification;
-                    payload = Serializer.Serialize(entityNotification, null);
+                    payload = Serializer.Serialize(entityNotification);
                     break;
                 case ChunkNotification chunkNotification:
                     command = OfficialCommand.ChunkNotification;
-                    payload = Serializer.Serialize(chunkNotification, null);
+                    payload = Serializer.Serialize(chunkNotification);
                     break;
                 default:
                     return;

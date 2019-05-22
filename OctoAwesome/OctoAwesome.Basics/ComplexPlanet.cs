@@ -42,9 +42,9 @@ namespace OctoAwesome.Basics
             Initalize();
         }
 
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public void Deserialize(BinaryReader reader)
         {
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader);
             Initalize();
         }
 

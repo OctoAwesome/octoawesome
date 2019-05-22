@@ -138,7 +138,7 @@ namespace OctoAwesome.Basics
                 }
             }
 
-            ChunkColumn column = new ChunkColumn(chunks, planet.Id, index);
+            ChunkColumn column = new ChunkColumn(chunks, planet.Id, index, definitionManager);
             column.CalculateHeights();
             return column;
         }
@@ -147,16 +147,16 @@ namespace OctoAwesome.Basics
         {
             IPlanet planet = new ComplexPlanet();
             using(var reader = new BinaryReader(stream))
-                planet.Deserialize(reader, null);
+                planet.Deserialize(reader);
             planet.Generator = this;
             return planet;
         }
 
-        public IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index)
+        public IChunkColumn GenerateColumn(Stream stream, int planetId, Index2 index)
         {
             IChunkColumn column = new ChunkColumn();
             using(var reader = new BinaryReader(stream))
-                column.Deserialize(reader, definitionManager);
+                column.Deserialize(reader);
             return column;
         }
     }

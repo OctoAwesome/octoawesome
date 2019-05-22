@@ -7,16 +7,16 @@ namespace OctoAwesome
 {
     public class SerializableCollection<T> : List<T>, ISerializable where T : ISerializable
     {
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public void Deserialize(BinaryReader reader)
         {
             foreach (var item in this)
-                item.Deserialize(reader, definitionManager);
+                item.Deserialize(reader);
         }
 
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public void Serialize(BinaryWriter writer)
         {
             foreach (var item in this)
-                item.Serialize(writer, definitionManager);
+                item.Serialize(writer);
         }
 
     }
