@@ -135,6 +135,8 @@
     <Compile Include="Simulation.cs" />
     <Compile Include="SimulationComponent.cs" />
     <Compile Include="SimulationState.cs" />
+    <Compile Include="StandaloneTypeContainer.cs" />
+    <Compile Include="TypeContainer.cs" />
     <Compile Include="Wall.cs" />
     <Compile Include="Universe.cs" />
     <Compile Include="UpdateableEntity.cs" />
