@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="engenious">
-      <Version>0.2.0-alpha</Version>
+      <Version>0.3.0.14-alpha</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>

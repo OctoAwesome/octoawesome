@@ -1,4 +1,5 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
 using System;
@@ -156,7 +157,7 @@ namespace OctoAwesome.Client.Screens
 
         private Button GetButton(string title)
         {
-            Button button = Button.TextButton(Manager, title);
+            Button button = new TextButton(Manager, title);
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
             return button;
         }

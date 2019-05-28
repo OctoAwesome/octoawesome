@@ -1,5 +1,6 @@
 ﻿using engenious;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
 
@@ -22,7 +23,7 @@ namespace OctoAwesome.Client.Screens
 
             var panel = new StackPanel(manager)
             {
-                VerticalAlignment = VerticalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Margin = Border.All(50),
                 Background = new BorderBrush(Color.White * 0.5f),
@@ -58,7 +59,7 @@ namespace OctoAwesome.Client.Screens
             };
             AddLabeledControl(grid, "Username:", playerNameInput);
 
-            var createButton = Button.TextButton(manager, Languages.OctoClient.Connect);
+            var createButton = new TextButton(manager, Languages.OctoClient.Connect);
             createButton.HorizontalAlignment = HorizontalAlignment.Center;
             createButton.VerticalAlignment = VerticalAlignment.Center;
             createButton.Visible = true;
