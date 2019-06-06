@@ -21,13 +21,18 @@ namespace OctoAwesome.EntityComponents
 
         public override void Deserialize(BinaryReader reader)
         {
+            IDefinitionManager definitionManager;
+
+            if (!TypeContainer.TryResolve(out definitionManager))
+                return;
+
             base.Deserialize(reader);
 
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
                 string name = reader.ReadString();
-                var definition = DefinitionManager.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
+                var definition = definitionManager.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
                 var amount = reader.ReadDecimal();
 
                 if (definition == null || !(definition is IInventoryableDefinition))

@@ -62,7 +62,7 @@ namespace OctoAwesome.Basics
                         continue;
 
                     LocalBuilder builder = new LocalBuilder(x, y, z + 1, column00, column10, column01, column11);
-                    treeDefinition.PlantTree(resourceManager.DefinitionManager, planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
+                    treeDefinition.PlantTree(planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
                 }
             }
         }

@@ -49,17 +49,26 @@ namespace OctoAwesome.Network
             mainLock = new object();
 
             this.settings = settings; //TODO: Where are the settings?
+                        
+            TypeContainer.Register(settings);
+            TypeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<DiskPersistenceManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<ResourceManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IResourceManager, ResourceManager>(InstanceBehaviour.Singleton);
 
-            extensionLoader = new ExtensionLoader(settings);
+            extensionLoader = TypeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
 
-            definitionManager = new DefinitionManager(extensionLoader);
+            definitionManager = TypeContainer.Get<DefinitionManager>();
 
-            var persistenceManager = new DiskPersistenceManager(extensionLoader, settings);
-
-            ResourceManager = new ResourceManager(extensionLoader, definitionManager, settings, persistenceManager);
+            ResourceManager = TypeContainer.Get<ResourceManager>();
             ResourceManager.InsertUpdateHub(updateHub);
-
+            
             chunkSubscription = updateHub.Subscribe(ResourceManager.GlobalChunkCache, DefaultChannels.Chunk);
             ResourceManager.GlobalChunkCache.InsertUpdateHub(updateHub);
             Service = new GameService(ResourceManager);
@@ -78,7 +87,7 @@ namespace OctoAwesome.Network
         {
             IsRunning = true;
             GameTime = new GameTime();
-            
+
             var universe = settings.Get<string>("LastUniverse");
 
             if (string.IsNullOrWhiteSpace(universe) || true) //TODO: If the load mechanism is repaired remove true

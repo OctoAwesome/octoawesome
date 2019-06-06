@@ -78,7 +78,7 @@ namespace OctoAwesome.Client.Components
                         var position = positioncomp.Position;
                         var body = entity.Components.GetComponent<BodyComponent>();
 
-                        HeadComponent head = new HeadComponent(Simulation.Simulation.ResourceManager.DefinitionManager);
+                        HeadComponent head = new HeadComponent();
                         if (entity.Components.ContainsComponent<HeadComponent>())
                             head = entity.Components.GetComponent<HeadComponent>();
 
