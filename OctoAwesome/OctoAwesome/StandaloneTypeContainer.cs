@@ -34,7 +34,7 @@ namespace OctoAwesome
         {
             if (!typeInformationRegister.ContainsKey(type))
                 typeInformationRegister.Add(type, new TypeInformation(this, type, InstanceBehaviour.Singleton, singelton));
-
+        
             typeRegister.Add(registrar, type);
         }
         public void Register<T>(T singelton) where T : class
@@ -56,17 +56,10 @@ namespace OctoAwesome
 
         public object Get(Type type)
         {
-            if (typeInformationRegister.TryGetValue(type, out TypeInformation typeInformation))
-            {
-                return typeInformation.Instance;
-            }
-
             if (typeRegister.TryGetValue(type, out var searchType))
             {
-                if (typeInformationRegister.TryGetValue(searchType, out typeInformation))
-                {
+                if (typeInformationRegister.TryGetValue(searchType, out var typeInformation))
                     return typeInformation.Instance;
-                }
             }
             return CreateObject(type);
         }
@@ -103,6 +96,18 @@ namespace OctoAwesome
         }
         public T CreateObject<T>() where T : class
             => (T)CreateObject(typeof(T));
+
+        public void Dispose()
+        {
+            typeRegister.Clear();
+            typeInformationRegister.Values
+                .Where(t => t.Behaviour == InstanceBehaviour.Singleton)
+                .Select(t => t.Instance as IDisposable)
+                .ToList()
+                .ForEach(i => i?.Dispose());
+
+            typeInformationRegister.Clear();
+        }
 
         private class TypeInformation
         {

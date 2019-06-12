@@ -63,15 +63,10 @@ namespace OctoAwesome.Client.Screens
             {
                 if (string.IsNullOrEmpty(nameInput.Text))
                     return;
-
-                int? seed = null;
-                int textseed;
-                if (int.TryParse(seedInput.Text, out textseed))
-                    seed = textseed;
-
+                
                 manager.Player.SetEntity(null);
 
-                Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seed);
+                Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
                 settings.Set("LastUniverse", guid.ToString());
 
                 Player player = manager.Game.Simulation.LoginPlayer("");

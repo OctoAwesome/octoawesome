@@ -86,22 +86,35 @@ namespace OctoAwesome
         /// Erzeugt ein neues Spiel (= Universum)
         /// </summary>
         /// <param name="name">Name des Universums.</param>
-        /// <param name="seed">Seed für den Weltgenerator.</param>
+        /// <param name="rawSeed">Seed für den Weltgenerator.</param>
         /// <returns>Die Guid des neuen Universums.</returns>
-        public Guid NewGame(string name, int? seed = null)
+        public Guid NewGame(string name, string rawSeed)
         {
-            if (seed == null)
+            int numericSeed;
+
+            if (string.IsNullOrWhiteSpace(rawSeed))
             {
                 var rand = new Random();
-                seed = rand.Next(int.MaxValue);
+                numericSeed = rand.Next(int.MaxValue);
             }
+            else if(int.TryParse(rawSeed, out var seed))
+            {
+                numericSeed = seed;
+            }
+            else
+            {
+                numericSeed = rawSeed.GetHashCode();
+            }
+            
 
-            Guid guid = ResourceManager.NewUniverse(name, seed.Value);
+            Guid guid = ResourceManager.NewUniverse(name, numericSeed);
 
             Start();
 
             return guid;
         }
+
+
 
         /// <summary>
         /// Lädt ein Spiel (= Universum).
@@ -306,5 +319,6 @@ namespace OctoAwesome
                 Type = EntityNotification.ActionType.Add
             }, DefaultChannels.Network);
         }
+
     }
 }

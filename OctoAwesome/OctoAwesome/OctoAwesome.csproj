@@ -78,6 +78,7 @@
     <Compile Include="EntityComponents\ToolBarComponent.cs" />
     <Compile Include="EntityFilterAttribute.cs" />
     <Compile Include="Extension.cs" />
+    <Compile Include="FailEntityChunkArgs.cs" />
     <Compile Include="GlobalChunkCache.cs" />
     <Compile Include="IBlockDefinition.cs" />
     <Compile Include="IChunk.cs" />

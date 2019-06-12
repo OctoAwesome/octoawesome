@@ -39,10 +39,10 @@ namespace OctoAwesome.Basics
 
         public ComplexPlanet() : base()
         {
-            Initalize();
+            //Initalize();
         }
 
-        public void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
             Initalize();

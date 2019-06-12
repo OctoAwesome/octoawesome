@@ -124,7 +124,7 @@ namespace OctoAwesome.Runtime
             using (BinaryWriter writer = new BinaryWriter(zip))
                 column.Serialize(writer);
         }
-
+        
         /// <summary>
         /// Gibt alle Universen zurück, die geladen werden können.
         /// </summary>
@@ -205,7 +205,6 @@ namespace OctoAwesome.Runtime
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
                 {
                     var awaiter = new Awaiter();
-                    awaiter.Serializable = planet;
                     awaiter.SetResult(generator.GeneratePlanet(zip));
                     return awaiter;
                 }

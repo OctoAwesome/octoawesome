@@ -10,6 +10,8 @@ using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;
+using OctoAwesome.Notifications;
+using OctoAwesome.Common;
 
 namespace OctoAwesome.Client
 {
@@ -57,13 +59,27 @@ namespace OctoAwesome.Client
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
 
-            //Window.AllowUserResizing = true;
-            Settings = new Settings();
+            TypeContainer.Register<Settings>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<GameService>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
 
-            ExtensionLoader = new ExtensionLoader(Settings);
+            //Window.AllowUserResizing = true;
+            Settings = TypeContainer.Get<Settings>();            
+
+            ExtensionLoader = TypeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
 
-            Service = new GameService(ResourceManager);
+            Service = TypeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);
@@ -94,12 +110,14 @@ namespace OctoAwesome.Client
 
             KeyMapper = new KeyMapper(Screen, Settings);
 
+            
+
             #region GameComponents
-            DefinitionManager = new DefinitionManager(ExtensionLoader);
+            DefinitionManager = TypeContainer.Get<DefinitionManager>();
 
             //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
             //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
-            ResourceManager = new ContainerResourceManager();
+            ResourceManager = TypeContainer.Get<ContainerResourceManager>();
 
 
             Player = new PlayerComponent(this, ResourceManager);
@@ -210,6 +228,7 @@ namespace OctoAwesome.Client
         {
             Player.SetEntity(null);
             Simulation.ExitGame();
+            TypeContainer.Get<ITypeContainer>().Dispose();
         }
     }
 }

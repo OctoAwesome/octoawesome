@@ -26,16 +26,22 @@ namespace OctoAwesome.Client
 
         public IUpdateHub UpdateHub { get; }
 
+        private readonly IExtensionResolver extensionResolver;
+        private readonly IDefinitionManager definitionManager;
+        private readonly ISettings settings;
+
         private ResourceManager resourceManager;
         private NetworkUpdateManager networkUpdateManager;
 
-        public ContainerResourceManager()
+        public ContainerResourceManager(IUpdateHub updateHub, IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
-            UpdateHub = new UpdateHub();
+            UpdateHub = updateHub;
+            this.extensionResolver = extensionResolver;
+            this.definitionManager = definitionManager;
+            this.settings = settings;
         }
 
-        public void CreateManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager,
-            ISettings settings, bool multiplayer)
+        public void CreateManager(bool multiplayer)
         {
             IPersistenceManager persistenceManager;
 

@@ -13,7 +13,6 @@ namespace OctoAwesome.Network
     public class SimulationManager
     {
         public bool IsRunning { get; private set; }
-        public IDefinitionManager DefinitionManager => definitionManager;
 
         public Simulation Simulation
         {
@@ -35,22 +34,20 @@ namespace OctoAwesome.Network
         public GameService Service { get; }
 
         private Simulation simulation;
-        private ExtensionLoader extensionLoader;
-        private DefinitionManager definitionManager;
+        private readonly ExtensionLoader extensionLoader;
 
-        private ISettings settings;
+        private readonly ISettings settings;
 
-        private Thread backgroundThread;
-        private object mainLock;
-        private IDisposable chunkSubscription;
+        private readonly Thread backgroundThread;
+        private readonly object mainLock;
+        private readonly IDisposable chunkSubscription;
 
         public SimulationManager(ISettings settings, UpdateHub updateHub)
         {
             mainLock = new object();
+            this.settings = settings;
 
-            this.settings = settings; //TODO: Where are the settings?
-                        
-            TypeContainer.Register(settings);
+
             TypeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
             TypeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
             TypeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
@@ -63,8 +60,6 @@ namespace OctoAwesome.Network
 
             extensionLoader = TypeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
-
-            definitionManager = TypeContainer.Get<DefinitionManager>();
 
             ResourceManager = TypeContainer.Get<ResourceManager>();
             ResourceManager.InsertUpdateHub(updateHub);
@@ -92,7 +87,7 @@ namespace OctoAwesome.Network
 
             if (string.IsNullOrWhiteSpace(universe) || true) //TODO: If the load mechanism is repaired remove true
             {
-                var guid = simulation.NewGame("melmack", new Random().Next());
+                var guid = simulation.NewGame("melmack", new Random().Next().ToString());
                 settings.Set("LastUniverse", guid.ToString());
             }
             else

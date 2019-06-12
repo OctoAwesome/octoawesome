@@ -190,7 +190,7 @@ namespace OctoAwesome.Runtime
                 }
                 else
                 {
-                    awaiter.WaitOn();
+                   planet = (IPlanet)awaiter.WaitOn();
                 }
 
                 planets.Add(id, planet);

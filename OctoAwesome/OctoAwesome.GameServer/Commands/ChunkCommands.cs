@@ -25,7 +25,8 @@ namespace OctoAwesome.GameServer.Commands
                 planetId = reader.ReadInt32();
                 index2 = new Index2(reader.ReadInt32(), reader.ReadInt32());
             }
-            var column = Program.ServerHandler.SimulationManager.LoadColumn(guid, planetId, index2);
+                      
+            var column = TypeContainer.Get<SimulationManager>().LoadColumn(guid, planetId, index2);
 
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
@@ -46,7 +47,7 @@ namespace OctoAwesome.GameServer.Commands
                 chunkColumn.Deserialize(reader);
             }
 
-            Program.ServerHandler.SimulationManager.Simulation.ResourceManager.SaveChunkColumn(chunkColumn);
+            TypeContainer.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn);
 
             return null;
         }

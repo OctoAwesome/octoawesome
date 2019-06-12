@@ -2,7 +2,7 @@
 
 namespace OctoAwesome
 {
-    public interface ITypeContainer
+    public interface ITypeContainer : IDisposable
     {
         object CreateObject(Type type);
         T CreateObject<T>() where T : class;

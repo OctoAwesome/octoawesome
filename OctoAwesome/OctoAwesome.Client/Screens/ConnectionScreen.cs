@@ -68,7 +68,7 @@ namespace OctoAwesome.Client.Screens
                 game.Settings.Set("player", playerNameInput.Text);
 
                 ((ContainerResourceManager)game.ResourceManager)
-                    .CreateManager(game.ExtensionLoader, game.DefinitionManager, game.Settings, true);
+                    .CreateManager(true);
 
                 PlayMultiplayer(manager, playerNameInput.Text);
             };

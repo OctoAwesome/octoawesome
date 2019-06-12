@@ -138,7 +138,7 @@ namespace OctoAwesome.Basics
                 }
             }
 
-            ChunkColumn column = new ChunkColumn(chunks, planet.Id, index, definitionManager);
+            ChunkColumn column = new ChunkColumn(chunks, planet.Id, index);
             column.CalculateHeights();
             return column;
         }

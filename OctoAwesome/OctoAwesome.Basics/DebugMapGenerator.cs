@@ -26,7 +26,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
-            ChunkColumn column = new ChunkColumn(result, planet.Id, index, definitionManager);
+            ChunkColumn column = new ChunkColumn(result, planet.Id, index);
 
 
             for (int layer = 0; layer < planet.Size.Z; layer++)

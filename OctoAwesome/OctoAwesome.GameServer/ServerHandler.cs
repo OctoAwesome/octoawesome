@@ -21,16 +21,19 @@ namespace OctoAwesome.GameServer
         private readonly Server server;
         private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
 
-        public ServerHandler(ISettings settings)
+        public ServerHandler()
         {
             logger = LogManager.GetCurrentClassLogger();
 
-            var updateHub = new UpdateHub();
-            UpdateHub = updateHub;
+            TypeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<Server>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<SimulationManager>(InstanceBehaviour.Singleton);
 
-            server = new Server();
+            SimulationManager = TypeContainer.Get<SimulationManager>();
+            UpdateHub = TypeContainer.Get<IUpdateHub>();
+            server = TypeContainer.Get<Server>();
 
-            SimulationManager = new SimulationManager(settings, updateHub);
             defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
 

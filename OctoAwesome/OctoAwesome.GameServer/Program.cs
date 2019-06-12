@@ -14,8 +14,6 @@ namespace OctoAwesome.GameServer
 {
     internal class Program
     {
-        public static ServerHandler ServerHandler { get; set; }
-
         private static ManualResetEvent manualResetEvent;
         private static Logger logger;
 
@@ -55,12 +53,15 @@ namespace OctoAwesome.GameServer
                 settings = new Settings(fileInfo);                
             }
 
-            ServerHandler = new ServerHandler(settings);
-            ServerHandler.Start();
+            TypeContainer.Register(settings);
+            TypeContainer.Register<ISettings, Settings>(settings);
+            TypeContainer.Register<ServerHandler>(InstanceBehaviour.Singleton);
+            TypeContainer.Get<ServerHandler>().Start();
 
             Console.CancelKeyPress += (s, e) => manualResetEvent.Set();
             manualResetEvent.WaitOne();
             settings.Save();
+            TypeContainer.Get<ITypeContainer>().Dispose();
         }
 
 

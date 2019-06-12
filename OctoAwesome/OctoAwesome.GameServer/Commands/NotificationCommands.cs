@@ -16,7 +16,7 @@ namespace OctoAwesome.GameServer.Commands
 
         static NotificationCommands()
         {
-            updateHub = Program.ServerHandler.UpdateHub;
+            updateHub = TypeContainer.Get<IUpdateHub>();
         }
 
         [Command((ushort)OfficialCommand.EntityNotification)]
