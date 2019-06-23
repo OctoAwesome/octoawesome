@@ -228,6 +228,12 @@ namespace OctoAwesome.Client
         {
             Player.SetEntity(null);
             Simulation.ExitGame();
+        }
+
+
+        public override void Dispose()
+        {
+            base.Dispose();
             TypeContainer.Get<ITypeContainer>().Dispose();
         }
     }

@@ -34,7 +34,7 @@ namespace OctoAwesome
         {
             if (!typeInformationRegister.ContainsKey(type))
                 typeInformationRegister.Add(type, new TypeInformation(this, type, InstanceBehaviour.Singleton, singelton));
-        
+
             typeRegister.Add(registrar, type);
         }
         public void Register<T>(T singelton) where T : class
@@ -101,7 +101,7 @@ namespace OctoAwesome
         {
             typeRegister.Clear();
             typeInformationRegister.Values
-                .Where(t => t.Behaviour == InstanceBehaviour.Singleton)
+                .Where(t => t.Behaviour == InstanceBehaviour.Singleton && t.Instance != this)
                 .Select(t => t.Instance as IDisposable)
                 .ToList()
                 .ForEach(i => i?.Dispose());

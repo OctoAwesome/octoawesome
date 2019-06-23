@@ -205,7 +205,8 @@ namespace OctoAwesome.Runtime
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
                 {
                     var awaiter = new Awaiter();
-                    awaiter.SetResult(generator.GeneratePlanet(zip));
+                    planet = generator.GeneratePlanet(zip);
+                    awaiter.SetResult(planet);
                     return awaiter;
                 }
             }
@@ -233,7 +234,8 @@ namespace OctoAwesome.Runtime
                     {
                         var awaiter = new Awaiter();
                         awaiter.Serializable = column;
-                        awaiter.SetResult(planet.Generator.GenerateColumn(zip, planet.Id, columnIndex));
+                        column = planet.Generator.GenerateColumn(zip, planet.Id, columnIndex);
+                        awaiter.SetResult(column);
                         return awaiter;
                     }
                 }
