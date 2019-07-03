@@ -138,10 +138,9 @@ namespace OctoAwesome
                 cacheItem.Wait();
                 cacheItem.ChunkColumn = loadDelegate(planet, position);
                 cacheItem.ChunkColumn.SetCache(this);
-                lock (updateSemaphore)
-                {
-                    newChunks.Enqueue(cacheItem);
-                }
+                updateSemaphore.Wait();
+                newChunks.Enqueue(cacheItem);
+                updateSemaphore.Release();
                 cacheItem.Release();
             }
 

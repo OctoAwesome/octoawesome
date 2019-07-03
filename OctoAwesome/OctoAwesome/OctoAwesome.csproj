@@ -66,7 +66,6 @@
     <Compile Include="Component.cs" />
     <Compile Include="ComponentList.cs" />
     <Compile Include="Coordinate.cs" />
-    <Compile Include="CustomAwaiter.cs" />
     <Compile Include="EntityComponents\RenderComponent.cs" />
     <Compile Include="EntityList.cs" />
     <Compile Include="EntityComponent.cs" />

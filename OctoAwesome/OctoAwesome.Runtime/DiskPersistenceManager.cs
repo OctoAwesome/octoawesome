@@ -157,7 +157,6 @@ namespace OctoAwesome.Runtime
             universe = new Universe();
             if (!File.Exists(file))
                 return null;
-            var tcs = new CustomAwaiter();
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
