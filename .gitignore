@@ -304,3 +304,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/OctoAwesome/OctoAwesome.Client/Content/engenious.CreatedContent.Content.dll
