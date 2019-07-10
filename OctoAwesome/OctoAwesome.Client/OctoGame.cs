@@ -20,6 +20,8 @@ namespace OctoAwesome.Client
     /// </summary>
     internal class OctoGame : Game
     {
+        private readonly ITypeContainer typeContainer;
+
         //GraphicsDeviceManager graphics;
 
         public CameraComponent Camera { get; private set; }
@@ -59,22 +61,12 @@ namespace OctoAwesome.Client
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
 
-            TypeContainer.Register<Settings>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<GameService>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer = TypeContainer.Get<ITypeContainer>();
+            Startup.Register(typeContainer);
+            Register(typeContainer);
 
             //Window.AllowUserResizing = true;
-            Settings = TypeContainer.Get<Settings>();            
+            Settings = TypeContainer.Get<Settings>();
 
             ExtensionLoader = TypeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
@@ -110,7 +102,7 @@ namespace OctoAwesome.Client
 
             KeyMapper = new KeyMapper(Screen, Settings);
 
-            
+
 
             #region GameComponents
             DefinitionManager = TypeContainer.Get<DefinitionManager>();
@@ -152,6 +144,23 @@ namespace OctoAwesome.Client
             };*/
             SetKeyBindings();
 
+        }
+
+        private static void Register(ITypeContainer typeContainer)
+        {
+            typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
         }
 
         private void SetKeyBindings()
@@ -234,7 +243,7 @@ namespace OctoAwesome.Client
         public override void Dispose()
         {
             base.Dispose();
-            TypeContainer.Get<ITypeContainer>().Dispose();
+            typeContainer.Dispose();
         }
     }
 }

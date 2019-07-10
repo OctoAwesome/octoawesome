@@ -17,7 +17,6 @@ namespace OctoAwesome.Client
     {
         public IDefinitionManager DefinitionManager => resourceManager.DefinitionManager;
         public IUniverse CurrentUniverse => resourceManager.CurrentUniverse;
-        public IGlobalChunkCache GlobalChunkCache => resourceManager.GlobalChunkCache;
 
         private IDisposable chunkSubscription;
 
@@ -140,5 +139,6 @@ namespace OctoAwesome.Client
 
         public void UnloadUniverse() => resourceManager.UnloadUniverse();
         public void SaveChunkColumn(IChunkColumn chunkColumn) => resourceManager.SaveChunkColumn(chunkColumn);
+        public IChunkColumn LoadChunkColumn(int planetId, Index2 index) => resourceManager.LoadChunkColumn(planetId, index);
     }
 }

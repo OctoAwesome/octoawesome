@@ -44,5 +44,7 @@ namespace OctoAwesome
         /// </summary>
         IMapGenerator Generator { get; set; }
 
+        IGlobalChunkCache GlobalChunkCache { get; set; }
+
     }
 }

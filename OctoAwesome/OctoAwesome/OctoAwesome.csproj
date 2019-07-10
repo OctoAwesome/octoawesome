@@ -113,6 +113,7 @@
     <Compile Include="Notifications\ObserverHashSet.cs" />
     <Compile Include="Notifications\PropertyChangedNotification.cs" />
     <Compile Include="Notifications\SerializableNotification.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="RemoteEntity.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
     <Compile Include="ISettings.cs" />

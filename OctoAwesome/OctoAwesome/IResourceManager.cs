@@ -71,17 +71,13 @@ namespace OctoAwesome
         /// <param name="planetId">Die Planteten-ID des gewünschten Planeten</param>
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
-
-        /// <summary>
-        /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.
-        /// </summary>
-        IGlobalChunkCache GlobalChunkCache { get; }
-        
+                
         IUpdateHub UpdateHub { get; }
 
         Player CurrentPlayer { get; }
 
         void SaveEntity(Entity entity);
         void SaveChunkColumn(IChunkColumn value);
+        IChunkColumn LoadChunkColumn(int planetId, Index2 index);
     }
 }

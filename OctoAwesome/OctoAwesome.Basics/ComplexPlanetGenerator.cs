@@ -8,16 +8,8 @@ namespace OctoAwesome.Basics
 {
     public class ComplexPlanetGenerator : IMapGenerator
     {
-        public IPlanet GeneratePlanet(Guid universe, int id, int seed)
-        {
-            Index3 size = new Index3(12, 12, 3);
-            //TODO: Ist es gewollt, das hier der Generator zwei mal reingegeben wird?
-            ComplexPlanet planet = new ComplexPlanet(id, universe, size, this, seed)
-            {
-                Generator = this
-            };
-            return planet;
-        }
+        public IPlanet GeneratePlanet(Guid universe, int id, int seed) 
+            => new ComplexPlanet(id, universe, new Index3(12, 12, 3), this, seed);
 
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {

@@ -22,16 +22,12 @@ namespace OctoAwesome.Runtime
             }
             private set => player = value;
         }
-        /// <summary>
-        /// Der <see cref="IGlobalChunkCache"/>, der im Spiel verwendet werden soll.
-        /// </summary>
-        public IGlobalChunkCache GlobalChunkCache => globalChunkCache;
+
         public IUpdateHub UpdateHub { get; private set; }
 
         private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
         private readonly bool disablePersistence = false;
         private IPersistenceManager persistenceManager = null;
-        private GlobalChunkCache globalChunkCache = null;
         private readonly List<IMapPopulator> populators = null;
         private Dictionary<int, IPlanet> planets;
         private Player player;
@@ -60,13 +56,7 @@ namespace OctoAwesome.Runtime
             this.persistenceManager = persistenceManager;
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
-
-            globalChunkCache = new GlobalChunkCache(
-                (p, i) => LoadChunkColumn(p, i),
-                (i) => GetPlanet(i),
-                (p, i, c) => SaveChunkColumn(p, i, c));
-
-
+                       
             planets = new Dictionary<int, IPlanet>();
 
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
@@ -127,8 +117,6 @@ namespace OctoAwesome.Runtime
         {
             persistenceManager.SaveUniverse(CurrentUniverse);
 
-            // Unload Chunks
-            globalChunkCache.Clear();
 
             foreach (var planet in planets)
             {
@@ -295,13 +283,10 @@ namespace OctoAwesome.Runtime
             return column11;
         }
         public void SaveChunkColumn(IChunkColumn chunkColumn)
-            => SaveChunkColumn(chunkColumn.Planet, chunkColumn.Index, chunkColumn);
-
-        private void SaveChunkColumn(int planetId, Index2 index, IChunkColumn value)
         {
-            if (!disablePersistence && value.ChangeCounter > 0) //value.Chunks.Any(c => c.ChangeCounter > 0)
+            if (!disablePersistence && chunkColumn.ChangeCounter > 0) //value.Chunks.Any(c => c.ChangeCounter > 0)
             {
-                persistenceManager.SaveColumn(CurrentUniverse.Id, planetId, value);
+                persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
             }
         }
 

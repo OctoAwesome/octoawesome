@@ -103,11 +103,13 @@ namespace OctoAwesome
             if (_loadingTask != null && !_loadingTask.IsCompleted)
             {
                 _cancellationToken.Cancel();
+                _cancellationToken?.Dispose();
                 _cancellationToken = new CancellationTokenSource();
                 _loadingTask = _loadingTask.ContinueWith(_ => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }
             else
             {
+                _cancellationToken?.Dispose();
                 _cancellationToken = new CancellationTokenSource();
                 _loadingTask = Task.Factory.StartNew(() => InternalSetCenter(_cancellationToken.Token, planet, index, successCallback));
             }

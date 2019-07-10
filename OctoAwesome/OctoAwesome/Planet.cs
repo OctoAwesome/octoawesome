@@ -44,6 +44,8 @@ namespace OctoAwesome
         /// </summary>
         public IMapGenerator Generator { get; set; }
 
+        public IGlobalChunkCache GlobalChunkCache { get; set; }
+
         /// <summary>
         /// Initialisierung des Planeten.
         /// </summary>
@@ -53,6 +55,8 @@ namespace OctoAwesome
         /// <param name="seed">Seed des Zufallsgenerators.</param>
         public Planet(int id, Guid universe, Index3 size, int seed)
         {
+            GlobalChunkCache = TypeContainer.Get<IGlobalChunkCache>();
+
             Id = id;
             Universe = universe;
             Size = new Index3(

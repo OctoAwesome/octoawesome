@@ -27,14 +27,7 @@ namespace OctoAwesome
         /// <param name="position">Position des Chunks</param>
         /// <returns>Den neu abonnierten Chunk</returns>
         IChunkColumn Subscribe(int planet, Index2 position, bool passive);
-
-        /// <summary>
-        /// Gibt einen Planenten anhand seiner ID zurück
-        /// </summary>
-        /// <param name="id">ID des Planeten</param>
-        /// <returns>Planet</returns>
-        IPlanet GetPlanet(int id);
-
+        
         bool IsChunkLoaded(int planet, Index2 position);
 
         /// <summary>
