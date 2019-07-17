@@ -25,6 +25,8 @@ namespace OctoAwesome.Client
 
         public IUpdateHub UpdateHub { get; }
 
+        public Dictionary<int, IPlanet> Planets => resourceManager.Planets;
+
         private readonly IExtensionResolver extensionResolver;
         private readonly IDefinitionManager definitionManager;
         private readonly ISettings settings;
@@ -102,26 +104,30 @@ namespace OctoAwesome.Client
             resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager);
             resourceManager.InsertUpdateHub(UpdateHub as UpdateHub);
 
-            chunkSubscription = UpdateHub.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
-            GlobalChunkCache.InsertUpdateHub(UpdateHub);
+            
 
             IsMultiplayer = multiplayer;
 
-            if (multiplayer)
-            {
-                resourceManager.GlobalChunkCache.ChunkColumnChanged += (s, c) =>
-                {
-                    var networkPersistence = (NetworkPersistenceManager)persistenceManager;
-                    networkPersistence.SendChangedChunkColumn(c);
-                };
-            }
+            //if (multiplayer)
+            //{
+            //    resourceManager.GlobalChunkCache.ChunkColumnChanged += (s, c) =>
+            //    {
+            //        var networkPersistence = (NetworkPersistenceManager)persistenceManager;
+            //        networkPersistence.SendChangedChunkColumn(c);
+            //    };
+            //}
 
 
         }
 
         public void DeleteUniverse(Guid id) => resourceManager.DeleteUniverse(id);
 
-        public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
+        public IPlanet GetPlanet(int planetId)
+        {
+            var planet = resourceManager.GetPlanet(planetId);
+            planet.UpdateHub = UpdateHub;
+            return planet;
+        }
 
         public IUniverse GetUniverse() => resourceManager.GetUniverse();
 
@@ -139,6 +145,6 @@ namespace OctoAwesome.Client
 
         public void UnloadUniverse() => resourceManager.UnloadUniverse();
         public void SaveChunkColumn(IChunkColumn chunkColumn) => resourceManager.SaveChunkColumn(chunkColumn);
-        public IChunkColumn LoadChunkColumn(int planetId, Index2 index) => resourceManager.LoadChunkColumn(planetId, index);
+        public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index) => resourceManager.LoadChunkColumn(planet, index);
     }
 }

@@ -23,11 +23,11 @@ namespace OctoAwesome
         /// Dictionary, das alle <see cref="CacheItem"/>s hält.
         /// </summary>
         private readonly Dictionary<Index3, CacheItem> cache;
-        private Queue<CacheItem> newChunks;
-        private Queue<CacheItem> oldChunks;
-        private CancellationTokenSource tokenSource;
+        private readonly Queue<CacheItem> newChunks;
+        private readonly Queue<CacheItem> oldChunks;
+        private readonly CancellationTokenSource tokenSource;
         private readonly IResourceManager resourceManager;
-        
+
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
         /// </summary>
@@ -35,7 +35,7 @@ namespace OctoAwesome
         private readonly SemaphoreSlim updateSemaphore = new SemaphoreSlim(1, 1);
 
         // TODO: Früher oder später nach draußen auslagern
-        private Task cleanupTask;
+        private readonly Task cleanupTask;
         private IUpdateHub updateHub;
 
 
@@ -58,12 +58,15 @@ namespace OctoAwesome
         /// </summary>
         public int DirtyChunkColumn => _dirtyItems.Count;
 
+        public IPlanet Planet { get; }
+
         /// <summary>
         /// Create new instance of GlobalChunkCache
         /// </summary>
         /// <param name="resourceManager">the current <see cref="IResourceManager"/> to load ressources/></param>
-        public GlobalChunkCache(IResourceManager resourceManager)
+        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager)
         {
+            Planet = planet ?? throw new ArgumentNullException(nameof(planet));
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
             
             cache = new Dictionary<Index3, CacheItem>();
@@ -81,13 +84,13 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <returns></returns>
-        public IChunkColumn Subscribe(int planet, Index2 position, bool passive)
+        public IChunkColumn Subscribe(Index2 position, bool passive)
         {
             CacheItem cacheItem = null;
     
             semaphore.Wait();
 
-            if (!cache.TryGetValue(new Index3(position, planet), out cacheItem))
+            if (!cache.TryGetValue(new Index3(position, Planet.Id), out cacheItem))
             {
                 //TODO: Überdenken
                 if (passive)
@@ -95,7 +98,7 @@ namespace OctoAwesome
 
                 cacheItem = new CacheItem()
                 {
-                    Planet = planet,
+                    Planet = Planet,
                     Index = position,
                     References = 0,
                     PassiveReference = 0,
@@ -104,7 +107,7 @@ namespace OctoAwesome
 
                 cacheItem.Changed += ItemChanged;
                 //_dirtyItems.Enqueue(cacheItem);
-                cache.Add(new Index3(position, planet), cacheItem);
+                cache.Add(new Index3(position, Planet.Id), cacheItem);
                 //_autoResetEvent.Set();
             }
 
@@ -118,7 +121,7 @@ namespace OctoAwesome
             if (cacheItem.ChunkColumn == null)
             {
                 cacheItem.Wait();
-                cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(planet, position);
+                cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(Planet, position);
                 cacheItem.ChunkColumn.SetCache(this);
                 updateSemaphore.Wait();
                 newChunks.Enqueue(cacheItem);
@@ -129,8 +132,8 @@ namespace OctoAwesome
             return cacheItem.ChunkColumn;
         }
 
-        public bool IsChunkLoaded(int planet, Index2 position)
-            => cache.ContainsKey(new Index3(position, planet));
+        public bool IsChunkLoaded(Index2 position)
+            => cache.ContainsKey(new Index3(position, Planet.Id));
 
         private void ItemChanged(CacheItem obj, IChunkColumn chunkColumn)
         {
@@ -145,9 +148,9 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des zurückzugebenden Chunks</param>
         /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
-        public IChunkColumn Peek(int planet, Index2 position)
+        public IChunkColumn Peek(Index2 position)
         {
-            if (cache.TryGetValue(new Index3(position, planet), out CacheItem cacheItem))
+            if (cache.TryGetValue(new Index3(position, Planet.Id), out CacheItem cacheItem))
                 return cacheItem.ChunkColumn;
 
             return null;
@@ -175,11 +178,11 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        public void Release(int planet, Index2 position, bool passive)
+        public void Release(Index2 position, bool passive)
         {
             using (new CacheLock(semaphore))
             {
-                if (!cache.TryGetValue(new Index3(position, planet), out CacheItem cacheItem))
+                if (!cache.TryGetValue(new Index3(position, Planet.Id), out CacheItem cacheItem))
                 {
                     if (!passive)
                     {
@@ -228,7 +231,7 @@ namespace OctoAwesome
                 {
                     if (ci.References <= 0)
                     {
-                        var key = new Index3(ci.Index, ci.Planet);
+                        var key = new Index3(ci.Index, ci.Planet.Id);
 
                         using (ci.Lock())
                             ci.Changed -= ItemChanged;
@@ -283,8 +286,11 @@ namespace OctoAwesome
 
                 foreach (var entity in failChunkEntities)
                 {
-                    var currentchunk = Peek(entity.CurrentPlanet, entity.CurrentChunk);
-                    var targetchunk = Peek(entity.TargetPlanet, entity.TargetChunk);
+                    //TODO: Old Planet change
+                    //var currentchunk = Peek(entity.CurrentPlanet, entity.CurrentChunk);
+                    //var targetchunk = Peek(entity.TargetPlanet, entity.TargetChunk);
+                    var currentchunk = Peek(entity.CurrentChunk);
+                    var targetchunk = Peek(entity.TargetChunk);
 
                     currentchunk.Entities.Remove(entity.Entity);
 
@@ -345,7 +351,7 @@ namespace OctoAwesome
             private IChunkColumn _chunkColumn;
             private readonly SemaphoreSlim internalSemaphore;
 
-            public int Planet { get; set; }
+            public IPlanet Planet { get; set; }
 
             public Index2 Index { get; set; }
 

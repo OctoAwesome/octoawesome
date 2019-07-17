@@ -133,12 +133,12 @@ namespace OctoAwesome.Client.Controls
                 }
             }
 
-            planet = Manager.Game.ResourceManager.GetPlanet(0);
+            planet = Manager.Game.ResourceManager.GetPlanet(player.Position.Position.Planet);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
 
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
-            localChunkCache = new LocalChunkCache(Manager.Game.ResourceManager.GlobalChunkCache, false, VIEWRANGE, range);
+            localChunkCache = new LocalChunkCache(planet.GlobalChunkCache, false, VIEWRANGE, range);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -539,7 +539,6 @@ namespace OctoAwesome.Client.Controls
             if (destinationChunk != currentChunk)
             {
                 localChunkCache.SetCenter(
-                    planet,
                     new Index2(player.Position.Position.ChunkIndex),
                     b =>
                     {

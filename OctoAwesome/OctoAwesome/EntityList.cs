@@ -12,11 +12,13 @@ namespace OctoAwesome
     {
         private List<Entity> entities;
         private IChunkColumn column;
+        private readonly IResourceManager resourceManager;
 
         public EntityList(IChunkColumn column)
         {
             entities = new List<Entity>();
             this.column = column;
+            resourceManager = TypeContainer.Get<IResourceManager>();
         }
 
         public int Count => entities.Count;
@@ -61,7 +63,7 @@ namespace OctoAwesome
                             CurrentChunk = new Index2(column.Index),
                             CurrentPlanet = column.Planet,
                             TargetChunk = new Index2(position.Position.ChunkIndex),
-                            TargetPlanet = position.Position.Planet,
+                            TargetPlanet = resourceManager.GetPlanet(position.Position.Planet),
                         };
                     }
                 }

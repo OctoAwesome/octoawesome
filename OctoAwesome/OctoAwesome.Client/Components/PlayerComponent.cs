@@ -71,8 +71,6 @@ namespace OctoAwesome.Client.Components
         {
             CurrentEntity = entity;
 
-
-
             if (CurrentEntity == null)
             {
                 CurrentEntityHead = null;
@@ -81,7 +79,7 @@ namespace OctoAwesome.Client.Components
             {
                 // Map other Components
 
-                CurrentController = entity.Components.GetComponent<ControllableComponent>();
+                CurrentController = CurrentEntity.Components.GetComponent<ControllableComponent>();
 
                 CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
                 if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();

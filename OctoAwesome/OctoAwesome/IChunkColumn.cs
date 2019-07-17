@@ -18,7 +18,7 @@ namespace OctoAwesome
         /// <summary>
         /// Der Index des Planeten.
         /// </summary>
-        int Planet { get; }
+        IPlanet Planet { get; }
 
         /// <summary>
         /// Die Position der Säule.

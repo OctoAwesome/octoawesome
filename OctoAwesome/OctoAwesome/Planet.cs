@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -45,6 +46,18 @@ namespace OctoAwesome
         public IMapGenerator Generator { get; set; }
 
         public IGlobalChunkCache GlobalChunkCache { get; set; }
+        public IUpdateHub UpdateHub
+        {
+            get => updateHub; set
+            {
+
+                chunkSubscription = UpdateHub.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
+                GlobalChunkCache.InsertUpdateHub(UpdateHub);
+            }
+        }
+
+        private IUpdateHub updateHub;
+        private IDisposable chunkSubscription;
 
         /// <summary>
         /// Initialisierung des Planeten.
@@ -53,9 +66,8 @@ namespace OctoAwesome
         /// <param name="universe">ID des Universums.</param>
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
         /// <param name="seed">Seed des Zufallsgenerators.</param>
-        public Planet(int id, Guid universe, Index3 size, int seed)
+        public Planet(int id, Guid universe, Index3 size, int seed) : this()
         {
-            GlobalChunkCache = TypeContainer.Get<IGlobalChunkCache>();
 
             Id = id;
             Universe = universe;
@@ -71,7 +83,7 @@ namespace OctoAwesome
         /// </summary>
         public Planet()
         {
-
+            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>());
         }
 
         /// <summary>
@@ -101,6 +113,13 @@ namespace OctoAwesome
             Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
             Universe = new Guid(reader.ReadBytes(16));
             //var name = reader.ReadString();
+        }
+
+        public void Dispose()
+        {
+            chunkSubscription.Dispose();
+
+            chunkSubscription = null;
         }
     }
 }

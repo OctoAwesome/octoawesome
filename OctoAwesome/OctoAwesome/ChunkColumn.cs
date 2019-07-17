@@ -27,7 +27,7 @@ namespace OctoAwesome
         /// <param name="chunks">Die Chunks für die Säule</param>
         /// <param name="planet">Der Index des Planeten</param>
         /// <param name="columnIndex">Die Position der Säule</param>
-        public ChunkColumn(IChunk[] chunks, int planet, Index2 columnIndex) : this()
+        public ChunkColumn(IChunk[] chunks, IPlanet planet, Index2 columnIndex) : this()
         {
             Planet = planet;
             Chunks = chunks;
@@ -109,7 +109,7 @@ namespace OctoAwesome
         /// <summary>
         /// Der Index des Planeten.
         /// </summary>
-        public int Planet
+        public IPlanet Planet
         {
             get;
             private set;
@@ -255,7 +255,7 @@ namespace OctoAwesome
             writer.Write(Populated); // Populated
             writer.Write(Index.X);
             writer.Write(Index.Y);
-            writer.Write(Planet);
+            writer.Write(Planet.Id);
 
             for (var y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
@@ -330,7 +330,10 @@ namespace OctoAwesome
             Populated = reader.ReadBoolean(); // Populated
 
             Index = new Index2(reader.ReadInt32(), reader.ReadInt32());
-            Planet = reader.ReadInt32();
+            int planetId = reader.ReadInt32();
+
+            var resManager = TypeContainer.Get<IResourceManager>();
+            Planet = resManager.GetPlanet(planetId);
 
             for (var y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)

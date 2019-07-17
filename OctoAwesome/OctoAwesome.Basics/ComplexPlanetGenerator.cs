@@ -42,7 +42,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)
-                chunks[i] = new Chunk(new Index3(index, i), planet.Id);
+                chunks[i] = new Chunk(new Index3(index, i), planet);
 
             int obersteSchicht;
             bool surfaceBlock;
@@ -130,7 +130,7 @@ namespace OctoAwesome.Basics
                 }
             }
 
-            ChunkColumn column = new ChunkColumn(chunks, planet.Id, index);
+            ChunkColumn column = new ChunkColumn(chunks, planet, index);
             column.CalculateHeights();
             return column;
         }

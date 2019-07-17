@@ -173,8 +173,8 @@ namespace OctoAwesome.Client.Controls
             //Draw Loaded Chunks
             loadedChunks.Text = string.Format("{0}: {1}/{2}",
                 Languages.OctoClient.LoadedChunks,
-                manager.Game.ResourceManager.GlobalChunkCache.DirtyChunkColumn,
-                manager.Game.ResourceManager.GlobalChunkCache.LoadedChunkColumns);
+                manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.DirtyChunkColumn,
+                manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.LoadedChunkColumns);
 
             // Draw Loaded Textures
             loadedTextures.Text = string.Format("Loaded Textures: {0}",

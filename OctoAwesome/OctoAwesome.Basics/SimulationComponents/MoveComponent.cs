@@ -16,9 +16,9 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
 
-            var planet = entity.Cache.LoadPlanet(poscomp.Position.Planet);
+            var planet = entity.Cache.Planet;
             poscomp.Position.NormalizeChunkIndexXY(planet.Size);
-            entity.Cache.SetCenter(planet, new Index2(poscomp.Position.ChunkIndex));
+            entity.Cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
             return true;
         }
 
@@ -42,7 +42,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(e.Cache.Planet.Size);
-            var result = e.Cache.SetCenter(e.Cache.Planet, new Index2(poscomp.Position.ChunkIndex));
+            var result = e.Cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
             if (result)
                 poscomp.Position = newposition;
 

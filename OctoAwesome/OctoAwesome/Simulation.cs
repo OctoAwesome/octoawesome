@@ -140,20 +140,22 @@ namespace OctoAwesome
         /// <param name="gameTime">Spielzeit</param>
         public void Update(GameTime gameTime)
         {
-            if (State == SimulationState.Running)
-            {
-                ResourceManager.GlobalChunkCache.BeforeSimulationUpdate(this);
+            if (State != SimulationState.Running)
+                return;
 
-                //Update all Entities
-                foreach (var entity in Entities.OfType<UpdateableEntity>())
-                    entity.Update(gameTime);
+            foreach (var planet in ResourceManager.Planets)
+                planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
-                // Update all Components
-                foreach (var component in Components.Where(c => c.Enabled))
-                    component.Update(gameTime);
+            //Update all Entities
+            foreach (var entity in Entities.OfType<UpdateableEntity>())
+                entity.Update(gameTime);
 
-                ResourceManager.GlobalChunkCache.AfterSimulationUpdate(this);
-            }
+            // Update all Components
+            foreach (var component in Components.Where(c => c.Enabled))
+                component.Update(gameTime);
+
+            foreach (var planet in ResourceManager.Planets)
+                planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 using System;
 using System.IO;
 
@@ -7,7 +8,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basis Schnittstelle für alle Implementierungen von Planeten.
     /// </summary>
-    public interface IPlanet : ISerializable
+    public interface IPlanet : ISerializable, IDisposable
     {
         /// <summary>
         /// ID des Planeten.
@@ -45,6 +46,6 @@ namespace OctoAwesome
         IMapGenerator Generator { get; set; }
 
         IGlobalChunkCache GlobalChunkCache { get; set; }
-
+        IUpdateHub UpdateHub { get; set; }
     }
 }

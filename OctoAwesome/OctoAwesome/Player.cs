@@ -26,7 +26,9 @@ namespace OctoAwesome
         }
 
         protected override void OnInitialize(IResourceManager manager)
-            => Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
+        {
+            //Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
+        }
 
         /// <summary>
         /// Serialisiert den Player mit dem angegebenen BinaryWriter.
