@@ -16,7 +16,6 @@ namespace OctoAwesome.EntityComponents
         {
             get => position; set
             {
-
                 var valueBlockX = ((int)(value.BlockPosition.X * 100)) / 100f;
                 var valueBlockY = ((int)(value.BlockPosition.Y * 100)) / 100f;
                 var positionBlockX = ((int)(position.BlockPosition.X * 100)) / 100f;
@@ -26,17 +25,21 @@ namespace OctoAwesome.EntityComponents
                     || position.BlockPosition.Z != value.BlockPosition.Z;
 
                 SetValue(ref position, value);
+                TryUpdatePlanet(value.Planet);
             }
         }
 
         public float Direction { get; set; }
+        public IPlanet Planet { get; private set; }
 
         private Coordinate position;
         private bool posUpdate;
+        private readonly IResourceManager resourceManager;
 
         public PositionComponent()
         {
             Sendable = true;
+            resourceManager = TypeContainer.Get<IResourceManager>();
         }
 
         public override void Serialize(BinaryWriter writer)
@@ -66,6 +69,16 @@ namespace OctoAwesome.EntityComponents
             float posZ = reader.ReadSingle();
 
             position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+            TryUpdatePlanet(planet);
+        }
+
+        private bool TryUpdatePlanet(int planetId)
+        {
+            if (Planet != null && Planet.Id == planetId)
+                return false;
+
+            Planet = resourceManager.GetPlanet(planetId);
+            return true;
         }
 
         protected override void OnPropertyChanged<T>(T value, string callerName)

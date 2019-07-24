@@ -45,5 +45,15 @@ namespace OctoAwesome
             => instance.Get(type);
         public static T Get<T>() where T : class
             => instance.Get<T>();
+
+        public static object GetOrNull(Type type)
+            => instance.GetOrNull(type);
+        public static T GetOrNull<T>() where T : class
+            => instance.GetOrNull<T>();
+
+        public static object GetUnregistered(Type type)
+            => instance.GetUnregistered(type);
+        public static T GetUnregistered<T>() where T : class
+            => instance.GetUnregistered<T>();
     }
 }

@@ -19,5 +19,11 @@ namespace OctoAwesome
 
         object Get(Type type);
         T Get<T>() where T : class;
+
+        object GetUnregistered(Type type);
+        T GetUnregistered<T>() where T : class;
+
+        object GetOrNull(Type type);
+        T GetOrNull<T>() where T : class;
     }
 }

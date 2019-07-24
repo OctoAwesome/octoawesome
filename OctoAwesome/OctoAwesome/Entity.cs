@@ -100,7 +100,8 @@ namespace OctoAwesome
 
         }
 
-        public override int GetHashCode() => Id;
+        public override int GetHashCode() 
+            => Id;
 
         public override bool Equals(object obj)
         {

@@ -17,9 +17,7 @@ namespace OctoAwesome.Client
     {
         public IDefinitionManager DefinitionManager => resourceManager.DefinitionManager;
         public IUniverse CurrentUniverse => resourceManager.CurrentUniverse;
-
-        private IDisposable chunkSubscription;
-
+        
         public bool IsMultiplayer { get; private set; }
         public Player CurrentPlayer => resourceManager.CurrentPlayer;
 

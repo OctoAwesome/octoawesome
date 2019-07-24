@@ -44,7 +44,7 @@ namespace OctoAwesome
 
         public bool TryResolve(Type type, out object instance)
         {
-            instance = Get(type);
+            instance = GetOrNull(type);
             return instance != null;
         }
         public bool TryResolve<T>(out T instance) where T : class
@@ -55,16 +55,30 @@ namespace OctoAwesome
         }
 
         public object Get(Type type)
+            => GetOrNull(type) ?? throw new KeyNotFoundException($"Type {type} was not found in Container");
+
+        public T Get<T>() where T : class
+            => (T)Get(typeof(T));
+
+        public object GetOrNull(Type type)
         {
             if (typeRegister.TryGetValue(type, out var searchType))
             {
                 if (typeInformationRegister.TryGetValue(searchType, out var typeInformation))
                     return typeInformation.Instance;
             }
-            return CreateObject(type);
+            return null;
         }
-        public T Get<T>() where T : class
-            => (T)Get(typeof(T));
+        public T GetOrNull<T>() where T : class
+            => (T)GetOrNull(typeof(T));
+
+        public object GetUnregistered(Type type) 
+            => GetOrNull(type) 
+                ?? CreateObject(type) 
+                ?? throw new InvalidOperationException($"Can not create unregistered type of {type}");
+    
+        public T GetUnregistered<T>() where T : class
+            => (T)GetUnregistered(typeof(T));
 
         public object CreateObject(Type type)
         {
@@ -78,7 +92,7 @@ namespace OctoAwesome
                     {
                         tmpList.Add(instance);
                     }
-                    else
+                    else if (!parameter.IsOptional)
                     {
                         tmpList.Clear();
                         next = true;

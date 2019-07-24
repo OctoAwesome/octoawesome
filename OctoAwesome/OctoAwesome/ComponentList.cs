@@ -150,7 +150,7 @@ namespace OctoAwesome
 
                 if (!components.TryGetValue(type, out component))
                 {
-                    component = (T)Activator.CreateInstance(type);
+                    component = (T)TypeContainer.GetUnregistered(type);
                     //components.Add(type, component);
                     AddComponent(component);
                 }

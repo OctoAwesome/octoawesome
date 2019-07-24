@@ -10,8 +10,6 @@ namespace OctoAwesome.Basics.SimulationComponents
     [EntityFilter(typeof(MoveableComponent), typeof(PositionComponent))]
     public sealed class MoveComponent : SimulationComponent<MoveableComponent, PositionComponent>
     {
-
-
         protected override bool AddEntity(Entity entity)
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();

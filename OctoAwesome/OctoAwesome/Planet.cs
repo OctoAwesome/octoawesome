@@ -51,8 +51,9 @@ namespace OctoAwesome
             get => updateHub; set
             {
 
-                chunkSubscription = UpdateHub.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
-                GlobalChunkCache.InsertUpdateHub(UpdateHub);
+                chunkSubscription = value.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
+                GlobalChunkCache.InsertUpdateHub(value);
+                updateHub = value;
             }
         }
 

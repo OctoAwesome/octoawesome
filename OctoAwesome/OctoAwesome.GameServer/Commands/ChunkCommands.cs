@@ -26,7 +26,7 @@ namespace OctoAwesome.GameServer.Commands
                 index2 = new Index2(reader.ReadInt32(), reader.ReadInt32());
             }
                       
-            var column = TypeContainer.Get<SimulationManager>().LoadColumn(guid, planetId, index2);
+            var column = TypeContainer.Get<SimulationManager>().LoadColumn(planetId, index2);
 
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
