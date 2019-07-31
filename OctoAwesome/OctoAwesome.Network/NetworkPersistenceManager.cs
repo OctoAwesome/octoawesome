@@ -44,7 +44,7 @@ namespace OctoAwesome.Network
 
                 package.Payload = memoryStream.ToArray();
             }
-            column = new ChunkColumn();
+            column = new ChunkColumn(planet);
             var awaiter = GetAwaiter(column, package.UId);
 
             client.SendPackage(package);

@@ -27,12 +27,6 @@ namespace OctoAwesome
         /// </summary>
         public Simulation Simulation { get; internal set; }
 
-       
-
-        /// <summary>
-        /// LocalChunkCache für die Entity
-        /// </summary>
-        public ILocalChunkCache Cache { get; protected set; }
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
@@ -40,17 +34,31 @@ namespace OctoAwesome
         public Entity()
         {
             Components = new ComponentList<EntityComponent>(
-                ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
+                ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
         }
 
         private void OnRemoveComponent(EntityComponent component)
         {
-            
+
         }
 
         private void OnAddComponent(EntityComponent component)
         {
             component.SetEntity(this);
+
+            //HACK: Remove PositionComponent Dependency
+            if (component is LocalChunkCacheComponent cacheComponent)
+            {
+                if (cacheComponent.LocalChunkCache != null)
+                    return;
+
+                var positionComponent = Components.GetComponent<PositionComponent>();
+
+                if (positionComponent == null)
+                    return;
+
+                cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
+            }
         }
 
         private void ValidateAddComponent(EntityComponent component)
@@ -100,7 +108,7 @@ namespace OctoAwesome
 
         }
 
-        public override int GetHashCode() 
+        public override int GetHashCode()
             => Id;
 
         public override bool Equals(object obj)
@@ -121,6 +129,6 @@ namespace OctoAwesome
             foreach (var component in Components)
                 component?.OnUpdate(notification);
         }
-        
+
     }
 }

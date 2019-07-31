@@ -68,9 +68,9 @@ namespace OctoAwesome.Basics
 
 
 
-        public IChunkColumn GenerateColumn(Stream stream, int planetId, Index2 index)
+        public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
-            IChunkColumn column = new ChunkColumn();
+            IChunkColumn column = new ChunkColumn(planet);
             using (var reader = new BinaryReader(stream))
                 column.Deserialize(reader);
             return column;

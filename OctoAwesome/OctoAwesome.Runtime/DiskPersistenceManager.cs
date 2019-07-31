@@ -118,7 +118,7 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
             Directory.CreateDirectory(path);
 
-            string file = path = Path.Combine(path, string.Format(ColumnFilename, column.Index.X, column.Index.Y));
+            string file = Path.Combine(path, string.Format(ColumnFilename, column.Index.X, column.Index.Y));
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             using (GZipStream zip = new GZipStream(stream, CompressionMode.Compress))
             using (BinaryWriter writer = new BinaryWriter(zip))
@@ -221,7 +221,7 @@ namespace OctoAwesome.Runtime
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString(), string.Format(ColumnFilename, columnIndex.X, columnIndex.Y));
-            column = new ChunkColumn();
+            column = new ChunkColumn(planet);
             if (!File.Exists(file))
                 return null;
 
@@ -233,7 +233,7 @@ namespace OctoAwesome.Runtime
                     {
                         var awaiter = new Awaiter();
                         awaiter.Serializable = column;
-                        column = planet.Generator.GenerateColumn(zip, planet.Id, columnIndex);
+                        column = planet.Generator.GenerateColumn(zip, planet, columnIndex);
                         awaiter.SetResult(column);
                         return awaiter;
                     }
@@ -270,8 +270,10 @@ namespace OctoAwesome.Runtime
                 {
                     try
                     {
-                        var awaiter = new Awaiter();
-                        awaiter.Serializable = player;
+                        var awaiter = new Awaiter
+                        {
+                            Serializable = player
+                        };
                         player.Deserialize(reader);
                         awaiter.SetResult(player);
                         return awaiter;

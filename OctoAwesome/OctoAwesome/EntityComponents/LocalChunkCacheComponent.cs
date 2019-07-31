@@ -8,11 +8,14 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class LocalChunkCacheComponent : EntityComponent
     {
-        public ILocalChunkCache LocalChunkCache { get; private set; }
+        public ILocalChunkCache LocalChunkCache { get; set; }
 
-        public LocalChunkCacheComponent(IGlobalChunkCache globalCache, bool passive, int dimensions, int range)
+        public LocalChunkCacheComponent()
         {
-            LocalChunkCache = new LocalChunkCache(globalCache, passive, dimensions, range);
+        }
+        public LocalChunkCacheComponent(IGlobalChunkCache globalChunkCache, int dimensions,int range)
+        {
+            LocalChunkCache = new LocalChunkCache(globalChunkCache, dimensions, range);
         }
     }
 }

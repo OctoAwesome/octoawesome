@@ -138,7 +138,7 @@ namespace OctoAwesome.Client.Controls
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
 
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
-            localChunkCache = new LocalChunkCache(planet.GlobalChunkCache, false, VIEWRANGE, range);
+            localChunkCache = new LocalChunkCache(planet.GlobalChunkCache, VIEWRANGE, range);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),

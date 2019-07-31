@@ -24,10 +24,9 @@ namespace OctoAwesome
         /// <summary>
         /// Abonniert einen Chunk.
         /// </summary>
-        /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <returns>Den neu abonnierten Chunk</returns>
-        IChunkColumn Subscribe(Index2 position, bool passive);
+        IChunkColumn Subscribe(Index2 position);
         
         bool IsChunkLoaded(Index2 position);
 
@@ -42,9 +41,8 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
-        /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        void Release(Index2 position, bool passive);
+        void Release(Index2 position);
         
         /// <summary>
         /// Löscht den gesamten Inhalt des Caches.

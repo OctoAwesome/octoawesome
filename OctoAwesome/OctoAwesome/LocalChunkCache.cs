@@ -15,15 +15,13 @@ namespace OctoAwesome
         /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
         public IPlanet Planet { get; private set; }
-
-        public bool IsPassive { get; private set; }
-
+        
         public Index2 CenterPosition { get; set; }
 
         /// <summary>
         /// Referenz auf den Globalen Cache
         /// </summary>
-        private IGlobalChunkCache globalCache;
+        private readonly IGlobalChunkCache globalCache;
 
         /// <summary>
         /// Die im lokalen Cache gespeicherten Chunks
@@ -59,10 +57,8 @@ namespace OctoAwesome
         /// <param name="globalCache">Referenz auf global Chunk Cache</param>
         /// <param name="dimensions">Größe des Caches in Zweierpotenzen</param>
         /// <param name="range">Gibt die Range in alle Richtungen an.</param>
-        public LocalChunkCache(IGlobalChunkCache globalCache, bool passive, int dimensions, int range)
+        public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range)
         {
-            IsPassive = passive;
-
             if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
@@ -83,10 +79,7 @@ namespace OctoAwesome
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         public bool SetCenter(Index2 index, Action<bool> successCallback = null)
-        {
-            if (IsPassive && !globalCache.IsChunkLoaded(index))
-                return false;
-            
+        {            
             CenterPosition = index;
 
             if (_loadingTask != null && !_loadingTask.IsCompleted)
@@ -152,7 +145,7 @@ namespace OctoAwesome
                 // Alten Chunk entfernen, falls notwendig
                 if (chunkColumn != null && chunkColumn.Index != chunkColumnIndex)
                 {
-                    globalCache.Release(chunkColumn.Index, IsPassive);
+                    globalCache.Release(chunkColumn.Index);
                     chunkColumns[flatIndex] = null;
                     chunkColumn = null;
                 }
@@ -167,7 +160,7 @@ namespace OctoAwesome
                 // Neuen Chunk laden
                 if (chunkColumn == null)
                 {
-                    chunkColumn = globalCache.Subscribe(new Index2(chunkColumnIndex), IsPassive);
+                    chunkColumn = globalCache.Subscribe(new Index2(chunkColumnIndex));
                     chunkColumns[flatIndex] = chunkColumn;
 
                     if (chunkColumn == null)
@@ -328,7 +321,7 @@ namespace OctoAwesome
 
                 IChunkColumn chunkColumn = chunkColumns[i];
 
-                globalCache.Release(chunkColumn.Index, IsPassive);
+                globalCache.Release(chunkColumn.Index);
                 chunkColumns[i] = null;
             }
         }

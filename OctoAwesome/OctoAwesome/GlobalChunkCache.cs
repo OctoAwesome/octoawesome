@@ -68,7 +68,7 @@ namespace OctoAwesome
         {
             Planet = planet ?? throw new ArgumentNullException(nameof(planet));
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
-            
+
             cache = new Dictionary<Index3, CacheItem>();
             newChunks = new Queue<CacheItem>();
             oldChunks = new Queue<CacheItem>();
@@ -84,24 +84,20 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Position des Chunks</param>
         /// <returns></returns>
-        public IChunkColumn Subscribe(Index2 position, bool passive)
+        public IChunkColumn Subscribe(Index2 position)
         {
             CacheItem cacheItem = null;
-    
+
             semaphore.Wait();
 
             if (!cache.TryGetValue(new Index3(position, Planet.Id), out cacheItem))
             {
-                //TODO: Überdenken
-                if (passive)
-                    return null;
 
                 cacheItem = new CacheItem()
                 {
                     Planet = Planet,
                     Index = position,
                     References = 0,
-                    PassiveReference = 0,
                     ChunkColumn = null,
                 };
 
@@ -111,10 +107,7 @@ namespace OctoAwesome
                 //_autoResetEvent.Set();
             }
 
-            if (passive)
-                cacheItem.PassiveReference++;
-            else
-                cacheItem.References++;
+            cacheItem.References++;
             semaphore.Release();
 
 
@@ -122,7 +115,6 @@ namespace OctoAwesome
             {
                 cacheItem.Wait();
                 cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(Planet, position);
-                cacheItem.ChunkColumn.SetCache(this);
                 updateSemaphore.Wait();
                 newChunks.Enqueue(cacheItem);
                 updateSemaphore.Release();
@@ -166,7 +158,6 @@ namespace OctoAwesome
             foreach (var value in cache.Values)
             {
                 value.References = 0;
-                value.PassiveReference = 0;
                 _unreferencedItems.Enqueue(value);
             }
             semaphore.Release();
@@ -176,35 +167,21 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
-        /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des freizugebenden Chunks</param>
-        public void Release(Index2 position, bool passive)
+        public void Release(Index2 position)
         {
             using (new CacheLock(semaphore))
             {
                 if (!cache.TryGetValue(new Index3(position, Planet.Id), out CacheItem cacheItem))
                 {
-                    if (!passive)
-                    {
-                        throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
-                    }
-
-                    return;
+                        throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));                    
                 }
 
-                if (passive)
-                {
-                    if (cacheItem != null)
-                        cacheItem.PassiveReference--;
-                }
-                else
-                {
                     if (--cacheItem.References <= 0)
                     {
                         _unreferencedItems.Enqueue(cacheItem);
                         _autoResetEvent.Set();
                     }
-                }
             }
         }
 
@@ -360,7 +337,6 @@ namespace OctoAwesome
             /// </summary>
             public int References { get; set; }
 
-            public int PassiveReference { get; set; }
 
             /// <summary>
             /// Der Chunk, auf den das <see cref="CacheItem"/> referenziert

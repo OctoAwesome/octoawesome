@@ -225,7 +225,7 @@ namespace OctoAwesome.Runtime
             var awaiter = persistenceManager.Load(out IChunkColumn column11, CurrentUniverse.Id, planet, index);
             if (awaiter == null)
             {
-                IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));
+                IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));                
                 column11 = column;
             }
             else

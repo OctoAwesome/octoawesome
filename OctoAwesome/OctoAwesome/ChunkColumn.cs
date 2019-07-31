@@ -27,9 +27,8 @@ namespace OctoAwesome
         /// <param name="chunks">Die Chunks für die Säule</param>
         /// <param name="planet">Der Index des Planeten</param>
         /// <param name="columnIndex">Die Position der Säule</param>
-        public ChunkColumn(IChunk[] chunks, IPlanet planet, Index2 columnIndex) : this()
-        {
-            Planet = planet;
+        public ChunkColumn(IChunk[] chunks, IPlanet planet, Index2 columnIndex) : this(planet)
+        {            
             Chunks = chunks;
             Index = columnIndex;
             Entities = new EntityList(this);
@@ -40,21 +39,25 @@ namespace OctoAwesome
             }
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz einer ChunkColumn.
+        /// </summary>
+        public ChunkColumn(IPlanet planet)
+        {
+            Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
+            Entities = new EntityList(this);
+            DefinitionManager = TypeContainer.Get<IDefinitionManager>();
+            Planet = planet;
+            globalChunkCache = planet.GlobalChunkCache;
+        }
+
         private void OnChunkChanged(IChunk arg1, int arg2)
         {
             ChangeCounter++;
             Changed?.Invoke(this, arg1, arg2);
         }
 
-        /// <summary>
-        /// Erzeugt eine neue Instanz einer ChunkColumn.
-        /// </summary>
-        public ChunkColumn()
-        {
-            Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
-            Entities = new EntityList(this);
-            DefinitionManager = TypeContainer.Get<IDefinitionManager>();
-        }
+      
 
         /// <summary>
         /// Errechnet die obersten Blöcke der Säule.
@@ -412,10 +415,7 @@ namespace OctoAwesome
         }
 
         public event Action<IChunkColumn, IChunk, int> Changed;
-
-        public void SetCache(IGlobalChunkCache globalChunkCache)
-            => this.globalChunkCache = globalChunkCache;
-
+        
         public void OnUpdate(SerializableNotification notification)
         {
             if (notification is ChunkNotification chunkNotification)
