@@ -213,8 +213,12 @@ namespace OctoAwesome.Network
 
             if (currentPackage.IsComplete)
             {
-                foreach (var observer in observers)
-                    observer.OnNext(currentPackage);
+                var package = currentPackage;
+                Task.Run(() =>
+                {                    
+                    foreach (var observer in observers)
+                        observer.OnNext(package);
+                });
 
                 currentPackage = null;
             }

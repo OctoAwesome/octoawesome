@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
@@ -18,12 +19,17 @@ namespace OctoAwesome.Notifications
         public Dictionary<string, ObserverHashSet>.ValueCollection Values => internalDictionary.Values;
 
         private readonly Dictionary<string, ObserverHashSet> internalDictionary;
+        private readonly SemaphoreSlim addSemaphore;
 
-        public NotificationChannelCollection() 
-            => internalDictionary = new Dictionary<string, ObserverHashSet>();
+        public NotificationChannelCollection()
+        {
+            internalDictionary = new Dictionary<string, ObserverHashSet>();
+            addSemaphore = new SemaphoreSlim(1,1);
+        }
 
         public void Add(string channel, INotificationObserver value)
         {
+            addSemaphore.Wait();
             if (internalDictionary.TryGetValue(channel, out ObserverHashSet hashset))
             {
                 hashset.Wait();
@@ -34,6 +40,7 @@ namespace OctoAwesome.Notifications
             {
                 internalDictionary.Add(channel, new ObserverHashSet { value });
             }
+            addSemaphore.Release();
         }
 
         public void Clear()

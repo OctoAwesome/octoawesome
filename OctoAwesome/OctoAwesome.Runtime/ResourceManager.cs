@@ -222,16 +222,22 @@ namespace OctoAwesome.Runtime
         public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index)
         {
             // Load from disk
-            var awaiter = persistenceManager.Load(out IChunkColumn column11, CurrentUniverse.Id, planet, index);
-            if (awaiter == null)
+            Awaiter awaiter;
+            IChunkColumn column11;
+            do
             {
-                IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));                
-                column11 = column;
-            }
-            else
-            {
-                awaiter.WaitOn();
-            }
+                awaiter = persistenceManager.Load(out column11, CurrentUniverse.Id, planet, index);
+                if (awaiter == null)
+                {
+                    IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));
+                    column11 = column;
+                }
+                else
+                {
+                    awaiter.WaitOn();
+                }
+
+            } while (awaiter != null && awaiter.Timeouted);
 
             IChunkColumn column00 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(-1, -1), planet.Size));
             IChunkColumn column10 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(0, -1), planet.Size));

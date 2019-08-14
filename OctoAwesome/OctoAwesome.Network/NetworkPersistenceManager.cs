@@ -10,10 +10,10 @@ namespace OctoAwesome.Network
 {
     public class NetworkPersistenceManager : IPersistenceManager, IObserver<Package>
     {
-        private Client client;
+        private readonly Client client;
         private readonly IDisposable subscription;
 
-        private Dictionary<uint, Awaiter> packages;
+        private readonly Dictionary<uint, Awaiter> packages;
 
         public NetworkPersistenceManager(Client client)
         {
@@ -32,6 +32,9 @@ namespace OctoAwesome.Network
 
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
+            if (columnIndex.X == 0 && columnIndex.Y == 0)
+                ;
+
             var package = new Package((ushort)OfficialCommand.LoadColumn, 0);
 
             using (var memoryStream = new MemoryStream())
@@ -87,8 +90,7 @@ namespace OctoAwesome.Network
             universe = new Universe();
             var awaiter = GetAwaiter(universe, package.UId);
             client.SendPackage(package);
-
-
+                       
             return awaiter;
         }
 

@@ -1,4 +1,7 @@
 ﻿#region Using Statements
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +22,16 @@ namespace OctoAwesome.Client
         [STAThread]
         static void Main()
         {
+
+            var config = new LoggingConfiguration();
+
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoClient.logfile")
+            {
+                FileName = $"./logs/octoClient-{DateTime.Now.ToString("ddMMyy_hhmmss")}.log"
+            });
+
+            LogManager.Configuration = config;
+
             using (game = new OctoGame())
                 game.Run(60,60);
         }

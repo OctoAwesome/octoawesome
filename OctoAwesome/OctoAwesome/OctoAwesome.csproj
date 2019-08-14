@@ -114,6 +114,7 @@
     <Compile Include="Notifications\ObserverHashSet.cs" />
     <Compile Include="Notifications\PropertyChangedNotification.cs" />
     <Compile Include="Notifications\SerializableNotification.cs" />
+    <Compile Include="SemaphoreExtended.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="RemoteEntity.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
@@ -148,6 +149,9 @@
   <ItemGroup>
     <PackageReference Include="engenious">
       <Version>0.2.0-alpha</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.6.6</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

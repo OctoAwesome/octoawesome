@@ -42,9 +42,16 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(cache.Planet.Size);
-            var result = cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
-            if (result)
+            if (poscomp.Position.ChunkIndex != newposition.ChunkIndex)
+            {
+                var result = cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
+                if (result)
+                    poscomp.Position = newposition;
+            }
+            else
+            {
                 poscomp.Position = newposition;
+            }
 
             //Direction
             if (movecomp.PositionMove.LengthSquared != 0)
