@@ -2,6 +2,7 @@
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,7 +24,7 @@ namespace OctoAwesome.Client
 
         public IUpdateHub UpdateHub { get; }
 
-        public Dictionary<int, IPlanet> Planets => resourceManager.Planets;
+        public ConcurrentDictionary<int, IPlanet> Planets => resourceManager.Planets;
 
         private readonly IExtensionResolver extensionResolver;
         private readonly IDefinitionManager definitionManager;

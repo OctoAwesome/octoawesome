@@ -25,7 +25,7 @@ namespace OctoAwesome
         public ISerializable WaitOn()
         {
             if (!alreadyDeserialized)
-                Timeouted = !manualReset.Wait(10000);
+                Timeouted = !manualReset.Wait(3000);
 
             return Serializable;
         }

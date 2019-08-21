@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -38,9 +39,9 @@ namespace OctoAwesome.Runtime
         public IUniverse CurrentUniverse { get; private set; }
 
         public IDefinitionManager DefinitionManager { get; private set; }
-        public Dictionary<int, IPlanet> Planets { get; }
+        public ConcurrentDictionary<int, IPlanet> Planets { get; }
 
-        private IExtensionResolver extensionResolver;
+        private readonly IExtensionResolver extensionResolver;
 
         /// <summary>
         /// Konstruktor
@@ -57,7 +58,7 @@ namespace OctoAwesome.Runtime
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
-            Planets = new Dictionary<int, IPlanet>();
+            Planets = new ConcurrentDictionary<int, IPlanet>();
 
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
         }
@@ -181,7 +182,7 @@ namespace OctoAwesome.Runtime
                     awaiter.WaitOn();
                 }
 
-                Planets.Add(id, planet);
+                Planets.TryAdd(id, planet);
             }
             semaphoreSlim.Release();
             return planet;
