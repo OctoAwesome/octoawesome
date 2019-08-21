@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,6 @@ namespace OctoAwesome
 {
     public static class TypeContainer
     {
-
         private static readonly ITypeContainer instance;
 
         static TypeContainer()
@@ -55,5 +55,8 @@ namespace OctoAwesome
             => instance.GetUnregistered(type);
         public static T GetUnregistered<T>() where T : class
             => instance.GetUnregistered<T>();
+
+        //public static ILogger GetLogger()
+        //    => new Logger(NLog.LogManager.GetCurrentClassLogger())
     }
 }

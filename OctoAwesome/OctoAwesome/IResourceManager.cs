@@ -1,5 +1,6 @@
 using OctoAwesome.Notifications;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace OctoAwesome
@@ -72,7 +73,7 @@ namespace OctoAwesome
         /// <param name="planetId">Die Planteten-ID des gewünschten Planeten</param>
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
-        Dictionary<int, IPlanet> Planets { get; }
+        ConcurrentDictionary<int, IPlanet> Planets { get; }
                 
         IUpdateHub UpdateHub { get; }
 

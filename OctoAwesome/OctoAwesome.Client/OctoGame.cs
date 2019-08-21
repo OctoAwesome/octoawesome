@@ -55,14 +55,12 @@ namespace OctoAwesome.Client
             //graphics.PreferredBackBufferHeight = 720;
 
             //Content.RootDirectory = "Content";
-
-
+            
             Title = "OctoAwesome";
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-            Startup.Register(typeContainer);
             Register(typeContainer);
 
             //Window.AllowUserResizing = true;
@@ -243,7 +241,6 @@ namespace OctoAwesome.Client
         public override void Dispose()
         {
             base.Dispose();
-            typeContainer.Dispose();
         }
     }
 }

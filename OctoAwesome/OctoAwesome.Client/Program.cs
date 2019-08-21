@@ -22,25 +22,21 @@ namespace OctoAwesome.Client
         [STAThread]
         static void Main()
         {
-
-            var config = new LoggingConfiguration();
-
-            config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoClient.logfile")
+            using (var typeContainer = TypeContainer.Get<ITypeContainer>())
             {
-                FileName = $"./logs/octoClient-{DateTime.Now.ToString("ddMMyy_hhmmss")}.log"
-            });
+                Startup.Register(typeContainer);
+                Startup.ConfigureLogger(ClientType.DesktopClient);
 
-            LogManager.Configuration = config;
-
-            using (game = new OctoGame())
-                game.Run(60,60);
+                using (game = new OctoGame())
+                    game.Run(60, 60);
+            }
         }
 
         public static void Restart()
         {
             game.Exit();
             using (game = new OctoGame())
-                game.Run(60,60);
+                game.Run(60, 60);
         }
     }
 #endif
