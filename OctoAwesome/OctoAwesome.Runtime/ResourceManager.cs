@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Runtime
@@ -29,6 +30,7 @@ namespace OctoAwesome.Runtime
         private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
         private readonly bool disablePersistence = false;
         private IPersistenceManager persistenceManager = null;
+        private readonly ILogger logger;
         private readonly List<IMapPopulator> populators = null;
         private Player player;
         private readonly SemaphoreSlim semaphoreSlim;
@@ -55,6 +57,8 @@ namespace OctoAwesome.Runtime
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
             this.persistenceManager = persistenceManager;
+
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ResourceManager));
 
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
@@ -237,6 +241,9 @@ namespace OctoAwesome.Runtime
                 {
                     awaiter.WaitOn();
                 }
+
+                if (awaiter?.Timeouted ?? false)
+                    logger.Error("Awaiter timeout");
 
             } while (awaiter != null && awaiter.Timeouted);
 

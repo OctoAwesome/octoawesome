@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using OctoAwesome.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +32,7 @@ namespace OctoAwesome
         /// Die im lokalen Cache gespeicherten Chunks
         /// </summary>
         private readonly IChunkColumn[] chunkColumns;
-        private readonly Logger logger;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Größe des Caches in Zweierpotenzen
@@ -76,7 +76,7 @@ namespace OctoAwesome
             limit = dimensions;
             mask = (1 << limit) - 1;
             chunkColumns = new IChunkColumn[(mask + 1) * (mask + 1)];
-            logger = LogManager.GetCurrentClassLogger();
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(LocalChunkCache));
         }
 
 

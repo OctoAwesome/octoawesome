@@ -1,5 +1,5 @@
 ﻿using CommandManagementSystem;
-using NLog;
+using OctoAwesome.Logging;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
@@ -17,13 +17,13 @@ namespace OctoAwesome.GameServer
         public SimulationManager SimulationManager { get; set; }
         public IUpdateHub UpdateHub { get; private set; }
 
-        private readonly Logger logger;
+        private readonly ILogger logger;
         private readonly Server server;
         private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
 
         public ServerHandler()
         {
-            logger = LogManager.GetCurrentClassLogger();
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
 
             TypeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
             TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
@@ -67,14 +67,18 @@ namespace OctoAwesome.GameServer
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, "Dispatch failed in Command " + value.Command);
+                    logger.Error("Dispatch failed in Command " + value.OfficialCommand, ex);
                     return;
                 }
 
-                logger.Trace(value.Command);
+                logger.Trace(value.OfficialCommand);
 
                 if (value.Payload == null)
+                {
+                    logger.Trace($"Payload is null, returning from Command {value.OfficialCommand} without sending return package.");
+
                     return;
+                }
 
                 value.BaseClient.SendPackage(value);
             });

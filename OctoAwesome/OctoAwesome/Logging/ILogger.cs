@@ -27,5 +27,8 @@ namespace OctoAwesome.Logging
         void Warn(string message);
         void Warn(string message, Exception exception);
         void Warn<T>(T message);
+
+        ILogger As(string loggerName);
+        ILogger As(Type type);
     }
 }

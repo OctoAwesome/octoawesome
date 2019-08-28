@@ -56,7 +56,5 @@ namespace OctoAwesome
         public static T GetUnregistered<T>() where T : class
             => instance.GetUnregistered<T>();
 
-        //public static ILogger GetLogger()
-        //    => new Logger(NLog.LogManager.GetCurrentClassLogger())
     }
 }

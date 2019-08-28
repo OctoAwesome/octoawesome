@@ -8,11 +8,18 @@ namespace OctoAwesome.Logging
 {
     public sealed class Logger : ILogger
     {
-        private readonly NLog.ILogger internalLogger;
+        private readonly static NLog.ILogger nullLogger;
 
-        internal Logger(NLog.ILogger logger)
+        static Logger()
         {
-            internalLogger = logger;
+            nullLogger = NLog.LogManager.LogFactory.CreateNullLogger();
+        }
+
+        private NLog.ILogger internalLogger;
+
+        public Logger()
+        {
+            internalLogger = nullLogger;
         }
 
         public void Info(string message)
@@ -56,5 +63,13 @@ namespace OctoAwesome.Logging
             => internalLogger.Trace(exception, message);
         public void Fatal<T>(T message)
             => internalLogger.Trace(message);
+
+        public ILogger As(string loggerName)
+        {
+            internalLogger = NLog.LogManager.GetLogger(loggerName);
+            return this;
+        }
+        public ILogger As(Type type) 
+            => As(type.FullName);
     }
 }

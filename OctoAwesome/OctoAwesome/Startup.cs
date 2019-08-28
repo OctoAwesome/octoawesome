@@ -15,6 +15,9 @@ namespace OctoAwesome
         {
             typeContainer.Register<GlobalChunkCache, GlobalChunkCache>(InstanceBehaviour.Instance);
             typeContainer.Register<IGlobalChunkCache, GlobalChunkCache>(InstanceBehaviour.Instance);
+            typeContainer.Register<Logging.NullLogger, Logging.NullLogger>();
+            typeContainer.Register<Logging.Logger, Logging.Logger>();
+            typeContainer.Register<Logging.ILogger, Logging.Logger>();
         }
 
         public static void ConfigureLogger(ClientType clientType)

@@ -1,8 +1,6 @@
 ﻿using CommandManagementSystem;
 using Newtonsoft.Json;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
+using OctoAwesome.Logging;
 using OctoAwesome.Network;
 using System;
 using System.Collections.Generic;
@@ -15,7 +13,7 @@ namespace OctoAwesome.GameServer
     internal class Program
     {
         private static ManualResetEvent manualResetEvent;
-        private static Logger logger;
+        private static ILogger logger;
 
         private static void Main(string[] args)
         {
@@ -23,7 +21,7 @@ namespace OctoAwesome.GameServer
             {
                 Startup.Register(typeContainer);
                 Startup.ConfigureLogger(ClientType.GameServer);
-                logger = LogManager.GetCurrentClassLogger();
+                logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(Program));
 
                 manualResetEvent = new ManualResetEvent(false);
 
@@ -47,8 +45,7 @@ namespace OctoAwesome.GameServer
                     logger.Debug("Load Settings");
                     settings = new Settings(fileInfo);
                 }
-
-
+                
 
                 typeContainer.Register(settings);
                 typeContainer.Register<ISettings, Settings>(settings);

@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Concurrent;
@@ -40,8 +40,8 @@ namespace OctoAwesome
 
         // TODO: Früher oder später nach draußen auslagern
         private readonly Task cleanupTask;
+        private readonly ILogger logger;
         private IUpdateHub updateHub;
-        private Logger logger;
 
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace OctoAwesome
             tokenSource = new CancellationTokenSource();
             cleanupTask = new Task(async () => await BackgroundCleanup(tokenSource.Token), TaskCreationOptions.LongRunning);
             cleanupTask.Start(TaskScheduler.Default);
-            logger = LogManager.GetCurrentClassLogger();
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace OctoAwesome
                 if (--cacheItem.References <= 0)
                 {
                     if (cacheItem.References < 0)
-                        logger.Warn($"Remove Refernce from {cacheItem.Index}, now at: {cacheItem.References}");
+                        logger.Warn($"Remove Reference from {cacheItem.Index}, now at: {cacheItem.References}");
 
                     _unreferencedItems.Enqueue(cacheItem);
                     _autoResetEvent.Set();

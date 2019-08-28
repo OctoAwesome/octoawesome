@@ -1,6 +1,7 @@
 ﻿using engenious;
 using OctoAwesome.Common;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Generic;
@@ -51,10 +52,10 @@ namespace OctoAwesome
         private readonly IDisposable simmulationSubscription;
 
         /// <summary>
-        /// Erzeugt eine neue Instaz der Klasse Simulation.
+        /// Erzeugt eine neue Instanz der Klasse Simulation.
         /// </summary>
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
-        {
+        {            
             ResourceManager = resourceManager;
             simmulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
 

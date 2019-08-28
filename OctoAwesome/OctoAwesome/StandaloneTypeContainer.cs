@@ -72,18 +72,21 @@ namespace OctoAwesome
         public T GetOrNull<T>() where T : class
             => (T)GetOrNull(typeof(T));
 
-        public object GetUnregistered(Type type) 
-            => GetOrNull(type) 
-                ?? CreateObject(type) 
+        public object GetUnregistered(Type type)
+            => GetOrNull(type)
+                ?? CreateObject(type)
                 ?? throw new InvalidOperationException($"Can not create unregistered type of {type}");
-    
+
         public T GetUnregistered<T>() where T : class
             => (T)GetUnregistered(typeof(T));
 
         public object CreateObject(Type type)
         {
             var tmpList = new List<object>();
-            foreach (var constructor in type.GetConstructors().OrderByDescending(c => c.GetParameters().Length))
+
+            var constructors = type.GetConstructors().OrderByDescending(c => c.GetParameters().Length);
+
+            foreach (var constructor in constructors)
             {
                 bool next = false;
                 foreach (var parameter in constructor.GetParameters())
@@ -104,6 +107,18 @@ namespace OctoAwesome
                     continue;
 
                 return constructor.Invoke(tmpList.ToArray());
+            }
+
+            if (constructors.Count() < 1)
+            {
+                try
+                {
+                    return Activator.CreateInstance(type);
+                }
+                catch
+                {
+                    return null;
+                }
             }
 
             return null;

@@ -109,6 +109,7 @@
     <Compile Include="ITypeContainer.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Notifications\ChunkNotification.cs" />
     <Compile Include="Notifications\DefaultChannels.cs" />
     <Compile Include="Notifications\INotificationObservable.cs" />
