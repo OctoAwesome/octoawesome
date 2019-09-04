@@ -10,7 +10,7 @@ namespace OctoAwesome.Network
         public const int HEAD_LENGTH = sizeof(ushort) + sizeof(int) + sizeof(uint);
 
         public static uint NextUId => nextUid++;
-        private static uint nextUid;
+        private volatile static uint nextUid;
 
         public BaseClient BaseClient { get; set; }
 

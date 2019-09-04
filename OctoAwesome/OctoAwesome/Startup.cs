@@ -1,6 +1,8 @@
 ﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
+using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +17,13 @@ namespace OctoAwesome
         {
             typeContainer.Register<GlobalChunkCache, GlobalChunkCache>(InstanceBehaviour.Instance);
             typeContainer.Register<IGlobalChunkCache, GlobalChunkCache>(InstanceBehaviour.Instance);
+
             typeContainer.Register<Logging.NullLogger, Logging.NullLogger>();
             typeContainer.Register<Logging.Logger, Logging.Logger>();
             typeContainer.Register<Logging.ILogger, Logging.Logger>();
+
+            typeContainer.Register<IPool<Awaiter>, Pool<Awaiter>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<Awaiter>, Pool<Awaiter>>(InstanceBehaviour.Singleton);
         }
 
         public static void ConfigureLogger(ClientType clientType)

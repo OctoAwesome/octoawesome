@@ -139,7 +139,10 @@ namespace OctoAwesome.Runtime
             {
                 string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
                 if (Guid.TryParse(id, out Guid guid))
-                    universes.Add((IUniverse)Load(out var universe, guid).WaitOn());
+                {
+                    Load(out var universe, guid).WaitOnAndRelease();
+                    universes.Add(universe);
+                }
             }
             awaiter.SetResult(universes);
 

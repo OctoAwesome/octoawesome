@@ -92,7 +92,8 @@ namespace OctoAwesome.Runtime
         /// <returns>Die Liste der Universen.</returns>
         public IUniverse[] ListUniverses()
         {
-            persistenceManager.Load(out SerializableCollection<IUniverse> universes).WaitOn();
+            persistenceManager.Load(out SerializableCollection<IUniverse> universes).WaitOnAndRelease();
+            
             return universes.ToArray();
         }
 
@@ -109,7 +110,8 @@ namespace OctoAwesome.Runtime
 
             // Neuen Daten loaden/generieren
 
-            persistenceManager.Load(out IUniverse universe, universeId).WaitOn();
+            persistenceManager.Load(out IUniverse universe, universeId).WaitOnAndRelease();
+         
             CurrentUniverse = universe;
             if (CurrentUniverse == null)
                 throw new Exception();
@@ -183,7 +185,7 @@ namespace OctoAwesome.Runtime
                 }
                 else
                 {
-                    awaiter.WaitOn();
+                    awaiter.WaitOnAndRelease();
                 }
 
                 Planets.TryAdd(id, planet);
@@ -207,7 +209,7 @@ namespace OctoAwesome.Runtime
             if (awaiter == null)
                 player = new Player();
             else
-                awaiter.WaitOn();
+                awaiter.WaitOnAndRelease();
 
             return player;
         }
@@ -239,7 +241,7 @@ namespace OctoAwesome.Runtime
                 }
                 else
                 {
-                    awaiter.WaitOn();
+                    awaiter.WaitOnAndRelease();
                 }
 
                 if (awaiter?.Timeouted ?? false)

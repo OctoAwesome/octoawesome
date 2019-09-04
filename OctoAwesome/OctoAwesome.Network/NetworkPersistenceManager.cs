@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using OctoAwesome.Basics;
 using OctoAwesome.Logging;
+using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Network
@@ -17,6 +18,7 @@ namespace OctoAwesome.Network
 
         private readonly ConcurrentDictionary<uint, Awaiter> packages;
         private readonly ILogger logger;
+        private readonly IPool<Awaiter> awaiterPool;
 
         public NetworkPersistenceManager(Client client)
         {
@@ -25,6 +27,7 @@ namespace OctoAwesome.Network
 
             packages = new ConcurrentDictionary<uint, Awaiter>();
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkPersistenceManager));
+            awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
         }
 
         public void DeleteUniverse(Guid universeGuid)
@@ -36,9 +39,6 @@ namespace OctoAwesome.Network
 
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
-            if (columnIndex.X == 0 && columnIndex.Y == 0)
-                ;
-
             var package = new Package((ushort)OfficialCommand.LoadColumn, 0);
 
             using (var memoryStream = new MemoryStream())
@@ -99,10 +99,9 @@ namespace OctoAwesome.Network
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
-            var awaiter = new Awaiter
-            {
-                Serializable = serializable
-            };
+            var awaiter = awaiterPool.Get();
+            awaiter.Serializable = serializable;
+
             if (!packages.TryAdd(packageUId, awaiter))
             {
                 logger.Error($"Awaiter for package {packageUId} could not be added");

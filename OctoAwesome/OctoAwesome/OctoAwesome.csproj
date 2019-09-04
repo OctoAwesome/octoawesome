@@ -118,6 +118,9 @@
     <Compile Include="Notifications\ObserverHashSet.cs" />
     <Compile Include="Notifications\PropertyChangedNotification.cs" />
     <Compile Include="Notifications\SerializableNotification.cs" />
+    <Compile Include="Pooling\IPool.cs" />
+    <Compile Include="Pooling\IPoolElement.cs" />
+    <Compile Include="Pooling\Pool.cs" />
     <Compile Include="SemaphoreExtended.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="RemoteEntity.cs" />

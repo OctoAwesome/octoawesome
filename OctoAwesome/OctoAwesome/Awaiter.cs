@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
-    public class Awaiter
+    public class Awaiter : IPoolElement, IDisposable
     {
         public ISerializable Serializable { get; set; }
         public bool Timeouted { get; private set; }
         private readonly ManualResetEventSlim manualReset;
         private bool alreadyDeserialized;
-
+        private IPool pool;
 
         public Awaiter()
         {
@@ -28,6 +29,12 @@ namespace OctoAwesome
                 Timeouted = !manualReset.Wait(3000);
 
             return Serializable;
+        }
+
+        public void WaitOnAndRelease()
+        {
+            WaitOn();
+            Release();
         }
 
         public void SetResult(ISerializable serializable)
@@ -46,6 +53,29 @@ namespace OctoAwesome
             }
             manualReset.Set();
             alreadyDeserialized = true;
+        }
+
+        public void Init(IPool pool)
+        {
+            this.pool = pool;
+            manualReset.Reset();            
+        }
+
+        public void Release()
+        {
+            if (!manualReset.IsSet)
+                manualReset.Set();
+
+            alreadyDeserialized = false;
+            Timeouted = false;
+            Serializable = null;
+
+            pool.Push(this);
+        }
+
+        public void Dispose()
+        {
+            manualReset.Dispose();
         }
     }
 }
