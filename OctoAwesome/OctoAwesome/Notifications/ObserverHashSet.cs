@@ -9,37 +9,30 @@ namespace OctoAwesome.Notifications
 {
     public class ObserverHashSet : HashSet<INotificationObserver>
     {
-        private readonly SemaphoreSlim semaphore;
+        private readonly SemaphoreExtended semaphore;
 
         public ObserverHashSet() : base()
         {
-            semaphore = new SemaphoreSlim(1, 1);
+            semaphore = new SemaphoreExtended(1, 1);
         }
 
         public ObserverHashSet(IEqualityComparer<INotificationObserver> comparer) :  base(comparer)
         {
-            semaphore = new SemaphoreSlim(1, 1);
+            semaphore = new SemaphoreExtended(1, 1);
         }
 
         public ObserverHashSet(IEnumerable<INotificationObserver> collection) : base(collection)
         {
-            semaphore = new SemaphoreSlim(1, 1);
+            semaphore = new SemaphoreExtended(1, 1);
         }
 
         public ObserverHashSet(IEnumerable<INotificationObserver> collection, IEqualityComparer<INotificationObserver> comparer)
             : base(collection, comparer)
         {
-            semaphore = new SemaphoreSlim(1, 1);
+            semaphore = new SemaphoreExtended(1, 1);
         }
 
-        public void Wait()
-        {
-            semaphore.Wait();
-        }
-
-        public void Release()
-        {
-            semaphore.Release();
-        }
+        public SemaphoreExtended.SemaphoreLock Wait() 
+            => semaphore.Wait();
     }
 }

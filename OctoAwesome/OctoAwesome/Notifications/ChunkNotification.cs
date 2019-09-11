@@ -39,5 +39,17 @@ namespace OctoAwesome.Notifications
             writer.Write(ChunkColumnIndex.X);
             writer.Write(ChunkColumnIndex.Y);
         }
+
+        protected override void OnRelease()
+        {
+            Meta = default;
+            Block = default;
+            FlatIndex = default;
+            ChunkPos = default;
+            Planet = default;
+            ChunkColumnIndex = default;
+
+            base.OnRelease();
+        }
     }
 }

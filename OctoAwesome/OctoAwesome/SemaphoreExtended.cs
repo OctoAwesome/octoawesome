@@ -27,15 +27,15 @@ namespace OctoAwesome
             await semaphoreSlim.WaitAsync(token);
             return new SemaphoreLock(this);
         }
-
-        public void Release()
-        {
-            semaphoreSlim.Release();
-        }
-
+              
         public void Dispose()
         {
             semaphoreSlim.Dispose();
+        }
+
+        private void Release()
+        {
+            semaphoreSlim.Release();
         }
 
         public struct SemaphoreLock : IDisposable

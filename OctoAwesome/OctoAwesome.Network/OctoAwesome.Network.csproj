@@ -60,6 +60,7 @@
     <Compile Include="ServerNotifications\ServerDataNotification.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SimulationManager.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="Subscription.cs" />
   </ItemGroup>
   <ItemGroup>

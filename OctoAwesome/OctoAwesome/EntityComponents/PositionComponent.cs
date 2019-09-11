@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,11 +36,13 @@ namespace OctoAwesome.EntityComponents
         private Coordinate position;
         private bool posUpdate;
         private readonly IResourceManager resourceManager;
+        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         public PositionComponent()
         {
             Sendable = true;
             resourceManager = TypeContainer.Get<IResourceManager>();
+            propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
         public override void Serialize(BinaryWriter writer)
@@ -87,12 +90,10 @@ namespace OctoAwesome.EntityComponents
 
             if (callerName == nameof(Position) && posUpdate)
             {
+                var updateNotification = propertyChangedNotificationPool.Get();
 
-                var updateNotification = new PropertyChangedNotification
-                {
-                    Issuer = nameof(PositionComponent),
-                    Property = callerName
-                };
+                updateNotification.Issuer = nameof(PositionComponent);
+                updateNotification.Property = callerName;
 
                 using (var stream = new MemoryStream())
                 using (var writer = new BinaryWriter(stream))

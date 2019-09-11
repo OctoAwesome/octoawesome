@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Network.ServerNotifications;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
 using System.Buffers;
@@ -15,9 +16,11 @@ namespace OctoAwesome.Network
         public IDisposable NetworkChannelSubscription { get; set; }
         public IDisposable ServerSubscription { get; set; }
 
+        private readonly IPool<Package> packagePool;
+
         public ConnectedClient(Socket socket) : base(socket)
         {
-            
+            packagePool = TypeContainer.Get<IPool<Package>>();
         }
 
         public void OnCompleted()
@@ -56,11 +59,10 @@ namespace OctoAwesome.Network
 
         private void BuildAndSendPackage(byte[] data, OfficialCommand officialCommand)
         {
-            SendPackage(new Package()
-            {
-                Payload = data,
-                Command = (ushort)officialCommand
-            });
+            var package = packagePool.Get();
+            package.Payload = data;
+            package.Command = (ushort)officialCommand;
+            SendPackageAndRelase(package);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace OctoAwesome.Runtime
     {
         private readonly NotificationChannelCollection observers;
 
-        public UpdateHub() 
+        public UpdateHub()
             => observers = new NotificationChannelCollection();
 
         public IDisposable Subscribe(INotificationObserver observer, string channel = "none")
@@ -21,22 +21,21 @@ namespace OctoAwesome.Runtime
             return new NotificationSubscription(this, observer, channel);
         }
 
-        public void Unsubscribe(INotificationObserver observer) 
+        public void Unsubscribe(INotificationObserver observer)
             => observers.Remove(observer);
 
-        public void Unsubscribe(INotificationObserver observer, string channel) 
+        public void Unsubscribe(INotificationObserver observer, string channel)
             => observers.Remove(channel, observer);
 
         public void Push(Notification notification)
         {
             foreach (KeyValuePair<string, ObserverHashSet> observerSet in observers)
             {
-                observerSet.Value.Wait();
-
-                foreach (INotificationObserver observer in observerSet.Value)
-                    observer.OnNext(notification);
-
-                observerSet.Value.Release();
+                using (observerSet.Value.Wait())
+                {
+                    foreach (INotificationObserver observer in observerSet.Value)
+                        observer.OnNext(notification);
+                }
             }
         }
         public void Push(Notification notification, string channel)
@@ -44,10 +43,11 @@ namespace OctoAwesome.Runtime
 
             if (observers.TryGetValue(channel, out ObserverHashSet observerSet))
             {
-                observerSet.Wait();
-                foreach (INotificationObserver observer in observerSet)
-                    observer.OnNext(notification);
-                observerSet.Release();
+                using (observerSet.Wait())
+                {
+                    foreach (INotificationObserver observer in observerSet)
+                        observer.OnNext(notification);
+                }
             }
 
         }
@@ -57,15 +57,14 @@ namespace OctoAwesome.Runtime
 
             foreach (KeyValuePair<string, ObserverHashSet> observerSet in observers)
             {
-                observerSet.Value.Wait();
-
-                foreach (INotificationObserver observer in observerSet.Value)
-                    observer.OnCompleted();
-
-                observerSet.Value.Release();
+                using (observerSet.Value.Wait())
+                {
+                    foreach (INotificationObserver observer in observerSet.Value)
+                        observer.OnCompleted();
+                }
             }
             observers.Clear();
         }
-        
+
     }
 }

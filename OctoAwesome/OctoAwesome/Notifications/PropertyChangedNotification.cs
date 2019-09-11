@@ -29,5 +29,14 @@ namespace OctoAwesome.Notifications
             writer.Write(Value.Length);
             writer.Write(Value);
         }
+
+        protected override void OnRelease()
+        {
+            Issuer = default;
+            Property = default;
+            Value = default;
+
+            base.OnRelease();
+        }
     }
 }

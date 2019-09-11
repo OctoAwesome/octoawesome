@@ -24,6 +24,8 @@ namespace OctoAwesome.Client
                 Startup.Register(typeContainer);
                 Startup.ConfigureLogger(ClientType.DesktopClient);
 
+                Network.Startup.Register(typeContainer);
+
                 using (game = new OctoGame())
                     game.Run(60, 60);
             }

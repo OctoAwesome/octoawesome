@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Network;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
 using System.IO;
@@ -12,26 +13,36 @@ namespace OctoAwesome.Network
         private readonly IUpdateHub updateHub;
         private readonly IDisposable hubSubscription;
         private readonly IDisposable clientSubscription;
+        private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly IPool<ChunkNotification> chunkNotificationPool;
+        private readonly IPool<Package> packagePool;
 
         public NetworkUpdateManager(Client client, IUpdateHub updateHub)
         {
             this.client = client;
             this.updateHub = updateHub;
+
+            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            chunkNotificationPool = TypeContainer.Get<IPool<ChunkNotification>>();
+            packagePool = TypeContainer.Get<IPool<Package>>();
+
             hubSubscription = updateHub.Subscribe(this, DefaultChannels.Network);
             clientSubscription = client.Subscribe(this);
         }
 
         public void OnNext(Package package)
         {
-            switch (package.Command)
+            switch (package.OfficialCommand)
             {
-                case (ushort)OfficialCommand.EntityNotification:
-                    var entityNotification = Serializer.Deserialize<EntityNotification>(package.Payload);
+                case OfficialCommand.EntityNotification:
+                    var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, package.Payload);
                     updateHub.Push(entityNotification, DefaultChannels.Simulation);
+                    entityNotification.Release();
                     break;
-                case (ushort)OfficialCommand.ChunkNotification:
-                    var chunkNotification = Serializer.Deserialize<ChunkNotification>(package.Payload);
+                case OfficialCommand.ChunkNotification:
+                    var chunkNotification = Serializer.DeserializePoolElement(chunkNotificationPool, package.Payload);
                     updateHub.Push(chunkNotification, DefaultChannels.Chunk);
+                    chunkNotification.Release();
                     break;
                 default:
                     break;
@@ -55,11 +66,10 @@ namespace OctoAwesome.Network
                 default:
                     return;
             }
-
-            client.SendPackage(new Package(command, 0)
-            {
-                Payload = payload
-            });
+            var package = packagePool.Get();
+            package.Command = command;
+            package.Payload = payload;
+            client.SendPackageAndRelase(package);
         }
 
         public void OnError(Exception error)

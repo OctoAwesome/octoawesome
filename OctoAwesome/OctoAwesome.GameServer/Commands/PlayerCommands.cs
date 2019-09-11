@@ -4,6 +4,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Network;
 using OctoAwesome.Network.ServerNotifications;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace OctoAwesome.GameServer.Commands
 {
     public static class PlayerCommands
     {
-      
+
 
         [Command((ushort)OfficialCommand.Whoami)]
         public static byte[] Whoami(CommandParameter parameter)
@@ -24,12 +25,14 @@ namespace OctoAwesome.GameServer.Commands
             var updateHub = TypeContainer.Get<IUpdateHub>();
             string playername = Encoding.UTF8.GetString(parameter.Data);
             var player = new Player();
+            var entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            var entityNotification = entityNotificationPool.Get();
+            entityNotification.Entity = player;
+            entityNotification.Type = EntityNotification.ActionType.Add;
 
-            updateHub.Push(new EntityNotification()
-            {
-                Entity = player,
-                Type = EntityNotification.ActionType.Add
-            }, DefaultChannels.Simulation);
+            updateHub.Push(entityNotification, DefaultChannels.Simulation);
+            entityNotification.Release();
+
 
             var remotePlayer = new RemoteEntity(player);
             remotePlayer.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
@@ -37,14 +40,12 @@ namespace OctoAwesome.GameServer.Commands
             remotePlayer.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
 
             Console.WriteLine(playername);
+            entityNotification = entityNotificationPool.Get();
+            entityNotification.Entity = remotePlayer;
+            entityNotification.Type = EntityNotification.ActionType.Add;
 
-            updateHub.Push(new EntityNotification()
-            {
-                Entity = remotePlayer,
-                Type = EntityNotification.ActionType.Add
-            }, DefaultChannels.Network);
-
-
+            updateHub.Push(entityNotification, DefaultChannels.Network);
+            entityNotification.Release();
             return Serializer.Serialize(player);
         }
     }

@@ -24,6 +24,12 @@ namespace OctoAwesome
 
             typeContainer.Register<IPool<Awaiter>, Pool<Awaiter>>(InstanceBehaviour.Singleton);
             typeContainer.Register<Pool<Awaiter>, Pool<Awaiter>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<ChunkNotification>, Pool<ChunkNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<ChunkNotification>, Pool<ChunkNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
         }
 
         public static void ConfigureLogger(ClientType clientType)

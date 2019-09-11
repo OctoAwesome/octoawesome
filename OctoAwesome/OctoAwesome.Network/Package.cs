@@ -1,8 +1,9 @@
-﻿using System;
+﻿using OctoAwesome.Pooling;
+using System;
 
 namespace OctoAwesome.Network
 {
-    public class Package
+    public sealed class Package : IPoolElement
     {
         /// <summary>
         /// Bytesize of Header
@@ -26,6 +27,7 @@ namespace OctoAwesome.Network
         public int PayloadRest => Payload.Length - internalOffset;
 
         private int internalOffset;
+        private IPool pool;
 
         public Package(ushort command, int size) : this()
         {
@@ -86,5 +88,22 @@ namespace OctoAwesome.Network
             return Payload.Length + HEAD_LENGTH;
         }
 
+        public void Init(IPool pool)
+        {
+            UId = NextUId;           
+            Payload = Array.Empty<byte>();
+            this.pool = pool;
+        }
+
+        public void Release()
+        {
+            BaseClient = default;
+            Command = default;
+            Payload = default;
+            UId = default;
+            internalOffset = default;
+
+            pool.Push(this);
+        }
     }
 }

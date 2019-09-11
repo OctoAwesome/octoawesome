@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,23 +12,24 @@ namespace OctoAwesome.Notifications
     public sealed class EntityNotification : SerializableNotification
     {
         public ActionType Type { get; set; }
-        public int EntityId { get; private set; }
+        public int EntityId { get; set; }
         public Entity Entity
         {
             get => entity; set
             {
                 entity = value;
-                EntityId = value.Id;
+                EntityId = value?.Id ?? default;
             }
         }
 
         public PropertyChangedNotification Notification { get; set; }
 
         private Entity entity;
+        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         public EntityNotification()
         {
-
+            propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
         public EntityNotification(int id) : this()
@@ -47,7 +49,8 @@ namespace OctoAwesome.Notifications
 
             var isNotification = reader.ReadBoolean();
             if (isNotification)
-                Notification = Serializer.Deserialize<PropertyChangedNotification>(reader.ReadBytes(reader.ReadInt32()));
+                Notification = Serializer.DeserializePoolElement(
+                    propertyChangedNotificationPool, reader.ReadBytes(reader.ReadInt32()));
         }
 
         public override void Serialize(BinaryWriter writer)
@@ -68,11 +71,22 @@ namespace OctoAwesome.Notifications
             var subNotification = Notification != null;
             writer.Write(subNotification);
             if (subNotification)
-            {                
+            {
                 var bytes = Serializer.Serialize(Notification);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }
+        }
+
+        protected override void OnRelease()
+        {
+            Notification?.Release();
+
+            Type = default;
+            Entity = default;
+            Notification = default;
+
+            base.OnRelease();
         }
 
         public enum ActionType

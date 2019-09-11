@@ -35,8 +35,6 @@ namespace OctoAwesome.Pooling
 
         public void Push(T obj)
         {
-            obj.Release();
-
             using (semaphoreExtended.Wait())
                 internalStack.Push(obj);
         }

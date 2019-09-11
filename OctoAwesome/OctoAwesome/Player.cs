@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 
 namespace OctoAwesome
 {
@@ -18,11 +19,14 @@ namespace OctoAwesome
         /// </summary>
         public const int SELECTIONRANGE = 8;
 
+        private readonly IPool<EntityNotification> entityNotificationPool;
+
         /// <summary>
         /// Erzeugt eine neue Player-Instanz an der Default-Position.
         /// </summary>
         public Player() : base()
         {
+            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
         }
 
         protected override void OnInitialize(IResourceManager manager)
@@ -48,15 +52,14 @@ namespace OctoAwesome
         {
             base.OnUpdate(notification);
 
-            var entityNotification = new EntityNotification
-            {
-                Entity = this,
-                Type = EntityNotification.ActionType.Update,
-                Notification = notification as PropertyChangedNotification
-            };
+            var entityNotification = entityNotificationPool.Get();
+            entityNotification.Entity = this;
+            entityNotification.Type = EntityNotification.ActionType.Update;
+            entityNotification.Notification = notification as PropertyChangedNotification;
 
             Simulation?.OnUpdate(entityNotification);
+            entityNotification.Release();
         }
-        
+
     }
 }

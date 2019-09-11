@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using System;
 
 namespace OctoAwesome
@@ -233,14 +234,18 @@ namespace OctoAwesome
         }
 
         private void BlockChanged(int index, ushort block, int meta)
-            => OnUpdate(new ChunkNotification()
-            {
-                FlatIndex = index,
-                Block = block,
-                Meta = meta,
-                ChunkPos = Index,
-                Planet = Planet.Id
-            });
+        {
+            var notification = TypeContainer.Get<IPool<ChunkNotification>>().Get();
+            notification.FlatIndex = index;
+            notification.Block = block;
+            notification.Meta = meta;
+            notification.ChunkPos = Index;
+            notification.Planet = Planet.Id;
+
+            OnUpdate(notification);
+
+            notification.Release();
+        }
 
         public event Action<IChunk, int> Changed;
     }

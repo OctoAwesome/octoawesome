@@ -32,9 +32,8 @@ namespace OctoAwesome.Notifications
             addSemaphore.Wait();
             if (internalDictionary.TryGetValue(channel, out ObserverHashSet hashset))
             {
-                hashset.Wait();
-                hashset.Add(value);
-                hashset.Release();
+                using (hashset.Wait())
+                    hashset.Add(value);
             }
             else
             {
@@ -62,9 +61,8 @@ namespace OctoAwesome.Notifications
 
             foreach (ObserverHashSet hashSet in internalDictionary.Values)
             {
-                hashSet.Wait();
-                returnValue = returnValue ? returnValue : hashSet.Remove(item);
-                hashSet.Release();
+                using (hashSet.Wait())
+                    returnValue = returnValue ? returnValue : hashSet.Remove(item);
             }
 
             return returnValue;
@@ -72,9 +70,11 @@ namespace OctoAwesome.Notifications
         public bool Remove(string key, INotificationObserver item)
         {
             ObserverHashSet hashSet = internalDictionary[key];
-            hashSet.Wait();
-            var returnValue = hashSet.Remove(item);
-            hashSet.Release();
+            bool returnValue;
+
+            using (hashSet.Wait())
+                returnValue = hashSet.Remove(item);
+
             return returnValue;
         }
 

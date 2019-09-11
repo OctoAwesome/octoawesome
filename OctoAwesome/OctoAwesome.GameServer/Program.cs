@@ -21,6 +21,9 @@ namespace OctoAwesome.GameServer
             {
                 Startup.Register(typeContainer);
                 Startup.ConfigureLogger(ClientType.GameServer);
+
+                Network.Startup.Register(typeContainer);
+
                 logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(Program));
 
                 manualResetEvent = new ManualResetEvent(false);

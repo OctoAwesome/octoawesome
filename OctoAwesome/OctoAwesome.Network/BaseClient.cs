@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Pooling;
+using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace OctoAwesome.Network
         private bool sending;
         private Package currentPackage;
         private readonly ConcurrentBag<IObserver<Package>> observers;
-
+        private readonly IPool<Package> packagePool;
         private readonly SocketAsyncEventArgs sendArgs;
 
         private readonly (byte[] data, int len)[] sendQueue;
@@ -35,12 +36,13 @@ namespace OctoAwesome.Network
         private readonly CancellationTokenSource cancellationTokenSource;
 
         protected BaseClient()
-        {
+        {            
             sendQueue = new (byte[] data, int len)[256];
             sendLock = new object();
             ReceiveArgs = new SocketAsyncEventArgs();
             ReceiveArgs.Completed += OnReceived;
             ReceiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(1024 * 1024), 0, 1024 * 1024);
+            packagePool = TypeContainer.Get<IPool<Package>>();
 
             sendArgs = new SocketAsyncEventArgs();
             sendArgs.Completed += OnSent;
@@ -98,6 +100,12 @@ namespace OctoAwesome.Network
             byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
             package.SerializePackage(bytes, 0);
             SendAsync(bytes, bytes.Length);
+        }
+
+        public void SendPackageAndRelase(Package package)
+        {
+            SendPackage(package);
+            package.Release();
         }
 
         public IDisposable Subscribe(IObserver<Package> observer)
@@ -184,10 +192,13 @@ namespace OctoAwesome.Network
 
             if (currentPackage == null)
             {
-                currentPackage = new Package(false)
-                {
-                    BaseClient = this
-                };
+                //currentPackage = new Package(false)
+                //{
+                //    BaseClient = this
+                //};
+
+                currentPackage = packagePool.Get();
+                currentPackage.BaseClient = this;
 
                 if (length - bufferOffset < Package.HEAD_LENGTH)
                 {
@@ -215,9 +226,11 @@ namespace OctoAwesome.Network
             {
                 var package = currentPackage;
                 Task.Run(() =>
-                {                    
+                {
                     foreach (var observer in observers)
                         observer.OnNext(package);
+
+                    package.Release();
                 });
 
                 currentPackage = null;
