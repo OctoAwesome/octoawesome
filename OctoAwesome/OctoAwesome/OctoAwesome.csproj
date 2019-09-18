@@ -148,6 +148,8 @@
     <Compile Include="SimulationComponent.cs" />
     <Compile Include="SimulationState.cs" />
     <Compile Include="StandaloneTypeContainer.cs" />
+    <Compile Include="Threading\IAsyncObservable.cs" />
+    <Compile Include="Threading\IAsyncObserver.cs" />
     <Compile Include="TypeContainer.cs" />
     <Compile Include="Wall.cs" />
     <Compile Include="Universe.cs" />

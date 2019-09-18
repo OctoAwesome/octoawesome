@@ -30,5 +30,7 @@ namespace OctoAwesome.Logging
 
         ILogger As(string loggerName);
         ILogger As(Type type);
+
+        void Flush();
     }
 }

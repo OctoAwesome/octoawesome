@@ -4,14 +4,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using OctoAwesome.Basics;
 using OctoAwesome.Logging;
+using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
+using OctoAwesome.Threading;
 
 namespace OctoAwesome.Network
 {
-    public class NetworkPersistenceManager : IPersistenceManager, IObserver<Package>
+    public class NetworkPersistenceManager : IPersistenceManager, IAsyncObserver<Package>
     {
         private readonly Client client;
         private readonly IDisposable subscription;
@@ -19,7 +22,7 @@ namespace OctoAwesome.Network
         private readonly ConcurrentDictionary<uint, Awaiter> packages;
         private readonly ILogger logger;
         private readonly IPool<Awaiter> awaiterPool;
-        private readonly IPool<Package> packagePool;
+        private readonly PackagePool packagePool;
 
         public NetworkPersistenceManager(Client client)
         {
@@ -29,7 +32,7 @@ namespace OctoAwesome.Network
             packages = new ConcurrentDictionary<uint, Awaiter>();
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkPersistenceManager));
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
-            packagePool = TypeContainer.Get<IPool<Package>>();
+            packagePool = TypeContainer.Get<PackagePool>();
         }
 
         public void DeleteUniverse(Guid universeGuid)
@@ -148,7 +151,7 @@ namespace OctoAwesome.Network
             //client.SendPackage(package);
         }
 
-        public void OnNext(Package package)
+        public Task OnNext(Package package)
         {
             logger.Trace($"Package with id:{package.UId} for Command: {package.OfficialCommand}");
 
@@ -170,14 +173,22 @@ namespace OctoAwesome.Network
                     break;
                 default:
                     logger.Warn($"Cant handle Command: {package.OfficialCommand}");
-                    return;
+                    return Task.CompletedTask;
             }
+
+            return Task.CompletedTask;
         }
 
-        public void OnError(Exception error)
-            => throw error;
+        public Task OnError(Exception error)
+        {
+            logger.Error(error.Message, error);
+            return Task.CompletedTask;
+        }
 
-        public void OnCompleted()
-            => subscription.Dispose();
+        public Task OnCompleted()
+        {
+            subscription.Dispose();
+            return Task.CompletedTask;
+        }
     }
 }

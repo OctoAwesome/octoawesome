@@ -24,16 +24,23 @@ namespace OctoAwesome.GameServer
 
                 Network.Startup.Register(typeContainer);
 
-                logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(Program));
+                logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As("OctoAwesome.GameServer");
+                AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+                {
+                    File.WriteAllText(
+                        Path.Combine(".", "logs", $"server-dump-{DateTime.Now.ToString("ddMMyy_hhmmss")}.txt"), 
+                        e.ExceptionObject.ToString());
+
+                    logger.Fatal($"Unhandled Exception: {e.ExceptionObject}", e.ExceptionObject as Exception);
+                    logger.Flush();
+                };
 
                 manualResetEvent = new ManualResetEvent(false);
 
                 logger.Info("Server start");
-
                 var fileInfo = new FileInfo(Path.Combine(".", "settings.json"));
                 Settings settings;
-
-
+                
                 if (!fileInfo.Exists)
                 {
                     logger.Debug("Create new Default Settings");

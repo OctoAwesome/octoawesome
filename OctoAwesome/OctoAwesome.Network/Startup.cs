@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Pooling;
+﻿using OctoAwesome.Network.Pooling;
+using OctoAwesome.Pooling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,7 @@ namespace OctoAwesome.Network
     {
         public static void Register(ITypeContainer typeContainer)
         {
-            typeContainer.Register<IPool<Package>, Pool<Package>>(InstanceBehaviour.Singleton);
-            typeContainer.Register<Pool<Package>, Pool<Package>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<PackagePool, PackagePool>(InstanceBehaviour.Singleton);
         }
     }
 }

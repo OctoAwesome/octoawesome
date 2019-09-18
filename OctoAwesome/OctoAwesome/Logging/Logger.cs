@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace OctoAwesome.Logging
 
         static Logger()
         {
-            nullLogger = NLog.LogManager.LogFactory.CreateNullLogger();
+            nullLogger = LogManager.LogFactory.CreateNullLogger();
         }
 
         private NLog.ILogger internalLogger;
@@ -71,5 +72,10 @@ namespace OctoAwesome.Logging
         }
         public ILogger As(Type type) 
             => As(type.FullName);
+
+        public void Flush()
+        {
+            LogManager.Flush();
+        }
     }
 }

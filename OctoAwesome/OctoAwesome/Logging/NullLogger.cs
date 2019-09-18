@@ -47,5 +47,7 @@ namespace OctoAwesome.Logging
         public void Warn(string message) { }
         public void Warn(string message, Exception exception) { }
         public void Warn<T>(T message) { }
+
+        public void Flush() { }
     }
 }

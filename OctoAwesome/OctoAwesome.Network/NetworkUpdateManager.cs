@@ -1,36 +1,43 @@
-﻿using OctoAwesome.Network;
+﻿using OctoAwesome.Logging;
+using OctoAwesome.Network;
+using OctoAwesome.Network.Pooling;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
+using OctoAwesome.Threading;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public class NetworkUpdateManager : IObserver<Package>, INotificationObserver
+    public class NetworkUpdateManager : IAsyncObserver<Package>, INotificationObserver
     {
         private readonly Client client;
         private readonly IUpdateHub updateHub;
+        private readonly ILogger logger;
         private readonly IDisposable hubSubscription;
         private readonly IDisposable clientSubscription;
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly IPool<ChunkNotification> chunkNotificationPool;
-        private readonly IPool<Package> packagePool;
+        private readonly PackagePool packagePool;
 
         public NetworkUpdateManager(Client client, IUpdateHub updateHub)
         {
             this.client = client;
             this.updateHub = updateHub;
 
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkUpdateManager));
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
             chunkNotificationPool = TypeContainer.Get<IPool<ChunkNotification>>();
-            packagePool = TypeContainer.Get<IPool<Package>>();
+            packagePool = TypeContainer.Get<PackagePool>();
 
             hubSubscription = updateHub.Subscribe(this, DefaultChannels.Network);
             clientSubscription = client.Subscribe(this);
+            
         }
 
-        public void OnNext(Package package)
+        public Task OnNext(Package package)
         {
             switch (package.OfficialCommand)
             {
@@ -47,6 +54,8 @@ namespace OctoAwesome.Network
                 default:
                     break;
             }
+
+            return Task.CompletedTask;
         }
 
         public void OnNext(Notification value)
@@ -72,10 +81,26 @@ namespace OctoAwesome.Network
             client.SendPackageAndRelase(package);
         }
 
-        public void OnError(Exception error)
-            => throw error;
+        public Task OnError(Exception error)
+        {
+            logger.Error(error.Message, error);
+            return Task.CompletedTask;
+        }
 
-        public void OnCompleted()
-            => clientSubscription.Dispose();
+        public Task OnCompleted()
+        {
+            clientSubscription.Dispose();
+            return Task.CompletedTask;
+        }
+
+        void INotificationObserver.OnCompleted()
+        {
+            //hubSubscription.Dispose();
+        }
+
+        void INotificationObserver.OnError(Exception error)
+        {
+            logger.Error(error.Message, error);
+        }
     }
 }

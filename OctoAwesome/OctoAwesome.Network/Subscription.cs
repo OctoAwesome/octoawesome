@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Threading;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace OctoAwesome.Network
 {
     public class Subscription<T> : IDisposable
     {
-        public IObservable<T> Observable { get; private set; }
-        public IObserver<T> Observer { get; private set; }
+        public IAsyncObservable<T> Observable { get; }
+        public IAsyncObserver<T> Observer { get;  }
         
-        public Subscription(IObservable<T> observable, IObserver<T> observer)
+        public Subscription(IAsyncObservable<T> observable, IAsyncObserver<T> observer)
         {
             Observable = observable;
             Observer = observer;
