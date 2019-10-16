@@ -10,6 +10,7 @@ using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
 using engenious.Helper;
+using System.Windows.Threading;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -89,7 +90,9 @@ namespace OctoAwesome.Client.Controls
         };
 
         private ScreenComponent Manager { get; set; }
+
         private int _fillIncrement;
+
         public SceneControl(ScreenComponent manager, string style = "") :
             base(manager, style)
         {
@@ -102,7 +105,6 @@ namespace OctoAwesome.Client.Controls
             assets = manager.Game.Assets;
             entities = manager.Game.Entity;
             Manager = manager;
-
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
@@ -289,7 +291,7 @@ namespace OctoAwesome.Client.Controls
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = (IBlockDefinition) Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition)Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
 
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 
@@ -544,7 +546,7 @@ namespace OctoAwesome.Client.Controls
                     {
                         if (b)
                         {
-                            fillResetEvent.Set(); 
+                            fillResetEvent.Set();
                         }
                     });
 
@@ -581,7 +583,7 @@ namespace OctoAwesome.Client.Controls
 
                 currentChunk = destinationChunk;
             }
-            
+
             foreach (var e in additionalFillResetEvents)
                 e.Set();
 
@@ -627,7 +629,7 @@ namespace OctoAwesome.Client.Controls
             {
                 forceResetEvent.WaitOne();
 
-                while(!forcedRenders.IsEmpty)
+                while (!forcedRenders.IsEmpty)
                 {
                     while (forcedRenders.TryDequeue(out ChunkRenderer r))
                     {
@@ -669,7 +671,7 @@ namespace OctoAwesome.Client.Controls
 
         #endregion
 
-        private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();        
+        private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
 
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {

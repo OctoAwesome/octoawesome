@@ -192,7 +192,7 @@ namespace OctoAwesome
             {
                 if (!cache.TryGetValue(new Index3(position, Planet.Id), out CacheItem cacheItem))
                 {
-                    throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
+                     throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
                 }
 
                 if (--cacheItem.References <= 0)
