@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Network.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.GameServer", "OctoAwesome.GameServer\OctoAwesome.GameServer.csproj", "{38EAE0E6-FCCF-4A33-B500-C9ED28717388}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Database", "OctoAwesome.Database\OctoAwesome.Database.csproj", "{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,14 @@ Global
 		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|x86.ActiveCfg = Release|Any CPU
 		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|x86.Build.0 = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|x86.Build.0 = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|x86.ActiveCfg = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
