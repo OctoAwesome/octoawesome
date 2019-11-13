@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,27 +8,29 @@ namespace OctoAwesome.Database
 {
     internal class ValueStore
     {
-        private readonly FileStream fileStream;
+        private readonly Writer writer;
+        private readonly Reader reader;
 
-        public ValueStore(FileStream stream)
+        public ValueStore(Writer writer, Reader reader)
         {
-            fileStream = stream;
+            this.writer = writer;
+            this.reader = reader;
         }
 
-        public bool TryGetValue(Key key, out Value value)
+        public Value GetValue(Key key)
         {
-            var buffer = new byte[key.Length];
-            fileStream.Seek(key.Index, SeekOrigin.Begin);
-            fileStream.Read(buffer, 0, key.Length);
-            value = new Value(buffer, key);
-            return true;
+            var byteArray = reader.Read(key.Index + Key.KEY_SIZE, key.Length);
+            return new Value(byteArray);
         }
 
-        public bool TryAddValue(Key key, Value value)
+        internal Key AddValue<TTag>(TTag tag, Value value) where TTag : ITagable
         {
-            fileStream.Seek(0, SeekOrigin.End);
-            fileStream.Write(value.ToArray(), 0, key.Length);
-            return true;
+            var key = new Key(tag.Tag, fileStream.Seek(0, SeekOrigin.End), value.Content.Length);
+            //TODO: Hash, Sync
+            writer.Write(key.GetBytes(), 0, Key.KEY_SIZE);
+            writer.Write(value.Content, 0, value.Content.Length);
+
+            return key;
         }
     }
 }

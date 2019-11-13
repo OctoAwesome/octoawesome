@@ -4,20 +4,13 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    class Value
+    public readonly struct Value
     {
-        private byte[] buffer;
+        public byte[] Content { get; }
 
-        public Value(byte[] buffer, Key key)
+        public Value(byte[] buffer)
         {
-            this.buffer = buffer;
-            Key = key;
+            Content = buffer;
         }
-
-        public Key Key { get; set; }
-        public byte[] Hash { get; set; }
-        public byte[] Content { get; set; }
-
-        internal byte[] ToArray() => throw new NotImplementedException();
     }
 }
