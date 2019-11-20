@@ -122,6 +122,8 @@
     <Compile Include="Pooling\IPoolElement.cs" />
     <Compile Include="Pooling\Pool.cs" />
     <Compile Include="SemaphoreExtended.cs" />
+    <Compile Include="Serialization\IIdentification.cs" />
+    <Compile Include="Serialization\SerializableIdDatabaseContext.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="RemoteEntity.cs" />
     <Compile Include="Serialization\ISerializable.cs" />
@@ -163,7 +165,12 @@
       <Version>4.6.6</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj">
+      <Project>{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}</Project>
+      <Name>OctoAwesome.Database</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

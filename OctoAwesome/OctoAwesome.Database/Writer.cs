@@ -27,6 +27,15 @@ namespace OctoAwesome.Database
         public void Write(byte[] data, int offset, int length)
             => fileStream.Write(data, offset, length);
 
+        public void WriteAndFlush(byte[] data, int offset, int length)
+        {
+            Write(data, offset, length);
+            fileStream.Flush();
+        }
+
+        internal long ToEnd()
+            => fileStream.Seek(0, SeekOrigin.End);
+
         #region IDisposable Support
         private bool disposedValue = false;
                

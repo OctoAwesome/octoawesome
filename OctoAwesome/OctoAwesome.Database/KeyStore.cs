@@ -6,22 +6,30 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Database
 {
-    internal class KeyStore<TTag> where TTag : ITagable
+    internal class KeyStore<TTag> : IDisposable where TTag : ITagable
     {
         private readonly Dictionary<int, Key> keys;
-        private readonly FileStream fileStream;
+        private readonly Writer writer;
+        private readonly Reader reader;
 
-        public KeyStore(FileStream fileStream)
+        public KeyStore(Writer writer, Reader reader)
         {
             keys = new Dictionary<int, Key>();
-            this.fileStream = fileStream;
+
+            this.writer = writer;
+            this.reader = reader;
         }
 
-        public void Load()
+        public void Open()
         {
-            var buffer = new byte[fileStream.Length];
-            fileStream.Seek(0, SeekOrigin.Begin);
-            fileStream.Read(buffer, 0, buffer.Length);            
+            writer.Open();
+            var buffer = reader.Read(0, -1);
+
+            for (int i = 0; i < buffer.Length; i += Key.KEY_SIZE)
+            {
+                var key = Key.FromBytes(buffer, i);
+                keys.Add(key.Tag, key);
+            }
         }
 
         internal Key GetKey(TTag tag) 
@@ -35,8 +43,13 @@ namespace OctoAwesome.Database
         internal void Add(Key key)
         {
             keys.Add(key.Tag, key);
-            fileStream.Seek(0, SeekOrigin.End);
-            fileStream.Write(key.GetBytes(), 0, Key.KEY_SIZE);
+            writer.ToEnd();
+            writer.WriteAndFlush(key.GetBytes(), 0, Key.KEY_SIZE);
+        }
+
+        public void Dispose()
+        {
+            writer.Dispose();
         }
     }
 }

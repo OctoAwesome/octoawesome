@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public class Database<TTag> where TTag : ITagable
+    public class Database<TTag> : IDisposable where TTag : ITagable
     {
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
 
-        public Database()
+        public Database(FileInfo keyFile, FileInfo valueFile)
         {
-            keyStore = new KeyStore();
-            valueStore = new ValueStore();
+            keyStore = new KeyStore<TTag>(new Writer(keyFile), new Reader(keyFile));
+            valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile));
+        }
+
+        public void Open()
+        {
+            keyStore.Open();
+            valueStore.Open();
         }
 
         public Value GetValue(TTag tag)
@@ -22,17 +29,24 @@ namespace OctoAwesome.Database
             return valueStore.GetValue(key);
         }
 
-        public void Add(TTag tag, Value value)
+        public void AddOrUpdate(TTag tag, Value value)
         {
             if (keyStore.Contains(tag))
-                throw new ArgumentException($"{nameof(value)} already exist");
-
-            var key = valueStore.AddValue(tag, value);
-            keyStore.Add(key);
+            {
+                //TODO: Update
+            }
+            else
+            {
+                keyStore.Add(valueStore.AddValue(tag, value));
+            }            
         }
 
-        public void Update() { }
-        public void Remove() { }
+        public void Remove(TTag tag) { }
 
+        public void Dispose()
+        {
+            keyStore.Dispose();
+            valueStore.Dispose();
+        }
     }
 }

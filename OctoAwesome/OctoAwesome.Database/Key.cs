@@ -28,5 +28,14 @@ namespace OctoAwesome.Database
             Buffer.BlockCopy(BitConverter.GetBytes(Length), 0, byteArray, sizeof(int) + sizeof(long), sizeof(int));
             return byteArray;
         }
+
+        public static Key FromBytes(byte[] array, int index)
+        {
+            var tag = BitConverter.ToInt32(array, index);
+            var localIndex = BitConverter.ToInt64(array, index + sizeof(int));
+            var length= BitConverter.ToInt32(array, index + sizeof(int) + sizeof(long));
+
+            return new Key(tag, localIndex, length);
+        }
     }
 }

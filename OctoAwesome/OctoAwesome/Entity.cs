@@ -10,7 +10,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity : ISerializable
+    public abstract class Entity : ISerializable, IIdentification
     {
         /// <summary>
         /// Contains all Components.
@@ -18,7 +18,7 @@ namespace OctoAwesome
         public ComponentList<EntityComponent> Components { get; private set; }
 
         /// <summary>
-        /// Temp Id
+        /// Id
         /// </summary>
         public int Id { get; internal set; }
 

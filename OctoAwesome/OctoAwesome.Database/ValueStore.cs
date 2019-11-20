@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    internal class ValueStore
+    internal class ValueStore : IDisposable
     {
         private readonly Writer writer;
         private readonly Reader reader;
@@ -16,7 +16,7 @@ namespace OctoAwesome.Database
             this.writer = writer;
             this.reader = reader;
         }
-
+        
         public Value GetValue(Key key)
         {
             var byteArray = reader.Read(key.Index + Key.KEY_SIZE, key.Length);
@@ -25,12 +25,21 @@ namespace OctoAwesome.Database
 
         internal Key AddValue<TTag>(TTag tag, Value value) where TTag : ITagable
         {
-            var key = new Key(tag.Tag, fileStream.Seek(0, SeekOrigin.End), value.Content.Length);
+            var key = new Key(tag.Tag, writer.ToEnd(), value.Content.Length);
             //TODO: Hash, Sync
             writer.Write(key.GetBytes(), 0, Key.KEY_SIZE);
-            writer.Write(value.Content, 0, value.Content.Length);
-
+            writer.WriteAndFlush(value.Content, 0, value.Content.Length);
             return key;
+        }
+
+        internal void Open()
+        {
+            writer.Open();
+        }
+
+        public void Dispose()
+        {
+            writer.Dispose();
         }
     }
 }
