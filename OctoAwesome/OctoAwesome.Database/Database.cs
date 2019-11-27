@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public class Database<TTag> : IDisposable where TTag : ITagable
+    public class Database<TTag> : IDisposable where TTag : ITag, new()
     {
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
@@ -32,16 +32,16 @@ namespace OctoAwesome.Database
         public void AddOrUpdate(TTag tag, Value value)
         {
             if (keyStore.Contains(tag))
-            {
-                //TODO: Update
-            }
-            else
-            {
-                keyStore.Add(valueStore.AddValue(tag, value));
-            }            
+                Remove(tag);
+
+            keyStore.Add(valueStore.AddValue(tag, value));
         }
 
-        public void Remove(TTag tag) { }
+        public void Remove(TTag tag)
+        {
+            keyStore.Remove(tag, out var key);
+            valueStore.Remove(key);
+        }
 
         public void Dispose()
         {

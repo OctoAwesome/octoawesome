@@ -26,10 +26,20 @@ namespace OctoAwesome.Database
 
         public void Write(byte[] data, int offset, int length)
             => fileStream.Write(data, offset, length);
+        public void Write(byte[] data, int offset, int length, long position)
+        {
+            fileStream.Seek(position, SeekOrigin.Begin);
+            Write(data, offset, length);
+        }
 
         public void WriteAndFlush(byte[] data, int offset, int length)
         {
             Write(data, offset, length);
+            fileStream.Flush();
+        }
+        public void WriteAndFlush(byte[] data, int offset, int length, long position)
+        {
+            Write(data, offset, length, position);
             fileStream.Flush();
         }
 

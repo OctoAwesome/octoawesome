@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public abstract class DatabaseContext<Tag, TKey, TObject> where Tag : ITagable
+    public abstract class DatabaseContext<Tag, TObject> where Tag : ITag, new()
     {
         protected Database<Tag> Database { get; }
 
@@ -13,7 +13,7 @@ namespace OctoAwesome.Database
             Database = database;
         }
 
-        public abstract TObject Get(TKey key);
+        public abstract TObject Get(Tag key);
 
         public abstract void AddOrUpdate(TObject value);
 

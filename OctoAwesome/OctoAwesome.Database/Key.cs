@@ -5,37 +5,47 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public readonly struct Key
+    public readonly struct Key<TTag> where TTag : ITag, new()
     {
-        public const int KEY_SIZE = sizeof(long) + sizeof(int) + sizeof(int);
+        public const int BASE_KEY_SIZE = sizeof(long) + sizeof(int);
+        public static int KEY_SIZE { get; }
+        public static Key<TTag> Empty { get; }
 
-        public int Tag { get;  }
+        static Key()
+        {
+            var emptyTag = new TTag();
+            KEY_SIZE = emptyTag.Length + BASE_KEY_SIZE;
+            Empty = new Key<TTag>();
+        }
+
+        public TTag Tag { get; }
         public long Index { get; }
         public int Length { get; }
 
-        public Key(int tag, long index, int length)
+        public Key(TTag tag, long index, int length)
         {
             Tag = tag;
             Index = index;
-            Length = length;
+            Length = length;            
         }
 
         internal byte[] GetBytes()
         {
-            var byteArray = new byte[KEY_SIZE];           
-            Buffer.BlockCopy(BitConverter.GetBytes(Tag), 0, byteArray, 0, sizeof(int));
-            Buffer.BlockCopy(BitConverter.GetBytes(Index), 0, byteArray, sizeof(int), sizeof(long));
-            Buffer.BlockCopy(BitConverter.GetBytes(Length), 0, byteArray, sizeof(int) + sizeof(long), sizeof(int));
+            var byteArray = new byte[KEY_SIZE];
+            Buffer.BlockCopy(BitConverter.GetBytes(Index), 0, byteArray, 0, sizeof(long));
+            Buffer.BlockCopy(BitConverter.GetBytes(Length), 0, byteArray, sizeof(long), sizeof(int));
+            Buffer.BlockCopy(Tag.GetBytes(), 0, byteArray, BASE_KEY_SIZE, Tag.Length);
             return byteArray;
         }
 
-        public static Key FromBytes(byte[] array, int index)
+        public static Key<TTag> FromBytes(byte[] array, int index)
         {
-            var tag = BitConverter.ToInt32(array, index);
-            var localIndex = BitConverter.ToInt64(array, index + sizeof(int));
-            var length= BitConverter.ToInt32(array, index + sizeof(int) + sizeof(long));
+            var localIndex = BitConverter.ToInt64(array, index);
+            var length = BitConverter.ToInt32(array, index + sizeof(long));
+            var tag = new TTag();
+            tag.FromBytes(array, index + BASE_KEY_SIZE);
 
-            return new Key(tag, localIndex, length);
+            return new Key<TTag>(tag, localIndex, length);
         }
     }
 }
