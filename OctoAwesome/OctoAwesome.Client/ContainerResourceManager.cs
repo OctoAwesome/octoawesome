@@ -14,7 +14,7 @@ namespace OctoAwesome.Client
     /// <summary>
     /// This is only temporary
     /// </summary>
-    public class ContainerResourceManager : IResourceManager
+    public class ContainerResourceManager : IResourceManager, IDisposable
     {
         public IDefinitionManager DefinitionManager => resourceManager.DefinitionManager;
         public IUniverse CurrentUniverse => resourceManager.CurrentUniverse;
@@ -145,5 +145,11 @@ namespace OctoAwesome.Client
         public void UnloadUniverse() => resourceManager.UnloadUniverse();
         public void SaveChunkColumn(IChunkColumn chunkColumn) => resourceManager.SaveChunkColumn(chunkColumn);
         public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index) => resourceManager.LoadChunkColumn(planet, index);
+
+        public void Dispose()
+        {
+            if (resourceManager is IDisposable disposable)
+                disposable.Dispose();
+        }
     }
 }

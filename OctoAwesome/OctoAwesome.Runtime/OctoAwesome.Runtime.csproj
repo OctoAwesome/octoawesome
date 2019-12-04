@@ -64,6 +64,10 @@
     <Compile Include="UpdateHub.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj">
+      <Project>{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}</Project>
+      <Name>OctoAwesome.Database</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
       <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
       <Name>OctoAwesome</Name>

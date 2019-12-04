@@ -116,7 +116,7 @@ namespace OctoAwesome.Network
             return awaiter;
         }
 
-        public void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column)
+        public void SaveColumn(Guid universeGuid, IPlanet planet, IChunkColumn column)
         {
             //throw new NotImplementedException();
         }

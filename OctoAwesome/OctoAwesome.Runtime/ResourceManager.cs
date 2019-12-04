@@ -300,7 +300,7 @@ namespace OctoAwesome.Runtime
         {
             if (!disablePersistence && chunkColumn.ChangeCounter > 0) //value.Chunks.Any(c => c.ChangeCounter > 0)
             {
-                persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet.Id, chunkColumn);
+                persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
             }
         }
 

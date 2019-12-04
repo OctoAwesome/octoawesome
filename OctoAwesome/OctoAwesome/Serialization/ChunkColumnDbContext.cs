@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Serialization
 {
-    public sealed class ChunkColumnDbContext : DatabaseContext<Index2Tag, ChunkColumn>
+    public sealed class ChunkColumnDbContext : DatabaseContext<Index2Tag, IChunkColumn>
     {
         private readonly IPlanet currentPlanet;
 
@@ -17,24 +18,28 @@ namespace OctoAwesome.Serialization
             currentPlanet = planet;
         }
 
-        public override void AddOrUpdate(ChunkColumn value)
-            => Database.AddOrUpdate(new Index2Tag(value.Index), new Value(Serializer.Serialize(value)));
+        public override void AddOrUpdate(IChunkColumn value)
+            => Database.AddOrUpdate(new Index2Tag(value.Index), new Value(Serializer.SerializeCompressed(value)));
 
-        public ChunkColumn Get(Index2 key)
+        public IChunkColumn Get(Index2 key)
             => Get(new Index2Tag(key));
-        public override ChunkColumn Get(Index2Tag key)
+        public override IChunkColumn Get(Index2Tag key)
         {
-            var chunkColumn = new ChunkColumn(currentPlanet);
+            if (!Database.ContainsKey(key))
+                return null;
 
+            var chunkColumn = new ChunkColumn(currentPlanet);
             using (var stream = new MemoryStream(Database.GetValue(key).Content))
-            using (var reader = new BinaryReader(stream))
+            using (var zip = new GZipStream(stream, CompressionMode.Decompress))
+            using (var reader = new BinaryReader(zip))
             {
                 chunkColumn.Deserialize(reader);
                 return chunkColumn;
             }
         }
 
-        public override void Remove(ChunkColumn value)
+        public override void Remove(IChunkColumn value)
            => Database.Remove(new Index2Tag(value.Index));
+        
     }
 }

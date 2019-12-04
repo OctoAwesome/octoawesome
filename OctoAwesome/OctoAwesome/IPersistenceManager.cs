@@ -61,9 +61,9 @@ namespace OctoAwesome
         /// Speichert eine <see cref="IChunkColumn"/>.
         /// </summary>
         /// <param name="universeGuid">GUID des Universums.</param>
-        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="planet">Planet der Column.</param>
         /// <param name="column">Zu serialisierende ChunkColumn.</param>
-        void SaveColumn(Guid universeGuid, int planetId, IChunkColumn column);
+        void SaveColumn(Guid universeGuid, IPlanet planet, IChunkColumn column);
 
         /// <summary>
         /// Lädt einen Player.
