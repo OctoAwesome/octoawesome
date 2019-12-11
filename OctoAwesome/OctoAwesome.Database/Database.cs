@@ -8,6 +8,8 @@ namespace OctoAwesome.Database
 {
     public class Database<TTag> : IDisposable where TTag : ITag, new()
     {
+        public IEnumerable<TTag> Keys => keyStore.Tags;
+
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
 
@@ -22,6 +24,7 @@ namespace OctoAwesome.Database
             keyStore.Open();
             valueStore.Open();
         }
+
 
         public Value GetValue(TTag tag)
         {

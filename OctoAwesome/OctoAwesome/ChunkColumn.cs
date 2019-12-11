@@ -11,7 +11,7 @@ namespace OctoAwesome
     /// </summary>
     public class ChunkColumn : IChunkColumn
     {
-        private IGlobalChunkCache globalChunkCache;
+        private readonly IGlobalChunkCache globalChunkCache;
 
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
@@ -28,7 +28,7 @@ namespace OctoAwesome
         /// <param name="planet">Der Index des Planeten</param>
         /// <param name="columnIndex">Die Position der Säule</param>
         public ChunkColumn(IChunk[] chunks, IPlanet planet, Index2 columnIndex) : this(planet)
-        {            
+        {
             Chunks = chunks;
             Index = columnIndex;
             Entities = new EntityList(this);
@@ -56,8 +56,6 @@ namespace OctoAwesome
             ChangeCounter++;
             Changed?.Invoke(this, arg1, arg2);
         }
-
-      
 
         /// <summary>
         /// Errechnet die obersten Blöcke der Säule.
@@ -415,14 +413,10 @@ namespace OctoAwesome
         }
 
         public event Action<IChunkColumn, IChunk, int> Changed;
-        
+
         public void OnUpdate(SerializableNotification notification)
         {
-            if (notification is ChunkNotification chunkNotification)
-            {
-                chunkNotification.ChunkColumnIndex = Index;
-                globalChunkCache.OnUpdate(notification);
-            }
+            globalChunkCache.OnUpdate(notification);
         }
 
         public void Update(SerializableNotification notification)
@@ -430,7 +424,7 @@ namespace OctoAwesome
             if (notification is ChunkNotification chunkNotification)
             {
                 Chunks
-                    .FirstOrDefault(c => c.Index == chunkNotification.ChunkPos)
+                    .FirstOrDefault(c => c.Index == chunkNotification.ChunkPos)?
                     .Update(notification);
             }
         }

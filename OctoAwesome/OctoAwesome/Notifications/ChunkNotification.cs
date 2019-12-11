@@ -9,7 +9,6 @@ namespace OctoAwesome.Notifications
         public int FlatIndex { get; internal set; }
         public Index3 ChunkPos { get; internal set; }
         public int Planet { get; internal set; }
-        public Index2 ChunkColumnIndex { get; internal set; }
 
         public override void Deserialize(BinaryReader reader)
         {
@@ -22,9 +21,6 @@ namespace OctoAwesome.Notifications
                 reader.ReadInt32());
 
             Planet = reader.ReadInt32();
-            ChunkColumnIndex = new Index2(
-                reader.ReadInt32(),
-                reader.ReadInt32());
         }
 
         public override void Serialize(BinaryWriter writer)
@@ -36,8 +32,6 @@ namespace OctoAwesome.Notifications
             writer.Write(ChunkPos.Y);
             writer.Write(ChunkPos.Z);
             writer.Write(Planet);
-            writer.Write(ChunkColumnIndex.X);
-            writer.Write(ChunkColumnIndex.Y);
         }
 
         protected override void OnRelease()
@@ -47,7 +41,6 @@ namespace OctoAwesome.Notifications
             FlatIndex = default;
             ChunkPos = default;
             Planet = default;
-            ChunkColumnIndex = default;
 
             base.OnRelease();
         }

@@ -97,7 +97,7 @@ namespace OctoAwesome.Client
             }
             else
             {
-                persistenceManager = new DiskPersistenceManager(extensionResolver, settings);
+                persistenceManager = new DiskPersistenceManager(extensionResolver, settings, UpdateHub);
             }
 
             resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager);

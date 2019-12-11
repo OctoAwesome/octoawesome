@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Database;
+using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
@@ -14,25 +15,31 @@ namespace OctoAwesome.Runtime
     /// <summary>
     /// Persistiert Chunks auf die Festplatte.
     /// </summary>
-    public class DiskPersistenceManager : IPersistenceManager, IDisposable
+    public class DiskPersistenceManager : IPersistenceManager, IDisposable, INotificationObserver
     {
         private const string UniverseFilename = "universe.info";
 
         private const string PlanetGeneratorInfo = "generator.info";
 
         private const string PlanetFilename = "planet.info";
-        
+
         private DirectoryInfo root;
-        private Database<Index2Tag> index2Database;
+        private IUniverse currentUniverse;
+        private readonly Dictionary<int, Database<Index2Tag>> index2Databases;
+        private readonly Dictionary<int, Database<ChunkDiffTag>> diffDatabases;
         private readonly ISettings settings;
         private readonly IPool<Awaiter> awaiterPool;
+        private readonly IDisposable chunkSubscription;
         private readonly IExtensionResolver extensionResolver;
 
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings Settings)
+        public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings Settings, IUpdateHub updateHub)
         {
             this.extensionResolver = extensionResolver;
+            index2Databases = new Dictionary<int, Database<Index2Tag>>();
+            diffDatabases = new Dictionary<int, Database<ChunkDiffTag>>();
             settings = Settings;
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
+            chunkSubscription = updateHub.Subscribe(this, DefaultChannels.Chunk);
         }
 
         private string GetRoot()
@@ -58,17 +65,34 @@ namespace OctoAwesome.Runtime
 
         private Database<Index2Tag> GetDatabase(Guid universeGuid, int planetId)
         {
-            if (index2Database != default)
-                return index2Database;
+            if (index2Databases.TryGetValue(planetId, out var database))
+                return database;
 
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
             Directory.CreateDirectory(path);
 
             string keyFile = Path.Combine(path, "index2.keys");
             string valueFile = Path.Combine(path, "index2.db");
-            index2Database = new Database<Index2Tag>(new FileInfo(keyFile), new FileInfo(valueFile));
+            var index2Database = new Database<Index2Tag>(new FileInfo(keyFile), new FileInfo(valueFile));
             index2Database.Open();
+            index2Databases.Add(planetId, index2Database);
             return index2Database;
+        }
+
+        private Database<ChunkDiffTag> GetDiffDatabase(Guid universeGuid, int planetId)
+        {
+            if (diffDatabases.TryGetValue(planetId, out var database))
+                return database;
+
+            string path = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString());
+            Directory.CreateDirectory(path);
+
+            string keyFile = Path.Combine(path, "ChunkDiff.keys");
+            string valueFile = Path.Combine(path, "ChunkDiff.db");
+            var diffDatabase = new Database<ChunkDiffTag>(new FileInfo(keyFile), new FileInfo(valueFile));
+            diffDatabase.Open();
+            diffDatabases.Add(planetId, diffDatabase);
+            return diffDatabase;
         }
 
         /// <summary>
@@ -170,6 +194,7 @@ namespace OctoAwesome.Runtime
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), UniverseFilename);
             universe = new Universe();
+            currentUniverse = universe;
             if (!File.Exists(file))
                 return null;
 
@@ -178,11 +203,11 @@ namespace OctoAwesome.Runtime
             using (var reader = new BinaryReader(zip))
             {
                 var awaiter = awaiterPool.Get();
-                awaiter.Serializable = universe;
                 universe.Deserialize(reader);
                 awaiter.SetResult(universe);
                 return awaiter;
             }
+
 
         }
 
@@ -242,10 +267,13 @@ namespace OctoAwesome.Runtime
             if (column == null)
                 return null;
 
+            ApplyChunkDiff(column, universeGuid, planet);
+
             var awaiter = awaiterPool.Get();
             awaiter.SetResult(column);
             return awaiter;
         }
+
 
         /// <summary>
         /// Lädt einen Player.
@@ -306,7 +334,41 @@ namespace OctoAwesome.Runtime
 
         public void Dispose()
         {
-            index2Database?.Dispose();
+            foreach (var database in index2Databases.Values)
+                database.Dispose();
+        }
+
+        public void OnCompleted() { }
+
+        public void OnError(Exception error)
+            => throw error;
+
+        public void OnNext(Notification notification)
+        {
+            if (notification is ChunkNotification chunkNotification)
+                SaveChunk(chunkNotification);
+        }
+
+        private void SaveChunk(ChunkNotification chunkNotification)
+        {
+            var databaseContext = new ChunkDiffDbContext(GetDiffDatabase(currentUniverse.Id, chunkNotification.Planet));
+            databaseContext.AddOrUpdate(chunkNotification);
+        }
+
+        private void ApplyChunkDiff(IChunkColumn column, Guid universeGuid, IPlanet planet)
+        {
+            var databaseContext = new ChunkDiffDbContext(GetDiffDatabase(universeGuid, planet.Id));
+            var keys = databaseContext
+                .GetAllKeys()
+                .Where(t => t.ChunkPositon.X == column.Index.X && t.ChunkPositon.Y == column.Index.Y);
+
+            foreach (var key in keys)
+            {
+                var block = databaseContext.Get(key);
+                column.Chunks[key.ChunkPositon.Z].Blocks[key.FlatIndex] = block.Block;
+                column.Chunks[key.ChunkPositon.Z].MetaData[key.FlatIndex] = block.Meta;
+            }
+
         }
     }
 }

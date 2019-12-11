@@ -20,7 +20,6 @@ namespace OctoAwesome
 
         public event EventHandler<IChunkColumn> ChunkColumnChanged;
 
-        private readonly ConcurrentQueue<CacheItem> _dirtyItems = new ConcurrentQueue<CacheItem>();
         private readonly ConcurrentQueue<CacheItem> _unreferencedItems = new ConcurrentQueue<CacheItem>();
         private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
         /// <summary>
@@ -61,7 +60,7 @@ namespace OctoAwesome
         /// <summary>
         /// Anzahl der noch nicht gespeicherten ChunkColumns.
         /// </summary>
-        public int DirtyChunkColumn => _dirtyItems.Count;
+        public int DirtyChunkColumn => 0;
 
         public IPlanet Planet { get; }
 
@@ -125,16 +124,12 @@ namespace OctoAwesome
                 using (cacheItem.Wait())
                 {
                     cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(Planet, position);
-                    if (cacheItem.ChunkColumn.Index != cacheItem.Index)
-                        ;
+
                     using (updateSemaphore.Wait())
                         newChunks.Enqueue(cacheItem);
 
                 }
             }
-
-            if (position != cacheItem.Index)
-                ;
 
             return cacheItem.ChunkColumn;
         }
@@ -144,7 +139,6 @@ namespace OctoAwesome
 
         private void ItemChanged(CacheItem obj, IChunkColumn chunkColumn)
         {
-            _dirtyItems.Enqueue(obj);
             _autoResetEvent.Set();
             ChunkColumnChanged?.Invoke(this, chunkColumn);
         }
@@ -186,13 +180,11 @@ namespace OctoAwesome
         /// <param name="position">Die Position des freizugebenden Chunks</param>
         public void Release(Index2 position)
         {
-            var callerName = new StackFrame(1).GetMethod().Name;
-            //logger.Debug($"Release from {callerName}");
             using (semaphore.Wait())
             {
                 if (!cache.TryGetValue(new Index3(position, Planet.Id), out CacheItem cacheItem))
                 {
-                     throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
+                    throw new NotSupportedException(string.Format("Kein Chunk für die Position ({0}) im Cache", position));
                 }
 
                 if (--cacheItem.References <= 0)
@@ -211,21 +203,8 @@ namespace OctoAwesome
             while (!token.IsCancellationRequested)
             {
                 _autoResetEvent.WaitOne();
-                CacheItem ci;
-                var itemsToSave = new List<CacheItem>();
 
-                while (_dirtyItems.TryDequeue(out ci))
-                    itemsToSave.Add(ci);
-
-                foreach (var item in itemsToSave.Distinct())
-                {
-                    lock (item)
-                    {
-                        resourceManager.SaveChunkColumn(item.ChunkColumn);
-                    }
-                }
-
-                while (_unreferencedItems.TryDequeue(out ci))
+                while (_unreferencedItems.TryDequeue(out CacheItem ci))
                 {
                     if (ci.References <= 0)
                     {
@@ -300,7 +279,6 @@ namespace OctoAwesome
                     {
                         targetchunk = resourceManager.LoadChunkColumn(entity.CurrentPlanet, entity.TargetChunk);
                         targetchunk.Entities.Add(entity.Entity);
-                        resourceManager.SaveChunkColumn(targetchunk);
                         simulation.RemoveEntity(entity.Entity);
                     }
                 }
@@ -325,13 +303,19 @@ namespace OctoAwesome
         }
 
         public void OnUpdate(SerializableNotification notification)
-            => updateHub?.Push(notification, DefaultChannels.Network);
+        {
+            updateHub?.Push(notification, DefaultChannels.Network);
+
+            if (notification is ChunkNotification chunkNotification)
+                updateHub?.Push(chunkNotification, DefaultChannels.Chunk);
+        }
 
         public void Update(SerializableNotification notification)
         {
-            if (notification is ChunkNotification chunkNotification &&
-                cache.TryGetValue(new Index3(chunkNotification.ChunkColumnIndex, chunkNotification.Planet),
-                out var cacheItem))
+            if (notification is ChunkNotification chunkNotification
+                && cache.TryGetValue(
+                        new Index3(chunkNotification.ChunkPos.X, chunkNotification.ChunkPos.Y, chunkNotification.Planet),
+                        out var cacheItem))
             {
                 cacheItem.ChunkColumn.Update(notification);
             }

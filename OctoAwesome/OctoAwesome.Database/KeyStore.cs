@@ -8,6 +8,8 @@ namespace OctoAwesome.Database
 {
     internal class KeyStore<TTag> : IDisposable where TTag : ITag, new()
     {
+        public IEnumerable<TTag> Tags => keys.Keys;
+        public IEnumerable<Key<TTag>> Keys => keys.Values;
         private readonly Dictionary<TTag, Key<TTag>> keys;
         private readonly Writer writer;
         private readonly Reader reader;
