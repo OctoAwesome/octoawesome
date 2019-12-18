@@ -375,7 +375,7 @@ namespace OctoAwesome
                 internalSemaphore.Dispose();
             }
 
-            private void OnChanged(IChunkColumn chunkColumn, IChunk chunk, int changeCounter)
+            private void OnChanged(IChunkColumn chunkColumn, IChunk chunk)
                 => Changed?.Invoke(this, chunkColumn);
 
         }

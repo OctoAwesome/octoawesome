@@ -54,6 +54,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseProvider.cs" />
     <Compile Include="DiskPersistenceManager.cs" />
     <Compile Include="DefinitionManager.cs" />
     <Compile Include="ExtensionLoader.cs" />

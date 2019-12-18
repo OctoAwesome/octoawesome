@@ -25,8 +25,6 @@ namespace OctoAwesome
         /// </summary>
         Index2 Index { get; }
 
-        int ChangeCounter { get; set; }
-
         /// <summary>
         /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
         /// </summary>
@@ -58,7 +56,7 @@ namespace OctoAwesome
         /// <returns>Block-ID der angegebenen Koordinate</returns>
         ushort GetBlock(int x, int y, int z);
 
-        event Action<IChunkColumn, IChunk, int> Changed;
+        event Action<IChunkColumn, IChunk> Changed;
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.

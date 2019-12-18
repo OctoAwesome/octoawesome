@@ -59,13 +59,6 @@ namespace OctoAwesome
         public int[] MetaData { get; private set; }
 
         /// <summary>
-        /// Verzweigtes Array, das die Ressourcen zu den Blöcken eines Chunks enthält.
-        /// Der Index der ersten Dimension ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
-        /// </summary>
-        //public ushort[][] Resources { get; private set; }
-
-
-        /// <summary>
         /// Chunk Index innerhalb des Planeten.
         /// </summary>
         public Index3 Index { get; private set; }
@@ -76,12 +69,6 @@ namespace OctoAwesome
         public IPlanet Planet { get; private set; }
 
         /// <summary>
-        /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
-        /// dazu verwendet werden herauszufinden, ob es Änderungen gab.<para/>
-        /// </summary>
-        public int ChangeCounter { get; set; }
-
-        /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Chunk
         /// </summary>
         /// <param name="pos">Position des Chunks</param>
@@ -90,11 +77,9 @@ namespace OctoAwesome
         {
             Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
             MetaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            //Resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
 
             Index = pos;
             Planet = planet;
-            ChangeCounter = 0;
         }
 
         /// <summary>
@@ -143,8 +128,7 @@ namespace OctoAwesome
         {
             Blocks[flatIndex] = block;
             MetaData[flatIndex] = meta;
-            ChangeCounter++;
-            Changed?.Invoke(this, ChangeCounter);
+            Changed?.Invoke(this);
 
             BlockChanged(flatIndex, block, meta);
         }
@@ -171,8 +155,7 @@ namespace OctoAwesome
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
             MetaData[GetFlatIndex(x, y, z)] = meta;
-            ChangeCounter++;
-            Changed?.Invoke(this, ChangeCounter);
+            Changed?.Invoke(this);
         }
 
         /// <summary>
@@ -184,7 +167,7 @@ namespace OctoAwesome
         /// <returns>Ein Array aller Ressourcen des Blocks</returns>
         public ushort[] GetBlockResources(int x, int y, int z)
         {
-            return new ushort[0];// Resources[GetFlatIndex(x, y, z)];
+            return Array.Empty<ushort>();
         }
 
         /// <summary>
@@ -196,9 +179,7 @@ namespace OctoAwesome
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
-            //Resources[GetFlatIndex(x, y, z)] = resources;
-            ChangeCounter++;
-            Changed?.Invoke(this, ChangeCounter);
+            Changed?.Invoke(this);
         }
 
         public void SetColumn(IChunkColumn chunkColumn)
@@ -213,8 +194,7 @@ namespace OctoAwesome
             {
                 Blocks[chunkNotification.FlatIndex] = chunkNotification.Block;
                 MetaData[chunkNotification.FlatIndex] = chunkNotification.Meta;
-                ChangeCounter++;
-                Changed?.Invoke(this, ChangeCounter);
+                Changed?.Invoke(this);
             }
         }
 
@@ -247,6 +227,6 @@ namespace OctoAwesome
             notification.Release();
         }
 
-        public event Action<IChunk, int> Changed;
+        public event Action<IChunk> Changed;
     }
 }

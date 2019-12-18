@@ -6,20 +6,33 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public class Database<TTag> : IDisposable where TTag : ITag, new()
+    public abstract class Database : IDisposable
+    {
+        public Type TagType { get; }
+
+        protected Database(Type tagType)
+        {
+            TagType = tagType;
+        }
+
+        public abstract void Open();
+        public abstract void Dispose();
+    }
+
+    public sealed class Database<TTag> : Database where TTag : ITag, new()
     {
         public IEnumerable<TTag> Keys => keyStore.Tags;
 
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
 
-        public Database(FileInfo keyFile, FileInfo valueFile)
+        public Database(FileInfo keyFile, FileInfo valueFile) : base(typeof(TTag))
         {
             keyStore = new KeyStore<TTag>(new Writer(keyFile), new Reader(keyFile));
             valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile));
         }
 
-        public void Open()
+        public override void Open()
         {
             keyStore.Open();
             valueStore.Open();
@@ -61,7 +74,7 @@ namespace OctoAwesome.Database
         }
 
 
-        public void Dispose()
+        public override void Dispose()
         {
             keyStore.Dispose();
             valueStore.Dispose();

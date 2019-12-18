@@ -51,10 +51,10 @@ namespace OctoAwesome
             globalChunkCache = planet.GlobalChunkCache;
         }
 
-        private void OnChunkChanged(IChunk arg1, int arg2)
+        private void OnChunkChanged(IChunk arg1)
         {
             ChangeCounter++;
-            Changed?.Invoke(this, arg1, arg2);
+            Changed?.Invoke(this, arg1);
         }
 
         /// <summary>
@@ -262,9 +262,6 @@ namespace OctoAwesome
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     writer.Write((ushort)Heights[x, y]);
 
-            for (var i = 0; i < Chunks.Length; i++) // Change Counter
-                writer.Write(Chunks[i].ChangeCounter);
-
             // Schreibe Phase 2 (Block Definitionen)
             if (longIndex)
                 writer.Write((ushort)definitions.Count);
@@ -340,11 +337,7 @@ namespace OctoAwesome
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     Heights[x, y] = reader.ReadUInt16();
 
-            var counter = new int[Chunks.Length];
-
-            for (var i = 0; i < Chunks.Length; i++) // ChangeCounter
-                counter[i] = reader.ReadInt32();
-
+         
             // Phase 2 (Block Definitionen)
             var types = new List<IDefinition>();
             var map = new Dictionary<ushort, ushort>();
@@ -382,7 +375,6 @@ namespace OctoAwesome
                             chunk.MetaData[i] = reader.ReadInt32();
                     }
                 }
-                chunk.ChangeCounter = counter[c];
             }
 
             //Entities lesen
@@ -412,7 +404,7 @@ namespace OctoAwesome
             }
         }
 
-        public event Action<IChunkColumn, IChunk, int> Changed;
+        public event Action<IChunkColumn, IChunk> Changed;
 
         public void OnUpdate(SerializableNotification notification)
         {

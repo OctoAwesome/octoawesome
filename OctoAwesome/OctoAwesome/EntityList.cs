@@ -28,7 +28,6 @@ namespace OctoAwesome
         public void Add(Entity item)
         {
             entities.Add(item);
-            column.ChangeCounter++;
         }
 
         public void Clear() => entities.Clear();
@@ -41,7 +40,6 @@ namespace OctoAwesome
 
         public bool Remove(Entity item)
         {
-            column.ChangeCounter++;
             return entities.Remove(item);
         }
 

@@ -206,9 +206,12 @@ namespace OctoAwesome
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
 
+            if (entity.Id > nextId)
+                nextId = entity.Id;
+
             if (entity.Id == 0)
                 entity.Id = nextId++;
-            else
+            else if (entity.Id == nextId) 
                 nextId++;
 
             entities.Add(entity);

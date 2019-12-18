@@ -89,7 +89,7 @@ namespace OctoAwesome.Client.Components
         public bool NeedsUpdate = false;
 
 
-        private void OnChunkChanged(IChunk c, int n)
+        private void OnChunkChanged(IChunk c)
         {
             NeedsUpdate = true;
             _sceneControl.Enqueue(this);
@@ -154,8 +154,6 @@ namespace OctoAwesome.Client.Components
 
         }
 
-        private int ChangeStart = -1;
-
         public bool RegenerateVertexBuffer()
         {
             if (!ChunkPosition.HasValue)
@@ -177,7 +175,6 @@ namespace OctoAwesome.Client.Components
                 this.chunk.Changed += OnChunkChanged;
             }
             var chunk = this.chunk;
-            ChangeStart = chunk.ChangeCounter;
             List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>();
             List<int> index = new List<int>();
             int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
@@ -573,7 +570,7 @@ namespace OctoAwesome.Client.Components
                 loaded = true;
             }
 
-            NeedsUpdate = chunk.ChangeCounter != ChangeStart || chunk != this.chunk;
+            NeedsUpdate |=  chunk != this.chunk;
             return !NeedsUpdate;
         }
 

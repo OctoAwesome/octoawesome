@@ -30,17 +30,6 @@ namespace OctoAwesome
         int[] MetaData { get; }
 
         /// <summary>
-        /// Verzweigtes Array, das die Ressourcen zu den Blöcken eines Chunks enthält.
-        /// Der Index der ersten Dimension ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
-        /// </summary>
-        //ushort[][] Resources { get; }
-
-        /// <summary>
-        /// Veränderungs-Counter zur Ermittlung von Änderungen.<para/>
-        /// </summary>
-        int ChangeCounter { get; set; }
-
-        /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
@@ -116,6 +105,6 @@ namespace OctoAwesome
         void Update(Notifications.SerializableNotification notification);
         void OnUpdate(Notifications.SerializableNotification notification);
 
-        event Action<IChunk, int> Changed;
+        event Action<IChunk> Changed;
     }
 }
