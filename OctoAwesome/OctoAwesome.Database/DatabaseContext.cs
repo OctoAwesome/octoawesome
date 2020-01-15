@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public abstract class DatabaseContext<Tag, TObject> where Tag : ITag, new()
+    public abstract class DatabaseContext<Tag, TObject> : IDatabaseContext<Tag, TObject> where Tag : ITag, new()
     {
         protected Database<Tag> Database { get; }
 

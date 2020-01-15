@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Runtime
 {
-    public sealed class DatabaseProvider : IDisposable
+    public sealed class DatabaseProvider : IDisposable, IDatabaseProvider
     {
         private readonly string rootPath;
         private readonly Dictionary<(Type Type, Guid Universe, int PlanetId), Database.Database> planetDatabaseRegister;
@@ -22,7 +22,7 @@ namespace OctoAwesome.Runtime
             universeDatabaseRegister = new Dictionary<(Type Type, Guid Universe), Database.Database>();
             globalDatabaseRegister = new Dictionary<Type, Database.Database>();
         }
-                
+
         public Database<T> GetDatabase<T>() where T : ITag, new()
         {
             var key = typeof(T);

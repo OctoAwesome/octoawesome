@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public struct IdTag : ITag
+    public struct IdTag<T> : ITag
     {
         public int Tag { get; private set; }
 

@@ -124,7 +124,10 @@
     <Compile Include="SemaphoreExtended.cs" />
     <Compile Include="Serialization\ChunkDiffDbContext.cs" />
     <Compile Include="Serialization\ChunkDiffTag.cs" />
-    <Compile Include="Serialization\EntityDbContext.cs" />
+    <Compile Include="Serialization\Entities\EntityComponentsDbContext.cs" />
+    <Compile Include="Serialization\Entities\EntityDbContext.cs" />
+    <Compile Include="Serialization\Entities\EntityDefinition.cs" />
+    <Compile Include="Serialization\IDatabaseProvider.cs" />
     <Compile Include="Serialization\IIdentification.cs" />
     <Compile Include="Serialization\ChunkColumnDbContext.cs" />
     <Compile Include="Serialization\Index2Tag.cs" />
