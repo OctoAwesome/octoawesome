@@ -5,20 +5,20 @@ using System.Text;
 
 namespace OctoAwesome.Serialization
 {
-    public sealed class IdDatabaseContext<TObject> : SerializableDatabaseContext<IdTag, TObject> 
+    public sealed class IdDatabaseContext<TObject> : SerializableDatabaseContext<IdTag<int>, TObject> 
         where TObject : ISerializable, IIdentification, new()
     {
-        public IdDatabaseContext(Database<IdTag> database) : base(database)
+        public IdDatabaseContext(Database<IdTag<int>> database) : base(database)
         {
         }
 
         public override void AddOrUpdate(TObject value) 
-            => InternalAddOrUpdate(new IdTag(value.Id), value);
+            => InternalAddOrUpdate(new IdTag<int>(value.Id), value);
 
         public TObject Get(int key) 
-            => Get(new IdTag(key));
+            => Get(new IdTag<int>(key));
 
         public override void Remove(TObject value) 
-           => InternalRemove(new IdTag(value.Id));
+           => InternalRemove(new IdTag<int>(value.Id));
     }
 }

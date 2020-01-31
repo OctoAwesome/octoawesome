@@ -32,6 +32,9 @@ namespace OctoAwesome.Serialization.Entities
             return Serializer.Deserialize<T>(database.GetValue(tag).Content);
         }
 
+        public IEnumerable<IdTag<T>> GetAllKeys<T>() where T : EntityComponent
+            => databaseProvider.GetDatabase<IdTag<T>>(universeGuid).Keys;
+
         public void Remove<T>(Entity entity) where T : EntityComponent
         {
             var database = databaseProvider.GetDatabase<IdTag<T>>(universeGuid);

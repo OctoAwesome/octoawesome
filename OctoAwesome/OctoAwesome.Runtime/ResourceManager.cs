@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Runtime
 {
@@ -93,7 +94,7 @@ namespace OctoAwesome.Runtime
         public IUniverse[] ListUniverses()
         {
             persistenceManager.Load(out SerializableCollection<IUniverse> universes).WaitOnAndRelease();
-            
+
             return universes.ToArray();
         }
 
@@ -111,7 +112,7 @@ namespace OctoAwesome.Runtime
             // Neuen Daten loaden/generieren
 
             persistenceManager.Load(out IUniverse universe, universeId).WaitOnAndRelease();
-         
+
             CurrentUniverse = universe;
             if (CurrentUniverse == null)
                 throw new Exception();
@@ -305,10 +306,33 @@ namespace OctoAwesome.Runtime
             persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
         }
 
+        public Entity LoadEntity(int entityId)
+        {
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
+            var awaiter = persistenceManager.Load(out Entity entity, CurrentUniverse.Id, entityId);
+
+            if (awaiter == null)
+                return null;
+            else
+                awaiter.WaitOnAndRelease();
+
+            return entity;
+        }
+
         public void SaveEntity(Entity entity)
         {
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
             if (entity is Player player)
                 SavePlayer(player);
+            else
+                persistenceManager.SaveEntity(entity, CurrentUniverse.Id);
         }
+
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent
+            => persistenceManager.LoadEntitiesWithComponent<T>(CurrentUniverse.Id);
     }
 }

@@ -47,6 +47,14 @@ namespace OctoAwesome.Serialization.Entities
             return entity;
         }
 
+        public IEnumerable<Entity> GetEntitiesWithComponent<T>() where T : EntityComponent
+        {
+            var entities = componentsDbContext.GetAllKeys<T>().Select(t => new IdTag<Entity>(t.Tag));
+
+            foreach (var entityId in entities)
+                yield return Get(entityId);
+        }
+
         public IEnumerable<IdTag<Entity>> GetAllKeys()
             => entityDefinitionContext.GetAllKeys().Select(e => new IdTag<Entity>(e.Tag));
 

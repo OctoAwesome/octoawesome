@@ -131,6 +131,7 @@
     <Compile Include="Serialization\IIdentification.cs" />
     <Compile Include="Serialization\ChunkColumnDbContext.cs" />
     <Compile Include="Serialization\Index2Tag.cs" />
+    <Compile Include="Serialization\ISerializableEnumerable.cs" />
     <Compile Include="Serialization\SerializableDatabaseContext.cs" />
     <Compile Include="Serialization\IdDatabaseContext.cs" />
     <Compile Include="Startup.cs" />
@@ -153,7 +154,7 @@
     <Compile Include="PlanetIndex3.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializableCollection.cs" />
+    <Compile Include="Serialization\SerializableCollection.cs" />
     <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Simulation.cs" />
     <Compile Include="SimulationComponent.cs" />

@@ -242,11 +242,11 @@ namespace OctoAwesome
                 //Alte Chunks aus der Siumaltion entfernen
                 while (oldChunks.Count > 0)
                 {
-                    var chunk = oldChunks.Dequeue();
-
-                    foreach (var entity in chunk.ChunkColumn.Entities)
-                        simulation.RemoveEntity(entity);
-                    chunk.Dispose();
+                    using (var chunk = oldChunks.Dequeue())
+                    {
+                        foreach (var entity in chunk.ChunkColumn.Entities)
+                            simulation.RemoveEntity(entity);
+                    }
                 }
             }
         }

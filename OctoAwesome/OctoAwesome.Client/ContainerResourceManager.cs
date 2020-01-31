@@ -151,5 +151,10 @@ namespace OctoAwesome.Client
             if (resourceManager is IDisposable disposable)
                 disposable.Dispose();
         }
+
+        public Entity LoadEntity(int entityId) 
+            => resourceManager.LoadEntity(entityId);
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent 
+            => resourceManager.LoadEntitiesWithComponent<T>();
     }
 }

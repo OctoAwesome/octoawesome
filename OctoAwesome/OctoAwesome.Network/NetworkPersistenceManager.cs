@@ -103,6 +103,15 @@ namespace OctoAwesome.Network
             return awaiter;
         }
 
+        public Awaiter Load(out Entity entity, Guid universeGuid, int entityId)
+        {
+            entity = null;
+            return null;
+        }
+
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
+            => Array.Empty<Entity>();
+
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
             var awaiter = awaiterPool.Get();
@@ -135,6 +144,8 @@ namespace OctoAwesome.Network
         {
             //throw new NotImplementedException();
         }
+
+        public void SaveEntity(Entity entity, Guid universe) { }
 
         public void SendChangedChunkColumn(IChunkColumn chunkColumn)
         {
@@ -190,6 +201,6 @@ namespace OctoAwesome.Network
         {
             subscription.Dispose();
             return Task.CompletedTask;
-        }
+        }                     
     }
 }
