@@ -35,8 +35,8 @@ namespace OctoAwesome.Runtime
         public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings Settings, IUpdateHub updateHub)
         {
             this.extensionResolver = extensionResolver;
-            databaseProvider = new DatabaseProvider(GetRoot());
             settings = Settings;
+            databaseProvider = new DatabaseProvider(GetRoot());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             chunkSubscription = updateHub.Subscribe(this, DefaultChannels.Chunk);
         }
@@ -61,7 +61,7 @@ namespace OctoAwesome.Runtime
                 return root.FullName;
             }
         }
-               
+
         /// <summary>
         /// Speichert das Universum.
         /// </summary>
@@ -277,7 +277,7 @@ namespace OctoAwesome.Runtime
             awaiter.SetResult(entity);
             return awaiter;
         }
-       
+
 
         /// <summary>
         /// Lädt einen Player.
@@ -315,8 +315,17 @@ namespace OctoAwesome.Runtime
             return null;
         }
 
-        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent 
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
             => new EntityDbContext(databaseProvider, universeGuid).GetEntitiesWithComponent<T>();
+
+        public IEnumerable<int> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
+            => new EntityDbContext(databaseProvider, universeGuid).GetEntityIdsFromComponent<T>().Select(i => i.Tag);
+
+        public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<int> entityIds) where T : EntityComponent, new()
+        {
+            foreach (var entityId in entityIds)
+                yield return (entityId, new EntityComponentsDbContext(databaseProvider, universeGuid).Get<T>(entityId));
+        }
 
         public void Dispose()
         {

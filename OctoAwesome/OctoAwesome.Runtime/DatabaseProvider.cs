@@ -34,6 +34,7 @@ namespace OctoAwesome.Runtime
             {
                 Database<T> tmpDatabase = CreateDatabase<T>(rootPath);
                 globalDatabaseRegister.Add(key, tmpDatabase);
+                tmpDatabase.Open();
                 return tmpDatabase;
             }
         }
@@ -49,6 +50,7 @@ namespace OctoAwesome.Runtime
             {
                 Database<T> tmpDatabase = CreateDatabase<T>(Path.Combine(rootPath, universeGuid.ToString()));
                 universeDatabaseRegister.Add(key, tmpDatabase);
+                tmpDatabase.Open();
                 return tmpDatabase;
             }
         }
@@ -64,6 +66,7 @@ namespace OctoAwesome.Runtime
             {
                 Database<T> tmpDatabase = CreateDatabase<T>(Path.Combine(rootPath, universeGuid.ToString(), planetId.ToString()));
                 planetDatabaseRegister.Add(key, tmpDatabase);
+                tmpDatabase.Open();
                 return tmpDatabase;
             }
         }

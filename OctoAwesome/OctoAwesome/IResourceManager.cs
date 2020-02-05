@@ -74,7 +74,7 @@ namespace OctoAwesome
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
         ConcurrentDictionary<int, IPlanet> Planets { get; }
-                
+
         IUpdateHub UpdateHub { get; }
 
         Player CurrentPlayer { get; }
@@ -84,5 +84,7 @@ namespace OctoAwesome
         IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
         Entity LoadEntity(int entityId);
         IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent;
+        IEnumerable<int> GetEntityIdsFromComponent<T>() where T : EntityComponent;
+        IEnumerable<(int Id, T Component)> GetEntityComponents<T>(IEnumerable<int> entityIds) where T : EntityComponent, new();
     }
 }

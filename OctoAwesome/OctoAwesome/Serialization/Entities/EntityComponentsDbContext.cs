@@ -25,12 +25,14 @@ namespace OctoAwesome.Serialization.Entities
             database.AddOrUpdate(tag, new Value(Serializer.Serialize(value)));
         }
 
-        public EntityComponent Get<T>(Entity entity) where T : EntityComponent, new()
+        public T Get<T>(int id) where T : EntityComponent, new()
         {
             var database = databaseProvider.GetDatabase<IdTag<T>>(universeGuid);
-            var tag = new IdTag<T>(entity.Id);
+            var tag = new IdTag<T>(id);
             return Serializer.Deserialize<T>(database.GetValue(tag).Content);
         }
+        public T Get<T>(Entity entity) where T : EntityComponent, new()
+            => Get<T>(entity.Id);
 
         public IEnumerable<IdTag<T>> GetAllKeys<T>() where T : EntityComponent
             => databaseProvider.GetDatabase<IdTag<T>>(universeGuid).Keys;

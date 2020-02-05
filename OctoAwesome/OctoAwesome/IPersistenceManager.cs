@@ -84,5 +84,7 @@ namespace OctoAwesome
         IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent;
         void SaveEntity(Entity entity, Guid universe);
         Awaiter Load(out Entity entity, Guid universeGuid, int entityId);
+        IEnumerable<int> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent;
+        IEnumerable<(int Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<int> entityIds) where T : EntityComponent, new();
     }
 }

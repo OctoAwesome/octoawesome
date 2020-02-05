@@ -334,5 +334,11 @@ namespace OctoAwesome.Runtime
 
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent
             => persistenceManager.LoadEntitiesWithComponent<T>(CurrentUniverse.Id);
+
+        public IEnumerable<int> GetEntityIdsFromComponent<T>() where T : EntityComponent
+            => persistenceManager.GetEntityIdsFromComponent<T>(CurrentUniverse.Id);
+
+        public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(IEnumerable<int> entityIds) where T : EntityComponent, new()
+            => persistenceManager.GetEntityComponents<T>(CurrentUniverse.Id, entityIds);
     }
 }

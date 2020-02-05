@@ -39,7 +39,7 @@ namespace OctoAwesome.Network
         {
             //throw new NotImplementedException();
         }
-        
+
         public Awaiter Load(out SerializableCollection<IUniverse> universes) => throw new NotImplementedException();
 
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
@@ -67,7 +67,7 @@ namespace OctoAwesome.Network
 
         public Awaiter Load(out IPlanet planet, Guid universeGuid, int planetId)
         {
-            var package = packagePool.Get(); 
+            var package = packagePool.Get();
             package.Command = (ushort)OfficialCommand.GetPlanet;
             planet = new ComplexPlanet();
             var awaiter = GetAwaiter(planet, package.UId);
@@ -111,6 +111,12 @@ namespace OctoAwesome.Network
 
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
             => Array.Empty<Entity>();
+
+        public IEnumerable<int> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
+            => Array.Empty<int>();
+
+        public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<int> entityIds) where T : EntityComponent, new()
+            => Array.Empty<(int, T)>();
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
@@ -201,6 +207,6 @@ namespace OctoAwesome.Network
         {
             subscription.Dispose();
             return Task.CompletedTask;
-        }                     
+        }
     }
 }

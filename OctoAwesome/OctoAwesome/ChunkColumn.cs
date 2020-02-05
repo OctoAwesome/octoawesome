@@ -301,13 +301,10 @@ namespace OctoAwesome
                     }
                 }
             }
-
-            //Entities schreiben
-            writer.Write(Entities.Count);
-            foreach (Entity entity in Entities)
+            var resManager = TypeContainer.Get<IResourceManager>();
+            foreach (var entity in Entities)
             {
-                writer.Write(entity.GetType().AssemblyQualifiedName);
-                entity.Serialize(writer);
+                resManager.SaveEntity(entity);
             }
         }
 
@@ -374,32 +371,6 @@ namespace OctoAwesome
                         if (definition.HasMetaData)
                             chunk.MetaData[i] = reader.ReadInt32();
                     }
-                }
-            }
-
-            //Entities lesen
-            var count = reader.ReadInt32();
-            for (var i = 0; i < count; i++)
-            {
-                var name = reader.ReadString();
-                var length = reader.ReadInt32();
-
-                var buffer = new byte[length];
-                reader.Read(buffer, 0, length);
-
-                try
-                {
-                    var type = Type.GetType(name);
-
-                    if (type == null)
-                        continue;
-
-                    var entity = (Entity)Activator.CreateInstance(type);
-                    entity.Deserialize(reader);
-                    Entities.Add(entity);
-                }
-                catch (Exception)
-                {
                 }
             }
         }
