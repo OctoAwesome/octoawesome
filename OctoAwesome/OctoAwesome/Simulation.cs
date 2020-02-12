@@ -196,7 +196,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
-            if (entity.Simulation != null)
+            if (entity.Simulation != null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
             if (entities.Contains(entity))

@@ -28,7 +28,7 @@ namespace OctoAwesome.Serialization.Entities
         {
             entityDefinitionContext.AddOrUpdate(new EntityDefinition(value));
 
-            foreach (var component in value.Components)
+            foreach (dynamic component in value.Components) //dynamic so tyepof<T> in get database returns correct type 
                 componentsDbContext.AddOrUpdate(component, value);
         }
 

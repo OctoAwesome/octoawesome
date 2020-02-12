@@ -125,7 +125,6 @@ namespace OctoAwesome.Runtime
         {
             persistenceManager.SaveUniverse(CurrentUniverse);
 
-
             foreach (var planet in Planets)
             {
                 persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);

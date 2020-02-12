@@ -87,12 +87,36 @@ namespace OctoAwesome.Runtime
             globalDatabaseRegister.Clear();
         }
 
-        private Database<T> CreateDatabase<T>(string path) where T : ITag, new()
+        private Database<T> CreateDatabase<T>(string path, string typeName = null) where T : ITag, new()
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+            
+            var type = typeof(T);
+            if (typeName == null)
+                typeName = type.Name;
 
-            var name = typeof(T).Name.Substring(0, typeof(T).Name.Length - 3);
+            string name;
+
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                typeName = typeName.Replace(c, '\0');
+            }
+
+            if (type.IsGenericType)
+            {
+                var firstType = type.GenericTypeArguments.FirstOrDefault();
+
+                if (firstType != default)
+                    name = $"{typeName}_{firstType.Name}";
+                else
+                    name = typeName;
+            }
+            else
+            {
+                name = typeName;
+            }
+
             string keyFile = Path.Combine(path, $"{name}.keys");
             string valueFile = Path.Combine(path, $"{name}.db");
             return new Database<T>(new FileInfo(keyFile), new FileInfo(valueFile));
