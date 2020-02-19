@@ -16,7 +16,7 @@ namespace OctoAwesome
     /// <summary>
     /// Globaler Cache für Chunks
     /// </summary>
-    public sealed class GlobalChunkCache : IGlobalChunkCache
+    public sealed class GlobalChunkCache : IGlobalChunkCache, IDisposable
     {
 
         public event EventHandler<IChunkColumn> ChunkColumnChanged;
@@ -43,8 +43,7 @@ namespace OctoAwesome
         private readonly ILogger logger;
         private readonly IEnumerable<(int Id, PositionComponent Component)> positionComponents;
         private IUpdateHub updateHub;
-
-
+      
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
         /// </summary>
@@ -337,6 +336,29 @@ namespace OctoAwesome
         public void InsertUpdateHub(IUpdateHub updateHub)
             => this.updateHub = updateHub;
 
+        public void Dispose()
+        {
+            foreach (var item in _unreferencedItems.ToArray())
+                item.Dispose();
+
+            foreach (var item in cache.ToArray())
+                item.Value.Dispose();
+
+            foreach (var item in newChunks.ToArray())
+                item.Dispose();
+
+            foreach (var item in oldChunks.ToArray())
+                item.Dispose();
+
+            cache.Clear();
+            newChunks.Clear();
+            oldChunks.Clear();
+
+            semaphore.Dispose();
+            updateSemaphore.Dispose();
+            _autoResetEvent.Dispose();
+        }
+
         /// <summary>
         /// Element für den Cache
         /// </summary>
@@ -375,12 +397,28 @@ namespace OctoAwesome
 
             public event Action<CacheItem, IChunkColumn> Changed;
 
+            private bool disposed;
+
             public CacheItem() => internalSemaphore = new SemaphoreExtended(1, 1);
 
             public SemaphoreExtended.SemaphoreLock Wait()
                 => internalSemaphore.Wait();
 
-            public void Dispose() => internalSemaphore.Dispose();
+            public void Dispose()
+            {
+                if (disposed)
+                    return;
+
+                disposed = true;
+
+                internalSemaphore.Dispose();
+
+                if (_chunkColumn is IDisposable disposable)
+                    disposable.Dispose();
+
+                _chunkColumn = null;
+                Planet = null;
+            }
 
             private void OnChanged(IChunkColumn chunkColumn, IChunk chunk)
                 => Changed?.Invoke(this, chunkColumn);

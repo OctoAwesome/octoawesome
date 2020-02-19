@@ -60,6 +60,8 @@ namespace OctoAwesome
         private IUpdateHub updateHub;
         private IDisposable chunkSubscription;
 
+        private bool disposed;
+
         /// <summary>
         /// Initialisierung des Planeten.
         /// </summary>
@@ -118,9 +120,18 @@ namespace OctoAwesome
 
         public void Dispose()
         {
+            if (disposed)
+                return;
+
+            disposed = true;
+
             chunkSubscription.Dispose();
 
+            if (GlobalChunkCache is IDisposable disposable)
+                disposable.Dispose();
+
             chunkSubscription = null;
+            GlobalChunkCache = null;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Common;
+using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
@@ -45,13 +46,12 @@ namespace OctoAwesome
         /// </summary>
         public List<Entity> Entities => entities.ToList();
 
-        private int nextId = 1;
-
         private readonly IExtensionResolver extensionResolver;
 
         private readonly HashSet<Entity> entities = new HashSet<Entity>();
         private readonly IDisposable simmulationSubscription;
         private readonly IPool<EntityNotification> entityNotificationPool;
+        private IdManager entityIdManager;
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Simulation.
@@ -119,8 +119,6 @@ namespace OctoAwesome
             return guid;
         }
 
-
-
         /// <summary>
         /// Lädt ein Spiel (= Universum).
         /// </summary>
@@ -136,6 +134,7 @@ namespace OctoAwesome
             if (State != SimulationState.Ready)
                 throw new Exception();
 
+            entityIdManager = new IdManager(ResourceManager.GetEntityIds());
             State = SimulationState.Running;
         }
 
@@ -173,7 +172,7 @@ namespace OctoAwesome
 
             State = SimulationState.Paused;
 
-            //TODO: unschön
+            //TODO: unschön, Dispose Entity's, Reset Extensions
             Entities.ForEach(entity => RemoveEntity(entity));
             //while (entites.Count > 0)
             //    RemoveEntity(Entities.First());
@@ -206,13 +205,10 @@ namespace OctoAwesome
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
 
-            if (entity.Id > nextId)
-                nextId = entity.Id;
-
-            if (entity.Id == 0)
-                entity.Id = nextId++;
-            else if (entity.Id == nextId) 
-                nextId++;
+            if (entity.Id == -1)
+                entity.Id = entityIdManager.GetId();
+            else
+                entityIdManager.ReserveId(entity.Id);
 
             entities.Add(entity);
 
@@ -241,16 +237,18 @@ namespace OctoAwesome
             }
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
-                throw new NotSupportedException("Adding Entities only allowed in running or paused state");
+                throw new NotSupportedException("Removing Entities only allowed in running or paused state");
+
+            ResourceManager.SaveEntity(entity);
 
             foreach (var component in Components)
                 component.Remove(entity);
 
             entities.Remove(entity);
-            entity.Id = 0;
+            entityIdManager.ReleaseId(entity.Id);
+            entity.Id = -1;
             entity.Simulation = null;
 
-            ResourceManager.SaveEntity(entity);
         }
         public void RemoveEntity(int entityId)
             => RemoveEntity(entities.First(e => e.Id == entityId));

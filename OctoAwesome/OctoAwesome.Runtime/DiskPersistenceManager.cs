@@ -320,6 +320,8 @@ namespace OctoAwesome.Runtime
 
         public IEnumerable<int> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
             => new EntityDbContext(databaseProvider, universeGuid).GetEntityIdsFromComponent<T>().Select(i => i.Tag);
+        public IEnumerable<int> GetEntityIds(Guid universeGuid)
+            => new EntityDbContext(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
         public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<int> entityIds) where T : EntityComponent, new()
         {

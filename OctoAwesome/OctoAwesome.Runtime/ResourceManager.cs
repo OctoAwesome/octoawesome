@@ -128,7 +128,9 @@ namespace OctoAwesome.Runtime
             foreach (var planet in Planets)
             {
                 persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
+                planet.Value.Dispose();
             }
+
             Planets.Clear();
 
             CurrentUniverse = null;
@@ -210,7 +212,7 @@ namespace OctoAwesome.Runtime
                 player = new Player();
             else
                 awaiter.WaitOnAndRelease();
-
+            
             return player;
         }
 
@@ -336,6 +338,8 @@ namespace OctoAwesome.Runtime
 
         public IEnumerable<int> GetEntityIdsFromComponent<T>() where T : EntityComponent
             => persistenceManager.GetEntityIdsFromComponent<T>(CurrentUniverse.Id);
+        public IEnumerable<int> GetEntityIds()
+            => persistenceManager.GetEntityIds(CurrentUniverse.Id);
 
         public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(IEnumerable<int> entityIds) where T : EntityComponent, new()
             => persistenceManager.GetEntityComponents<T>(CurrentUniverse.Id, entityIds);

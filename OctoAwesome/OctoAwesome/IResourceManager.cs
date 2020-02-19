@@ -85,6 +85,7 @@ namespace OctoAwesome
         Entity LoadEntity(int entityId);
         IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent;
         IEnumerable<int> GetEntityIdsFromComponent<T>() where T : EntityComponent;
+        IEnumerable<int> GetEntityIds();
         IEnumerable<(int Id, T Component)> GetEntityComponents<T>(IEnumerable<int> entityIds) where T : EntityComponent, new();
     }
 }

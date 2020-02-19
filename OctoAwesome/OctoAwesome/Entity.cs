@@ -35,6 +35,7 @@ namespace OctoAwesome
         {
             Components = new ComponentList<EntityComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
+            Id = -1;
         }
 
         private void OnRemoveComponent(EntityComponent component)
