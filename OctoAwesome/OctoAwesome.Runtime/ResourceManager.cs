@@ -307,7 +307,7 @@ namespace OctoAwesome.Runtime
             persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
         }
 
-        public Entity LoadEntity(int entityId)
+        public Entity LoadEntity(Guid entityId)
         {
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
@@ -336,12 +336,12 @@ namespace OctoAwesome.Runtime
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent
             => persistenceManager.LoadEntitiesWithComponent<T>(CurrentUniverse.Id);
 
-        public IEnumerable<int> GetEntityIdsFromComponent<T>() where T : EntityComponent
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : EntityComponent
             => persistenceManager.GetEntityIdsFromComponent<T>(CurrentUniverse.Id);
-        public IEnumerable<int> GetEntityIds()
+        public IEnumerable<Guid> GetEntityIds()
             => persistenceManager.GetEntityIds(CurrentUniverse.Id);
 
-        public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(IEnumerable<int> entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(IEnumerable<Guid> entityIds) where T : EntityComponent, new()
             => persistenceManager.GetEntityComponents<T>(CurrentUniverse.Id, entityIds);
     }
 }

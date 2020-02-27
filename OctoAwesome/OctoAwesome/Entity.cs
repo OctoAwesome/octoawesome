@@ -20,7 +20,7 @@ namespace OctoAwesome
         /// <summary>
         /// Id
         /// </summary>
-        public int Id { get; internal set; }
+        public Guid Id { get; internal set; }
 
         /// <summary>
         /// Reference to the active Simulation.
@@ -35,7 +35,7 @@ namespace OctoAwesome
         {
             Components = new ComponentList<EntityComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
-            Id = -1;
+            Id = Guid.Empty;
         }
 
         private void OnRemoveComponent(EntityComponent component)
@@ -89,7 +89,7 @@ namespace OctoAwesome
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         public virtual void Serialize(BinaryWriter writer)
         {
-            writer.Write(Id);
+            writer.Write(Id.ToByteArray());
 
             Components.Serialize(writer);
         }
@@ -100,7 +100,7 @@ namespace OctoAwesome
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
         public virtual void Deserialize(BinaryReader reader)
         {
-            Id = reader.ReadInt32();
+            Id = new Guid(reader.ReadBytes(16));
             Components.Deserialize(reader);
         }
 
@@ -110,7 +110,7 @@ namespace OctoAwesome
         }
 
         public override int GetHashCode()
-            => Id;
+            => Id.GetHashCode();
 
         public override bool Equals(object obj)
         {

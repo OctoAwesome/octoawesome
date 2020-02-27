@@ -268,10 +268,10 @@ namespace OctoAwesome.Runtime
             return awaiter;
         }
 
-        public Awaiter Load(out Entity entity, Guid universeGuid, int entityId)
+        public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
             var entityContext = new EntityDbContext(databaseProvider, universeGuid);
-            entity = entityContext.Get(new IdTag<Entity>(entityId));
+            entity = entityContext.Get(new GuidTag<Entity>(entityId));
 
             var awaiter = awaiterPool.Get();
             awaiter.SetResult(entity);
@@ -318,12 +318,12 @@ namespace OctoAwesome.Runtime
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
             => new EntityDbContext(databaseProvider, universeGuid).GetEntitiesWithComponent<T>();
 
-        public IEnumerable<int> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
             => new EntityDbContext(databaseProvider, universeGuid).GetEntityIdsFromComponent<T>().Select(i => i.Tag);
-        public IEnumerable<int> GetEntityIds(Guid universeGuid)
+        public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => new EntityDbContext(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
-        public IEnumerable<(int Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<int> entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<Guid> entityIds) where T : EntityComponent, new()
         {
             foreach (var entityId in entityIds)
                 yield return (entityId, new EntityComponentsDbContext(databaseProvider, universeGuid).Get<T>(entityId));

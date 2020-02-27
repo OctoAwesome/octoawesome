@@ -41,7 +41,7 @@ namespace OctoAwesome
         // TODO: Früher oder später nach draußen auslagern
         private readonly Task cleanupTask;
         private readonly ILogger logger;
-        private readonly IEnumerable<(int Id, PositionComponent Component)> positionComponents;
+        private readonly IEnumerable<(Guid Id, PositionComponent Component)> positionComponents;
         private IUpdateHub updateHub;
       
         /// <summary>

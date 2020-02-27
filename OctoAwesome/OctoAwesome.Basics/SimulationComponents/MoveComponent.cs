@@ -28,7 +28,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         protected override void UpdateEntity(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
         {
 
-            if (entity.Id == 0)
+            if (entity.Id == Guid.Empty)
                 return;
 
             //TODO:Sehr unschön

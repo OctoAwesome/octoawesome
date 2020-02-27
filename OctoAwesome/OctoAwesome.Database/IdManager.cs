@@ -61,6 +61,7 @@ namespace OctoAwesome.Database
             reservedIds.Remove(id);
         }
 
-        public void ReserveId(int id) => reservedIds.Add(id);
+        public void ReserveId(int id) 
+            => reservedIds.Add(id);
     }
 }

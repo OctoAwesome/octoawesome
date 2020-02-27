@@ -25,8 +25,7 @@ namespace OctoAwesome.Client.Screens
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
             {
-                ((ContainerResourceManager)manager.Game.ResourceManager)
-                .CreateManager(false);
+                ((ContainerResourceManager)manager.Game.ResourceManager).CreateManager(false);
                 manager.NavigateToScreen(new LoadScreen(manager));
             };
             stack.Controls.Add(startButton);

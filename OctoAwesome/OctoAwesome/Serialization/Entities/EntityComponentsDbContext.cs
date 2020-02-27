@@ -20,27 +20,27 @@ namespace OctoAwesome.Serialization.Entities
 
         public void AddOrUpdate<T>(T value, Entity entity) where T : EntityComponent
         {
-            var database = databaseProvider.GetDatabase<IdTag<T>>(universeGuid);
-            var tag = new IdTag<T>(entity.Id);
+            var database = databaseProvider.GetDatabase<GuidTag<T>>(universeGuid);
+            var tag = new GuidTag<T>(entity.Id);
             database.AddOrUpdate(tag, new Value(Serializer.Serialize(value)));
         }
 
-        public T Get<T>(int id) where T : EntityComponent, new()
+        public T Get<T>(Guid id) where T : EntityComponent, new()
         {
-            var database = databaseProvider.GetDatabase<IdTag<T>>(universeGuid);
-            var tag = new IdTag<T>(id);
+            var database = databaseProvider.GetDatabase<GuidTag<T>>(universeGuid);
+            var tag = new GuidTag<T>(id);
             return Serializer.Deserialize<T>(database.GetValue(tag).Content);
         }
         public T Get<T>(Entity entity) where T : EntityComponent, new()
             => Get<T>(entity.Id);
 
-        public IEnumerable<IdTag<T>> GetAllKeys<T>() where T : EntityComponent
-            => databaseProvider.GetDatabase<IdTag<T>>(universeGuid).Keys;
+        public IEnumerable<GuidTag<T>> GetAllKeys<T>() where T : EntityComponent
+            => databaseProvider.GetDatabase<GuidTag<T>>(universeGuid).Keys;
 
         public void Remove<T>(Entity entity) where T : EntityComponent
         {
-            var database = databaseProvider.GetDatabase<IdTag<T>>(universeGuid);
-            var tag = new IdTag<T>(entity.Id);
+            var database = databaseProvider.GetDatabase<GuidTag<T>>(universeGuid);
+            var tag = new GuidTag<T>(entity.Id);
             database.Remove(tag);
         }
 

@@ -12,7 +12,7 @@ namespace OctoAwesome.Notifications
     public sealed class EntityNotification : SerializableNotification
     {
         public ActionType Type { get; set; }
-        public int EntityId { get; set; }
+        public Guid EntityId { get; set; }
         public Entity Entity
         {
             get => entity; set
@@ -32,7 +32,7 @@ namespace OctoAwesome.Notifications
             propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
-        public EntityNotification(int id) : this()
+        public EntityNotification(Guid id) : this()
         {
             EntityId = id;
         }
@@ -45,7 +45,7 @@ namespace OctoAwesome.Notifications
             if (Type == ActionType.Add)
                 Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
             else
-                EntityId = reader.ReadInt32();
+                EntityId = new Guid(reader.ReadBytes(16));
 
             var isNotification = reader.ReadBoolean();
             if (isNotification)
@@ -65,7 +65,7 @@ namespace OctoAwesome.Notifications
             }
             else
             {
-                writer.Write(EntityId);
+                writer.Write(EntityId.ToByteArray());
             }
 
             var subNotification = Notification != null;
