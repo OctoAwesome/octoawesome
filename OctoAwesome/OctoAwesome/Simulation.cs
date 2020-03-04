@@ -122,10 +122,13 @@ namespace OctoAwesome
         /// Lädt ein Spiel (= Universum).
         /// </summary>
         /// <param name="guid">Die Guid des Universums.</param>
-        public void LoadGame(Guid guid)
+        public bool TryLoadGame(Guid guid)
         {
-            ResourceManager.LoadUniverse(guid);
+            if (!ResourceManager.TryLoadUniverse(guid))
+                return false;
+
             Start();
+            return true;
         }
 
         private void Start()

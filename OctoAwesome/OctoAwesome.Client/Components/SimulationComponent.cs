@@ -54,7 +54,7 @@ namespace OctoAwesome.Client.Components
             }
 
             Simulation = new Simulation(resourceManager, extensionResolver, Service);
-            Simulation.LoadGame(guid);
+            Simulation.TryLoadGame(guid);
         }
 
         public override void Update(GameTime gameTime)

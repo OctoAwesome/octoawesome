@@ -24,7 +24,7 @@ namespace OctoAwesome
         /// Lädt das Universum für die angegebene GUID.
         /// </summary>
         /// <param name="universeId">Die Guid des Universums.</param>
-        void LoadUniverse(Guid universeId);
+        bool TryLoadUniverse(Guid universeId);
 
         /// <summary>
         /// Das aktuell geladene Universum.

@@ -63,7 +63,7 @@ namespace OctoAwesome.Network
 
             ResourceManager = TypeContainer.Get<ResourceManager>();
             ResourceManager.InsertUpdateHub(updateHub);
-            
+
             Service = new GameService(ResourceManager);
             simulation = new Simulation(ResourceManager, extensionLoader, Service)
             {
@@ -81,6 +81,7 @@ namespace OctoAwesome.Network
             IsRunning = true;
             GameTime = new GameTime();
 
+            //TODO: Load and Save logic for Server (Multiple games etc.....)
             var universe = settings.Get<string>("LastUniverse");
 
             if (string.IsNullOrWhiteSpace(universe))
@@ -90,7 +91,11 @@ namespace OctoAwesome.Network
             }
             else
             {
-                simulation.LoadGame(new Guid(universe));
+                if (!simulation.TryLoadGame(new Guid(universe)))
+                {
+                    var guid = simulation.NewGame("melmack", new Random().Next().ToString());
+                    settings.Set("LastUniverse", guid.ToString());
+                }
             }
 
             backgroundThread.Start();
@@ -103,7 +108,7 @@ namespace OctoAwesome.Network
             backgroundThread.Abort();
         }
 
-        public IUniverse GetUniverse() 
+        public IUniverse GetUniverse()
             => ResourceManager.CurrentUniverse;
 
         public IUniverse NewUniverse()
@@ -117,10 +122,10 @@ namespace OctoAwesome.Network
             planet.UpdateHub = updateHub;
             return planet;
         }
-        
-        public IChunkColumn LoadColumn( IPlanet planet, Index2 index2)
+
+        public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
             => ResourceManager.LoadChunkColumn(planet, index2);
-        public IChunkColumn LoadColumn( int planetId, Index2 index2)
+        public IChunkColumn LoadColumn(int planetId, Index2 index2)
             => LoadColumn(GetPlanet(planetId), index2);
 
         private void SimulationLoop()

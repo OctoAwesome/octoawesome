@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OctoAwesome.Database
 {
-    public readonly struct Key<TTag> where TTag : ITag, new()
+    public readonly struct Key<TTag> : IEquatable<Key<TTag>> where TTag : ITag, new()
     {
         public const int BASE_KEY_SIZE = sizeof(long) + sizeof(int);
         public static int KEY_SIZE { get; }
@@ -35,12 +35,15 @@ namespace OctoAwesome.Database
         {
         }
 
-        internal byte[] GetBytes()
+        public byte[] GetBytes()
         {
             var byteArray = new byte[KEY_SIZE];
             Buffer.BlockCopy(BitConverter.GetBytes(Index), 0, byteArray, 0, sizeof(long));
             Buffer.BlockCopy(BitConverter.GetBytes(Length), 0, byteArray, sizeof(long), sizeof(int));
-            Buffer.BlockCopy(Tag.GetBytes(), 0, byteArray, BASE_KEY_SIZE, Tag.Length);
+
+            if (Tag != null)
+                Buffer.BlockCopy(Tag.GetBytes(), 0, byteArray, BASE_KEY_SIZE, Tag.Length);          
+
             return byteArray;
         }
 
@@ -53,5 +56,25 @@ namespace OctoAwesome.Database
 
             return new Key<TTag>(tag, localIndex, length, index);
         }
+
+        public override bool Equals(object obj) 
+            => obj is Key<TTag> key 
+            && Equals(key);
+        public bool Equals(Key<TTag> other) 
+            => EqualityComparer<TTag>.Default.Equals(Tag, other.Tag) 
+               && Length == other.Length;
+
+        public override int GetHashCode()
+        {
+            var hashCode = 139101280;
+            hashCode = hashCode * -1521134295 + EqualityComparer<TTag>.Default.GetHashCode(Tag);
+            hashCode = hashCode * -1521134295 + Length.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(Key<TTag> left, Key<TTag> right) 
+            => left.Equals(right);
+        public static bool operator !=(Key<TTag> left, Key<TTag> right) 
+            => !(left == right);
     }
 }

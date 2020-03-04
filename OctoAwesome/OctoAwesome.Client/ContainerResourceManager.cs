@@ -134,7 +134,7 @@ namespace OctoAwesome.Client
 
         public Player LoadPlayer(string playername) => resourceManager.LoadPlayer(playername);
 
-        public void LoadUniverse(Guid universeId) => resourceManager.LoadUniverse(universeId);
+        public bool TryLoadUniverse(Guid universeId) => resourceManager.TryLoadUniverse(universeId);
 
         public Guid NewUniverse(string name, int seed) => resourceManager.NewUniverse(name, seed);
 

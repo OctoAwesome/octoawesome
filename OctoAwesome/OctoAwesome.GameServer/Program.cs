@@ -28,7 +28,7 @@ namespace OctoAwesome.GameServer
                 AppDomain.CurrentDomain.UnhandledException += (s, e) =>
                 {
                     File.WriteAllText(
-                        Path.Combine(".", "logs", $"server-dump-{DateTime.Now.ToString("ddMMyy_hhmmss")}.txt"), 
+                        Path.Combine(".", "logs", $"server-dump-{DateTime.Now:ddMMyy_hhmmss}.txt"), 
                         e.ExceptionObject.ToString());
 
                     logger.Fatal($"Unhandled Exception: {e.ExceptionObject}", e.ExceptionObject as Exception);

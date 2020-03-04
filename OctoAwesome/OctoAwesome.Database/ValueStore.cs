@@ -8,13 +8,20 @@ namespace OctoAwesome.Database
 {
     internal class ValueStore : IDisposable
     {
+        public bool Updateable { get;  }
+
         private readonly Writer writer;
         private readonly Reader reader;
 
-        public ValueStore(Writer writer, Reader reader)
+        public ValueStore(Writer writer, Reader reader, bool updateable)
         {
-            this.writer = writer;
-            this.reader = reader;
+            this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
+            this.reader = reader ?? throw new ArgumentNullException(nameof(reader)); 
+            Updateable = updateable;
+        }
+        public ValueStore(Writer writer, Reader reader) : this(writer, reader, false)
+        {
+
         }
         
         public Value GetValue<TTag>(Key<TTag> key) where TTag : ITag, new()

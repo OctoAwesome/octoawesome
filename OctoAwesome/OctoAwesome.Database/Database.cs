@@ -21,15 +21,21 @@ namespace OctoAwesome.Database
 
     public sealed class Database<TTag> : Database where TTag : ITag, new()
     {
+        public bool ValueUpdateable { get; }
         public IEnumerable<TTag> Keys => keyStore.Tags;
 
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
 
-        public Database(FileInfo keyFile, FileInfo valueFile) : base(typeof(TTag))
+        public Database(FileInfo keyFile, FileInfo valueFile, bool valueUpdateable) : base(typeof(TTag))
         {
             keyStore = new KeyStore<TTag>(new Writer(keyFile), new Reader(keyFile));
-            valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile));
+            valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), valueUpdateable);
+            ValueUpdateable = valueUpdateable;
+        }
+        public Database(FileInfo keyFile, FileInfo valueFile) : this(keyFile, valueFile, false)
+        {
+
         }
 
         public override void Open()
