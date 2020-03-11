@@ -23,6 +23,8 @@ namespace OctoAwesome.Database
         public int Length { get; }
         public long Position { get; }
 
+        public bool IsEmpty => Tag == null && Length == 0;
+
         public Key(TTag tag, long index, int length, long position)
         {
             Tag = tag;

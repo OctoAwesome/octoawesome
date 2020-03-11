@@ -21,17 +21,17 @@ namespace OctoAwesome.Database
 
     public sealed class Database<TTag> : Database where TTag : ITag, new()
     {
-        public bool ValueUpdateable { get; }
+        public bool FixedValueLength { get; }
         public IEnumerable<TTag> Keys => keyStore.Tags;
 
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
 
-        public Database(FileInfo keyFile, FileInfo valueFile, bool valueUpdateable) : base(typeof(TTag))
+        public Database(FileInfo keyFile, FileInfo valueFile, bool fixedValueLength) : base(typeof(TTag))
         {
             keyStore = new KeyStore<TTag>(new Writer(keyFile), new Reader(keyFile));
-            valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), valueUpdateable);
-            ValueUpdateable = valueUpdateable;
+            valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), fixedValueLength);
+            FixedValueLength = fixedValueLength;
         }
         public Database(FileInfo keyFile, FileInfo valueFile) : this(keyFile, valueFile, false)
         {
@@ -57,7 +57,15 @@ namespace OctoAwesome.Database
             if (contains)
             {
                 var key = keyStore.GetKey(tag);
-                valueStore.Remove(key);
+
+                if (FixedValueLength)
+                {
+                    valueStore.Update(key, value);
+                }
+                else
+                {
+                    valueStore.Remove(key);
+                }
             }
 
             var newKey = valueStore.AddValue(tag, value);
@@ -68,9 +76,9 @@ namespace OctoAwesome.Database
                 keyStore.Add(newKey);
         }
 
-
         public bool ContainsKey(TTag tag)
             => keyStore.Contains(tag);
+
 
 
         public void Remove(TTag tag)

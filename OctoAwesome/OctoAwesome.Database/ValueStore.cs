@@ -8,16 +8,16 @@ namespace OctoAwesome.Database
 {
     internal class ValueStore : IDisposable
     {
-        public bool Updateable { get;  }
+        public bool FixedValueLength { get;  }
 
         private readonly Writer writer;
         private readonly Reader reader;
 
-        public ValueStore(Writer writer, Reader reader, bool updateable)
+        public ValueStore(Writer writer, Reader reader, bool fixedValueLength)
         {
             this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader)); 
-            Updateable = updateable;
+            FixedValueLength = fixedValueLength;
         }
         public ValueStore(Writer writer, Reader reader) : this(writer, reader, false)
         {
@@ -37,6 +37,21 @@ namespace OctoAwesome.Database
             writer.Write(key.GetBytes(), 0, Key<TTag>.KEY_SIZE);
             writer.WriteAndFlush(value.Content, 0, value.Content.Length);
             return key;
+        }
+
+        /// <summary>
+        /// Update a value on the exact <paramref name="key"/> index <see cref="Key{TTag}.Index"/> 
+        /// </summary>
+        /// <typeparam name="TTag"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <exception cref="NotSupportedException">If <see cref="FixedValueLength"/> is false</exception>
+        internal void Update<TTag>(Key<TTag> key, Value value) where TTag : ITag, new()
+        {
+            if (!FixedValueLength)
+                throw new NotSupportedException("Update is not allowed when value have no fixed size");
+
+            writer.WriteAndFlush(value.Content, 0, key.Length, key.Index + Key<TTag>.KEY_SIZE);
         }
 
         internal void Remove<TTag>(Key<TTag> key) where TTag : ITag, new()
