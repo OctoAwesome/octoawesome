@@ -24,6 +24,12 @@ namespace OctoAwesome.Database
            fileStream =  fileInfo.Open(FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
         }
 
+        public void Close()
+        {
+            fileStream.Dispose();
+            fileStream = null;
+        }
+
         public void Write(byte[] data, int offset, int length)
             => fileStream.Write(data, offset, length);
         public void Write(byte[] data, int offset, int length, long position)
@@ -48,7 +54,8 @@ namespace OctoAwesome.Database
 
         #region IDisposable Support
         private bool disposedValue = false;
-               
+
+        
 
         public void Dispose()
         {

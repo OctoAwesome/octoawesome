@@ -18,18 +18,33 @@ namespace OctoAwesome.Database
             Empty = new Key<TTag>();
         }
 
+        /// <summary>
+        /// The uniqe identification object for this key
+        /// </summary>
         public TTag Tag { get; }
+        /// <summary>
+        /// The current position of this Key and the referenced <see cref="Value"/> in the value file
+        /// </summary>
         public long Index { get; }
-        public int Length { get; }
+        /// <summary>
+        /// The length of the referenced <see cref="Value"/> in the value file
+        /// </summary>
+        public int ValueLength { get; }
+        /// <summary>
+        /// The current position of the key in the <see cref="KeyStore{TTag}"/> file
+        /// </summary>
         public long Position { get; }
 
-        public bool IsEmpty => Tag == null && Length == 0;
+        /// <summary>
+        /// Returns true if the Key is not valid. Comparing with default should have the same result
+        /// </summary>
+        public bool IsEmpty => Tag == null && ValueLength == 0;
 
         public Key(TTag tag, long index, int length, long position)
         {
             Tag = tag;
             Index = index;
-            Length = length;
+            ValueLength = length;
             Position = position;
         }
 
@@ -41,10 +56,10 @@ namespace OctoAwesome.Database
         {
             var byteArray = new byte[KEY_SIZE];
             Buffer.BlockCopy(BitConverter.GetBytes(Index), 0, byteArray, 0, sizeof(long));
-            Buffer.BlockCopy(BitConverter.GetBytes(Length), 0, byteArray, sizeof(long), sizeof(int));
+            Buffer.BlockCopy(BitConverter.GetBytes(ValueLength), 0, byteArray, sizeof(long), sizeof(int));
 
             if (Tag != null)
-                Buffer.BlockCopy(Tag.GetBytes(), 0, byteArray, BASE_KEY_SIZE, Tag.Length);          
+                Buffer.BlockCopy(Tag.GetBytes(), 0, byteArray, BASE_KEY_SIZE, Tag.Length);
 
             return byteArray;
         }
@@ -59,24 +74,30 @@ namespace OctoAwesome.Database
             return new Key<TTag>(tag, localIndex, length, index);
         }
 
-        public override bool Equals(object obj) 
-            => obj is Key<TTag> key 
+        public override bool Equals(object obj)
+            => obj is Key<TTag> key
             && Equals(key);
-        public bool Equals(Key<TTag> other) 
-            => EqualityComparer<TTag>.Default.Equals(Tag, other.Tag) 
-               && Length == other.Length;
+        public bool Equals(Key<TTag> other)
+            => EqualityComparer<TTag>.Default.Equals(Tag, other.Tag)
+               && ValueLength == other.ValueLength;
 
         public override int GetHashCode()
         {
             var hashCode = 139101280;
             hashCode = hashCode * -1521134295 + EqualityComparer<TTag>.Default.GetHashCode(Tag);
-            hashCode = hashCode * -1521134295 + Length.GetHashCode();
+            hashCode = hashCode * -1521134295 + ValueLength.GetHashCode();
             return hashCode;
         }
 
-        public static bool operator ==(Key<TTag> left, Key<TTag> right) 
+        public bool Validate()
+            => ValueLength >= 0
+               && Position >= 0
+               && Index >= 0
+               && KEY_SIZE > BASE_KEY_SIZE;
+
+        public static bool operator ==(Key<TTag> left, Key<TTag> right)
             => left.Equals(right);
-        public static bool operator !=(Key<TTag> left, Key<TTag> right) 
+        public static bool operator !=(Key<TTag> left, Key<TTag> right)
             => !(left == right);
     }
 }
