@@ -202,7 +202,6 @@ namespace OctoAwesome.Runtime
                 return awaiter;
             }
 
-
         }
 
         /// <summary>
@@ -357,7 +356,8 @@ namespace OctoAwesome.Runtime
             var databaseContext = new ChunkDiffDbContext(databaseProvider.GetDatabase<ChunkDiffTag>(universeGuid, planet.Id, true));
             var keys = databaseContext
                 .GetAllKeys()
-                .Where(t => t.ChunkPositon.X == column.Index.X && t.ChunkPositon.Y == column.Index.Y);
+                .Where(t => t.ChunkPositon.X == column.Index.X && t.ChunkPositon.Y == column.Index.Y)
+                .ToArray();
 
             foreach (var key in keys)
             {
@@ -366,6 +366,11 @@ namespace OctoAwesome.Runtime
                 column.Chunks[key.ChunkPositon.Z].MetaData[key.FlatIndex] = block.Meta;
             }
 
+            if (keys.Length > 1000)
+            {
+                SaveColumn(universeGuid, planet, column);
+                databaseContext.Remove(keys);
+            }
         }
     }
 }

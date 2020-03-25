@@ -17,6 +17,7 @@ namespace OctoAwesome.Database
         }
 
         public abstract void Open();
+        public abstract void Close();
         public abstract void Dispose();
     }
 
@@ -24,6 +25,16 @@ namespace OctoAwesome.Database
     {
         public bool FixedValueLength => valueStore.FixedValueLength;
         public IEnumerable<TTag> Keys => keyStore.Tags;
+
+        public bool IsOpen { get; private set; }
+
+        /// <summary>
+        /// This Threshold handels the auto defragmenation. 
+        /// If the Database have more Empty Values than this Threshold the <see cref="Defragmentation"/> is executed.
+        /// Use -1 to deactivate the deframentation for this Database.
+        /// Default Value is 1000.
+        /// </summary>
+        public int Threshold { get; set; }
 
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
@@ -36,6 +47,7 @@ namespace OctoAwesome.Database
             valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), fixedValueLength);
             defragmentation = new Defragmentation<TTag>(keyFile, valueFile);
             fileCheck = new ValueFileCheck<TTag>(valueFile);
+            Threshold = 1000;
         }
         public Database(FileInfo keyFile, FileInfo valueFile) : this(keyFile, valueFile, false)
         {
@@ -44,6 +56,7 @@ namespace OctoAwesome.Database
 
         public override void Open()
         {
+            IsOpen = true;
             try
             {
                 keyStore.Open();
@@ -54,20 +67,24 @@ namespace OctoAwesome.Database
                 defragmentation.RecreateKeyFile();
                 keyStore.Open();
             }
-
             valueStore.Open();
+
+            if (Threshold >= 0 && keyStore.EmptyKeys >= Threshold)
+                Defragmentation();            
+        }
+
+        public override void Close()
+        {
+            IsOpen = false;
+            keyStore.Close();
+            valueStore.Close();
         }
 
         public void Validate()
-        {
-            keyStore.Close();
-            valueStore.Close();
+            => ExecuteOperationOnKeyValueStore(fileCheck.Check);
 
-            fileCheck.Check();
-
-            keyStore.Open();
-            valueStore.Open();
-        }
+        public void Defragmentation()
+            => ExecuteOperationOnKeyValueStore(defragmentation.StartDefragmentation);
 
         public Value GetValue(TTag tag)
         {
@@ -103,18 +120,33 @@ namespace OctoAwesome.Database
         public bool ContainsKey(TTag tag)
             => keyStore.Contains(tag);
 
-
         public void Remove(TTag tag)
         {
             keyStore.Remove(tag, out var key);
             valueStore.Remove(key);
         }
 
-
         public override void Dispose()
         {
             keyStore.Dispose();
             valueStore.Dispose();
+        }
+
+        private void ExecuteOperationOnKeyValueStore(Action action)
+        {
+            if (IsOpen)
+            {
+                keyStore.Close();
+                valueStore.Close();
+            }
+
+            action();
+
+            if (IsOpen)
+            {
+                keyStore.Open();
+                valueStore.Open();
+            }
         }
     }
 }

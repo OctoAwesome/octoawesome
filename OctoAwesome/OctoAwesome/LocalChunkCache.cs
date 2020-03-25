@@ -15,6 +15,7 @@ namespace OctoAwesome
     public class LocalChunkCache : ILocalChunkCache
     {
         private readonly SemaphoreExtended semaphore;
+        private readonly SemaphoreExtended taskSemaphore;
 
         /// <summary>
         /// Aktueller Planet auf dem sich der Cache bezieht.
@@ -68,7 +69,9 @@ namespace OctoAwesome
             if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
+            
             semaphore = new SemaphoreExtended(1, 1);
+            taskSemaphore = new SemaphoreExtended(1, 1);
             Planet = globalCache.Planet;
             this.globalCache = globalCache;
             this.range = range;
@@ -88,7 +91,7 @@ namespace OctoAwesome
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
         public bool SetCenter(Index2 index, Action<bool> successCallback = null)
         {
-            using (semaphore.Wait())
+            using (taskSemaphore.Wait())
             {
                 var callerName = new StackFrame(1).GetMethod().Name;
                 logger.Debug($"Set Center from {callerName}");

@@ -274,13 +274,10 @@ namespace OctoAwesome
 
                 foreach (FailEntityChunkArgs entity in failChunkEntities)
                 {
-                    //TODO: Old Planet change
-                    //var currentchunk = Peek(entity.CurrentPlanet, entity.CurrentChunk);
-                    //var targetchunk = Peek(entity.TargetPlanet, entity.TargetChunk);
                     IChunkColumn currentchunk = Peek(entity.CurrentChunk);
                     IChunkColumn targetchunk = Peek(entity.TargetChunk);
 
-                    currentchunk.Entities.Remove(entity.Entity);
+                    currentchunk?.Entities.Remove(entity.Entity);
 
                     if (targetchunk != null)
                     {
