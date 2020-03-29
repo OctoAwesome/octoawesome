@@ -38,7 +38,7 @@ namespace OctoAwesome.Noise
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
-        float[,] GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY);
+        float[,] GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY, float donutSth = 2f);
 
         /// <summary>
         /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück

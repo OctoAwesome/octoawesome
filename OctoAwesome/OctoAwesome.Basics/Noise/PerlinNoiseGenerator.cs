@@ -484,7 +484,7 @@ namespace OctoAwesome.Noise
             throw new NotImplementedException();
         }
 
-        public float[,] GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY)
+        public float[,] GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY, float donutSth)
         {
             throw new NotImplementedException();
         }

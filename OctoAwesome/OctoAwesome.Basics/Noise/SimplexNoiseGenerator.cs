@@ -155,7 +155,7 @@ namespace OctoAwesome.Noise
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
-        public float[,] GetTileableNoiseMap2D(int startX, int startY, int sizeX, int sizeY, int tileSizeX, int tileSizeY)
+        public float[,] GetTileableNoiseMap2D(int startX, int startY, int sizeX, int sizeY, int tileSizeX, int tileSizeY, float donutSth = 2f)
         {
             float[,] noise = new float[sizeX, sizeY];
 
@@ -170,10 +170,10 @@ namespace OctoAwesome.Noise
                     float u = (float)(x + startX) / tileSizeX;
                     float v = (float)(y + startY) / tileSizeY;
 
-                    float nx = (float)(Math.Cos(u * 2 * Math.PI) * tileSizeX / (2 * Math.PI));
-                    float ny = (float)(Math.Cos(v * 2 * Math.PI) * tileSizeY / (2 * Math.PI));
-                    float nz = (float)(Math.Sin(u * 2 * Math.PI) * tileSizeX / (2 * Math.PI));
-                    float nw = (float)(Math.Sin(v * 2 * Math.PI) * tileSizeY / (2 * Math.PI));
+                    float nx = (float)(Math.Cos(u * donutSth * Math.PI) * tileSizeX / (2 * Math.PI));
+                    float ny = (float)(Math.Cos(v * donutSth * Math.PI) * tileSizeY / (2 * Math.PI));
+                    float nz = (float)(Math.Sin(u * donutSth * Math.PI) * tileSizeX / (2 * Math.PI));
+                    float nw = (float)(Math.Sin(v * donutSth * Math.PI) * tileSizeY / (2 * Math.PI));
 
                     for (int i = 0; i < Octaves; i++)
                     {

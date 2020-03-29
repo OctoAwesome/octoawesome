@@ -132,6 +132,13 @@ namespace OctoAwesome
 
             BlockChanged(flatIndex, block, meta);
         }
+        public void SetBlockWE(int x, int y, int z, ushort block, int meta = 0)
+       => SetBlockWE(GetFlatIndex(x, y, z), block, meta);
+        public void SetBlockWE(int flatIndex, ushort block, int meta = 0)
+        {
+            Blocks[flatIndex] = block;
+            MetaData[flatIndex] = meta;
+        }
 
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
