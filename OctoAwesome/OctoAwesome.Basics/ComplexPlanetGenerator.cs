@@ -60,6 +60,7 @@ namespace OctoAwesome.Basics
                     {
                         for (int z = Chunk.CHUNKSIZE_Z - 1; z >= 0; z--)
                         {
+                            int flatIndex = Chunk.GetFlatIndex(x, y, z);
                             int absoluteZ = (z + (i * Chunk.CHUNKSIZE_Z));
 
                             if (absoluteZ <= localHeightmap[x, y] * localPlanet.Size.Z * Chunk.CHUNKSIZE_Z)
@@ -70,58 +71,59 @@ namespace OctoAwesome.Basics
 
                                     if ((ozeanSurface || surfaceBlock) && (absoluteZ <= (localPlanet.BiomeGenerator.SeaLevel + 2)) && (absoluteZ >= (localPlanet.BiomeGenerator.SeaLevel - 2)))
                                     {
-                                        chunks[i].SetBlock(x, y, z, sandIndex);
+                                      
+                                        chunks[i].Blocks[flatIndex] = sandIndex;
                                     }
                                     else if (temp >= 35)
                                     {
-                                        chunks[i].SetBlock(x, y, z, sandIndex);
+                                        chunks[i].Blocks[flatIndex] = sandIndex;
                                     }
                                     else if (absoluteZ >= localPlanet.Size.Z * Chunk.CHUNKSIZE_Z * 0.6f)
                                     {
                                         if (temp > 12)
-                                            chunks[i].SetBlock(x, y, z, groundIndex);
+                                             chunks[i].Blocks[flatIndex] = groundIndex;
                                         else
-                                            chunks[i].SetBlock(x, y, z, stoneIndex);
+                                             chunks[i].Blocks[flatIndex] = stoneIndex;
                                     }
                                     else if (temp >= 8)
                                     {
                                         if (surfaceBlock && !ozeanSurface)
                                         {
-                                            chunks[i].SetBlock(x, y, z, grassIndex);
+                                             chunks[i].Blocks[flatIndex] = grassIndex;
                                             surfaceBlock = false;
                                         }
                                         else
                                         {
-                                            chunks[i].SetBlock(x, y, z, groundIndex);
+                                             chunks[i].Blocks[flatIndex] = groundIndex;
                                         }
                                     }
                                     else if (temp <= 0)
                                     {
                                         if (surfaceBlock && !ozeanSurface)
                                         {
-                                            chunks[i].SetBlock(x, y, z, snowIndex);
+                                             chunks[i].Blocks[flatIndex] = snowIndex;
                                             surfaceBlock = false;
                                         }
                                         else
                                         {
-                                            chunks[i].SetBlock(x, y, z, groundIndex);
+                                             chunks[i].Blocks[flatIndex] = groundIndex;
                                         }
                                     }
                                     else
                                     {
-                                        chunks[i].SetBlock(x, y, z, groundIndex);
+                                         chunks[i].Blocks[flatIndex] = groundIndex;
                                     }
                                     obersteSchicht--;
                                 }
                                 else
                                 {
-                                    chunks[i].SetBlock(x, y, z, stoneIndex);
+                                     chunks[i].Blocks[flatIndex] = stoneIndex;
                                 }
                             }
                             else if ((z + (i * Chunk.CHUNKSIZE_Z)) <= localPlanet.BiomeGenerator.SeaLevel)
                             {
 
-                                chunks[i].SetBlock(x, y, z, waterIndex);
+                                 chunks[i].Blocks[flatIndex] = waterIndex;
                                 ozeanSurface = true;
                             }
 

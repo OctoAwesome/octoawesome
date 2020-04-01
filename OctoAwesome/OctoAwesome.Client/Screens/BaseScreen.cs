@@ -56,5 +56,12 @@ namespace OctoAwesome.Client.Screens
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 10 });
         }
 
+        protected Button GetButton(string title)
+        {
+            Button button = Button.TextButton(Manager, title);
+            button.HorizontalAlignment = HorizontalAlignment.Stretch;
+            return button;
+        }
+
     }
 }

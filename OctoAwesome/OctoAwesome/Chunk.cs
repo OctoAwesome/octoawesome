@@ -198,21 +198,6 @@ namespace OctoAwesome
             }
         }
 
-        /// <summary>
-        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb
-        /// der Chunkgrösse liegen, wird dies gewrapt.
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate</param>
-        /// <param name="y">Y-Anteil der Koordinate</param>
-        /// <param name="z">Z-Anteil der Koordinate</param>
-        /// <returns>Index innerhalb des flachen Arrays</returns>
-        private int GetFlatIndex(int x, int y, int z)
-        {
-            return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
-                   | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
-                   | ((x & (CHUNKSIZE_X - 1)));
-        }
-
         private void BlockChanged(int index, ushort block, int meta)
         {
             var notification = TypeContainer.Get<IPool<ChunkNotification>>().Get();
@@ -228,5 +213,20 @@ namespace OctoAwesome
         }
 
         public event Action<IChunk> Changed;
+
+        /// <summary>
+        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb
+        /// der Chunkgrösse liegen, wird dies gewrapt.
+        /// </summary>
+        /// <param name="x">X-Anteil der Koordinate</param>
+        /// <param name="y">Y-Anteil der Koordinate</param>
+        /// <param name="z">Z-Anteil der Koordinate</param>
+        /// <returns>Index innerhalb des flachen Arrays</returns>
+        public static int GetFlatIndex(int x, int y, int z)
+        {
+            return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
+                   | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
+                   | ((x & (CHUNKSIZE_X - 1)));
+        }
     }
 }

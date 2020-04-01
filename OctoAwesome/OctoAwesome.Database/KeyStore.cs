@@ -36,7 +36,7 @@ namespace OctoAwesome.Database
             {
                 var key = Key<TTag>.FromBytes(buffer, i);
 
-                if (key.Validate())
+                if (!key.Validate())
                     throw new KeyInvalidException("Key is not valid", i);
 
                 if (key.IsEmpty)
