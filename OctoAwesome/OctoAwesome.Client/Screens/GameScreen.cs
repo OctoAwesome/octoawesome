@@ -9,17 +9,23 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class GameScreen : Screen
     {
+        public event EventHandler OnCenterChanged
+        {
+            add => scene.OnCenterChanged += value;
+            remove => scene.OnCenterChanged -= value;
+        }
+
         private const float mouseSpeed = 0.2f;
 
         private new ScreenComponent Manager { get; set; }
 
-        DebugControl debug;
-        SceneControl scene;
-        CompassControl compass;
-        ToolbarControl toolbar;
-        MinimapControl minimap;
-        CrosshairControl crosshair;
-        HealthBarControl healthbar;
+        private readonly DebugControl debug;
+        private readonly SceneControl scene;
+        private readonly CompassControl compass;
+        private readonly ToolbarControl toolbar;
+        private readonly MinimapControl minimap;
+        private readonly CrosshairControl crosshair;
+        private readonly HealthBarControl healthbar;
 
         public GameScreen(ScreenComponent manager) : base(manager)
         {
@@ -30,7 +36,7 @@ namespace OctoAwesome.Client.Screens
 
             scene = new SceneControl(manager);
             scene.HorizontalAlignment = HorizontalAlignment.Stretch;
-            scene.VerticalAlignment = VerticalAlignment.Stretch;
+            scene.VerticalAlignment = VerticalAlignment.Stretch;            
             Controls.Add(scene);
 
             debug = new DebugControl(manager);

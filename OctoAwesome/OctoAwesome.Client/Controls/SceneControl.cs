@@ -11,6 +11,7 @@ using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -61,6 +62,8 @@ namespace OctoAwesome.Client.Controls
         public RenderTarget2D ControlTexture { get; set; }
 
         private float sunPosition = 0f;
+
+        public event EventHandler OnCenterChanged;
 
         private readonly VertexPositionColor[] selectionVertices =
         {
@@ -547,6 +550,7 @@ namespace OctoAwesome.Client.Controls
                         if (b)
                         {
                             fillResetEvent.Set();
+                            OnCenterChanged?.Invoke(this, System.EventArgs.Empty);
                         }
                     });
 
