@@ -1,4 +1,4 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
 using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using engenious.Input;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using OctoAwesome.Client.Controls;
 using engenious;
 using OctoAwesome.EntityComponents;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {

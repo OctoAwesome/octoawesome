@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MonoGameUi;
+using engenious.UI;
 using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using System.Diagnostics;
 using OctoAwesome.Client.Crew;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -116,7 +117,7 @@ namespace OctoAwesome.Client.Screens
             {                
                 if (CheckHttpUrl(link.Url))
                 {
-                    Button linkButton = Button.TextButton(manager, link.Title);
+                    Button linkButton = new TextButton(manager, link.Title);
                     linkButton.LeftMouseClick += (s, e) => Process.Start(link.Url);
                     linkStack.Controls.Add(linkButton);
                 }

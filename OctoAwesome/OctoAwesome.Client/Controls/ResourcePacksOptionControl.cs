@@ -1,5 +1,6 @@
 ﻿using engenious;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Controls
@@ -40,29 +41,29 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            addButton = Button.TextButton(manager, Languages.OctoClient.Add);
+            addButton = new TextButton(manager, Languages.OctoClient.Add);
             addButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             addButton.Visible = false;
             buttons.Controls.Add(addButton);
 
-            removeButton = Button.TextButton(manager, Languages.OctoClient.Remove);
+            removeButton = new TextButton(manager, Languages.OctoClient.Remove);
             removeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             removeButton.Visible = false;
             buttons.Controls.Add(removeButton);
 
-            moveUpButton = Button.TextButton(manager, Languages.OctoClient.Up);
+            moveUpButton = new TextButton(manager, Languages.OctoClient.Up);
             moveUpButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             moveUpButton.Visible = false;
             buttons.Controls.Add(moveUpButton);
 
-            moveDownButton = Button.TextButton(manager, Languages.OctoClient.Down);
+            moveDownButton = new TextButton(manager, Languages.OctoClient.Down);
             moveDownButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             moveDownButton.Visible = false;
             buttons.Controls.Add(moveDownButton);
 
             #endregion
 
-            applyButton = Button.TextButton(manager, Languages.OctoClient.Apply);
+            applyButton = new TextButton(manager, Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);

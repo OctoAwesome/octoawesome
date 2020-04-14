@@ -1,5 +1,6 @@
 ﻿using engenious.Input;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Screens
@@ -19,7 +20,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (Manager.CanGoBack)
             {
-                BackButton = Button.TextButton(Manager, Languages.OctoClient.Back);
+                BackButton = new TextButton(Manager, Languages.OctoClient.Back);
                 BackButton.VerticalAlignment = VerticalAlignment.Top;
                 BackButton.HorizontalAlignment = HorizontalAlignment.Left;
                 BackButton.LeftMouseClick += (s, e) =>
@@ -58,7 +59,7 @@ namespace OctoAwesome.Client.Screens
 
         protected Button GetButton(string title)
         {
-            Button button = Button.TextButton(Manager, title);
+            Button button = new TextButton(Manager, title);
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
             return button;
         }
