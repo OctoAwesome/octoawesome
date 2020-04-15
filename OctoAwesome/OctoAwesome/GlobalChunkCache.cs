@@ -246,7 +246,7 @@ namespace OctoAwesome
                 {
                     CacheItem chunk = newChunks.Dequeue();
 
-                    foreach (Entity entity in chunk.ChunkColumn.Entities)
+                    foreach (Entity entity in chunk.ChunkColumn.Entities.ToArray())
                         simulation.AddEntity(entity);
                 }
 

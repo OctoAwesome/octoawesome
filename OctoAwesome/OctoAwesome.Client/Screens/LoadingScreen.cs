@@ -62,7 +62,7 @@ namespace OctoAwesome.Client.Screens
 
             var text = new Label(manager)
             {
-                Text = "Konfuzius sagt: Das hier lädt!",
+                Text = "Konfuzius sagt: Das hier lädt...",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Padding = Border.All(10),
@@ -82,16 +82,21 @@ namespace OctoAwesome.Client.Screens
 
             Button cancelButton = GetButton(Languages.OctoClient.Cancel);
             buttonStack.Controls.Add(cancelButton);
-            cancelButton.LeftMouseClick += (s, e) =>
-            {
-                manager.NavigateBack();
-            };
 
             Debug.WriteLine("Create GameScreen");
-
             gameScreen = new GameScreen(manager);
             gameScreen.Update(new GameTime());
             gameScreen.OnCenterChanged += SwitchToGame;
+
+            cancelButton.LeftMouseClick += (s, e) =>
+            {
+                manager.Player.SetEntity(null);
+                manager.Game.Simulation.ExitGame();
+                gameScreen.Unload();
+                manager.NavigateBack();
+            };
+
+
         }
 
         private void SwitchToGame(object sender, System.EventArgs args)

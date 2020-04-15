@@ -59,8 +59,10 @@ namespace OctoAwesome.Client.Screens
 
         protected Button GetButton(string title)
         {
-            Button button = new TextButton(Manager, title);
-            button.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Button button = new TextButton(Manager, title)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
             return button;
         }
 

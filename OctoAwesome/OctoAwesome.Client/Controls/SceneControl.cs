@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 namespace OctoAwesome.Client.Controls
 {
-    internal sealed class SceneControl : Control
+    internal sealed class SceneControl : Control, IDisposable
     {
         public static int VIEWRANGE = 4; // Anzahl Chunks als Potenz (Volle Sichtweite)
         public const int TEXTURESIZE = 64;
@@ -270,7 +270,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (player.CurrentEntity == null)
+            if (disposed || player.CurrentEntity == null)
                 return;
 
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
@@ -676,11 +676,53 @@ namespace OctoAwesome.Client.Controls
         #endregion
 
         private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
+        private bool disposed;
 
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {
             forcedRenders.Enqueue(chunkRenderer1);
             forceResetEvent.Set();
+        }
+
+        public void Dispose()
+        {
+            if (disposed)
+                return;
+
+            disposed = true;
+
+            backgroundThread.Abort();
+            backgroundThread2.Abort();
+
+            foreach (var thread in _additionalRegenerationThreads)
+                thread.Abort();
+
+            foreach (var cr in chunkRenderer)
+                cr.Dispose();
+
+            foreach (var cr in orderedChunkRenderer)
+                cr.Dispose();
+
+            chunkRenderer = null;
+            orderedChunkRenderer.Clear();
+
+            localChunkCache = null;
+
+            selectionIndexBuffer.Dispose();
+            selectionLines.Dispose();
+            billboardVertexbuffer.Dispose();
+
+            player = null;
+            camera = null;
+            assets = null;
+            entities = null;
+            planet = null;
+
+            sunEffect.Dispose();
+            selectionEffect.Dispose();
+
+            blockTextures.Dispose();
+            sunTexture.Dispose();
         }
     }
 }

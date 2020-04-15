@@ -106,6 +106,11 @@ namespace OctoAwesome.Client.Screens
             base.OnUpdate(gameTime);
         }
 
+        public void Unload()
+        {
+            scene.Dispose();
+        }
+
         #region Mouse Input
 
         protected override void OnLeftMouseDown(MouseEventArgs args)
@@ -294,6 +299,7 @@ namespace OctoAwesome.Client.Screens
         private bool pressedGamepadFlymode = false;
         private bool pressedGamepadSlotLeft = false;
         private bool pressedGamepadSlotRight = false;
+        private bool disposedValue;
 
         private void HandleGamePad()
         {
@@ -342,7 +348,7 @@ namespace OctoAwesome.Client.Screens
                 pressedGamepadInventory = gamePadState.Buttons.Back == ButtonState.Pressed;
             }
         }
-
+              
         #endregion
     }
 }
