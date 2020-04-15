@@ -1,4 +1,4 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using System;
@@ -7,6 +7,7 @@ using System.Linq;
 using engenious.Graphics;
 using engenious;
 using engenious.Input;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -95,7 +96,7 @@ namespace OctoAwesome.Client.Screens
             #endregion
 
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
-            exitButton = Button.TextButton(manager, Languages.OctoClient.RestartGameToApplyChanges);
+            exitButton = new TextButton(manager, Languages.OctoClient.RestartGameToApplyChanges);
             exitButton.VerticalAlignment = VerticalAlignment.Top;
             exitButton.HorizontalAlignment = HorizontalAlignment.Right;
             exitButton.Enabled = false;

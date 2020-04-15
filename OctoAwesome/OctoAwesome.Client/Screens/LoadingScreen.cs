@@ -1,12 +1,14 @@
 ﻿using engenious;
 using engenious.Input;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.Screens
@@ -94,8 +96,11 @@ namespace OctoAwesome.Client.Screens
 
         private void SwitchToGame(object sender, System.EventArgs args)
         {
-            Manager.NavigateToScreen(gameScreen);
-            gameScreen.OnCenterChanged -= SwitchToGame;
+            Manager.Invoke(() =>
+            {
+                Manager.NavigateToScreen(gameScreen);
+                gameScreen.OnCenterChanged -= SwitchToGame;
+            });
         }
     }
 }

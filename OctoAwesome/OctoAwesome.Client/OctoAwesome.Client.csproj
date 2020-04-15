@@ -110,10 +110,6 @@
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\MonoGameUi.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -204,7 +200,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="engenious">
-      <Version>0.3.0.32-alpha</Version>
+      <Version>0.3.0.33-alpha</Version>
+    </PackageReference>
+    <PackageReference Include="engenious.ContentTool">
+      <Version>0.3.0.28-alpha</Version>
+    </PackageReference>
+    <PackageReference Include="engenious.UI">
+      <Version>0.3.1.18-alpha</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
