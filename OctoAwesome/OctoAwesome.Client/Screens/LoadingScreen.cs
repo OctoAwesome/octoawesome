@@ -6,6 +6,7 @@ using OctoAwesome.Client.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -15,11 +16,22 @@ namespace OctoAwesome.Client.Screens
 {
     internal sealed class LoadingScreen : BaseScreen
     {
+        private static readonly QuoteProvider loadingQuoteProvider;
+        static LoadingScreen()
+        {
+            var settings = TypeContainer.Get<ISettings>();
+            loadingQuoteProvider = new QuoteProvider(new FileInfo(Path.Combine(settings.Get<string>("LoadingScreenQuotesPath"))));
+        }
+
         private readonly GameScreen gameScreen;
+        private readonly CancellationTokenSource tokenSource;
+        private readonly Task quoteUpdate;
 
         public LoadingScreen(ScreenComponent manager) : base(manager)
         {
             Padding = new Border(0, 0, 0, 0);
+            tokenSource = new CancellationTokenSource();
+
 
             Title = "Loading";
 
@@ -68,6 +80,7 @@ namespace OctoAwesome.Client.Screens
                 Padding = Border.All(10),
             };
 
+            quoteUpdate = Task.Run(async () => await UpdateLabel(text, loadingQuoteProvider, TimeSpan.FromSeconds(1), tokenSource.Token));
             mainGrid.AddControl(text, 1, 1);
 
 
@@ -106,6 +119,22 @@ namespace OctoAwesome.Client.Screens
                 Manager.NavigateToScreen(gameScreen);
                 gameScreen.OnCenterChanged -= SwitchToGame;
             });
+
+            tokenSource.Cancel();
+            tokenSource.Dispose();
+        }
+
+        private static async Task UpdateLabel(Label label, QuoteProvider quoteProvider, TimeSpan timeSpan, CancellationToken token)
+        {
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+                var text = quoteProvider.GetRandomQuote();
+
+                label.ScreenManager.Invoke(() => label.Text = text + "...");
+
+                await Task.Delay(timeSpan, token);
+            }
         }
     }
 }

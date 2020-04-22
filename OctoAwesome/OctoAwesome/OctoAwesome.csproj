@@ -169,10 +169,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="engenious">
-      <Version>0.3.0.33-alpha</Version>
+      <Version>0.3.0.36-alpha</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.6.8</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
