@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
+using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,14 +16,14 @@ namespace OctoAwesome
         public ISerializable Serializable { get; set; }
         public bool Timeouted { get; private set; }
         private readonly ManualResetEventSlim manualReset;
-        private readonly SemaphoreExtended semaphore;
+        private readonly LockSemaphore semaphore;
         private bool alreadyDeserialized;
         private IPool pool;
 
         public Awaiter()
         {
             manualReset = new ManualResetEventSlim(false);
-            semaphore = new SemaphoreExtended(1, 1);
+            semaphore = new LockSemaphore(1, 1);
         }
 
         public ISerializable WaitOn()

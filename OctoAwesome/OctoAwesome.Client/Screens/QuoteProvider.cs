@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Threading;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,13 +15,13 @@ namespace OctoAwesome.Client.Screens
         private bool loaded;
         private string[] quotes;
 
-        private readonly SemaphoreExtended semaphoreExtended;
+        private readonly LockSemaphore semaphoreExtended;
 
         public QuoteProvider(FileInfo fileInfo)
         {
             this.fileInfo = fileInfo;
             random = new Random();
-            semaphoreExtended = new SemaphoreExtended(1, 1);
+            semaphoreExtended = new LockSemaphore(1, 1);
         }
 
         public string GetRandomQuote()

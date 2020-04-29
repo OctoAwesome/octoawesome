@@ -103,6 +103,8 @@ namespace OctoAwesome.Client.Screens
 
             cancelButton.LeftMouseClick += (s, e) =>
             {
+                tokenSource.Cancel();
+                tokenSource.Dispose();
                 manager.Player.SetEntity(null);
                 manager.Game.Simulation.ExitGame();
                 gameScreen.Unload();
@@ -116,12 +118,11 @@ namespace OctoAwesome.Client.Screens
         {
             Manager.Invoke(() =>
             {
+                tokenSource.Cancel();
+                tokenSource.Dispose();
                 Manager.NavigateToScreen(gameScreen);
                 gameScreen.OnCenterChanged -= SwitchToGame;
-            });
-
-            tokenSource.Cancel();
-            tokenSource.Dispose();
+            });            
         }
 
         private static async Task UpdateLabel(Label label, QuoteProvider quoteProvider, TimeSpan timeSpan, CancellationToken token)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Threading;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,12 @@ namespace OctoAwesome.Pooling
     public sealed class Pool<T> : IPool<T> where T : IPoolElement, new()
     {
         private readonly Stack<T> internalStack;
-        private readonly SemaphoreExtended semaphoreExtended;
+        private readonly LockSemaphore semaphoreExtended;
 
         public Pool()
         {
             internalStack = new Stack<T>();
-            semaphoreExtended = new SemaphoreExtended(1, 1);
+            semaphoreExtended = new LockSemaphore(1, 1);
         }
 
         public T Get()

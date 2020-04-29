@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Logging;
+using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,8 +15,8 @@ namespace OctoAwesome
     /// </summary>
     public class LocalChunkCache : ILocalChunkCache
     {
-        private readonly SemaphoreExtended semaphore;
-        private readonly SemaphoreExtended taskSemaphore;
+        private readonly LockSemaphore semaphore;
+        private readonly LockSemaphore taskSemaphore;
 
         /// <summary>
         /// Aktueller Planet auf dem sich der Cache bezieht.
@@ -70,8 +71,8 @@ namespace OctoAwesome
                 throw new ArgumentException("Range too big");
 
             
-            semaphore = new SemaphoreExtended(1, 1);
-            taskSemaphore = new SemaphoreExtended(1, 1);
+            semaphore = new LockSemaphore(1, 1);
+            taskSemaphore = new LockSemaphore(1, 1);
             Planet = globalCache.Planet;
             this.globalCache = globalCache;
             this.range = range;

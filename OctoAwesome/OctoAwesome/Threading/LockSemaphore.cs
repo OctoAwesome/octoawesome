@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OctoAwesome
+namespace OctoAwesome.Threading
 {
-    public sealed class SemaphoreExtended : IDisposable
+    public sealed class LockSemaphore : IDisposable
     {
         private readonly SemaphoreSlim semaphoreSlim;
 
-        public SemaphoreExtended(int initialCount, int maxCount)
+        public LockSemaphore(int initialCount, int maxCount)
         {
             semaphoreSlim = new SemaphoreSlim(initialCount, maxCount);
         }
@@ -38,13 +38,13 @@ namespace OctoAwesome
             semaphoreSlim.Release();
         }
 
-        public struct SemaphoreLock : IDisposable
+        public readonly struct SemaphoreLock : IDisposable, IEquatable<SemaphoreLock>
         {
             public static SemaphoreLock Empty => new SemaphoreLock(null);
 
-            private readonly SemaphoreExtended internalSemaphore;
+            private readonly LockSemaphore internalSemaphore;
 
-            public SemaphoreLock(SemaphoreExtended semaphoreExtended)
+            public SemaphoreLock(LockSemaphore semaphoreExtended)
             {
                 internalSemaphore = semaphoreExtended;
             }
@@ -53,6 +53,19 @@ namespace OctoAwesome
             {
                 internalSemaphore?.Release();
             }
+
+            public override bool Equals(object obj) 
+                => obj is SemaphoreLock @lock 
+                   && Equals(@lock);
+            public bool Equals(SemaphoreLock other) 
+                => EqualityComparer<LockSemaphore>.Default.Equals(internalSemaphore, other.internalSemaphore);
+            public override int GetHashCode() 
+                => 37286538 + EqualityComparer<LockSemaphore>.Default.GetHashCode(internalSemaphore);
+
+            public static bool operator ==(SemaphoreLock left, SemaphoreLock right) 
+                => left.Equals(right);
+            public static bool operator !=(SemaphoreLock left, SemaphoreLock right)
+                => !(left == right);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
+using OctoAwesome.Threading;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -35,8 +36,8 @@ namespace OctoAwesome
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
         /// </summary>
-        private readonly SemaphoreExtended semaphore = new SemaphoreExtended(1, 1);
-        private readonly SemaphoreExtended updateSemaphore = new SemaphoreExtended(1, 1);
+        private readonly LockSemaphore semaphore = new LockSemaphore(1, 1);
+        private readonly LockSemaphore updateSemaphore = new LockSemaphore(1, 1);
 
         // TODO: Früher oder später nach draußen auslagern
         private readonly Task cleanupTask;
@@ -362,7 +363,7 @@ namespace OctoAwesome
         private class CacheItem : IDisposable
         {
             private IChunkColumn _chunkColumn;
-            private readonly SemaphoreExtended internalSemaphore;
+            private readonly LockSemaphore internalSemaphore;
 
             public IPlanet Planet { get; set; }
 
@@ -396,9 +397,9 @@ namespace OctoAwesome
 
             private bool disposed;
 
-            public CacheItem() => internalSemaphore = new SemaphoreExtended(1, 1);
+            public CacheItem() => internalSemaphore = new LockSemaphore(1, 1);
 
-            public SemaphoreExtended.SemaphoreLock Wait()
+            public LockSemaphore.SemaphoreLock Wait()
                 => internalSemaphore.Wait();
 
             public void Dispose()
