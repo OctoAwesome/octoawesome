@@ -1,6 +1,8 @@
-﻿using engenious.Input;
+﻿using engenious;
+using engenious.Input;
 using MonoGameUi;
 using OctoAwesome.Client.Components;
+using System;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -12,8 +14,8 @@ namespace OctoAwesome.Client.Screens
         {
             assets = manager.Game.Assets;
 
-            // IsOverlay = true;
-            // Background = new BorderBrush(new Color(Color.Black, 0.5f));
+            //IsOverlay = true;
+            //Background = new BorderBrush(new Color(Color.Black, 0.5f));
 
             Background = new TextureBrush(assets.LoadTexture(typeof(ScreenComponent), "background"), TextureBrushMode.Stretch);
 
@@ -69,6 +71,24 @@ namespace OctoAwesome.Client.Screens
             }
 
             base.OnKeyDown(args);
+        }
+
+        private bool pressedGamepadBack = false;
+
+        protected override void OnUpdate(GameTime gameTime)
+        {
+            if (!IsActiveScreen) return;
+
+            try
+            {
+                var gamePadState = GamePad.GetState(0);
+                if (gamePadState.Buttons.Back == ButtonState.Pressed && !pressedGamepadBack)
+                    Manager.NavigateBack();
+                pressedGamepadBack = gamePadState.Buttons.Back == ButtonState.Pressed;
+            }
+            catch (Exception) { }
+
+            base.OnUpdate(gameTime);
         }
     }
 }
