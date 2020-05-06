@@ -36,11 +36,6 @@ namespace OctoAwesome
         IChunk[] Chunks { get; }
 
         /// <summary>
-        /// Auflistung aller sich in dieser Column befindenden Entitäten.
-        /// </summary>
-        IEntityList Entities { get; }
-
-        /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
         /// </summary>
         /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
@@ -113,5 +108,9 @@ namespace OctoAwesome
         void SetBlockResources(int x, int y, int z, ushort[] resources);
         void OnUpdate(Notifications.SerializableNotification notification);
         void Update(Notifications.SerializableNotification notification);
+        void ForEachEntity(Action<Entity> action);
+        IEnumerable<FailEntityChunkArgs> FailChunkEntity();
+        void Remove(Entity entity);
+        void Add(Entity entity);
     }
 }

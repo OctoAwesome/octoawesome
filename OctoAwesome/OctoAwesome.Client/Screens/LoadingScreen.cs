@@ -26,17 +26,16 @@ namespace OctoAwesome.Client.Screens
         private readonly GameScreen gameScreen;
         private readonly CancellationTokenSource tokenSource;
         private readonly Task quoteUpdate;
-
+    
         public LoadingScreen(ScreenComponent manager) : base(manager)
         {
             Padding = new Border(0, 0, 0, 0);
             tokenSource = new CancellationTokenSource();
 
-
             Title = "Loading";
 
             SetDefaultBackground();
-
+            
             //Main Panel
             var mainStack = new Grid(manager);
             mainStack.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 4 });

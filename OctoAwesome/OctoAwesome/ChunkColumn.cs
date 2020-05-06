@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Notifications;
+using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,10 @@ namespace OctoAwesome
         /// <summary>
         /// Auflistung aller sich in dieser Column befindenden Entitäten.
         /// </summary>
-        public IEntityList Entities { get; private set; }
+        private readonly IEntityList entities;
+        private readonly LockSemaphore entitieSemaphore;
+
+
         public IDefinitionManager DefinitionManager { get; }
 
         public int ChangeCounter { get; set; }
@@ -31,7 +35,6 @@ namespace OctoAwesome
         {
             Chunks = chunks;
             Index = columnIndex;
-            Entities = new EntityList(this);
             foreach (IChunk chunk in chunks)
             {
                 chunk.Changed += OnChunkChanged;
@@ -45,7 +48,8 @@ namespace OctoAwesome
         public ChunkColumn(IPlanet planet)
         {
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
-            Entities = new EntityList(this);
+            entities = new EntityList(this);
+            entitieSemaphore = new LockSemaphore(1, 1);
             DefinitionManager = TypeContainer.Get<IDefinitionManager>();
             Planet = planet;
             globalChunkCache = planet.GlobalChunkCache;
@@ -302,9 +306,10 @@ namespace OctoAwesome
                 }
             }
             var resManager = TypeContainer.Get<IResourceManager>();
-            foreach (var entity in Entities)
+            using (var lockObj = entitieSemaphore.Wait())
             {
-                resManager.SaveEntity(entity);
+                foreach (var entity in entities)
+                    resManager.SaveEntity(entity);
             }
         }
 
@@ -334,7 +339,7 @@ namespace OctoAwesome
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     Heights[x, y] = reader.ReadUInt16();
 
-         
+
             // Phase 2 (Block Definitionen)
             var types = new List<IDefinition>();
             var map = new Dictionary<ushort, ushort>();
@@ -390,6 +395,35 @@ namespace OctoAwesome
                     .FirstOrDefault(c => c.Index == chunkNotification.ChunkPos)?
                     .Update(notification);
             }
+        }
+
+        public void ForEachEntity(Action<Entity> action)
+        {
+            using (entitieSemaphore.Wait())
+            {
+                foreach (var entity in entities)
+                {
+                    action(entity);
+                }
+            }
+        }
+
+        public void Add(Entity entity)
+        {
+            using (entitieSemaphore.Wait())
+                entities.Add(entity);
+        }
+
+        public void Remove(Entity entity)
+        {
+            using (entitieSemaphore.Wait())
+                entities.Remove(entity);
+        }
+
+        public IEnumerable<FailEntityChunkArgs> FailChunkEntity()
+        {
+            using (entitieSemaphore.Wait())
+                return entities.FailChunkEntity().ToList();
         }
     }
 }

@@ -12,3 +12,4 @@ Gebirge werden gemeißelt
 Welt wird gelocht
 Welt wird glasiert
 Texturen werden gesucht
+Arbeitsspeicher wird gefressen

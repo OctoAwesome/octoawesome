@@ -39,7 +39,7 @@ namespace OctoAwesome.Basics
 
             PositionComponent position = new PositionComponent() { Position = new Coordinate(0, new Index3(x+column00.Index.X*Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), new Vector3(0, 0, 0)) };
             wauzi.Components.AddComponent(position);
-            column00.Entities.Add(wauzi);
+            column00.Add(wauzi);
         }
 
     }
