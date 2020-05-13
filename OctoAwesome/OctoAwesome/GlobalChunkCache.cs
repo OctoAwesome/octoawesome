@@ -84,7 +84,7 @@ namespace OctoAwesome
             cleanupTask.Start(TaskScheduler.Default);
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
 
-            var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>();
+            var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>().ToList();
             positionComponents = resourceManager.GetEntityComponents<PositionComponent>(ids);
         }
 
@@ -132,7 +132,8 @@ namespace OctoAwesome
                     var chunkIndex = new Index3(position, Planet.Id);
                     var loadedEntities = positionComponents
                         .Where(x => x.Component.Planet == Planet && x.Component.Position.ChunkIndex.X == chunkIndex.X && x.Component.Position.ChunkIndex.Y == chunkIndex.Y)
-                        .Select(x=> resourceManager.LoadEntity(x.Id));
+                        .Select(x=> resourceManager.LoadEntity(x.Id))
+                        .ToArray();
 
                     foreach (var entity in loadedEntities)
                         cacheItem.ChunkColumn.Add(entity);

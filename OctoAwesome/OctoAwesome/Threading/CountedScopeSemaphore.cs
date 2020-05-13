@@ -7,41 +7,68 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Threading
 {
-    public class CountedScopeSemaphore
+    public class CountedScopeSemaphore : IDisposable
     {
-        private readonly SemaphoreSlim semaphoreSlim;
+        private readonly ManualResetEventSlim superLock;
+        private readonly ManualResetEventSlim mainLock;
 
-        private volatile int counter;
-
-        public CountedScopeSemaphore(int initialCount)
+        private readonly object lockObject;
+        private readonly object countLockObject;
+        private int counter;
+        public CountedScopeSemaphore()
         {
-            semaphoreSlim = new SemaphoreSlim(1, 1);
-            counter = initialCount;
+            mainLock = new ManualResetEventSlim(true);
+            superLock = new ManualResetEventSlim(true);
+            lockObject = new object();
+            countLockObject = new object();
         }
 
-        public void Wait()
+        public SuperScope Wait()
         {
-            if (counter > 0)
-                semaphoreSlim.Wait();
+            lock (lockObject)
+            {
+                mainLock.Wait();
+                superLock.Reset();
+            }
+            return new SuperScope(this);
         }
 
         public CountScope EnterScope()
         {
-            counter++;
+            lock (lockObject)
+            {
+                superLock.Wait();
+                lock (countLockObject)
+                {
+                    counter++;
+                    if (counter > 0)
+                        mainLock.Reset();
+                }
+            }
+
+
             return new CountScope(this);
         }
 
         public void Dispose()
         {
-            semaphoreSlim.Dispose();
+            superLock.Dispose();
+            mainLock.Dispose();
         }
 
-        private void LeaveScope()
+        private void LeaveMainScope()
         {
-            counter--;
+            lock (countLockObject)
+            {
+                counter--;
+                if (counter == 0)
+                    mainLock.Set();
+            }
+        }
 
-            if (counter == 0 && semaphoreSlim.CurrentCount < 1)
-                semaphoreSlim.Release();
+        private void LeaveSuperScope()
+        {
+            superLock.Set();
         }
 
         public readonly struct CountScope : IDisposable, IEquatable<CountScope>
@@ -57,7 +84,7 @@ namespace OctoAwesome.Threading
 
             public void Dispose()
             {
-                internalSemaphore?.LeaveScope();
+                internalSemaphore?.LeaveMainScope();
             }
 
             public override bool Equals(object obj)
@@ -73,6 +100,32 @@ namespace OctoAwesome.Threading
                 => left.Equals(right);
             public static bool operator !=(CountScope left, CountScope right)
                 => !(left == right);
+        }
+
+        public readonly struct SuperScope : IDisposable, IEquatable<SuperScope>
+        {
+            public static SuperScope Empty => new SuperScope(null);
+
+            private readonly CountedScopeSemaphore internalSemaphore;
+
+            public SuperScope(CountedScopeSemaphore semaphore)
+            {
+                internalSemaphore = semaphore;
+            }
+
+            public void Dispose()
+            {
+                internalSemaphore?.LeaveSuperScope();
+            }
+
+            public override bool Equals(object obj) => obj is SuperScope scope && Equals(scope);
+            public bool Equals(SuperScope other)
+                => EqualityComparer<CountedScopeSemaphore>.Default.Equals(internalSemaphore, other.internalSemaphore);
+            public override int GetHashCode()
+                => 37296538 + EqualityComparer<CountedScopeSemaphore>.Default.GetHashCode(internalSemaphore);
+
+            public static bool operator ==(SuperScope left, SuperScope right) => left.Equals(right);
+            public static bool operator !=(SuperScope left, SuperScope right) => !(left == right);
         }
     }
 }
