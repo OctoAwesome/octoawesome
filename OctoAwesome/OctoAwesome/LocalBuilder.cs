@@ -87,9 +87,12 @@
             y += originY;
             z += originZ;
             IChunkColumn column = GetColumn(column00, column10, column01, column11, x, y);
+            var index = z / Chunk.CHUNKSIZE_Z;
             x %= Chunk.CHUNKSIZE_X;
             y %= Chunk.CHUNKSIZE_Y;
-            column.SetBlock(x, y, z, block, meta);
+            z %= Chunk.CHUNKSIZE_Z;
+            int flatIndex = Chunk.GetFlatIndex(x, y, z);
+            column.Chunks[index].Blocks[flatIndex]=block;
         }
 
         /// <summary>

@@ -58,26 +58,30 @@ namespace OctoAwesome.Database
             {
                 do
                 {
-                    currentValueStoreStream.Read(keyBuffer, 0, keyBuffer.Length);
+                    if (currentValueStoreStream.Read(keyBuffer, 0, keyBuffer.Length) == 0)
+                        break;
                     var key = Key<TTag>.FromBytes(keyBuffer, 0);
 
                     if (key.IsEmpty)
                     {
                         var intBuffer = new byte[sizeof(int)];
-                        currentValueStoreStream.Read(intBuffer, 0, sizeof(int));
+                        if (currentValueStoreStream.Read(intBuffer, 0, sizeof(int)) == 0)
+                            break;
                         var length = BitConverter.ToInt32(intBuffer, 0) - sizeof(int);
-
+                        if (length < 0)
+                            throw new DataMisalignedException();
                         currentValueStoreStream.Seek(length, SeekOrigin.Current);
                     }
                     else
                     {
                         var buffer = new byte[key.ValueLength];
-                        currentValueStoreStream.Read(buffer, 0, buffer.Length);
+                        if (currentValueStoreStream.Read(buffer, 0, buffer.Length) == 0)
+                            break;
                         newValueStoreStream.Write(keyBuffer, 0, keyBuffer.Length);
                         newValueStoreStream.Write(buffer, 0, buffer.Length);
                         yield return key;
                     }
-                } while (currentValueStoreStream.Position != currentValueStoreStream.Length);
+                } while (currentValueStoreStream.Position < currentValueStoreStream.Length);
             }
         }
 
@@ -87,24 +91,27 @@ namespace OctoAwesome.Database
             {
                 do
                 {
-                    fileStream.Read(keyBuffer, 0, keyBuffer.Length);
+                    if (fileStream.Read(keyBuffer, 0, keyBuffer.Length) == 0)
+                        break;
                     var key = Key<TTag>.FromBytes(keyBuffer, 0);
                     long length = 0;
 
                     if (key.IsEmpty)
                     {
                         var intBuffer = new byte[sizeof(int)];
-                        fileStream.Read(intBuffer, 0, sizeof(int));
+                        if (fileStream.Read(intBuffer, 0, sizeof(int)) == 0)
+                            break;
                         length = BitConverter.ToInt32(intBuffer, 0) - sizeof(int);
                     }
                     else
                     {
                         length = key.ValueLength;
                     }
-
+                    if (length < 0)
+                        throw new DataMisalignedException();
                     fileStream.Seek(length, SeekOrigin.Current);
                     yield return key;
-                } while (fileStream.Position != fileStream.Length);
+                } while (fileStream.Position < fileStream.Length);
             }
         }
     }

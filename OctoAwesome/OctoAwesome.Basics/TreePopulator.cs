@@ -31,7 +31,7 @@ namespace OctoAwesome.Basics
         }
 
         public override void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
-         {
+        {
             // Tree Definitions initialisieren
             if (treeDefinitions == null)
             {
@@ -44,10 +44,11 @@ namespace OctoAwesome.Basics
             Random random = new Random(planet.Seed + salt);
 
             Index3 sample = new Index3(column00.Index.X * Chunk.CHUNKSIZE_X, column00.Index.Y * Chunk.CHUNKSIZE_Y, column00.Heights[0, 0]);
+            //bool wasChanged = false;
             foreach (var treeDefinition in treeDefinitions)
             {
                 int density = treeDefinition.GetDensity(planet, sample);
-                if (density <= 0) continue;               
+                if (density <= 0) continue;
 
                 for (int i = 0; i < density; i++)
                 {
@@ -63,8 +64,17 @@ namespace OctoAwesome.Basics
 
                     LocalBuilder builder = new LocalBuilder(x, y, z + 1, column00, column10, column01, column11);
                     treeDefinition.PlantTree(planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
+                    //wasChanged = true;
                 }
             }
+            //TODO: Unschön
+            //if (wasChanged)
+            //{
+            //    resourceManager.SaveChunkColumn(column00);
+            //    resourceManager.SaveChunkColumn(column10);
+            //    resourceManager.SaveChunkColumn(column01);
+            //    resourceManager.SaveChunkColumn(column11);
+            //}
         }
     }
 }

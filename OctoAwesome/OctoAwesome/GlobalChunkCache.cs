@@ -325,7 +325,7 @@ namespace OctoAwesome
                         new Index3(chunkNotification.ChunkPos.X, chunkNotification.ChunkPos.Y, chunkNotification.Planet),
                         out CacheItem cacheItem))
             {
-                cacheItem.ChunkColumn.Update(notification);
+                cacheItem.ChunkColumn?.Update(notification);
             }
         }
 

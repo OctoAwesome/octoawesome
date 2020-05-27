@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace OctoAwesome.Database
@@ -40,6 +41,8 @@ namespace OctoAwesome.Database
         private readonly ValueStore valueStore;
         private readonly Defragmentation<TTag> defragmentation;
         private readonly ValueFileCheck<TTag> fileCheck;
+        private readonly FileInfo keyFile;
+        private readonly FileInfo valueFile;
 
         public Database(FileInfo keyFile, FileInfo valueFile, bool fixedValueLength) : base(typeof(TTag))
         {
@@ -47,6 +50,8 @@ namespace OctoAwesome.Database
             valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), fixedValueLength);
             defragmentation = new Defragmentation<TTag>(keyFile, valueFile);
             fileCheck = new ValueFileCheck<TTag>(valueFile);
+            this.keyFile = keyFile;
+            this.valueFile = valueFile;
             Threshold = 1000;
         }
         public Database(FileInfo keyFile, FileInfo valueFile) : this(keyFile, valueFile, false)
@@ -57,16 +62,22 @@ namespace OctoAwesome.Database
         public override void Open()
         {
             IsOpen = true;
+
+            if ((valueFile.Exists && valueFile.Length > 0) && (!keyFile.Exists || keyFile.Length == 0))
+                defragmentation.RecreateKeyFile();
+
             try
             {
                 keyStore.Open();
             }
-            catch (KeyInvalidException)
+            catch (Exception ex) 
+                when(ex is KeyInvalidException || ex is ArgumentException)
             {
                 keyStore.Close();
                 defragmentation.RecreateKeyFile();
                 keyStore.Open();
             }
+
             valueStore.Open();
 
             if (Threshold >= 0 && keyStore.EmptyKeys >= Threshold)
