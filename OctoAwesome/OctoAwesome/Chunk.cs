@@ -133,6 +133,19 @@ namespace OctoAwesome
             BlockChanged(flatIndex, block, meta);
         }
 
+        public void SetBlocks(params BlockInfo[] blockInfos)
+        {
+            for (int i = 0; i < blockInfos.Length; i++)
+            {
+                var flatIndex = GetFlatIndex(blockInfos[i].Position);
+                Blocks[flatIndex] = blockInfos[i].Block;
+                MetaData[flatIndex] = blockInfos[i].Meta;
+            }
+            Changed?.Invoke(this);
+
+            BlocksChanged(blockInfos);
+        }
+
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
         /// </summary>
@@ -190,20 +203,41 @@ namespace OctoAwesome
 
         public void Update(SerializableNotification notification)
         {
-            if (notification is ChunkNotification chunkNotification)
+            if (notification is BlockChangedNotification blockChanged)
             {
-                Blocks[chunkNotification.FlatIndex] = chunkNotification.Block;
-                MetaData[chunkNotification.FlatIndex] = chunkNotification.Meta;
+                Blocks[blockChanged.FlatIndex] = blockChanged.Block;
+                MetaData[blockChanged.FlatIndex] = blockChanged.Meta;
+                Changed?.Invoke(this);
+            } else if(notification is BlocksChangedNotification blocksChanged)
+            {
+                foreach (var block in blocksChanged.BlockInfos)
+                {
+                    var flatIndex = GetFlatIndex(block.Position);
+                    Blocks[flatIndex] = block.Block;
+                    MetaData[flatIndex] = block.Meta;
+                }
+
                 Changed?.Invoke(this);
             }
         }
 
         private void BlockChanged(int index, ushort block, int meta)
         {
-            var notification = TypeContainer.Get<IPool<ChunkNotification>>().Get();
+            var notification = TypeContainer.Get<IPool<BlockChangedNotification>>().Get();
             notification.FlatIndex = index;
             notification.Block = block;
             notification.Meta = meta;
+            notification.ChunkPos = Index;
+            notification.Planet = Planet.Id;
+
+            OnUpdate(notification);
+
+            notification.Release();
+        }
+        private void BlocksChanged(params BlockInfo[] blockInfos)
+        {
+            var notification = TypeContainer.Get<IPool<BlocksChangedNotification>>().Get();
+            notification.BlockInfos = blockInfos;
             notification.ChunkPos = Index;
             notification.Planet = Planet.Id;
 
@@ -227,6 +261,18 @@ namespace OctoAwesome
             return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
                    | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
                    | ((x & (CHUNKSIZE_X - 1)));
+        }
+        /// <summary>
+        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb
+        /// der Chunkgrösse liegen, wird dies gewrapt.
+        /// </summary>
+        /// <param name="position">Die aktuelle Blockposition</param>
+        /// <returns>Index innerhalb des flachen Arrays</returns>
+        public static int GetFlatIndex(Index3 position)
+        {
+            return ((position.Z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
+                   | ((position.Y & (CHUNKSIZE_Y - 1)) << LimitX)
+                   | ((position.X & (CHUNKSIZE_X - 1)));
         }
     }
 }

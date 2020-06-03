@@ -341,11 +341,11 @@ namespace OctoAwesome.Runtime
 
         public void OnNext(Notification notification)
         {
-            if (notification is ChunkNotification chunkNotification)
+            if (notification is BlockChangedNotification chunkNotification)
                 SaveChunk(chunkNotification);
         }
 
-        private void SaveChunk(ChunkNotification chunkNotification)
+        private void SaveChunk(BlockChangedNotification chunkNotification)
         {
             var databaseContext = new ChunkDiffDbContext(databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true));
             databaseContext.AddOrUpdate(chunkNotification);

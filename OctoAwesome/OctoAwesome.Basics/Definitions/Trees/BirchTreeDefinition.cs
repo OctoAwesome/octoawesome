@@ -59,10 +59,12 @@ namespace OctoAwesome.Basics.Definitions.Trees
 
             builder.FillSphere(0, 0, height, radius, leave);
 
+            var infos = new BlockInfo[height + 2];
             for (int i = 0; i < height + 2; i++)
             {
-                builder.SetBlock(0, 0, 0 + i, wood);
+                infos[i] = (0, 0, i, wood);
             }
+            builder.SetBlocks(infos);
         }
     }
 }

@@ -201,6 +201,14 @@ namespace OctoAwesome
             Chunks[index].SetBlock(x, y, z, block, meta);
         }
 
+        public void SetBlocks(params BlockInfo[] blockInfos)
+        {
+            foreach (var item in blockInfos.GroupBy(x => x.Position.Z / Chunk.CHUNKSIZE_Z))
+            {
+                Chunks[item.Key].SetBlocks(item.ToArray());
+            }            
+        }
+
         /// <summary>
         /// Überschreibt den Block an der angegebenen Koordinate.
         /// </summary>
@@ -389,7 +397,7 @@ namespace OctoAwesome
 
         public void Update(SerializableNotification notification)
         {
-            if (notification is ChunkNotification chunkNotification)
+            if (notification is BlockChangedNotification chunkNotification)
             {
                 Chunks
                     .FirstOrDefault(c => c.Index == chunkNotification.ChunkPos)?
