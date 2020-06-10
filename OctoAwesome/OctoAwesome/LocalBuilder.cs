@@ -104,58 +104,26 @@ namespace OctoAwesome
         /// 
         /// </summary>
         /// <param name="blockInfos"></param>
-
         public void SetBlocks(params BlockInfo[] blockInfos)
-        {
-            var list = new Dictionary<IChunkColumn, Dictionary<int, List<BlockInfo>>>();
-            foreach (var block in blockInfos)
-            {
-
-                var x = block.Position.X + originX;
-                var y = block.Position.Y + originY;
-                var z = block.Position.Z + originZ;
-                IChunkColumn column = GetColumn(column00, column10, column01, column11, x, y);
-                var index = z / Chunk.CHUNKSIZE_Z;
-                x %= Chunk.CHUNKSIZE_X;
-                y %= Chunk.CHUNKSIZE_Y;
-                z %= Chunk.CHUNKSIZE_Z;
-                if (list.TryGetValue(column, out var columninfos))
-                {
-                    if (columninfos.TryGetValue(index, out var infos))
-                        infos.Add((x, y, z, block.Block, block.Meta));
-                    else
-                        columninfos.Add(index, new List<BlockInfo> { (x, y, z, block.Block, block.Meta) });
-                }
-                else
-                    list.Add(column, new Dictionary<int, List<BlockInfo>> { { index, new List<BlockInfo> { (x, y, z, block.Block, block.Meta) } } });
-            }
-            foreach (var item in list)
-            {
-                foreach (var item2 in item.Value)
-                {
-                    item.Key.Chunks[item2.Key].SetBlocks(item2.Value.ToArray());
-                }
-            }
-
-
-            //foreach (var blockInfo in blockInfos.GroupBy(x => new Index2(x.Position.X + originX, x.Position.Y + originY)))
-            //{
-            //    IChunkColumn column = GetColumn(column00, column10, column01, column11, blockInfo.Key.X, blockInfo.Key.Y);
-            //    foreach (var item in blockInfo
-            //                            .GroupBy(x =>
-            //                                        (x.Position.Z + originZ) / Chunk.CHUNKSIZE_Z)
-            //                            .Select(x => (x.Key, x.Select(y =>
-            //                                                      new BlockInfo(
-            //                                                          y.Position.X % Chunk.CHUNKSIZE_X,
-            //                                                          y.Position.Y % Chunk.CHUNKSIZE_Y,
-            //                                                          (y.Position.Z + originZ) % Chunk.CHUNKSIZE_Z,
-            //                                                          y.Block,
-            //                                                          y.Meta)))))
-            //    {
-            //        column.Chunks[item.Key].SetBlocks(item.Item2.ToArray());
-            //    }
-            //}
-        }
+            => blockInfos
+                    .Select(b =>
+                    {
+                        var x = b.Position.X + originX;
+                        var y = b.Position.Y + originY;
+                        var z = b.Position.Z + originZ;
+                        IChunkColumn column = GetColumn(column00, column10, column01, column11, x, y);
+                        var index = z / Chunk.CHUNKSIZE_Z;
+                        x %= Chunk.CHUNKSIZE_X;
+                        y %= Chunk.CHUNKSIZE_Y;
+                        z %= Chunk.CHUNKSIZE_Z;
+                        var info = new BlockInfo(x, y, z, b.Block, b.Meta);
+                        return new { info, index, column };
+                    })
+                    .GroupBy(a => a.column)
+                    .ForEach(column => column
+                        .GroupBy(i => i.index)
+                        .ForEach(i => column.Key.Chunks[i.Key].SetBlocks(i.Select(b => b.info).ToArray())));
+        
 
         /// <summary>
         /// 

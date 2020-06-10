@@ -5,9 +5,7 @@ namespace OctoAwesome.Notifications
 {
     public sealed class BlockChangedNotification : SerializableNotification
     {
-        public int Meta { get; internal set; }
-        public ushort Block { get; internal set; }
-        public int FlatIndex { get; internal set; }
+        public BlockInfo BlockInfo { get; set; }
         public Index3 ChunkPos { get; internal set; }
         public int Planet { get; internal set; }
 
@@ -16,10 +14,15 @@ namespace OctoAwesome.Notifications
             if (reader.ReadByte() != (byte)BlockNotificationType.BlockChanged)//Read type of the notification
             {
                 throw new InvalidCastException("this is the wrong type of notification");
-            } 
-            Meta = reader.ReadInt32();
-            Block = reader.ReadUInt16();
-            FlatIndex = reader.ReadInt32();
+            }
+
+            BlockInfo = new BlockInfo(
+                    x: reader.ReadInt32(),
+                    y: reader.ReadInt32(),
+                    z: reader.ReadInt32(),
+                    block: reader.ReadUInt16(),
+                    meta: reader.ReadInt32());
+
             ChunkPos = new Index3(
                 reader.ReadInt32(),
                 reader.ReadInt32(),
@@ -31,9 +34,13 @@ namespace OctoAwesome.Notifications
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((byte)BlockNotificationType.BlockChanged); //indicate that this is a single Block Notification
-            writer.Write(Meta);
-            writer.Write(Block);
-            writer.Write(FlatIndex);
+
+            writer.Write(BlockInfo.Position.X);
+            writer.Write(BlockInfo.Position.Y);
+            writer.Write(BlockInfo.Position.Z);
+            writer.Write(BlockInfo.Block);
+            writer.Write(BlockInfo.Meta);
+
             writer.Write(ChunkPos.X);
             writer.Write(ChunkPos.Y);
             writer.Write(ChunkPos.Z);
@@ -42,9 +49,7 @@ namespace OctoAwesome.Notifications
 
         protected override void OnRelease()
         {
-            Meta = default;
-            Block = default;
-            FlatIndex = default;
+            BlockInfo = default;
             ChunkPos = default;
             Planet = default;
 

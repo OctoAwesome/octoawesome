@@ -28,6 +28,7 @@ namespace OctoAwesome.Runtime
         private IUniverse currentUniverse;
         private readonly ISettings settings;
         private readonly IPool<Awaiter> awaiterPool;
+        private readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private readonly IDisposable chunkSubscription;
         private readonly IExtensionResolver extensionResolver;
         private readonly DatabaseProvider databaseProvider;
@@ -38,6 +39,7 @@ namespace OctoAwesome.Runtime
             settings = Settings;
             databaseProvider = new DatabaseProvider(GetRoot());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
+            blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
             chunkSubscription = updateHub.Subscribe(this, DefaultChannels.Chunk);
         }
 
@@ -347,13 +349,15 @@ namespace OctoAwesome.Runtime
 
         private void SaveChunk(BlockChangedNotification chunkNotification)
         {
-            var databaseContext = new ChunkDiffDbContext(databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true));
+            var database = databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true);
+            var databaseContext = new ChunkDiffDbContext(database, blockChangedNotificationPool);
             databaseContext.AddOrUpdate(chunkNotification);
         }
 
         private void ApplyChunkDiff(IChunkColumn column, Guid universeGuid, IPlanet planet)
         {
-            var databaseContext = new ChunkDiffDbContext(databaseProvider.GetDatabase<ChunkDiffTag>(universeGuid, planet.Id, true));
+            var database = databaseProvider.GetDatabase<ChunkDiffTag>(universeGuid, planet.Id, true);
+            var databaseContext = new ChunkDiffDbContext(database, blockChangedNotificationPool);
             var keys = databaseContext
                 .GetAllKeys()
                 .Where(t => t.ChunkPositon.X == column.Index.X && t.ChunkPositon.Y == column.Index.Y)
@@ -362,8 +366,8 @@ namespace OctoAwesome.Runtime
             foreach (var key in keys)
             {
                 var block = databaseContext.Get(key);
-                column.Chunks[key.ChunkPositon.Z].Blocks[key.FlatIndex] = block.Block;
-                column.Chunks[key.ChunkPositon.Z].MetaData[key.FlatIndex] = block.Meta;
+                column.Chunks[key.ChunkPositon.Z].Blocks[key.FlatIndex] = block.BlockInfo.Block;
+                column.Chunks[key.ChunkPositon.Z].MetaData[key.FlatIndex] = block.BlockInfo.Meta;
             }
 
             if (keys.Length > 1000)

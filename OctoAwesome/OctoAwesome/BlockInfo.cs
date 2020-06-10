@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OctoAwesome.Serialization;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +45,23 @@ namespace OctoAwesome
             hashCode = hashCode * -1521134295 + Meta.GetHashCode();
             return hashCode;
         }
+
+        public static void Serialize(BinaryWriter writer, BlockInfo info)
+        {
+            writer.Write(info.Position.X);
+            writer.Write(info.Position.Y);
+            writer.Write(info.Position.Z);
+            writer.Write(info.Block);
+            writer.Write(info.Meta);
+        }
+
+        public static BlockInfo Deserialize(BinaryReader reader)
+            => new BlockInfo(
+                    reader.ReadInt32(),
+                    reader.ReadInt32(),
+                    reader.ReadInt32(),
+                    reader.ReadUInt16(),
+                    reader.ReadInt32());
 
         public static bool operator ==(BlockInfo left, BlockInfo right)
             => left.Equals(right);
