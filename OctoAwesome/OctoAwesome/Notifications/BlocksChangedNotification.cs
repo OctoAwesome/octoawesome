@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
-    public sealed class BlocksChangedNotification : SerializableNotification
+    public sealed class BlocksChangedNotification : SerializableNotification, IChunkNotification
     {
         public ICollection<BlockInfo> BlockInfos { get; set; }
         public Index3 ChunkPos { get; internal set; }

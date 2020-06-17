@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Database;
+using OctoAwesome.Logging;
 using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace OctoAwesome.Runtime
     public sealed class DatabaseProvider : IDisposable, IDatabaseProvider
     {
         private readonly string rootPath;
+        private readonly ILogger logger;
         private readonly LockSemaphore planetSemaphore;
         private readonly LockSemaphore universeSemaphore;
         private readonly LockSemaphore globalSemaphore;
@@ -19,9 +21,10 @@ namespace OctoAwesome.Runtime
         private readonly Dictionary<(Type Type, Guid Universe), Database.Database> universeDatabaseRegister;
         private readonly Dictionary<Type, Database.Database> globalDatabaseRegister;
 
-        public DatabaseProvider(string rootPath)
+        public DatabaseProvider(string rootPath, ILogger logger)
         {
             this.rootPath = rootPath;
+            this.logger = (logger ?? NullLogger.Default).As(nameof(DatabaseProvider));
             planetSemaphore = new LockSemaphore(1, 1);
             universeSemaphore = new LockSemaphore(1, 1);
             globalSemaphore = new LockSemaphore(1, 1);
@@ -42,8 +45,18 @@ namespace OctoAwesome.Runtime
                 else
                 {
                     Database<T> tmpDatabase = CreateDatabase<T>(rootPath, fixedValueSize);
+                    
+                    try
+                    {
+                        tmpDatabase.Open();
+                    }
+                    catch (Exception ex)
+                    {
+                        tmpDatabase.Dispose();
+                        logger.Error($"Can not Open Database for global, {typeof(T).Name}", ex);
+                        throw ex;
+                    }
                     globalDatabaseRegister.Add(key, tmpDatabase);
-                    tmpDatabase.Open();
                     return tmpDatabase;
                 }
             }
@@ -61,8 +74,18 @@ namespace OctoAwesome.Runtime
                 else
                 {
                     Database<T> tmpDatabase = CreateDatabase<T>(Path.Combine(rootPath, universeGuid.ToString()), fixedValueSize);
+                    
+                    try
+                    {
+                        tmpDatabase.Open();
+                    }
+                    catch (Exception ex)
+                    {
+                        tmpDatabase.Dispose();
+                        logger.Error($"Can not Open Database for [{universeGuid}], {typeof(T).Name}", ex);
+                        throw ex;
+                    }
                     universeDatabaseRegister.Add(key, tmpDatabase);
-                    tmpDatabase.Open();
                     return tmpDatabase;
                 }
             }
@@ -80,8 +103,17 @@ namespace OctoAwesome.Runtime
                 else
                 {
                     Database<T> tmpDatabase = CreateDatabase<T>(Path.Combine(rootPath, universeGuid.ToString(), planetId.ToString()), fixedValueSize);
+                    try
+                    {
+                        tmpDatabase.Open();
+                    }
+                    catch(Exception ex)
+                    {
+                        tmpDatabase.Dispose();
+                        logger.Error($"Can not Open Database for [{universeGuid}]{planetId}, {typeof(T).Name}", ex);
+                        throw ex;
+                    }
                     planetDatabaseRegister.Add(key, tmpDatabase);
-                    tmpDatabase.Open();
                     return tmpDatabase;
                 }
             }

@@ -44,7 +44,7 @@ namespace OctoAwesome.Basics
             Random random = new Random(planet.Seed + salt);
 
             Index3 sample = new Index3(column00.Index.X * Chunk.CHUNKSIZE_X, column00.Index.Y * Chunk.CHUNKSIZE_Y, column00.Heights[0, 0]);
-            //bool wasChanged = false;
+            
             foreach (var treeDefinition in treeDefinitions)
             {
                 int density = treeDefinition.GetDensity(planet, sample);
@@ -64,17 +64,8 @@ namespace OctoAwesome.Basics
 
                     LocalBuilder builder = new LocalBuilder(x, y, z + 1, column00, column10, column01, column11);
                     treeDefinition.PlantTree(planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
-                    //wasChanged = true;
                 }
             }
-            //TODO: Unschön
-            //if (wasChanged)
-            //{
-            //    resourceManager.SaveChunkColumn(column00);
-            //    resourceManager.SaveChunkColumn(column10);
-            //    resourceManager.SaveChunkColumn(column01);
-            //    resourceManager.SaveChunkColumn(column11);
-            //}
         }
     }
 }

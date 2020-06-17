@@ -397,7 +397,7 @@ namespace OctoAwesome
 
         public void Update(SerializableNotification notification)
         {
-            if (notification is BlockChangedNotification chunkNotification)
+            if (notification is IChunkNotification chunkNotification)
             {
                 Chunks
                     .FirstOrDefault(c => c.Index == chunkNotification.ChunkPos)?

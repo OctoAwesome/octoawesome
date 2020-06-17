@@ -3,7 +3,7 @@ using System.IO;
 
 namespace OctoAwesome.Notifications
 {
-    public sealed class BlockChangedNotification : SerializableNotification
+    public sealed class BlockChangedNotification : SerializableNotification, IChunkNotification
     {
         public BlockInfo BlockInfo { get; set; }
         public Index3 ChunkPos { get; internal set; }

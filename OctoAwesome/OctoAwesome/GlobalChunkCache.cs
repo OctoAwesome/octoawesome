@@ -44,7 +44,7 @@ namespace OctoAwesome
         private readonly ILogger logger;
         private readonly IEnumerable<(Guid Id, PositionComponent Component)> positionComponents;
         private IUpdateHub updateHub;
-      
+
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
         /// </summary>
@@ -132,7 +132,7 @@ namespace OctoAwesome
                     var chunkIndex = new Index3(position, Planet.Id);
                     var loadedEntities = positionComponents
                         .Where(x => x.Component.Planet == Planet && x.Component.Position.ChunkIndex.X == chunkIndex.X && x.Component.Position.ChunkIndex.Y == chunkIndex.Y)
-                        .Select(x=> resourceManager.LoadEntity(x.Id))
+                        .Select(x => resourceManager.LoadEntity(x.Id))
                         .ToArray();
 
                     foreach (var entity in loadedEntities)
@@ -302,8 +302,11 @@ namespace OctoAwesome
         {
             switch (value)
             {
-                case BlockChangedNotification chunkNotification:
-                    Update(chunkNotification);
+                case BlockChangedNotification blockChangedNotification:
+                    Update(blockChangedNotification);
+                    break;
+                case BlocksChangedNotification blocksChangedNotification:
+                    Update(blocksChangedNotification);
                     break;
                 default:
                     break;
@@ -314,16 +317,15 @@ namespace OctoAwesome
         {
             updateHub?.Push(notification, DefaultChannels.Network);
 
-            if (notification is BlockChangedNotification chunkNotification)
-                updateHub?.Push(chunkNotification, DefaultChannels.Chunk);
+            if (notification is IChunkNotification)
+                updateHub?.Push(notification, DefaultChannels.Chunk);
         }
 
         public void Update(SerializableNotification notification)
         {
-            if (notification is BlockChangedNotification chunkNotification
-                && cache.TryGetValue(
-                        new Index3(chunkNotification.ChunkPos.X, chunkNotification.ChunkPos.Y, chunkNotification.Planet),
-                        out CacheItem cacheItem))
+            if (notification is IChunkNotification chunk
+                && cache.TryGetValue(new Index3(chunk.ChunkPos.X, chunk.ChunkPos.Y, chunk.Planet), 
+                out CacheItem cacheItem))
             {
                 cacheItem.ChunkColumn?.Update(notification);
             }

@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Database;
+using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
@@ -37,7 +38,7 @@ namespace OctoAwesome.Runtime
         {
             this.extensionResolver = extensionResolver;
             settings = Settings;
-            databaseProvider = new DatabaseProvider(GetRoot());
+            databaseProvider = new DatabaseProvider(GetRoot(), TypeContainer.Get<ILogger>());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
             chunkSubscription = updateHub.Subscribe(this, DefaultChannels.Chunk);
@@ -343,11 +344,20 @@ namespace OctoAwesome.Runtime
 
         public void OnNext(Notification notification)
         {
-            if (notification is BlockChangedNotification chunkNotification)
-                SaveChunk(chunkNotification);
+            if (notification is BlockChangedNotification blockChanged)
+                SaveChunk(blockChanged);
+            else if (notification is BlocksChangedNotification blocksChanged)
+                SaveChunk(blocksChanged);
         }
 
         private void SaveChunk(BlockChangedNotification chunkNotification)
+        {
+            var database = databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true);
+            var databaseContext = new ChunkDiffDbContext(database, blockChangedNotificationPool);
+            databaseContext.AddOrUpdate(chunkNotification);
+        }
+
+        private void SaveChunk(BlocksChangedNotification chunkNotification)
         {
             var database = databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true);
             var databaseContext = new ChunkDiffDbContext(database, blockChangedNotificationPool);

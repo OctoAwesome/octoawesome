@@ -20,6 +20,12 @@ namespace OctoAwesome.Database
         public abstract void Open();
         public abstract void Close();
         public abstract void Dispose();
+        /// <summary>
+        /// Locks this Database for the specific operation
+        /// </summary>
+        /// <param name="mode">Indicates witch operation is currently performed</param>
+        /// <returns>A new database lock</returns>
+        public abstract DatabaseLock Lock(Operation mode);
     }
 
     public sealed class Database<TTag> : Database where TTag : ITag, new()
@@ -46,6 +52,7 @@ namespace OctoAwesome.Database
 
         public Database(FileInfo keyFile, FileInfo valueFile, bool fixedValueLength) : base(typeof(TTag))
         {
+
             keyStore = new KeyStore<TTag>(new Writer(keyFile), new Reader(keyFile));
             valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), fixedValueLength);
             defragmentation = new Defragmentation<TTag>(keyFile, valueFile);
@@ -63,7 +70,7 @@ namespace OctoAwesome.Database
         {
             IsOpen = true;
 
-            if ((valueFile.Exists && valueFile.Length > 0) && (!keyFile.Exists || keyFile.Length == 0))
+            if (valueFile.Exists && valueFile.Length > 0 && (!keyFile.Exists || keyFile.Length == 0))
                 defragmentation.RecreateKeyFile();
 
             try
@@ -135,6 +142,23 @@ namespace OctoAwesome.Database
         {
             keyStore.Remove(tag, out var key);
             valueStore.Remove(key);
+        }
+
+        public override DatabaseLock Lock(Operation mode)
+        {
+            if (mode.HasFlag(Operation.Read))
+            {
+                //Read -> Blocks Write && Other read is ok
+                //Exclusive -> Blocks every other operation
+            }
+
+            if (mode.HasFlag(Operation.Write))
+            {
+                //Write -> Blocks Read && Other write is ok
+                //Exclusive -> Blocks ever other operation
+            }
+
+            throw new NotImplementedException();
         }
 
         public override void Dispose()

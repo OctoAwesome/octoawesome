@@ -115,6 +115,7 @@
     <Compile Include="Notifications\BlockNotificationType.cs" />
     <Compile Include="Notifications\BlocksChangedNotification.cs" />
     <Compile Include="Notifications\DefaultChannels.cs" />
+    <Compile Include="Notifications\IChunkNotification.cs" />
     <Compile Include="Notifications\INotificationObservable.cs" />
     <Compile Include="Notifications\INotificationObserver.cs" />
     <Compile Include="Notifications\NotificationChannelCollection.cs" />

@@ -45,6 +45,10 @@ namespace OctoAwesome.Database
                     continue;
                 }
 
+                //TODO: Temp
+                if (keys.ContainsKey(key.Tag))
+                    continue;
+
                 keys.Add(key.Tag, key);
             }
         }
