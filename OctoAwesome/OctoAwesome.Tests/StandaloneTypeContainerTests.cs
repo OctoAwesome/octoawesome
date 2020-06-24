@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using Xunit;
 
 namespace OctoAwesome.Tests
 {
     public class StandaloneTypeContainerTests
     {
-        [Fact]
+        [Test]
         public void IntialisationTest() => new StandaloneTypeContainer();
 
-        [Fact]
+        [Test]
         public void InstanceTest()
         {
             var typecontainer = new StandaloneTypeContainer();

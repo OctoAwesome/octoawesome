@@ -1,157 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{739F0779-A605-49C9-A298-FE30DC628C9E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OctoAwesome.Basics</RootNamespace>
-    <AssemblyName>OctoAwesome.Basics</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <TargetFramework>net48</TargetFramework>
+    
     <DocumentationFile>..\bin\Debug\OctoAwesome.Basics.XML</DocumentationFile>
-    <NoWarn>CS1591,1591</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Release\OctoAwesome.Basics.XML</DocumentationFile>
-    <NoWarn>CS1591</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="engenious" Version="0.3.0.36-alpha" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Biomes\BiomeBase.cs" />
-    <Compile Include="Definitions\Items\WauziEggDefinition.cs" />
-    <Compile Include="Entities\WauziEntity.cs" />
-    <Compile Include="Extension.cs" />
-    <Compile Include="Biomes\FlatlandBiome.cs" />
-    <Compile Include="Biomes\HighMountainBiome.cs" />
-    <Compile Include="Biomes\HillsBiome.cs" />
-    <Compile Include="Biomes\IBiome.cs" />
-    <Compile Include="EntityComponents\BodyPowerComponent.cs" />
-    <Compile Include="EntityComponents\CollisionComponent.cs" />
-    <Compile Include="EntityComponents\MassComponent.cs" />
-    <Compile Include="EntityComponents\BoxCollisionComponent.cs" />
-    <Compile Include="EntityComponents\EntityCollisionComponent.cs" />
-    <Compile Include="Definitions\Blocks\BirchWoodBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\CactusBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\GravelBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\RedPlankBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\RedstoneBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\OrangeLeavesBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\GreystoneBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\PlankBlockDefinition.cs" />
-    <Compile Include="Definitions\Trees\BirchTreeDefinition.cs" />
-    <Compile Include="Definitions\Trees\CactusTreeDefinition.cs" />
-    <Compile Include="EntityComponents\ForceComponent.cs" />
-    <Compile Include="EntityComponents\GravityComponent.cs" />
-    <Compile Include="EntityComponents\MoveableComponent.cs" />
-    <Compile Include="EntityComponents\PowerComponent.cs" />
-    <Compile Include="ITreeDefinition.cs" />
-    <Compile Include="Noise\INoise.cs" />
-    <Compile Include="Biomes\LandBiomeGenerator.cs" />
-    <Compile Include="Noise\PerlinNoiseGenerator.cs" />
-    <Compile Include="Noise\SimplexNoiseGenerator.cs" />
-    <Compile Include="Biomes\OceanBiomeGenerator.cs" />
-    <Compile Include="Biomes\LargeBiomeBase.cs" />
-    <Compile Include="Biomes\SurfaceBiomeGenerator.cs" />
-    <Compile Include="Definitions\Blocks\IceBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\LeavesBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\BlueCottonBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\StoneBrickBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\BrickBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\TanCottonBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\GreenCottonBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\RedCottonBlockDefinition.cs" />
-    <Compile Include="Climate\ComplexClimateMap.cs" />
-    <Compile Include="ComplexPlanet.cs" />
-    <Compile Include="ComplexPlanetGenerator.cs" />
-    <Compile Include="DebugMapGenerator.cs" />
-    <Compile Include="Definitions\Blocks\GrassBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\GroundBlockDefinition.cs" />
-    <Compile Include="Definitions\Items\Pickaxe.cs" />
-    <Compile Include="Languages\OctoBasics.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OctoBasics.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Definitions\Trees\OakTreeDefinition.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Definitions\Blocks\SandBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\SnowBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\StoneBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\WaterBlockDefinition.cs" />
-    <Compile Include="Definitions\Blocks\WoodBlockDefinition.cs" />
-    <Compile Include="Definitions\Trees\SpruceTreeDefinition.cs" />
-    <Compile Include="SimulationComponents\BlockInteractionComponent.cs" />
-    <Compile Include="SimulationComponents\CollisionComponent.cs" />
-    <Compile Include="SimulationComponents\ForceAggregatorComponent.cs" />
-    <Compile Include="SimulationComponents\MoveComponent.cs" />
-    <Compile Include="SimulationComponents\AccelerationComponent.cs" />
-    <Compile Include="SimulationComponents\NewtonGravitatorComponent.cs" />
-    <Compile Include="SimulationComponents\PowerAggregatorComponent.cs" />
-    <Compile Include="SimulationComponents\WattMoverComponent.cs" />
-    <Compile Include="TreeDefinition.cs" />
-    <Compile Include="TreePopulator.cs" />
-    <Compile Include="Definitions\Items\PickAxeDefinition.cs" />
-    <Compile Include="WauziPopulator.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601DB8-F134-418E-8B35-11E30CFEC31C}</Project>
-      <Name>OctoAwesome</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Languages\OctoBasics.de.resx" />
-    <EmbeddedResource Include="Languages\OctoBasics.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>OctoBasics.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Definitions\Blocks\dirt.png" />
@@ -184,30 +44,7 @@
     <EmbeddedResource Include="Assets\Definitions\Blocks\water.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\wood_side.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\wood_top.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Biomes\Noise\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
-      <Name>OctoAwesome</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assets\Definitions\Items\wauziegg.png" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="engenious">
-      <Version>0.3.0.36-alpha</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
 </Project>

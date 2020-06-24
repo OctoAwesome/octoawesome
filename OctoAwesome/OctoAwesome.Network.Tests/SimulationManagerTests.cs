@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OctoAwesome.Runtime;
+﻿using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,10 +7,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using NUnit.Framework;
 
 namespace OctoAwesome.Network.Tests
 {
-    [TestClass]
+    [TestOf(typeof(SimulationManager))]
     public class SimulationManagerTests
     {
         private SimulationManager simulationManager;
@@ -21,14 +21,14 @@ namespace OctoAwesome.Network.Tests
             simulationManager = new SimulationManager(new Settings(), new UpdateHub());
         }
 
-        [TestMethod]
+        [Test]
         public void StartStopTest()
         {
             simulationManager.Start();
             simulationManager.Stop();
         }
 
-        [TestMethod]
+        [Test]
         public void RuntimeTest()
         {
             var reset = new ManualResetEvent(false);
