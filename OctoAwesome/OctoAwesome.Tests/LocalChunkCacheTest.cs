@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using Xunit;
 
 namespace OctoAwesome.Tests
@@ -19,7 +20,7 @@ namespace OctoAwesome.Tests
             globalCache = new TestGlobalCache();
         }
 
-        [Fact]
+        [Test]
         public void SimpleLoad()
         {
             Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
@@ -29,23 +30,23 @@ namespace OctoAwesome.Tests
 
             cache.SetCenter(planet, new Index2(15, 15));
             System.Threading.Thread.Sleep(150);
-            Assert.Equal(9, globalCache.LoadCounter);
-            Assert.Equal(0, globalCache.SaveCounter);
+            Assert.Equals(9, globalCache.LoadCounter);
+            Assert.Equals(0, globalCache.SaveCounter);
 
             // Chunk im Zentrum
             IChunk chunk = cache.GetChunk(15, 15, 1);
             Assert.NotNull(chunk);
-            Assert.Equal(chunk.Index, new Index3(15, 15, 1));
+            Assert.Equals(chunk.Index, new Index3(15, 15, 1));
 
             // Chunk in der Ecke
             chunk = cache.GetChunk(14, 14, 0);
             Assert.NotNull(chunk);
-            Assert.Equal(chunk.Index, new Index3(14, 14, 0));
+            Assert.Equals(chunk.Index, new Index3(14, 14, 0));
 
             // Chunk in der Ecke
             chunk = cache.GetChunk(16, 16, 2);
             Assert.NotNull(chunk);
-            Assert.Equal(chunk.Index, new Index3(16, 16, 2));
+            Assert.Equals(chunk.Index, new Index3(16, 16, 2));
 
             // Chunk außerhalb des Centers
             chunk = cache.GetChunk(10, 10, 1);
@@ -53,8 +54,8 @@ namespace OctoAwesome.Tests
 
             cache.Flush();
 
-            Assert.Equal(9, globalCache.LoadCounter);
-            Assert.Equal(9, globalCache.SaveCounter);
+            Assert.Equals(9, globalCache.LoadCounter);
+            Assert.Equals(9, globalCache.SaveCounter);
 
             // Chunk im Zentrum
             chunk = cache.GetChunk(15, 15, 1);
@@ -73,7 +74,7 @@ namespace OctoAwesome.Tests
             Assert.Null(chunk);
         }
 
-        [Fact]
+        [Test]
         public void MovingCenter()
         {
             Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
@@ -89,8 +90,8 @@ namespace OctoAwesome.Tests
 
             cache.SetCenter(planet, new Index2(15, 15)); // 15 - 1111
             System.Threading.Thread.Sleep(150);
-            Assert.Equal(9, globalCache.LoadCounter);
-            Assert.Equal(0, globalCache.SaveCounter);
+            Assert.Equals(9, globalCache.LoadCounter);
+            Assert.Equals(0, globalCache.SaveCounter);
 
             //    00    01    10    11
             // 00 16/16 --    14/16 15/16
@@ -100,8 +101,8 @@ namespace OctoAwesome.Tests
 
             cache.SetCenter(planet, new Index2(14, 15));
             System.Threading.Thread.Sleep(150);
-            Assert.Equal(12, globalCache.LoadCounter);
-            Assert.Equal(0, globalCache.SaveCounter);
+            Assert.Equals(12, globalCache.LoadCounter);
+            Assert.Equals(0, globalCache.SaveCounter);
 
             //    00    01    10    11
             // 00 16/16 13/16 14/16 15/16
@@ -111,8 +112,8 @@ namespace OctoAwesome.Tests
 
             cache.SetCenter(planet, new Index2(13, 15));
             System.Threading.Thread.Sleep(150);
-            Assert.Equal(15, globalCache.LoadCounter);
-            Assert.Equal(3, globalCache.SaveCounter);
+            Assert.Equals(15, globalCache.LoadCounter);
+            Assert.Equals(3, globalCache.SaveCounter);
 
             //    00    01    10    11
             // 00 12/16 13/16 14/16 15/16
@@ -123,12 +124,12 @@ namespace OctoAwesome.Tests
             // Chunk im Zentrum
             IChunk chunk = cache.GetChunk(13, 15, 0);
             Assert.NotNull(chunk);
-            Assert.Equal(chunk.Index, new Index3(13, 15, 0));
+            Assert.Equals(chunk.Index, new Index3(13, 15, 0));
 
             // Chunk in der Ecke
             chunk = cache.GetChunk(15, 15, 0);
             Assert.NotNull(chunk);
-            Assert.Equal(chunk.Index, new Index3(15, 15, 0));
+            Assert.Equals(chunk.Index, new Index3(15, 15, 0));
         }
     }
 

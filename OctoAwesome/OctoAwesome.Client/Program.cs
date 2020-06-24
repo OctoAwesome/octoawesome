@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace OctoAwesome.Client
 {
-#if WINDOWS || LINUX
     /// <summary>
     /// The main class.
     /// </summary>
@@ -51,5 +50,4 @@ namespace OctoAwesome.Client
                 game.Run(60, 60);
         }
     }
-#endif
 }

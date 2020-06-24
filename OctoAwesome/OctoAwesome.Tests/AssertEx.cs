@@ -1,15 +1,15 @@
 ﻿using engenious;
-using Xunit;
+using NUnit.Framework;
 
 namespace OctoAwesome.Tests
 {
     public static class AssertEx
     {
-        public static void Equal(Vector3 p1, Vector3 p2)
+        public static void Equals(Vector3 p1, Vector3 p2)
         {
-            Assert.Equal(p1.X, p2.X, 4);
-            Assert.Equal(p1.Y, p2.Y, 4);
-            Assert.Equal(p1.Z, p2.Z, 4);
+            Assert.That(p1.X, Is.EqualTo(p2.X).Within(4).Ulps);
+            Assert.That(p1.Y, Is.EqualTo(p2.Y).Within(4).Ulps);
+            Assert.That(p1.Z, Is.EqualTo(p2.Z).Within(4).Ulps);
         }
     }
 }
