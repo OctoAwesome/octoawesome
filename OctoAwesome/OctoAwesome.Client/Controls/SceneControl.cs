@@ -1,17 +1,13 @@
-﻿using engenious.UI;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using OctoAwesome.Client.Components;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
-using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
 using engenious.Helper;
-using System.Windows.Threading;
-using System.Diagnostics;
+using engenious.UI;
 
 namespace OctoAwesome.Client.Controls
 {

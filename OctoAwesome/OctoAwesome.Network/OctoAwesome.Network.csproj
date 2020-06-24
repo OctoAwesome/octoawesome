@@ -6,14 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Condition="'$(TargetFramework)' == 'net48'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0-preview.2">
+    <PackageReference Condition="'$(TargetFramework)' == 'net48'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="engenious" Version="0.3.0.36-alpha" />
+    <PackageReference Include="engenious" Version="0.4.0.6-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-preview.2.20160.6" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-preview.5.20278.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +31,6 @@
       <_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
       <ReferencePath Remove="@(_ReferencePathToRemove)" />
     </ItemGroup>
-    <Message Text="Removing System.Memory for mono compatibility" Importance="high"/>
+    <Message Text="Removing System.Memory for mono compatibility" Importance="high" />
   </Target>
 </Project>

@@ -1,5 +1,5 @@
-﻿using System;
-using Xunit;
+﻿using NUnit.Framework;
+using System;
 
 namespace OctoAwesome.Model.Tests
 {
@@ -48,12 +48,12 @@ namespace OctoAwesome.Model.Tests
 
             Assert.Equals(i1, i1);
             Assert.Equals(i1, i8);
-            Assert.NotEqual(i1, i2);
-            Assert.NotEqual(i1, i3);
-            Assert.NotEqual(i1, i4);
-            Assert.NotEqual(i1, i5);
-            Assert.NotEqual(i1, i6);
-            Assert.NotEqual(i1, i7);
+            Assert.AreNotEqual(i1, i2);
+            Assert.AreNotEqual(i1, i3);
+            Assert.AreNotEqual(i1, i4);
+            Assert.AreNotEqual(i1, i5);
+            Assert.AreNotEqual(i1, i6);
+            Assert.AreNotEqual(i1, i7);
 
             // Assert.True(i1 == i1);
             Assert.True(i1 == i8);

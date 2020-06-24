@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
-using Xunit;
 
 namespace OctoAwesome.Tests
 {

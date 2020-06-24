@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.3.0.36-alpha" />
-    <PackageReference Include="NLog" Version="4.7.0" />
+    <PackageReference Include="engenious" Version="0.4.0.6-alpha" />
+    <PackageReference Include="NLog" Version="4.7.2" />
     <PackageReference Include="System.Interactive" Version="4.1.1" />
   </ItemGroup>
 

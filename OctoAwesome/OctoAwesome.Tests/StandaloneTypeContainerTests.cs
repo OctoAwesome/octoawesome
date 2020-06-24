@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Xunit;
 
 namespace OctoAwesome.Tests
 {
@@ -39,9 +38,9 @@ namespace OctoAwesome.Tests
             Assert.True(instanceC is ITestInterface);
             Assert.True(instanceD is TestClass);
             Assert.True(instanceD is ITestInterface);
-            Assert.NotSame(instanceD, instanceC);
-            Assert.NotSame(instanceA, instanceB);
-            Assert.NotSame(instanceA, instanceD);
+            Assert.AreNotSame(instanceD, instanceC);
+            Assert.AreNotSame(instanceA, instanceB);
+            Assert.AreNotSame(instanceA, instanceD);
 
             Assert.False(typecontainer.TryResolve(typeof(SecondTestClass), out instanceA));
             Assert.Null(instanceA);

@@ -16,7 +16,6 @@ namespace OctoAwesome.Client.Components
         private GraphicsDevice graphicsDevice;
 
         private Texture2DArray textures;
-        private readonly LockSemaphore semaphore;
         private readonly Dispatcher dispatcher;
 
         /// <summary>
@@ -58,7 +57,6 @@ namespace OctoAwesome.Client.Components
             this.definitionManager = definitionManager;
             this.graphicsDevice = graphicsDevice;
             this.textures = textures;
-            semaphore = new LockSemaphore(1, 1);
             dispatcher = Dispatcher.CurrentDispatcher;
             simple = simpleShader;
             GenerateIndexBuffer();
@@ -538,31 +536,18 @@ namespace OctoAwesome.Client.Components
 
             if (vertexCount > 0)
             {
-                try
-                {
                     Dispatch(() =>
                     {
                         if (vb == null || ib == null)
                         {
                             vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount + 2);
-                            //ib = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedInt, indexCount);
                         }
                         if (vertexCount + 2 > vb.VertexCount)
                             vb.Resize(vertexCount + 2);
 
-                        //vb2 = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount+2);//TODO: why do I need more vertices?
 
                         vb.SetData(vertices.ToArray());
-
-                        //if (indexCount > ib.IndexCount)
-                        //    ib.Resize(indexCount);
-                        //ib.SetData<int>(index.ToArray());
                     });
-                }
-                catch (Exception ex)
-                {
-                    var foo = ex;
-                }
             }
 
             
@@ -589,11 +574,6 @@ namespace OctoAwesome.Client.Components
                 chunk = null;
             }
 
-            //if (ib != null)
-            //{
-            //    ib.Dispose();
-            //    ib = null;
-            //}
         }
 
         private void Dispatch(Action action)

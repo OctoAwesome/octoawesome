@@ -146,6 +146,9 @@ namespace OctoAwesome.Database
 
         public override DatabaseLock Lock(Operation mode)
         {
+            //1 counted für Read (1 komplett block)
+            //1 counted für Write (1 komplett block)
+
             if (mode.HasFlag(Operation.Read))
             {
                 //Read -> Blocks Write && Other read is ok
@@ -155,7 +158,7 @@ namespace OctoAwesome.Database
             if (mode.HasFlag(Operation.Write))
             {
                 //Write -> Blocks Read && Other write is ok
-                //Exclusive -> Blocks ever other operation
+                //Exclusive -> Blocks every other operation
             }
 
             throw new NotImplementedException();
