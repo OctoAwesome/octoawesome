@@ -121,13 +121,16 @@ namespace OctoAwesome
 
                 if (cacheItem.References > 1)
                     logger.Warn($"Add Reference to:{cacheItem.Index}, now at:{cacheItem.References}");
+
             }
 
-
-            if (cacheItem.ChunkColumn == null)
+            using (cacheItem.Wait())
             {
-                using (cacheItem.Wait())
+
+                if (cacheItem.ChunkColumn == null)
                 {
+                    //using (cacheItem.Wait())
+                    //{
                     cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(Planet, position);
                     var chunkIndex = new Index3(position, Planet.Id);
                     var loadedEntities = positionComponents
@@ -141,10 +144,11 @@ namespace OctoAwesome
                     using (updateSemaphore.Wait())
                         newChunks.Enqueue(cacheItem);
 
+                    //}
                 }
-            }
 
-            return cacheItem.ChunkColumn;
+                return cacheItem.ChunkColumn;
+            }
         }
 
         public bool IsChunkLoaded(Index2 position)
@@ -324,7 +328,7 @@ namespace OctoAwesome
         public void Update(SerializableNotification notification)
         {
             if (notification is IChunkNotification chunk
-                && cache.TryGetValue(new Index3(chunk.ChunkPos.X, chunk.ChunkPos.Y, chunk.Planet), 
+                && cache.TryGetValue(new Index3(chunk.ChunkPos.X, chunk.ChunkPos.Y, chunk.Planet),
                 out CacheItem cacheItem))
             {
                 cacheItem.ChunkColumn?.Update(notification);

@@ -14,25 +14,28 @@ namespace OctoAwesome.Serialization
     {
         private readonly IPool<BlockChangedNotification> notificationBlockPool;
 
-        public ChunkDiffDbContext(Database<ChunkDiffTag> database, IPool<BlockChangedNotification> blockPool) 
-            : base(database)
-        {
-            notificationBlockPool = blockPool;
-        }
+        public ChunkDiffDbContext(Database<ChunkDiffTag> database, IPool<BlockChangedNotification> blockPool)
+            : base(database) => notificationBlockPool = blockPool;
 
         public override void AddOrUpdate(BlockChangedNotification value)
-            => InternalAddOrUpdate(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(value.BlockInfo.Position)), value.BlockInfo);
+        {
+            using (Database.Lock(Operation.Write))
+                InternalAddOrUpdate(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(value.BlockInfo.Position)), value.BlockInfo);
+        }
 
-        public void AddOrUpdate(BlocksChangedNotification value) 
-            => value.BlockInfos.ForEach(b => InternalAddOrUpdate(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(b.Position)), b));
+        public void AddOrUpdate(BlocksChangedNotification value)
+        {
+            using (Database.Lock(Operation.Write))
+                value.BlockInfos.ForEach(b => InternalAddOrUpdate(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(b.Position)), b));
+        }
 
-        public IEnumerable<ChunkDiffTag> GetAllKeys() 
+        public IEnumerable<ChunkDiffTag> GetAllKeys()
             => Database.Keys;
 
         public override void Remove(BlockChangedNotification value)
             => InternalRemove(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(value.BlockInfo.Position)));
 
-        public void Remove(BlocksChangedNotification value) 
+        public void Remove(BlocksChangedNotification value)
             => value.BlockInfos.ForEach(b => InternalRemove(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(b.Position))));
 
         public void Remove(params ChunkDiffTag[] tags)
@@ -42,7 +45,10 @@ namespace OctoAwesome.Serialization
         }
 
         private void InternalRemove(ChunkDiffTag tag)
-            => Database.Remove(tag);
+        {
+            using (Database.Lock(Operation.Write))
+                Database.Remove(tag);
+        }
 
         private void InternalAddOrUpdate(ChunkDiffTag tag, BlockInfo blockInfo)
         {
@@ -63,10 +69,10 @@ namespace OctoAwesome.Serialization
                 return BlockInfo.Deserialize(reader);
             }
         }
-               
+
         public override BlockChangedNotification Get(ChunkDiffTag key)
         {
-            var notification = notificationBlockPool.Get();
+            BlockChangedNotification notification = notificationBlockPool.Get();
             notification.BlockInfo = InternalGet(key);
             notification.ChunkPos = key.ChunkPositon;
             return notification;

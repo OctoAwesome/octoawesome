@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,8 +11,8 @@ namespace OctoAwesome.Database
     internal class KeyStore<TTag> : IDisposable where TTag : ITag, new()
     {
         public int EmptyKeys { get; private set; }
-        public IEnumerable<TTag> Tags => keys.Keys;
-        public IEnumerable<Key<TTag>> Keys => keys.Values;
+        public IReadOnlyList<TTag> Tags => keys.Keys.ToArray();
+        public IReadOnlyList<Key<TTag>> Keys => keys.Values.ToArray();
         private readonly Dictionary<TTag, Key<TTag>> keys;
         private readonly Writer writer;
         private readonly Reader reader;

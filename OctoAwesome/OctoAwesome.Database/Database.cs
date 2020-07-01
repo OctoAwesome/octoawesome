@@ -1,10 +1,13 @@
 ﻿using OctoAwesome.Database.Checks;
+using OctoAwesome.Database.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 
 namespace OctoAwesome.Database
 {
@@ -31,7 +34,14 @@ namespace OctoAwesome.Database
     public sealed class Database<TTag> : Database where TTag : ITag, new()
     {
         public bool FixedValueLength => valueStore.FixedValueLength;
-        public IEnumerable<TTag> Keys => keyStore.Tags;
+        public IEnumerable<TTag> Keys
+        {
+            get
+            {
+                using (databaseLockMonitor.StartOperation(Operation.Read))
+                    return keyStore.Tags;
+            }
+        }
 
         public bool IsOpen { get; private set; }
 
@@ -49,10 +59,13 @@ namespace OctoAwesome.Database
         private readonly ValueFileCheck<TTag> fileCheck;
         private readonly FileInfo keyFile;
         private readonly FileInfo valueFile;
+        private readonly DatabaseLockMonitor databaseLockMonitor;
+        private readonly SemaphoreSlim dbLockSemaphore;
 
         public Database(FileInfo keyFile, FileInfo valueFile, bool fixedValueLength) : base(typeof(TTag))
         {
-
+            dbLockSemaphore = new SemaphoreSlim(1, 1);
+            databaseLockMonitor = new DatabaseLockMonitor();
             keyStore = new KeyStore<TTag>(new Writer(keyFile), new Reader(keyFile));
             valueStore = new ValueStore(new Writer(valueFile), new Reader(valueFile), fixedValueLength);
             defragmentation = new Defragmentation<TTag>(keyFile, valueFile);
@@ -77,8 +90,8 @@ namespace OctoAwesome.Database
             {
                 keyStore.Open();
             }
-            catch (Exception ex) 
-                when(ex is KeyInvalidException || ex is ArgumentException)
+            catch (Exception ex)
+                when (ex is KeyInvalidException || ex is ArgumentException)
             {
                 keyStore.Close();
                 defragmentation.RecreateKeyFile();
@@ -88,7 +101,7 @@ namespace OctoAwesome.Database
             valueStore.Open();
 
             if (Threshold >= 0 && keyStore.EmptyKeys >= Threshold)
-                Defragmentation();            
+                Defragmentation();
         }
 
         public override void Close()
@@ -106,68 +119,88 @@ namespace OctoAwesome.Database
 
         public Value GetValue(TTag tag)
         {
-            var key = keyStore.GetKey(tag);
-            return valueStore.GetValue(key);
+            using (databaseLockMonitor.StartOperation(Operation.Read))
+            {
+                var key = keyStore.GetKey(tag);
+                return valueStore.GetValue(key);
+            }
         }
 
         public void AddOrUpdate(TTag tag, Value value)
         {
-            var contains = keyStore.Contains(tag);
-            if (contains)
+            using (databaseLockMonitor.StartOperation(Operation.Write))
             {
-                var key = keyStore.GetKey(tag);
-
-                if (FixedValueLength)
+                var contains = keyStore.Contains(tag);
+                if (contains)
                 {
-                    valueStore.Update(key, value);
+                    var key = keyStore.GetKey(tag);
+
+                    if (FixedValueLength)
+                    {
+                        valueStore.Update(key, value);
+                    }
+                    else
+                    {
+                        valueStore.Remove(key);
+                    }
                 }
+
+                var newKey = valueStore.AddValue(tag, value);
+
+                if (contains)
+                    keyStore.Update(newKey);
                 else
-                {
-                    valueStore.Remove(key);
-                }
+                    keyStore.Add(newKey);
             }
-
-            var newKey = valueStore.AddValue(tag, value);
-
-            if (contains)
-                keyStore.Update(newKey);
-            else
-                keyStore.Add(newKey);
         }
 
         public bool ContainsKey(TTag tag)
-            => keyStore.Contains(tag);
+        {
+            using (databaseLockMonitor.StartOperation(Operation.Read))
+                return keyStore.Contains(tag);
+        }
 
         public void Remove(TTag tag)
         {
-            keyStore.Remove(tag, out var key);
-            valueStore.Remove(key);
+            using (databaseLockMonitor.StartOperation(Operation.Write))
+            {
+                keyStore.Remove(tag, out var key);
+                valueStore.Remove(key);
+            }
         }
 
         public override DatabaseLock Lock(Operation mode)
         {
-            //1 counted für Read (1 komplett block)
-            //1 counted für Write (1 komplett block)
+            //Read -> Blocks Write && Other read is ok
+            //Exclusive -> Blocks every other operation
 
-            if (mode.HasFlag(Operation.Read))
+            //Write -> Blocks Read && Other write is ok
+            //Exclusive -> Blocks every other operation
+            dbLockSemaphore.Wait();
+            try
             {
-                //Read -> Blocks Write && Other read is ok
-                //Exclusive -> Blocks every other operation
-            }
+                if (!databaseLockMonitor.CheckLock(mode))
+                {
+                    databaseLockMonitor.Wait(mode);
+                }
 
-            if (mode.HasFlag(Operation.Write))
+                var dbLock = new DatabaseLock(databaseLockMonitor, mode);
+                dbLock.Enter();
+                return dbLock;
+            }
+            finally
             {
-                //Write -> Blocks Read && Other write is ok
-                //Exclusive -> Blocks every other operation
+                dbLockSemaphore.Release();
             }
-
-            throw new NotImplementedException();
         }
 
         public override void Dispose()
         {
             keyStore.Dispose();
             valueStore.Dispose();
+
+            databaseLockMonitor.Dispose();
+            dbLockSemaphore.Dispose();
         }
 
         private void ExecuteOperationOnKeyValueStore(Action action)

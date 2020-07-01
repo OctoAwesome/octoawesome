@@ -262,6 +262,7 @@ namespace OctoAwesome.Runtime
 
             if (column == null)
                 return null;
+            //var localColumn = column;
 
             ApplyChunkDiff(column, universeGuid, planet);
 
