@@ -112,6 +112,7 @@ namespace OctoAwesome
         IEnumerable<FailEntityChunkArgs> FailChunkEntity();
         void Remove(Entity entity);
         void Add(Entity entity);
-        void SetBlocks(params BlockInfo[] blockInfos);
+        void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos);
+        void FlagDirty();
     }
 }

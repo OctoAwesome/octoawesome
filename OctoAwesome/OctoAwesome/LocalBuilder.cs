@@ -104,7 +104,7 @@ namespace OctoAwesome
         /// 
         /// </summary>
         /// <param name="blockInfos"></param>
-        public void SetBlocks(params BlockInfo[] blockInfos)
+        public void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos)
             => blockInfos
                     .Select(b =>
                     {
@@ -122,8 +122,8 @@ namespace OctoAwesome
                     .GroupBy(a => a.column)
                     .ForEach(column => column
                         .GroupBy(i => i.index)
-                        .ForEach(i => column.Key.Chunks[i.Key].SetBlocks(i.Select(b => b.info).ToArray())));
-        
+                        .ForEach(i => column.Key.Chunks[i.Key].SetBlocks(issueNotification, i.Select(b => b.info).ToArray())));
+
 
         /// <summary>
         /// 
@@ -149,7 +149,7 @@ namespace OctoAwesome
                     }
                 }
             }
-            SetBlocks(blockInfos.ToArray());
+            SetBlocks(false, blockInfos.ToArray());
         }
 
         /// <summary>

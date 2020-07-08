@@ -266,7 +266,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (disposed || player.CurrentEntity == null)
+            if (disposed || player?.CurrentEntity == null)
                 return;
 
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
@@ -381,7 +381,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnPreDraw(GameTime gameTime)
         {
-            if (player.CurrentEntity == null)
+            if (player?.CurrentEntity == null)
                 return;
 
             if (ControlTexture == null)
@@ -531,7 +531,7 @@ namespace OctoAwesome.Client.Controls
 
         private void FillChunkRenderer()
         {
-            if (player.CurrentEntity == null)
+            if (player?.CurrentEntity == null)
                 return;
 
             Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);

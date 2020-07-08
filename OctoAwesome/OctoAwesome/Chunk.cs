@@ -133,7 +133,7 @@ namespace OctoAwesome
             BlockChanged(blockInfo);
         }
 
-        public void SetBlocks(params BlockInfo[] blockInfos)
+        public void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos)
         {
             for (int i = 0; i < blockInfos.Length; i++)
             {
@@ -141,10 +141,19 @@ namespace OctoAwesome
                 Blocks[flatIndex] = blockInfos[i].Block;
                 MetaData[flatIndex] = blockInfos[i].Meta;
             }
-            Changed?.Invoke(this);
+            if (issueNotification)
+            {
+                Changed?.Invoke(this);
 
-            BlocksChanged(blockInfos);
+                BlocksChanged(blockInfos);
+            }
         }
+
+        public void FlagDirty()
+        {
+            Changed?.Invoke(this);
+        }
+
 
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.

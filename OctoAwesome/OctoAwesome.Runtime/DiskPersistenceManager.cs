@@ -123,7 +123,7 @@ namespace OctoAwesome.Runtime
         /// Speichert eine <see cref="IChunkColumn"/>.
         /// </summary>
         /// <param name="universeGuid">GUID des Universums.</param>
-        /// <param name="planetId">Index des Planeten.</param>
+        /// <param name="planet">Index des Planeten.</param>
         /// <param name="column">Zu serialisierende ChunkColumn.</param>
         public void SaveColumn(Guid universeGuid, IPlanet planet, IChunkColumn column)
         {

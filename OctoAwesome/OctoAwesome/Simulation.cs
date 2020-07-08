@@ -182,6 +182,7 @@ namespace OctoAwesome
             // thread.Join();
 
             ResourceManager.UnloadUniverse();
+            simulationSubscription?.Dispose();
         }
 
         /// <summary>

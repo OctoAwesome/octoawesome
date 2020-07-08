@@ -12,7 +12,7 @@ namespace OctoAwesome.Database
 
         public Reader(FileInfo fileInfo)
         {
-            this.fileInfo = fileInfo;
+            this.fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
         }
         public Reader(string path) : this(new FileInfo(path))
         {
@@ -21,7 +21,11 @@ namespace OctoAwesome.Database
 
         internal byte[] Read(long index, int length)
         {
-            length = length < 0 ? (int)fileInfo.Length : length;
+            if (length < 0)
+            {
+                fileInfo.Refresh();
+                length = fileInfo.Exists ? (int)fileInfo.Length : length;
+            }
 
             var array = new byte[length];
             using (var fileStream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))

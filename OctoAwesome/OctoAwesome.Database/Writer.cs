@@ -12,7 +12,7 @@ namespace OctoAwesome.Database
 
         public Writer(FileInfo fileInfo)
         {
-            this.fileInfo = fileInfo;
+            this.fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
         }
         public Writer(string path) : this(new FileInfo(path))
         {

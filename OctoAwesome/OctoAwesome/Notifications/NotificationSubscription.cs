@@ -21,8 +21,8 @@ namespace OctoAwesome.Notifications
 
         public void Dispose()
         {
-            observer.OnCompleted();
-            observable.Unsubscribe(observer, channel);
+            observer?.OnCompleted();
+            observable?.Unsubscribe(observer, channel);
             observable = null;
             observer = null;
         }

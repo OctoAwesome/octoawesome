@@ -64,7 +64,7 @@ namespace OctoAwesome.Basics.Definitions.Trees
             {
                 infos[i] = (0, 0, i, wood);
             }
-            builder.SetBlocks(infos);
+            builder.SetBlocks(false, infos);
          
         }
     }

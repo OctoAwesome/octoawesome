@@ -50,6 +50,9 @@ namespace OctoAwesome.Client
                 if (resourceManager.CurrentUniverse != null)
                     resourceManager.UnloadUniverse();
 
+                if (resourceManager is IDisposable disposable)
+                    disposable.Dispose();
+
                 resourceManager = null;
             }
 

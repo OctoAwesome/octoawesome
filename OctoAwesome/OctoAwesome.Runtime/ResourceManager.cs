@@ -172,7 +172,8 @@ namespace OctoAwesome.Runtime
                     persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
                     planet.Value.Dispose();
                 }
-
+                if (persistenceManager is IDisposable disposable)
+                    disposable.Dispose();
                 Planets.Clear();
 
                 CurrentUniverse = null;
@@ -303,8 +304,6 @@ namespace OctoAwesome.Runtime
                     if (awaiter?.Timeouted ?? false)
                         logger.Error("Awaiter timeout");
                 }
-                if (awaiter == null)
-                    SaveChunkColumn(column11);
             } while (awaiter != null && awaiter.Timeouted);
 
             IChunkColumn column00 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(-1, -1), planet.Size));
@@ -325,6 +324,8 @@ namespace OctoAwesome.Runtime
                     populator.Populate(this, planet, column11, column21, column12, column22);
 
                 column11.Populated = true;
+                column11.FlagDirty();
+                SaveChunkColumn(column11);
             }
 
             // Links oben
@@ -334,6 +335,8 @@ namespace OctoAwesome.Runtime
                     populator.Populate(this, planet, column00, column10, column01, column11);
 
                 column00.Populated = true;
+                column00.FlagDirty();
+                SaveChunkColumn(column00);
             }
 
             // Oben
@@ -342,6 +345,8 @@ namespace OctoAwesome.Runtime
                 foreach (var populator in populators)
                     populator.Populate(this, planet, column10, column20, column11, column21);
                 column10.Populated = true;
+                column10.FlagDirty();
+                SaveChunkColumn(column10);
             }
 
             // Links
@@ -350,6 +355,8 @@ namespace OctoAwesome.Runtime
                 foreach (var populator in populators)
                     populator.Populate(this, planet, column01, column11, column02, column12);
                 column01.Populated = true;
+                column01.FlagDirty();
+                SaveChunkColumn(column01);
             }
 
             return column11;
