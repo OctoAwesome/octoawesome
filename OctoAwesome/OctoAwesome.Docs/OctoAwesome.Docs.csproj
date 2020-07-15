@@ -11,6 +11,14 @@
     <Content Include="template\conceptual.extension.js" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\bin\Release\</OutputPath>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="docfx.console" Version="2.55.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

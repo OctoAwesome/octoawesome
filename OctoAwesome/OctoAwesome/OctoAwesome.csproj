@@ -3,7 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
 
-    <DocumentationFile>..\bin\Debug\OctoAwesome.xml</DocumentationFile>
+    <DocumentationFile>..\bin\Release\OctoAwesome.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\bin\Release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
