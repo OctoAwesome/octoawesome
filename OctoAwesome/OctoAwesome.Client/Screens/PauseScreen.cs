@@ -1,6 +1,8 @@
 ﻿using engenious.Input;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using System.Linq;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -20,7 +22,7 @@ namespace OctoAwesome.Client.Screens
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
 
-            Button resumeButton = Button.TextButton(manager, Languages.OctoClient.Resume);
+            Button resumeButton = new TextButton(manager, Languages.OctoClient.Resume);
             resumeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             resumeButton.Margin = new Border(0, 0, 0, 10);
             resumeButton.LeftMouseClick += (s, e) =>
@@ -29,7 +31,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(resumeButton);
 
-            Button optionButton = Button.TextButton(manager, Languages.OctoClient.Options);
+            Button optionButton = new TextButton(manager, Languages.OctoClient.Options);
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             optionButton.Margin = new Border(0, 0, 0, 10);
             optionButton.MinWidth = 300;
@@ -39,7 +41,7 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(optionButton);
 
-            Button creditsButton = Button.TextButton(manager, Languages.OctoClient.CreditsCrew);
+            Button creditsButton = new TextButton(manager, Languages.OctoClient.CreditsCrew);
             creditsButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             creditsButton.Margin = new Border(0, 0, 0, 10);
             creditsButton.LeftMouseClick += (s, e) =>
@@ -48,13 +50,19 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(creditsButton);
 
-            Button mainMenuButton = Button.TextButton(manager, Languages.OctoClient.ToMainMenu);
+            Button mainMenuButton = new TextButton(manager, Languages.OctoClient.ToMainMenu);
             mainMenuButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             mainMenuButton.Margin = new Border(0, 0, 0, 10);
             mainMenuButton.LeftMouseClick += (s, e) =>
             {
                 manager.Player.SetEntity(null);
                 manager.Game.Simulation.ExitGame();
+
+                foreach (var gameScreen in manager.History.OfType<GameScreen>())
+                {
+                    gameScreen.Unload();
+                }
+
                 manager.NavigateHome();
             };
             stack.Controls.Add(mainMenuButton);
@@ -64,7 +72,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (Manager.CanGoBack && args.Key == Keys.Escape)
             {
-                args.Handled = true;
+                args.Handled = true;                
                 Manager.NavigateBack();
             }
 

@@ -5,11 +5,13 @@ using OctoAwesome.Runtime;
 using System;
 using System.Configuration;
 using System.Linq;
-using MonoGameUi;
+using engenious.UI;
 using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;
+using OctoAwesome.Notifications;
+using OctoAwesome.Common;
 
 namespace OctoAwesome.Client
 {
@@ -18,6 +20,8 @@ namespace OctoAwesome.Client
     /// </summary>
     internal class OctoGame : Game
     {
+        private readonly ITypeContainer typeContainer;
+
         //GraphicsDeviceManager graphics;
 
         public CameraComponent Camera { get; private set; }
@@ -51,19 +55,21 @@ namespace OctoAwesome.Client
             //graphics.PreferredBackBufferHeight = 720;
 
             //Content.RootDirectory = "Content";
-
-
+            
             Title = "OctoAwesome";
             IsMouseVisible = true;
             Icon = Properties.Resources.octoawesome;
 
-            //Window.AllowUserResizing = true;
-            Settings = new Settings();
+            typeContainer = TypeContainer.Get<ITypeContainer>();
+            Register(typeContainer);
 
-            ExtensionLoader = new ExtensionLoader(Settings);
+            //Window.AllowUserResizing = true;
+            Settings = TypeContainer.Get<Settings>();
+
+            ExtensionLoader = TypeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
 
-            Service = new GameService(ResourceManager);
+            Service = TypeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);
@@ -94,12 +100,14 @@ namespace OctoAwesome.Client
 
             KeyMapper = new KeyMapper(Screen, Settings);
 
+
+
             #region GameComponents
-            DefinitionManager = new DefinitionManager(ExtensionLoader);
+            DefinitionManager = TypeContainer.Get<DefinitionManager>();
 
             //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
             //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
-            ResourceManager = new ContainerResourceManager();
+            ResourceManager = TypeContainer.Get<ContainerResourceManager>();
 
 
             Player = new PlayerComponent(this, ResourceManager);
@@ -134,6 +142,23 @@ namespace OctoAwesome.Client
             };*/
             SetKeyBindings();
 
+        }
+
+        private static void Register(ITypeContainer typeContainer)
+        {
+            typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
         }
 
         private void SetKeyBindings()
@@ -206,10 +231,16 @@ namespace OctoAwesome.Client
             });
         }
 
-        protected override void OnExiting(object sender, EventArgs args)
+        protected override void OnExiting(EventArgs args)
         {
             Player.SetEntity(null);
             Simulation.ExitGame();
+        }
+
+
+        public override void Dispose()
+        {
+            base.Dispose();
         }
     }
 }

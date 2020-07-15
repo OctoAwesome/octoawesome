@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace OctoAwesome.Network.Tests
 {
-    [TestClass]
+    [TestOf(typeof(Package))]
     public class OctoNetworkPackageTest
     {
         private Package package;
         private OctoNetworkStream networkStream;
 
-        [TestMethod]
+        [Test]
         public void PackageNormal()
         {
             package = new Package(0, 100);
@@ -29,7 +29,7 @@ namespace OctoAwesome.Network.Tests
             Assert.AreEqual(packageDes.Command, package.Command);
         }
 
-        [TestMethod]
+        [Test]
         public void PackageWithSubPackages()
         {
             package = new Package(0, 1000);
@@ -48,7 +48,7 @@ namespace OctoAwesome.Network.Tests
             Assert.AreEqual(packageDes.Command, package.Command);
         }
 
-        [TestMethod]
+        [Test]
         public void TestReadWriteStream()
         {
 

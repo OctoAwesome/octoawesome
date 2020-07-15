@@ -31,11 +31,12 @@ namespace OctoAwesome.Basics.SimulationComponents
         protected override void UpdateEntity(GameTime gameTime, Entity entity, ControllableComponent controller, InventoryComponent inventory)
         {
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
+            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
 
             if (controller.InteractBlock.HasValue)
             {
-                ushort lastBlock = entity.Cache.GetBlock(controller.InteractBlock.Value);
-                entity.Cache.SetBlock(controller.InteractBlock.Value, 0);
+                ushort lastBlock = cache.GetBlock(controller.InteractBlock.Value);
+                cache.SetBlock(controller.InteractBlock.Value, 0);
 
                 if (lastBlock != 0)
                 {
@@ -66,7 +67,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         IBlockDefinition definition = toolbar.ActiveTool.Definition as IBlockDefinition;
 
                         Index3 idx = controller.ApplyBlock.Value + add;
-                        var boxes = definition.GetCollisionBoxes(entity.Cache, idx.X, idx.Y, idx.Z);
+                        var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
                         bool intersects = false;
                         var positioncomponent = entity.Components.GetComponent<PositionComponent>();
@@ -101,8 +102,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                         {
                             if (inventory.RemoveUnit(toolbar.ActiveTool))
                             {
-                                entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-                                entity.Cache.SetBlockMeta(idx, (int)controller.ApplySide);
+                                cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                cache.SetBlockMeta(idx, (int)controller.ApplySide);
                                 if (toolbar.ActiveTool.Amount <= 0)
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
                             }

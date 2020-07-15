@@ -1,8 +1,6 @@
 ﻿using CommandManagementSystem;
 using Newtonsoft.Json;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
+using OctoAwesome.Logging;
 using OctoAwesome.Network;
 using System;
 using System.Collections.Generic;
@@ -14,53 +12,60 @@ namespace OctoAwesome.GameServer
 {
     internal class Program
     {
-        public static ServerHandler ServerHandler { get; set; }
-
         private static ManualResetEvent manualResetEvent;
-        private static Logger logger;
+        private static ILogger logger;
 
         private static void Main(string[] args)
         {
-            var config = new LoggingConfiguration();
-
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
+            using (var typeContainer = TypeContainer.Get<ITypeContainer>())
             {
-                FileName = $"./logs/server-{DateTime.Now.ToString("ddMMyy_hhmmss")}.log"
-            });
+                Startup.Register(typeContainer);
+                Startup.ConfigureLogger(ClientType.GameServer);
 
-            LogManager.Configuration = config;
-            logger = LogManager.GetCurrentClassLogger();
+                Network.Startup.Register(typeContainer);
 
-            manualResetEvent = new ManualResetEvent(false);
-
-            logger.Info("Server start");
-
-            var fileInfo = new FileInfo(Path.Combine(".", "settings.json"));
-            Settings settings;
-
-
-            if (!fileInfo.Exists)
-            {
-                logger.Debug("Create new Default Settings");
-                settings = new Settings()
+                logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As("OctoAwesome.GameServer");
+                AppDomain.CurrentDomain.UnhandledException += (s, e) =>
                 {
-                    FileInfo = fileInfo
+                    File.WriteAllText(
+                        Path.Combine(".", "logs", $"server-dump-{DateTime.Now:ddMMyy_hhmmss}.txt"), 
+                        e.ExceptionObject.ToString());
+
+                    logger.Fatal($"Unhandled Exception: {e.ExceptionObject}", e.ExceptionObject as Exception);
+                    logger.Flush();
                 };
+
+                manualResetEvent = new ManualResetEvent(false);
+
+                logger.Info("Server start");
+                var fileInfo = new FileInfo(Path.Combine(".", "settings.json"));
+                Settings settings;
+                
+                if (!fileInfo.Exists)
+                {
+                    logger.Debug("Create new Default Settings");
+                    settings = new Settings()
+                    {
+                        FileInfo = fileInfo
+                    };
+                    settings.Save();
+                }
+                else
+                {
+                    logger.Debug("Load Settings");
+                    settings = new Settings(fileInfo);
+                }
+                
+
+                typeContainer.Register(settings);
+                typeContainer.Register<ISettings, Settings>(settings);
+                typeContainer.Register<ServerHandler>(InstanceBehaviour.Singleton);
+                typeContainer.Get<ServerHandler>().Start();
+
+                Console.CancelKeyPress += (s, e) => manualResetEvent.Set();
+                manualResetEvent.WaitOne();
                 settings.Save();
             }
-            else
-            {
-                logger.Debug("Load Settings");
-                settings = new Settings(fileInfo);                
-            }
-
-            ServerHandler = new ServerHandler(settings);
-            ServerHandler.Start();
-
-            Console.CancelKeyPress += (s, e) => manualResetEvent.Set();
-            manualResetEvent.WaitOne();
-            settings.Save();
         }
 
 

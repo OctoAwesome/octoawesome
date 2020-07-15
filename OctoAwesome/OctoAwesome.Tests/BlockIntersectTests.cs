@@ -1,6 +1,6 @@
 ﻿using engenious;
 using System.Collections.Generic;
-using Xunit;
+using NUnit.Framework;
 
 namespace OctoAwesome.Tests
 {
@@ -11,7 +11,7 @@ namespace OctoAwesome.Tests
         /// <summary>
         /// Testet das Verhalten wenn der Playerblock zu weit Weg für eine Kollision ist
         /// </summary>
-        [Fact]
+        [Test]
         public void BlockIntersectFromOutside()
         {
             BoundingBox player = new BoundingBox(new Vector3(5, 20, 30), new Vector3(6, 21, 31));
@@ -39,7 +39,7 @@ namespace OctoAwesome.Tests
         /// <summary>
         /// Testet das Handling bei vollständiger Überschneidung
         /// </summary>
-        [Fact]
+        [Test]
         public void BlockIntersectPreviousCollision()
         {
             // X-Achse bereits links überschnitten (keine Bewegung) 
@@ -54,102 +54,102 @@ namespace OctoAwesome.Tests
 
             // X-Achse bereits links überschnitten (Bewegung nach links)
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 20, 30), new Vector3(11, 21, 31)), new Vector3(-2, 0, 0), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(-0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(-0.5f, distance);
 
             // X-Achse bereits links überschnitten (Bewegung nach rechts)
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 20, 30), new Vector3(11, 21, 31)), new Vector3(2, 0, 0), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(-0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(-0.5f, distance);
         }
 
         /// <summary>
         /// Prüfung, ob die richtigen Achsen und Distanz erkannt werden
         /// </summary>
-        [Fact]
+        [Test]
         public void BlockIntersectAxisCheck()
         {
             // Kollisionsprüfung auf +X Achse
             Axis? collisionAxis;
             float? distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 20, 30), new Vector3(9, 21, 31)), new Vector3(2, 0, 0), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Kollisionsprüfung auf -X Achse
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(12, 20, 30), new Vector3(13, 21, 31)), new Vector3(-2, 0, 0), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Kollisionsprüfung auf +Y Achse
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 18, 30), new Vector3(11, 19, 31)), new Vector3(0, 2, 0), out collisionAxis);
-            Assert.Equal(Axis.Y, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Y, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Kollisionsprüfung auf -Y Achse
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 22, 30), new Vector3(11, 23, 31)), new Vector3(0, -2, 0), out collisionAxis);
-            Assert.Equal(Axis.Y, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Y, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Kollisionsprüfung auf +Z Achse
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 20, 28), new Vector3(11, 21, 29)), new Vector3(0, 0, 2), out collisionAxis);
-            Assert.Equal(Axis.Z, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Z, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Kollisionsprüfung auf -Z Achse
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 20, 32), new Vector3(11, 21, 33)), new Vector3(0, 0, -2), out collisionAxis);
-            Assert.Equal(Axis.Z, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Z, collisionAxis);
+            Assert.Equals(0.5f, distance);
         }
 
         /// <summary>
         /// Testet Achsenpriorisierung
         /// </summary>
-        [Fact]
+        [Test]
         public void BlockIntersectDistanceCheck()
         {
             // Bewegung von links oben mit Kollision auf X
             Axis? collisionAxis;
             float? distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 18, 28), new Vector3(9, 19, 29)), new Vector3(2, 3, 3), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Bewegung von links oben mit Kollision auf Y
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 18, 28), new Vector3(9, 19, 29)), new Vector3(3, 2, 3), out collisionAxis);
-            Assert.Equal(Axis.Y, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Y, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Bewegung von links oben mit Kollision auf Z
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 18, 28), new Vector3(9, 19, 29)), new Vector3(3, 3, 2), out collisionAxis);
-            Assert.Equal(Axis.Z, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Z, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Bewegung von rechts unten mit Kollision auf X
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(12, 22, 32), new Vector3(13, 23, 33)), new Vector3(-2, -3, -3), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Bewegung von rechts unten mit Kollision auf Y
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(12, 22, 32), new Vector3(13, 23, 33)), new Vector3(-3, -2, -3), out collisionAxis);
-            Assert.Equal(Axis.Y, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Y, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // Bewegung von rechts unten mit Kollision auf Z
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(12, 22, 32), new Vector3(13, 23, 33)), new Vector3(-3, -3, -2), out collisionAxis);
-            Assert.Equal(Axis.Z, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Z, collisionAxis);
+            Assert.Equals(0.5f, distance);
         }
 
         /// <summary>
         /// Durchdrungene Achsen ignorieren
         /// </summary>
-        [Fact]
+        [Test]
         public void BlockIntersectSliding()
         {
             // X
             Axis? collisionAxis;
             float? distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 20.5f, 30), new Vector3(9, 21.5f, 31)), new Vector3(2, 0.5f, 0), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(0.5f, distance);
         }
 
         /// <summary>
@@ -160,37 +160,37 @@ namespace OctoAwesome.Tests
             // Muss trotz vollständiger Durchdringung eine Kollision ermitteln
             Axis? collisionAxis;
             float? distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(9, 19, 29), new Vector3(10, 20, 30)), new Vector3(5, 5, 5), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(1f / 3f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(1f / 3f, distance);
         }
 
         /// <summary>
         /// Testet die Kollision, wenn eine Ecke kollidiert, die nicht die Move-Ecke des Spielers ist.
         /// </summary>
-        [Fact]
+        [Test]
         public void OppositCornerIntersect()
         {
             // x
             Axis? collisionAxis;
             float? distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(8, 20, 30), new Vector3(9, 21, 31)), new Vector3(2, 1.5f, 0), out collisionAxis);
-            Assert.Equal(Axis.X, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.X, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // y
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 18, 30), new Vector3(11, 19, 31)), new Vector3(0, 2f, 1.5f), out collisionAxis);
-            Assert.Equal(Axis.Y, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Y, collisionAxis);
+            Assert.Equals(0.5f, distance);
 
             // z
             distance = Block.Intersect(block.GetCollisionBoxes(null, 0, 0, 0), new Index3(10, 20, 30), new BoundingBox(new Vector3(10, 20, 28), new Vector3(11, 21, 29)), new Vector3(0, 1.5f, 2), out collisionAxis);
-            Assert.Equal(Axis.Z, collisionAxis);
-            Assert.Equal(0.5f, distance);
+            Assert.Equals(Axis.Z, collisionAxis);
+            Assert.Equals(0.5f, distance);
         }
 
         /// <summary>
         /// Prüft das Verhalten der Kollision bei Blocks, die sich knapp übers Eck aneinander vorbei bewegen
         /// </summary>
-        [Fact]
+        [Test]
         public void NonContactCornerIntersect()
         {
             // x
@@ -201,7 +201,7 @@ namespace OctoAwesome.Tests
         }
 
         // Prüft das Entlang schlittern an einer Wand
-        [Fact]
+        [Test]
         public void SlidingWall()
         {
             // ###
@@ -237,8 +237,8 @@ namespace OctoAwesome.Tests
 
                 if (pos == new Index3(4, 3, 1) || pos == new Index3(4, 4, 1))
                 {
-                    Assert.Equal(Axis.X, collisionAxis);
-                    Assert.Equal(1f / 3f, distance);
+                    Assert.Equals(Axis.X, collisionAxis);
+                    Assert.Equals(1f / 3f, distance);
                 }
                 else
                 {
@@ -255,13 +255,13 @@ namespace OctoAwesome.Tests
 
                 if (pos == new Index3(4, 3, 1) || pos == new Index3(4, 4, 1))
                 {
-                    Assert.Equal(Axis.X, collisionAxis);
-                    Assert.Equal(0f, distance);
+                    Assert.Equals(Axis.X, collisionAxis);
+                    Assert.Equals(0f, distance);
                 }
                 else if (pos == new Index3(2, 2, 1) || pos == new Index3(3, 2, 1) || pos == new Index3(4, 2, 1))
                 {
-                    Assert.Equal(Axis.Y, collisionAxis);
-                    Assert.Equal(2f / 3f, distance);
+                    Assert.Equals(Axis.Y, collisionAxis);
+                    Assert.Equals(2f / 3f, distance);
                 }
                 else
                 {
@@ -278,13 +278,13 @@ namespace OctoAwesome.Tests
 
                 if (pos == new Index3(4, 2, 1) || pos == new Index3(4, 3, 1))
                 {
-                    Assert.Equal(Axis.X, collisionAxis);
-                    Assert.Equal(0f, distance);
+                    Assert.Equals(Axis.X, collisionAxis);
+                    Assert.Equals(0f, distance);
                 }
                 else if (pos == new Index3(2, 2, 1) || pos == new Index3(3, 2, 1))
                 {
-                    Assert.Equal(Axis.Y, collisionAxis);
-                    Assert.Equal(0, distance);
+                    Assert.Equals(Axis.Y, collisionAxis);
+                    Assert.Equals(0, distance);
                 }
                 else
                 {

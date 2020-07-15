@@ -1,123 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBCB341A-ACD0-4511-AD71-006779B90151}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OctoAwesome.Client</RootNamespace>
-    <AssemblyName>OctoClient</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Components\AssetComponent.cs" />
-    <Compile Include="Components\ChunkRenderer.cs" />
-    <Compile Include="Components\CameraComponent.cs" />
-    <Compile Include="Components\EntityComponent.cs" />
-    <Compile Include="Components\IAssetRelatedComponent.cs" />
-    <Compile Include="Components\KeyMapper.cs" />
-    <Compile Include="Components\PlayerComponent.cs" />
-    <Compile Include="Components\ScreenComponent.cs" />
-    <Compile Include="Components\SimulationComponent.cs" />
-    <Compile Include="Components\VertexPositionNormalTextureLight.cs" />
-    <Compile Include="Components\VertexPositionNormalTexturePacked.cs" />
-    <Compile Include="ContainerResourceManager.cs" />
-    <Compile Include="Controls\BindingsOptionControl.cs" />
-    <Compile Include="Controls\CompassControl.cs" />
-    <Compile Include="Controls\CrosshairControl.cs" />
-    <Compile Include="Controls\DebugControl.cs" />
-    <Compile Include="Controls\HealthBarControl.cs" />
-    <Compile Include="Controls\InventoryControl.cs" />
-    <Compile Include="Controls\MinimapControl.cs" />
-    <Compile Include="Controls\OptionsOptionControl.cs" />
-    <Compile Include="Controls\ExtensionsOptionControl.cs" />
-    <Compile Include="Controls\ResourcePacksOptionControl.cs" />
-    <Compile Include="Controls\SceneControl.cs" />
-    <Compile Include="Controls\ToolbarControl.cs" />
-    <Compile Include="Crew\CrewMember.cs" />
-    <Compile Include="Languages\OctoClient.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OctoClient.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Languages\OctoKeys.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OctoKeys.resx</DependentUpon>
-    </Compile>
-    <Compile Include="OctoGame.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourcePack.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Screens\BaseScreen.cs" />
-    <Compile Include="Screens\ConnectionScreen.cs" />
-    <Compile Include="Screens\CreateUniverseScreen.cs" />
-    <Compile Include="Screens\CreditsScreen.cs" />
-    <Compile Include="Screens\CrewMemberScreen.cs" />
-    <Compile Include="Screens\GameScreen.cs" />
-    <Compile Include="Screens\InventoryScreen.cs" />
-    <Compile Include="Screens\LoadScreen.cs" />
-    <Compile Include="Screens\MainScreen.cs" />
-    <Compile Include="Screens\TargetScreen.cs" />
-    <Compile Include="Screens\MessageScreen.cs" />
-    <Compile Include="Screens\OptionsScreen.cs" />
-    <Compile Include="Screens\PauseScreen.cs" />
-    <Compile Include="Settings.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="MonoGameUi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\MonoGameUi.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
+    <EngeniousContentReference Include="Content\Content.ecp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Components\background.png" />
@@ -137,84 +37,39 @@
     <EmbeddedResource Include="Assets\Components\progress_red.png" />
     <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
     <EmbeddedResource Include="Assets\Crew\blackorca.png" />
+    <EmbeddedResource Include="Assets\Crew\base.png" />
+    <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
     <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
     <Content Include="Content\GameFont.png" />
     <Content Include="Content\HeadlineFont.png" />
     <Content Include="Content\Hud.png" />
-    <EmbeddedResource Include="Assets\Crew\base.png" />
-    <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
     <Content Include="Copyright.txt" />
+    <None Include="de\LoadingScreenQuotes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
     <Content Include="TODO.txt" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj">
-      <Project>{b1f4d7bb-7f56-4e96-87dd-ebebae9cf336}</Project>
-      <Name>OctoAwesome.Network</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj">
-      <Project>{31D774C6-E5D9-40B7-8D63-942E28FE1D94}</Project>
-      <Name>OctoAwesome.Runtime</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj">
-      <Project>{93601db8-f134-418e-8b35-11e30cfec31c}</Project>
-      <Name>OctoAwesome</Name>
-    </ProjectReference>
+    <PackageReference Include="engenious" Version="0.4.0.6-alpha" />
+    <PackageReference Include="engenious.ContentTool" Version="0.4.0.3-alpha" />
+    <PackageReference Include="engenious.UI" Version="0.4.0-alpha" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="CompiledContent\BoldFont.xnb" />
-    <None Include="CompiledContent\GameFont.xnb" />
-    <None Include="CompiledContent\HeadlineFont.xnb" />
-    <None Include="CompiledContent\Hud.xnb" />
-    <None Include="CompiledContent\simple.xnb" />
-    <None Include="Content\BoldFont.fnt" />
-    <EngeniousContentReference Include="Content\Content.ecp" />
-    <None Include="Content\GameFont.fnt" />
-    <None Include="Content\HeadlineFont.fnt" />
-    <None Include="Content\Hud.fnt" />
-    <None Include="Content\simple.glsl">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Content\simple\simple.ps" />
-    <None Include="Content\simple\simple.vs" />
+    <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
+    <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Languages\OctoClient.de.resx" />
-    <EmbeddedResource Include="Languages\OctoClient.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>OctoClient.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Languages\OctoKeys.de.resx" />
-    <EmbeddedResource Include="Languages\OctoKeys.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>OctoKeys.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="engenious">
-      <Version>0.2.0-alpha</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

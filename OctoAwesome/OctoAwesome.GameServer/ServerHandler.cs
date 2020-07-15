@@ -1,8 +1,9 @@
 ﻿using CommandManagementSystem;
-using NLog;
+using OctoAwesome.Logging;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
+using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,25 +13,28 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.GameServer
 {
-    public class ServerHandler : IObserver<Package>
+    public class ServerHandler : IAsyncObserver<Package>
     {
         public SimulationManager SimulationManager { get; set; }
         public IUpdateHub UpdateHub { get; private set; }
 
-        private readonly Logger logger;
+        private readonly ILogger logger;
         private readonly Server server;
         private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
 
-        public ServerHandler(ISettings settings)
+        public ServerHandler()
         {
-            logger = LogManager.GetCurrentClassLogger();
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
 
-            var updateHub = new UpdateHub();
-            UpdateHub = updateHub;
+            TypeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<Server>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<SimulationManager>(InstanceBehaviour.Singleton);
 
-            server = new Server();
+            SimulationManager = TypeContainer.Get<SimulationManager>();
+            UpdateHub = TypeContainer.Get<IUpdateHub>();
+            server = TypeContainer.Get<Server>();
 
-            SimulationManager = new SimulationManager(settings, updateHub);
             defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
 
@@ -48,40 +52,44 @@ namespace OctoAwesome.GameServer
             e.NetworkChannelSubscription = UpdateHub.Subscribe(e, DefaultChannels.Network);
         }
 
-        public void OnNext(Package value)
+        public async Task OnNext(Package value)
         {
-            Task.Run(() =>
+            if (value.Command == 0 && value.Payload.Length == 0)
             {
-                if (value.Command == 0 && value.Payload.Length == 0)
-                {
-                    logger.Debug("Received null package");
-                    return;
-                }
-                logger.Trace("Received a new Package with ID: " + value.UId);
-                try
-                {
-                    value.Payload = defaultManager.Dispatch(value.Command,new CommandParameter(value.BaseClient.Id, value.Payload));
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Dispatch failed in Command " + value.Command);
-                    return;
-                }
+                logger.Debug("Received null package");
+                return;
+            }
+            logger.Trace("Received a new Package with ID: " + value.UId);
+            try
+            {
+                value.Payload = defaultManager.Dispatch(value.Command, new CommandParameter(value.BaseClient.Id, value.Payload));
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Dispatch failed in Command " + value.OfficialCommand, ex);
+                return;
+            }
 
-                logger.Trace(value.Command);
+            logger.Trace(value.OfficialCommand);
 
-                if (value.Payload == null)
-                    return;
+            if (value.Payload == null)
+            {
+                logger.Trace($"Payload is null, returning from Command {value.OfficialCommand} without sending return package.");
+                return;
+            }
 
-                value.BaseClient.SendPackage(value);
-            });
+           await value.BaseClient.SendPackageAsync(value);
         }
 
-        public void OnError(Exception error)
-            => throw error;
-
-        public void OnCompleted()
+        public Task OnError(Exception error)
         {
+            logger.Error(error.Message, error);
+            return Task.CompletedTask;
+        }
+
+        public Task OnCompleted()
+        {
+            return Task.CompletedTask;
         }
     }
 }

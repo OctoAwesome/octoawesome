@@ -75,14 +75,15 @@ namespace OctoAwesome.Runtime
 
             var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : new string[0];
 
-            List<Type> result = new List<Type>();
+            var result = new List<Type>();
             foreach (var assembly in assemblies)
             {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (!typeof(IExtension).IsAssignableFrom(type))
-                        continue;
+                var types = assembly
+                    .GetTypes()
+                    .Where(t => typeof(IExtension).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
+                foreach (var type in types)
+                {
                     try
                     {
                         IExtension extension = (IExtension)Activator.CreateInstance(type);
@@ -93,7 +94,7 @@ namespace OctoAwesome.Runtime
                         else
                             ActiveExtensions.Add(extension);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // TODO: Logging
                     }

@@ -9,7 +9,7 @@ namespace OctoAwesome.Tests
     internal class TestChunkColumn : ChunkColumn
     {
         public TestChunkColumn (int planet, Index2 pos)
-            :base(new[]{new Chunk(new Index3(pos,0),planet)},planet,pos)
+            :base(new[]{new Chunk(new Index3(pos,0),planet)},planet,pos, null)
         {
         }
     }

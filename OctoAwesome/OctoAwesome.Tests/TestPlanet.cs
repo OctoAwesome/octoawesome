@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Tests
 {
@@ -26,9 +27,12 @@ namespace OctoAwesome.Tests
 
         public float Gravity => throw new NotImplementedException();
 
+        public IGlobalChunkCache GlobalChunkCache { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IUpdateHub UpdateHub { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager) => throw new NotImplementedException();
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager) => throw new NotImplementedException();
+        public void Deserialize(BinaryReader reader) => throw new NotImplementedException();
+        public void Dispose() => throw new NotImplementedException();
+        public void Serialize(BinaryWriter writer) => throw new NotImplementedException();
     }
 }

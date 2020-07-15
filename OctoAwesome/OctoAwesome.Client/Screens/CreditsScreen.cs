@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OctoAwesome.Client.Components;
-using MonoGameUi;
+using engenious.UI;
 using engenious;
 using OctoAwesome.Client.Crew;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -37,7 +38,7 @@ namespace OctoAwesome.Client.Screens
 
             foreach(CrewMember member in crew)
             {
-                Button memberButton = Button.TextButton(manager, member.Username);
+                Button memberButton = new TextButton(manager, member.Username);
                 memberButton.HorizontalAlignment = HorizontalAlignment.Stretch;
                 memberButton.Margin = new Border(5, 5, 5, 5);
 

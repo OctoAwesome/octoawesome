@@ -28,18 +28,18 @@ namespace OctoAwesome.EntityComponents
             Height = 1;
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public override void Serialize(BinaryWriter writer)
         {
-            base.Serialize(writer, definitionManager);
+            base.Serialize(writer);
 
             writer.Write(Mass);
             writer.Write(Radius);
             writer.Write(Height);
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader);
 
             Mass = reader.ReadSingle();
             Radius = reader.ReadSingle();

@@ -1,5 +1,6 @@
 ﻿using engenious;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Screens;
 
@@ -88,7 +89,7 @@ namespace OctoAwesome.Client.Controls
             };
             mapPathStack.Controls.Add(mapPath);
 
-            Button changePath = Button.TextButton(manager, Languages.OctoClient.ChangePath);
+            Button changePath = new TextButton(manager, Languages.OctoClient.ChangePath);
             changePath.HorizontalAlignment = HorizontalAlignment.Center;
             changePath.Height = 40;
             changePath.LeftMouseClick += (s, e) => ChangePath();

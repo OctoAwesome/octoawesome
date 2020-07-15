@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.Entities
 
         protected override void OnInitialize(IResourceManager manager)
         {
-            Cache = new LocalChunkCache(manager.GlobalChunkCache, true, 2, 1);
+            //Cache = new LocalChunkCache(manager.GlobalChunkCache, true, 2, 1);
         }
 
         public override void Update(GameTime gameTime)
@@ -46,7 +46,9 @@ namespace OctoAwesome.Basics.Entities
 
         public override void RegisterDefault()
         {
-            Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) });
+            var posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
+
+            Components.AddComponent(posComponent);
             Components.AddComponent(new GravityComponent());
             Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
@@ -54,6 +56,7 @@ namespace OctoAwesome.Basics.Entities
             Components.AddComponent(new BoxCollisionComponent());
             Components.AddComponent(new ControllableComponent());
             Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 2, 1));
         }
     }
 }

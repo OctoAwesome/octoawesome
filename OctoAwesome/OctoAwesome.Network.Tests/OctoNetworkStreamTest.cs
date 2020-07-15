@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace OctoAwesome.Network.Tests
 {
-    [TestClass]
+    [TestOf(typeof(OctoNetworkStream))]
     public class OctoNetworkStreamTest
     {
         private OctoNetworkStream testStream;
@@ -19,7 +19,7 @@ namespace OctoAwesome.Network.Tests
             rand = new Random();
         }
 
-        [TestMethod]
+        [Test]
         public void WriteTest()
         {
             var buffer = new byte[500];
@@ -28,7 +28,7 @@ namespace OctoAwesome.Network.Tests
             testStream.Write(buffer, 0, buffer.Length);
         }
 
-        [TestMethod]
+        [Test]
         public void ReadTest()
         {
             var buffer = new byte[500];
@@ -42,7 +42,7 @@ namespace OctoAwesome.Network.Tests
             Assert.IsTrue(buffer.SequenceEqual(resultTest));
         }
 
-        [TestMethod]
+        [Test]
         public void RingTest()
         {
             var buffer = new byte[500];

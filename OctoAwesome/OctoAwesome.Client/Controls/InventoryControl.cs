@@ -1,6 +1,7 @@
 ﻿using engenious;
 using engenious.Graphics;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 
 namespace OctoAwesome.Client.Controls

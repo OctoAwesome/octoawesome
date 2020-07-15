@@ -1,4 +1,4 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
 using System;
@@ -9,6 +9,7 @@ using System.Text;
 using engenious;
 using engenious.Graphics;
 using OctoAwesome.EntityComponents;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Controls
 {

@@ -18,14 +18,12 @@ namespace OctoAwesome
         /// <summary>
         /// Der Index des Planeten.
         /// </summary>
-        int Planet { get; }
+        IPlanet Planet { get; }
 
         /// <summary>
         /// Die Position der Säule.
         /// </summary>
         Index2 Index { get; }
-
-        int ChangeCounter { get; set; }
 
         /// <summary>
         /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
@@ -36,11 +34,6 @@ namespace OctoAwesome
         /// Die Chunks der Säule.
         /// </summary>
         IChunk[] Chunks { get; }
-
-        /// <summary>
-        /// Auflistung aller sich in dieser Column befindenden Entitäten.
-        /// </summary>
-        IEntityList Entities { get; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -58,7 +51,7 @@ namespace OctoAwesome
         /// <returns>Block-ID der angegebenen Koordinate</returns>
         ushort GetBlock(int x, int y, int z);
 
-        event Action<IChunkColumn, IChunk, int> Changed;
+        event Action<IChunkColumn, IChunk> Changed;
 
         /// <summary>
         /// Überschreibt den Block an der angegebenen Position.
@@ -113,8 +106,13 @@ namespace OctoAwesome
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
-        void SetCache(IGlobalChunkCache globalChunkCache);
         void OnUpdate(Notifications.SerializableNotification notification);
         void Update(Notifications.SerializableNotification notification);
+        void ForEachEntity(Action<Entity> action);
+        IEnumerable<FailEntityChunkArgs> FailChunkEntity();
+        void Remove(Entity entity);
+        void Add(Entity entity);
+        void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos);
+        void FlagDirty();
     }
 }

@@ -10,7 +10,7 @@ namespace OctoAwesome
         /// <summary>
         /// Referenz auf den Planeten.
         /// </summary>
-        int Planet { get; }
+        IPlanet Planet { get; }
 
         /// <summary>
         /// Chunk-Position innerhalb des Planeten.
@@ -28,17 +28,6 @@ namespace OctoAwesome
         /// Der Index ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
         /// </summary>
         int[] MetaData { get; }
-
-        /// <summary>
-        /// Verzweigtes Array, das die Ressourcen zu den Blöcken eines Chunks enthält.
-        /// Der Index der ersten Dimension ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
-        /// </summary>
-        //ushort[][] Resources { get; }
-
-        /// <summary>
-        /// Veränderungs-Counter zur Ermittlung von Änderungen.<para/>
-        /// </summary>
-        int ChangeCounter { get; set; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -74,7 +63,7 @@ namespace OctoAwesome
         /// <param name="block">Die neue Block-ID</param>
         void SetBlock(int x, int y, int z, ushort block, int meta = 0);
 
-        void SetBlock(int flatIndex, ushort block, int meta = 0);
+        void SetBlock(int flatIndex, BlockInfo blockInfo);
 
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
@@ -115,7 +104,9 @@ namespace OctoAwesome
         void SetColumn(IChunkColumn chunkColumn);
         void Update(Notifications.SerializableNotification notification);
         void OnUpdate(Notifications.SerializableNotification notification);
+        void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos);
 
-        event Action<IChunk, int> Changed;
+        event Action<IChunk> Changed;
+        void FlagDirty();
     }
 }
