@@ -1,8 +1,8 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Tests
 {
