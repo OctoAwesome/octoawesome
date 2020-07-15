@@ -175,7 +175,6 @@ namespace OctoAwesome.Client.Components
             }
             var chunk = this.chunk;
             List<VertexPositionNormalTextureLight> vertices = new List<VertexPositionNormalTextureLight>();
-            List<int> index = new List<int>();
             int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
             float textureWidth = 1f / textureColumns;
             float texelSize = 1f / SceneControl.TEXTURESIZE;
@@ -271,12 +270,6 @@ namespace OctoAwesome.Client.Components
                                     uvOffsets[(4 + rotation) % 4],
                                     (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Top, _manager, globalX, globalY, globalZ)),
                                     0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
                         }
 
                         ushort bottomBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y, z - 1));
@@ -321,12 +314,6 @@ namespace OctoAwesome.Client.Components
                                     uvOffsets[(4 + rotation) % 4],
                                     (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Bottom, _manager, globalX, globalY, globalZ)),
                                     0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
                         }
 
                         ushort southBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y + 1, z));
@@ -370,12 +357,6 @@ namespace OctoAwesome.Client.Components
                                     uvOffsets[(4 + rotation) % 4],
                                     (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Front, _manager, globalX, globalY, globalZ)),
                                     0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
                         }
 
                         ushort northBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x, y - 1, z));
@@ -419,12 +400,6 @@ namespace OctoAwesome.Client.Components
                                     uvOffsets[(6 + rotation) % 4],
                                     (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Back, _manager, globalX, globalY, globalZ)),
                                     0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
                         }
 
                         ushort westBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x - 1, y, z));
@@ -469,12 +444,6 @@ namespace OctoAwesome.Client.Components
                                     uvOffsets[(5 + rotation) % 4],
                                     (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Left, _manager, globalX, globalY, globalZ)),
                                     0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
                         }
 
                         ushort eastBlock = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x + 1, y, z));
@@ -519,45 +488,41 @@ namespace OctoAwesome.Client.Components
                                     uvOffsets[(7 + rotation) % 4],
                                     (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Right, _manager, globalX, globalY, globalZ)),
                                     0));
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 1);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 0);
-                            index.Add(localOffset + 3);
-                            index.Add(localOffset + 2);
                         }
                     }
                 }
             }
 
             vertexCount = vertices.Count;
-            indexCount = index.Count;
-
+            indexCount = vertices.Count * 6 / 4;
 
             if (vertexCount > 0)
             {
-                    Dispatch(() =>
+                Dispatch(() =>
+                {
+                    if (vb == null || ib == null)
                     {
-                        if (vb == null || ib == null)
-                        {
-                            vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount + 2);
-                        }
-                        if (vertexCount + 2 > vb.VertexCount)
-                            vb.Resize(vertexCount + 2);
+                        vb = new VertexBuffer(graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount + 2);
+                    }
+                    if (vertexCount + 2 > vb.VertexCount)
+                        vb.Resize(vertexCount + 2);
 
 
-                        vb.SetData(vertices.ToArray());
-                    });
+                    vb.SetData(vertices.ToArray());
+                });
             }
 
-            
             lock (this)
             {
-                loaded = true;
-            }
+                if (chunk != null && chunk.Index != ChunkPosition)
+                {
+                    return loaded;
+                }
 
-            NeedsUpdate |=  chunk != this.chunk;
-            return !NeedsUpdate;
+                loaded = true;
+                NeedsUpdate |= chunk != this.chunk;
+                return !NeedsUpdate;
+            }
         }
 
         public void Dispose()

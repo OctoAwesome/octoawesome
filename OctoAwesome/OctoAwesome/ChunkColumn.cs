@@ -436,6 +436,9 @@ namespace OctoAwesome
 
         public void FlagDirty()
         {
+            if (Chunks is null)
+                return;
+
             foreach (var chunk in Chunks)
             {
                 chunk.FlagDirty();

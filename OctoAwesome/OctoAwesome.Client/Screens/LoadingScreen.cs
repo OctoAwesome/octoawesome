@@ -79,7 +79,7 @@ namespace OctoAwesome.Client.Screens
                 Padding = Border.All(10),
             };
 
-            quoteUpdate = Task.Run(async () => await UpdateLabel(text, loadingQuoteProvider, TimeSpan.FromSeconds(1), tokenSource.Token));
+            quoteUpdate = Task.Run(async () => await UpdateLabel(text, loadingQuoteProvider, TimeSpan.FromSeconds(1.5), tokenSource.Token));
             mainGrid.AddControl(text, 1, 1);
 
 
