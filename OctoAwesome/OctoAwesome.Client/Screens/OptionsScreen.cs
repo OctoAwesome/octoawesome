@@ -56,6 +56,7 @@ namespace OctoAwesome.Client.Screens
             #region BindingsPage
 
             TabPage bindingsPage = new TabPage(manager, Languages.OctoClient.KeyBindings);
+            bindingsPage.Padding = Border.All(10);
             tabs.Pages.Add(bindingsPage);
 
             BindingsOptionControl bindingsOptions = new BindingsOptionControl(manager)

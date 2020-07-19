@@ -31,6 +31,7 @@ namespace OctoAwesome.Client.Screens
 
             StackPanel crewList = new StackPanel(manager) {
                 MinWidth = 700,
+                Padding = new Border(10, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Orientation = Orientation.Vertical,
             };

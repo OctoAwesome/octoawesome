@@ -24,7 +24,7 @@ namespace OctoAwesome.Client.Screens
 
             Title = Languages.OctoClient.CreditsCrew + ": " + member.Username;
 
-            SpriteFont boldFont = manager.Content.Load<SpriteFont>("BoldFont");
+            SpriteFont boldFont = manager.Content.Load<SpriteFont>("Fonts/BoldFont");
 
             Padding = new Border(0, 0, 0, 0);
 
@@ -77,7 +77,7 @@ namespace OctoAwesome.Client.Screens
             Label username = new Label(manager)
             {
                 Text = usernameText,
-                Font = manager.Content.Load<SpriteFont>("HeadlineFont"),
+                Font = manager.Content.Load<SpriteFont>("Fonts/HeadlineFont"),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };

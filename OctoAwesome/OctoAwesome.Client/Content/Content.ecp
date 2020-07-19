@@ -49,24 +49,24 @@
       <Name>Fonts</Name>
       <Contents>
         <ContentFile>
-          <Name>BoldFont.fnt</Name>
-          <Processor>FontProcessor</Processor>
-          <Importer>FontImporter</Importer>
+          <Name>BoldFont.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
         </ContentFile>
         <ContentFile>
-          <Name>GameFont.fnt</Name>
-          <Processor>FontProcessor</Processor>
-          <Importer>FontImporter</Importer>
+          <Name>GameFont.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
         </ContentFile>
         <ContentFile>
-          <Name>HeadlineFont.fnt</Name>
-          <Processor>FontProcessor</Processor>
-          <Importer>FontImporter</Importer>
+          <Name>HeadlineFont.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
         </ContentFile>
         <ContentFile>
-          <Name>Hud.fnt</Name>
-          <Processor>FontProcessor</Processor>
-          <Importer>FontImporter</Importer>
+          <Name>Hud.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
         </ContentFile>
       </Contents>
     </ContentFolder>
