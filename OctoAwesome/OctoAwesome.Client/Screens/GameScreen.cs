@@ -92,10 +92,10 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 1f);
-            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-1f, 0f);
-            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -1f);
-            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(1f, 0f);
+            if (pressedMoveUp) Manager.Player.MoveInput += new Vector2(0f, 10f);
+            if (pressedMoveLeft) Manager.Player.MoveInput += new Vector2(-10f, 0f);
+            if (pressedMoveDown) Manager.Player.MoveInput += new Vector2(0f, -10f);
+            if (pressedMoveRight) Manager.Player.MoveInput += new Vector2(10f, 0f);
             if (pressedHeadUp) Manager.Player.HeadInput += new Vector2(0f, 1f);
             if (pressedHeadDown) Manager.Player.HeadInput += new Vector2(0f, -1f);
             if (pressedHeadLeft) Manager.Player.HeadInput += new Vector2(-1f, 0f);
@@ -285,6 +285,16 @@ namespace OctoAwesome.Client.Screens
                         Manager.Game.Player.Position.Position = new Coordinate(0, new Index3(x, y, 300), new Vector3());
                         Manager.NavigateBack();
                     }, Manager.Game.Player.Position.Position.GlobalBlockIndex.X, Manager.Game.Player.Position.Position.GlobalBlockIndex.Y));
+            });
+            Manager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) return;
+                ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
+            });
+            Manager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) return;
+                ChunkRenderer.OverrideLightLevel= ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
         }
 

@@ -13,8 +13,8 @@ namespace OctoAwesome.Client.Components
         static VertexPositionNormalTextureLight()
         {
             VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2, 
-                new VertexElement(0, VertexElementFormat.Rgba32, VertexElementUsage.Position, 0), 
-                new VertexElement(sizeof(uint), VertexElementFormat.Rgba32, VertexElementUsage.Normal, 0));
+                new VertexElement(0, VertexElementFormat.Single, VertexElementUsage.Position, 0), 
+                new VertexElement(sizeof(uint), VertexElementFormat.Single, VertexElementUsage.Normal, 0));
         }
         public VertexPositionNormalTextureLight(Vector3 position, Vector3 normal, Vector2 uv,byte layer,uint light)
         {

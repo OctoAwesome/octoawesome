@@ -207,4 +207,10 @@
   <data name="teleport" xml:space="preserve">
     <value>Teleport</value>
   </data>
+  <data name="toggleAmbientOcclusion" xml:space="preserve">
+    <value>Toggle Ambient Occlusion</value>
+  </data>
+  <data name="toggleWireFrame" xml:space="preserve">
+    <value>Toggle Wireframe</value>
+  </data>
 </root>
