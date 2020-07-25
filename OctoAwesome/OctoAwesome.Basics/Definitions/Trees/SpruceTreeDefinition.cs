@@ -48,7 +48,7 @@ namespace OctoAwesome.Basics.Definitions.Trees
             water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
         }
 
-        public override void PlantTree(IDefinitionManager definitionManager, IPlanet planet, Index3 index, LocalBuilder builder, int seed)
+        public override void PlantTree(IPlanet planet, Index3 index, LocalBuilder builder, int seed)
         {
             ushort ground = builder.GetBlock(0, 0, -1);
             if (ground == water) return;
@@ -59,10 +59,13 @@ namespace OctoAwesome.Basics.Definitions.Trees
 
             builder.FillSphere(0, 0, height, radius, leave);
 
+            var infos = new BlockInfo[height + 2];
             for (int i = 0; i < height + 2; i++)
             {
-                builder.SetBlock(0, 0, 0 + i, wood);
+                infos[i] = (0, 0, i, wood);
             }
+            builder.SetBlocks(false, infos);
+         
         }
     }
 }

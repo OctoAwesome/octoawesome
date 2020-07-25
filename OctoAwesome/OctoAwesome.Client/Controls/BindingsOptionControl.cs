@@ -1,6 +1,7 @@
 ﻿using engenious;
 using engenious.Input;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Screens;
 using System.Linq;

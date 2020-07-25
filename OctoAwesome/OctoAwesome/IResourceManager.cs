@@ -1,5 +1,7 @@
 using OctoAwesome.Notifications;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace OctoAwesome
 {
@@ -22,7 +24,7 @@ namespace OctoAwesome
         /// Lädt das Universum für die angegebene GUID.
         /// </summary>
         /// <param name="universeId">Die Guid des Universums.</param>
-        void LoadUniverse(Guid universeId);
+        bool TryLoadUniverse(Guid universeId);
 
         /// <summary>
         /// Das aktuell geladene Universum.
@@ -71,17 +73,19 @@ namespace OctoAwesome
         /// <param name="planetId">Die Planteten-ID des gewünschten Planeten</param>
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
+        ConcurrentDictionary<int, IPlanet> Planets { get; }
 
-        /// <summary>
-        /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.
-        /// </summary>
-        IGlobalChunkCache GlobalChunkCache { get; }
-        
         IUpdateHub UpdateHub { get; }
 
         Player CurrentPlayer { get; }
 
         void SaveEntity(Entity entity);
         void SaveChunkColumn(IChunkColumn value);
+        IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
+        Entity LoadEntity(Guid entityId);
+        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent;
+        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : EntityComponent;
+        IEnumerable<Guid> GetEntityIds();
+        IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(IEnumerable<Guid> entityIds) where T : EntityComponent, new();
     }
 }

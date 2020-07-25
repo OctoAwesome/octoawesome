@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using System;
 
 namespace OctoAwesome
@@ -58,13 +59,6 @@ namespace OctoAwesome
         public int[] MetaData { get; private set; }
 
         /// <summary>
-        /// Verzweigtes Array, das die Ressourcen zu den Blöcken eines Chunks enthält.
-        /// Der Index der ersten Dimension ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
-        /// </summary>
-        //public ushort[][] Resources { get; private set; }
-
-
-        /// <summary>
         /// Chunk Index innerhalb des Planeten.
         /// </summary>
         public Index3 Index { get; private set; }
@@ -72,28 +66,20 @@ namespace OctoAwesome
         /// <summary>
         /// Referenz auf den Planeten.
         /// </summary>
-        public int Planet { get; private set; }
-
-        /// <summary>
-        /// Ein Counter, der jede Veränderung durch SetBlock gemacht wird. Kann 
-        /// dazu verwendet werden herauszufinden, ob es Änderungen gab.<para/>
-        /// </summary>
-        public int ChangeCounter { get; set; }
+        public IPlanet Planet { get; private set; }
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Chunk
         /// </summary>
         /// <param name="pos">Position des Chunks</param>
         /// <param name="planet">Index des Planeten</param>
-        public Chunk(Index3 pos, int planet)
+        public Chunk(Index3 pos, IPlanet planet)
         {
             Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
             MetaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
-            //Resources = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z][];
 
             Index = pos;
             Planet = planet;
-            ChangeCounter = 0;
         }
 
         /// <summary>
@@ -137,16 +123,37 @@ namespace OctoAwesome
         /// <param name="block">Die neue Block-ID</param>
         /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
-            => SetBlock(GetFlatIndex(x, y, z), block, meta);
-        public void SetBlock(int flatIndex, ushort block, int meta = 0)
+            => SetBlock(GetFlatIndex(x, y, z), new BlockInfo(x, y, z, block, meta));
+        public void SetBlock(int flatIndex, BlockInfo blockInfo)
         {
-            Blocks[flatIndex] = block;
-            MetaData[flatIndex] = meta;
-            ChangeCounter++;
-            Changed?.Invoke(this, ChangeCounter);
+            Blocks[flatIndex] = blockInfo.Block;
+            MetaData[flatIndex] = blockInfo.Meta;
+            Changed?.Invoke(this);
 
-            BlockChanged(flatIndex, block, meta);
+            BlockChanged(blockInfo);
         }
+
+        public void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos)
+        {
+            for (int i = 0; i < blockInfos.Length; i++)
+            {
+                var flatIndex = GetFlatIndex(blockInfos[i].Position);
+                Blocks[flatIndex] = blockInfos[i].Block;
+                MetaData[flatIndex] = blockInfos[i].Meta;
+            }
+            if (issueNotification)
+            {
+                Changed?.Invoke(this);
+
+                BlocksChanged(blockInfos);
+            }
+        }
+
+        public void FlagDirty()
+        {
+            Changed?.Invoke(this);
+        }
+
 
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
@@ -170,8 +177,7 @@ namespace OctoAwesome
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
             MetaData[GetFlatIndex(x, y, z)] = meta;
-            ChangeCounter++;
-            Changed?.Invoke(this, ChangeCounter);
+            Changed?.Invoke(this);
         }
 
         /// <summary>
@@ -183,7 +189,7 @@ namespace OctoAwesome
         /// <returns>Ein Array aller Ressourcen des Blocks</returns>
         public ushort[] GetBlockResources(int x, int y, int z)
         {
-            return new ushort[0];// Resources[GetFlatIndex(x, y, z)];
+            return Array.Empty<ushort>();
         }
 
         /// <summary>
@@ -195,9 +201,7 @@ namespace OctoAwesome
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
-            //Resources[GetFlatIndex(x, y, z)] = resources;
-            ChangeCounter++;
-            Changed?.Invoke(this, ChangeCounter);
+            Changed?.Invoke(this);
         }
 
         public void SetColumn(IChunkColumn chunkColumn)
@@ -208,14 +212,50 @@ namespace OctoAwesome
 
         public void Update(SerializableNotification notification)
         {
-            if (notification is ChunkNotification chunkNotification)
+            if (notification is BlockChangedNotification blockChanged)
             {
-                Blocks[chunkNotification.FlatIndex] = chunkNotification.Block;
-                MetaData[chunkNotification.FlatIndex] = chunkNotification.Meta;
-                ChangeCounter++;
-                Changed?.Invoke(this, ChangeCounter);
+                var flatIndex = GetFlatIndex(blockChanged.BlockInfo.Position);
+                Blocks[flatIndex] = blockChanged.BlockInfo.Block;
+                MetaData[flatIndex] = blockChanged.BlockInfo.Meta;
+                Changed?.Invoke(this);
+            }
+            else if (notification is BlocksChangedNotification blocksChanged)
+            {
+                foreach (var block in blocksChanged.BlockInfos)
+                {
+                    var flatIndex = GetFlatIndex(block.Position);
+                    Blocks[flatIndex] = block.Block;
+                    MetaData[flatIndex] = block.Meta;
+                }
+
+                Changed?.Invoke(this);
             }
         }
+
+        private void BlockChanged(BlockInfo blockInfo)
+        {
+            var notification = TypeContainer.Get<IPool<BlockChangedNotification>>().Get();
+            notification.BlockInfo = blockInfo;
+            notification.ChunkPos = Index;
+            notification.Planet = Planet.Id;
+
+            OnUpdate(notification);
+
+            notification.Release();
+        }
+        private void BlocksChanged(params BlockInfo[] blockInfos)
+        {
+            var notification = TypeContainer.Get<IPool<BlocksChangedNotification>>().Get();
+            notification.BlockInfos = blockInfos;
+            notification.ChunkPos = Index;
+            notification.Planet = Planet.Id;
+
+            OnUpdate(notification);
+
+            notification.Release();
+        }
+
+        public event Action<IChunk> Changed;
 
         /// <summary>
         /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb
@@ -225,23 +265,23 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate</param>
         /// <param name="z">Z-Anteil der Koordinate</param>
         /// <returns>Index innerhalb des flachen Arrays</returns>
-        private int GetFlatIndex(int x, int y, int z)
+        public static int GetFlatIndex(int x, int y, int z)
         {
             return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
                    | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
-                   | ((x & (CHUNKSIZE_X - 1)));
+                   | (x & (CHUNKSIZE_X - 1));
         }
-
-        private void BlockChanged(int index, ushort block, int meta)
-            => OnUpdate(new ChunkNotification()
-            {
-                FlatIndex = index,
-                Block = block,
-                Meta = meta,
-                ChunkPos = Index,
-                Planet = Planet
-            });
-
-        public event Action<IChunk, int> Changed;
+        /// <summary>
+        /// Liefert den Index des Blocks im abgeflachten Block-Array der angegebenen 3D-Koordinate zurück. Sollte die Koordinate ausserhalb
+        /// der Chunkgrösse liegen, wird dies gewrapt.
+        /// </summary>
+        /// <param name="position">Die aktuelle Blockposition</param>
+        /// <returns>Index innerhalb des flachen Arrays</returns>
+        public static int GetFlatIndex(Index3 position)
+        {
+            return ((position.Z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
+                   | ((position.Y & (CHUNKSIZE_Y - 1)) << LimitX)
+                   | (position.X & (CHUNKSIZE_X - 1));
+        }
     }
 }

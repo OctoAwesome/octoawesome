@@ -10,7 +10,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity : ISerializable
+    public abstract class Entity : ISerializable, IIdentification
     {
         /// <summary>
         /// Contains all Components.
@@ -18,21 +18,15 @@ namespace OctoAwesome
         public ComponentList<EntityComponent> Components { get; private set; }
 
         /// <summary>
-        /// Temp Id
+        /// Id
         /// </summary>
-        public int Id { get; internal set; }
+        public Guid Id { get; internal set; }
 
         /// <summary>
         /// Reference to the active Simulation.
         /// </summary>
         public Simulation Simulation { get; internal set; }
 
-       
-
-        /// <summary>
-        /// LocalChunkCache für die Entity
-        /// </summary>
-        public ILocalChunkCache Cache { get; protected set; }
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
@@ -40,17 +34,32 @@ namespace OctoAwesome
         public Entity()
         {
             Components = new ComponentList<EntityComponent>(
-                ValidateAddComponent, ValidateRemoveComponent,OnAddComponent,OnRemoveComponent);
+                ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
+            Id = Guid.Empty;
         }
 
         private void OnRemoveComponent(EntityComponent component)
         {
-            
+
         }
 
         private void OnAddComponent(EntityComponent component)
         {
             component.SetEntity(this);
+
+            //HACK: Remove PositionComponent Dependency
+            if (component is LocalChunkCacheComponent cacheComponent)
+            {
+                if (cacheComponent.LocalChunkCache != null)
+                    return;
+
+                var positionComponent = Components.GetComponent<PositionComponent>();
+
+                if (positionComponent == null)
+                    return;
+
+                cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
+            }
         }
 
         private void ValidateAddComponent(EntityComponent component)
@@ -78,23 +87,21 @@ namespace OctoAwesome
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public virtual void Serialize(BinaryWriter writer)
         {
-            writer.Write(Id);
+            writer.Write(Id.ToByteArray());
 
-            Components.Serialize(writer, definitionManager);
+            Components.Serialize(writer);
         }
 
         /// <summary>
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        /// <param name="definitionManager">Der aktuell verwendete <see cref="IDefinitionManager"/>.</param>
-        public virtual void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public virtual void Deserialize(BinaryReader reader)
         {
-            Id = reader.ReadInt32();
-            Components.Deserialize(reader, definitionManager);
+            Id = new Guid(reader.ReadBytes(16));
+            Components.Deserialize(reader);
         }
 
         public virtual void RegisterDefault()
@@ -102,7 +109,8 @@ namespace OctoAwesome
 
         }
 
-        public override int GetHashCode() => Id;
+        public override int GetHashCode()
+            => Id.GetHashCode();
 
         public override bool Equals(object obj)
         {
@@ -122,6 +130,6 @@ namespace OctoAwesome
             foreach (var component in Components)
                 component?.OnUpdate(notification);
         }
-        
+
     }
 }

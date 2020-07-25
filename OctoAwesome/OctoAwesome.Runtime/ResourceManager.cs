@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
+using OctoAwesome.Threading;
 
 namespace OctoAwesome.Runtime
 {
@@ -22,20 +27,15 @@ namespace OctoAwesome.Runtime
             }
             private set => player = value;
         }
-        /// <summary>
-        /// Der <see cref="IGlobalChunkCache"/>, der im Spiel verwendet werden soll.
-        /// </summary>
-        public IGlobalChunkCache GlobalChunkCache => globalChunkCache;
+
         public IUpdateHub UpdateHub { get; private set; }
 
-        private Guid DEFAULT_UNIVERSE = Guid.Parse("{3C4B1C38-70DC-4B1D-B7BE-7ED9F4B1A66D}");
         private readonly bool disablePersistence = false;
-        private IPersistenceManager persistenceManager = null;
-        private GlobalChunkCache globalChunkCache = null;
+        private readonly IPersistenceManager persistenceManager = null;
+        private readonly ILogger logger;
         private readonly List<IMapPopulator> populators = null;
-        private Dictionary<int, IPlanet> planets;
         private Player player;
-        private readonly SemaphoreSlim semaphoreSlim;
+        private readonly LockSemaphore semaphoreSlim;
 
         /// <summary>
         /// Das aktuell geladene Universum.
@@ -43,8 +43,13 @@ namespace OctoAwesome.Runtime
         public IUniverse CurrentUniverse { get; private set; }
 
         public IDefinitionManager DefinitionManager { get; private set; }
+        public ConcurrentDictionary<int, IPlanet> Planets { get; }
 
-        private IExtensionResolver extensionResolver;
+        private readonly IExtensionResolver extensionResolver;
+
+        private readonly CountedScopeSemaphore loadingSemaphore;
+        private CancellationToken currentToken;
+        private CancellationTokenSource tokenSource;
 
         /// <summary>
         /// Konstruktor
@@ -54,20 +59,17 @@ namespace OctoAwesome.Runtime
         /// <param name="settings">Einstellungen</param>
         public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager)
         {
-            semaphoreSlim = new SemaphoreSlim(1, 1);
+            semaphoreSlim = new LockSemaphore(1, 1);
+            loadingSemaphore = new CountedScopeSemaphore();
             this.extensionResolver = extensionResolver;
             DefinitionManager = definitionManager;
             this.persistenceManager = persistenceManager;
 
+            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ResourceManager));
+
             populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
 
-            globalChunkCache = new GlobalChunkCache(
-                (p, i) => LoadChunkColumn(p, i),
-                (i) => GetPlanet(i),
-                (p, i, c) => SaveChunkColumn(p, i, c));
-
-
-            planets = new Dictionary<int, IPlanet>();
+            Planets = new ConcurrentDictionary<int, IPlanet>();
 
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
         }
@@ -85,10 +87,20 @@ namespace OctoAwesome.Runtime
         /// <returns>Die Guid des neuen Universums.</returns>
         public Guid NewUniverse(string name, int seed)
         {
-            Guid guid = Guid.NewGuid();
-            CurrentUniverse = new Universe(guid, name, seed);
-            persistenceManager.SaveUniverse(CurrentUniverse);
-            return guid;
+            if (CurrentUniverse != null)
+                UnloadUniverse();
+
+            using (loadingSemaphore.EnterScope())
+            {
+                tokenSource?.Dispose();
+                tokenSource = new CancellationTokenSource();
+                currentToken = tokenSource.Token;
+
+                Guid guid = Guid.NewGuid();
+                CurrentUniverse = new Universe(guid, name, seed);
+                persistenceManager.SaveUniverse(CurrentUniverse);
+                return guid;
+            }
         }
 
         /// <summary>
@@ -97,7 +109,13 @@ namespace OctoAwesome.Runtime
         /// <returns>Die Liste der Universen.</returns>
         public IUniverse[] ListUniverses()
         {
-            persistenceManager.Load(out SerializableCollection<IUniverse> universes).WaitOn();
+            var awaiter = persistenceManager.Load(out SerializableCollection<IUniverse> universes);
+
+            if (awaiter == null)
+                return Array.Empty<IUniverse>();
+            else
+                awaiter.WaitOnAndRelease();
+
             return universes.ToArray();
         }
 
@@ -106,18 +124,32 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="universeId">Die Guid des Universums.</param>
         /// <returns>Das geladene Universum.</returns>
-        public void LoadUniverse(Guid universeId)
+        public bool TryLoadUniverse(Guid universeId)
         {
             // Alte Daten entfernen
             if (CurrentUniverse != null)
                 UnloadUniverse();
 
-            // Neuen Daten loaden/generieren
+            using (loadingSemaphore.EnterScope())
+            {
+                tokenSource?.Dispose();
+                tokenSource = new CancellationTokenSource();
+                currentToken = tokenSource.Token;
 
-            persistenceManager.Load(out IUniverse universe, universeId).WaitOn();
-            CurrentUniverse = universe;
-            if (CurrentUniverse == null)
-                throw new Exception();
+                // Neuen Daten loaden/generieren
+                var awaiter = persistenceManager.Load(out IUniverse universe, universeId);
+
+                if (awaiter == null)
+                    return false;
+                else
+                    awaiter.WaitOnAndRelease();
+
+                CurrentUniverse = universe;
+                if (CurrentUniverse == null)
+                    throw new NullReferenceException();
+
+                return true;
+            }
         }
 
         /// <summary>
@@ -125,29 +157,36 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void UnloadUniverse()
         {
-            persistenceManager.SaveUniverse(CurrentUniverse);
+            using (loadingSemaphore.Wait())
+                tokenSource.Cancel();
 
-            // Unload Chunks
-            globalChunkCache.Clear();
-
-            foreach (var planet in planets)
+            using (loadingSemaphore.Wait())
             {
-                persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
-            }
-            planets.Clear();
+                if (CurrentUniverse == null)
+                    return;
 
-            CurrentUniverse = null;
-            GC.Collect();
+                persistenceManager.SaveUniverse(CurrentUniverse);
+
+                foreach (var planet in Planets)
+                {
+                    persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
+                    planet.Value.Dispose();
+                }
+                if (persistenceManager is IDisposable disposable)
+                    disposable.Dispose();
+                Planets.Clear();
+
+                CurrentUniverse = null;
+                GC.Collect();
+            }
         }
 
         /// <summary>
-        /// Entlädt das aktuelle Universum
+        /// Gibt das aktuelle Universum zurück
         /// </summary>
         /// <returns>Das gewünschte Universum, falls es existiert</returns>
         public IUniverse GetUniverse()
-        {
-            return CurrentUniverse;
-        }
+            => CurrentUniverse;
 
         /// <summary>
         /// Löscht ein Universum.
@@ -171,32 +210,36 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            semaphoreSlim.Wait();
 
-            if (!planets.TryGetValue(id, out IPlanet planet))
+            using (semaphoreSlim.Wait())
+            using (loadingSemaphore.EnterScope())
             {
-                // Versuch vorhandenen Planeten zu laden
-                var awaiter = persistenceManager.Load(out planet, CurrentUniverse.Id, id);
+                currentToken.ThrowIfCancellationRequested();
 
-                if (awaiter == null)
+                if (!Planets.TryGetValue(id, out IPlanet planet))
                 {
-                    // Keiner da -> neu erzeugen
-                    Random rand = new Random(CurrentUniverse.Seed + id);
-                    var generators = extensionResolver.GetMapGenerator().ToArray();
-                    int index = rand.Next(generators.Length - 1);
-                    IMapGenerator generator = generators[index];
-                    planet = generator.GeneratePlanet(CurrentUniverse.Id, id, CurrentUniverse.Seed + id);
-                    // persistenceManager.SavePlanet(universe.Id, planet);
-                }
-                else
-                {
-                    awaiter.WaitOn();
-                }
+                    // Versuch vorhandenen Planeten zu laden
+                    var awaiter = persistenceManager.Load(out planet, CurrentUniverse.Id, id);
 
-                planets.Add(id, planet);
+                    if (awaiter == null)
+                    {
+                        // Keiner da -> neu erzeugen
+                        Random rand = new Random(CurrentUniverse.Seed + id);
+                        var generators = extensionResolver.GetMapGenerator().ToArray();
+                        int index = rand.Next(generators.Length - 1);
+                        IMapGenerator generator = generators[index];
+                        planet = generator.GeneratePlanet(CurrentUniverse.Id, id, CurrentUniverse.Seed + id);
+                        // persistenceManager.SavePlanet(universe.Id, planet);
+                    }
+                    else
+                    {
+                        awaiter.WaitOnAndRelease();
+                    }
+
+                    Planets.TryAdd(id, planet);
+                }
+                return planet;
             }
-            semaphoreSlim.Release();
-            return planet;
         }
 
         /// <summary>
@@ -209,14 +252,18 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            var awaiter = persistenceManager.Load(out Player player, CurrentUniverse.Id, playername);
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                var awaiter = persistenceManager.Load(out Player player, CurrentUniverse.Id, playername);
 
-            if (awaiter == null)
-                player = new Player();
-            else
-                awaiter.WaitOn();
+                if (awaiter == null)
+                    player = new Player();
+                else
+                    awaiter.WaitOnAndRelease();
 
-            return player;
+                return player;
+            }
         }
 
         /// <summary>
@@ -228,35 +275,47 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            persistenceManager.SavePlayer(CurrentUniverse.Id, player);
+            using (loadingSemaphore.EnterScope())
+                persistenceManager.SavePlayer(CurrentUniverse.Id, player);
         }
 
-        public IChunkColumn LoadChunkColumn(int planetId, Index2 index)
+        public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index)
         {
-            IPlanet planet = GetPlanet(planetId);
-
             // Load from disk
-            var awaiter = persistenceManager.Load(out IChunkColumn column11, CurrentUniverse.Id, planet, index);
-            if (awaiter == null)
+            Awaiter awaiter;
+            IChunkColumn column11;
+
+            do
             {
-                IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));
-                column11 = column;
-            }
-            else
-            {
-                awaiter.WaitOn();
-            }
+                using (loadingSemaphore.EnterScope())
+                {
+                    currentToken.ThrowIfCancellationRequested();
+                    awaiter = persistenceManager.Load(out column11, CurrentUniverse.Id, planet, index);
+                    if (awaiter == null)
+                    {
+                        IChunkColumn column = planet.Generator.GenerateColumn(DefinitionManager, planet, new Index2(index.X, index.Y));
+                        column11 = column;
+                    }
+                    else
+                    {
+                        awaiter.WaitOnAndRelease();
+                    }
 
-            IChunkColumn column00 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, -1), planet.Size));
-            IChunkColumn column10 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, -1), planet.Size));
-            IChunkColumn column20 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, -1), planet.Size));
+                    if (awaiter?.Timeouted ?? false)
+                        logger.Error("Awaiter timeout");
+                }
+            } while (awaiter != null && awaiter.Timeouted);
 
-            IChunkColumn column01 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 0), planet.Size));
-            IChunkColumn column21 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 0), planet.Size));
+            IChunkColumn column00 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(-1, -1), planet.Size));
+            IChunkColumn column10 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(0, -1), planet.Size));
+            IChunkColumn column20 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(1, -1), planet.Size));
 
-            IChunkColumn column02 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(-1, 1), planet.Size));
-            IChunkColumn column12 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(0, 1), planet.Size));
-            IChunkColumn column22 = GlobalChunkCache.Peek(planet.Id, Index2.NormalizeXY(index + new Index2(1, 1), planet.Size));
+            IChunkColumn column01 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(-1, 0), planet.Size));
+            IChunkColumn column21 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(1, 0), planet.Size));
+
+            IChunkColumn column02 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(-1, 1), planet.Size));
+            IChunkColumn column12 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(0, 1), planet.Size));
+            IChunkColumn column22 = planet.GlobalChunkCache.Peek(Index2.NormalizeXY(index + new Index2(1, 1), planet.Size));
 
             // Zentrum
             if (!column11.Populated && column21 != null && column12 != null && column22 != null)
@@ -265,6 +324,8 @@ namespace OctoAwesome.Runtime
                     populator.Populate(this, planet, column11, column21, column12, column22);
 
                 column11.Populated = true;
+                column11.FlagDirty();
+                SaveChunkColumn(column11);
             }
 
             // Links oben
@@ -274,6 +335,8 @@ namespace OctoAwesome.Runtime
                     populator.Populate(this, planet, column00, column10, column01, column11);
 
                 column00.Populated = true;
+                column00.FlagDirty();
+                SaveChunkColumn(column00);
             }
 
             // Oben
@@ -282,6 +345,8 @@ namespace OctoAwesome.Runtime
                 foreach (var populator in populators)
                     populator.Populate(this, planet, column10, column20, column11, column21);
                 column10.Populated = true;
+                column10.FlagDirty();
+                SaveChunkColumn(column10);
             }
 
             // Links
@@ -290,25 +355,89 @@ namespace OctoAwesome.Runtime
                 foreach (var populator in populators)
                     populator.Populate(this, planet, column01, column11, column02, column12);
                 column01.Populated = true;
+                column01.FlagDirty();
+                SaveChunkColumn(column01);
             }
 
             return column11;
+
         }
         public void SaveChunkColumn(IChunkColumn chunkColumn)
-            => SaveChunkColumn(chunkColumn.Planet, chunkColumn.Index, chunkColumn);
-
-        private void SaveChunkColumn(int planetId, Index2 index, IChunkColumn value)
         {
-            if (!disablePersistence && value.ChangeCounter > 0) //value.Chunks.Any(c => c.ChangeCounter > 0)
+            if (disablePersistence)
+                return;
+
+            using (loadingSemaphore.EnterScope())
+                persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
+        }
+
+        public Entity LoadEntity(Guid entityId)
+        {
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
+            using (loadingSemaphore.EnterScope())
             {
-                persistenceManager.SaveColumn(CurrentUniverse.Id, planetId, value);
+                currentToken.ThrowIfCancellationRequested();
+                var awaiter = persistenceManager.Load(out Entity entity, CurrentUniverse.Id, entityId);
+
+                if (awaiter == null)
+                    return null;
+                else
+                    awaiter.WaitOnAndRelease();
+
+                return entity;
             }
         }
 
         public void SaveEntity(Entity entity)
         {
-            if (entity is Player player)
-                SavePlayer(player);
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
+            using (loadingSemaphore.EnterScope())
+            {
+                if (entity is Player player)
+                    SavePlayer(player);
+                else
+                    persistenceManager.SaveEntity(entity, CurrentUniverse.Id);
+            }
+        }
+
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent
+        {
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                return persistenceManager.LoadEntitiesWithComponent<T>(CurrentUniverse.Id);
+            }
+        }
+
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : EntityComponent
+        {
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                return persistenceManager.GetEntityIdsFromComponent<T>(CurrentUniverse.Id);
+            }
+        }
+
+        public IEnumerable<Guid> GetEntityIds()
+        {
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                return persistenceManager.GetEntityIds(CurrentUniverse.Id);
+            }
+        }
+
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(IEnumerable<Guid> entityIds) where T : EntityComponent, new()
+        {
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                return persistenceManager.GetEntityComponents<T>(CurrentUniverse.Id, entityIds);
+            }
         }
     }
 }

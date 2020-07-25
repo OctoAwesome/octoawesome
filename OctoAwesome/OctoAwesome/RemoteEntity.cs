@@ -22,16 +22,16 @@ namespace OctoAwesome
             Id = originEntity.Id;
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public override void Serialize(BinaryWriter writer)
         {
-            Components.Serialize(writer, definitionManager);
-            base.Serialize(writer, definitionManager);
+            Components.Serialize(writer);
+            base.Serialize(writer);
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
-            Components.Deserialize(reader, definitionManager);
-            base.Deserialize(reader, definitionManager);
+            Components.Deserialize(reader);
+            base.Deserialize(reader);
         }
     }
 }

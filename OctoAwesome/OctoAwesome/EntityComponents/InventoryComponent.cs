@@ -19,9 +19,14 @@ namespace OctoAwesome.EntityComponents
             Inventory = new List<InventorySlot>();
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
-            base.Deserialize(reader, definitionManager);
+            IDefinitionManager definitionManager;
+
+            if (!TypeContainer.TryResolve(out definitionManager))
+                return;
+
+            base.Deserialize(reader);
 
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -43,9 +48,9 @@ namespace OctoAwesome.EntityComponents
             }
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public override void Serialize(BinaryWriter writer)
         {
-            base.Serialize(writer, definitionManager);
+            base.Serialize(writer);
 
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)

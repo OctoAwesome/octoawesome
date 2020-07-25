@@ -1,4 +1,4 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
 using System.Collections.Generic;
 using OctoAwesome.Runtime;
 using OctoAwesome.Client.Components;
@@ -7,6 +7,7 @@ using engenious;
 using engenious.Graphics;
 using System.Linq;
 using engenious.Helper;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -173,8 +174,8 @@ namespace OctoAwesome.Client.Controls
             //Draw Loaded Chunks
             loadedChunks.Text = string.Format("{0}: {1}/{2}",
                 Languages.OctoClient.LoadedChunks,
-                manager.Game.ResourceManager.GlobalChunkCache.DirtyChunkColumn,
-                manager.Game.ResourceManager.GlobalChunkCache.LoadedChunkColumns);
+                manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.DirtyChunkColumn,
+                manager.Game.ResourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.LoadedChunkColumns);
 
             // Draw Loaded Textures
             loadedTextures.Text = string.Format("Loaded Textures: {0}",

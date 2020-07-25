@@ -12,7 +12,11 @@ namespace OctoAwesome
         /// Reference to the Entity.
         /// </summary>
         public Entity Entity { get; private set; }
-        
+
+        public EntityComponent()
+        {
+        }
+
         public void SetEntity(Entity entity)
         {
             if (Entity != null)

@@ -1,4 +1,4 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
 using System;
@@ -7,19 +7,21 @@ using System.Linq;
 using System.Text;
 using engenious;
 using engenious.Input;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
     internal class LoadScreen : BaseScreen
     {
-        private new ScreenComponent Manager;
+        private new readonly ScreenComponent Manager;
+        private readonly Button deleteButton;
+        private readonly Button createButton;
+        private readonly Button playButton;
+        private readonly Grid mainStack;
+        private readonly Listbox<IUniverse> levelList;
+        private readonly Label seedLabel;
 
-        Button deleteButton, createButton, playButton;
-        Grid mainStack;
-        Listbox<IUniverse> levelList;
-        Label seedLabel;
-
-        private ISettings settings;
+        private readonly ISettings settings;
 
         public LoadScreen(ScreenComponent manager) : base(manager)
         {
@@ -44,12 +46,14 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(mainStack);
 
             //Level Stack
-            levelList = new Listbox<IUniverse>(manager);
-            levelList.Background = new BorderBrush(Color.White * 0.5f);
-            levelList.VerticalAlignment = VerticalAlignment.Stretch;
-            levelList.HorizontalAlignment = HorizontalAlignment.Stretch;
-            levelList.Margin = Border.All(10);
-            levelList.SelectedItemBrush = new BorderBrush(Color.SaddleBrown * 0.7f);
+            levelList = new Listbox<IUniverse>(manager)
+            {
+                Background = new BorderBrush(Color.White * 0.5f),
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = Border.All(10),
+                SelectedItemBrush = new BorderBrush(Color.SaddleBrown * 0.7f)
+            };
             levelList.TemplateGenerator += (x) =>
             {
                 var li = new Label(manager)
@@ -154,12 +158,6 @@ namespace OctoAwesome.Client.Screens
             }
         }
 
-        private Button GetButton(string title)
-        {
-            Button button = Button.TextButton(Manager, title);
-            button.HorizontalAlignment = HorizontalAlignment.Stretch;
-            return button;
-        }
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
@@ -183,8 +181,8 @@ namespace OctoAwesome.Client.Screens
 
             Player player = Manager.Game.Simulation.LoginPlayer("");
             Manager.Game.Player.SetEntity(player);
-            
-            Manager.NavigateToScreen(new GameScreen(Manager));
+
+            Manager.NavigateToScreen(new LoadingScreen(Manager));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommandManagementSystem.Attributes;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
@@ -13,29 +14,51 @@ namespace OctoAwesome.GameServer.Commands
     public static class NotificationCommands
     {
         private static readonly IUpdateHub updateHub;
+        private static readonly IPool<EntityNotification> entityNotificationPool;
+        private static readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
+        private static readonly IPool<BlocksChangedNotification> blocksChangedNotificationPool;
 
         static NotificationCommands()
         {
-            updateHub = Program.ServerHandler.UpdateHub;
+            updateHub = TypeContainer.Get<IUpdateHub>();
+            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
+            blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
         }
 
         [Command((ushort)OfficialCommand.EntityNotification)]
         public static byte[] EntityNotification(CommandParameter parameter)
         {
-            var entityNotification = Serializer.Deserialize<EntityNotification>(parameter.Data, null);
+            var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, parameter.Data);
             entityNotification.SenderId = parameter.ClientId;
             updateHub.Push(entityNotification, DefaultChannels.Simulation);
             updateHub.Push(entityNotification, DefaultChannels.Network);
+            entityNotification.Release();
             return null;
         }
 
         [Command((ushort)OfficialCommand.ChunkNotification)]
         public static byte[] ChunkNotification(CommandParameter parameter)
         {
-            var chunkNotification = Serializer.Deserialize<ChunkNotification>(parameter.Data, null);
+            var notificationType = (BlockNotificationType)parameter.Data[0];
+            Notification chunkNotification;
+            switch (notificationType)
+            {
+                case BlockNotificationType.BlockChanged:
+                    chunkNotification = Serializer.DeserializePoolElement(blockChangedNotificationPool, parameter.Data);
+                    break;
+                case BlockNotificationType.BlocksChanged:
+                    chunkNotification = Serializer.DeserializePoolElement(blocksChangedNotificationPool, parameter.Data);
+                    break;
+                default:
+                    throw new NotSupportedException($"This Type is not supported: {notificationType}");
+            }
+
             chunkNotification.SenderId = parameter.ClientId;
             updateHub.Push(chunkNotification, DefaultChannels.Chunk);
             updateHub.Push(chunkNotification, DefaultChannels.Network);
+            chunkNotification.Release();
+
             return null;
         }
     }

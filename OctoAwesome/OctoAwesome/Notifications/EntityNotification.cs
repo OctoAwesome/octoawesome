@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,68 +12,81 @@ namespace OctoAwesome.Notifications
     public sealed class EntityNotification : SerializableNotification
     {
         public ActionType Type { get; set; }
-        public int EntityId { get; private set; }
+        public Guid EntityId { get; set; }
         public Entity Entity
         {
             get => entity; set
             {
                 entity = value;
-                EntityId = value.Id;
+                EntityId = value?.Id ?? default;
             }
         }
 
         public PropertyChangedNotification Notification { get; set; }
 
         private Entity entity;
+        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         public EntityNotification()
         {
-
+            propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
-        public EntityNotification(int id) : this()
+        public EntityNotification(Guid id) : this()
         {
             EntityId = id;
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager = null)
+        public override void Deserialize(BinaryReader reader)
         {
             Type = (ActionType)reader.ReadInt32();
 
 
             if (Type == ActionType.Add)
-                Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()), definitionManager);
+                Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
             else
-                EntityId = reader.ReadInt32();
+                EntityId = new Guid(reader.ReadBytes(16));
 
             var isNotification = reader.ReadBoolean();
             if (isNotification)
-                Notification = Serializer.Deserialize<PropertyChangedNotification>(reader.ReadBytes(reader.ReadInt32()), definitionManager);
+                Notification = Serializer.DeserializePoolElement(
+                    propertyChangedNotificationPool, reader.ReadBytes(reader.ReadInt32()));
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager = null)
+        public override void Serialize(BinaryWriter writer)
         {
             writer.Write((int)Type);
 
             if (Type == ActionType.Add)
             {
-                var bytes = Serializer.Serialize(Entity, definitionManager);
+                var bytes = Serializer.Serialize(Entity);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }
             else
             {
-                writer.Write(EntityId);
+                writer.Write(EntityId.ToByteArray());
             }
 
             var subNotification = Notification != null;
             writer.Write(subNotification);
             if (subNotification)
-            {                
-                var bytes = Serializer.Serialize(Notification, definitionManager);
+            {
+                var bytes = Serializer.Serialize(Notification);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }
+        }
+
+        protected override void OnRelease()
+        {
+            Notification?.Release();
+
+            Type = default;
+            Entity = default;
+            Notification = default;
+
+            base.OnRelease();
         }
 
         public enum ActionType

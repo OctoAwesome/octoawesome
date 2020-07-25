@@ -1,5 +1,7 @@
-﻿using OctoAwesome.Network.ServerNotifications;
+﻿using OctoAwesome.Network.Pooling;
+using OctoAwesome.Network.ServerNotifications;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
 using System.Buffers;
@@ -7,6 +9,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
@@ -15,9 +18,11 @@ namespace OctoAwesome.Network
         public IDisposable NetworkChannelSubscription { get; set; }
         public IDisposable ServerSubscription { get; set; }
 
+        private readonly PackagePool packagePool;
+
         public ConnectedClient(Socket socket) : base(socket)
         {
-            
+            packagePool = TypeContainer.Get<PackagePool>();
         }
 
         public void OnCompleted()
@@ -41,11 +46,13 @@ namespace OctoAwesome.Network
             {
                 case EntityNotification entityNotification:
                     command = OfficialCommand.EntityNotification;
-                    payload = Serializer.Serialize(entityNotification, null);
+                    payload = Serializer.Serialize(entityNotification);
                     break;
-                case ChunkNotification chunkNotification:
+
+                case BlocksChangedNotification _:
+                case BlockChangedNotification _:
                     command = OfficialCommand.ChunkNotification;
-                    payload = Serializer.Serialize(chunkNotification, null);
+                    payload = Serializer.Serialize(value as SerializableNotification);
                     break;
                 default:
                     return;
@@ -56,11 +63,10 @@ namespace OctoAwesome.Network
 
         private void BuildAndSendPackage(byte[] data, OfficialCommand officialCommand)
         {
-            SendPackage(new Package()
-            {
-                Payload = data,
-                Command = (ushort)officialCommand
-            });
+            var package = packagePool.Get();
+            package.Payload = data;
+            package.Command = (ushort)officialCommand;
+            SendPackageAndRelase(package);
         }
     }
 }

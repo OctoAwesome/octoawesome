@@ -1,7 +1,10 @@
 ﻿using engenious;
 using OctoAwesome.Common;
+using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,20 +46,21 @@ namespace OctoAwesome
         /// </summary>
         public List<Entity> Entities => entities.ToList();
 
-        private int nextId = 1;
-
         private readonly IExtensionResolver extensionResolver;
 
         private readonly HashSet<Entity> entities = new HashSet<Entity>();
-        private readonly IDisposable simmulationSubscription;
+        private readonly IDisposable simulationSubscription;
+        private readonly IPool<EntityNotification> entityNotificationPool;
 
         /// <summary>
-        /// Erzeugt eine neue Instaz der Klasse Simulation.
+        /// Erzeugt eine neue Instanz der Klasse Simulation.
         /// </summary>
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
-        {
+        {            
             ResourceManager = resourceManager;
-            simmulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
+            simulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
+            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
@@ -86,17 +90,28 @@ namespace OctoAwesome
         /// Erzeugt ein neues Spiel (= Universum)
         /// </summary>
         /// <param name="name">Name des Universums.</param>
-        /// <param name="seed">Seed für den Weltgenerator.</param>
+        /// <param name="rawSeed">Seed für den Weltgenerator.</param>
         /// <returns>Die Guid des neuen Universums.</returns>
-        public Guid NewGame(string name, int? seed = null)
+        public Guid NewGame(string name, string rawSeed)
         {
-            if (seed == null)
+            int numericSeed;
+
+            if (string.IsNullOrWhiteSpace(rawSeed))
             {
                 var rand = new Random();
-                seed = rand.Next(int.MaxValue);
+                numericSeed = rand.Next(int.MaxValue);
             }
+            else if(int.TryParse(rawSeed, out var seed))
+            {
+                numericSeed = seed;
+            }
+            else
+            {
+                numericSeed = rawSeed.GetHashCode();
+            }
+            
 
-            Guid guid = ResourceManager.NewUniverse(name, seed.Value);
+            Guid guid = ResourceManager.NewUniverse(name, numericSeed);
 
             Start();
 
@@ -107,10 +122,13 @@ namespace OctoAwesome
         /// Lädt ein Spiel (= Universum).
         /// </summary>
         /// <param name="guid">Die Guid des Universums.</param>
-        public void LoadGame(Guid guid)
+        public bool TryLoadGame(Guid guid)
         {
-            ResourceManager.LoadUniverse(guid);
+            if (!ResourceManager.TryLoadUniverse(guid))
+                return false;
+
             Start();
+            return true;
         }
 
         private void Start()
@@ -127,20 +145,22 @@ namespace OctoAwesome
         /// <param name="gameTime">Spielzeit</param>
         public void Update(GameTime gameTime)
         {
-            if (State == SimulationState.Running)
-            {
-                ResourceManager.GlobalChunkCache.BeforeSimulationUpdate(this);
+            if (State != SimulationState.Running)
+                return;
 
-                //Update all Entities
-                foreach (var entity in Entities.OfType<UpdateableEntity>())
-                    entity.Update(gameTime);
+            foreach (var planet in ResourceManager.Planets)
+                planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
-                // Update all Components
-                foreach (var component in Components.Where(c => c.Enabled))
-                    component.Update(gameTime);
+            //Update all Entities
+            foreach (var entity in Entities.OfType<UpdateableEntity>())
+                entity.Update(gameTime);
 
-                ResourceManager.GlobalChunkCache.AfterSimulationUpdate(this);
-            }
+            // Update all Components
+            foreach (var component in Components.Where(c => c.Enabled))
+                component.Update(gameTime);
+
+            foreach (var planet in ResourceManager.Planets)
+                planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
         }
 
         /// <summary>
@@ -153,7 +173,7 @@ namespace OctoAwesome
 
             State = SimulationState.Paused;
 
-            //TODO: unschön
+            //TODO: unschön, Dispose Entity's, Reset Extensions
             Entities.ForEach(entity => RemoveEntity(entity));
             //while (entites.Count > 0)
             //    RemoveEntity(Entities.First());
@@ -162,6 +182,7 @@ namespace OctoAwesome
             // thread.Join();
 
             ResourceManager.UnloadUniverse();
+            simulationSubscription?.Dispose();
         }
 
         /// <summary>
@@ -176,7 +197,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
-            if (entity.Simulation != null)
+            if (entity.Simulation != null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
             if (entities.Contains(entity))
@@ -186,10 +207,8 @@ namespace OctoAwesome
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
 
-            if (entity.Id == 0)
-                entity.Id = nextId++;
-            else
-                nextId++;
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
 
             entities.Add(entity);
 
@@ -206,7 +225,7 @@ namespace OctoAwesome
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            if (entity.Id == 0)
+            if (entity.Id == Guid.Empty)
                 return;
 
             if (entity.Simulation != this)
@@ -218,18 +237,19 @@ namespace OctoAwesome
             }
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
-                throw new NotSupportedException("Adding Entities only allowed in running or paused state");
+                throw new NotSupportedException("Removing Entities only allowed in running or paused state");
+
+            ResourceManager.SaveEntity(entity);
 
             foreach (var component in Components)
                 component.Remove(entity);
 
             entities.Remove(entity);
-            entity.Id = 0;
+            entity.Id = Guid.Empty;
             entity.Simulation = null;
 
-            ResourceManager.SaveEntity(entity);
         }
-        public void RemoveEntity(int entityId)
+        public void RemoveEntity(Guid entityId)
             => RemoveEntity(entities.First(e => e.Id == entityId));
 
         public void OnNext(Notification value)
@@ -274,10 +294,11 @@ namespace OctoAwesome
             var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
             if (entity == null)
             {
-                ResourceManager.UpdateHub.Push(new EntityNotification(notification.EntityId)
-                {
-                    Type = EntityNotification.ActionType.Request
-                }, DefaultChannels.Network);
+                var entityNotification = entityNotificationPool.Get();
+                entityNotification.EntityId = notification.EntityId;
+                entityNotification.Type = EntityNotification.ActionType.Request;
+                ResourceManager.UpdateHub.Push(entityNotification, DefaultChannels.Network);
+                entityNotification.Release();
             }
             else
             {
@@ -296,15 +317,17 @@ namespace OctoAwesome
                 return;
 
             var remoteEntity = new RemoteEntity(entity);
-            remoteEntity.Components.AddComponent(new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
-            remoteEntity.Components.AddComponent(new RenderComponent { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            remoteEntity.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            remoteEntity.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            
+            var newEntityNotification = entityNotificationPool.Get();
+            newEntityNotification.Entity = remoteEntity;
+            newEntityNotification.Type = EntityNotification.ActionType.Add;
 
-            ResourceManager.UpdateHub.Push(new EntityNotification()
-            {
-                Entity = remoteEntity,
-                Type = EntityNotification.ActionType.Add
-            }, DefaultChannels.Network);
+            ResourceManager.UpdateHub.Push(newEntityNotification, DefaultChannels.Network);
+            newEntityNotification.Release();
         }
+
     }
 }

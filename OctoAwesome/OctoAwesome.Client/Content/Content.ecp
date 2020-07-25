@@ -5,26 +5,6 @@
   <OutputDir>bin/{Configuration}/</OutputDir>
   <Contents>
     <ContentFile>
-      <Name>BoldFont.fnt</Name>
-      <Processor>FontProcessor</Processor>
-      <Importer>FontImporter</Importer>
-    </ContentFile>
-    <ContentFile>
-      <Name>GameFont.fnt</Name>
-      <Processor>FontProcessor</Processor>
-      <Importer>FontImporter</Importer>
-    </ContentFile>
-    <ContentFile>
-      <Name>HeadlineFont.fnt</Name>
-      <Processor>FontProcessor</Processor>
-      <Importer>FontImporter</Importer>
-    </ContentFile>
-    <ContentFile>
-      <Name>Hud.fnt</Name>
-      <Processor>FontProcessor</Processor>
-      <Importer>FontImporter</Importer>
-    </ContentFile>
-    <ContentFile>
       <Name>simple.glsl</Name>
       <Processor>EffectProcessor</Processor>
       <Importer>Effect Importer</Importer>
@@ -65,5 +45,30 @@
         <TransformMesh>True</TransformMesh>
       </Settings>
     </ContentFile>
+    <ContentFolder>
+      <Name>Fonts</Name>
+      <Contents>
+        <ContentFile>
+          <Name>BoldFont.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
+        </ContentFile>
+        <ContentFile>
+          <Name>GameFont.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
+        </ContentFile>
+        <ContentFile>
+          <Name>HeadlineFont.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
+        </ContentFile>
+        <ContentFile>
+          <Name>Hud.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
   </Contents>
 </Content>

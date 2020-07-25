@@ -1,5 +1,6 @@
 ﻿using engenious;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
 
@@ -39,19 +40,19 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            enableButton = Button.TextButton(manager, Languages.OctoClient.Enable);
+            enableButton = new TextButton(manager, Languages.OctoClient.Enable);
             enableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             enableButton.Visible = false;
             buttons.Controls.Add(enableButton);
 
-            disableButton = Button.TextButton(manager, Languages.OctoClient.Disable);
+            disableButton = new TextButton(manager, Languages.OctoClient.Disable);
             disableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             disableButton.Visible = false;
             buttons.Controls.Add(disableButton);
 
             #endregion
 
-            applyButton = Button.TextButton(manager, Languages.OctoClient.Apply);
+            applyButton = new TextButton(manager, Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);

@@ -2,14 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace OctoAwesome.Network.Tests
 {
-    [TestClass]
     public class AsyncStreamExperiments
     {
-        [TestMethod]
+        [Test]
         public void ReadWriteSwap()
         {
             OctoNetworkStream test = new OctoNetworkStream();
@@ -25,7 +24,7 @@ namespace OctoAwesome.Network.Tests
             Assert.IsTrue(writeData.SequenceEqual(readData));
         }
 
-        [TestMethod]
+        [Test]
         public async Task ReadWriteSwapAsync()
         {
             OctoNetworkStream test = new OctoNetworkStream();

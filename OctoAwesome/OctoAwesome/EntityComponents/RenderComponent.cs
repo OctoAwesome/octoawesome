@@ -20,22 +20,22 @@ namespace OctoAwesome.EntityComponents
             Sendable = true;
         }
 
-        public override void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public override void Serialize(BinaryWriter writer)
         {
             writer.Write(Name);
             writer.Write(ModelName);
             writer.Write(TextureName);
             writer.Write(BaseZRotation);
-            base.Serialize(writer, definitionManager);
+            base.Serialize(writer);
         }
 
-        public override void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
             Name = reader.ReadString();
             ModelName = reader.ReadString();
             TextureName = reader.ReadString();
             BaseZRotation = reader.ReadSingle();
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader);
         }
     }
 }

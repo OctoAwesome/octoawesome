@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MonoGameUi;
+using engenious.UI;
 using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using System.Diagnostics;
 using OctoAwesome.Client.Crew;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -23,7 +24,7 @@ namespace OctoAwesome.Client.Screens
 
             Title = Languages.OctoClient.CreditsCrew + ": " + member.Username;
 
-            SpriteFont boldFont = manager.Content.Load<SpriteFont>("BoldFont");
+            SpriteFont boldFont = manager.Content.Load<SpriteFont>("Fonts/BoldFont");
 
             Padding = new Border(0, 0, 0, 0);
 
@@ -76,7 +77,7 @@ namespace OctoAwesome.Client.Screens
             Label username = new Label(manager)
             {
                 Text = usernameText,
-                Font = manager.Content.Load<SpriteFont>("HeadlineFont"),
+                Font = manager.Content.Load<SpriteFont>("Fonts/HeadlineFont"),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
@@ -116,7 +117,7 @@ namespace OctoAwesome.Client.Screens
             {                
                 if (CheckHttpUrl(link.Url))
                 {
-                    Button linkButton = Button.TextButton(manager, link.Title);
+                    Button linkButton = new TextButton(manager, link.Title);
                     linkButton.LeftMouseClick += (s, e) => Process.Start(link.Url);
                     linkStack.Controls.Add(linkButton);
                 }

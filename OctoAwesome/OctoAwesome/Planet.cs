@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -44,6 +45,23 @@ namespace OctoAwesome
         /// </summary>
         public IMapGenerator Generator { get; set; }
 
+        public IGlobalChunkCache GlobalChunkCache { get; set; }
+        public IUpdateHub UpdateHub
+        {
+            get => updateHub; set
+            {
+
+                chunkSubscription = value.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
+                GlobalChunkCache.InsertUpdateHub(value);
+                updateHub = value;
+            }
+        }
+
+        private IUpdateHub updateHub;
+        private IDisposable chunkSubscription;
+
+        private bool disposed;
+
         /// <summary>
         /// Initialisierung des Planeten.
         /// </summary>
@@ -51,8 +69,9 @@ namespace OctoAwesome
         /// <param name="universe">ID des Universums.</param>
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
         /// <param name="seed">Seed des Zufallsgenerators.</param>
-        public Planet(int id, Guid universe, Index3 size, int seed)
+        public Planet(int id, Guid universe, Index3 size, int seed) : this()
         {
+
             Id = id;
             Universe = universe;
             Size = new Index3(
@@ -67,14 +86,14 @@ namespace OctoAwesome
         /// </summary>
         public Planet()
         {
-
+            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>());
         }
 
         /// <summary>
         /// Serialisiert den Planeten in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
-        public void Serialize(BinaryWriter writer, IDefinitionManager definitionManager)
+        public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(Id);
             writer.Write(Seed);
@@ -89,7 +108,7 @@ namespace OctoAwesome
         /// Deserialisiert den Planeten aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public virtual void Deserialize(BinaryReader reader)
         {
             Id = reader.ReadInt32();
             Seed = reader.ReadInt32();
@@ -97,6 +116,22 @@ namespace OctoAwesome
             Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
             Universe = new Guid(reader.ReadBytes(16));
             //var name = reader.ReadString();
+        }
+
+        public void Dispose()
+        {
+            if (disposed)
+                return;
+
+            disposed = true;
+
+            chunkSubscription.Dispose();
+
+            if (GlobalChunkCache is IDisposable disposable)
+                disposable.Dispose();
+
+            chunkSubscription = null;
+            GlobalChunkCache = null;
         }
     }
 }

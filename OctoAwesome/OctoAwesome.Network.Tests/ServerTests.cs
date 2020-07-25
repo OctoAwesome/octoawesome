@@ -5,21 +5,21 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace OctoAwesome.Network.Tests
 {
-    [TestClass]
+    [TestOf(typeof(Server))]
     public class ServerTests
     {
-        [TestMethod]
+        [Test]
         public void NewServerTest()
         {
             var server = new Server();
             server.Start(new IPEndPoint(IPAddress.Any, 44444));
         }
 
-        [TestMethod]
+        [Test]
         public void ConnectionTest()
         {
             var resetEvent = new ManualResetEvent(false);
@@ -38,7 +38,7 @@ namespace OctoAwesome.Network.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SendingTest()
         {
             var resetEvent = new ManualResetEvent(false);

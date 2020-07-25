@@ -1,6 +1,7 @@
 ﻿using engenious;
 using engenious.Graphics;
-using MonoGameUi;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
 
@@ -77,7 +78,7 @@ namespace OctoAwesome.Client.Screens
             };
             yStack.Controls.Add(yText);
 
-            Button closeButton = Button.TextButton(manager, Languages.OctoClient.Teleport);
+            Button closeButton = new TextButton(manager, Languages.OctoClient.Teleport);
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             closeButton.LeftMouseClick += (s, e) =>
             {

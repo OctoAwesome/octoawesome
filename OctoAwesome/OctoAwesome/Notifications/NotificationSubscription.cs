@@ -9,8 +9,8 @@ namespace OctoAwesome.Notifications
     public sealed class NotificationSubscription : IDisposable
     {
         private INotificationObservable observable;
-        private string channel;
         private INotificationObserver observer;
+        private readonly string channel;
 
         public NotificationSubscription(INotificationObservable observable, INotificationObserver observer, string channel)
         {
@@ -21,8 +21,8 @@ namespace OctoAwesome.Notifications
 
         public void Dispose()
         {
-            observer.OnCompleted();
-            observable.Unsubscribe(observer, channel);
+            observer?.OnCompleted();
+            observable?.Unsubscribe(observer, channel);
             observable = null;
             observer = null;
         }

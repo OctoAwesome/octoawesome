@@ -2,6 +2,7 @@
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,29 +14,34 @@ namespace OctoAwesome.Client
     /// <summary>
     /// This is only temporary
     /// </summary>
-    public class ContainerResourceManager : IResourceManager
+    public class ContainerResourceManager : IResourceManager, IDisposable
     {
         public IDefinitionManager DefinitionManager => resourceManager.DefinitionManager;
         public IUniverse CurrentUniverse => resourceManager.CurrentUniverse;
-        public IGlobalChunkCache GlobalChunkCache => resourceManager.GlobalChunkCache;
-
-        private IDisposable chunkSubscription;
-
+        
         public bool IsMultiplayer { get; private set; }
         public Player CurrentPlayer => resourceManager.CurrentPlayer;
 
         public IUpdateHub UpdateHub { get; }
 
+        public ConcurrentDictionary<int, IPlanet> Planets => resourceManager.Planets;
+
+        private readonly IExtensionResolver extensionResolver;
+        private readonly IDefinitionManager definitionManager;
+        private readonly ISettings settings;
+
         private ResourceManager resourceManager;
         private NetworkUpdateManager networkUpdateManager;
 
-        public ContainerResourceManager()
+        public ContainerResourceManager(IUpdateHub updateHub, IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
-            UpdateHub = new UpdateHub();
+            UpdateHub = updateHub;
+            this.extensionResolver = extensionResolver;
+            this.definitionManager = definitionManager;
+            this.settings = settings;
         }
 
-        public void CreateManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager,
-            ISettings settings, bool multiplayer)
+        public void CreateManager(bool multiplayer)
         {
             IPersistenceManager persistenceManager;
 
@@ -43,6 +49,9 @@ namespace OctoAwesome.Client
             {
                 if (resourceManager.CurrentUniverse != null)
                     resourceManager.UnloadUniverse();
+
+                if (resourceManager is IDisposable disposable)
+                    disposable.Dispose();
 
                 resourceManager = null;
             }
@@ -86,37 +95,41 @@ namespace OctoAwesome.Client
 
                 var client = new Network.Client();
                 client.Connect(host, port > 0 ? (ushort)port : (ushort)8888);
-                persistenceManager = new NetworkPersistenceManager(client, definitionManager);
-                networkUpdateManager = new NetworkUpdateManager(client, UpdateHub, definitionManager);
+                persistenceManager = new NetworkPersistenceManager(client);
+                networkUpdateManager = new NetworkUpdateManager(client, UpdateHub);
             }
             else
             {
-                persistenceManager = new DiskPersistenceManager(extensionResolver, definitionManager, settings);
+                persistenceManager = new DiskPersistenceManager(extensionResolver, settings, UpdateHub);
             }
 
             resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager);
             resourceManager.InsertUpdateHub(UpdateHub as UpdateHub);
 
-            chunkSubscription = UpdateHub.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
-            GlobalChunkCache.InsertUpdateHub(UpdateHub);
+            
 
             IsMultiplayer = multiplayer;
 
-            if (multiplayer)
-            {
-                resourceManager.GlobalChunkCache.ChunkColumnChanged += (s, c) =>
-                {
-                    var networkPersistence = (NetworkPersistenceManager)persistenceManager;
-                    networkPersistence.SendChangedChunkColumn(c);
-                };
-            }
+            //if (multiplayer)
+            //{
+            //    resourceManager.GlobalChunkCache.ChunkColumnChanged += (s, c) =>
+            //    {
+            //        var networkPersistence = (NetworkPersistenceManager)persistenceManager;
+            //        networkPersistence.SendChangedChunkColumn(c);
+            //    };
+            //}
 
 
         }
 
         public void DeleteUniverse(Guid id) => resourceManager.DeleteUniverse(id);
 
-        public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
+        public IPlanet GetPlanet(int planetId)
+        {
+            var planet = resourceManager.GetPlanet(planetId);
+            planet.UpdateHub = UpdateHub;
+            return planet;
+        }
 
         public IUniverse GetUniverse() => resourceManager.GetUniverse();
 
@@ -124,7 +137,7 @@ namespace OctoAwesome.Client
 
         public Player LoadPlayer(string playername) => resourceManager.LoadPlayer(playername);
 
-        public void LoadUniverse(Guid universeId) => resourceManager.LoadUniverse(universeId);
+        public bool TryLoadUniverse(Guid universeId) => resourceManager.TryLoadUniverse(universeId);
 
         public Guid NewUniverse(string name, int seed) => resourceManager.NewUniverse(name, seed);
 
@@ -134,5 +147,24 @@ namespace OctoAwesome.Client
 
         public void UnloadUniverse() => resourceManager.UnloadUniverse();
         public void SaveChunkColumn(IChunkColumn chunkColumn) => resourceManager.SaveChunkColumn(chunkColumn);
+        public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index) => resourceManager.LoadChunkColumn(planet, index);
+
+        public void Dispose()
+        {
+            if (resourceManager is IDisposable disposable)
+                disposable.Dispose();
+        }
+
+        public Entity LoadEntity(Guid entityId) 
+            => resourceManager.LoadEntity(entityId);
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent
+            => resourceManager.LoadEntitiesWithComponent<T>();
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : EntityComponent
+            => resourceManager.GetEntityIdsFromComponent<T>();       
+        public IEnumerable<Guid> GetEntityIds()
+            => resourceManager.GetEntityIds();
+
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(IEnumerable<Guid> entityIds) where T : EntityComponent, new()
+            => resourceManager.GetEntityComponents<T>(entityIds);
     }
 }

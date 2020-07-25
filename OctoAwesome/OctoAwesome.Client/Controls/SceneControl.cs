@@ -1,19 +1,17 @@
-﻿using MonoGameUi;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using OctoAwesome.Client.Components;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
-using OctoAwesome.Runtime;
 using engenious;
 using engenious.Graphics;
 using engenious.Helper;
+using engenious.UI;
 
 namespace OctoAwesome.Client.Controls
 {
-    internal sealed class SceneControl : Control
+    internal sealed class SceneControl : Control, IDisposable
     {
         public static int VIEWRANGE = 4; // Anzahl Chunks als Potenz (Volle Sichtweite)
         public const int TEXTURESIZE = 64;
@@ -61,6 +59,8 @@ namespace OctoAwesome.Client.Controls
 
         private float sunPosition = 0f;
 
+        public event EventHandler OnCenterChanged;
+
         private readonly VertexPositionColor[] selectionVertices =
         {
                 new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
@@ -89,7 +89,9 @@ namespace OctoAwesome.Client.Controls
         };
 
         private ScreenComponent Manager { get; set; }
+
         private int _fillIncrement;
+
         public SceneControl(ScreenComponent manager, string style = "") :
             base(manager, style)
         {
@@ -102,7 +104,6 @@ namespace OctoAwesome.Client.Controls
             assets = manager.Game.Assets;
             entities = manager.Game.Entity;
             Manager = manager;
-
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
@@ -133,12 +134,12 @@ namespace OctoAwesome.Client.Controls
                 }
             }
 
-            planet = Manager.Game.ResourceManager.GetPlanet(0);
+            planet = Manager.Game.ResourceManager.GetPlanet(player.Position.Position.Planet);
 
             // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
 
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
-            localChunkCache = new LocalChunkCache(Manager.Game.ResourceManager.GlobalChunkCache, false, VIEWRANGE, range);
+            localChunkCache = new LocalChunkCache(planet.GlobalChunkCache, VIEWRANGE, range);
 
             chunkRenderer = new ChunkRenderer[
                 (int)Math.Pow(2, VIEWRANGE) * (int)Math.Pow(2, VIEWRANGE),
@@ -265,7 +266,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (player.CurrentEntity == null)
+            if (disposed || player?.CurrentEntity == null)
                 return;
 
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;
@@ -289,7 +290,7 @@ namespace OctoAwesome.Client.Controls
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = (IBlockDefinition) Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition)Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
 
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 
@@ -380,7 +381,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnPreDraw(GameTime gameTime)
         {
-            if (player.CurrentEntity == null)
+            if (player?.CurrentEntity == null)
                 return;
 
             if (ControlTexture == null)
@@ -530,7 +531,7 @@ namespace OctoAwesome.Client.Controls
 
         private void FillChunkRenderer()
         {
-            if (player.CurrentEntity == null)
+            if (player?.CurrentEntity == null)
                 return;
 
             Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);
@@ -539,13 +540,13 @@ namespace OctoAwesome.Client.Controls
             if (destinationChunk != currentChunk)
             {
                 localChunkCache.SetCenter(
-                    planet,
                     new Index2(player.Position.Position.ChunkIndex),
                     b =>
                     {
                         if (b)
                         {
-                            fillResetEvent.Set(); 
+                            fillResetEvent.Set();
+                            OnCenterChanged?.Invoke(this, System.EventArgs.Empty);
                         }
                     });
 
@@ -582,7 +583,7 @@ namespace OctoAwesome.Client.Controls
 
                 currentChunk = destinationChunk;
             }
-            
+
             foreach (var e in additionalFillResetEvents)
                 e.Set();
 
@@ -628,7 +629,7 @@ namespace OctoAwesome.Client.Controls
             {
                 forceResetEvent.WaitOne();
 
-                while(!forcedRenders.IsEmpty)
+                while (!forcedRenders.IsEmpty)
                 {
                     while (forcedRenders.TryDequeue(out ChunkRenderer r))
                     {
@@ -670,12 +671,54 @@ namespace OctoAwesome.Client.Controls
 
         #endregion
 
-        private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();        
+        private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
+        private bool disposed;
 
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {
             forcedRenders.Enqueue(chunkRenderer1);
             forceResetEvent.Set();
+        }
+
+        public void Dispose()
+        {
+            if (disposed)
+                return;
+
+            disposed = true;
+
+            backgroundThread.Abort();
+            backgroundThread2.Abort();
+
+            foreach (var thread in _additionalRegenerationThreads)
+                thread.Abort();
+
+            foreach (var cr in chunkRenderer)
+                cr.Dispose();
+
+            foreach (var cr in orderedChunkRenderer)
+                cr.Dispose();
+
+            chunkRenderer = null;
+            orderedChunkRenderer.Clear();
+
+            localChunkCache = null;
+
+            selectionIndexBuffer.Dispose();
+            selectionLines.Dispose();
+            billboardVertexbuffer.Dispose();
+
+            player = null;
+            camera = null;
+            assets = null;
+            entities = null;
+            planet = null;
+
+            sunEffect.Dispose();
+            selectionEffect.Dispose();
+
+            blockTextures.Dispose();
+            sunTexture.Dispose();
         }
     }
 }

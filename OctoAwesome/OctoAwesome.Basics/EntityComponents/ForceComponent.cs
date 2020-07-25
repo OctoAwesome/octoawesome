@@ -12,6 +12,5 @@ namespace OctoAwesome.Basics.EntityComponents
         public Vector3 Force { get; set; }
 
 
-
     }
 }

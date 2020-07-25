@@ -16,7 +16,7 @@ namespace OctoAwesome.Basics
         public float[,,] CloudMap { get; private set; }
 
         public SurfaceBiomeGenerator BiomeGenerator { get; private set; }
-
+        
         /// <summary>
         /// Konstruktor des komplexen Map-Generators
         /// </summary>
@@ -29,22 +29,23 @@ namespace OctoAwesome.Basics
         public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed, int averageDensity = 5510)
             : base(id, universe, size, seed)
         {
+            Generator = generator;
+
             // Berechnung der Gravitation auf Basis des Newton'schen Grundgesetzes und
             // der Annahme einer Kugel mit gleicher Oberfläche wie der rechteckige Planet.
             var radius = Math.Sqrt((Size.X * Size.Y) / (16 * Math.PI));
             Gravity = (float)((4f / 3f) * Math.PI * GravitationalConstant * averageDensity * radius);
-
             Initalize();
         }
 
         public ComplexPlanet() : base()
         {
-            Initalize();
+            //Initalize();
         }
 
-        public void Deserialize(BinaryReader reader, IDefinitionManager definitionManager)
+        public override void Deserialize(BinaryReader reader)
         {
-            base.Deserialize(reader, definitionManager);
+            base.Deserialize(reader);
             Initalize();
         }
 
