@@ -544,7 +544,7 @@ namespace OctoAwesome.Client.Components
         }
 
         private static int VertexAO(int side1, int side2, int corner)
-        => ((side1 & side2) ^ 1) * (3 - (side1 + side2 + corner));
+            => ((side1 & side2) ^ 1) * (3 - (side1 + side2 + corner));
 
         private uint AmbientToBrightness(uint ambient)
             => (0xFFFFFF / 2) + (0xFFFFFF / 6 * ambient);
@@ -563,8 +563,8 @@ namespace OctoAwesome.Client.Components
         private static int GetIndex(int zOffset, int yOffset, int xOffset)
             => ((((zOffset + 1) * 3) + yOffset + 1) * 3) + xOffset + 1;
 
-        static int IsSolidWall(Wall wall, uint solidWall)
-        => ((int)solidWall >> (int)wall) & 1;
+        private static int IsSolidWall(Wall wall, uint solidWall)
+            => ((int)solidWall >> (int)wall) & 1;
 
         public void Dispose()
         {

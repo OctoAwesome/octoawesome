@@ -288,12 +288,16 @@ namespace OctoAwesome.Client.Screens
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) return;
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) 
+                    return;
+                
                 ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) return;
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) 
+                    return;
+                
                 ChunkRenderer.OverrideLightLevel= ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
         }
