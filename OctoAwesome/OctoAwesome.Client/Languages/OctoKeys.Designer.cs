@@ -329,5 +329,29 @@ namespace OctoAwesome.Client.Languages {
                 return ResourceManager.GetString("teleport", resourceCulture);
             }
         }
+
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
+        /// </summary>
+        internal static string ambientOcclusion
+        {
+            get
+            {
+                return ResourceManager.GetString("ambientOcclusion", resourceCulture);
+            }
+        }
+
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
+        /// </summary>
+        internal static string wireFrame
+        {
+            get
+            {
+                return ResourceManager.GetString("wireFrame", resourceCulture);
+            }
+        }
     }
 }

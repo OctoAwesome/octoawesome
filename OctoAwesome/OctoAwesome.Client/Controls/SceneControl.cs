@@ -171,7 +171,12 @@ namespace OctoAwesome.Client.Controls
             };
             backgroundThread2.Start();
 
-            var additional = Environment.ProcessorCount / 3;
+            int additional;
+
+            if (Environment.ProcessorCount <= 4)
+                additional = Environment.ProcessorCount / 3;
+            else
+                additional = Environment.ProcessorCount - 4;
             additional = additional == 0 ? 1 : additional;
             _fillIncrement = additional + 1;
             additionalFillResetEvents = new AutoResetEvent[additional];
@@ -439,7 +444,7 @@ namespace OctoAwesome.Client.Controls
                     (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
                     (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
 
-                int range = 3;
+                int range = 6;
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
                     renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
