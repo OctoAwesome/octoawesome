@@ -116,6 +116,7 @@ namespace OctoAwesome.Client.Components
 
             if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;
+
             InteractInput = false;
 
             if (ApplyInput && SelectedBox.HasValue)

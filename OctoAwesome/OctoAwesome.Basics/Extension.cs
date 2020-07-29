@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System;
 using engenious;
+using OctoAwesome.Basics.Services;
 
 namespace OctoAwesome.Basics
 {
@@ -49,6 +50,7 @@ namespace OctoAwesome.Basics
 
             });
 
+            
             extensionLoader.RegisterSimulationExtender((s) =>
             {
                 s.Components.AddComponent(new WattMoverComponent());
@@ -57,8 +59,10 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new PowerAggregatorComponent());
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
-                s.Components.AddComponent(new BlockInteractionComponent(s));
+                s.Components.AddComponent(new BlockInteractionComponent(s, new BlockInteractionService()));
+
                 //TODO: unschön
+                //TODO: TypeContainer?
             });
         }
     }

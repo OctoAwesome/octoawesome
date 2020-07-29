@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,14 @@ namespace OctoAwesome.Pooling
 {
     public sealed class Pool<T> : IPool<T> where T : IPoolElement, new()
     {
+        private static readonly Func<T> getInstance;
+
+        static Pool()
+        {
+            var body = Expression.New(typeof(T));
+            getInstance = Expression.Lambda<Func<T>>(body).Compile();
+        }
+
         private readonly Stack<T> internalStack;
         private readonly LockSemaphore semaphoreExtended;
 
@@ -27,7 +36,7 @@ namespace OctoAwesome.Pooling
                 if (internalStack.Count > 0)
                     obj = internalStack.Pop();
                 else
-                    obj = new T();
+                    obj = getInstance();
             }
 
             obj.Init(this);

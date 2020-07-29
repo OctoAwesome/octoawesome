@@ -5,17 +5,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
+using OctoAwesome.Basics.Services;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
     public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
     {
-        private Simulation simulation;
+        private readonly Simulation simulation;
+        private readonly BlockInteractionService service;
 
-        public BlockInteractionComponent(Simulation simulation)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService interactionService)
         {
             this.simulation = simulation;
+            service = interactionService;
         }
 
         protected override bool AddEntity(Entity entity)

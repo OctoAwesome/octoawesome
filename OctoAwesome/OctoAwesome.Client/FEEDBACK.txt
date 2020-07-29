@@ -108,7 +108,6 @@ Cleanup
 - Texture (Mehrteilig)
 - Friction (Auf Block-Instanz)
 - Angle-Klasse
-- Chunkgröße auf 16 runter? Oder dynamisch machen
 - InstanceManager fur Universe, Planet, 
 - Persistierung von Chunks bereits beim Erzeugen?
 - -> SimpleNoiseGenerator, line 162, serialisieren
