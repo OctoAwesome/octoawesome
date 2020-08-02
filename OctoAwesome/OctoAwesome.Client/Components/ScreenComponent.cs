@@ -53,6 +53,7 @@ namespace OctoAwesome.Client.Components
             Skin.Current.ButtonBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_brown"), 15, 15);
             Skin.Current.ButtonHoverBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_beige"), 15, 15);
             Skin.Current.ButtonPressedBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_beige_pressed"), 15, 15);
+            Skin.Current.ButtonDisabledBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "buttonLong_brown_disabled"), 15, 15);
             Skin.Current.ProgressBarBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "progress_red"), 10, 8);
             Skin.Current.HorizontalScrollBackgroundBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture(typeof(ScreenComponent), "progress_background"), 10, 8);
         }
