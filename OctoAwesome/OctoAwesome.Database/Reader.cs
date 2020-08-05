@@ -8,6 +8,7 @@ namespace OctoAwesome.Database
 {
     public sealed class Reader
     {
+
         private readonly FileInfo fileInfo;
 
         public Reader(FileInfo fileInfo)

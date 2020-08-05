@@ -16,15 +16,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
-                    "leaves"
-                };
-            }
-        }
+        public override string[] Textures { get; } = new[] {"leaves"};
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {

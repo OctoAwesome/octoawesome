@@ -12,11 +12,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override string Name => Languages.OctoBasics.Cactus;
 
-        public override string[] Textures => new[] {
-                    "cactus_inside",
-                    "cactus_side",
-                    "cactus_top"
-                };
+        public override string[] Textures { get; }
+
+        public CactusBlockDefinition()
+        {
+            Textures = new[] {"cactus_inside","cactus_side","cactus_top" };
+        }
 
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
             int x, int y, int z)

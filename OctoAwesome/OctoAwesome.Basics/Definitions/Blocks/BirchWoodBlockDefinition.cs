@@ -15,7 +15,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData => true;
 
-        public override string[] Textures => new[] {
+        public override string[] Textures{ get; } = new[] {
                 "birch_wood_top",
                 "birch_wood_side" };
 

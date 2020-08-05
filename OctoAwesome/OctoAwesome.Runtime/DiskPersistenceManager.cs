@@ -326,7 +326,7 @@ namespace OctoAwesome.Runtime
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => new EntityDbContext(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
-        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<Guid> entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new()
         {
             foreach (var entityId in entityIds)
                 yield return (entityId, new EntityComponentsDbContext(databaseProvider, universeGuid).Get<T>(entityId));

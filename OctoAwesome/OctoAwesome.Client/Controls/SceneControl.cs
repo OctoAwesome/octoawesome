@@ -8,6 +8,7 @@ using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
+using engenious.UserDefined;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -50,7 +51,7 @@ namespace OctoAwesome.Client.Controls
         private Thread backgroundThread;
         private Thread backgroundThread2;
         private ILocalChunkCache localChunkCache;
-        private Effect simpleShader;
+        private simple simpleShader;
 
         private Thread[] _additionalRegenerationThreads;
 
@@ -105,7 +106,7 @@ namespace OctoAwesome.Client.Controls
             entities = manager.Game.Entity;
             Manager = manager;
 
-            simpleShader = manager.Game.Content.Load<Effect>("simple");
+            simpleShader = manager.Game.Content.Load<simple>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
@@ -410,9 +411,10 @@ namespace OctoAwesome.Client.Controls
 
             Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
 
-            simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
-            simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
-            simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
+            simpleShader.Ambient.Pass1.Apply();
+            simpleShader.Ambient.DiffuseColor = new Color(190, 190, 190);
+            simpleShader.Ambient.DiffuseIntensity = 0.6f;
+            simpleShader.Ambient.DiffuseDirection = sunDirection;
 
             // Console.WriteLine(sunDirection);
 
@@ -423,10 +425,11 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Manager.GraphicsDevice.Clear(background);
+            Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
 
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.ChunkPosition.HasValue)
+                if (!renderer.ChunkPosition.HasValue || renderer.VertexCount == 0)
                     continue;
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(
@@ -474,9 +477,10 @@ namespace OctoAwesome.Client.Controls
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
+            Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.ChunkPosition.HasValue)
+                if (!renderer.ChunkPosition.HasValue || renderer.VertexCount == 0)
                     continue;
 
                 Index3 shift = chunkOffset.ShortestDistanceXY(

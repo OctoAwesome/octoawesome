@@ -53,6 +53,8 @@ namespace OctoAwesome.Database
         /// </summary>
         public int Threshold { get; set; }
 
+        private Action startDefragFunc;
+        private Action checkFunc;
         private readonly KeyStore<TTag> keyStore;
         private readonly ValueStore valueStore;
         private readonly Defragmentation<TTag> defragmentation;
@@ -73,6 +75,8 @@ namespace OctoAwesome.Database
             this.keyFile = keyFile;
             this.valueFile = valueFile;
             Threshold = 1000;
+            startDefragFunc = defragmentation.StartDefragmentation;
+            checkFunc = fileCheck.Check;
         }
         public Database(FileInfo keyFile, FileInfo valueFile) : this(keyFile, valueFile, false)
         {
@@ -112,10 +116,10 @@ namespace OctoAwesome.Database
         }
 
         public void Validate()
-            => ExecuteOperationOnKeyValueStore(fileCheck.Check);
+            => ExecuteOperationOnKeyValueStore(checkFunc);
 
         public void Defragmentation()
-            => ExecuteOperationOnKeyValueStore(defragmentation.StartDefragmentation);
+            => ExecuteOperationOnKeyValueStore(startDefragFunc);
 
         public Value GetValue(TTag tag)
         {

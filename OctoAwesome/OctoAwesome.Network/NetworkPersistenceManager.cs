@@ -117,7 +117,7 @@ namespace OctoAwesome.Network
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => Array.Empty<Guid>();
 
-        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, IEnumerable<Guid> entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new()
             => Array.Empty<(Guid, T)>();
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)

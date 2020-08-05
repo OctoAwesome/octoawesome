@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Properties;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,14 +22,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData { get { return true; } }
 
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
-                "planks"};
-            }
-        }
+        public override string[] Textures { get; } = new[] { "planks" };
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {

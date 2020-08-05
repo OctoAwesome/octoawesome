@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Database.Expressions;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +40,7 @@ namespace OctoAwesome.Database
         /// <summary>
         /// Returns true if the Key is not valid. Comparing with default should have the same result
         /// </summary>
-        public bool IsEmpty => Tag == null && ValueLength == 0;
+        public bool IsEmpty => ValueLength == 0 && Tag == null;
 
         public Key(TTag tag, long index, int length, long position)
         {
@@ -68,7 +70,7 @@ namespace OctoAwesome.Database
         {
             var localIndex = BitConverter.ToInt64(array, index);
             var length = BitConverter.ToInt32(array, index + sizeof(long));
-            var tag = new TTag();
+            var tag = InstanceCreator<TTag>.CreateInstance();
             tag.FromBytes(array, index + BASE_KEY_SIZE);
 
             return new Key<TTag>(tag, localIndex, length, index);

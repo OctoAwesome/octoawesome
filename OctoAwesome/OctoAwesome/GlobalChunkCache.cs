@@ -42,7 +42,7 @@ namespace OctoAwesome
         // TODO: Früher oder später nach draußen auslagern
         private readonly Task cleanupTask;
         private readonly ILogger logger;
-        private readonly IEnumerable<(Guid Id, PositionComponent Component)> positionComponents;
+        private readonly (Guid Id, PositionComponent Component)[] positionComponents;
         private IUpdateHub updateHub;
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace OctoAwesome
             cleanupTask.Start(TaskScheduler.Default);
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
 
-            var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>().ToList();
+            var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>().ToArray();
             positionComponents = resourceManager.GetEntityComponents<PositionComponent>(ids);
         }
 
@@ -133,13 +133,16 @@ namespace OctoAwesome
                     //{
                     cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(Planet, position);
                     var chunkIndex = new Index3(position, Planet.Id);
-                    var loadedEntities = positionComponents
-                        .Where(x => x.Component.Planet == Planet && x.Component.Position.ChunkIndex.X == chunkIndex.X && x.Component.Position.ChunkIndex.Y == chunkIndex.Y)
-                        .Select(x => resourceManager.LoadEntity(x.Id))
-                        .ToArray();
 
-                    foreach (var entity in loadedEntities)
-                        cacheItem.ChunkColumn.Add(entity);
+                    foreach (var positionComponent in positionComponents)
+                    {
+                        if (!(positionComponent.Component.Planet == Planet 
+                            && positionComponent.Component.Position.ChunkIndex.X == chunkIndex.X 
+                            && positionComponent.Component.Position.ChunkIndex.Y == chunkIndex.Y))
+                            continue;
+
+                        cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(positionComponent.Component.Entity.Id));
+                    }
 
                     using (updateSemaphore.Wait())
                         newChunks.Enqueue(cacheItem);
@@ -268,33 +271,33 @@ namespace OctoAwesome
         public void AfterSimulationUpdate(Simulation simulation)
         {
             //TODO: Überarbeiten
-            using (semaphore.Wait())
-            {
-                FailEntityChunkArgs[] failChunkEntities = cache
-                    .Where(chunk => chunk.Value.ChunkColumn != null)
-                    .SelectMany(chunk => chunk.Value.ChunkColumn.FailChunkEntity())
-                    .ToArray();
+            //using (semaphore.Wait())
+            //{
+            //    FailEntityChunkArgs[] failChunkEntities = cache
+            //        .Where(chunk => chunk.Value.ChunkColumn != null)
+            //        .SelectMany(chunk => chunk.Value.ChunkColumn.FailChunkEntity())
+            //        .ToArray();
 
-                foreach (FailEntityChunkArgs entity in failChunkEntities)
-                {
-                    IChunkColumn currentchunk = Peek(entity.CurrentChunk);
-                    IChunkColumn targetchunk = Peek(entity.TargetChunk);
+            //    foreach (FailEntityChunkArgs entity in failChunkEntities)
+            //    {
+            //        IChunkColumn currentchunk = Peek(entity.CurrentChunk);
+            //        IChunkColumn targetchunk = Peek(entity.TargetChunk);
 
-                    currentchunk?.Remove(entity.Entity);
+            //        currentchunk?.Remove(entity.Entity);
 
-                    if (targetchunk != null)
-                    {
-                        targetchunk.Add(entity.Entity);
-                    }
-                    else
-                    {
-                        targetchunk = resourceManager.LoadChunkColumn(entity.CurrentPlanet, entity.TargetChunk);
+            //        if (targetchunk != null)
+            //        {
+            //            targetchunk.Add(entity.Entity);
+            //        }
+            //        else
+            //        {
+            //            targetchunk = resourceManager.LoadChunkColumn(entity.CurrentPlanet, entity.TargetChunk);
 
-                        simulation.RemoveEntity(entity.Entity); //Because we add it again through the targetchunk
-                        targetchunk.Add(entity.Entity);
-                    }
-                }
-            }
+            //            simulation.RemoveEntity(entity.Entity); //Because we add it again through the targetchunk
+            //            targetchunk.Add(entity.Entity);
+            //        }
+            //    }
+            //}
         }
 
         public void OnCompleted() { }

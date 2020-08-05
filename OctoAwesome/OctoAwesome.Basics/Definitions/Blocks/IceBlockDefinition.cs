@@ -16,30 +16,22 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
-                    "ice"
-                };
-            }
-        }
+        public override string[] Textures { get; } = new[] { "ice" };
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+    public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+    {
+        return new PhysicalProperties()
         {
-            return new PhysicalProperties()
-            {
-                Density = 2f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
-        }
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
+            Density = 2f,
+            FractureToughness = 0.3f,
+            Granularity = 0.9f,
+            Hardness = 0.1f
+        };
     }
+
+    public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+    {
+        throw new NotImplementedException();
+    }
+}
 }

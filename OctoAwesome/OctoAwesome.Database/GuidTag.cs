@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace OctoAwesome.Database
 {
-    public struct GuidTag<T> : ITag
+    public struct GuidTag<T> : ITag, IEquatable<GuidTag<T>>
     {
         public Guid Tag { get; private set; }
 
@@ -21,5 +21,29 @@ namespace OctoAwesome.Database
 
         public void FromBytes(byte[] array, int startIndex)
             => Tag = new Guid(array.Skip(startIndex).Take(Length).ToArray());
+
+        public override bool Equals(object obj) 
+            => obj is GuidTag<T> tag && Equals(tag);
+
+        public bool Equals(GuidTag<T> other) 
+            => Length == other.Length && Tag.Equals(other.Tag);
+
+        public override int GetHashCode()
+        {
+            int hashCode = 139101280;
+            hashCode = hashCode * -1521134295 + Tag.GetHashCode();
+            hashCode = hashCode * -1521134295 + Length.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(GuidTag<T> left, GuidTag<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(GuidTag<T> left, GuidTag<T> right)
+        {
+            return !(left == right);
+        }
     }
 }

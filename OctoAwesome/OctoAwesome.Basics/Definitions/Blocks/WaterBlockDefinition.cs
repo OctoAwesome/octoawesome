@@ -28,11 +28,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override string[] Textures => new[] {
-                    "water"
-                };
-
-
-
+        public override string[] Textures { get; } = new[] { "water" };
     }
 }

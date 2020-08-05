@@ -15,16 +15,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             get { return "sand"; }
         }
 
-
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
-                    "sand"
-                };
-            }
-        }
+        public override string[] Textures { get; } = new[] {"sand"};
 
         public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
         {

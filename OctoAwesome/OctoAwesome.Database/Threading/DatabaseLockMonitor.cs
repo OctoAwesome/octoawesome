@@ -41,10 +41,10 @@ namespace OctoAwesome.Database.Threading
                 if (exclusiveLocks)
                     return false;
 
-                if (operation.HasFlag(Operation.Read))
+                if ((operation & Operation.Read) == Operation.Read)
                     return writeLocks < 1;
 
-                if (operation.HasFlag(Operation.Write))
+                if ((operation & Operation.Write) == Operation.Write)
                     return readLocks < 1;
             }
             finally
@@ -60,10 +60,10 @@ namespace OctoAwesome.Database.Threading
             //if (operation.HasFlag(Operation.Exclusive))
             //    exclusiveEvent.WaitOne();
 
-            if (operation.HasFlag(Operation.Read))
+            if ((operation & Operation.Read) == Operation.Read)
                 writeEvent.WaitOne();
 
-            if (operation.HasFlag(Operation.Write))
+            if ((operation & Operation.Write) == Operation.Write)
                 readEvent.WaitOne();
 
         }
@@ -74,10 +74,10 @@ namespace OctoAwesome.Database.Threading
             semaphoreSlim.Wait();
             try
             {
-                if (operation.HasFlag(Operation.Read))
+                if ((operation & Operation.Read) == Operation.Read)
                     ++readOperations;
 
-                if (operation.HasFlag(Operation.Write))
+                if ((operation & Operation.Write) == Operation.Write)
                     ++writeOperations;
 
                 return new DatabaseOperation(this, operation);
@@ -93,10 +93,10 @@ namespace OctoAwesome.Database.Threading
             semaphoreSlim.Wait();
             try
             {
-                if (operation.HasFlag(Operation.Read))
+                if ((operation & Operation.Read) == Operation.Read)
                     --readOperations;
 
-                if (operation.HasFlag(Operation.Write))
+                if ((operation & Operation.Write) == Operation.Write)
                     --writeOperations;
 
                 if (readLocks == 0 && readOperations == 0)
@@ -116,13 +116,13 @@ namespace OctoAwesome.Database.Threading
             semaphoreSlim.Wait();
             try
             {
-                if (operation.HasFlag(Operation.Exclusive))
+                if ((operation & Operation.Exclusive) == Operation.Exclusive)
                     exclusiveLocks = true;
 
-                if (operation.HasFlag(Operation.Read))
+                if ((operation & Operation.Read) == Operation.Read)
                     ++readLocks;
 
-                if (operation.HasFlag(Operation.Write))
+                if ((operation & Operation.Write) == Operation.Write)
                     ++writeLocks;
 
                 if (exclusiveLocks)
@@ -148,13 +148,13 @@ namespace OctoAwesome.Database.Threading
             semaphoreSlim.Wait();
             try
             {
-                if (operation.HasFlag(Operation.Exclusive))
+                if ((operation & Operation.Exclusive) == Operation.Exclusive)
                     exclusiveLocks = false;
 
-                if (operation.HasFlag(Operation.Read))
+                if ((operation & Operation.Read) == Operation.Read)
                     --readLocks;
 
-                if (operation.HasFlag(Operation.Write))
+                if ((operation & Operation.Write) == Operation.Write)
                     --writeLocks;
 
                 if (readLocks == 0 && readOperations == 0)

@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Properties;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,11 +16,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData => true;
 
-        public override string[] Textures => new[] {
-                "wood_top",
-                "wood_side" };
+        public override string[] Textures { get; } = new[] { "wood_top", "wood_side" };
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z) 
+        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
             => new PhysicalProperties()
             {
                 Density = 0.87f,
@@ -28,7 +27,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 Hardness = 0.1f
             };
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties) 
+        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
             => throw new NotImplementedException();
 
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
@@ -92,7 +91,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             // Assert this
             return -1;
         }
-        
+
         public override int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
             OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);

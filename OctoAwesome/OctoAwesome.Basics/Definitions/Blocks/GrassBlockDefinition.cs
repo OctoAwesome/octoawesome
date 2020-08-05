@@ -15,19 +15,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             get { return "grass_top"; }
         }
 
-        public override string[] Textures
-        {
-            get
-            {
-                
-
-                return new[] {
+        public override string[] Textures { get; } = new[] {
                     "grass_top",
                     "dirt",
                     "dirt_grass",
                 };
-            }
-        }
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
@@ -50,7 +42,8 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             if (wall == Wall.Top)
             {
                 return 0;
-            } else if (wall == Wall.Bottom)
+            }
+            else if (wall == Wall.Bottom)
             {
                 return 1;
             }

@@ -21,14 +21,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override bool HasMetaData { get { return true; } }
 
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
-                "planks_red"};
-            }
-        }
+        public override string[] Textures { get; } = new[] {"planks_red"};
 
         public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
