@@ -36,10 +36,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 Hardness = 0.9f
             };
         }
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

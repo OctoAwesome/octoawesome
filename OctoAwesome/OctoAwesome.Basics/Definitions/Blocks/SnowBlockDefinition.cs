@@ -46,12 +46,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 Hardness = 0.05f
             };
         }
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
-
+             
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
             if (wall == Wall.Top)

@@ -35,15 +35,17 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public List<IExtension> ActiveExtensions { get; private set; }
 
-        private ISettings settings;
+        private readonly ISettings settings;
+        private readonly ITypeContainer typeContainer;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings">Current Gamesettings</param>
-        public ExtensionLoader(ISettings settings)
+        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings)
         {
             this.settings = settings;
+            this.typeContainer = typeContainer;
             definitions = new List<IDefinition>();
             entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
@@ -87,7 +89,8 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         IExtension extension = (IExtension)Activator.CreateInstance(type);
-                        extension.Register(this);
+                        extension.Register(typeContainer);
+                        extension.Register(this, typeContainer);
 
                         if (disabledExtensions.Contains(type.FullName))
                             LoadedExtensions.Add(extension);

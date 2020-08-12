@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.Information;
 using System;
 
 namespace OctoAwesome
@@ -13,7 +14,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="block">Der Block-Typ des interagierenden Elements</param>
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
-        void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
+        BlockInteractionInformation Hit(BlockInteractionInformation interactionInformation, IItem item);
 
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält

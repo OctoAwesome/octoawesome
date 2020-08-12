@@ -62,12 +62,12 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="index">Index der BlockDefinition</param>
         /// <returns>BlockDefinition</returns>
-        public IDefinition GetDefinitionByIndex(ushort index)
+        public IBlockDefinition GetBlockDefinitionByIndex(ushort index)
         {
             if (index == 0)
                 return null;
 
-            return definitions[(index & Blocks.TypeMask) - 1];
+            return (IBlockDefinition)definitions[(index & Blocks.TypeMask) - 1];
         }
 
         /// <summary>

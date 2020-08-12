@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using engenious;
 using System.Collections.Generic;
+using OctoAwesome.Information;
 
 namespace OctoAwesome
 {
@@ -56,7 +57,15 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="block">Der Block-Typ des interagierenden Elements</param>
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
-        public abstract void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
+        public virtual BlockInteractionInformation Hit(BlockInteractionInformation interactionInformation, IItem item)
+        {
+            if(interactionInformation is BlockCollectionInformation collectionInformation)
+            {
+                collectionInformation.VolumeRemaining -= VolumePerUnit;
+            }
+
+            return interactionInformation;
+        }
 
         /// <summary>
         /// Liefert die Kollisionsbox für den Block. Da ein Array zurück gegeben wird, lässt sich die 
@@ -74,5 +83,6 @@ namespace OctoAwesome
         public virtual int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
         
         public bool IsSolidWall(Wall wall) => (SolidWall& (1 << (int)wall)) != 0;
+        
     }
 }

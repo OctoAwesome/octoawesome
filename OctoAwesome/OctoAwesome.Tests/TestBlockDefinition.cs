@@ -36,7 +36,7 @@ namespace OctoAwesome.Tests
             throw new NotImplementedException();
         }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+        public override BlockInteractionInformation Hit(BlockInteractionInformation interactionInformation, IItem item)
         {
             throw new NotImplementedException();
         }

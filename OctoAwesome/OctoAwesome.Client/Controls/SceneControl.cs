@@ -295,7 +295,7 @@ namespace OctoAwesome.Client.Controls
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = (IBlockDefinition)Manager.Game.DefinitionManager.GetDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition)Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
 
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 

@@ -208,9 +208,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             };
         }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

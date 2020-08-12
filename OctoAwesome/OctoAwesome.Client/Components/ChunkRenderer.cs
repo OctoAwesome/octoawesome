@@ -233,7 +233,7 @@ namespace OctoAwesome.Client.Components
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition)definitionManager.GetBlockDefinitionByIndex(block);
 
                         if (blockDefinition == null)
                             continue;
@@ -248,7 +248,7 @@ namespace OctoAwesome.Client.Components
                                 {
                                     blocks[GetIndex(zOffset, yOffset, xOffset)] = _manager.GetBlock((ChunkPosition.Value * Chunk.CHUNKSIZE) + new Index3(x + xOffset, y + yOffset, z + zOffset));
                                     blockDefinitions[GetIndex(zOffset, yOffset, xOffset)] =
-                                        (IBlockDefinition)definitionManager.GetDefinitionByIndex(blocks[GetIndex(zOffset, yOffset, xOffset)]);
+                                        (IBlockDefinition)definitionManager.GetBlockDefinitionByIndex(blocks[GetIndex(zOffset, yOffset, xOffset)]);
                                 }
 
                         ushort topBlock = blocks[GetIndex(1, 0, 0)];

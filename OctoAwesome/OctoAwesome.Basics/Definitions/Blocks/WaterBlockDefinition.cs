@@ -21,12 +21,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 Hardness = 0.1f
             };
         }
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
-
+     
 
         public override string[] Textures => new[] {
                     "water"

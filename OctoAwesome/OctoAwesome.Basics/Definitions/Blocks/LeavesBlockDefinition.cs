@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Information;
+using System;
 using System.Drawing;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
@@ -37,9 +38,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             };
         }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

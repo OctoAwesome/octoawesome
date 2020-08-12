@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Properties;
+using OctoAwesome.Information;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -39,12 +40,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 Granularity = 0.9f,
                 Hardness = 0.1f
             };
-        }
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
+        }      
 
     }
 }

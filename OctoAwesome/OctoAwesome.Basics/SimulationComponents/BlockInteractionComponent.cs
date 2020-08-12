@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
-using OctoAwesome.Basics.Services;
+using OctoAwesome.Services;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -38,16 +38,16 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             if (controller.InteractBlock.HasValue)
             {
-                ushort lastBlock = cache.GetBlock(controller.InteractBlock.Value);
-                cache.SetBlock(controller.InteractBlock.Value, 0);
-
-                if (lastBlock != 0)
+                var lastBlock = cache.GetBlockInfo(controller.InteractBlock.Value);
+                
+                if (!lastBlock.IsEmpty)
                 {
-                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
+                    var blockUnit = service.Hit(10, lastBlock);
                     if (blockDefinition is IInventoryableDefinition invDef)
                         inventory.AddUnit(invDef);
                 }
                 controller.InteractBlock = null;
+                //cache.SetBlock(controller.InteractBlock.Value, 0);
             }
 
             if (toolbar != null && controller.ApplyBlock.HasValue)

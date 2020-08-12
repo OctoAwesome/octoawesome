@@ -25,6 +25,7 @@ namespace OctoAwesome
         /// Register the Components in the ExtensionsLoader
         /// </summary>
         /// <param name="extensionLoader">ExtensionsLoader</param>
-        void Register(IExtensionLoader extensionLoader);
+        void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer);
+        void Register(ITypeContainer typeContainer);
     }
 }
