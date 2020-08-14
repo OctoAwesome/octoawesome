@@ -1,10 +1,12 @@
 ﻿using engenious;
+
 using OctoAwesome.Common;
 using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,7 +58,7 @@ namespace OctoAwesome
         /// Erzeugt eine neue Instanz der Klasse Simulation.
         /// </summary>
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
-        {            
+        {
             ResourceManager = resourceManager;
             simulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
@@ -101,7 +103,7 @@ namespace OctoAwesome
                 var rand = new Random();
                 numericSeed = rand.Next(int.MaxValue);
             }
-            else if(int.TryParse(rawSeed, out var seed))
+            else if (int.TryParse(rawSeed, out var seed))
             {
                 numericSeed = seed;
             }
@@ -109,7 +111,7 @@ namespace OctoAwesome
             {
                 numericSeed = rawSeed.GetHashCode();
             }
-            
+
 
             Guid guid = ResourceManager.NewUniverse(name, numericSeed);
 
@@ -152,12 +154,14 @@ namespace OctoAwesome
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
             //Update all Entities
-            foreach (var entity in Entities.OfType<UpdateableEntity>())
-                entity.Update(gameTime);
+            foreach (var entity in Entities)
+                if (entity is UpdateableEntity updateableEntity)
+                    updateableEntity.Update(gameTime);
 
             // Update all Components
-            foreach (var component in Components.Where(c => c.Enabled))
-                component.Update(gameTime);
+            foreach (var component in Components)
+                if (component.Enabled)
+                    component.Update(gameTime);
 
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
@@ -320,7 +324,7 @@ namespace OctoAwesome
             remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             remoteEntity.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             remoteEntity.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
-            
+
             var newEntityNotification = entityNotificationPool.Get();
             newEntityNotification.Entity = remoteEntity;
             newEntityNotification.Type = EntityNotification.ActionType.Add;

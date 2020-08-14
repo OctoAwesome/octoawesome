@@ -34,7 +34,7 @@ namespace OctoAwesome.Database
     public sealed class Database<TTag> : Database where TTag : ITag, new()
     {
         public bool FixedValueLength => valueStore.FixedValueLength;
-        public IEnumerable<TTag> Keys
+        public IReadOnlyList<TTag> Keys
         {
             get
             {

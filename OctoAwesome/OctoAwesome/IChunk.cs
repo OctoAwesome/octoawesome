@@ -29,6 +29,8 @@ namespace OctoAwesome
         /// </summary>
         int[] MetaData { get; }
 
+        int Version { get; set; }
+
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
         /// </summary>

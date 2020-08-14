@@ -1,4 +1,5 @@
 ﻿#region Using Statements
+using OctoAwesome.Client.Cache;
 using OctoAwesome.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ namespace OctoAwesome.Client
             {
                 Startup.Register(typeContainer);
                 Startup.ConfigureLogger(ClientType.DesktopClient);
-
                 Network.Startup.Register(typeContainer);
 
                 var logger = (typeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As("OctoAwesome.Client");

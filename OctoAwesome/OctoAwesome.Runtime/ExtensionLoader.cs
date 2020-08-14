@@ -79,25 +79,25 @@ namespace OctoAwesome.Runtime
             foreach (var assembly in assemblies)
             {
                 var types = assembly
-                    .GetTypes()
-                    .Where(t => typeof(IExtension).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+                    .GetTypes();
 
                 foreach (var type in types)
                 {
-                    try
-                    {
-                        IExtension extension = (IExtension)Activator.CreateInstance(type);
-                        extension.Register(this);
+                    if (typeof(IExtension).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                        try
+                        {
+                            IExtension extension = (IExtension)Activator.CreateInstance(type);
+                            extension.Register(this);
 
-                        if (disabledExtensions.Contains(type.FullName))
-                            LoadedExtensions.Add(extension);
-                        else
-                            ActiveExtensions.Add(extension);
-                    }
-                    catch (Exception ex)
-                    {
-                        // TODO: Logging
-                    }
+                            if (disabledExtensions.Contains(type.FullName))
+                                LoadedExtensions.Add(extension);
+                            else
+                                ActiveExtensions.Add(extension);
+                        }
+                        catch (Exception ex)
+                        {
+                            // TODO: Logging
+                        }
                 }
             }
         }
@@ -189,7 +189,7 @@ namespace OctoAwesome.Runtime
             list.Add(extenderDelegate);
         }
 
-        public void RegisterDefaultEntityExtender<T>() where T : Entity 
+        public void RegisterDefaultEntityExtender<T>() where T : Entity
             => RegisterEntityExtender<T>((e) => e.RegisterDefault());
 
         /// <summary>

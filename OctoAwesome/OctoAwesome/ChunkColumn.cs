@@ -287,6 +287,7 @@ namespace OctoAwesome
             for (var c = 0; c < Chunks.Length; c++)
             {
                 IChunk chunk = Chunks[c];
+                writer.Write(chunk.Version);
                 for (var i = 0; i < chunk.Blocks.Length; i++)
                 {
                     if (chunk.Blocks[i] == 0)
@@ -368,6 +369,7 @@ namespace OctoAwesome
             for (var c = 0; c < Chunks.Length; c++)
             {
                 IChunk chunk = Chunks[c] = new Chunk(new Index3(Index, c), Planet);
+                chunk.Version = reader.ReadInt32();
                 chunk.Changed += OnChunkChanged;
                 chunk.SetColumn(this);
 

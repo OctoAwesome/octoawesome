@@ -16,9 +16,11 @@ namespace OctoAwesome
 
         public RemoteEntity(Entity originEntity)
         {
-            var sendableComponents = Components.Where(c => c.Sendable);
-            foreach (var component in sendableComponents)
-                Components.AddComponent(component);
+            foreach (var component in Components)
+            {
+                if (component.Sendable)
+                    Components.AddComponent(component);
+            }
             Id = originEntity.Id;
         }
 

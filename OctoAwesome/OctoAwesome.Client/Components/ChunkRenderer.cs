@@ -8,6 +8,11 @@ using System.Windows.Threading;
 using System.Threading;
 using OctoAwesome.Threading;
 using engenious.UserDefined;
+using OctoAwesome.Client.Cache;
+using OctoAwesome.Expressions;
+using OctoAwesome.Runtime;
+using System.IO;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Client.Components
 {
@@ -32,6 +37,7 @@ namespace OctoAwesome.Client.Components
         /// Referenz auf den aktuellen Chunk (falls vorhanden)
         /// </summary>
         private IChunk chunk;
+        private IPlanet planet;
         private bool loaded = false;
 
         public int VertexCount { get; private set; }
@@ -41,7 +47,6 @@ namespace OctoAwesome.Client.Components
         private readonly SceneControl _sceneControl;
         private IDefinitionManager definitionManager;
         private static RasterizerState wireFrameState;
-
         /// <summary>
         /// Adresse des aktuellen Chunks
         /// </summary>
@@ -105,14 +110,13 @@ namespace OctoAwesome.Client.Components
             simple.Ambient.BlockTextures = textures;
             simple.Ambient.AmbientIntensity = 0.4f;
             simple.Ambient.AmbientColor = Color.White.ToVector4();
+            dbProvier = new DatabaseProvider(Path.Combine("cache", "chunkverticescache"), null);
 
 
         }
 
-        public void SetChunk(ILocalChunkCache manager, int x, int y, int z)
+        public void SetChunk(ILocalChunkCache manager, Index3? newPosition, IPlanet planet)
         {
-            var newPosition = new Index3(x, y, z);
-
             if (_manager == manager && newPosition == ChunkPosition)
             {
                 NeedsUpdate = !loaded;
@@ -124,12 +128,25 @@ namespace OctoAwesome.Client.Components
 
             if (chunk != null)
             {
+                CacheCurrentChunkVerticesData();
+
                 chunk.Changed -= OnChunkChanged;
                 chunk = null;
             }
+            this.planet = planet;
 
             loaded = false;
             NeedsUpdate = true;
+        }
+
+        private void CacheCurrentChunkVerticesData()
+        {
+            if (vertices.Count == 0 || chunk == null || planet == null )
+                return;
+            var database = new ChunkRendererDbContext(dbProvier.GetDatabase<Index3Tag>(this.planet.Universe, this.planet.Id, false));
+
+            using (var cacheObject = new VerticesForChunk(chunk.Version, chunk.Index, ArrayOfList<VertexPositionNormalTextureLight>.GetArray(vertices)))
+                database.AddOrUpdate(cacheObject);
         }
 
         public bool NeedsUpdate = false;
@@ -178,6 +195,7 @@ namespace OctoAwesome.Client.Components
         private float textureGap;
         private Dictionary<IBlockDefinition, int> textureOffsets;
         private List<VertexPositionNormalTextureLight> vertices;
+        private DatabaseProvider dbProvier;
 
         public void GenerateIndexBuffer()
         {
@@ -227,9 +245,18 @@ namespace OctoAwesome.Client.Components
                 this.chunk.Changed += OnChunkChanged;
             }
             var chunk = this.chunk;
-
             vertices.Clear();
-
+            var database = new ChunkRendererDbContext(dbProvier.GetDatabase<Index3Tag>(planet.Universe, planet.Id, false));
+            var verticesForChunk = database.Get(chunk.Index);
+            if (verticesForChunk != null)
+            {
+                if (verticesForChunk.Version == chunk.Version)
+                {
+                    vertices.AddRange(verticesForChunk.Vertices);
+                    RegisterNewVertices(chunk);
+                    return true;
+                }
+            }
 
             var blockDefinitions = new IBlockDefinition[27];
 
@@ -277,6 +304,14 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
+            return RegisterNewVertices(chunk);
+        }
+#if DEBUG
+        private bool RegisterNewVertices(IChunk chunk)
+#else
+        private unsafe bool RegisterNewVertices(IChunk chunk)
+#endif
+        {
             VertexCount = vertices.Count;
             indexCount = vertices.Count * 6 / 4;
 
@@ -308,8 +343,11 @@ namespace OctoAwesome.Client.Components
                 return !NeedsUpdate;
             }
         }
-
+#if DEBUG
+        private void GenerateVertices(IChunk chunk, int x, int y, int z, IBlockDefinition[] blockDefinitions, bool getFromManager)
+#else
         private unsafe void GenerateVertices(IChunk chunk, int x, int y, int z, IBlockDefinition[] blockDefinitions, bool getFromManager)
+#endif
         {
             ushort block = chunk.GetBlock(x, y, z);
 
@@ -643,6 +681,7 @@ namespace OctoAwesome.Client.Components
 
         public void Dispose()
         {
+            CacheCurrentChunkVerticesData();
             if (VertexBuffer != null)
             {
                 VertexBuffer.Dispose();

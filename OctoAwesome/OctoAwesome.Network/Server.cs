@@ -33,8 +33,9 @@ namespace OctoAwesome.Network
 
             if (endpoints.Any(x => x.AddressFamily == AddressFamily.InterNetwork))
             {
-                foreach (var endpoint in endpoints.Where(e => e.AddressFamily == AddressFamily.InterNetwork))
-                    ipv4Socket.Bind(endpoint);
+                foreach (var endpoint in endpoints)
+                    if (endpoint.AddressFamily == AddressFamily.InterNetwork)
+                        ipv4Socket.Bind(endpoint);
 
                 ipv4Socket.Listen(1024);
                 ipv4Socket.BeginAccept(OnClientAccepted, ipv4Socket);
@@ -61,7 +62,7 @@ namespace OctoAwesome.Network
             var socket = ar.AsyncState as Socket;
 
             var tmpSocket = socket.EndAccept(ar);
-            
+
             tmpSocket.NoDelay = true;
 
             var client = new ConnectedClient(tmpSocket);

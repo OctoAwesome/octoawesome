@@ -574,7 +574,7 @@ namespace OctoAwesome.Client.Controls
 
                         for (int z = 0; z < planet.Size.Z; z++)
                         {
-                            chunkRenderer[rendererIndex, z].SetChunk(localChunkCache, local.X, local.Y, z);
+                            chunkRenderer[rendererIndex, z].SetChunk(localChunkCache, new Index3(local.X, local.Y, z), player.Position.Planet);
                         }
                     }
                 }
@@ -707,6 +707,9 @@ namespace OctoAwesome.Client.Controls
 
             foreach (var cr in orderedChunkRenderer)
                 cr.Dispose();
+
+            foreach (var renderer in chunkRenderer)
+                renderer.SetChunk(null, null, null);
 
             chunkRenderer = null;
             orderedChunkRenderer.Clear();

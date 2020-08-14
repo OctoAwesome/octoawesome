@@ -29,7 +29,7 @@ namespace OctoAwesome.Serialization
                 value.BlockInfos.ForEach(b => InternalAddOrUpdate(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(b.Position)), b));
         }
 
-        public IEnumerable<ChunkDiffTag> GetAllKeys()
+        public IReadOnlyList<ChunkDiffTag> GetAllKeys()
             => Database.Keys;
 
         public override void Remove(BlockChangedNotification value)
@@ -39,6 +39,11 @@ namespace OctoAwesome.Serialization
             => value.BlockInfos.ForEach(b => InternalRemove(new ChunkDiffTag(value.ChunkPos, Chunk.GetFlatIndex(b.Position))));
 
         public void Remove(params ChunkDiffTag[] tags)
+        {
+            foreach (ChunkDiffTag tag in tags)
+                InternalRemove(tag);
+        }
+        public void Remove(IReadOnlyList<ChunkDiffTag> tags)
         {
             foreach (ChunkDiffTag tag in tags)
                 InternalRemove(tag);

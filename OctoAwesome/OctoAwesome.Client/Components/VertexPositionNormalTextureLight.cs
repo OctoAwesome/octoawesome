@@ -45,6 +45,11 @@ namespace OctoAwesome.Client.Components
             PackedValue = (posX & 0xFF) | ((posY & 0xFF) << 8) | ((posZ & 0xFF) << 16) | ((uint)layer << 24);
             PackedValue2 = light | (normalPacked << 24) | (uvExpanded << 28);
         }
+        public VertexPositionNormalTextureLight(uint packedValue1, uint packedValue2)
+        {
+            PackedValue = packedValue1;
+            PackedValue2 = packedValue2;
+        }
         public uint PackedValue { get; private set; }
         public uint PackedValue2 { get; private set; }
         VertexDeclaration IVertexType.VertexDeclaration

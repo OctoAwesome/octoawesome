@@ -109,8 +109,12 @@ namespace OctoAwesome.Client.Components
             if (!(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
                 return;
 
-            Entities = simulation.Entities.Where(i => i.Components.ContainsComponent<PositionComponent>()).ToList();
-
+            Entities.Clear();
+            foreach (var item in simulation.Entities)
+            {
+                if (item.Components.ContainsComponent<PositionComponent>())
+                    Entities.Add(item);
+            }
             //base.Update(gameTime);
         }
     }
