@@ -305,3 +305,4 @@ paket-files/
 __pycache__/
 *.pyc
 /OctoAwesome/OctoAwesome.Client/Content/engenious.CreatedContent.Content.dll
+*.coauthors
