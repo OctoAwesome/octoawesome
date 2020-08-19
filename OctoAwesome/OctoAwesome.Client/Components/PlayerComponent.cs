@@ -193,11 +193,11 @@ namespace OctoAwesome.Client.Components
 
             var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
             foreach (var blockDefinition in blockDefinitions)
-                inventory.AddUnit(blockDefinition);
+                inventory.AddUnit(blockDefinition.VolumePerUnit, blockDefinition);
 
             var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
             foreach (var itemDefinition in itemDefinitions)
-                inventory.AddUnit(itemDefinition);
+                inventory.AddUnit(itemDefinition.VolumePerUnit, itemDefinition);
         }
     }
 }

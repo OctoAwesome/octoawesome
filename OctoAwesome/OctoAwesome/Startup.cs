@@ -36,8 +36,8 @@ namespace OctoAwesome
             typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
 
-            typeContainer.Register<IPool<BlockCollectionInformation>, Pool<BlockCollectionInformation>>(InstanceBehaviour.Singleton);
-            typeContainer.Register<BlockInteractionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<BlockCollectionService>(InstanceBehaviour.Singleton);
         }
 
         public static void ConfigureLogger(ClientType clientType)

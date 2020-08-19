@@ -21,5 +21,6 @@ namespace OctoAwesome
         /// Der Zustand des Items
         /// </summary>
         int Condition { get; set; }
+        IItemDefinition Definition { get; }
     }
 }

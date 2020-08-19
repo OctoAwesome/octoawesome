@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Services;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -13,12 +14,15 @@ namespace OctoAwesome.Basics.SimulationComponents
     public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
     {
         private readonly Simulation simulation;
-        private readonly BlockInteractionService service;
+        private readonly BlockCollectionService service;
 
-        public BlockInteractionComponent(Simulation simulation, BlockInteractionService interactionService)
+        private readonly Hand hand;
+
+        public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
+            hand = new Hand(new HandDefinition());
         }
 
         protected override bool AddEntity(Entity entity)
@@ -39,15 +43,20 @@ namespace OctoAwesome.Basics.SimulationComponents
             if (controller.InteractBlock.HasValue)
             {
                 var lastBlock = cache.GetBlockInfo(controller.InteractBlock.Value);
-                
+
                 if (!lastBlock.IsEmpty)
                 {
-                    var blockUnit = service.Hit(10, lastBlock);
-                    if (blockDefinition is IInventoryableDefinition invDef)
-                        inventory.AddUnit(invDef);
+                    var blockHitInformation = service.Hit(lastBlock, hand, cache);
+
+                    if (blockHitInformation.IsHitValid)
+                        foreach (var definition in blockHitInformation.Definitions ?? Array.Empty<KeyValuePair<int, IDefinition>>())
+                        {
+                            if (definition.Value is IInventoryableDefinition invDef)
+                                inventory.AddUnit(definition.Key, invDef);
+                        }
+
                 }
                 controller.InteractBlock = null;
-                //cache.SetBlock(controller.InteractBlock.Value, 0);
             }
 
             if (toolbar != null && controller.ApplyBlock.HasValue)

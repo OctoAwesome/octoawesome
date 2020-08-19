@@ -2,6 +2,7 @@
 using engenious;
 using System.Collections.Generic;
 using OctoAwesome.Information;
+using OctoAwesome.Services;
 
 namespace OctoAwesome
 {
@@ -30,7 +31,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
-        public virtual decimal VolumePerUnit => 125;
+        public virtual int VolumePerUnit => 125;
 
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
@@ -57,14 +58,9 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="block">Der Block-Typ des interagierenden Elements</param>
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
-        public virtual BlockInteractionInformation Hit(BlockInteractionInformation interactionInformation, IItem item)
+        public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem itemDefinition)
         {
-            if(interactionInformation is BlockCollectionInformation collectionInformation)
-            {
-                collectionInformation.VolumeRemaining -= VolumePerUnit;
-            }
-
-            return interactionInformation;
+            return default;
         }
 
         /// <summary>

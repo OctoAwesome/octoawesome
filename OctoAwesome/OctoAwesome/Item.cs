@@ -22,11 +22,14 @@ namespace OctoAwesome
         /// </summary>
         public List<IResource> Resources { get; private set; }
 
+        public IItemDefinition Definition { get; }
+
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Item.
         /// </summary>
-        public Item()
+        public Item(IItemDefinition definition)
         {
+            Definition = definition;
             Resources = new List<IResource>();
             Condition = 99;
         }

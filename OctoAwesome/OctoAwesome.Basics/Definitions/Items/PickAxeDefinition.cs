@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Properties;
+using OctoAwesome.Information;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -41,7 +42,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             }
         }
 
-        decimal IInventoryableDefinition.VolumePerUnit => 1;
+        int IInventoryableDefinition.VolumePerUnit => 1;
 
         public PhysicalProperties GetProperties(IItem item)
         {
@@ -54,7 +55,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             };
         }
 
-        public void Hit(IItem item, PhysicalProperties itemProperties)
+        public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit)
         {
             // item.Condition--;
         }

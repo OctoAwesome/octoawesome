@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome.Basics.Definitions.Items
+﻿using OctoAwesome.Information;
+
+namespace OctoAwesome.Basics.Definitions.Items
 {
     public sealed class WauziEggDefinition : IItemDefinition
     {
@@ -34,6 +36,8 @@
             }
         }
 
-        decimal IInventoryableDefinition.VolumePerUnit => 1;
+        int IInventoryableDefinition.VolumePerUnit => 1;
+
+        public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit) => throw new System.NotImplementedException();
     }
 }

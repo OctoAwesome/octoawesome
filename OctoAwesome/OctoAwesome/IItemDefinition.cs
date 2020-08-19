@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Information;
+using System;
 
 namespace OctoAwesome
 {
@@ -14,11 +15,11 @@ namespace OctoAwesome
         /// <returns>Die physikalischen Parameter</returns>
         PhysicalProperties GetProperties(IItem item);*/
 
-        /*/// <summary>
+        /// <summary>
         /// Geplante Methode, mit der das Item auf Interaktion von aussen reagieren kann.
         /// </summary>
         /// <param name="item">Der Item-Typ des interagierenden Elements</param>
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
-        void Hit(IItem item, PhysicalProperties itemProperties);*/
+        void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit);
     }
 }

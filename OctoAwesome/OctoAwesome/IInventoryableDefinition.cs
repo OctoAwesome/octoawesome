@@ -14,7 +14,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
-        decimal VolumePerUnit { get; }
+        int VolumePerUnit { get; }
 
         /// <summary>
         /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können (in Anzahl der Blöcke, nicht in Vielfachen der <see cref="VolumePerUnit"/>!).

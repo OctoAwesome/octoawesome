@@ -64,7 +64,7 @@ namespace OctoAwesome.EntityComponents
         /// Fügt ein Element des angegebenen Definitionstyps hinzu.
         /// </summary>
         /// <param name="definition">Die Definition.</param>
-        public void AddUnit(IInventoryableDefinition definition)
+        public void AddUnit(int quantity, IInventoryableDefinition definition)
         {
             var slot = Inventory.FirstOrDefault(s => s.Definition == definition &&
                 s.Amount < definition.VolumePerUnit * definition.StackLimit);
@@ -79,7 +79,7 @@ namespace OctoAwesome.EntityComponents
                 };
                 Inventory.Add(slot);
             }
-            slot.Amount += definition.VolumePerUnit;
+            slot.Amount += quantity;
         }
 
         /// <summary>
