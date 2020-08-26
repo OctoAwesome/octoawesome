@@ -117,7 +117,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (!IsActiveScreen) return;
 
-            Manager.Player.ApplyInput = true;
+            Manager.Player.InteractInput = true;
             args.Handled = true;
         }
 
@@ -125,8 +125,26 @@ namespace OctoAwesome.Client.Screens
         {
             if (!IsActiveScreen) return;
 
-            Manager.Player.InteractInput = true;
+            Manager.Player.ApplyInput = true;
             args.Handled = true;
+           
+        }
+
+        protected override void OnLeftMouseUp(MouseEventArgs args)
+        {
+            if (!IsActiveScreen) return;
+
+            Manager.Player.InteractInput = false;
+            args.Handled = true;
+        }
+
+        protected override void OnRightMouseUp(MouseEventArgs args)
+        {
+            if (!IsActiveScreen) return;
+
+            Manager.Player.ApplyInput = false;
+            args.Handled = true;
+
         }
 
         protected override void OnMouseMove(MouseEventArgs args)
@@ -214,13 +232,13 @@ namespace OctoAwesome.Client.Screens
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:interact", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.InteractInput = true;
+                if (!IsActiveScreen || type == KeyMapper.KeyType.Pressed) return;
+                Manager.Player.InteractInput = type == KeyMapper.KeyType.Down;
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:apply", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.Player.ApplyInput = true;
+                if (!IsActiveScreen || type == KeyMapper.KeyType.Pressed) return;
+                Manager.Player.ApplyInput = type == KeyMapper.KeyType.Down;
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:flymode", type =>
             {
