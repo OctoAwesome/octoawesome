@@ -3,6 +3,7 @@ using engenious;
 using System.Collections.Generic;
 using OctoAwesome.Information;
 using OctoAwesome.Services;
+using System;
 
 namespace OctoAwesome
 {
@@ -33,6 +34,8 @@ namespace OctoAwesome
         /// </summary>
         public virtual int VolumePerUnit => 125;
 
+        public virtual int VolumePerHit => 25;
+
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
         /// </summary>
@@ -42,6 +45,8 @@ namespace OctoAwesome
         /// Zeigt, ob der Block-Typ Metadaten besitzt
         /// </summary>
         public virtual bool HasMetaData => false;
+
+        public virtual TimeSpan TimeToVolumeReset { get; } = TimeSpan.FromSeconds(10);
 
         /// <summary>
         /// Liefert die Physikalischen Paramerter, wie härte, dichte und bruchzähigkeit
@@ -60,7 +65,7 @@ namespace OctoAwesome
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
         public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem itemDefinition)
         {
-            return default;
+            return new BlockHitInformation(true, VolumePerHit, new[] { (VolumePerUnit, (IDefinition)this)});
         }
 
         /// <summary>
