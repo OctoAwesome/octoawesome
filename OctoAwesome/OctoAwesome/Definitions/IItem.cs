@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Interface, das ein Item darstellt

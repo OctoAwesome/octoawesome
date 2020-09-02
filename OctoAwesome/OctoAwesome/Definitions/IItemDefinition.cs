@@ -1,7 +1,7 @@
 ﻿using OctoAwesome.Information;
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Interface für die Definition eînes Items

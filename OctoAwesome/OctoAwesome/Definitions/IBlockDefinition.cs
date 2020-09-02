@@ -3,7 +3,7 @@ using OctoAwesome.Information;
 using OctoAwesome.Services;
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Basisinterface für eine Blockdefinition

@@ -5,7 +5,7 @@ using OctoAwesome.Information;
 using OctoAwesome.Services;
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Eine definition eines Block-Typen

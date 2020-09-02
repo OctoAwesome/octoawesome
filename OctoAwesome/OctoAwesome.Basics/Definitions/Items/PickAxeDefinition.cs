@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Basics.Properties;
 using OctoAwesome.Information;
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

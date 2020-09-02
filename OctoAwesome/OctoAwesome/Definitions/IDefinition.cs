@@ -1,4 +1,4 @@
-﻿namespace OctoAwesome
+﻿namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Base Interface for all Definitions

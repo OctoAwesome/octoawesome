@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Basisinterface für einen DefinitionManager, der z.B. Erweiterungen behandelt

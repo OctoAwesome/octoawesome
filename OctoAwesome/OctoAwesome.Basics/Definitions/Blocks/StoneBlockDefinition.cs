@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Information;
 using System;
 using System.Drawing;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {

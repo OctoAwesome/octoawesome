@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Common
+namespace OctoAwesome.Definitions
 {
     public interface IFluidMaterialDefinition : IMaterialDefinition
     {
