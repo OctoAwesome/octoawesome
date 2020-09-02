@@ -357,7 +357,7 @@ namespace OctoAwesome
             for (var i = 0; i < typecount; i++)
             {
                 var typeName = reader.ReadString();
-                IDefinition[] definitions = DefinitionManager.GetDefinitions().ToArray();
+                IDefinition[] definitions = DefinitionManager.Definitions.ToArray();
                 IDefinition blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                 types.Add(blockDefinition);
 

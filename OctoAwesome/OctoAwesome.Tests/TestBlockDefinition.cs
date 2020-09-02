@@ -31,7 +31,7 @@ namespace OctoAwesome.Tests
             }
         }
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
             throw new NotImplementedException();
         }

@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
-    public sealed class GroundBlockDefinition : BlockDefinition
+    public sealed class DirtBlockDefinition : BlockDefinition
     {
         public override string Name
         {
@@ -26,9 +26,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
-            return new PhysicalProperties()
+            return new MaterialDefinition()
             {
                 Density = 2f,
                 FractureToughness = 0.3f,

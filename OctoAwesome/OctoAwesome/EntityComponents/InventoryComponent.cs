@@ -32,7 +32,7 @@ namespace OctoAwesome.EntityComponents
             for (int i = 0; i < count; i++)
             {
                 string name = reader.ReadString();
-                var definition = definitionManager.GetDefinitions().FirstOrDefault(d => d.GetType().FullName == name);
+                var definition = definitionManager.Definitions.FirstOrDefault(d => d.GetType().FullName == name);
                 var amount = reader.ReadDecimal();
 
                 if (definition == null || !(definition is IInventoryableDefinition))

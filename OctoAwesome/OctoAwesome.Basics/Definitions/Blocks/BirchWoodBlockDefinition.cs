@@ -20,8 +20,8 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 "birch_wood_top",
                 "birch_wood_side" };
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
-            => new PhysicalProperties()
+        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
+            => new MaterialDefinition()
             {
                 Density = 0.87f,
                 FractureToughness = 0.3f,

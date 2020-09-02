@@ -26,9 +26,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
-            return new PhysicalProperties()
+            return new MaterialDefinition()
             {
                 //Schüttdichte
                 Density = 1.5f,

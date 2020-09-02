@@ -109,7 +109,7 @@ namespace OctoAwesome.Client.Controls
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
-            var definitions = Manager.Game.DefinitionManager.GetBlockDefinitions();
+            var definitions = Manager.Game.DefinitionManager.BlockDefinitions;
             int textureCount = 0;
             foreach (var definition in definitions)
             {

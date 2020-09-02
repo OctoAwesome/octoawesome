@@ -56,7 +56,7 @@ namespace OctoAwesome
         /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
         /// <returns>Die physikalischen Parameter</returns>
-        public abstract PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z);
+        public abstract MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z);
 
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.

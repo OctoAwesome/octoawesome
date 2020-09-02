@@ -44,9 +44,9 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         int IInventoryableDefinition.VolumePerUnit => 1;
 
-        public PhysicalProperties GetProperties(IItem item)
+        public MaterialDefinition GetProperties(IItem item)
         {
-            return new PhysicalProperties()
+            return new MaterialDefinition()
             {
                 Density = 1f,
                 FractureToughness = 1f,

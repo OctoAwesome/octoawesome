@@ -11,9 +11,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override string Icon => "water";
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
-            return new PhysicalProperties()
+            return new MaterialDefinition()
             {
                 Density = 1f,
                 FractureToughness = 0.3f,

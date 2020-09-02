@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.Screens
         {
             assets = manager.Game.Assets;
 
-            foreach (var item in manager.Game.DefinitionManager.GetDefinitions())
+            foreach (var item in manager.Game.DefinitionManager.Definitions)
             {
                 Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
