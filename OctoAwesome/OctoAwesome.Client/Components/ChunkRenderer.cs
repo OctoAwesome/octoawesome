@@ -7,6 +7,7 @@ using System;
 using System.Windows.Threading;
 using System.Threading;
 using OctoAwesome.Threading;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Components
 {

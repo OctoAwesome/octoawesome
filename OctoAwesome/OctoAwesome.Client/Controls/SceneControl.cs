@@ -8,6 +8,7 @@ using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -295,7 +296,7 @@ namespace OctoAwesome.Client.Controls
                         if (block == 0)
                             continue;
 
-                        IBlockDefinition blockDefinition = (IBlockDefinition)Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
 
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 

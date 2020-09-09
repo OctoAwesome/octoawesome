@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Definitions;
+using OctoAwesome.Notifications;
 using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;

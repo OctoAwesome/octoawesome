@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics
 {

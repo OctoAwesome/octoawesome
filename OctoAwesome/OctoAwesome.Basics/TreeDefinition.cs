@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome.Basics
+﻿using OctoAwesome.Definitions;
+
+namespace OctoAwesome.Basics
 {
     /// <summary>
     /// Basisklasse für Baumdefinitionen, die vom TreePopulator verarbeitet werden sollen.

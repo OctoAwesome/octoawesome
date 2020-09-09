@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Common;
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace OctoAwesome.Runtime
         /// GAP.
         /// </summary>
         public const float GAP = 0.01f;
-        private IResourceManager manager;
+        private readonly IResourceManager manager;
         /// <summary>
         /// Standart Konstruktor.
         /// </summary>

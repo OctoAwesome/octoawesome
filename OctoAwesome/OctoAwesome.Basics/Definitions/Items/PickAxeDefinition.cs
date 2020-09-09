@@ -45,16 +45,7 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         int IInventoryableDefinition.VolumePerUnit => 1;
 
-        public MaterialDefinition GetProperties(IItem item)
-        {
-            return new MaterialDefinition()
-            {
-                Density = 1f,
-                FractureToughness = 1f,
-                Granularity = 1f,
-                Hardness = 1f
-            };
-        }
+        
 
         public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit)
         {

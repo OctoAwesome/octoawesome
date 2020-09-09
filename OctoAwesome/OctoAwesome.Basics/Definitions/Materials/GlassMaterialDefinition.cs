@@ -13,9 +13,9 @@ namespace OctoAwesome.Basics.Definitions.Materials
 
         public int Density => 2500;
 
-        public int Granularity => throw new NotImplementedException();
+        public int Granularity => 1;
 
-        public int FractureToughness => throw new NotImplementedException();
+        public int FractureToughness => 50;
 
         public string Name => "Glass";
 

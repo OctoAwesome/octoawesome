@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using OctoAwesome.Definitions;
+using OctoAwesome.Basics.Definitions.Materials;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -32,16 +33,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return new MaterialDefinition()
-            {
-                Density = 0.87f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
-        }      
+        public override IMaterialDefinition Material { get; }
 
+        public PlankBlockDefinition(WoodMaterialDefinition material)
+        {
+            Material = material;
+        }
     }
 }

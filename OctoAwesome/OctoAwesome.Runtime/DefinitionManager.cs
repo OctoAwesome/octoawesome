@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -86,7 +87,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Typ der Definition</typeparam>
         /// <returns>Auflistung von Instanzen</returns>
-        public IEnumerable<T> GetDefinitions<T>() where T : IDefinition
+        public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
         {
             // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary)
             return extensionResolver.GetDefinitions<T>();

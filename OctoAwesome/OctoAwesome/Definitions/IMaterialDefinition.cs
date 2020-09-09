@@ -1,24 +1,19 @@
 ﻿namespace OctoAwesome.Definitions
 {
     /// <summary>
-    /// Repräsentiert die physikalischen Eigenschaften eines Blocks/Items/...
+    /// Represents the physical properties of a block/item/...
     /// </summary>
     public interface IMaterialDefinition : IDefinition
     {
         /// <summary>
-        /// Härte, welche Materialien können abgebaut werden
+        /// Hardness, which materials can be mined
         /// </summary>
         int Hardness { get; }
 
         /// <summary>
-        /// Dichte in kg/m^3, Wie viel benötigt (Volumen berechnung) für Crafting bzw. hit result etc....
+        /// Density in kg/m^3, How much needed (volume calculation) for crafting or hit result etc...
         /// </summary>
         int Density { get; }
-               
-
-        /// <summary>
-        /// Bruchzähigkeit, Wie schnell geht etwas zu Bruch? Haltbarkeit.
-        /// </summary>
-        int FractureToughness { get; }
+        
     }
 }

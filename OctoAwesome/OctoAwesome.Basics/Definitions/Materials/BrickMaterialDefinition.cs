@@ -1,6 +1,4 @@
-﻿
-
-using OctoAwesome.Definitions;
+﻿using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +13,9 @@ namespace OctoAwesome.Basics.Definitions.Materials
 
         public int Density => 1800;
 
-        public int Granularity => throw new NotImplementedException();
+        public int Granularity => 1;
 
-        public int FractureToughness => throw new NotImplementedException();
+        public int FractureToughness => 2;
 
         public string Name => "Brick";
 

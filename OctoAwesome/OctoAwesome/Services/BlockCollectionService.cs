@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Definitions.Items;
+﻿using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 using OctoAwesome.Information;
 using OctoAwesome.Pooling;
 using System;

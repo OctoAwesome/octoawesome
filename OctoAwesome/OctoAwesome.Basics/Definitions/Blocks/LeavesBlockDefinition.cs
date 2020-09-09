@@ -2,6 +2,7 @@
 using OctoAwesome.Definitions;
 using System;
 using System.Drawing;
+using OctoAwesome.Basics.Definitions.Materials;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -28,17 +29,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
+        public override IMaterialDefinition Material { get; }
+
+        public LeavesBlockDefinition(LeaveMaterialDefinition material)
         {
-            return new MaterialDefinition()
-            {
-                Density = 2f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
+            Material = material;
         }
 
-       
     }
 }

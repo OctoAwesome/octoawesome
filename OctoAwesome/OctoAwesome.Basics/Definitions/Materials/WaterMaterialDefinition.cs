@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Common;
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,10 @@ namespace OctoAwesome.Basics.Definitions.Materials
 
         public int Density => 997;
 
-        public int Granularity => throw new NotImplementedException();
-
-        public int FractureToughness => throw new NotImplementedException();
-
         public string Name => "Water";
 
         public string Icon => string.Empty;
+
+        public int Viscosity => 1008;
     }
 }

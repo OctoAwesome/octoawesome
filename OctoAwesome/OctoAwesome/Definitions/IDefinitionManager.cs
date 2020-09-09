@@ -52,6 +52,6 @@ namespace OctoAwesome.Definitions
         /// </summary>
         /// <typeparam name="T">Typ der Definition</typeparam>
         /// <returns>Auflistung von Instanzen</returns>
-        IEnumerable<T> GetDefinitions<T>() where T : IDefinition;
+        IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition;
     }
 }

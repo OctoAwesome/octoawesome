@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
