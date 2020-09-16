@@ -7,10 +7,6 @@ namespace OctoAwesome.Definitions
     /// </summary>
     public interface IItem
     {
-        /// <summary>
-        /// Die Liste aller Ressourcen, die im Item enthalten sind
-        /// </summary>
-        List<IResource> Resources { get; }
 
         /// <summary>
         /// Die Koordinate, an der das Item in der Welt herumliegt, falls es nicht im Inventar ist
@@ -22,5 +18,8 @@ namespace OctoAwesome.Definitions
         /// </summary>
         int Condition { get; set; }
         IItemDefinition Definition { get; }
+        IMaterialDefinition Material { get; set; }
+
+        int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit);
     }
 }

@@ -8,7 +8,7 @@ namespace OctoAwesome.Definitions
     /// <summary>
     /// Basisinterface für eine Blockdefinition
     /// </summary>
-    public interface IBlockDefinition : IInventoryableDefinition, IDefinition
+    public interface IBlockDefinition : IInventoryable, IDefinition
     {
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.

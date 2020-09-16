@@ -40,9 +40,7 @@ namespace OctoAwesome.Services
             var blockHitInformation = volumeState.BlockDefinition.Hit(volumeState, item);
 
             if (!blockHitInformation.IsHitValid)
-                return (false, null); 
-
-            item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
+                return (false, null);           
 
             volumeState.VolumeRemaining -= blockHitInformation.Quantity;
             volumeState.RestoreTime();

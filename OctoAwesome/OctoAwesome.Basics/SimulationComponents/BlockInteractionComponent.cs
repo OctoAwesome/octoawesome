@@ -47,12 +47,14 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 if (!lastBlock.IsEmpty)
                 {
-                    var blockHitInformation = service.Hit(lastBlock, hand, cache);
+                    if (!(toolbar.ActiveTool.Item is IItem item))
+                        item = hand;
+                    var blockHitInformation = service.Hit(lastBlock, item, cache);
 
                     if (blockHitInformation.Valid)
                         foreach (var (Quantity, Definition) in blockHitInformation.List)
                         {
-                            if (Definition is IInventoryableDefinition invDef)
+                            if (Definition is IInventoryable invDef)
                                 inventory.AddUnit(Quantity, invDef);
                         }
 
@@ -75,7 +77,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    if (toolbar.ActiveTool.Definition is IBlockDefinition definition)
+                    if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
                         Index3 idx = controller.ApplyBlock.Value + add;
                         var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);

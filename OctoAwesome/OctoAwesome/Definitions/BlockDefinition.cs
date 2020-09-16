@@ -59,9 +59,11 @@ namespace OctoAwesome.Definitions
         /// </summary>
         /// <param name="block">Der Block-Typ des interagierenden Elements</param>
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
-        public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem itemDefinition)
+        public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem item)
         {
-            return new BlockHitInformation(true, VolumePerHit, new[] { (VolumePerUnit, (IDefinition)this)});
+            //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
+            var valueMined = item.Hit(Material, blockVolume.VolumeRemaining, VolumePerHit);
+            return new BlockHitInformation(valueMined != 0, valueMined, new[] { (VolumePerUnit, (IDefinition)this)});
         }
 
         /// <summary>

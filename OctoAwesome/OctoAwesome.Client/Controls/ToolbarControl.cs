@@ -99,7 +99,7 @@ namespace OctoAwesome.Client.Controls
                 if (Player.Toolbar.Tools != null &&
                     Player.Toolbar.Tools.Length > i &&
                     Player.Toolbar.Tools[i] != null &&
-                    Player.Toolbar.Tools[i].Definition != null)
+                    Player.Toolbar.Tools[i].Item != null)
                 {
                     images[i].Texture = toolTextures[Player.Toolbar.Tools[i].Definition.GetType().FullName];
 

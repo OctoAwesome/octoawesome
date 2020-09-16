@@ -43,13 +43,20 @@ namespace OctoAwesome.Basics.Definitions.Items
             }
         }
 
-        int IInventoryableDefinition.VolumePerUnit => 1;
 
-        
-
-        public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit)
+        public bool CanMineMaterial(IMaterialDefinition material)
         {
-            // item.Condition--;
+            if(material is ISolidMaterialDefinition solid)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public Pickaxe Create(IMaterialDefinition material)
+        {
+            return new Pickaxe(this, material);
         }
     }
 }

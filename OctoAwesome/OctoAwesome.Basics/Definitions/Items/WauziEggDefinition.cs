@@ -37,8 +37,9 @@ namespace OctoAwesome.Basics.Definitions.Items
             }
         }
 
-        int IInventoryableDefinition.VolumePerUnit => 1;
 
+        public bool CanMineMaterial(IMaterialDefinition material) => throw new System.NotImplementedException();
+        public Pickaxe Create(IMaterialDefinition material) => null;
         public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit) => throw new System.NotImplementedException();
     }
 }

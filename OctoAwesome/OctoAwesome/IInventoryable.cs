@@ -10,7 +10,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basis-Interface für alle im Inventar-Verwaltbaren Definitionen.
     /// </summary>
-    public interface IInventoryableDefinition : IDefinition
+    public interface IInventoryable
     {
         /// <summary>
         /// Gibt das Volumen für eine Einheit an.

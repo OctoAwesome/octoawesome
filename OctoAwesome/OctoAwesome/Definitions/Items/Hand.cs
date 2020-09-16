@@ -8,12 +8,14 @@ namespace OctoAwesome.Definitions.Items
 {
     public class Hand : Item
     {
-        public Hand(HandDefinition handDefinition) : base(handDefinition)
+        public Hand(HandDefinition handDefinition) : base(handDefinition, null)
         {
 
         }
-        public override void Hit(IItem item)
+
+        public override int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
         {
+            return volumePerHit / 5;
         }
     }
 }

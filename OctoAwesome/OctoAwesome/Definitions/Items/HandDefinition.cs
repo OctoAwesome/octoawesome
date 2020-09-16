@@ -17,6 +17,8 @@ namespace OctoAwesome.Definitions.Items
 
         public string Icon => "";
 
+        public bool CanMineMaterial(IMaterialDefinition material) =>true;
+
         public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit) { }
     }
 }

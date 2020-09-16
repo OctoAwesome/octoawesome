@@ -5,7 +5,7 @@ namespace OctoAwesome.Definitions.Items
     /// <summary>
     /// Basisklasse für alle nicht-lebendigen Spielelemente (für lebendige Spielelemente siehe <see cref="Entity"/>
     /// </summary>
-    public abstract class Item : IItem
+    public abstract class Item : IItem, IInventoryable
     {
         /// <summary>
         /// Der Zustand des Items
@@ -17,27 +17,43 @@ namespace OctoAwesome.Definitions.Items
         /// </summary>
         public Coordinate? Position { get; set; }
 
-        /// <summary>
-        /// Die Liste aller Ressourcen, die im Item enthalten sind
-        /// </summary>
-        public List<IResource> Resources { get; private set; }
-
         public IItemDefinition Definition { get; }
+
+        public IMaterialDefinition Material { get; set; }
+
+        public virtual int VolumePerUnit => 1;
+
+        public virtual int StackLimit => 1;
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Item.
         /// </summary>
-        public Item(IItemDefinition definition)
+        public Item(IItemDefinition definition, IMaterialDefinition material)
         {
             Definition = definition;
-            Resources = new List<IResource>();
+            Material = material;
             Condition = 99;
         }
 
-        /// <summary>
-        /// Das was passiert wenn das Item zuschlägt.
-        /// </summary>
-        /// <param name="item">Das interagierende Item</param>
-        public abstract void Hit(IItem item);
+        public virtual int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
+        {
+            //TODO Condition Berechnung
+
+            if (!Definition.CanMineMaterial(material))
+                return 0;
+
+            var solid = material as ISolidMaterialDefinition;
+
+            if (solid.Granularity > 1)
+            {
+
+                return volumePerHit;
+            }
+
+            if (Material.Hardness * 1.2f < material.Hardness)
+                return 0;
+
+            return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
+        }
     }
 }

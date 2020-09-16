@@ -6,13 +6,12 @@ namespace OctoAwesome.Basics
 {
     public class Pickaxe : Item
     {
-        public Pickaxe(PickaxeDefinition pickaxeDefinition) : base(pickaxeDefinition)
+        public Pickaxe(PickaxeDefinition pickaxeDefinition, IMaterialDefinition materialDefinition) 
+            : base(pickaxeDefinition, materialDefinition)
         {
 
         }
 
-        public override void Hit(IItem item)
-        {
-        }
+        
     }
 }

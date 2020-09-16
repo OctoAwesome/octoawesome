@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Basics.Definitions.Items;
 
 namespace OctoAwesome.Client.Components
 {
@@ -195,8 +196,18 @@ namespace OctoAwesome.Client.Components
                 inventory.AddUnit(blockDefinition.VolumePerUnit, blockDefinition);
 
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
+            var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Wood");
+            var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Stone");
             foreach (var itemDefinition in itemDefinitions)
-                inventory.AddUnit(itemDefinition.VolumePerUnit, itemDefinition);
+            {
+                if(!(itemDefinition is PickaxeDefinition pickaxeDef))
+                    continue;
+                var woodItem = pickaxeDef.Create(wood);
+
+                inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+                var stoneItem = pickaxeDef.Create(stone);
+                inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+            }
         }
     }
 }

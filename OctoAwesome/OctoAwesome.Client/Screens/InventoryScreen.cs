@@ -126,7 +126,7 @@ namespace OctoAwesome.Client.Screens
                     if (slot != null)
                     {
                         e.Handled = true;
-                        e.Icon = toolTextures[slot.Definition.GetType().FullName];
+                        e.Icon = toolTextures[slot.Item.GetType().FullName];
                         e.Content = slot;
                         e.Sender = toolbar;
                     }
@@ -199,7 +199,7 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnUpdate(gameTime);
 
-            nameLabel.Text = inventory.HoveredSlot?.Definition.Name ?? "";
+            nameLabel.Text = inventory.HoveredSlot?.Definition?.Name ?? "";
             massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
             // Aktualisierung des aktiven Buttons
@@ -208,7 +208,7 @@ namespace OctoAwesome.Client.Screens
                 if (player.Toolbar.Tools != null &&
                     player.Toolbar.Tools.Length > i &&
                     player.Toolbar.Tools[i] != null &&
-                    player.Toolbar.Tools[i].Definition != null)
+                    player.Toolbar.Tools[i].Item != null)
                 {
                     images[i].Texture = toolTextures[player.Toolbar.Tools[i].Definition.GetType().FullName];
                 }
