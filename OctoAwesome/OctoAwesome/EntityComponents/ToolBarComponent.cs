@@ -33,6 +33,7 @@ namespace OctoAwesome.EntityComponents
         public ToolBarComponent()
         {
             Tools = new InventorySlot[TOOLCOUNT];
+            ActiveTool = Tools[0];
         }
 
         /// <summary>

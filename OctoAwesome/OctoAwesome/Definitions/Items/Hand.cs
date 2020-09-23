@@ -15,7 +15,15 @@ namespace OctoAwesome.Definitions.Items
 
         public override int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
         {
-            return volumePerHit / 5;
+            if(material is ISolidMaterialDefinition solidMaterial)
+            {
+                if (solidMaterial.Granularity > 1)
+                    return volumePerHit / 3;
+            }
+            if(material is IGasMaterialDefinition || material is IFluidMaterialDefinition)
+                return 0;
+
+            return volumePerHit - material.Hardness / 2;
         }
     }
 }

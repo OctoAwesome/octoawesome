@@ -47,7 +47,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 if (!lastBlock.IsEmpty)
                 {
-                    if (!(toolbar.ActiveTool.Item is IItem item))
+                    if (toolbar.ActiveTool is null || !(toolbar.ActiveTool.Item is IItem item))
                         item = hand;
                     var blockHitInformation = service.Hit(lastBlock, item, cache);
 

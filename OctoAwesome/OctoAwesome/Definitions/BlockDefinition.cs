@@ -57,8 +57,8 @@ namespace OctoAwesome.Definitions
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
         /// </summary>
-        /// <param name="block">Der Block-Typ des interagierenden Elements</param>
-        /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
+        /// <param name="blockVolume">Der Block-Typ des interagierenden Elements</param>
+        /// <param name="item">Die physikalischen Parameter des interagierenden Elements</param>
         public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem item)
         {
             //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
