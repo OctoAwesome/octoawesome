@@ -42,12 +42,10 @@ namespace OctoAwesome.Definitions.Items
             if (!Definition.CanMineMaterial(material))
                 return 0;
 
-            var solid = material as ISolidMaterialDefinition;
-
-            if (solid.Granularity > 1)
+            if (material is ISolidMaterialDefinition solid)
             {
-
-                return volumePerHit;
+                if (solid.Granularity > 1)
+                    return 0;
             }
 
             if (Material.Hardness * 1.2f < material.Hardness)

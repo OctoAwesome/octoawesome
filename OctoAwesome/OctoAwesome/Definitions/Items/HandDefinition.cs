@@ -9,15 +9,30 @@ namespace OctoAwesome.Definitions.Items
 {
     public class HandDefinition : IItemDefinition
     {
-        public int VolumePerUnit => 0;
+        public int VolumePerUnit { get; }
 
-        public int StackLimit => 0;
+        public int StackLimit { get; }
 
-        public string Name => nameof(Hand);
+        public string Name { get; }
 
-        public string Icon => "";
+        public string Icon { get; }
 
-        public bool CanMineMaterial(IMaterialDefinition material) =>true;
+        private readonly Hand hand;
+
+        public HandDefinition()
+        {
+            VolumePerUnit = 0;
+            StackLimit = 0;
+            Name = nameof(Hand);
+            Icon = "";
+            hand = new Hand(this);
+        }
+
+        public bool CanMineMaterial(IMaterialDefinition material) 
+            => true;
+
+        public Item Create(IMaterialDefinition material)
+            => hand;
 
         public void Hit(IItem item, IBlockDefinition blockDefinition, BlockHitInformation blockHit) { }
     }

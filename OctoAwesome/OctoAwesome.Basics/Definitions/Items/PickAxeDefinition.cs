@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
@@ -54,7 +55,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             return false;
         }
 
-        public Pickaxe Create(IMaterialDefinition material)
+        public Item Create(IMaterialDefinition material)
         {
             return new Pickaxe(this, material);
         }

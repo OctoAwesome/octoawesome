@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics.Definitions.Materials
 
         public int Density => 1400;
 
-        public int Granularity => 1;
+        public int Granularity => 50;
 
         public int FractureToughness => 50;
 

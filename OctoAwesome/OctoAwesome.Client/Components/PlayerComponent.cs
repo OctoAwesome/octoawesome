@@ -200,12 +200,9 @@ namespace OctoAwesome.Client.Components
             var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Stone");
             foreach (var itemDefinition in itemDefinitions)
             {
-                if(!(itemDefinition is PickaxeDefinition pickaxeDef))
-                    continue;
-                var woodItem = pickaxeDef.Create(wood);
-
+                var woodItem = itemDefinition.Create(wood);
                 inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
-                var stoneItem = pickaxeDef.Create(stone);
+                var stoneItem = itemDefinition.Create(stone);
                 inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
             }
         }

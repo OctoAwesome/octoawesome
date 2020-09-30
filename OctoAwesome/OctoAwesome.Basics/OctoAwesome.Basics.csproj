@@ -15,6 +15,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Definitions\Items\axe_iron.png" />
+    <None Remove="Assets\Definitions\Items\bucket.png" />
+    <None Remove="Assets\Definitions\Items\hammer_iron.png" />
+    <None Remove="Assets\Definitions\Items\hoe_iron.png" />
+    <None Remove="Assets\Definitions\Items\shovel_iron.png" />
+    <None Remove="Assets\Definitions\Items\sword_iron.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="engenious" Version="0.4.0.6-alpha" />
   </ItemGroup>
 
@@ -45,6 +54,10 @@
     <EmbeddedResource Include="Assets\Definitions\Blocks\planks.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\planks_red.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\redstone.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\axe_iron.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\bucket.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\hammer_iron.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\hoe_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\pick_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\sand.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\snow.png" />
@@ -52,6 +65,8 @@
     <EmbeddedResource Include="Assets\Definitions\Blocks\water.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\wood_side.png" />
     <EmbeddedResource Include="Assets\Definitions\Blocks\wood_top.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\shovel_iron.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\sword_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\wauziegg.png" />
   </ItemGroup>
   

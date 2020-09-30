@@ -126,7 +126,7 @@ namespace OctoAwesome.Client.Screens
                     if (slot != null)
                     {
                         e.Handled = true;
-                        e.Icon = toolTextures[slot.Item.GetType().FullName];
+                        e.Icon = toolTextures[slot.Definition.GetType().FullName];
                         e.Content = slot;
                         e.Sender = toolbar;
                     }
