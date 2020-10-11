@@ -12,6 +12,10 @@ namespace OctoAwesome.Basics
 
         }
 
-        
+        public override int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit)
+        {
+            //⁅((−𝑥^2)/400)+150⁆
+            return base.Hit(material, volumeRemaining, volumePerHit);
+        }
     }
 }
