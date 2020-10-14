@@ -51,7 +51,7 @@ namespace OctoAwesome.Definitions.Items
             if (Material.Hardness * 1.2f < material.Hardness)
                 return 0;
 
-            //(Hardness Effictivity + Fracture Effictivity) / 2
+            //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
         }
     }

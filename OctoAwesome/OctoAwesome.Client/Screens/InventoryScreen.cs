@@ -7,6 +7,7 @@ using OctoAwesome.Client.Controls;
 using engenious;
 using OctoAwesome.EntityComponents;
 using engenious.UI.Controls;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -199,7 +200,12 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnUpdate(gameTime);
 
-            nameLabel.Text = inventory.HoveredSlot?.Definition?.Name ?? "";
+            var name = inventory.HoveredSlot?.Definition?.Name;
+
+            if (inventory.HoveredSlot?.Item is IItem item)
+                name += " (" + item.Material.Name + ")";
+
+            nameLabel.Text = name ?? "";
             massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
             // Aktualisierung des aktiven Buttons
