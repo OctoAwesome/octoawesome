@@ -15,6 +15,8 @@ namespace OctoAwesome.Client.Controls
 {
     internal class ToolbarControl : Panel
     {
+        public PlayerComponent Player { get; set; }
+
         private Dictionary<string, Texture2D> toolTextures;
 
         private Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
@@ -25,9 +27,9 @@ namespace OctoAwesome.Client.Controls
 
         private Brush activeBackground;
 
-        public PlayerComponent Player { get; set; }
+        private Label activeToolLabel;
 
-        public Label activeToolLabel;
+        private int lastActiveIndex;
 
         public ToolbarControl(ScreenComponent screenManager)
             : base(screenManager)
@@ -93,27 +95,17 @@ namespace OctoAwesome.Client.Controls
 
             if (Player.CurrentEntity == null) return;
 
-           // Aktualisierung des aktiven Buttons
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            if (Player.Toolbar.ActiveIndex != lastActiveIndex)
             {
-                if (Player.Toolbar.Tools != null &&
-                    Player.Toolbar.Tools.Length > i &&
-                    Player.Toolbar.Tools[i] != null &&
-                    Player.Toolbar.Tools[i].Item != null)
-                {
-                    images[i].Texture = toolTextures[Player.Toolbar.Tools[i].Definition.GetType().FullName];
-
-                    if (Player.Toolbar.ActiveTool == Player.Toolbar.Tools[i])
-                        buttons[i].Background = activeBackground;
-                    else
-                        buttons[i].Background = buttonBackgroud;
-                }
-                else
-                {
-                    images[i].Texture = null;
-                    buttons[i].Background = buttonBackgroud;
-                }
+                buttons[lastActiveIndex].Background = buttonBackgroud;
+                lastActiveIndex = Player.Toolbar.ActiveIndex;
             }
+
+            buttons[Player.Toolbar.ActiveIndex].Background = activeBackground;
+            var definitionName = Player.Toolbar.ActiveTool.Definition.GetType().FullName;
+
+            if (toolTextures.TryGetValue(definitionName, out var texture))
+                images[Player.Toolbar.ActiveIndex].Texture = texture;
 
             // Aktualisierung des ActiveTool Labels
             activeToolLabel.Text = Player.Toolbar.ActiveTool != null ?

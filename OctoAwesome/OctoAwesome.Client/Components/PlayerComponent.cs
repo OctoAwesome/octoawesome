@@ -133,53 +133,28 @@ namespace OctoAwesome.Client.Components
 
             if (Toolbar.Tools != null && Toolbar.Tools.Length > 0)
             {
-                if (Toolbar.ActiveTool == null) Toolbar.ActiveTool = Toolbar.Tools[0];
                 for (int i = 0; i < Math.Min(Toolbar.Tools.Length, SlotInput.Length); i++)
                 {
                     if (SlotInput[i])
-                        Toolbar.ActiveTool = Toolbar.Tools[i];
+                        Toolbar.ActiveIndex = i;
                     SlotInput[i] = false;
                 }
             }
 
-            //Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            List<int> toolIndices = new List<int>();
-            if (Toolbar.Tools != null)
-            {
-                for (int i = 0; i < Toolbar.Tools.Length; i++)
-                {
-                    if (Toolbar.Tools[i] != null)
-                        toolIndices.Add(i);
-
-                    if (Toolbar.Tools[i] == Toolbar.ActiveTool)
-                        activeTool = toolIndices.Count - 1;
-                }
-            }
-
+            //Index des aktiven Werkzeugs ermitteln   
             if (SlotLeftInput)
             {
-                if (activeTool > -1)
-                    activeTool--;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[toolIndices.Count - 1];
+                Toolbar.ActiveIndex--;
             }
             SlotLeftInput = false;
 
             if (SlotRightInput)
             {
-                if (activeTool > -1)
-                    activeTool++;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[0];
+                Toolbar.ActiveIndex++;
             }
             SlotRightInput = false;
 
-            if (activeTool > -1)
-            {
-                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
-            }
+           
         }
 
         /// <summary>

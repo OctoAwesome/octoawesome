@@ -17,13 +17,11 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
 
-        private readonly Hand hand;
 
         public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
-            hand = new Hand(new HandDefinition());
         }
 
         protected override bool AddEntity(Entity entity)
@@ -47,9 +45,17 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 if (!lastBlock.IsEmpty)
                 {
-                    if (toolbar.ActiveTool is null || !(toolbar.ActiveTool.Item is IItem item))
-                        item = hand;
-                    var blockHitInformation = service.Hit(lastBlock, item, cache);
+                    IItem activeItem;
+                    if (toolbar.ActiveTool.Item is IItem item)
+                    {
+                        activeItem = item;
+                    }
+                    else
+                    {
+                        activeItem = toolbar.HandSlot.Item as IItem;
+                    }
+
+                    var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
 
                     if (blockHitInformation.Valid)
                         foreach (var (Quantity, Definition) in blockHitInformation.List)
@@ -57,6 +63,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             if (Definition is IInventoryable invDef)
                                 inventory.AddUnit(Quantity, invDef);
                         }
+
 
                 }
                 controller.InteractBlock = null;

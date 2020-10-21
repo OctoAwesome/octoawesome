@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Definitions.Items;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,15 +26,26 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Derzeit aktives Werkzeug des Spielers
         /// </summary>
-        public InventorySlot ActiveTool { get; set; }
+        public InventorySlot ActiveTool => Tools[activeIndex] ?? HandSlot;
+
+        public InventorySlot HandSlot { get;  }
+
+        public int ActiveIndex
+        {
+            get => activeIndex;
+            set => activeIndex = (value + TOOLCOUNT) % TOOLCOUNT;
+        }
+
+        private int activeIndex;
 
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
         /// </summary>
         public ToolBarComponent()
         {
+            HandSlot = new InventorySlot { Item = new Hand(new HandDefinition()) };
             Tools = new InventorySlot[TOOLCOUNT];
-            ActiveTool = Tools[0];
+            ActiveIndex = 0;
         }
 
         /// <summary>
@@ -47,8 +59,6 @@ namespace OctoAwesome.EntityComponents
                 if (Tools[i] == slot)
                     Tools[i] = null;
             }
-            if (ActiveTool == slot)
-                ActiveTool = null;
         }
 
         /// <summary>
