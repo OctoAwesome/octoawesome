@@ -28,7 +28,7 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public InventorySlot ActiveTool => Tools[activeIndex] ?? HandSlot;
 
-        public InventorySlot HandSlot { get;  }
+        public InventorySlot HandSlot { get; }
 
         public int ActiveIndex
         {
@@ -36,7 +36,11 @@ namespace OctoAwesome.EntityComponents
             set => activeIndex = (value + TOOLCOUNT) % TOOLCOUNT;
         }
 
+        public event Action<InventorySlot, int> OnChanged;
+
+
         private int activeIndex;
+
 
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
@@ -57,7 +61,11 @@ namespace OctoAwesome.EntityComponents
             for (int i = 0; i < Tools.Length; i++)
             {
                 if (Tools[i] == slot)
+                {
                     Tools[i] = null;
+                    OnChanged?.Invoke(HandSlot, i);
+                    break;
+                }
             }
         }
 
@@ -71,6 +79,7 @@ namespace OctoAwesome.EntityComponents
             RemoveSlot(slot);
 
             Tools[index] = slot;
+            OnChanged?.Invoke(slot, index);
         }
 
         /// <summary>
@@ -98,6 +107,7 @@ namespace OctoAwesome.EntityComponents
                 if (Tools[i] == null)
                 {
                     Tools[i] = slot;
+                    OnChanged?.Invoke(slot, i);
                     break;
                 }
             }

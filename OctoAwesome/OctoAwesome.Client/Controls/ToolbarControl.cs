@@ -1,15 +1,15 @@
-﻿using engenious.UI;
+﻿using engenious;
+using engenious.Graphics;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using engenious;
-using engenious.Graphics;
-using OctoAwesome.EntityComponents;
-using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -17,17 +17,17 @@ namespace OctoAwesome.Client.Controls
     {
         public PlayerComponent Player { get; set; }
 
-        private Dictionary<string, Texture2D> toolTextures;
+        private readonly Dictionary<string, Texture2D> toolTextures;
 
-        private Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
+        private readonly Button[] buttons = new Button[ToolBarComponent.TOOLCOUNT];
 
-        private Image[] images = new Image[ToolBarComponent.TOOLCOUNT];
+        private readonly Image[] images = new Image[ToolBarComponent.TOOLCOUNT];
 
-        private Brush buttonBackgroud;
+        private readonly Brush buttonBackgroud;
 
-        private Brush activeBackground;
+        private readonly Brush activeBackground;
 
-        private Label activeToolLabel;
+        private readonly Label activeToolLabel;
 
         private int lastActiveIndex;
 
@@ -35,18 +35,19 @@ namespace OctoAwesome.Client.Controls
             : base(screenManager)
         {
             Player = screenManager.Player;
+            Player.Toolbar.OnChanged += (slot, index) => SetTexture(slot, index);
             toolTextures = new Dictionary<string, Texture2D>();
 
-            buttonBackgroud = new BorderBrush(Color.Black);
-            activeBackground = new BorderBrush(Color.Red);
+            buttonBackgroud = new BorderBrush(new Color(Color.Black, 0.5f));
+            activeBackground = new BorderBrush(new Color(Color.Black, 0.5f), LineType.Dotted, Color.Red, 3);
 
-            foreach (var item in screenManager.Game.DefinitionManager.Definitions)
+            foreach (Definitions.IDefinition item in screenManager.Game.DefinitionManager.Definitions)
             {
                 Texture2D texture = screenManager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
             }
 
-            Grid grid = new Grid(screenManager)
+            var grid = new Grid(screenManager)
             {
                 Margin = new Border(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -57,19 +58,21 @@ namespace OctoAwesome.Client.Controls
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (var i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
 
-            activeToolLabel = new Label(screenManager);
-            activeToolLabel.VerticalAlignment = VerticalAlignment.Top;
-            activeToolLabel.HorizontalAlignment = HorizontalAlignment.Center;
-            activeToolLabel.Background = new BorderBrush(Color.Black * 0.3f);
-            activeToolLabel.TextColor = Color.White;
+            activeToolLabel = new Label(screenManager)
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Background = new BorderBrush(Color.Black * 0.3f),
+                TextColor = Color.White
+            };
             grid.AddControl(activeToolLabel, 0, 0, ToolBarComponent.TOOLCOUNT);
 
-            for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
+            for (var i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
                 buttons[i] = new Button(screenManager)
                 {
@@ -93,7 +96,8 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled)
                 return;
 
-            if (Player.CurrentEntity == null) return;
+            if (Player.CurrentEntity == null)
+                return;
 
             if (Player.Toolbar.ActiveIndex != lastActiveIndex)
             {
@@ -102,19 +106,40 @@ namespace OctoAwesome.Client.Controls
             }
 
             buttons[Player.Toolbar.ActiveIndex].Background = activeBackground;
-            var definitionName = Player.Toolbar.ActiveTool.Definition.GetType().FullName;
+            SetTexture(Player.Toolbar.ActiveTool, Player.Toolbar.ActiveIndex);
 
-            if (toolTextures.TryGetValue(definitionName, out var texture))
-                images[Player.Toolbar.ActiveIndex].Texture = texture;
+            var newText = "";
 
             // Aktualisierung des ActiveTool Labels
-            activeToolLabel.Text = Player.Toolbar.ActiveTool != null ?
-                string.Format("{0} ({1})", Player.Toolbar.ActiveTool.Definition.Name, Player.Toolbar.ActiveTool.Amount) :
-                string.Empty;
+            if (Player.Toolbar.ActiveTool != null)
+            {
+                newText = Player.Toolbar.ActiveTool.Definition.Name;
+
+                if (Player.Toolbar.ActiveTool.Amount > 1)
+                    newText += $" ({Player.Toolbar.ActiveTool.Amount})";
+            }
+
+            activeToolLabel.Text = newText;
 
             activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
 
             base.OnUpdate(gameTime);
+        }
+
+        private void SetTexture(InventorySlot inventorySlot, int index)
+        {
+            if (inventorySlot is null)
+            {
+                images[index].Texture = null;
+                return;
+            }
+
+            var definitionName = inventorySlot.Definition.GetType().FullName;
+
+            if (toolTextures.TryGetValue(definitionName, out Texture2D texture)) 
+                images[index].Texture = texture;
+            else
+                images[index].Texture = null;
         }
     }
 }
