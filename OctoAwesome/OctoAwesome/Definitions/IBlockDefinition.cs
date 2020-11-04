@@ -61,6 +61,7 @@ namespace OctoAwesome.Definitions
 
         uint SolidWall { get; }
         TimeSpan TimeToVolumeReset { get; }
+        IMaterialDefinition Material { get; }
 
         bool IsSolidWall(Wall wall);
     }

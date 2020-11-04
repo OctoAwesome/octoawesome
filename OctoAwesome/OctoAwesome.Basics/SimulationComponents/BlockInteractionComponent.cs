@@ -60,8 +60,17 @@ namespace OctoAwesome.Basics.SimulationComponents
                     if (blockHitInformation.Valid)
                         foreach (var (Quantity, Definition) in blockHitInformation.List)
                         {
-                            if (Definition is IInventoryable invDef)
+                            if (activeItem is IFluidInventory fluidInventory 
+                                && Definition is IBlockDefinition fluidBlock 
+                                && fluidBlock.Material is IFluidMaterialDefinition)
+                            {
+                                fluidInventory.AddFluid(Quantity, fluidBlock);
+                            }
+                            else if (Definition is IInventoryable invDef)
+                            {
                                 inventory.AddUnit(Quantity, invDef);
+                            }
+                             
                         }
 
 
