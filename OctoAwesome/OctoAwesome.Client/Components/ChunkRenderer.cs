@@ -271,7 +271,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         {
-                            GenerateVertices(centerChunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
                         }
                     }
                 }
@@ -282,7 +282,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         {
-                            GenerateVertices(centerChunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
 
                         }
                     }
@@ -294,7 +294,7 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = Chunk.CHUNKSIZE_X - 1; x >= 0; x -= Chunk.CHUNKSIZE.X - 1)
                         {
-                            GenerateVertices(centerChunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
                         }
                     }
                 }
@@ -305,12 +305,12 @@ namespace OctoAwesome.Client.Components
                     {
                         for (int x = 1; x < Chunk.CHUNKSIZE_X - 1; x++)
                         {
-                            GenerateVertices(centerChunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
+                            GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
                         }
                     }
                 }
 
-                return RegisterNewVertices(centerChunk);
+                return RegisterNewVertices(chunk);
             }
         }
 #if DEBUG
