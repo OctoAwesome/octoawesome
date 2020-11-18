@@ -18,15 +18,9 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override string[] Textures
-        {
-            get
-            {
-                return new[] {
-                    "dirt"
-                };
-            }
-        }
+        public override string[] Textures { get; } = new[] { "dirt" };
+
+
 
         public override IMaterialDefinition Material { get; }
 

@@ -97,7 +97,7 @@ namespace OctoAwesome.Client.Components
             int textureColumns = textures.Width / SceneControl.TEXTURESIZE;
             textureSizeGap = 1f / SceneControl.TEXTURESIZE;
             // BlockTypes sammlen
-            var localBlockDefinitions = definitionManager.GetBlockDefinitions();
+            var localBlockDefinitions = definitionManager.BlockDefinitions;
             textureOffsets = new Dictionary<IBlockDefinition, int>(localBlockDefinitions.Length);
             // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
             int definitionIndex = 0;

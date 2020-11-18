@@ -202,7 +202,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override IMaterialDefinition Material { get; }
 
-        public CactusBlockDefinition(CactusMaterialDefinition material)
+        public CactusBlockDefinition(CactusMaterialDefinition material) : this()
         {
             Material = material;
         }
