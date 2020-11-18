@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Linq;
 using System;
 using engenious;
+using OctoAwesome.Services;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics
 {
@@ -16,13 +18,19 @@ namespace OctoAwesome.Basics
 
         public string Name => Languages.OctoBasics.ExtensionName;
 
-        public void Register(IExtensionLoader extensionLoader)
+
+        public void Register(ITypeContainer typeContainer)
+        {
+            
+        }
+
+        public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
-            {
+            {                
                 if (!t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t))
-                    extensionLoader.RegisterDefinition((IDefinition)Activator.CreateInstance(t));
+                    extensionLoader.RegisterDefinition(t);
             }
 
             extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
@@ -44,11 +52,11 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new MoveableComponent());
                 p.Components.AddComponent(new BoxCollisionComponent());
                 p.Components.AddComponent(new EntityCollisionComponent());
-
                 p.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
 
             });
 
+            
             extensionLoader.RegisterSimulationExtender((s) =>
             {
                 s.Components.AddComponent(new WattMoverComponent());
@@ -57,8 +65,10 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new PowerAggregatorComponent());
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
-                s.Components.AddComponent(new BlockInteractionComponent(s));
+                s.Components.AddComponent(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
+
                 //TODO: unschön
+                //TODO: TypeContainer?
             });
         }
     }

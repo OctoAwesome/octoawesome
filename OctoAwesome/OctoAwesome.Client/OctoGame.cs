@@ -12,6 +12,7 @@ using engenious.Input;
 using System.Collections.Generic;
 using OctoAwesome.Notifications;
 using OctoAwesome.Common;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client
 {

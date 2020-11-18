@@ -13,6 +13,7 @@ using OctoAwesome.Runtime;
 using System.IO;
 using OctoAwesome.Serialization;
 using System.Collections.ObjectModel;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Components
 {
@@ -361,7 +362,7 @@ namespace OctoAwesome.Client.Components
             if (block == 0)
                 return;
 
-            IBlockDefinition blockDefinition = (IBlockDefinition)definitionManager.GetDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = (IBlockDefinition)definitionManager.GetBlockDefinitionByIndex(block);
 
             if (blockDefinition == null)
                 return;
@@ -415,7 +416,7 @@ namespace OctoAwesome.Client.Components
                     for (int xOffset = -1; xOffset <= 1; xOffset++)
                     {
                         blockDefinitions[GetIndex(zOffset, yOffset, xOffset)] =
-                            (IBlockDefinition)definitionManager.GetDefinitionByIndex(blocks[GetIndex(zOffset, yOffset, xOffset)]);
+                            (IBlockDefinition)definitionManager.GetBlockDefinitionByIndex(blocks[GetIndex(zOffset, yOffset, xOffset)]);
                     }
 
             IBlockDefinition topBlockDefintion = blockDefinitions[(((2 * 3) + 1) * 3) + 1];

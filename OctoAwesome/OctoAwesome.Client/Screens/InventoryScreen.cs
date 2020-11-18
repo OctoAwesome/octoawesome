@@ -7,6 +7,7 @@ using OctoAwesome.Client.Controls;
 using engenious;
 using OctoAwesome.EntityComponents;
 using engenious.UI.Controls;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -36,7 +37,7 @@ namespace OctoAwesome.Client.Screens
         {
             assets = manager.Game.Assets;
 
-            foreach (var item in manager.Game.DefinitionManager.GetDefinitions())
+            foreach (var item in manager.Game.DefinitionManager.Definitions)
             {
                 Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
@@ -199,7 +200,12 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnUpdate(gameTime);
 
-            nameLabel.Text = inventory.HoveredSlot?.Definition.Name ?? "";
+            var name = inventory.HoveredSlot?.Definition?.Name;
+
+            if (inventory.HoveredSlot?.Item is IItem item)
+                name += " (" + item.Material.Name + ")";
+
+            nameLabel.Text = name ?? "";
             massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
             // Aktualisierung des aktiven Buttons
@@ -208,7 +214,7 @@ namespace OctoAwesome.Client.Screens
                 if (player.Toolbar.Tools != null &&
                     player.Toolbar.Tools.Length > i &&
                     player.Toolbar.Tools[i] != null &&
-                    player.Toolbar.Tools[i].Definition != null)
+                    player.Toolbar.Tools[i].Item != null)
                 {
                     images[i].Texture = toolTextures[player.Toolbar.Tools[i].Definition.GetType().FullName];
                 }

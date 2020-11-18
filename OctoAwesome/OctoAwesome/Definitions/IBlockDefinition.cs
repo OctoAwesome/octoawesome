@@ -1,19 +1,21 @@
 ﻿using engenious;
+using OctoAwesome.Information;
+using OctoAwesome.Services;
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Basisinterface für eine Blockdefinition
     /// </summary>
-    public interface IBlockDefinition : IInventoryableDefinition, IDefinition
+    public interface IBlockDefinition : IInventoryable, IDefinition
     {
         /// <summary>
         /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
         /// </summary>
         /// <param name="block">Der Block-Typ des interagierenden Elements</param>
         /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
-        void Hit(IBlockDefinition block, PhysicalProperties itemProperties);
+        BlockHitInformation Hit(BlockVolumeState blockVolume, IItem itemDefinition);
 
         /// <summary>
         /// Array, das alle Texturen für alle Seiten des Blocks enthält
@@ -58,6 +60,8 @@ namespace OctoAwesome
         int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z);
 
         uint SolidWall { get; }
+        TimeSpan TimeToVolumeReset { get; }
+        IMaterialDefinition Material { get; }
 
         bool IsSolidWall(Wall wall);
     }

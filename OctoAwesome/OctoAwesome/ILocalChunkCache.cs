@@ -51,6 +51,13 @@ namespace OctoAwesome
         /// <summary>
         /// Liefert den Block an der angegebenen Block-Koodinate zurück.
         /// </summary>
+        /// <param name="index">Block Index</param>
+        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        BlockInfo GetBlockInfo(Index3 index);
+
+        /// <summary>
+        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// </summary>
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>

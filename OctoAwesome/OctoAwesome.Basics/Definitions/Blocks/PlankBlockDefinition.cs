@@ -1,9 +1,12 @@
 ﻿using OctoAwesome.Basics.Properties;
+using OctoAwesome.Information;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using OctoAwesome.Definitions;
+using OctoAwesome.Basics.Definitions.Materials;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -23,21 +26,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override string[] Textures { get; } = new[] {"planks_red"};
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return new PhysicalProperties()
-            {
-                Density = 0.87f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
-        }
+        public override IMaterialDefinition Material { get; }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+        public PlankBlockDefinition(WoodMaterialDefinition material)
         {
-            throw new NotImplementedException();
+            Material = material;
         }
-
     }
 }

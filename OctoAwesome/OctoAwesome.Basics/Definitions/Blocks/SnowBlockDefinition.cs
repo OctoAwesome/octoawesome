@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -26,20 +28,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override string[] Textures { get; } = new[] {"snow","dirt","dirt_snow",};
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return new PhysicalProperties()
-            {
-                Density = 1.5f,
-                FractureToughness = 0.2f,
-                Granularity = 0.9f,
-                Hardness = 0.05f
-            };
-        }
+        public override IMaterialDefinition Material { get; }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+        public SnowBlockDefinition(SnowMaterialDefinition material)
         {
-            throw new NotImplementedException();
+            Material = material;
         }
 
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)

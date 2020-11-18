@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Definitions;
+using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
 using System;
@@ -257,7 +258,7 @@ namespace OctoAwesome
                 {
                     if (chunk.Blocks[i] != 0)
                     {
-                        var definition = (IBlockDefinition)DefinitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
+                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
                         if (!definitions.Contains(definition))
                             definitions.Add(definition);
                     }
@@ -305,7 +306,7 @@ namespace OctoAwesome
                     else
                     {
                         // Definition Index
-                        var definition = (IBlockDefinition)DefinitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
+                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
 
                         if (longIndex)
                             writer.Write((ushort)(definitions.IndexOf(definition) + 1));
@@ -362,7 +363,7 @@ namespace OctoAwesome
             for (var i = 0; i < typecount; i++)
             {
                 var typeName = reader.ReadString();
-                IDefinition[] definitions = DefinitionManager.GetDefinitions().ToArray();
+                IDefinition[] definitions = DefinitionManager.Definitions.ToArray();
                 IDefinition blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                 types.Add(blockDefinition);
 
@@ -385,7 +386,7 @@ namespace OctoAwesome
                     {
                         chunk.Blocks[i] = map[typeIndex];
 
-                        var definition = (IBlockDefinition)DefinitionManager.GetDefinitionByIndex(map[typeIndex]);
+                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(map[typeIndex]);
 
                         if (definition.HasMetaData)
                             chunk.MetaData[i] = reader.ReadInt32();

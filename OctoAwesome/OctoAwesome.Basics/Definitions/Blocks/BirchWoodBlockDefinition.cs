@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Basics.Properties;
+﻿using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Basics.Properties;
+using OctoAwesome.Definitions;
+using OctoAwesome.Information;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,18 +22,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 "birch_wood_top",
                 "birch_wood_side" };
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
-            => new PhysicalProperties()
-            {
-                Density = 0.87f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
+        public override IMaterialDefinition Material { get; }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+
+        public BirchWoodBlockDefinition(WoodMaterialDefinition material)
         {
-            throw new NotImplementedException();
+            Material = material;
         }
 
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,

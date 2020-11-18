@@ -5,17 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
+using OctoAwesome.Services;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
     public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
     {
-        private Simulation simulation;
+        private readonly Simulation simulation;
+        private readonly BlockCollectionService service;
 
-        public BlockInteractionComponent(Simulation simulation)
+
+        public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
+            service = interactionService;
         }
 
         protected override bool AddEntity(Entity entity)
@@ -35,14 +41,39 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             if (controller.InteractBlock.HasValue)
             {
-                ushort lastBlock = cache.GetBlock(controller.InteractBlock.Value);
-                cache.SetBlock(controller.InteractBlock.Value, 0);
+                var lastBlock = cache.GetBlockInfo(controller.InteractBlock.Value);
 
-                if (lastBlock != 0)
+                if (!lastBlock.IsEmpty)
                 {
-                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
-                    if (blockDefinition is IInventoryableDefinition invDef)
-                        inventory.AddUnit(invDef);
+                    IItem activeItem;
+                    if (toolbar.ActiveTool.Item is IItem item)
+                    {
+                        activeItem = item;
+                    }
+                    else
+                    {
+                        activeItem = toolbar.HandSlot.Item as IItem;
+                    }
+
+                    var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+
+                    if (blockHitInformation.Valid)
+                        foreach (var (Quantity, Definition) in blockHitInformation.List)
+                        {
+                            if (activeItem is IFluidInventory fluidInventory 
+                                && Definition is IBlockDefinition fluidBlock 
+                                && fluidBlock.Material is IFluidMaterialDefinition)
+                            {
+                                fluidInventory.AddFluid(Quantity, fluidBlock);
+                            }
+                            else if (Definition is IInventoryable invDef)
+                            {
+                                inventory.AddUnit(Quantity, invDef);
+                            }
+                             
+                        }
+
+
                 }
                 controller.InteractBlock = null;
             }
@@ -62,10 +93,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    if (toolbar.ActiveTool.Definition is IBlockDefinition)
+                    if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
-                        IBlockDefinition definition = toolbar.ActiveTool.Definition as IBlockDefinition;
-
                         Index3 idx = controller.ApplyBlock.Value + add;
                         var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
@@ -88,8 +117,9 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 );
 
                             // Nicht in sich selbst reinbauen
-                            foreach (var box in boxes)
+                            for (var i = 0; i < boxes.Length; i++)
                             {
+                                var box = boxes[i];
                                 var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
                                 if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
                                     newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&

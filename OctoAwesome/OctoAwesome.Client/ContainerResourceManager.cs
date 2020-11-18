@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Network;
+﻿using OctoAwesome.Definitions;
+using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using System;

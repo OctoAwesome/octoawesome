@@ -31,12 +31,12 @@ namespace OctoAwesome.Tests
             }
         }
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
+        public override MaterialDefinition GetProperties(ILocalChunkCache manager, int x, int y, int z)
         {
             throw new NotImplementedException();
         }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+        public override BlockInteractionInformation Hit(BlockInteractionInformation interactionInformation, IItem item)
         {
             throw new NotImplementedException();
         }

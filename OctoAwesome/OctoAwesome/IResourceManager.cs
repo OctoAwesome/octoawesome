@@ -1,3 +1,4 @@
+using OctoAwesome.Definitions;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Concurrent;

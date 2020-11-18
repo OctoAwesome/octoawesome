@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Definitions.Blocks;
+using OctoAwesome.Definitions;
 using OctoAwesome.Pooling;
 
 using System;
@@ -22,7 +23,7 @@ namespace OctoAwesome.Basics
 
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IDefinition[] definitions = definitionManager.GetDefinitions();
+            IDefinition[] definitions = definitionManager.Definitions;
             //TODO More Generic, überdenken der Planetgeneration im allgemeinen (Heapmap + Highmap + Biome + Modding)
             IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().FirstOrDefault();
             ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
@@ -30,7 +31,7 @@ namespace OctoAwesome.Basics
             IBlockDefinition snowDefinition = definitions.OfType<SnowBlockDefinition>().FirstOrDefault();
             ushort snowIndex = (ushort)(Array.IndexOf(definitions.ToArray(), snowDefinition) + 1);
 
-            IBlockDefinition groundDefinition = definitions.OfType<GroundBlockDefinition>().FirstOrDefault();
+            IBlockDefinition groundDefinition = definitions.OfType<DirtBlockDefinition>().FirstOrDefault();
             ushort groundIndex = (ushort)(Array.IndexOf(definitions.ToArray(), groundDefinition) + 1);
 
             IBlockDefinition stoneDefinition = definitions.OfType<StoneBlockDefinition>().FirstOrDefault();
