@@ -33,6 +33,8 @@ namespace OctoAwesome
             typeContainer.Register<Pool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehaviour.Singleton);
+
         }
 
         public static void ConfigureLogger(ClientType clientType)

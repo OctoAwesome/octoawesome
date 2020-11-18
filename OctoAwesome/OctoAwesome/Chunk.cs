@@ -285,5 +285,22 @@ namespace OctoAwesome
                    | ((position.Y & (CHUNKSIZE_Y - 1)) << LimitX)
                    | (position.X & (CHUNKSIZE_X - 1));
         }
+
+        public void Init(Index3 position, IPlanet planet)
+        {
+            Index = position;
+            Planet = planet;
+        }
+
+        public void Init(IPool pool)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Release()
+        {
+            Index = default;
+            Planet = default;
+        }
     }
 }

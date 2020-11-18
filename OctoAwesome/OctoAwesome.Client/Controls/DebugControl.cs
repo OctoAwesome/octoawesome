@@ -213,8 +213,8 @@ namespace OctoAwesome.Client.Controls
                 string selection = "box: " +
                     Player.SelectedBox.Value.ToString() + " on " +
                     Player.SelectedSide.ToString() + " (" +
-                    Player.SelectedPoint.Value.X.ToString("0.00") + "/" +
-                    Player.SelectedPoint.Value.Y.ToString("0.00") + ") -> " +
+                    Player.SelectedPoint.Value.X.ToString("0.000000") + "/" +
+                    Player.SelectedPoint.Value.Y.ToString("0.000000") + ") -> " +
                     Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
                 box.Text = selection;
             }

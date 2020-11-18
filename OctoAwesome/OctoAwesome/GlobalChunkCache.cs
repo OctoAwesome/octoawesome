@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
 using System;
 using System.Collections.Concurrent;
@@ -369,6 +370,8 @@ namespace OctoAwesome
         /// </summary>
         private class CacheItem : IDisposable
         {
+
+            private static ChunkPool chunkPool;
             private IChunkColumn _chunkColumn;
             private readonly LockSemaphore internalSemaphore;
 
@@ -404,7 +407,12 @@ namespace OctoAwesome
 
             private bool disposed;
 
-            public CacheItem() => internalSemaphore = new LockSemaphore(1, 1);
+            public CacheItem()
+            {
+                internalSemaphore = new LockSemaphore(1, 1);
+                if (chunkPool == null)
+                    chunkPool = TypeContainer.Get<ChunkPool>();
+            }
 
             public LockSemaphore.SemaphoreLock Wait()
                 => internalSemaphore.Wait();

@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Noise;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,14 @@ namespace OctoAwesome.Basics.Biomes
     public class OceanBiomeGenerator : LargeBiomeBase
     {
         public OceanBiomeGenerator(IPlanet planet, float minVal, float maxVal, float valueRangeOffset, float valueRange)
-            :base(planet, valueRangeOffset, valueRange)
+            : base(planet, valueRangeOffset, valueRange)
         {
             MinValue = minVal;
             MaxValue = maxVal;
         }
 
-        public override float[,] GetHeightmap(Index2 chunkIndex)
+        public override float[] GetHeightmap(Index2 chunkIndex, float[] heightmap)
         {
-            float[,] values = new float[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
 
             chunkIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);
 
@@ -25,10 +25,10 @@ namespace OctoAwesome.Basics.Biomes
             {
                 for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
                 {
-                    values[x, y] = 0f;
+                    heightmap[(y * Chunk.CHUNKSIZE_X) + x] = 0f;
                 }
             }
-            return values;
+            return heightmap;
         }
     }
 }

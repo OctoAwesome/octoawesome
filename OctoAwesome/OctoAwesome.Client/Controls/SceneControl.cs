@@ -88,6 +88,8 @@ namespace OctoAwesome.Client.Controls
                 4, 5, 4, 6, 5, 7, 6, 7,
                 0, 4, 1, 5, 2, 6, 3, 7
         };
+        private readonly float sphereRadius;
+        private readonly float sphereRadiusSquared;
 
         private ScreenComponent Manager { get; set; }
 
@@ -105,6 +107,11 @@ namespace OctoAwesome.Client.Controls
             assets = manager.Game.Assets;
             entities = manager.Game.Entity;
             Manager = manager;
+
+            var chunkDiag = (float)Math.Sqrt((Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_X) + (Chunk.CHUNKSIZE_Y * Chunk.CHUNKSIZE_Y) + (Chunk.CHUNKSIZE_Z * Chunk.CHUNKSIZE_Z));
+            var tmpSphereRadius = (float)(((Math.Sqrt((Span * Chunk.CHUNKSIZE_X) * (Span * Chunk.CHUNKSIZE_X) * 3)) / 3) + camera.NearPlaneDistance + (chunkDiag / 2));
+            sphereRadius = tmpSphereRadius - (chunkDiag / 2);
+            sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
             simpleShader = manager.Game.Content.Load<simple>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
@@ -426,31 +433,19 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             Manager.GraphicsDevice.Clear(background);
             Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
+            var viewProj = miniMapProjectionMatrix * camera.MinimapView;
 
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.ChunkPosition.HasValue || renderer.VertexCount == 0)
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || renderer.VertexCount == 0)
                     continue;
 
-                Index3 shift = chunkOffset.ShortestDistanceXY(
-                    renderer.ChunkPosition.Value, new Index2(
-                        planet.Size.X,
-                        planet.Size.Y));
-
-                BoundingBox chunkBox = new BoundingBox(
-                new Vector3(
-                    shift.X * Chunk.CHUNKSIZE_X,
-                    shift.Y * Chunk.CHUNKSIZE_Y,
-                    shift.Z * Chunk.CHUNKSIZE_Z),
-                new Vector3(
-                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
+                Index3 shift = renderer.GetShift(chunkOffset, planet);
 
                 int range = 6;
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
-                    renderer.Draw(camera.MinimapView, miniMapProjectionMatrix, shift);
+                    renderer.Draw(viewProj, shift);
             }
 
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);
@@ -465,44 +460,23 @@ namespace OctoAwesome.Client.Controls
             if (camera.View == new Matrix())
                 return;
 
-            sunEffect.Texture = sunTexture;
-            Matrix billboard = Matrix.Invert(camera.View);
-            billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
-            sunEffect.World = billboard;
-            sunEffect.View = camera.View;
-            sunEffect.Projection = camera.Projection;
-            sunEffect.CurrentTechnique.Passes[0].Apply();
+            //sunEffect.Texture = sunTexture;
+            //Matrix billboard = Matrix.Invert(camera.View);
+            //billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
+            //sunEffect.World = billboard;
+            //sunEffect.View = camera.View;
+            //sunEffect.Projection = camera.Projection;
+            //sunEffect.CurrentTechnique.Passes[0].Apply();
+
+
             Manager.GraphicsDevice.VertexBuffer = billboardVertexbuffer;
             Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 2);
 
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
-            foreach (var renderer in chunkRenderer)
-            {
-                if (!renderer.ChunkPosition.HasValue || renderer.VertexCount == 0)
-                    continue;
-
-                Index3 shift = chunkOffset.ShortestDistanceXY(
-                    renderer.ChunkPosition.Value, new Index2(
-                        planet.Size.X,
-                        planet.Size.Y));
-
-                BoundingBox chunkBox = new BoundingBox(
-                new Vector3(
-                    shift.X * Chunk.CHUNKSIZE_X,
-                    shift.Y * Chunk.CHUNKSIZE_Y,
-                    shift.Z * Chunk.CHUNKSIZE_Z),
-                new Vector3(
-                    (shift.X + 1) * Chunk.CHUNKSIZE_X,
-                    (shift.Y + 1) * Chunk.CHUNKSIZE_Y,
-                    (shift.Z + 1) * Chunk.CHUNKSIZE_Z));
-
-                if (camera.Frustum.Intersects(chunkBox))
-                    renderer.Draw(camera.View, camera.Projection, shift);
-            }
-
-
+            var viewProjC = camera.Projection * camera.View;
+            DrawChunks(chunkOffset, viewProjC);
 
             entities.Draw(camera.View, camera.Projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
 
@@ -537,6 +511,28 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.SetRenderTarget(null);
         }
 
+
+        private void DrawChunks(Index3 chunkOffset, Matrix viewProj)
+        {
+            var spherePos = camera.PickRay.Position + (camera.PickRay.Direction * sphereRadius);
+  
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || renderer.VertexCount == 0)
+                    continue;
+
+                Index3 shift = renderer.GetShift(chunkOffset, planet);
+
+                var chunkPos = new Vector3(
+                    (shift.X * Chunk.CHUNKSIZE_X) + (Chunk.CHUNKSIZE_X / 2),
+                    (shift.Y * Chunk.CHUNKSIZE_Y) + (Chunk.CHUNKSIZE_Y / 2),
+                    (shift.Z * Chunk.CHUNKSIZE_Z) + (Chunk.CHUNKSIZE_Z / 2));
+
+                var frustumDist = spherePos - chunkPos;
+                if (frustumDist.LengthSquared < sphereRadiusSquared)
+                    renderer.Draw(viewProj, shift);
+            }
+        }
 
         private void FillChunkRenderer()
         {

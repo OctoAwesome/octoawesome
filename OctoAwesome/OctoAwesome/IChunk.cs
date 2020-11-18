@@ -1,11 +1,13 @@
-﻿using System;
+﻿using OctoAwesome.Pooling;
+
+using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basis-Schnittstelle für alle Implementierungen eines Chunks.
     /// </summary>
-    public interface IChunk
+    public interface IChunk : IPoolElement
     {
         /// <summary>
         /// Referenz auf den Planeten.

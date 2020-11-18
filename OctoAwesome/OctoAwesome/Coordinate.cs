@@ -206,10 +206,7 @@ namespace OctoAwesome
         /// Stellt die Coordinate-Instanz als string dar.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $@"({ Planet }/
-                    {(block.X + position.X).ToString("0.00")}/
-                    {(block.Y + position.Y).ToString("0.00")}/
-                    {(block.Z + position.Z).ToString("0.00")})";
+        public override string ToString() => $@"({ Planet }/{(block.X + position.X).ToString("0.000000")}/{(block.Y + position.Y).ToString("0.000000")}/{(block.Z + position.Z).ToString("0.000000")})";
 
         /// <summary>
         /// Compare this object with an other object

@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Noise;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,6 @@ namespace OctoAwesome.Basics.Biomes
 
         INoise BiomeNoiseGenerator { get; }
 
-        float[,] GetHeightmap(Index2 chunkIndex);
-
+        float[] GetHeightmap(Index2 chunkIndex, float[] heightmap);
     }
 }

@@ -150,6 +150,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                             else
                                 vz = movecomp.Velocity.Z;
 
+                            if (Math.Abs(vx) < 0.01f)
+                                vx = 0;
+                            if (Math.Abs(vy) < 0.01f)
+                                vy = 0;
+                            if (Math.Abs(vz) < 0.01f)
+                                vz = 0;
+
                             movecomp.Velocity = new Vector3(vx, vy, vz);
 
                             if (vx == 0 && vy == 0 && vz == 0)

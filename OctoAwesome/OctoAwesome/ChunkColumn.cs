@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace OctoAwesome
         /// </summary>
         private readonly IEntityList entities;
         private readonly LockSemaphore entitieSemaphore;
+        private static ChunkPool chunkPool;
 
 
         public IDefinitionManager DefinitionManager { get; }
@@ -53,6 +55,8 @@ namespace OctoAwesome
             DefinitionManager = TypeContainer.Get<IDefinitionManager>();
             Planet = planet;
             globalChunkCache = planet.GlobalChunkCache;
+            if (chunkPool == null)
+                chunkPool = TypeContainer.Get<ChunkPool>();
         }
 
         private void OnChunkChanged(IChunk arg1)

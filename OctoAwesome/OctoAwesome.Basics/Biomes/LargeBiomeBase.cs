@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Noise;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace OctoAwesome.Basics.Biomes
                 }
                 else if (SubBiomes[i].MaxValue >= value && SubBiomes[i].MinValue <= value)
                     return SubBiomes[i];
-                betweenPossible = (value > SubBiomes[i].MaxValue);
+                betweenPossible = value > SubBiomes[i].MaxValue;
             }
             return null;
         }
@@ -56,7 +57,7 @@ namespace OctoAwesome.Basics.Biomes
                 }
                 else if (SubBiomes[i].MaxValue >= value && SubBiomes[i].MinValue <= value)
                     return i;
-                betweenPossible = (value > SubBiomes[i].MaxValue);
+                betweenPossible = value > SubBiomes[i].MaxValue;
             }
             return -1;
         }
@@ -89,6 +90,6 @@ namespace OctoAwesome.Basics.Biomes
             return inputValue;
         }
 
-        public override float[,] GetHeightmap(Index2 chunkIndex) => base.GetHeightmap(chunkIndex);
+        public override float[] GetHeightmap(Index2 chunkIndex, float[] heightmap) => base.GetHeightmap(chunkIndex, heightmap);
     }
 }

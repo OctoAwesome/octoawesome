@@ -1,5 +1,8 @@
 ﻿using OctoAwesome.Basics.Definitions.Blocks;
+using OctoAwesome.Pooling;
+
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,12 +11,18 @@ namespace OctoAwesome.Basics
 {
     public class ComplexPlanetGenerator : IMapGenerator
     {
-        public IPlanet GeneratePlanet(Guid universe, int id, int seed) 
+        private readonly ChunkPool chunkPool;
+        public ComplexPlanetGenerator()
+        {
+            chunkPool = TypeContainer.Get<ChunkPool>();
+        }
+
+        public IPlanet GeneratePlanet(Guid universe, int id, int seed)
             => new ComplexPlanet(id, universe, new Index3(13, 13, 4), this, seed);
 
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
+            IDefinition[] definitions = definitionManager.GetDefinitions();
             //TODO More Generic, überdenken der Planetgeneration im allgemeinen (Heapmap + Highmap + Biome + Modding)
             IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().FirstOrDefault();
             ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
@@ -38,11 +47,13 @@ namespace OctoAwesome.Basics
 
             ComplexPlanet localPlanet = (ComplexPlanet)planet;
 
-            float[,] localHeightmap = localPlanet.BiomeGenerator.GetHeightmap(index);
+            var localHeightmap = ArrayPool<float>.Shared.Rent(Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
+
+            localPlanet.BiomeGenerator.GetHeightmap(index, localHeightmap);
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)
-                chunks[i] = new Chunk(new Index3(index, i), planet);
+                chunks[i] = chunkPool.Get(new Index3(index, i), planet);
 
             int obersteSchicht;
             bool surfaceBlock;
@@ -61,17 +72,16 @@ namespace OctoAwesome.Basics
                         for (int z = Chunk.CHUNKSIZE_Z - 1; z >= 0; z--)
                         {
                             int flatIndex = Chunk.GetFlatIndex(x, y, z);
-                            int absoluteZ = (z + (i * Chunk.CHUNKSIZE_Z));
-
-                            if (absoluteZ <= localHeightmap[x, y] * localPlanet.Size.Z * Chunk.CHUNKSIZE_Z)
+                            int absoluteZ = z + (i * Chunk.CHUNKSIZE_Z);
+                            if (absoluteZ <= localHeightmap[(y * Chunk.CHUNKSIZE_X) + x] * localPlanet.Size.Z * Chunk.CHUNKSIZE_Z)
                             {
                                 if (obersteSchicht > 0)
                                 {
-                                    float temp = localPlanet.ClimateMap.GetTemperature(new Index3(index.X * Chunk.CHUNKSIZE_X + x, index.Y * Chunk.CHUNKSIZE_Y + y, i * Chunk.CHUNKSIZE_Z + z));
+                                    float temp = localPlanet.ClimateMap.GetTemperature(new Index3((index.Y * Chunk.CHUNKSIZE_X) + x, (index.Y * Chunk.CHUNKSIZE_X) + x, (i * Chunk.CHUNKSIZE_Z) + z));
 
                                     if ((ozeanSurface || surfaceBlock) && (absoluteZ <= (localPlanet.BiomeGenerator.SeaLevel + 2)) && (absoluteZ >= (localPlanet.BiomeGenerator.SeaLevel - 2)))
                                     {
-                                      
+
                                         chunks[i].Blocks[flatIndex] = sandIndex;
                                     }
                                     else if (temp >= 35)
@@ -81,57 +91,58 @@ namespace OctoAwesome.Basics
                                     else if (absoluteZ >= localPlanet.Size.Z * Chunk.CHUNKSIZE_Z * 0.6f)
                                     {
                                         if (temp > 12)
-                                             chunks[i].Blocks[flatIndex] = groundIndex;
+                                            chunks[i].Blocks[flatIndex] = groundIndex;
                                         else
-                                             chunks[i].Blocks[flatIndex] = stoneIndex;
+                                            chunks[i].Blocks[flatIndex] = stoneIndex;
                                     }
                                     else if (temp >= 8)
                                     {
                                         if (surfaceBlock && !ozeanSurface)
                                         {
-                                             chunks[i].Blocks[flatIndex] = grassIndex;
+                                            chunks[i].Blocks[flatIndex] = grassIndex;
                                             surfaceBlock = false;
                                         }
                                         else
                                         {
-                                             chunks[i].Blocks[flatIndex] = groundIndex;
+                                            chunks[i].Blocks[flatIndex] = groundIndex;
                                         }
                                     }
                                     else if (temp <= 0)
                                     {
                                         if (surfaceBlock && !ozeanSurface)
                                         {
-                                             chunks[i].Blocks[flatIndex] = snowIndex;
+                                            chunks[i].Blocks[flatIndex] = snowIndex;
                                             surfaceBlock = false;
                                         }
                                         else
                                         {
-                                             chunks[i].Blocks[flatIndex] = groundIndex;
+                                            chunks[i].Blocks[flatIndex] = groundIndex;
                                         }
                                     }
                                     else
                                     {
-                                         chunks[i].Blocks[flatIndex] = groundIndex;
+                                        chunks[i].Blocks[flatIndex] = groundIndex;
                                     }
                                     obersteSchicht--;
                                 }
                                 else
                                 {
-                                     chunks[i].Blocks[flatIndex] = stoneIndex;
+                                    chunks[i].Blocks[flatIndex] = stoneIndex;
                                 }
                             }
                             else if ((z + (i * Chunk.CHUNKSIZE_Z)) <= localPlanet.BiomeGenerator.SeaLevel)
                             {
 
-                                 chunks[i].Blocks[flatIndex] = waterIndex;
+                                chunks[i].Blocks[flatIndex] = waterIndex;
                                 ozeanSurface = true;
                             }
-
+                            else
+                                chunks[i].Blocks[flatIndex] = 0;
                         }
                     }
                 }
             }
-
+            ArrayPool<float>.Shared.Return(localHeightmap);
             ChunkColumn column = new ChunkColumn(chunks, planet, index);
             column.CalculateHeights();
             return column;
@@ -140,7 +151,7 @@ namespace OctoAwesome.Basics
         public IPlanet GeneratePlanet(Stream stream)
         {
             IPlanet planet = new ComplexPlanet();
-            using(var reader = new BinaryReader(stream))
+            using (var reader = new BinaryReader(stream))
                 planet.Deserialize(reader);
             planet.Generator = this;
             return planet;
@@ -149,7 +160,7 @@ namespace OctoAwesome.Basics
         public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
             IChunkColumn column = new ChunkColumn(planet);
-            using(var reader = new BinaryReader(stream))
+            using (var reader = new BinaryReader(stream))
                 column.Deserialize(reader);
             return column;
         }

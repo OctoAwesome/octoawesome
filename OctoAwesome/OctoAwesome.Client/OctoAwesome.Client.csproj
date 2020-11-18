@@ -10,6 +10,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -74,7 +75,6 @@
     <Reference Include="engenious.CreatedContent.Content">
       <HintPath>F:\Repos\octoawesome\OctoAwesome\OctoAwesome.Client\Content\engenious.CreatedContent.Content.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
   </ItemGroup>
 
 </Project>
