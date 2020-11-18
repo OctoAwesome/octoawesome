@@ -70,9 +70,8 @@ namespace OctoAwesome.Client.Components
 
         public void SetEntity(Entity entity)
         {
-            CurrentEntity = entity;
 
-            if (CurrentEntity == null)
+            if (entity == null)
             {
                 CurrentEntityHead = null;
             }
@@ -80,20 +79,25 @@ namespace OctoAwesome.Client.Components
             {
                 // Map other Components
 
-                CurrentController = CurrentEntity.Components.GetComponent<ControllableComponent>();
+                CurrentController = entity.Components.GetComponent<ControllableComponent>();
 
-                CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
+                CurrentEntityHead = entity.Components.GetComponent<HeadComponent>();
+                if (CurrentEntityHead is null) 
+                    CurrentEntityHead = new() { Offset = new(0, 0, 3.2f) };
 
-                Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-                if (Inventory == null) Inventory = new InventoryComponent();
+                Inventory = entity.Components.GetComponent<InventoryComponent>();
+                if (Inventory is null) 
+                    Inventory = new();
 
-                Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar == null) Toolbar = new ToolBarComponent();
+                Toolbar = entity.Components.GetComponent<ToolBarComponent>();
+                if (Toolbar is null) 
+                    Toolbar = new();
 
-                Position = CurrentEntity.Components.GetComponent<PositionComponent>();
-                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
+                Position = entity.Components.GetComponent<PositionComponent>();
+                if (Position is null) 
+                    Position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
+            CurrentEntity = entity;
         }
 
         public override void Update(GameTime gameTime)
@@ -154,7 +158,7 @@ namespace OctoAwesome.Client.Components
             }
             SlotRightInput = false;
 
-           
+
         }
 
         /// <summary>

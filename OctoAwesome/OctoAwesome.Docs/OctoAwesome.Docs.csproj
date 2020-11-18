@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <LogFile>../bin/Doc/log.txt</LogFile>
   </PropertyGroup>
@@ -20,7 +20,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="docfx.console" Version="2.55.0">
+    <PackageReference Include="docfx.console" Version="2.56.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

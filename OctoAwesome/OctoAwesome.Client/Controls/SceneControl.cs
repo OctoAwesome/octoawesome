@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Controls
         private Thread backgroundThread;
         private Thread backgroundThread2;
         private ILocalChunkCache localChunkCache;
-        private simple simpleShader;
+        private Effect simpleShader;
 
         private Thread[] _additionalRegenerationThreads;
 
@@ -114,7 +114,7 @@ namespace OctoAwesome.Client.Controls
             sphereRadius = tmpSphereRadius - (chunkDiag / 2);
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
-            simpleShader = manager.Game.Content.Load<simple>("simple");
+            simpleShader = manager.Game.Content.Load<Effect>("simple");
             sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
@@ -417,12 +417,11 @@ namespace OctoAwesome.Client.Controls
                 //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
                 Matrix.CreateRotationY((float)(MathHelper.TwoPi - ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) % MathHelper.TwoPi)));
 
-            Vector3 sunDirection = Vector3.Transform(new Vector3(0, 0, 1), sunMovement);
+            Vector3 sunDirection = Vector3.Transform(sunMovement,new Vector3(0, 0, 1));
 
-            simpleShader.Ambient.Pass1.Apply();
-            simpleShader.Ambient.DiffuseColor = new Color(190, 190, 190);
-            simpleShader.Ambient.DiffuseIntensity = 0.6f;
-            simpleShader.Ambient.DiffuseDirection = sunDirection;
+            simpleShader.Parameters["DiffuseColor"].SetValue(new Color(190, 190, 190));
+            simpleShader.Parameters["DiffuseIntensity"].SetValue(0.6f);
+            simpleShader.Parameters["DiffuseDirection"].SetValue(sunDirection);
 
             // Console.WriteLine(sunDirection);
 

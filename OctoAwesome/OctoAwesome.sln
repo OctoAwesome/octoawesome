@@ -3,30 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29319.158
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Basics", "OctoAwesome.Basics\OctoAwesome.Basics.csproj", "{739F0779-A605-49C9-A298-FE30DC628C9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Basics", "OctoAwesome.Basics\OctoAwesome.Basics.csproj", "{739F0779-A605-49C9-A298-FE30DC628C9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Runtime", "OctoAwesome.Runtime\OctoAwesome.Runtime.csproj", "{31D774C6-E5D9-40B7-8D63-942E28FE1D94}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D269F5F0-2B6A-471A-8A44-253DEF5D98A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Tests", "OctoAwesome.Tests\OctoAwesome.Tests.csproj", "{0468B67C-E076-4B19-833C-382513606A5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Tests", "OctoAwesome.Tests\OctoAwesome.Tests.csproj", "{0468B67C-E076-4B19-833C-382513606A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
 	ProjectSection(ProjectDependencies) = postProject
 		{739F0779-A605-49C9-A298-FE30DC628C9E} = {739F0779-A605-49C9-A298-FE30DC628C9E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Docs", "OctoAwesome.Docs\OctoAwesome.Docs.csproj", "{A144F0E6-716C-40C1-83DD-A1039DA7F73B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Docs", "OctoAwesome.Docs\OctoAwesome.Docs.csproj", "{A144F0E6-716C-40C1-83DD-A1039DA7F73B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Community", "OctoAwesome.Community\OctoAwesome.Community.csproj", "{016407F4-814F-4183-855F-FA32C7378261}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Community", "OctoAwesome.Community\OctoAwesome.Community.csproj", "{016407F4-814F-4183-855F-FA32C7378261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Network", "OctoAwesome.Network\OctoAwesome.Network.csproj", "{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Network", "OctoAwesome.Network\OctoAwesome.Network.csproj", "{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Network.Tests", "OctoAwesome.Network.Tests\OctoAwesome.Network.Tests.csproj", "{762E8B0C-2EF8-4EC6-BF47-8926871973D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Network.Tests", "OctoAwesome.Network.Tests\OctoAwesome.Network.Tests.csproj", "{762E8B0C-2EF8-4EC6-BF47-8926871973D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.GameServer", "OctoAwesome.GameServer\OctoAwesome.GameServer.csproj", "{38EAE0E6-FCCF-4A33-B500-C9ED28717388}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.GameServer", "OctoAwesome.GameServer\OctoAwesome.GameServer.csproj", "{38EAE0E6-FCCF-4A33-B500-C9ED28717388}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database", "OctoAwesome.Database\OctoAwesome.Database.csproj", "{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}"
 EndProject

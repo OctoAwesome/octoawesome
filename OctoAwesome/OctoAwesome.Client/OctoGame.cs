@@ -59,7 +59,7 @@ namespace OctoAwesome.Client
             
             Title = "OctoAwesome";
             IsMouseVisible = true;
-            Icon = Properties.Resources.octoawesome;
+            //Icon = Properties.Resources.octoawesome;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
             Register(typeContainer);

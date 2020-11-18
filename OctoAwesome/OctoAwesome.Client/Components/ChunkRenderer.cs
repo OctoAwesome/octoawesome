@@ -14,6 +14,7 @@ using System.IO;
 using OctoAwesome.Serialization;
 using System.Collections.ObjectModel;
 using OctoAwesome.Definitions;
+using engenious.Helper;
 
 namespace OctoAwesome.Client.Components
 {
@@ -24,7 +25,7 @@ namespace OctoAwesome.Client.Components
         public static float OverrideLightLevel { get; set; }
         public static bool WireFrame { get; set; }
 
-        private simple simple;
+        private Effect simple;
         private GraphicsDevice graphicsDevice;
 
         private Texture2DArray textures;
@@ -84,7 +85,7 @@ namespace OctoAwesome.Client.Components
                 };
         }
 
-        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, simple simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
         {
             _sceneControl = sceneControl;
             this.definitionManager = definitionManager;
@@ -111,10 +112,10 @@ namespace OctoAwesome.Client.Components
             chunks = new IChunk[27];
             blockDefinitions = new IBlockDefinition[27];
 
-            simple.Ambient.Pass1.Apply();
-            simple.Ambient.BlockTextures = textures;
-            simple.Ambient.AmbientIntensity = 0.4f;
-            simple.Ambient.AmbientColor = Color.White.ToVector4();
+            //simple.Ambient.Pass1.Apply();
+            //simple.Ambient.BlockTextures = textures;
+            //simple.Ambient.AmbientIntensity = 0.4f;
+            //simple.Ambient.AmbientColor = Color.White.ToVector4();
 
             //dbProvier = new DatabaseProvider(Path.Combine("cache", "chunkverticescache"), null);
 
@@ -177,8 +178,13 @@ namespace OctoAwesome.Client.Components
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
 
-            simple.Ambient.OverrideLightLevel = OverrideLightLevel;
-            simple.Ambient.WorldViewProj = worldViewProj;
+            simple.Parameters["OverrideLightLevel"].SetValue(OverrideLightLevel);
+            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
+            simple.Parameters["BlockTextures"].SetValue(textures);
+
+            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
+            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+
 
 
             lock (this)
@@ -325,7 +331,7 @@ namespace OctoAwesome.Client.Components
 
             if (VertexCount > 0)
             {
-                Dispatch(() =>
+                ThreadingHelper.OnUiThread((t) =>
                 {
                     if (VertexBuffer == null || IndexBuffer == null)
                     {
@@ -336,7 +342,7 @@ namespace OctoAwesome.Client.Components
 
 
                     VertexBuffer.SetData(vertices.ToArray());
-                });
+                }, null);
             }
 
             lock (this)

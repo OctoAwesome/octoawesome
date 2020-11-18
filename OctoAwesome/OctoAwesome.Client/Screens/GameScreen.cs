@@ -341,7 +341,7 @@ namespace OctoAwesome.Client.Screens
             GamePadState gamePadState = new GamePadState();
             try
             {
-                gamePadState = GamePad.GetState(0);
+                //gamePadState = GamePad.GetState(0);
                 succeeded = true;
             }
             catch (Exception) { }

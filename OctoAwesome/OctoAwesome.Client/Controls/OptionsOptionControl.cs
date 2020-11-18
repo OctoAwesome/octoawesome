@@ -3,6 +3,7 @@ using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Screens;
+using System;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -187,17 +188,18 @@ namespace OctoAwesome.Client.Controls
 
         private void ChangePath()
         {
-            System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
-            folderBrowser.SelectedPath = settings.Get<string>("ChunkRoot");
+            throw new NotSupportedException();
+            //System.Windows.Forms.FolderBrowserDialog folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            //folderBrowser.SelectedPath = settings.Get<string>("ChunkRoot");
 
-            if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string path = folderBrowser.SelectedPath;
-                settings.Set("ChunkRoot", path);
-                mapPath.Text = path;
+            //if (folderBrowser.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    string path = folderBrowser.SelectedPath;
+            //    settings.Set("ChunkRoot", path);
+            //    mapPath.Text = path;
 
-                optionsScreen.NeedRestart();
-            }
+            //    optionsScreen.NeedRestart();
+            //}
         }
 
         private void SetPersistence(bool state)

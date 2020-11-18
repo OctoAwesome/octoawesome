@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace OctoAwesome.Runtime
 {
@@ -65,22 +66,21 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void LoadExtensions()
         {
-            List<Assembly> assemblies = new List<Assembly>();
+            List<Assembly> assemblies = new();
             var tempAssembly = Assembly.GetEntryAssembly();
 
             if (tempAssembly == null)
                 tempAssembly = Assembly.GetAssembly(GetType());
 
-            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(tempAssembly.Location));
+            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly.Location));
             assemblies.AddRange(LoadAssemblies(dir));
 
-            DirectoryInfo plugins = new DirectoryInfo(Path.Combine(dir.FullName, "plugins"));
+            DirectoryInfo plugins = new (Path.Combine(dir.FullName, "plugins"));
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
-            var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : new string[0];
+            var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : Array.Empty<string>();
 
-            var result = new List<Type>();
             foreach (var assembly in assemblies)
             {
                 var types = assembly
@@ -101,7 +101,7 @@ namespace OctoAwesome.Runtime
                             else
                                 ActiveExtensions.Add(extension);
                         }
-                        catch (Exception ex)
+                        catch 
                         {
                             // TODO: Logging
                         }
@@ -117,7 +117,7 @@ namespace OctoAwesome.Runtime
             {
                 try
                 {
-                    var assembly = Assembly.LoadFile(file.FullName);
+                    var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
                     assemblies.Add(assembly);
                 }
                 catch (Exception)
