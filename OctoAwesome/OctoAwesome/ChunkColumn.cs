@@ -286,7 +286,7 @@ namespace OctoAwesome
                 writer.Write((byte)definitions.Count);
 
             foreach (IBlockDefinition definition in definitions)
-                writer.Write(definition.GetType().FullName);
+                writer.Write(definition.GetType().FullName!);
 
             // Schreibe Phase 3 (Chunk Infos)
             for (var c = 0; c < Chunks.Length; c++)

@@ -127,7 +127,7 @@ namespace OctoAwesome
             writer.Write(components.Count);
             foreach (var componente in components)
             {
-                writer.Write(componente.Key.AssemblyQualifiedName);
+                writer.Write(componente.Key.AssemblyQualifiedName!);
                 componente.Value.Serialize(writer);
 
             }

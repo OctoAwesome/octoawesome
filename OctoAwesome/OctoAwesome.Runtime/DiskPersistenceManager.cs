@@ -109,7 +109,7 @@ namespace OctoAwesome.Runtime
             {
                 using (BinaryWriter bw = new BinaryWriter(stream))
                 {
-                    bw.Write(planet.Generator.GetType().FullName);
+                    bw.Write(planet.Generator.GetType().FullName!);
                 }
             }
 
@@ -228,7 +228,7 @@ namespace OctoAwesome.Runtime
                 using (BinaryReader bw = new BinaryReader(stream))
                 {
                     string generatorName = bw.ReadString();
-                    generator = extensionResolver.GetMapGenerator().FirstOrDefault(g => g.GetType().FullName.Equals(generatorName));
+                    generator = extensionResolver.GetMapGenerator().FirstOrDefault(g => g.GetType().FullName!.Equals(generatorName));
                 }
             }
 

@@ -54,7 +54,7 @@ namespace OctoAwesome.Runtime
                     {
                         tmpDatabase.Dispose();
                         logger.Error($"Can not Open Database for global, {typeof(T).Name}", ex);
-                        throw ex;
+                        throw;
                     }
                     globalDatabaseRegister.Add(key, tmpDatabase);
                     return tmpDatabase;
@@ -83,7 +83,7 @@ namespace OctoAwesome.Runtime
                     {
                         tmpDatabase.Dispose();
                         logger.Error($"Can not Open Database for [{universeGuid}], {typeof(T).Name}", ex);
-                        throw ex;
+                        throw;
                     }
                     universeDatabaseRegister.Add(key, tmpDatabase);
                     return tmpDatabase;
@@ -111,7 +111,7 @@ namespace OctoAwesome.Runtime
                     {
                         tmpDatabase.Dispose();
                         logger.Error($"Can not Open Database for [{universeGuid}]{planetId}, {typeof(T).Name}", ex);
-                        throw ex;
+                        throw;
                     }
                     planetDatabaseRegister.Add(key, tmpDatabase);
                     return tmpDatabase;

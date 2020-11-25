@@ -8,6 +8,7 @@ using engenious.Graphics;
 using System.Linq;
 using engenious.Helper;
 using engenious.UI.Controls;
+using System.Security.Cryptography.X509Certificates;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -208,7 +209,7 @@ namespace OctoAwesome.Client.Controls
             gravityInfo.Text = "Gravity" + ": " + planet.Gravity;
 
             //Draw Box Information
-            if (Player.SelectedBox.HasValue)
+            if (Player.SelectedBox.HasValue && Player.SelectedPoint.HasValue)
             {
                 string selection = "box: " +
                     Player.SelectedBox.Value.ToString() + " on " +

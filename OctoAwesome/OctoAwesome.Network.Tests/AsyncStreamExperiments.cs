@@ -33,18 +33,18 @@ namespace OctoAwesome.Network.Tests
             Random r = new Random();
 
             r.NextBytes(writeData);
-            Task readTask = new Task(() =>
+            Task readTask = new Task(async () =>
             {
                 int o = 0;
                 while (test.Read(readData, o, 100) != 0)
                 {
-                    Thread.Sleep(200);
+                    await Task.Delay(200);
                     o += 100;
                 }
             });
             test.Write(writeData, 0, writeData.Length);
+            await Task.Delay(100);
 
-            Thread.Sleep(100);
             readTask.Start();
 
             //Task writeTask = new Task(() => {
@@ -54,10 +54,26 @@ namespace OctoAwesome.Network.Tests
             //    }
 
             //});
+            await readTask;
             Assert.IsTrue(writeData.SequenceEqual(readData));
 
         }
 
-       
+        /// <summary>
+        /// You can rely on lama
+        /// </summary>
+        [Test]
+        public void Greet()
+        {
+            string viewer = @"
+                              <'l     
+                               ll     
+                               llama~ 
+                               || ||  
+                               '' ''
+                              ";
+
+            Assert.NotNull(viewer);
+        }
     }
 }

@@ -72,7 +72,7 @@ namespace OctoAwesome.Runtime
             if (tempAssembly == null)
                 tempAssembly = Assembly.GetAssembly(GetType());
 
-            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly.Location));
+            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly!.Location!)!);
             assemblies.AddRange(LoadAssemblies(dir));
 
             DirectoryInfo plugins = new (Path.Combine(dir.FullName, "plugins"));
@@ -93,7 +93,7 @@ namespace OctoAwesome.Runtime
                         try
                         {
                             IExtension extension = (IExtension)Activator.CreateInstance(type);
-                            extension.Register(typeContainer);
+                            extension!.Register(typeContainer);
                             extension.Register(this, typeContainer);
 
                             if (disabledExtensions.Contains(type.FullName))
@@ -281,7 +281,7 @@ namespace OctoAwesome.Runtime
             stack.Add(t);
             do
             {
-                t = t.BaseType;
+                t = t!.BaseType;
                 stack.Add(t);
             }
             while (t != typeof(Entity));

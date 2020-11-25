@@ -18,6 +18,10 @@ namespace OctoAwesome.Network
         public void Connect(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).FirstOrDefault();
+            if(address == default)
+            {
+                throw new ArgumentException(nameof(host));
+            }
             Socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
         }

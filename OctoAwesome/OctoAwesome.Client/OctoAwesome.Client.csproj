@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <Nullable>warnings</Nullable>
 
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>

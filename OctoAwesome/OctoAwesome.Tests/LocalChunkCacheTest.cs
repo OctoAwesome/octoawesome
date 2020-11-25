@@ -19,117 +19,117 @@ namespace OctoAwesome.Tests
             globalCache = new TestGlobalCache();
         }
 
-        [Test]
-        public void SimpleLoad()
-        {
-            Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
+        //[Test]
+        //public void SimpleLoad()
+        //{
+        //    Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
 
-            LocalChunkCache cache = new LocalChunkCache(globalCache,false, 2, 1);
-            TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
+        //    LocalChunkCache cache = new LocalChunkCache(globalCache,false, 2, 1);
+        //    TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
 
-            cache.SetCenter(planet, new Index2(15, 15));
-            System.Threading.Thread.Sleep(150);
-            Assert.Equals(9, globalCache.LoadCounter);
-            Assert.Equals(0, globalCache.SaveCounter);
+        //    cache.SetCenter(planet, new Index2(15, 15));
+        //    System.Threading.Thread.Sleep(150);
+        //    Assert.Equals(9, globalCache.LoadCounter);
+        //    Assert.Equals(0, globalCache.SaveCounter);
 
-            // Chunk im Zentrum
-            IChunk chunk = cache.GetChunk(15, 15, 1);
-            Assert.NotNull(chunk);
-            Assert.Equals(chunk.Index, new Index3(15, 15, 1));
+        //    // Chunk im Zentrum
+        //    IChunk chunk = cache.GetChunk(15, 15, 1);
+        //    Assert.NotNull(chunk);
+        //    Assert.Equals(chunk.Index, new Index3(15, 15, 1));
 
-            // Chunk in der Ecke
-            chunk = cache.GetChunk(14, 14, 0);
-            Assert.NotNull(chunk);
-            Assert.Equals(chunk.Index, new Index3(14, 14, 0));
+        //    // Chunk in der Ecke
+        //    chunk = cache.GetChunk(14, 14, 0);
+        //    Assert.NotNull(chunk);
+        //    Assert.Equals(chunk.Index, new Index3(14, 14, 0));
 
-            // Chunk in der Ecke
-            chunk = cache.GetChunk(16, 16, 2);
-            Assert.NotNull(chunk);
-            Assert.Equals(chunk.Index, new Index3(16, 16, 2));
+        //    // Chunk in der Ecke
+        //    chunk = cache.GetChunk(16, 16, 2);
+        //    Assert.NotNull(chunk);
+        //    Assert.Equals(chunk.Index, new Index3(16, 16, 2));
 
-            // Chunk außerhalb des Centers
-            chunk = cache.GetChunk(10, 10, 1);
-            Assert.Null(chunk);
+        //    // Chunk außerhalb des Centers
+        //    chunk = cache.GetChunk(10, 10, 1);
+        //    Assert.Null(chunk);
 
-            cache.Flush();
+        //    cache.Flush();
 
-            Assert.Equals(9, globalCache.LoadCounter);
-            Assert.Equals(9, globalCache.SaveCounter);
+        //    Assert.Equals(9, globalCache.LoadCounter);
+        //    Assert.Equals(9, globalCache.SaveCounter);
 
-            // Chunk im Zentrum
-            chunk = cache.GetChunk(15, 15, 1);
-            Assert.Null(chunk);
+        //    // Chunk im Zentrum
+        //    chunk = cache.GetChunk(15, 15, 1);
+        //    Assert.Null(chunk);
 
-            // Chunk in der Ecke
-            chunk = cache.GetChunk(14, 14, 0);
-            Assert.Null(chunk);
+        //    // Chunk in der Ecke
+        //    chunk = cache.GetChunk(14, 14, 0);
+        //    Assert.Null(chunk);
 
-            // Chunk in der Ecke
-            chunk = cache.GetChunk(16, 16, 2);
-            Assert.Null(chunk);
+        //    // Chunk in der Ecke
+        //    chunk = cache.GetChunk(16, 16, 2);
+        //    Assert.Null(chunk);
 
-            // Chunk außerhalb des Centers
-            chunk = cache.GetChunk(10, 10, 1);
-            Assert.Null(chunk);
-        }
+        //    // Chunk außerhalb des Centers
+        //    chunk = cache.GetChunk(10, 10, 1);
+        //    Assert.Null(chunk);
+        //}
 
-        [Test]
-        public void MovingCenter()
-        {
-            Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
+        //[Test]
+        //public void MovingCenter()
+        //{
+        //    Guid universe = Guid.Parse("{0E09993E-DA4E-43DE-8E78-45469563E3EA}");
 
-            LocalChunkCache cache = new LocalChunkCache(globalCache,false, 2, 1);
-            TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
+        //    LocalChunkCache cache = new LocalChunkCache(globalCache,false, 2, 1);
+        //    TestPlanet planet = new TestPlanet(universe, 12, new Index3(30, 30, 3));
 
-            //    00    01    10    11
-            // 00 --    --    --    --
-            // 01 --    --    --    --
-            // 10 --    --    --    --
-            // 11 --    --    --    --
+        //    //    00    01    10    11
+        //    // 00 --    --    --    --
+        //    // 01 --    --    --    --
+        //    // 10 --    --    --    --
+        //    // 11 --    --    --    --
 
-            cache.SetCenter(planet, new Index2(15, 15)); // 15 - 1111
-            System.Threading.Thread.Sleep(150);
-            Assert.Equals(9, globalCache.LoadCounter);
-            Assert.Equals(0, globalCache.SaveCounter);
+        //    cache.SetCenter(planet, new Index2(15, 15)); // 15 - 1111
+        //    System.Threading.Thread.Sleep(150);
+        //    Assert.Equals(9, globalCache.LoadCounter);
+        //    Assert.Equals(0, globalCache.SaveCounter);
 
-            //    00    01    10    11
-            // 00 16/16 --    14/16 15/16
-            // 01 --    --    --    --
-            // 10 16/14 --    14/14 15/14
-            // 11 16/15 --    14/15 15/15
+        //    //    00    01    10    11
+        //    // 00 16/16 --    14/16 15/16
+        //    // 01 --    --    --    --
+        //    // 10 16/14 --    14/14 15/14
+        //    // 11 16/15 --    14/15 15/15
 
-            cache.SetCenter(planet, new Index2(14, 15));
-            System.Threading.Thread.Sleep(150);
-            Assert.Equals(12, globalCache.LoadCounter);
-            Assert.Equals(0, globalCache.SaveCounter);
+        //    cache.SetCenter(planet, new Index2(14, 15));
+        //    System.Threading.Thread.Sleep(150);
+        //    Assert.Equals(12, globalCache.LoadCounter);
+        //    Assert.Equals(0, globalCache.SaveCounter);
 
-            //    00    01    10    11
-            // 00 16/16 13/16 14/16 15/16
-            // 01 --    --    --    --
-            // 10 16/14 13/14 14/14 15/14
-            // 11 16/15 13/15 14/15 15/15
+        //    //    00    01    10    11
+        //    // 00 16/16 13/16 14/16 15/16
+        //    // 01 --    --    --    --
+        //    // 10 16/14 13/14 14/14 15/14
+        //    // 11 16/15 13/15 14/15 15/15
 
-            cache.SetCenter(planet, new Index2(13, 15));
-            System.Threading.Thread.Sleep(150);
-            Assert.Equals(15, globalCache.LoadCounter);
-            Assert.Equals(3, globalCache.SaveCounter);
+        //    cache.SetCenter(planet, new Index2(13, 15));
+        //    System.Threading.Thread.Sleep(150);
+        //    Assert.Equals(15, globalCache.LoadCounter);
+        //    Assert.Equals(3, globalCache.SaveCounter);
 
-            //    00    01    10    11
-            // 00 12/16 13/16 14/16 15/16
-            // 01 --    --    --    --
-            // 10 12/14 13/14 14/14 15/14
-            // 11 12/15 13/15 14/15 15/15
+        //    //    00    01    10    11
+        //    // 00 12/16 13/16 14/16 15/16
+        //    // 01 --    --    --    --
+        //    // 10 12/14 13/14 14/14 15/14
+        //    // 11 12/15 13/15 14/15 15/15
 
-            // Chunk im Zentrum
-            IChunk chunk = cache.GetChunk(13, 15, 0);
-            Assert.NotNull(chunk);
-            Assert.Equals(chunk.Index, new Index3(13, 15, 0));
+        //    // Chunk im Zentrum
+        //    IChunk chunk = cache.GetChunk(13, 15, 0);
+        //    Assert.NotNull(chunk);
+        //    Assert.Equals(chunk.Index, new Index3(13, 15, 0));
 
-            // Chunk in der Ecke
-            chunk = cache.GetChunk(15, 15, 0);
-            Assert.NotNull(chunk);
-            Assert.Equals(chunk.Index, new Index3(15, 15, 0));
-        }
+        //    // Chunk in der Ecke
+        //    chunk = cache.GetChunk(15, 15, 0);
+        //    Assert.NotNull(chunk);
+        //    Assert.Equals(chunk.Index, new Index3(15, 15, 0));
+        //}
     }
 
 

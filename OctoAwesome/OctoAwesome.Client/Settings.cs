@@ -29,7 +29,7 @@ namespace OctoAwesome.Client
             }
             else
             {
-                _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
+                _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly()!.Location);
             }
         }
 
@@ -38,7 +38,7 @@ namespace OctoAwesome.Client
         /// </summary>
         public Settings()
         {
-            _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly().Location);
+            _config = ConfigurationManager.OpenExeConfiguration(Assembly.GetEntryAssembly()!.Location);
         }
 
         /// <summary>

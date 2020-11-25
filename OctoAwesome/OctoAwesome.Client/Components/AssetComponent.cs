@@ -90,12 +90,10 @@ namespace OctoAwesome.Client.Components
                     {
                         // Scan info File
                         XmlSerializer serializer = new XmlSerializer(typeof(ResourcePack));
-                        using (Stream stream = File.OpenRead(Path.Combine(directory, INFOFILENAME)))
-                        {
-                            ResourcePack pack = (ResourcePack)serializer.Deserialize(stream);
-                            pack.Path = info.FullName;
-                            loadedPacks.Add(pack);
-                        }
+                        using Stream stream = File.OpenRead(Path.Combine(directory, INFOFILENAME));
+                        ResourcePack pack = (ResourcePack)serializer.Deserialize(stream);
+                        pack!.Path = info.FullName;
+                        loadedPacks.Add(pack);
                     }
                     else
                     {
@@ -194,9 +192,7 @@ namespace OctoAwesome.Client.Components
 
             string fullkey = string.Format("{0}.{1}", baseType.Namespace, key);
 
-            string basefolder = baseType.Namespace.
-                // Replace("OctoAwesome.", "").
-                Replace('.', Path.DirectorySeparatorChar);
+            string basefolder = baseType.Namespace!.Replace('.', Path.DirectorySeparatorChar);
 
             // Cache fragen
             T result = default(T);
@@ -228,7 +224,7 @@ namespace OctoAwesome.Client.Components
             // Resource Fallback
             if (result == null)
             {
-                var assemblyName = baseType.Assembly.GetName().Name;
+                var assemblyName = baseType.Assembly.GetName().Name!;
 
                 // Spezialfall Client
                 if (assemblyName.Equals("OctoClient"))

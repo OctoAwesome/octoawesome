@@ -94,7 +94,7 @@ namespace OctoAwesome
         {
             using (taskSemaphore.Wait())
             {
-                var callerName = new StackFrame(1).GetMethod().Name;
+                var callerName = new StackFrame(1).GetMethod()?.Name;
                 logger.Debug($"Set Center from {callerName}");
                 CenterPosition = index;
 

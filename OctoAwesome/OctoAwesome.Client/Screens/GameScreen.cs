@@ -331,7 +331,6 @@ namespace OctoAwesome.Client.Screens
         private bool pressedGamepadFlymode = false;
         private bool pressedGamepadSlotLeft = false;
         private bool pressedGamepadSlotRight = false;
-        private bool disposedValue;
 
         private void HandleGamePad()
         {

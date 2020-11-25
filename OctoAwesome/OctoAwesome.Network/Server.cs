@@ -59,9 +59,9 @@ namespace OctoAwesome.Network
 
         private void OnClientAccepted(IAsyncResult ar)
         {
-            var socket = ar.AsyncState as Socket;
+            var socket = (Socket)ar.AsyncState;
 
-            var tmpSocket = socket.EndAccept(ar);
+            var tmpSocket = socket!.EndAccept(ar);
 
             tmpSocket.NoDelay = true;
 

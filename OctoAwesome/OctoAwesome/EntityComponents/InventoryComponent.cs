@@ -56,7 +56,7 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)
             {
-                writer.Write(slot.Item.GetType().FullName);
+                writer.Write(slot.Item.GetType().FullName!);
                 writer.Write(slot.Amount);
             }
         }

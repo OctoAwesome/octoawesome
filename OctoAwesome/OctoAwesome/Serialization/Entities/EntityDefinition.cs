@@ -28,12 +28,12 @@ namespace OctoAwesome.Serialization.Entities
 
         public void Serialize(BinaryWriter writer)
         {
-            writer.Write(Type.AssemblyQualifiedName);
+            writer.Write(Type.AssemblyQualifiedName!);
             writer.Write(Id.ToByteArray());
             writer.Write(ComponentsCount);
 
             foreach (var component in Components)
-                writer.Write(component.AssemblyQualifiedName);
+                writer.Write(component.AssemblyQualifiedName!);
         }
 
         public void Deserialize(BinaryReader reader)

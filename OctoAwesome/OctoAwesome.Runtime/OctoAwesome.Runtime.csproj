@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -11,11 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="engenious" Version="0.1.16" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />

@@ -48,13 +48,13 @@ namespace OctoAwesome
 
         /// <summary>
         /// Array, das alle Blöcke eines Chunks enthält. Jeder eintrag entspricht einer Block-ID.
-        /// Der Index ist derselbe wie bei <see cref="MetaData"/> und <see cref="Resources"/>.
+        /// Der Index ist derselbe wie bei <see cref="MetaData"/>.
         /// </summary>
         public ushort[] Blocks { get; private set; }
 
         /// <summary>
         /// Array, das die Metadaten zu den Blöcken eines Chunks enthält.
-        /// Der Index ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
+        /// Der Index ist derselbe wie bei <see cref="Blocks"/>.
         /// </summary>
         public int[] MetaData { get; private set; }
 

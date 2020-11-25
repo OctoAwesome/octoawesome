@@ -11,7 +11,7 @@ namespace OctoAwesome.Tests
         [Test]
         public void ReadWrite()
         {
-            Settings settings = new Settings(true);
+            Settings settings = new Settings();
 
             string[] testArray = new string[] { "foo", "bar" };
             settings.Set("foo", testArray);
@@ -59,7 +59,7 @@ namespace OctoAwesome.Tests
         [Test]
         public void UnsetTest()
         {
-            Settings settings = new Settings(true);
+            Settings settings = new Settings();
 
             int testInt = settings.Get<int>("foobarnotset");
             Assert.Equals(0, testInt);
@@ -77,7 +77,7 @@ namespace OctoAwesome.Tests
         [Test]
         public void DeleteTest()
         {
-            Settings settings = new Settings(true);
+            Settings settings = new Settings();
 
             settings.Set("test", 1);
             int test1 = settings.Get<int>("test");

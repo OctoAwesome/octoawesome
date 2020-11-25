@@ -10,8 +10,8 @@ namespace OctoAwesome.Services
 {
     public sealed class BlockVolumeState : IPoolElement
     {
-        public BlockInfo BlockInfo { get; protected set; }
-        public IBlockDefinition BlockDefinition { get; protected set; }
+        public BlockInfo BlockInfo { get; set; }
+        public IBlockDefinition BlockDefinition { get; set; }
         public decimal VolumeRemaining { get; internal set; }
         public DateTimeOffset ValidUntil { get; set; }
 

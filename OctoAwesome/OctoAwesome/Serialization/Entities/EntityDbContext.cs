@@ -36,7 +36,7 @@ namespace OctoAwesome.Serialization.Entities
         {
             EntityDefinition definition = entityDefinitionContext.Get(new GuidTag<EntityDefinition>(key.Tag));
             var entity = (Entity)Activator.CreateInstance(definition.Type);
-            entity.Id = definition.Id;
+            entity!.Id = definition.Id;
 
             foreach (Type component in definition.Components)
             {
