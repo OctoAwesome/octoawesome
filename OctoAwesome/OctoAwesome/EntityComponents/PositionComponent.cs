@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.Components;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class PositionComponent : EntityComponent
+    public sealed class PositionComponent: InstanceComponent<Entity>, IEntityComponent
     {
         public Coordinate Position
         {
@@ -102,13 +103,13 @@ namespace OctoAwesome.EntityComponents
                     updateNotification.Value = stream.ToArray();
                 }
 
-                Update(updateNotification);
+                Push(updateNotification);
             }
         }
 
-        public override void OnUpdate(SerializableNotification notification)
+        public override void OnNotification(SerializableNotification notification)
         {
-            base.OnUpdate(notification);
+            base.OnNotification(notification);
 
             if (notification is PropertyChangedNotification changedNotification)
             {

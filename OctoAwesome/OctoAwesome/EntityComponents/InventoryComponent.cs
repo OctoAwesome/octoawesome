@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Definitions;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public class InventoryComponent : EntityComponent
+    public class InventoryComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Das Inventar der Entity

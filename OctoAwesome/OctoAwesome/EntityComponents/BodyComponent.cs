@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Components;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class BodyComponent : EntityComponent
+    public sealed class BodyComponent : Component, IEntityComponent
     {
         public float Mass { get; set; }
 

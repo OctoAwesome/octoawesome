@@ -25,7 +25,7 @@ namespace OctoAwesome.Client.Controls
         private PlayerComponent player;
         private CameraComponent camera;
         private AssetComponent assets;
-        private Components.EntityComponent entities;
+        private Components.EntityGameComponent entities;
 
         private ChunkRenderer[,] chunkRenderer;
         private List<ChunkRenderer> orderedChunkRenderer;

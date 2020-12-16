@@ -4,6 +4,7 @@ using OctoAwesome.Basics.EntityComponents;
 using System.Linq;
 using OctoAwesome.EntityComponents;
 using engenious.Helper;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

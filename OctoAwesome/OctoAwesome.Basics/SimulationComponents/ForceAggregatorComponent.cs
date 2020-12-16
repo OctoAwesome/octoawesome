@@ -2,6 +2,7 @@
 using System.Linq;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

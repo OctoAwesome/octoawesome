@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

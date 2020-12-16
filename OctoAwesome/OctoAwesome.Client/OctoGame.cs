@@ -47,7 +47,7 @@ namespace OctoAwesome.Client
 
         public ExtensionLoader ExtensionLoader { get; private set; }
 
-        public Components.EntityComponent Entity { get; private set; }
+        public Components.EntityGameComponent Entity { get; private set; }
 
         public OctoGame() : base()
         {
@@ -118,7 +118,7 @@ namespace OctoAwesome.Client
             Simulation = new Components.SimulationComponent(this,
               ExtensionLoader, ResourceManager);
 
-            Entity = new Components.EntityComponent(this, Simulation);
+            Entity = new Components.EntityGameComponent(this, Simulation);
             Entity.UpdateOrder = 2;
             Components.Add(Entity);
 

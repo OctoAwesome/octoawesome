@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class EntityComponent : GameComponent
+    internal sealed class EntityGameComponent : GameComponent
     {
         private struct ModelInfo
         {
@@ -29,7 +29,7 @@ namespace OctoAwesome.Client.Components
 
         public List<Entity> Entities { get; set; }
 
-        public EntityComponent(OctoGame game, SimulationComponent simulation) : base(game)
+        public EntityGameComponent(OctoGame game, SimulationComponent simulation) : base(game)
         {
             Simulation = simulation;
 

@@ -1,6 +1,7 @@
 ﻿using engenious;
 
 using OctoAwesome.Common;
+using OctoAwesome.Components;
 using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
@@ -306,7 +307,7 @@ namespace OctoAwesome
             }
             else
             {
-                entity.Update(notification.Notification);
+                entity.Push(notification.Notification);
             }
         }
 

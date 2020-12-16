@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

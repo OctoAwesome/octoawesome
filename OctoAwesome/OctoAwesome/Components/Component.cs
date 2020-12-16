@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -7,7 +8,7 @@ namespace OctoAwesome
     /// <summary>
     /// Base Class for all Components.
     /// </summary>
-    public abstract class Component : ISerializable
+    public abstract class Component : IComponent
     {
         public bool Enabled { get; set; }
         public bool Sendable { get; set; }

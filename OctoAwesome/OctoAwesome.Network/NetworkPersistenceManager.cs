@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OctoAwesome.Basics;
+using OctoAwesome.Components;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
@@ -109,15 +111,15 @@ namespace OctoAwesome.Network
             return null;
         }
 
-        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
             => Array.Empty<Entity>();
 
-        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
             => Array.Empty<Guid>();
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => Array.Empty<Guid>();
 
-        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
             => Array.Empty<(Guid, T)>();
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)

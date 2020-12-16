@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace OctoAwesome
     /// Base Class for all Component based Entities.
     /// </summary>
     /// <typeparam name="T">Type of Component</typeparam>
-    public class ComponentList<T> : IEnumerable<T> where T : Component, ISerializable
+    public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializable
     {
         private readonly Action<T> insertValidator;
         private readonly Action<T> removeValidator;
@@ -26,7 +27,7 @@ namespace OctoAwesome
                 if (components.TryGetValue(type, out T result))
                     return result;
 
-                return null;
+                return default;
             }
         }
 
@@ -95,7 +96,7 @@ namespace OctoAwesome
             if (components.TryGetValue(typeof(V), out T result))
                 return (V)result;
 
-            return null;
+            return default;
         }
 
         /// <summary>

@@ -8,11 +8,12 @@ using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Definitions;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
     [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
-    public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
+    public class BlockInteractionComponent : SimulationComponent<Entity, ControllableComponent, InventoryComponent>
     {
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
@@ -36,6 +37,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
         protected override void UpdateEntity(GameTime gameTime, Entity entity, ControllableComponent controller, InventoryComponent inventory)
         {
+
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
             var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
 
