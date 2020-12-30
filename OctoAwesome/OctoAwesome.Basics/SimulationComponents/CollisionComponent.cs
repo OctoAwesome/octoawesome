@@ -8,14 +8,14 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    public sealed class CollisionComponent : SimulationComponent
+    public sealed class CollisionComponent : SimulationComponent<Entity>
     {
-        protected override bool AddEntity(Entity entity)
+        protected override bool OnAdd(Entity entity)
         {
             throw new NotImplementedException();
         }
 
-        protected override void RemoveEntity(Entity entity)
+        protected override void OnRemove(Entity entity)
         {
             throw new NotImplementedException();
         }

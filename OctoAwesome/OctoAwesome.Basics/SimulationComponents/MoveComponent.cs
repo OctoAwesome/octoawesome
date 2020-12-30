@@ -7,9 +7,8 @@ using engenious.Helper;
 using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
-{
-    [EntityFilter(typeof(MoveableComponent), typeof(PositionComponent))]
-    public sealed class MoveComponent : SimulationComponent<MoveableComponent, PositionComponent>
+{ 
+    public sealed class MoveComponent : SimulationComponent<Entity, MoveableComponent, PositionComponent>
     {
         protected override bool AddEntity(Entity entity)
         {

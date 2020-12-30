@@ -9,8 +9,7 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(PowerComponent), typeof(MoveableComponent))]
-    public sealed class PowerAggregatorComponent : SimulationComponent
+    public sealed class PowerAggregatorComponent : SimulationComponent<Entity, , PowerComponent, MoveableComponent>
     {
         private List<PoweredEntity> poweredEntities = new List<PoweredEntity>();
 
@@ -42,6 +41,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             if (poweredEntity != null)
                 poweredEntities.Remove(poweredEntity);
         }
+
 
         private class PoweredEntity
         {

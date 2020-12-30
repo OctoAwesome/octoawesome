@@ -11,8 +11,7 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent), typeof(BodyPowerComponent))]
-    public class WattMoverComponent : SimulationComponent<ControllableComponent, BodyPowerComponent>
+    public class WattMoverComponent : SimulationComponent<Entity, ControllableComponent, BodyPowerComponent>
     {
         protected override bool AddEntity(Entity entity)
         {

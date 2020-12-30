@@ -91,10 +91,10 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>Component</returns>
-        public V GetComponent<V>() where V : T
+        public V GetComponent<V>()
         {
             if (components.TryGetValue(typeof(V), out T result))
-                return (V)result;
+                return (V)(object)result;
 
             return default;
         }

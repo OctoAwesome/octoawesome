@@ -2,6 +2,7 @@
 using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,109 +10,147 @@ using System.Threading.Tasks;
 namespace OctoAwesome.Components
 {
     /// <summary>
+    /// Baseclass of all SimulationComponents who extend the <see cref="Simulation"/>
+    /// </summary>
+    public abstract class SimulationComponent : Component
+    {
+
+        /// <summary>
+        /// Updatemethod of this Component
+        /// </summary>
+        /// <param name="gameTime">The current gametime</param>
+        public abstract void Update(GameTime gameTime);
+
+    }
+
+    /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T> : Component
+    public abstract class SimulationComponent<T> : SimulationComponent
     {
         /// <summary>
         /// Entities die durch diese Simulationkomponete simuliert werden
         /// </summary>
-        protected List<T> entities = new List<T>();
-
-        private List<Type[]> componentFilter = new List<Type[]>();
+        protected readonly List<T> values = new();
 
         /// <summary>
         /// Konstruktor
         /// </summary>
         public SimulationComponent()
         {
-            // TODO: Refelct Attributes
-            foreach (EntityFilterAttribute attribute in GetType().GetCustomAttributes(typeof(EntityFilterAttribute), false))
-            {
-                foreach (var entityComponentType in attribute.EntityComponentTypes)
-                {
-                    if (!typeof(Component).IsAssignableFrom(entityComponentType))
-                        throw new NotSupportedException();
 
-                    componentFilter.Add(attribute.EntityComponentTypes);
-                }
-            }
         }
 
         /// <summary>
         /// Fügt eine neue Entity der Simulationskomponente hinzu
         /// </summary>
-        /// <param name="entity">Neue Entity</param>
-        public void Add(T entity)
+        /// <param name="value">Neue Entity</param>
+        public void Add(T value)
         {
-            if (Match(entity) && AddEntity(entity))
+            if (Match(value))
             {
-                entities.Add(entity);
+                OnAdd(value);
+                values.Add(value);
             }
         }
 
         /// <summary>
         /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
         /// </summary>
-        /// <param name="entity">Vergleichsentity</param>
+        /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected virtual bool Match(T entity)
+        protected virtual bool Match(T value)
         {
-            if (componentFilter.Count == 0)
-                return true;
-
-            return componentFilter.Any(
-                x => x.All(
-                    t => entity.Components.Any(
-                        c => t.IsAssignableFrom(c.GetType()))));
+            return true;
         }
 
         /// <summary>
         /// Internes Event, für das hinzufügen einer Entity
         /// </summary>
-        /// <param name="entity">Neue Entity</param>
+        /// <param name="value">Neue Entity</param>
         /// <returns>Ergebnis</returns>
-        protected abstract bool AddEntity(T entity);
+        protected abstract void OnAdd(T value);
 
         /// <summary>
         /// Entfernt eine Entity aus der Simulationskomponente
         /// </summary>
-        /// <param name="entity"></param>
-        public void Remove(T entity)
+        /// <param name="value"></param>
+        public void Remove(T value)
         {
-            if (entities.Contains(entity))
+            if (values.Contains(value))
             {
-                RemoveEntity(entity);
-                entities.Remove(entity);
+                OnRemove(value);
+                values.Remove(value);
             }
         }
 
         /// <summary>
         /// Internes Event, für das entfernen einer Entity
         /// </summary>
-        /// <param name="entity">Neue Entity</param>
+        /// <param name="value">Neue Entity</param>
         /// <returns>Ergebnis</returns>
-        protected abstract void RemoveEntity(T entity);
-
-        /// <summary>
-        /// Updatemethode der Entity
-        /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
-        public abstract void Update(GameTime gameTime);
+        protected abstract void OnRemove(T value);
     }
 
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T, C1> : SimulationComponent<T> where C1 : Component
+    public abstract class SimulationComponent<T, S, C1> : SimulationComponent
+        where T : IContainsComponents
+        where S : SimulationComponentRecord<T, C1>
+        where C1 : Component
     {
+
+        protected readonly List<S> values = new();
+
+        /// <summary>
+        /// Fügt eine neue Entity der Simulationskomponente hinzu
+        /// </summary>
+        /// <param name="value">Neue Entity</param>
+        public void Add(T value)
+        {
+            if (Match(value))
+            {
+
+                values.Add(OnAdd(value));
+            }
+        }
+
         /// <summary>
         /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
         /// </summary>
-        /// <param name="entity">Vergleichsentity</param>
+        /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected override bool Match(T entity) 
-            => entity.Components.ContainsComponent<C1>();
+        protected virtual bool Match(T value)
+            => value.ContainsComponent<C1>();
+
+        /// <summary>
+        /// Internes Event, für das hinzufügen einer Entity
+        /// </summary>
+        /// <param name="value">Neue Entity</param>
+        /// <returns>Ergebnis</returns>
+        protected virtual S OnAdd(T value)
+            => (S)new SimulationComponentRecord<T, C1>(value, value.GetComponent<C1>());
+
+        /// <summary>
+        /// Entfernt eine Entity aus der Simulationskomponente
+        /// </summary>
+        /// <param name="value"></param>
+        public void Remove(T value)
+        {
+            if (values.Contains(value))
+            {
+                OnRemove(value);
+                values.Remove(value);
+            }
+        }
+
+        /// <summary>
+        /// Internes Event, für das entfernen einer Entity
+        /// </summary>
+        /// <param name="value">Neue Entity</param>
+        /// <returns>Ergebnis</returns>
+        protected abstract void OnRemove(T value);
 
         /// <summary>
         /// Updatemethode der Entity
@@ -119,35 +158,38 @@ namespace OctoAwesome.Components
         /// <param name="gameTime">Spielzeit</param>
         public override void Update(GameTime gameTime)
         {
-            foreach (var entity in entities)
-                UpdateEntity(gameTime, entity, entity.Components.GetComponent<C1>());
+            foreach (var value in values)
+                UpdateValue(gameTime, value);
         }
 
         /// <summary>
         /// Internes Event, für das Updaten der Simulationskomponente
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
-        /// <param name="entity">Entity die geupdatet werden muss</param>
-        /// <param name="component1">Komponente 1</param>
-        protected abstract void UpdateEntity(GameTime gameTime, T entity, C1 component1);
+        /// <param name="value">Entity die geupdatet werden muss</param>
+        protected abstract void UpdateValue(GameTime gameTime, S value);
+
     }
 
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T, C1, C2> : SimulationComponent<T>
+    public abstract class SimulationComponent<T, S, C1, C2> : SimulationComponent
+        where T : IContainsComponents
+        where S : SimulationComponentRecord<T, C1, C2>
         where C1 : Component
         where C2 : Component
     {
+        protected readonly List<S> values = new();
 
         /// <summary>
         /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
         /// </summary>
-        /// <param name="entity">Vergleichsentity</param>
+        /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected override bool Match(T entity) 
-            => entity.Components.ContainsComponent<C1>()
-                && entity.Components.ContainsComponent<C2>();
+        protected virtual bool Match(T value)
+            => value.ContainsComponent<C1>()
+                && value.ContainsComponent<C2>();
 
         /// <summary>
         /// Updatemethode der Entity
@@ -156,37 +198,41 @@ namespace OctoAwesome.Components
         public override void Update(GameTime gameTime)
         {
             //TODO: Ändern
-            foreach (var entity in entities.ToArray())
-                UpdateEntity(gameTime, entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>());
+            foreach (var value in values)
+                UpdateValue(gameTime, value);
         }
 
         /// <summary>
         /// Internes Event, für das Updaten der Simulationskomponente
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
-        /// <param name="entity">Entity die geupdatet werden muss</param>
-        /// <param name="component1">Komponente 1</param>
-        /// <param name="component2">Komponente 2</param>
-        protected abstract void UpdateEntity(GameTime gameTime, T entity, C1 component1, C2 component2);
+        /// <param name="value">Entity die geupdatet werden muss</param>
+        protected abstract void UpdateValue(GameTime gameTime, S value);
+
     }
+
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T, C1, C2, C3> : SimulationComponent<T>
+    public abstract class SimulationComponent<T, S, C1, C2, C3> : SimulationComponent
+        where T : IContainsComponents
+        where S : SimulationComponentRecord<T, C1, C2, C3>
         where C1 : Component
         where C2 : Component
         where C3 : Component
     {
 
+        protected readonly List<S> values = new();
+
         /// <summary>
         /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
         /// </summary>
-        /// <param name="entity">Vergleichsentity</param>
+        /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected override bool Match(T entity) 
-            => entity.Components.ContainsComponent<C1>()
-                && entity.Components.ContainsComponent<C2>()
-                && entity.Components.ContainsComponent<C3>();
+        protected virtual bool Match(T value)
+            => value.ContainsComponent<C1>()
+                && value.ContainsComponent<C2>()
+                && value.ContainsComponent<C3>();
 
         /// <summary>
         /// Updatemethode der Entity
@@ -195,18 +241,20 @@ namespace OctoAwesome.Components
         public override void Update(GameTime gameTime)
         {
             //TODO: Ändern
-            foreach (var entity in entities.ToArray())
-                UpdateEntity(gameTime, entity, entity.Components.GetComponent<C1>(), entity.Components.GetComponent<C2>(), entity.Components.GetComponent<C3>());
+            foreach (var value in values)
+                UpdateValue(gameTime, value);
         }
 
         /// <summary>
         /// Internes Event, für das Updaten der Simulationskomponente
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
-        /// <param name="entity">Entity die geupdatet werden muss</param>
-        /// <param name="component1">Komponente 1</param>
-        /// <param name="component2">Komponente 2</param>
-        /// <param name="component3">Komponente 3</param>
-        protected abstract void UpdateEntity(GameTime gameTime, T entity, C1 component1, C2 component2, C3 component3);
+        /// <param name="value">Entity die geupdatet werden muss</param>
+        protected abstract void UpdateValue(GameTime gameTime, S value);
     }
+
+    public record SimulationComponentRecord<T, C1>(T Value, C1 Component);
+    public record SimulationComponentRecord<T, C1, C2>(T Value, C1 Component1, C2 Component2);
+    public record SimulationComponentRecord<T, C1, C2, C3>(T Value, C1 Component1, C2 Component2, C3 Component3);
 }
+

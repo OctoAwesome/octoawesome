@@ -3,11 +3,18 @@ using System.Linq;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Components;
+using SimulationComponentRecord = OctoAwesome.Components.SimulationComponentRecord<
+                                    OctoAwesome.Entity,
+                                    OctoAwesome.Basics.EntityComponents.ForceComponent,
+                                    OctoAwesome.Basics.EntityComponents.MoveableComponent>;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ForceComponent), typeof(MoveableComponent))]
-    public sealed class ForceAggregatorComponent : SimulationComponent
+    public sealed class ForceAggregatorComponent : SimulationComponent<
+            Entity,
+            ForceAggregatorComponent.ForcedEntity,
+            ForceComponent, 
+            MoveableComponent>
     {
         private List<ForcedEntity> forcedEntities = new List<ForcedEntity>();
 
@@ -40,13 +47,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
         }
 
-        private class ForcedEntity
-        {
-            public Entity Entity { get; set; }
-
-            public MoveableComponent Moveable { get; set; }
-
-            public ForceComponent[] Forces { get; set; }
-        }
+        public record ForcedEntity(Entity Entity, ForceComponent ForceComponent, MoveableComponent MoveableComponent, ForceComponent[] Forces)
+            : SimulationComponentRecord(Entity, ForceComponent, MoveableComponent);
     }
 }

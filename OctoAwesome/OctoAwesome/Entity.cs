@@ -11,7 +11,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisklasse für alle selbständigen Wesen
     /// </summary>
-    public abstract class Entity : ISerializable, IIdentification, INotificationSubject<SerializableNotification>
+    public abstract class Entity : ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification>
     {
         /// <summary>
         /// Contains all Components.
@@ -138,5 +138,10 @@ namespace OctoAwesome
             foreach (var component in notificationComponents)
                 component?.OnNotification(notification);
         }
+
+        public bool ContainsComponent<T>() 
+            => Components.ContainsComponent<T>();
+        public T GetComponent<T>()
+            => Components.GetComponent<T>();
     }
 }

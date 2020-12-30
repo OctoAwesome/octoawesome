@@ -12,7 +12,6 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
     public class BlockInteractionComponent : SimulationComponent<Entity, ControllableComponent, InventoryComponent>
     {
         private readonly Simulation simulation;

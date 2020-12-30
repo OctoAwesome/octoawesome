@@ -10,8 +10,7 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(GravityComponent), typeof(BodyComponent))]
-    public class NewtonGravitatorComponent : SimulationComponent
+    public class NewtonGravitatorComponent : SimulationComponent<Entity, GravityComponent, BodyComponent>
     {
         class GravityEntity
         {

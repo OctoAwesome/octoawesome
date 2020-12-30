@@ -8,8 +8,7 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(MoveableComponent), typeof(BodyComponent))]
-    public sealed class AccelerationComponent : SimulationComponent
+    public sealed class AccelerationComponent : SimulationComponent<Entity, MoveableComponent, BodyComponent>
     {
         private readonly List<AcceleratedEntity> acceleratedEntities;
 
