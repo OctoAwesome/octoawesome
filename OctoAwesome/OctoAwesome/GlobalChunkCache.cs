@@ -142,7 +142,7 @@ namespace OctoAwesome
                             && positionComponent.Component.Position.ChunkIndex.Y == chunkIndex.Y))
                             continue;
 
-                        cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(positionComponent.Component.Entity.Id));
+                        cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(positionComponent.Component.Instance.Id));
                     }
 
                     using (updateSemaphore.Wait())

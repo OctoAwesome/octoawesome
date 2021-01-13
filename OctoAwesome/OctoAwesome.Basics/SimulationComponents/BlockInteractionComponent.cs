@@ -12,7 +12,11 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    public class BlockInteractionComponent : SimulationComponent<Entity, ControllableComponent, InventoryComponent>
+    public class BlockInteractionComponent : SimulationComponent<
+        Entity, 
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>, 
+        ControllableComponent, 
+        InventoryComponent>
     {
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
@@ -23,19 +27,12 @@ namespace OctoAwesome.Basics.SimulationComponents
             this.simulation = simulation;
             service = interactionService;
         }
-
-        protected override bool AddEntity(Entity entity)
+                
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
         {
-            return true;
-        }
-
-        protected override void RemoveEntity(Entity entity)
-        {
-
-        }
-
-        protected override void UpdateEntity(GameTime gameTime, Entity entity, ControllableComponent controller, InventoryComponent inventory)
-        {
+            var entity = value.Value;
+            var controller = value.Component1;
+            var inventory = value.Component2;
 
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
             var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;

@@ -218,7 +218,12 @@ namespace OctoAwesome
             entities.Add(entity);
 
             foreach (var component in Components)
-                component.Add(entity);
+            {
+                if (component is IHoldComponent<Entity> holdComponent)
+                    holdComponent.Add(entity);
+                else
+                    ;
+            }
         }
 
         /// <summary>
@@ -247,7 +252,12 @@ namespace OctoAwesome
             ResourceManager.SaveEntity(entity);
 
             foreach (var component in Components)
-                component.Remove(entity);
+            {
+                if (component is IHoldComponent<Entity> holdComponent)
+                    holdComponent.Remove(entity);
+                else
+                    ;
+            }
 
             entities.Remove(entity);
             entity.Id = Guid.Empty;

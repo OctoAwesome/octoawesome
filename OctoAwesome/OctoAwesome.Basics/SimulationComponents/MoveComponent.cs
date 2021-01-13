@@ -8,25 +8,29 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 { 
-    public sealed class MoveComponent : SimulationComponent<Entity, MoveableComponent, PositionComponent>
+    public sealed class MoveComponent : SimulationComponent<
+        Entity, 
+        SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
+        MoveableComponent, 
+        PositionComponent>
     {
-        protected override bool AddEntity(Entity entity)
+        protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
+            var movecomp = entity.Components.GetComponent<MoveableComponent>();
             var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
 
             var planet = cache.Planet;
             poscomp.Position.NormalizeChunkIndexXY(planet.Size);
             cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
-            return true;
+            return new SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>(entity, movecomp, poscomp);
         }
 
-        protected override void RemoveEntity(Entity entity)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> value)
         {
-        }
-
-        protected override void UpdateEntity(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
-        {
+            var entity = value.Value;
+            var movecomp = value.Component1;
+            var poscomp = value.Component2;
 
             if (entity.Id == Guid.Empty)
                 return;
