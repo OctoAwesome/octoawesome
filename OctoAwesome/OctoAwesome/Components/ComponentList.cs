@@ -1,9 +1,11 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Serialization;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace OctoAwesome
 {
@@ -53,7 +55,7 @@ namespace OctoAwesome
         /// Adds a new Component to the List.
         /// </summary>
         /// <param name="component">Component</param>
-        public void AddComponent<V>(V component) where V : T 
+        public void AddComponent<V>(V component) where V : T
             => AddComponent(component, false);
 
 
@@ -79,12 +81,24 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// 
+        /// Checks wether the component of <typeparamref name="V"/> is present in the internal dictionary as a key
         /// </summary>
-        /// <typeparam name="V"></typeparam>
-        /// <returns></returns>
-        public bool ContainsComponent<V>() 
-            => components.ContainsKey(typeof(V));
+        /// <typeparam name="V">The type to search in the internal dictionary</typeparam>
+        /// <returns>
+        /// <list type="bullet">
+        ///     <item><see langword="true"/> if the component was found</item>
+        ///     <item><see langword="false"/> if the component was not found</item>
+        /// </list>
+        /// </returns>
+        public bool ContainsComponent<V>()
+        {
+            var type = typeof(V);
+            if (type.IsAbstract || type.IsInterface)
+            {
+                return components.Any(x => type.IsAssignableFrom(x.Key));
+            }
+            return components.ContainsKey(type);
+        }
 
         /// <summary>
         /// Returns the Component of the given Type or null

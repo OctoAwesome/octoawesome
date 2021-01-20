@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         protected override ForcedEntity OnAdd(Entity entity)
         {
             return new ForcedEntity(entity,
-                entity.Components.GetComponent<ForceComponent>(),
+                null,
                 entity.Components.GetComponent<MoveableComponent>(),
                 entity.Components.OfType<ForceComponent>().ToArray());
         }

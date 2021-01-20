@@ -47,11 +47,12 @@ namespace OctoAwesome
         /// <summary>
         /// List of all Entities.
         /// </summary>
-        public List<Entity> Entities => entities.ToList();
+        public IReadOnlyList<Entity> Entities => entities;
 
         private readonly IExtensionResolver extensionResolver;
 
-        private readonly HashSet<Entity> entities = new HashSet<Entity>();
+        private readonly List<Entity> entities = new ();
+        private readonly List<FunctionalBlock> functionalBlocks = new ();
         private readonly IDisposable simulationSubscription;
         private readonly IPool<EntityNotification> entityNotificationPool;
 
@@ -155,9 +156,12 @@ namespace OctoAwesome
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
             //Update all Entities
-            foreach (var entity in Entities)
+            for (var i = 0; i < entities.Count; i++)
+            {
+                var entity = entities[i];
                 if (entity is UpdateableEntity updateableEntity)
                     updateableEntity.Update(gameTime);
+            }
 
             // Update all Components
             foreach (var component in Components)
@@ -179,7 +183,7 @@ namespace OctoAwesome
             State = SimulationState.Paused;
 
             //TODO: unschön, Dispose Entity's, Reset Extensions
-            Entities.ForEach(entity => RemoveEntity(entity));
+            entities.ToList().ForEach(entity => Remove(entity));
             //while (entites.Count > 0)
             //    RemoveEntity(Entities.First());
 
@@ -194,7 +198,7 @@ namespace OctoAwesome
         /// Fügt eine Entity der Simulation hinzu
         /// </summary>
         /// <param name="entity">Neue Entity</param>
-        public void AddEntity(Entity entity)
+        public void Add(Entity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -221,8 +225,36 @@ namespace OctoAwesome
             {
                 if (component is IHoldComponent<Entity> holdComponent)
                     holdComponent.Add(entity);
-                else
-                    ;
+            }
+        }
+
+        public void Add(FunctionalBlock block)
+        {
+            if (block is null)
+                throw new ArgumentNullException(nameof(block));
+
+            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+                throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
+
+            if (block.Simulation != null && block.Simulation != this)
+                throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be part of more than one simulation");
+
+            if (functionalBlocks.Contains(block))
+                return;
+
+            //extensionResolver.ExtendEntity(entity);
+            block.Initialize(ResourceManager);
+            block.Simulation = this;
+
+            if (block.Id == Guid.Empty)
+                block.Id = Guid.NewGuid();
+
+            functionalBlocks.Add(block);
+
+            foreach (var component in Components)
+            {
+                if (component is IHoldComponent<FunctionalBlock> holdComponent)
+                    holdComponent.Add(block);
             }
         }
 
@@ -230,7 +262,7 @@ namespace OctoAwesome
         /// Entfernt eine Entity aus der Simulation
         /// </summary>
         /// <param name="entity">Entity die entfert werden soll</param>
-        public void RemoveEntity(Entity entity)
+        public void Remove(Entity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -264,8 +296,42 @@ namespace OctoAwesome
             entity.Simulation = null;
 
         }
+
+        public void Remove(FunctionalBlock block)
+        {
+            if (block == null)
+                throw new ArgumentNullException(nameof(block));
+
+            if (block.Id == Guid.Empty)
+                return;
+
+            if (block.Simulation != this)
+            {
+                if (block.Simulation == null)
+                    return;
+
+                throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be removed from a foreign simulation");
+            }
+
+            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+                throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
+
+            //ResourceManager.SaveEntity(block);
+
+            foreach (var component in Components)
+            {
+                if (component is IHoldComponent<FunctionalBlock> holdComponent)
+                    holdComponent.Remove(block);
+            }
+
+            functionalBlocks.Remove(block);
+            block.Id = Guid.Empty;
+            block.Simulation = null;
+
+        }
+
         public void RemoveEntity(Guid entityId)
-            => RemoveEntity(entities.First(e => e.Id == entityId));
+            => Remove(entities.First(e => e.Id == entityId));
 
         public void OnNext(Notification value)
         {
@@ -278,7 +344,7 @@ namespace OctoAwesome
                     if (entityNotification.Type == EntityNotification.ActionType.Remove)
                         RemoveEntity(entityNotification.EntityId);
                     else if (entityNotification.Type == EntityNotification.ActionType.Add)
-                        AddEntity(entityNotification.Entity);
+                        Add(entityNotification.Entity);
                     else if (entityNotification.Type == EntityNotification.ActionType.Update)
                         EntityUpdate(entityNotification);
                     else if (entityNotification.Type == EntityNotification.ActionType.Request)

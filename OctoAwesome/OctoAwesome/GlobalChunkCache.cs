@@ -255,7 +255,7 @@ namespace OctoAwesome
                 while (newChunks.Count > 0)
                 {
                     CacheItem chunk = newChunks.Dequeue();
-                    chunk.ChunkColumn.ForEachEntity(simulation.AddEntity);
+                    chunk.ChunkColumn.ForEachEntity(simulation.Add);
                 }
 
                 //Alte Chunks aus der Siumaltion entfernen
@@ -263,7 +263,7 @@ namespace OctoAwesome
                 {
                     using (CacheItem chunk = oldChunks.Dequeue())
                     {
-                        chunk.ChunkColumn.ForEachEntity(simulation.RemoveEntity);
+                        chunk.ChunkColumn.ForEachEntity(simulation.Remove);
                     }
                 }
             }
