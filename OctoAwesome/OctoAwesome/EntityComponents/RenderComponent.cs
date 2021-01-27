@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public class RenderComponent : Component, IEntityComponent
+    public class RenderComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         public string Name { get; set; }
         public string ModelName { get; set; }

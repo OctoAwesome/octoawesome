@@ -122,13 +122,13 @@ namespace OctoAwesome.Client
             Entity.UpdateOrder = 2;
             Components.Add(Entity);
 
-            Camera = new CameraComponent(this);
-            Camera.UpdateOrder = 3;
-            Components.Add(Camera);
-
-            Simulation.UpdateOrder = 4;
+            Simulation.UpdateOrder = 3;
             Components.Add(Simulation);
 
+            Camera = new CameraComponent(this);
+            Camera.UpdateOrder = 4;
+            Components.Add(Camera);
+            
             #endregion GameComponents
 
             /*Resize += (s, e) =>

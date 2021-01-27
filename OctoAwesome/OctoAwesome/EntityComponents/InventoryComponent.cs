@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public class InventoryComponent : Component, IEntityComponent
+    public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         /// <summary>
         /// Das Inventar der Entity
@@ -95,7 +95,7 @@ namespace OctoAwesome.EntityComponents
         /// <returns>Gibt an, ob das entfernen der Einheit aus dem Inventar funktioniert hat. False, z.B. wenn nicht genügend Volumen (weniger als VolumePerUnit) übrig ist-</returns>
         public bool RemoveUnit(InventorySlot slot)
         {
-            if (!(slot.Item is IInventoryable definition))
+            if (slot.Item is not IInventoryable definition)
                 return false;
 
             if (slot.Amount >= definition.VolumePerUnit) // Wir können noch einen Block setzen

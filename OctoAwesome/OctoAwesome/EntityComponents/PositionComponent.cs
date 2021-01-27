@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class PositionComponent: InstanceComponent<Entity>, IEntityComponent
+    public sealed class PositionComponent: InstanceComponent<INotificationSubject<SerializableNotification>>, IEntityComponent, IFunctionalBlockComponent
     {
         public Coordinate Position
         {

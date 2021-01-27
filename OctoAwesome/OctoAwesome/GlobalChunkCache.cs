@@ -137,12 +137,13 @@ namespace OctoAwesome
 
                     foreach (var positionComponent in positionComponents)
                     {
-                        if (!(positionComponent.Component.Planet == Planet 
-                            && positionComponent.Component.Position.ChunkIndex.X == chunkIndex.X 
+                        if (!(positionComponent.Component.Planet == Planet
+                            && positionComponent.Component.Position.ChunkIndex.X == chunkIndex.X
                             && positionComponent.Component.Position.ChunkIndex.Y == chunkIndex.Y))
                             continue;
 
-                        cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(positionComponent.Component.Instance.Id));
+                        if (positionComponent.Component.Instance is Entity e)
+                            cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(e.Id));
                     }
 
                     using (updateSemaphore.Wait())

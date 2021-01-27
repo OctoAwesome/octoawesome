@@ -62,7 +62,7 @@ namespace OctoAwesome.Definitions
         public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem item)
         {
             //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
-            var valueMined = item.Hit(Material, blockVolume.VolumeRemaining, VolumePerHit);
+            var valueMined = item.Hit(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining, VolumePerHit);
             return new BlockHitInformation(valueMined != 0, valueMined, new[] { (VolumePerUnit, (IDefinition)this)});
         }
 

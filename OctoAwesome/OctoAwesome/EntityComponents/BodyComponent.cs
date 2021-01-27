@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class BodyComponent : Component, IEntityComponent
+    public sealed class BodyComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         public float Mass { get; set; }
 
