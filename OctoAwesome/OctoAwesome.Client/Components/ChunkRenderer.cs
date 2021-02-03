@@ -150,6 +150,7 @@ namespace OctoAwesome.Client.Components
             }
 
             _manager = manager;
+            VertexBuffer?.Clear();
             ChunkPosition = newPosition;
 
             if (centerChunk != null)
@@ -343,11 +344,6 @@ namespace OctoAwesome.Client.Components
                 var verticesStolen = vertices.StealAndClearBuffer();
                 graphicsDevice.UiThread.QueueWork(CapturingDelegate.Create(&SendVerticesToGpu, this, verticesStolen, vertexCount));
             }
-            else
-            {
-                VertexBuffer?.Clear();
-            }
-
             lock (this)
             {
                 if (chunk != null && chunk.Index != ChunkPosition)
