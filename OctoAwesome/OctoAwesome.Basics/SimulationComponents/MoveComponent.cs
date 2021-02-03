@@ -7,11 +7,11 @@ using engenious.Helper;
 using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
-{ 
+{
     public sealed class MoveComponent : SimulationComponent<
-        Entity, 
+        Entity,
         SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
-        MoveableComponent, 
+        MoveableComponent,
         PositionComponent>
     {
         protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
@@ -57,11 +57,22 @@ namespace OctoAwesome.Basics.SimulationComponents
                 poscomp.Position = newposition;
             }
 
+            // Fix fluctuations for direction because of external forces
+            var tmp = movecomp.PositionMove;
+            if (Math.Abs(tmp.X) < 0.01)
+            {
+                tmp.X = 0;
+            }
+            if (Math.Abs(tmp.Y) < 0.01)
+            {
+                tmp.Y = 0;
+            }
+            movecomp.PositionMove = tmp;
+
             //Direction
             if (movecomp.PositionMove.LengthSquared != 0)
             {
-                var direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
-                poscomp.Direction = direction;
+                poscomp.Direction = (float)MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
             }
         }
 
