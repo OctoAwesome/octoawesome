@@ -333,7 +333,7 @@ namespace OctoAwesome.Client.Components
             }
             that.vertices.ReturnBuffer(stolenVertices);
         }
-        
+
         private unsafe bool RegisterNewVertices(IChunk chunk)
         {
             int vertexCount = vertices.Count;
@@ -342,6 +342,10 @@ namespace OctoAwesome.Client.Components
             {
                 var verticesStolen = vertices.StealAndClearBuffer();
                 graphicsDevice.UiThread.QueueWork(CapturingDelegate.Create(&SendVerticesToGpu, this, verticesStolen, vertexCount));
+            }
+            else
+            {
+                VertexBuffer?.Clear();
             }
 
             lock (this)
