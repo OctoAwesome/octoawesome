@@ -16,7 +16,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public ChestItemDefinition()
         {
             Name = "Chest";
-            Icon = "chest_icon";
+            Icon = "chest";
         }
 
         public bool CanMineMaterial(IMaterialDefinition material) 

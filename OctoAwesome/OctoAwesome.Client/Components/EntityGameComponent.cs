@@ -28,12 +28,14 @@ namespace OctoAwesome.Client.Components
 
 
         public List<Entity> Entities { get; set; }
+        public List<FunctionalBlock> FunctionalBlocks { get; set; }
 
         public EntityGameComponent(OctoGame game, SimulationComponent simulation) : base(game)
         {
             Simulation = simulation;
 
             Entities = new List<Entity>();
+            FunctionalBlocks = new List<FunctionalBlock>();
             graphicsDevice = game.GraphicsDevice;
 
             effect = new BasicEffect(graphicsDevice);
@@ -96,6 +98,52 @@ namespace OctoAwesome.Client.Components
 
                         modelinfo.model.Draw(effect, modelinfo.texture);
                     }
+
+                    foreach (var functionalBlock in FunctionalBlocks)
+                    {
+                        if (!functionalBlock.Components.ContainsComponent<RenderComponent>())
+                        {
+                            continue;
+                        }
+
+                        var rendercomp = functionalBlock.Components.GetComponent<RenderComponent>();
+
+
+                        if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
+                        {
+                            modelinfo = new ModelInfo()
+                            {
+                                render = true,
+                                model = Game.Content.Load<Model>(rendercomp.ModelName),
+                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
+                            };
+                        }
+
+                        if (!modelinfo.render)
+                            continue;
+
+                        var positioncomp = functionalBlock.Components.GetComponent<PositionComponent>();
+                        var position = positioncomp.Position;
+                        var body = functionalBlock.Components.GetComponent<BodyComponent>();
+
+                        HeadComponent head = new HeadComponent();
+                        if (functionalBlock.Components.ContainsComponent<HeadComponent>())
+                            head = functionalBlock.Components.GetComponent<HeadComponent>();
+
+                        Index3 shift = chunkOffset.ShortestDistanceXY(
+                       position.ChunkIndex, planetSize);
+
+                        var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+
+                        Matrix world = Matrix.CreateTranslation(
+                            shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                            shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
+                        effect.World = world;
+                        modelinfo.model.Transform = world;
+
+                        modelinfo.model.Draw(effect, modelinfo.texture);
+                    }
                 }
         }
 
@@ -114,6 +162,12 @@ namespace OctoAwesome.Client.Components
             {
                 if (item.Components.ContainsComponent<PositionComponent>())
                     Entities.Add(item);
+            }
+            FunctionalBlocks.Clear();
+            foreach (var item in simulation.FunctionalBlocks)
+            {
+                if (item.Components.ContainsComponent<PositionComponent>())
+                    FunctionalBlocks.Add(item);
             }
             //base.Update(gameTime);
         }

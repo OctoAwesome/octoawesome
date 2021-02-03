@@ -48,6 +48,7 @@ namespace OctoAwesome
         /// List of all Entities.
         /// </summary>
         public IReadOnlyList<Entity> Entities => entities;
+        public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly IExtensionResolver extensionResolver;
 
@@ -349,6 +350,10 @@ namespace OctoAwesome
                         EntityUpdate(entityNotification);
                     else if (entityNotification.Type == EntityNotification.ActionType.Request)
                         RequestEntity(entityNotification);
+                    break;
+                case FunctionalBlockNotification functionalBlockNotification:
+                    if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Add)
+                        Add(functionalBlockNotification.Block);
                     break;
                 default:
                     break;
