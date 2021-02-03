@@ -427,7 +427,7 @@ namespace OctoAwesome.Client.Controls
 
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || renderer.VertexCount == 0)
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || !renderer.CanRender)
                     continue;
 
                 Index3 shift = renderer.GetShift(chunkOffset, planet);
@@ -508,7 +508,7 @@ namespace OctoAwesome.Client.Controls
 
             foreach (var renderer in chunkRenderer)
             {
-                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || renderer.VertexCount == 0)
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || !renderer.CanRender)
                     continue;
 
                 Index3 shift = renderer.GetShift(chunkOffset, planet);
