@@ -47,6 +47,11 @@
     <EmbeddedResource Include="Assets\Crew\blackorca.png" />
     <EmbeddedResource Include="Assets\Crew\base.png" />
     <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
+    <Content Include="Content\simple.fx" />
+    <Content Include="Content\BoldFont.png" />
+    <Content Include="Content\GameFont.png" />
+    <Content Include="Content\HeadlineFont.png" />
+    <Content Include="Content\Hud.png" />
     <Content Include="Copyright.txt" />
     <None Include="de\LoadingScreenQuotes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -57,7 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.30-alpha" />
+    <PackageReference Include="engenious" Version="0.5.0.31-alpha" />
     <PackageReference Include="engenious.ContentTool" Version="0.5.0.25-alpha" />
     <PackageReference Include="engenious.UI" Version="0.5.0.12-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

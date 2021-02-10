@@ -11,6 +11,7 @@ using engenious.UI;
 using engenious.UserDefined;
 using OctoAwesome.Definitions;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -282,6 +283,8 @@ namespace OctoAwesome.Client.Controls
             Axis? selectedAxis = null;
             Vector3? selectionPoint = null;
             float bestDistance = 9999;
+            var pickEndPost = centerblock + (camera.PickRay.Position + (camera.PickRay.Direction * Player.SELECTIONRANGE));
+            var pickStartPos = centerblock + camera.PickRay.Position;
             for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
             {
                 for (int y = -Player.SELECTIONRANGE; y < Player.SELECTIONRANGE; y++)
@@ -302,10 +305,20 @@ namespace OctoAwesome.Client.Controls
                         {
                             pos.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
                             selected = pos;
+                            //var futureselected = PythonBresenham((int)pickStartPos.X, (int)pickStartPos.Y, (int)pickStartPos.Z, (int)pickEndPost.X, (int)pickEndPost.Y, (int)pickEndPost.Z);
+                            //if (futureselected is not null)
+                            //{
+                            //    futureselected.Value.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
+
+                            //    Debug.WriteLine($"Old Selection: {selected}, New Selection: {futureselected}");
+
+                            //    selected = futureselected;
+                            //}
                             selectedAxis = collisionAxis;
                             bestDistance = distance.Value;
                             selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
                         }
+
                     }
                 }
             }
@@ -720,6 +733,154 @@ namespace OctoAwesome.Client.Controls
 
             blockTextures.Dispose();
             sunTexture.Dispose();
+        }
+
+        private Index3? CheckPosition(int x, int y, int z)
+        {
+            Index3 pos = new Index3(x, y, z);
+            ushort block = localChunkCache.GetBlock(pos);
+            return block != 0 ? pos : null;
+        }
+
+        private Index3? PythonBresenham(int x0, int y0, int z0, int x1, int y1, int z1)
+        {
+            int dx = Math.Abs(x1 - x0);
+            int dy = Math.Abs(y1 - y0);
+            int dz = Math.Abs(z1 - z0);
+
+            int sx = x0 < x1 ? 1 : -1;
+            int sy = y0 < y1 ? 1 : -1;
+            int sz = z0 < z1 ? 1 : -1;
+
+            if (dx >= dy && dx >= dz)
+            {
+                var p1 = 2 * dy - dx;
+                var p2 = 2 * dz - dx;
+
+                while (x0 != x1)
+                {
+                    x0 += sx;
+                    if (p1 >= 0)
+                    {
+                        y0 += sy;
+                        p1 -= 2 * dx;
+                    }
+                    if (p2 >= 0)
+                    {
+                        z0 += sz;
+                        p2 -= 2 * dx;
+                    }
+                    p1 += 2 * dy;
+                    p2 += 2 * dz;
+
+                    var pos = CheckPosition(x0, y0, z0);
+
+                    if (pos.HasValue)
+                        return pos;
+                }
+            }
+            else if (dy >= dx && dy >= dz)
+            {
+                var p1 = 2 * dx - dy;
+                var p2 = 2 * dz - dy;
+                while (y0 != y1)
+                {
+                    y0 += sy;
+                    if (p1 >= 0)
+                    {
+                        x0 += sx;
+                        p1 -= 2 * dy;
+                    }
+                    if (p2 >= 0)
+                    {
+                        z0 += sz;
+                        p2 -= 2 * dy;
+                    }
+                    p1 += 2 * dx;
+                    p2 += 2 * dz;
+
+                    var pos = CheckPosition(x0, y0, z0);
+
+                    if (pos.HasValue)
+                        return pos;
+                }
+            }
+            else
+            {
+                var p1 = 2 * dy - dz;
+                var p2 = 2 * dx - dz;
+
+                while (z0 != z1)
+                {
+                    z0 += sz;
+                    if (p1 >= 0)
+                    {
+                        y0 += sy;
+                        p1 -= 2 * dz;
+                    }
+                    if (p2 >= 0)
+                    {
+                        x0 += sx;
+                        p2 -= 2 * dz;
+                    }
+                    p1 += 2 * dy;
+                    p2 += 2 * dx;
+
+                    var pos = CheckPosition(x0, y0, z0);
+
+                    if (pos.HasValue)
+                        return pos;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x0">StartPosition X</param>
+        /// <param name="y0">StartPosition Y</param>
+        /// <param name="z0">StartPosition Z</param>
+        /// <param name="x1">EndPosition X</param>
+        /// <param name="y1">EndPosition Y</param>
+        /// <param name="z1">EndPosition Z</param>
+        private Index3? SimpleBresenham(int x0, int y0, int z0, int x1, int y1, int z1)
+        {
+            int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+            int dy = Math.Abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+            int dz = Math.Abs(z1 - z0), sz = z0 < z1 ? 1 : -1;
+            int err = dx + dy + dz, e2; /* error value e_xy */
+
+            while (true)
+            {
+                Index3 pos = new Index3(x0, y0, z0);
+                ushort block = localChunkCache.GetBlock(pos);
+                var isBlock = block != 0;
+
+                if (isBlock)
+                    return pos;
+
+                if (x0 == x1 && y0 == y1 && z0 == z1)
+                    return null;
+
+                e2 = 2 * err;
+                if (e2 > dy)
+                {
+                    err += dy;
+                    x0 += sx;
+                } /* e_xy+e_x > 0 */
+                if (e2 > dx)
+                {
+                    err += dx;
+                    y0 += sy;
+                } /* e_xy+e_y < 0 */
+                if (e2 > dz)
+                {
+                    err += dz;
+                    z0 += sz;
+                }
+            }
         }
     }
 }
