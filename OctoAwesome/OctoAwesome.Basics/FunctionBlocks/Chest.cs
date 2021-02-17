@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Basics.EntityComponents;
+﻿using engenious;
+using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
             });
 
             Components.AddComponent(new BodyComponent() { Height = 0.005f, Radius = 0.002f });
-            Components.AddComponent(new BoxCollisionComponent());
+            Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
             Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchest", BaseZRotation = -90 }, true);
 
         }

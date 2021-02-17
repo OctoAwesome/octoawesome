@@ -41,7 +41,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             {
                 var lastBlock = cache.GetBlockInfo(controller.InteractBlock.Value);
 
-                if (!lastBlock.IsEmpty)
+                if (!lastBlock.IsEmpty && lastBlock.Block != 0)
                 {
                     IItem activeItem;
                     if (toolbar.ActiveTool.Item is IItem item)
@@ -58,8 +58,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                     if (blockHitInformation.Valid)
                         foreach (var (Quantity, Definition) in blockHitInformation.List)
                         {
-                            if (activeItem is IFluidInventory fluidInventory 
-                                && Definition is IBlockDefinition fluidBlock 
+                            if (activeItem is IFluidInventory fluidInventory
+                                && Definition is IBlockDefinition fluidBlock
                                 && fluidBlock.Material is IFluidMaterialDefinition)
                             {
                                 fluidInventory.AddFluid(Quantity, fluidBlock);
@@ -68,7 +68,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             {
                                 inventory.AddUnit(Quantity, invDef);
                             }
-                             
+
                         }
 
 

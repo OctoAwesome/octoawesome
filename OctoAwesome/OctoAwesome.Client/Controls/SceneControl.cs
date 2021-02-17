@@ -12,6 +12,9 @@ using engenious.UserDefined;
 using OctoAwesome.Definitions;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Linq;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Basics.EntityComponents;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -279,48 +282,17 @@ namespace OctoAwesome.Client.Controls
             Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
-            Index3? selected = null;
-            Axis? selectedAxis = null;
-            Vector3? selectionPoint = null;
-            float bestDistance = 9999;
-            var pickEndPost = centerblock + (camera.PickRay.Position + (camera.PickRay.Direction * Player.SELECTIONRANGE));
-            var pickStartPos = centerblock + camera.PickRay.Position;
-            for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
+            Index3? selected;
+            Axis? selectedAxis;
+            Vector3? selectionPoint;
+            GetSelectedBlock(centerblock, renderOffset, out selected, out selectedAxis, out selectionPoint);
+            GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint);
+
+            if (selectedFunc.HasValue && selectionFuncPoint.HasValue)
             {
-                for (int y = -Player.SELECTIONRANGE; y < Player.SELECTIONRANGE; y++)
-                {
-                    for (int x = -Player.SELECTIONRANGE; x < Player.SELECTIONRANGE; x++)
-                    {
-                        Index3 range = new Index3(x, y, z);
-                        Index3 pos = range + centerblock;
-                        ushort block = localChunkCache.GetBlock(pos);
-                        if (block == 0)
-                            continue;
-
-                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
-
-                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
-
-                        if (distance.HasValue && distance.Value < bestDistance)
-                        {
-                            pos.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
-                            selected = pos;
-                            //var futureselected = PythonBresenham((int)pickStartPos.X, (int)pickStartPos.Y, (int)pickStartPos.Z, (int)pickEndPost.X, (int)pickEndPost.Y, (int)pickEndPost.Z);
-                            //if (futureselected is not null)
-                            //{
-                            //    futureselected.Value.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
-
-                            //    Debug.WriteLine($"Old Selection: {selected}, New Selection: {futureselected}");
-
-                            //    selected = futureselected;
-                            //}
-                            selectedAxis = collisionAxis;
-                            bestDistance = distance.Value;
-                            selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
-                        }
-
-                    }
-                }
+                selected = selectedFunc;
+                selectionPoint = selectionFuncPoint;
+                selectedAxis = selectedFuncAxis;
             }
 
             if (selected.HasValue && selectionPoint.HasValue)
@@ -390,6 +362,94 @@ namespace OctoAwesome.Client.Controls
             }
 
             base.OnUpdate(gameTime);
+        }
+
+        private void GetSelectedBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
+        {
+            selected = null;
+            selectedAxis = null;
+            selectionPoint = null;
+            float bestDistance = 9999;
+            //var pickEndPost = centerblock + (camera.PickRay.Position + (camera.PickRay.Direction * Player.SELECTIONRANGE));
+            //var pickStartPos = centerblock + camera.PickRay.Position;
+            for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
+            {
+                for (int y = -Player.SELECTIONRANGE; y < Player.SELECTIONRANGE; y++)
+                {
+                    for (int x = -Player.SELECTIONRANGE; x < Player.SELECTIONRANGE; x++)
+                    {
+                        Index3 range = new Index3(x, y, z);
+                        Index3 pos = range + centerblock;
+                        ushort block = localChunkCache.GetBlock(pos);
+                        if (block == 0)
+                            continue;
+
+                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
+
+                        float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
+
+                        if (distance.HasValue && distance.Value < bestDistance)
+                        {
+                            pos.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
+                            selected = pos;
+                            //var futureselected = PythonBresenham((int)pickStartPos.X, (int)pickStartPos.Y, (int)pickStartPos.Z, (int)pickEndPost.X, (int)pickEndPost.Y, (int)pickEndPost.Z);
+                            //if (futureselected is not null)
+                            //{
+                            //    futureselected.Value.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
+
+                            //    Debug.WriteLine($"Old Selection: {selected}, New Selection: {futureselected}");
+
+                            //    selected = futureselected;
+                            //}
+                            selectedAxis = collisionAxis;
+                            bestDistance = distance.Value;
+                            selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        private void GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
+        {
+            selected = null;
+            selectedAxis = null;
+            selectionPoint = null;
+            float bestDistance = 9999;
+
+            //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
+            //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
+            foreach (var funcBlock in Manager.Game.Simulation.Simulation.FunctionalBlocks)
+            {
+                if (!funcBlock.ContainsComponent<PositionComponent>() || !funcBlock.ContainsComponent<BoxCollisionComponent>())
+                    continue;
+
+                var posComponent = funcBlock.GetComponent<PositionComponent>();
+                var boxCollisionComponent = funcBlock.GetComponent<BoxCollisionComponent>();
+
+                if (posComponent.Position.GlobalPosition.X - Player.SELECTIONRANGE < centerblock.X 
+                    && posComponent.Position.GlobalPosition.X + Player.SELECTIONRANGE > centerblock.X
+                    && posComponent.Position.GlobalPosition.Y - Player.SELECTIONRANGE < centerblock.Y
+                    && posComponent.Position.GlobalPosition.Y + Player.SELECTIONRANGE > centerblock.Y
+                    && posComponent.Position.GlobalPosition.Z - Player.SELECTIONRANGE < centerblock.Z
+                    && posComponent.Position.GlobalPosition.Z + Player.SELECTIONRANGE > centerblock.Z)
+                {
+
+                    float? distance = Block.Intersect(boxCollisionComponent.BoundingBoxes, posComponent.Position.GlobalBlockIndex - renderOffset, camera.PickRay, out Axis? collisionAxis);
+
+                    if (distance.HasValue && distance.Value < bestDistance)
+                    {
+                        posComponent.Position.GlobalBlockIndex.NormalizeXY(planet.Size * Chunk.CHUNKSIZE);
+                        selected = posComponent.Position.GlobalBlockIndex;
+
+                        selectedAxis = collisionAxis;
+                        bestDistance = distance.Value;
+                        selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
+                    }
+                }
+            }
+
         }
 
         private AutoResetEvent fillResetEvent = new AutoResetEvent(false);
