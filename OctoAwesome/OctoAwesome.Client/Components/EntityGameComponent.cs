@@ -68,8 +68,8 @@ namespace OctoAwesome.Client.Components
                             modelinfo = new ModelInfo()
                             {
                                 render = true,
-                                model = Game.Content.Load<Model>(rendercomp.ModelName),
-                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
+                                model = Game.Content.Load<Model>(rendercomp.ModelName)!,
+                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
                             };
                         }
 
@@ -94,9 +94,10 @@ namespace OctoAwesome.Client.Components
                             shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
                             shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
                         effect.World = world;
+                        effect.Texture = modelinfo.texture;
                         modelinfo.model.Transform = world;
 
-                        modelinfo.model.Draw(effect, modelinfo.texture);
+                        modelinfo.model.Draw(effect);
                     }
 
                     foreach (var functionalBlock in FunctionalBlocks)
@@ -114,8 +115,8 @@ namespace OctoAwesome.Client.Components
                             modelinfo = new ModelInfo()
                             {
                                 render = true,
-                                model = Game.Content.Load<Model>(rendercomp.ModelName),
-                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName),
+                                model = Game.Content.Load<Model>(rendercomp.ModelName)!,
+                                texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
                             };
                         }
 
@@ -140,9 +141,10 @@ namespace OctoAwesome.Client.Components
                             shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
                             shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
                         effect.World = world;
+                        effect.Texture = modelinfo.texture;
                         modelinfo.model.Transform = world;
 
-                        modelinfo.model.Draw(effect, modelinfo.texture);
+                        modelinfo.model.Draw(effect);
                     }
                 }
         }

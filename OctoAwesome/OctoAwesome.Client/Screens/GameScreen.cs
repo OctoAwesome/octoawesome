@@ -37,7 +37,7 @@ namespace OctoAwesome.Client.Screens
 
             scene = new SceneControl(manager);
             scene.HorizontalAlignment = HorizontalAlignment.Stretch;
-            scene.VerticalAlignment = VerticalAlignment.Stretch;            
+            scene.VerticalAlignment = VerticalAlignment.Stretch;
             Controls.Add(scene);
 
             debug = new DebugControl(manager);
@@ -55,7 +55,7 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(compass);
 
             toolbar = new ToolbarControl(manager);
-            toolbar.HorizontalAlignment = HorizontalAlignment.Stretch;
+            toolbar.HorizontalAlignment = HorizontalAlignment.Center;
             toolbar.VerticalAlignment = VerticalAlignment.Bottom;
             toolbar.Height = 100;
             Controls.Add(toolbar);

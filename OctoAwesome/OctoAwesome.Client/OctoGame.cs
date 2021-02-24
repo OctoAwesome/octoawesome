@@ -242,10 +242,5 @@ namespace OctoAwesome.Client
             Simulation.ExitGame();
         }
 
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
     }
 }

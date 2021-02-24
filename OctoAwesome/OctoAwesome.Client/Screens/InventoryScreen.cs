@@ -121,7 +121,7 @@ namespace OctoAwesome.Client.Screens
                     Padding = Border.All(2),
                 };
 
-                image.StartDrag += (e) =>
+                image.StartDrag += (c,e) =>
                 {
                     InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
                     if (slot != null)
@@ -133,9 +133,9 @@ namespace OctoAwesome.Client.Screens
                     }
                 };
 
-                image.DropEnter += (e) => { image.Background = hoverBrush; };
-                image.DropLeave += (e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (e) =>
+                image.DropEnter += (c,e) => { image.Background = hoverBrush; };
+                image.DropLeave += (c,e) => { image.Background = backgroundBrush; };
+                image.EndDrop += (c,e) =>
                 {
                     e.Handled = true;
 

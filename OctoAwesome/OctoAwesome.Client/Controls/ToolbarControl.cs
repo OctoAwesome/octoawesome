@@ -34,6 +34,7 @@ namespace OctoAwesome.Client.Controls
         public ToolbarControl(ScreenComponent screenManager)
             : base(screenManager)
         {
+            Background = new SolidColorBrush(Color.Transparent);
             Player = screenManager.Player;
             Player.Toolbar.OnChanged += (slot, index) => SetTexture(slot, index);
             toolTextures = new Dictionary<string, Texture2D>();

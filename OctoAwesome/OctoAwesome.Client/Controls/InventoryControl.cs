@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Controls
                 var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
                 image.MouseEnter += (s, e) => { HoveredSlot = inventorySlot; };
                 image.MouseLeave += (s, e) => { HoveredSlot = null; };
-                image.StartDrag += (e) =>
+                image.StartDrag += (c,e) =>
                 {
                     e.Handled = true;
                     e.Icon = texture;
