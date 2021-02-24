@@ -13,9 +13,9 @@ using OctoAwesome.Components;
 namespace OctoAwesome.Basics.SimulationComponents
 {
     public class BlockInteractionComponent : SimulationComponent<
-        Entity, 
-        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>, 
-        ControllableComponent, 
+        Entity,
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
+        ControllableComponent,
         InventoryComponent>
     {
         private readonly Simulation simulation;
@@ -27,7 +27,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             this.simulation = simulation;
             service = interactionService;
         }
-                
+
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
         {
             var entity = value.Value;
@@ -36,6 +36,14 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
             var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
+
+            controller
+                .Selection?
+                .Map(
+                blockInfo => { },
+                functionalBlock => {; },
+                entity => { }
+                );
 
             if (controller.InteractBlock.HasValue)
             {

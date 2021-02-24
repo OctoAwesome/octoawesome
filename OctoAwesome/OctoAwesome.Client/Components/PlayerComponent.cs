@@ -6,6 +6,7 @@ using System.Text;
 using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Basics.Definitions.Items;
+using OctoAwesome.SumTypes;
 
 namespace OctoAwesome.Client.Components
 {
@@ -50,7 +51,7 @@ namespace OctoAwesome.Client.Components
         public PositionComponent Position { get; private set; }
 
         // public ActorHost ActorHost { get; private set; }
-
+        public Selection Selection { get; set; }
         public Index3? SelectedBox { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
@@ -118,6 +119,9 @@ namespace OctoAwesome.Client.Components
 
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
+
+            if (SelectedBox.HasValue)
+                CurrentController.Selection = Selection;
 
             if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;

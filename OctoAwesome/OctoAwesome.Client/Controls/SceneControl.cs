@@ -285,14 +285,23 @@ namespace OctoAwesome.Client.Controls
             Index3? selected;
             Axis? selectedAxis;
             Vector3? selectionPoint;
-            GetSelectedBlock(centerblock, renderOffset, out selected, out selectedAxis, out selectionPoint);
-            GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint);
 
+            var selBlock = GetSelectedBlock(centerblock, renderOffset, out selected, out selectedAxis, out selectionPoint);
+            var funcBlock = GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint);
+
+
+
+            //TODO Distance check, so entity doesnt always get selected if a block is in front of it
             if (selectedFunc.HasValue && selectionFuncPoint.HasValue)
             {
                 selected = selectedFunc;
                 selectionPoint = selectionFuncPoint;
                 selectedAxis = selectedFuncAxis;
+                player.Selection = funcBlock;
+            }
+            else
+            {
+                player.Selection = selBlock;
             }
 
             if (selected.HasValue && selectionPoint.HasValue)
@@ -364,12 +373,13 @@ namespace OctoAwesome.Client.Controls
             base.OnUpdate(gameTime);
         }
 
-        private void GetSelectedBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
+        private BlockInfo GetSelectedBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
         {
             selected = null;
             selectedAxis = null;
             selectionPoint = null;
             float bestDistance = 9999;
+            BlockInfo block = default;
             //var pickEndPost = centerblock + (camera.PickRay.Position + (camera.PickRay.Direction * Player.SELECTIONRANGE));
             //var pickStartPos = centerblock + camera.PickRay.Position;
             for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
@@ -380,11 +390,10 @@ namespace OctoAwesome.Client.Controls
                     {
                         Index3 range = new Index3(x, y, z);
                         Index3 pos = range + centerblock;
-                        ushort block = localChunkCache.GetBlock(pos);
-                        if (block == 0)
+                        var localBlock = localChunkCache.GetBlockInfo(pos);
+                        if (localBlock.Block == 0)
                             continue;
-
-                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(block);
+                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(localBlock.Block);
 
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 
@@ -404,19 +413,22 @@ namespace OctoAwesome.Client.Controls
                             selectedAxis = collisionAxis;
                             bestDistance = distance.Value;
                             selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
+                            block = localBlock;
                         }
 
                     }
                 }
             }
+            return block;
         }
 
-        private void GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
+        private FunctionalBlock GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
         {
             selected = null;
             selectedAxis = null;
             selectionPoint = null;
             float bestDistance = 9999;
+            FunctionalBlock functionalBlock = null;
 
             //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
@@ -428,7 +440,7 @@ namespace OctoAwesome.Client.Controls
                 var posComponent = funcBlock.GetComponent<PositionComponent>();
                 var boxCollisionComponent = funcBlock.GetComponent<BoxCollisionComponent>();
 
-                if (posComponent.Position.GlobalPosition.X - Player.SELECTIONRANGE < centerblock.X 
+                if (posComponent.Position.GlobalPosition.X - Player.SELECTIONRANGE < centerblock.X
                     && posComponent.Position.GlobalPosition.X + Player.SELECTIONRANGE > centerblock.X
                     && posComponent.Position.GlobalPosition.Y - Player.SELECTIONRANGE < centerblock.Y
                     && posComponent.Position.GlobalPosition.Y + Player.SELECTIONRANGE > centerblock.Y
@@ -446,9 +458,11 @@ namespace OctoAwesome.Client.Controls
                         selectedAxis = collisionAxis;
                         bestDistance = distance.Value;
                         selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
+                        functionalBlock = funcBlock;
                     }
                 }
             }
+            return functionalBlock;
 
         }
 

@@ -13,13 +13,37 @@ using OctoAwesome.Components;
 namespace OctoAwesome.Basics.SimulationComponents
 {
     public class FunctionalBlockInteractionComponent : SimulationComponent<
-        FunctionalBlock, 
-        SimulationComponentRecord<FunctionalBlock, InventoryComponent>, 
+        Entity,
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
+        ControllableComponent,
         InventoryComponent>
     {
-        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<FunctionalBlock, InventoryComponent> value)
+        private readonly Simulation simulation;
+        private readonly BlockCollectionService service;
+
+
+        public FunctionalBlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
-            
+            this.simulation = simulation;
+            service = interactionService;
+        }
+
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
+        {
+            var entity = value.Value;
+            var controller = value.Component1;
+
+            controller
+                .Selection?
+                .Map(
+                blockInfo => { },
+                functionalBlock => InternalUpdate(controller, entity, functionalBlock),
+                entity => { }
+                );
+        }
+
+        private void InternalUpdate(ControllableComponent controller, Entity entity, FunctionalBlock functionalBlock)
+        {
         }
     }
 }
