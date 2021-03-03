@@ -1,7 +1,9 @@
-﻿using OctoAwesome.Components;
+﻿using engenious;
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
+using OpenTK.Audio.OpenAL;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,6 +75,13 @@ namespace OctoAwesome
         {
             OnInitialize(mananger);
         }
+
+        public void Interact(GameTime gameTime)
+        {
+            OnInteract(gameTime);
+        }
+
+        protected abstract void OnInteract(GameTime gameTime);
 
         protected virtual void OnInitialize(IResourceManager manager)
         {

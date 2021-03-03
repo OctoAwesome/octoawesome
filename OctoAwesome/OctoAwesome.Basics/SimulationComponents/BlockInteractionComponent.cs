@@ -40,49 +40,10 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Map(
-                blockInfo => { },
-                functionalBlock => {; },
+                blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                functionalBlock => functionalBlock.Interact(gameTime),
                 entity => { }
                 );
-
-            if (controller.InteractBlock.HasValue)
-            {
-                var lastBlock = cache.GetBlockInfo(controller.InteractBlock.Value);
-
-                if (!lastBlock.IsEmpty && lastBlock.Block != 0)
-                {
-                    IItem activeItem;
-                    if (toolbar.ActiveTool.Item is IItem item)
-                    {
-                        activeItem = item;
-                    }
-                    else
-                    {
-                        activeItem = toolbar.HandSlot.Item as IItem;
-                    }
-
-                    var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
-
-                    if (blockHitInformation.Valid)
-                        foreach (var (Quantity, Definition) in blockHitInformation.List)
-                        {
-                            if (activeItem is IFluidInventory fluidInventory
-                                && Definition is IBlockDefinition fluidBlock
-                                && fluidBlock.Material is IFluidMaterialDefinition)
-                            {
-                                fluidInventory.AddFluid(Quantity, fluidBlock);
-                            }
-                            else if (Definition is IInventoryable invDef)
-                            {
-                                inventory.AddUnit(Quantity, invDef);
-                            }
-
-                        }
-
-
-                }
-                controller.InteractBlock = null;
-            }
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
             {
@@ -147,6 +108,42 @@ namespace OctoAwesome.Basics.SimulationComponents
                     }
                 }
                 controller.ApplyBlock = null;
+            }
+        }
+
+        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool.Item is IItem item)
+                {
+                    activeItem = item;
+                }
+                else
+                {
+                    activeItem = toolbar.HandSlot.Item as IItem;
+                }
+
+                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+
+                if (blockHitInformation.Valid)
+                    foreach (var (Quantity, Definition) in blockHitInformation.List)
+                    {
+                        if (activeItem is IFluidInventory fluidInventory
+                            && Definition is IBlockDefinition fluidBlock
+                            && fluidBlock.Material is IFluidMaterialDefinition)
+                        {
+                            fluidInventory.AddFluid(Quantity, fluidBlock);
+                        }
+                        else if (Definition is IInventoryable invDef)
+                        {
+                            inventory.AddUnit(Quantity, invDef);
+                        }
+
+                    }
+
+
             }
         }
     }

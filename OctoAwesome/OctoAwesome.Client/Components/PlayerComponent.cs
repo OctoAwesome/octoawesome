@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using engenious;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.SumTypes;
 
 namespace OctoAwesome.Client.Components
@@ -120,12 +119,15 @@ namespace OctoAwesome.Client.Components
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
 
-            if (SelectedBox.HasValue)
+            if (InteractInput && SelectedBox.HasValue)
                 CurrentController.Selection = Selection;
-
+            else
+                CurrentController.Selection = null;
+                       
             if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;
-
+            else
+                CurrentController.InteractBlock = null;
 
             if (ApplyInput && SelectedBox.HasValue)
             {

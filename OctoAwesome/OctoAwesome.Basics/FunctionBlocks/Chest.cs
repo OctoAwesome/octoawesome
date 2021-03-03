@@ -11,9 +11,13 @@ namespace OctoAwesome.Basics.FunctionBlocks
 {
     public class Chest : FunctionalBlock
     {
+        private readonly InventoryComponent inventoryComponent;
+
         public Chest(Coordinate position)
         {
-            Components.AddComponent(new InventoryComponent());
+            inventoryComponent = new InventoryComponent();
+
+            Components.AddComponent(inventoryComponent);
             Components.AddComponent(new PositionComponent()
             {
                 Position = position
@@ -23,6 +27,10 @@ namespace OctoAwesome.Basics.FunctionBlocks
             Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
             Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchest", BaseZRotation = -90 }, true);
 
+        }
+
+        protected override void OnInteract(GameTime gameTime)
+        {
         }
     }
 }
