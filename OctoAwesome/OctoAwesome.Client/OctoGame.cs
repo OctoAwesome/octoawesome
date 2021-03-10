@@ -56,21 +56,32 @@ namespace OctoAwesome.Client
             //graphics.PreferredBackBufferHeight = 720;
 
             //Content.RootDirectory = "Content";
-            
+
             Title = "OctoAwesome";
             IsMouseVisible = true;
             //Icon = Properties.Resources.octoawesome;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-            Register(typeContainer);
+            Screen = new ScreenComponent(this);
+
+            typeContainer.Register<BaseScreenComponent>(Screen);
+            typeContainer.Register<ScreenComponent>(Screen);
 
             //Window.AllowUserResizing = true;
-            Settings = TypeContainer.Get<Settings>();
+            Register(typeContainer);
 
-            ExtensionLoader = TypeContainer.Get<ExtensionLoader>();
+            Settings = typeContainer.Get<Settings>();
+
+            KeyMapper = new KeyMapper(Screen, Settings);
+
+            Assets = new AssetComponent(this);
+            Screen.UpdateOrder = 1;
+            Screen.DrawOrder = 1;
+
+            ExtensionLoader = typeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
 
-            Service = TypeContainer.Get<GameService>();
+            Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", 1080);
@@ -89,26 +100,19 @@ namespace OctoAwesome.Client
                 SceneControl.VIEWRANGE = viewrange;
             }
 
-            Assets = new AssetComponent(this);
+
+
+           
             Components.Add(Assets);
-
-
-            Screen = new ScreenComponent(this);
-            Screen.UpdateOrder = 1;
-            Screen.DrawOrder = 1;
             Components.Add(Screen);
 
 
-            KeyMapper = new KeyMapper(Screen, Settings);
-
-
-
             #region GameComponents
-            DefinitionManager = TypeContainer.Get<DefinitionManager>();
+            DefinitionManager = typeContainer.Get<DefinitionManager>();
 
             //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
             //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
-            ResourceManager = TypeContainer.Get<ContainerResourceManager>();
+            ResourceManager = typeContainer.Get<ContainerResourceManager>();
 
 
             Player = new PlayerComponent(this, ResourceManager);
@@ -128,7 +132,7 @@ namespace OctoAwesome.Client
             Camera = new CameraComponent(this);
             Camera.UpdateOrder = 4;
             Components.Add(Camera);
-            
+
             #endregion GameComponents
 
             /*Resize += (s, e) =>

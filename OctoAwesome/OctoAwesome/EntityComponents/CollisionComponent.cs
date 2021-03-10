@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Basics.EntityComponents
+namespace OctoAwesome.EntityComponents
 {
     public abstract class CollisionComponent : Component, IEntityComponent
     {

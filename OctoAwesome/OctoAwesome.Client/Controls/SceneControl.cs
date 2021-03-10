@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Basics.EntityComponents;
 
 namespace OctoAwesome.Client.Controls
 {

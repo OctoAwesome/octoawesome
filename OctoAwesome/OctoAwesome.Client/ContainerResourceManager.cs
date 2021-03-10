@@ -33,16 +33,19 @@ namespace OctoAwesome.Client
         private readonly IExtensionResolver extensionResolver;
         private readonly IDefinitionManager definitionManager;
         private readonly ISettings settings;
+        private readonly ITypeContainer typeContainer;
 
         private ResourceManager resourceManager;
         private NetworkUpdateManager networkUpdateManager;
 
-        public ContainerResourceManager(IUpdateHub updateHub, IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
+        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
         {
             UpdateHub = updateHub;
+            this.typeContainer = typeContainer;
             this.extensionResolver = extensionResolver;
             this.definitionManager = definitionManager;
             this.settings = settings;
+
         }
 
         public void CreateManager(bool multiplayer)
@@ -99,7 +102,7 @@ namespace OctoAwesome.Client
 
                 var client = new Network.Client();
                 client.Connect(host, port > 0 ? (ushort)port : (ushort)8888);
-                persistenceManager = new NetworkPersistenceManager(client);
+                persistenceManager = new NetworkPersistenceManager(typeContainer, client);
                 networkUpdateManager = new NetworkUpdateManager(client, UpdateHub);
             }
             else

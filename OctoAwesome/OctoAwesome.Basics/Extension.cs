@@ -26,6 +26,7 @@ namespace OctoAwesome.Basics
 
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {
+            typeContainer.Register<IPlanet, ComplexPlanet>();
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {                

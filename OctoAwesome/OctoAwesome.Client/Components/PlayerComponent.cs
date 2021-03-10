@@ -136,7 +136,6 @@ namespace OctoAwesome.Client.Components
             }
 
             ApplyInput = false;
-
             //if (FlymodeInput)
             //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             //FlymodeInput = false;

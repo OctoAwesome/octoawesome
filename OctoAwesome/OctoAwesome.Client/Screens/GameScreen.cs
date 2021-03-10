@@ -167,6 +167,14 @@ namespace OctoAwesome.Client.Screens
             args.Handled = true;
         }
 
+        protected override void OnNavigateFrom(NavigationEventArgs args)
+        {
+            Manager.Player.ApplyInput = false;
+            Manager.Player.InteractInput = false;
+            base.OnNavigateFrom(args);
+        }
+
+
         #endregion
 
         #region Keyboard Input

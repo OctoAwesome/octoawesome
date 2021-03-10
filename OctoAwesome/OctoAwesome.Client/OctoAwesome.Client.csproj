@@ -73,10 +73,8 @@
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="engenious.CreatedContent.Content">

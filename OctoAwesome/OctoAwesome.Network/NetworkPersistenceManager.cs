@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using OctoAwesome.Basics;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
@@ -25,11 +24,13 @@ namespace OctoAwesome.Network
         private readonly ILogger logger;
         private readonly IPool<Awaiter> awaiterPool;
         private readonly PackagePool packagePool;
+        private readonly ITypeContainer typeContainer;
 
-        public NetworkPersistenceManager(Client client)
+        public NetworkPersistenceManager(ITypeContainer typeContainer, Client client)
         {
             this.client = client;
             subscription = client.Subscribe(this);
+            this.typeContainer = typeContainer;
 
             packages = new ConcurrentDictionary<uint, Awaiter>();
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkPersistenceManager));
@@ -71,7 +72,7 @@ namespace OctoAwesome.Network
         {
             var package = packagePool.Get();
             package.Command = (ushort)OfficialCommand.GetPlanet;
-            planet = new ComplexPlanet();
+            planet = typeContainer.Get<IPlanet>();
             var awaiter = GetAwaiter(planet, package.UId);
             client.SendPackageAndRelase(package);
 
