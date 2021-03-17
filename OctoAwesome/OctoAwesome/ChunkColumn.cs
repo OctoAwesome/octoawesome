@@ -355,10 +355,10 @@ namespace OctoAwesome
 
 
             // Phase 2 (Block Definitionen)
-            var types = new List<IDefinition>();
-            var map = new Dictionary<ushort, ushort>();
-
             int typecount = longIndex ? reader.ReadUInt16() : reader.ReadByte();
+            var types = new List<IDefinition>();
+            Span<ushort> map = stackalloc ushort[typecount];
+
 
             for (var i = 0; i < typecount; i++)
             {
@@ -367,13 +367,15 @@ namespace OctoAwesome
                 IDefinition blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                 types.Add(blockDefinition);
 
-                map.Add((ushort)types.Count, (ushort)(Array.IndexOf(definitions, blockDefinition) + 1));
+                map[types.Count-1] = (ushort)(Array.IndexOf(definitions, blockDefinition) + 1);
             }
 
             // Phase 3 (Chunk Infos)
             for (var c = 0; c < Chunks.Length; c++)
             {
-                IChunk chunk = Chunks[c] = new Chunk(new Index3(Index, c), Planet);
+
+
+                IChunk chunk = Chunks[c] = chunkPool.Get(new Index3(Index, c), Planet);
                 chunk.Version = reader.ReadInt32();
                 chunk.Changed += OnChunkChanged;
                 chunk.SetColumn(this);
@@ -382,7 +384,7 @@ namespace OctoAwesome
                 {
                     var typeIndex = longIndex ? reader.ReadUInt16() : reader.ReadByte();
                     chunk.MetaData[i] = 0;
-                    if (typeIndex > 0)
+                    if (typeIndex-- > 0)
                     {
                         chunk.Blocks[i] = map[typeIndex];
 

@@ -44,6 +44,7 @@ namespace OctoAwesome.Client.Components
         private readonly IChunk[] chunks;
 
         private readonly IBlockDefinition[] blockDefinitions;
+        private readonly Action<IChunk> chunkChanged;
         private IPlanet planet;
         public bool Loaded { get; set; } = false;
 
@@ -118,6 +119,8 @@ namespace OctoAwesome.Client.Components
             chunks = new IChunk[27];
             blockDefinitions = new IBlockDefinition[27];
 
+            chunkChanged = OnChunkChanged;
+
             //simple.Ambient.Pass1.Apply();
             //simple.Ambient.BlockTextures = textures;
             //simple.Ambient.AmbientIntensity = 0.4f;
@@ -157,7 +160,7 @@ namespace OctoAwesome.Client.Components
             {
                 //CacheCurrentChunkVerticesData();
 
-                centerChunk.Changed -= OnChunkChanged;
+                centerChunk.Changed -= chunkChanged;
                 centerChunk = null;
             }
             this.planet = planet;
@@ -254,7 +257,8 @@ namespace OctoAwesome.Client.Components
                     }
 
                     centerChunk = chunk;
-                    centerChunk.Changed += OnChunkChanged;
+                    centerChunk.Changed += chunkChanged;
+
                 }
                 vertices.Clear();
 
@@ -356,11 +360,8 @@ namespace OctoAwesome.Client.Components
                 return !NeedsUpdate;
             }
         }
-#if DEBUG
+
         private void GenerateVertices(IChunk centerChunk, IChunk[] chunks, Vector2[] uvOffsets, int z, int y, int x, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
-#else
-        private unsafe void GenerateVertices(IChunk centerChunk, IChunk[] chunks, Vector2[] uvOffsets, int z, int y, int x, Index3 chunkPosition, IBlockDefinition[] blockDefinitions, bool getFromManager)
-#endif
         {
             ushort block = centerChunk.GetBlock(x, y, z);
 
@@ -382,21 +383,19 @@ namespace OctoAwesome.Client.Components
             if (vertices.Count == 0)
                 vertices.Capacity = 4096;
 
-#if DEBUG
-            var blocks = new ushort[27];
-#else
-            var blocks = stackalloc ushort[27];
-#endif
+
+            Span<ushort> blocks = stackalloc ushort[27];
+ 
             ushort topBlock, bottomBlock, southBlock, northBlock, westBlock, eastBlock;
             if (getFromManager)
             {
 
-                IChunk chunk;
+                //IChunk chunk;
                 for (int zOffset = -1; zOffset <= 1; zOffset++)
                     for (int yOffset = -1; yOffset <= 1; yOffset++)
                         for (int xOffset = -1; xOffset <= 1; xOffset++)
                         {
-                            chunk = chunks[GetIndex(IsBorder(z) * OutsiteOfChunkBorderInDirection(z, zOffset), IsBorder(y) * OutsiteOfChunkBorderInDirection(y, yOffset), IsBorder(x) * OutsiteOfChunkBorderInDirection(x, xOffset))];
+                            //chunk = chunks[GetIndex(IsBorder(z) * OutsiteOfChunkBorderInDirection(z, zOffset), IsBorder(y) * OutsiteOfChunkBorderInDirection(y, yOffset), IsBorder(x) * OutsiteOfChunkBorderInDirection(x, xOffset))];
                             blocks[GetIndex(zOffset, yOffset, xOffset)] = manager.GetBlock((chunkPosition * Chunk.CHUNKSIZE) + new Index3(x + xOffset, y + yOffset, z + zOffset));
                         }
             }
@@ -731,7 +730,7 @@ namespace OctoAwesome.Client.Components
 
             if (centerChunk != null)
             {
-                centerChunk.Changed -= OnChunkChanged;
+                centerChunk.Changed -= chunkChanged;
                 centerChunk = null;
             }
 

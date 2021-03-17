@@ -38,10 +38,10 @@ namespace OctoAwesome.Client.Controls
             Player = screenManager.Player;
             manager = screenManager;
             assets = screenManager.Game.Assets;
+            Background = new SolidColorBrush(Color.Transparent);
 
             //Brush for Debug Background
             BorderBrush bg = new BorderBrush(Color.Black * 0.2f);
-
             //The left side of the Screen
             leftView = new StackPanel(ScreenManager)
             {
