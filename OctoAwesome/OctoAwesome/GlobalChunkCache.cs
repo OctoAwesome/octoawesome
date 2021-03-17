@@ -3,6 +3,7 @@ using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ namespace OctoAwesome
         // TODO: Früher oder später nach draußen auslagern
         private readonly Task cleanupTask;
         private readonly ILogger logger;
+        private readonly ChunkPool chunkPool;
         private readonly (Guid Id, PositionComponent Component)[] positionComponents;
         private IUpdateHub updateHub;
 
@@ -85,6 +87,8 @@ namespace OctoAwesome
             cleanupTask.Start(TaskScheduler.Default);
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
 
+            chunkPool = TypeContainer.Get<ChunkPool>();
+
             var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>().ToArray();
             positionComponents = resourceManager.GetEntityComponents<PositionComponent>(ids);
         }
@@ -105,7 +109,7 @@ namespace OctoAwesome
                 if (!cache.TryGetValue(new Index3(position, Planet.Id), out cacheItem))
                 {
 
-                    cacheItem = new CacheItem()
+                    cacheItem = new CacheItem(chunkPool)
                     {
                         Planet = Planet,
                         Index = position,
@@ -372,7 +376,7 @@ namespace OctoAwesome
         private class CacheItem : IDisposable
         {
 
-            private static ChunkPool chunkPool;
+            private ChunkPool chunkPool;
             private IChunkColumn _chunkColumn;
             private readonly LockSemaphore internalSemaphore;
 
@@ -408,11 +412,11 @@ namespace OctoAwesome
 
             private bool disposed;
 
-            public CacheItem()
+            public CacheItem(ChunkPool chunkPool)
             {
                 internalSemaphore = new LockSemaphore(1, 1);
-                if (chunkPool == null)
-                    chunkPool = TypeContainer.Get<ChunkPool>();
+
+                this.chunkPool = chunkPool;
             }
 
             public LockSemaphore.SemaphoreLock Wait()
@@ -426,6 +430,11 @@ namespace OctoAwesome
                 disposed = true;
 
                 internalSemaphore.Dispose();
+
+                foreach (var chunk in _chunkColumn.Chunks)
+                {
+                    chunkPool.Push(chunk);
+                }
 
                 if (_chunkColumn is IDisposable disposable)
                     disposable.Dispose();
