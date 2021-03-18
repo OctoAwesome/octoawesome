@@ -384,11 +384,13 @@ namespace OctoAwesome
                 {
                     var typeIndex = longIndex ? reader.ReadUInt16() : reader.ReadByte();
                     chunk.MetaData[i] = 0;
-                    if (typeIndex-- > 0)
+                    if (typeIndex > 0)
                     {
-                        chunk.Blocks[i] = map[typeIndex];
+                        var definitionIndex = map[typeIndex-1];
 
-                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(map[typeIndex]);
+                        chunk.Blocks[i] = definitionIndex;
+
+                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(definitionIndex);
 
                         if (definition.HasMetaData)
                             chunk.MetaData[i] = reader.ReadInt32();
