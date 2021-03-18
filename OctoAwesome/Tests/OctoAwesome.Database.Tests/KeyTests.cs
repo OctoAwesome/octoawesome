@@ -29,7 +29,6 @@ namespace OctoAwesome.Database.Tests
 
             public void WriteBytes(Span<byte> span)
             {
-                throw new NotImplementedException();
             }
         }
     }
