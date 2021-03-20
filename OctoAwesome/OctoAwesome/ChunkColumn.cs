@@ -373,8 +373,6 @@ namespace OctoAwesome
             // Phase 3 (Chunk Infos)
             for (var c = 0; c < Chunks.Length; c++)
             {
-
-
                 IChunk chunk = Chunks[c] = chunkPool.Get(new Index3(Index, c), Planet);
                 chunk.Version = reader.ReadInt32();
                 chunk.Changed += OnChunkChanged;

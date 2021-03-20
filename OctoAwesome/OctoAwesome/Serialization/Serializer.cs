@@ -52,14 +52,6 @@ namespace OctoAwesome.Serialization
                     obj.Serialize(writer);
 
                 return stream.ToArray();
-
-                //using (var ms = new MemoryStream())
-                //{
-                //    stream.Position = 0;
-                //    using (var zip = new GZipStream(ms, CompressionMode.Compress, true))
-                //        stream.CopyTo(zip);
-
-                //}
             }
         }
 

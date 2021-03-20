@@ -36,7 +36,6 @@ namespace OctoAwesome.Database
             var key = new Key<TTag>(tag, writer.ToEnd(), value.Content.Length);
             //TODO: Hash, Sync
             key.WriteBytes(writer);
-            //writer.Write(key.GetBytes(), 0, Key<TTag>.KEY_SIZE);
             writer.WriteAndFlush(value.Content, 0, value.Content.Length);
             return key;
         }

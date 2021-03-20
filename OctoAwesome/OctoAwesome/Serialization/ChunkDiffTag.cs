@@ -39,10 +39,6 @@ namespace OctoAwesome.Serialization
             BitConverter.TryWriteBytes(array[(intSize * 1)..(intSize * 2)], ChunkPositon.Y);
             BitConverter.TryWriteBytes(array[(intSize * 2)..(intSize * 3)], ChunkPositon.Z);
             BitConverter.TryWriteBytes(array[(intSize * 3)..(intSize * 4)], FlatIndex);
-            //Buffer.BlockCopy(BitConverter.GetBytes(ChunkPositon.X), 0, array, 0, sizeof(int));
-            //Buffer.BlockCopy(BitConverter.GetBytes(ChunkPositon.Y), 0, array, sizeof(int), sizeof(int));
-            //Buffer.BlockCopy(BitConverter.GetBytes(ChunkPositon.Z), 0, array, sizeof(int) * 2, sizeof(int));
-            //Buffer.BlockCopy(BitConverter.GetBytes(FlatIndex), 0, array, sizeof(int) * 3, sizeof(int));
 
             return array;
         }

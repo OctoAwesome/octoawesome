@@ -21,8 +21,6 @@ namespace OctoAwesome.Serialization
             var byteArray = new byte[Length];
             BitConverter.TryWriteBytes(byteArray[0..sizeof(int)], Index.X);
             BitConverter.TryWriteBytes(byteArray[sizeof(int)..(sizeof(int)*2)], Index.Y);
-            //Buffer.BlockCopy(BitConverter.GetBytes(Index.X), 0, byteArray, 0, sizeof(int));
-            //Buffer.BlockCopy(BitConverter.GetBytes(Index.Y), 0, byteArray, sizeof(int), sizeof(int));
             return byteArray;
         }
 
@@ -44,7 +42,6 @@ namespace OctoAwesome.Serialization
         {
             BitConverter.TryWriteBytes(span[0..sizeof(int)], Index.X);
             BitConverter.TryWriteBytes(span[sizeof(int)..(sizeof(int) * 2)], Index.Y);
- 
         }
 
         public static bool operator ==(Index2Tag left, Index2Tag right) 
