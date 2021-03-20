@@ -73,7 +73,7 @@ namespace OctoAwesome.Database
             BitConverter.TryWriteBytes(byteArray, Index);
             BitConverter.TryWriteBytes(byteArray[sizeof(long)..], ValueLength);
 
-            if (Tag != null)
+            if (Tag is not null)
                 Tag.WriteBytes(byteArray[BASE_KEY_SIZE..(BASE_KEY_SIZE + Tag.Length)]);
 
             if (flush)

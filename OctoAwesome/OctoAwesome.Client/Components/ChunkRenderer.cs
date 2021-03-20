@@ -390,12 +390,10 @@ namespace OctoAwesome.Client.Components
             if (getFromManager)
             {
 
-                //IChunk chunk;
                 for (int zOffset = -1; zOffset <= 1; zOffset++)
                     for (int yOffset = -1; yOffset <= 1; yOffset++)
                         for (int xOffset = -1; xOffset <= 1; xOffset++)
                         {
-                            //chunk = chunks[GetIndex(IsBorder(z) * OutsiteOfChunkBorderInDirection(z, zOffset), IsBorder(y) * OutsiteOfChunkBorderInDirection(y, yOffset), IsBorder(x) * OutsiteOfChunkBorderInDirection(x, xOffset))];
                             blocks[GetIndex(zOffset, yOffset, xOffset)] = manager.GetBlock((chunkPosition * Chunk.CHUNKSIZE) + new Index3(x + xOffset, y + yOffset, z + zOffset));
                         }
             }

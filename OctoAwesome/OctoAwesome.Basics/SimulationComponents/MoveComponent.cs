@@ -144,6 +144,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             {
                                 if (!CollisionPlane.Intersect(blockPlane, playerPlane))
                                     continue;
+                                    
                                 var distance = CollisionPlane.GetDistance(blockPlane, playerPlane);
 
                                 if (!CollisionPlane.CheckDistance(distance, move))
