@@ -1,37 +1,38 @@
 ﻿using engenious.UI;
-using OctoAwesome.Client.Components;
 using System;
 using engenious;
 using engenious.Graphics;
+using OctoAwesome.UI.Components;
+using OctoAwesome.EntityComponents;
 
-namespace OctoAwesome.Client.Controls
+namespace OctoAwesome.UI.Controls
 {
-    internal class CompassControl : Control
+    public class CompassControl : Control
     {
-        private Texture2D compassTexture;
+        private readonly Texture2D compassTexture;
 
-        private AssetComponent assets;
+        private readonly AssetComponent assets;
 
-        public PlayerComponent Player { get; set; }
+        public HeadComponent HeadComponent { get; set; }
 
-        public CompassControl(ScreenComponent screenManager) : base(screenManager)
+        public CompassControl(BaseScreenComponent screenManager, AssetComponent assets, HeadComponent headComponent ) : base(screenManager)
         {
-            assets = screenManager.Game.Assets;
+            this.assets = assets;
 
-            Player = screenManager.Player;
+            HeadComponent = headComponent;
             Padding = Border.All(7);
 
-            Texture2D background = assets.LoadTexture(typeof(ScreenComponent), "buttonLong_brown_pressed");
+            Texture2D background = assets.LoadTexture( "buttonLong_brown_pressed");
             Background = NineTileBrush.FromSingleTexture(background, 7, 7);
             compassTexture = assets.LoadTexture(GetType(), "compass");
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (Player == null || Player.CurrentEntity == null || !assets.Ready)
+            if (HeadComponent is null  || !assets.Ready)
                 return;
 
-            float compassValue = Player.CurrentEntityHead.Angle / (float)(2 * Math.PI);
+            float compassValue = HeadComponent.Angle / (float)(2 * Math.PI);
             compassValue %= 1f;
             if (compassValue < 0)
                 compassValue += 1f;

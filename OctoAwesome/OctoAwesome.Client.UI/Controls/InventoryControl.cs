@@ -2,12 +2,13 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.UI.Components;
+using System.Collections.Generic;
 
-namespace OctoAwesome.Client.Controls
+namespace OctoAwesome.UI.Controls
 {
-    internal sealed class InventoryControl : Panel
+    public sealed class InventoryControl : Panel
     {
         private const int COLUMNS = 8;
 
@@ -16,10 +17,8 @@ namespace OctoAwesome.Client.Controls
         /// </summary>
         public InventorySlot HoveredSlot { get; private set; }
 
-        public InventoryControl(ScreenComponent manager, int columns = COLUMNS) : base(manager)
-        {
-            
-
+        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, List<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+        {           
             ScrollContainer scroll = new ScrollContainer(manager)
             {
                 Margin = new Border(0, 0, 0, 0),
@@ -34,19 +33,19 @@ namespace OctoAwesome.Client.Controls
             };
             for (int i = 0; i < columns; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            int rows = (int)System.Math.Ceiling((float)manager.Game.Player.Inventory.Inventory.Count / columns);
+            int rows = (int)System.Math.Ceiling((float)inventorySlots.Count / columns);
             for (int i = 0; i < rows; i++)
                 grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
             int column = 0;
             int row = 0;
-            foreach (var inventorySlot in manager.Game.Player.Inventory.Inventory)
+            foreach (var inventorySlot in inventorySlots)
             {
                 Texture2D texture;
                 if (inventorySlot.Definition is null)
                     continue;
                 else 
-                    texture = manager.Game.Assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
+                    texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
                     
 
                 var image = new Image(manager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };

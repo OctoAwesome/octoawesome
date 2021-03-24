@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome.Client.Components
+﻿namespace OctoAwesome.UI.Components
 {
     /// <summary>
     /// Interface für alle Componenten, die mit Assets aus dem Asset 
     /// Manager (AssetComponent) arbeiten.
     /// </summary>
-    internal interface IAssetRelatedComponent
+    public interface IAssetRelatedComponent
     {
         /// <summary>
         /// Signalisiert das forcierte entladen aller Assets.

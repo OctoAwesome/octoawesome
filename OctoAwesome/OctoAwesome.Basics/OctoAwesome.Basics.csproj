@@ -71,7 +71,7 @@
     <EmbeddedResource Include="Assets\Definitions\Items\wauziegg.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
+    <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.UI.csproj" />
   </ItemGroup>
   
 </Project>

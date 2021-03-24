@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
 
         public TransferUIComponent()
         {
-            transferScreen = new TransferScreen(ScreenComponent);
+            transferScreen = new TransferScreen(ScreenComponent, AssetComponent);
         }
 
         public void Show()

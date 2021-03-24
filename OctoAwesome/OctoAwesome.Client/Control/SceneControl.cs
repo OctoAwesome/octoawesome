@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.UI.Components;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -28,37 +29,37 @@ namespace OctoAwesome.Client.Controls
         private PlayerComponent player;
         private CameraComponent camera;
         private AssetComponent assets;
-        private Components.EntityGameComponent entities;
+        private EntityGameComponent entities;
 
         private ChunkRenderer[,] chunkRenderer;
-        private List<ChunkRenderer> orderedChunkRenderer;
+        private readonly List<ChunkRenderer> orderedChunkRenderer;
 
         private IPlanet planet;
 
         // private List<Index3> distances = new List<Index3>();
 
-        private BasicEffect sunEffect;
-        private BasicEffect selectionEffect;
+        private readonly BasicEffect sunEffect;
+        private readonly BasicEffect selectionEffect;
         private Matrix miniMapProjectionMatrix;
 
         //private Texture2D blockTextures;
-        private Texture2DArray blockTextures;
-        private Texture2D sunTexture;
+        private readonly Texture2DArray blockTextures;
+        private readonly Texture2D sunTexture;
 
-        private IndexBuffer selectionIndexBuffer;
-        private VertexBuffer selectionLines;
-        private VertexBuffer billboardVertexbuffer;
+        private readonly IndexBuffer selectionIndexBuffer;
+        private readonly VertexBuffer selectionLines;
+        private readonly VertexBuffer billboardVertexbuffer;
         //private VertexPositionColor[] selectionLines;
         //private VertexPositionTexture[] billboardVertices;
 
         private Index2 currentChunk = new Index2(-1, -1);
 
-        private Task backgroundTask;
-        private Task backgroundThread2;
+        private readonly Task backgroundTask;
+        private readonly Task backgroundThread2;
         private ILocalChunkCache localChunkCache;
-        private Effect simpleShader;
+        private readonly Effect simpleShader;
 
-        private Task[] _additionalRegenerationThreads;
+        private readonly Task[] _additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
         public RenderTarget2D ControlTexture { get; set; }
@@ -117,7 +118,7 @@ namespace OctoAwesome.Client.Controls
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = assets.LoadTexture(typeof(ScreenComponent), "sun");
+            sunTexture = assets.LoadTexture( "sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = Manager.Game.DefinitionManager.BlockDefinitions;
@@ -465,9 +466,9 @@ namespace OctoAwesome.Client.Controls
 
         }
 
-        private AutoResetEvent fillResetEvent = new AutoResetEvent(false);
-        private AutoResetEvent[] additionalFillResetEvents;
-        private AutoResetEvent forceResetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent fillResetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent[] additionalFillResetEvents;
+        private readonly AutoResetEvent forceResetEvent = new AutoResetEvent(false);
 
         protected override void OnPreDraw(GameTime gameTime)
         {
@@ -758,7 +759,7 @@ namespace OctoAwesome.Client.Controls
 
         #endregion
 
-        private ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
+        private readonly ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
         private bool disposed;
 
         public void Enqueue(ChunkRenderer chunkRenderer1)

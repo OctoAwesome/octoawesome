@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace OctoAwesome.Client
+namespace OctoAwesome.UI
 {
     public sealed class ResourcePack
     {

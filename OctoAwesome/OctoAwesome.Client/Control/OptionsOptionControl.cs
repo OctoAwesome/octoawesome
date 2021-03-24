@@ -1,23 +1,23 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Screens;
+using OctoAwesome.UI.Components;
 using System;
 
 namespace OctoAwesome.Client.Controls
 {
     internal sealed class OptionsOptionControl : Panel
     {
-        private Label rangeTitle;
-        private Textbox mapPath;
+        private readonly Label rangeTitle;
+        private readonly Textbox mapPath;
 
-        private ISettings settings;
-        private OptionsScreen optionsScreen;
+        private readonly ISettings settings;
+        private readonly OptionsScreen optionsScreen;
 
-        public OptionsOptionControl(ScreenComponent manager, OptionsScreen optionsScreen) : base(manager)
+        public OptionsOptionControl(BaseScreenComponent manager, OptionsScreen optionsScreen, ISettings settings, AssetComponent assets) : base(manager)
         {
-            settings = manager.Game.Settings;
+            this.settings = settings;
             this.optionsScreen = optionsScreen;
 
             ////////////////////////////////////////////Settings Stack////////////////////////////////////////////
@@ -35,7 +35,7 @@ namespace OctoAwesome.Client.Controls
 
             rangeTitle = new Label(manager)
             {
-                Text = Languages.OctoClient.Viewrange + ": " + viewrange
+                Text = UI.Languages.OctoClient.Viewrange + ": " + viewrange
             };
             settingsStack.Controls.Add(rangeTitle);
 
@@ -60,14 +60,14 @@ namespace OctoAwesome.Client.Controls
 
             Label persistenceTitle = new Label(manager)
             {
-                Text = Languages.OctoClient.DisablePersistence + ":"
+                Text = UI.Languages.OctoClient.DisablePersistence + ":"
             };
             persistenceStack.Controls.Add(persistenceTitle);
 
             Checkbox disablePersistence = new Checkbox(manager)
             {
                 Checked = settings.Get("DisablePersistence", false),
-                HookBrush = new TextureBrush(manager.Game.Assets.LoadTexture(typeof(ScreenComponent), "iconCheck_brown"), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(assets.LoadTexture("iconCheck_brown"), TextureBrushMode.Stretch),
             };
             disablePersistence.CheckedChanged += (state) => SetPersistence(state);
             persistenceStack.Controls.Add(disablePersistence);
@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Controls
             };
             mapPathStack.Controls.Add(mapPath);
 
-            Button changePath = new TextButton(manager, Languages.OctoClient.ChangePath);
+            Button changePath = new TextButton(manager, UI.Languages.OctoClient.ChangePath);
             changePath.HorizontalAlignment = HorizontalAlignment.Center;
             changePath.Height = 40;
             changePath.LeftMouseClick += (s, e) => ChangePath();
@@ -106,14 +106,14 @@ namespace OctoAwesome.Client.Controls
 
             Label fullscreenTitle = new Label(manager)
             {
-                Text = Languages.OctoClient.EnableFullscreenOnStartup + ":"
+                Text = UI.Languages.OctoClient.EnableFullscreenOnStartup + ":"
             };
             fullscreenStack.Controls.Add(fullscreenTitle);
 
             Checkbox enableFullscreen = new Checkbox(manager)
             {
                 Checked = settings.Get<bool>("EnableFullscreen"),
-                HookBrush = new TextureBrush(manager.Game.Assets.LoadTexture(typeof(ScreenComponent), "iconCheck_brown"), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(assets.LoadTexture("iconCheck_brown"), TextureBrushMode.Stretch),
             };
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
             fullscreenStack.Controls.Add(enableFullscreen);
@@ -128,7 +128,7 @@ namespace OctoAwesome.Client.Controls
 
             Label resolutionTitle = new Label(manager)
             {
-                Text = Languages.OctoClient.Resolution + ":"
+                Text = UI.Languages.OctoClient.Resolution + ":"
             };
             resolutionStack.Controls.Add(resolutionTitle);
 
@@ -158,7 +158,7 @@ namespace OctoAwesome.Client.Controls
 
             Label pxLabel = new Label(manager)
             {
-                Text = Languages.OctoClient.Pixels
+                Text = UI.Languages.OctoClient.Pixels
             };
             resolutionStack.Controls.Add(pxLabel);
         }
@@ -179,7 +179,7 @@ namespace OctoAwesome.Client.Controls
 
         private void SetViewrange(int newRange)
         {
-            rangeTitle.Text = Languages.OctoClient.Viewrange + ": " + newRange;
+            rangeTitle.Text = UI.Languages.OctoClient.Viewrange + ": " + newRange;
 
             settings.Set("Viewrange", newRange);
 

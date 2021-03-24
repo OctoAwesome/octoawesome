@@ -4,18 +4,22 @@ using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Screens;
+using OctoAwesome.UI.Components;
 using System.Linq;
 
 namespace OctoAwesome.Client.Controls
 {
     internal sealed class BindingsOptionControl : Panel
     {
-        private ScreenComponent Manager { get; set; }
+        private readonly AssetComponent assets;
+        private readonly ISettings settings;
+        private readonly KeyMapper keyMapper;
 
-        public BindingsOptionControl(ScreenComponent manager) : base(manager)
+        public BindingsOptionControl(BaseScreenComponent manager, AssetComponent assets, KeyMapper keyMapper, ISettings settings) : base(manager)
         {
-            Manager = manager;
-
+            this.assets = assets;
+            this.settings = settings;
+            this.keyMapper = keyMapper;
             ScrollContainer bindingsScroll = new ScrollContainer(manager);
             Controls.Add(bindingsScroll);
 
@@ -28,7 +32,7 @@ namespace OctoAwesome.Client.Controls
             bindingsScroll.Content = bindingsStack;
 
             //////////////////////////////KeyBindings////////////////////////////////////////////
-            var bindings = manager.Game.KeyMapper.GetBindings();
+            var bindings = keyMapper.GetBindings();
             foreach (var binding in bindings)
             {
                 StackPanel bindingStack = new StackPanel(manager)
@@ -63,22 +67,26 @@ namespace OctoAwesome.Client.Controls
         private void BindingKeyLabel_LeftMouseClick(Control sender, MouseEventArgs args)
         {
             object[] data = (object[])sender.Tag;
+
+            if (data is null)
+                return;
+
             string id = (string)data[0];
             Keys oldKey = (Keys)data[1];
 
             Label lbl = (Label)sender;
 
-            MessageScreen screen = new MessageScreen(Manager, Languages.OctoClient.PressKey, "", Languages.OctoClient.Cancel);
+            MessageScreen screen = new MessageScreen(ScreenManager, assets, UI.Languages.OctoClient.PressKey, "", UI.Languages.OctoClient.Cancel);
             screen.KeyDown += (s, a) =>
             {
-                Manager.Game.KeyMapper.RemoveKey(id, oldKey);
-                Manager.Game.KeyMapper.AddKey(id, a.Key);
+                keyMapper.RemoveKey(id, oldKey);
+                keyMapper.AddKey(id, a.Key);
                 data[1] = a.Key;
-                Manager.Game.Settings.Set("KeyMapper-" + id, a.Key.ToString());
+                settings.Set("KeyMapper-" + id, a.Key.ToString());
                 lbl.Text = a.Key.ToString();
-                Manager.NavigateBack();
+                ScreenManager.NavigateBack();
             };
-            Manager.NavigateToScreen(screen);
+            ScreenManager.NavigateToScreen(screen);
         }
     }
 }

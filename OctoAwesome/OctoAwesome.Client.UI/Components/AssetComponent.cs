@@ -8,27 +8,22 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace OctoAwesome.Client.Components
+namespace OctoAwesome.UI.Components
 {
-    internal sealed class AssetComponent : DrawableGameComponent
+    public sealed class AssetComponent : DrawableGameComponent
     {
-        private Settings settings;
+        private readonly ISettings settings;
 
         public const string INFOFILENAME = "packinfo.xml";
 
         public const string SETTINGSKEY = "ActiveResourcePacks";
 
         public const string RESOURCEPATH = "Resources";
-
-        Dictionary<string, Texture2D> textures;
-
-        Dictionary<string, Bitmap> bitmaps;
-
-        string[] textureTypes = new string[] { "png", "jpg", "jpeg", "bmp" };
-
-        List<ResourcePack> loadedPacks = new List<ResourcePack>();
-
-        List<ResourcePack> activePacks = new List<ResourcePack>();
+        readonly Dictionary<string, Texture2D> textures;
+        readonly Dictionary<string, Bitmap> bitmaps;
+        readonly string[] textureTypes = new string[] { "png", "jpg", "jpeg", "bmp" };
+        readonly List<ResourcePack> loadedPacks = new();
+        readonly List<ResourcePack> activePacks = new();
 
         /// <summary>
         /// Gibt an, ob der Asset Manager bereit zum Laden von Resourcen ist.
@@ -38,21 +33,21 @@ namespace OctoAwesome.Client.Components
         /// <summary>
         /// Gibt die Anzahl geladener Texturen zurück.
         /// </summary>
-        public int LoadedTextures { get { return textures.Count + bitmaps.Count; } }
+        public int LoadedTextures => textures.Count + bitmaps.Count;
 
         /// <summary>
         /// Auflistung aller bekannten Resource Packs.
         /// </summary>
-        public IEnumerable<ResourcePack> LoadedResourcePacks { get { return loadedPacks.AsEnumerable(); } }
+        public IEnumerable<ResourcePack> LoadedResourcePacks => loadedPacks.AsEnumerable();
 
         /// <summary>
         /// Auflistung aller aktuell aktiven Resource Packs.
         /// </summary>
-        public IEnumerable<ResourcePack> ActiveResourcePacks { get { return activePacks.AsEnumerable(); } }
+        public IEnumerable<ResourcePack> ActiveResourcePacks => activePacks.AsEnumerable();
 
-        public AssetComponent(OctoGame game) : base(game)
+        public AssetComponent(IGame game, ISettings settings) : base(game)
         {
-            settings = game.Settings;
+            this.settings = settings;
 
             Ready = false;
             textures = new Dictionary<string, Texture2D>();
@@ -147,6 +142,13 @@ namespace OctoAwesome.Client.Components
             settings.Set(SETTINGSKEY, string.Join(";", activePacks.Select(p => p.Path)));
 
             Ready = true;
+        }
+        public Texture2D LoadTexture(string key)
+        {
+            lock (textures)
+            {
+                return Load(typeof(AssetComponent), key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
+            }
         }
 
         public Texture2D LoadTexture(Type baseType, string key)

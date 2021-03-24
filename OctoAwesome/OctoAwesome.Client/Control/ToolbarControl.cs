@@ -3,8 +3,10 @@ using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Runtime;
+using OctoAwesome.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,20 +33,20 @@ namespace OctoAwesome.Client.Controls
 
         private int lastActiveIndex;
 
-        public ToolbarControl(ScreenComponent screenManager)
+        public ToolbarControl(BaseScreenComponent screenManager, AssetComponent assets, PlayerComponent playerComponent, IDefinitionManager definitionManager)
             : base(screenManager)
         {
             Background = new SolidColorBrush(Color.Transparent);
-            Player = screenManager.Player;
+            Player = playerComponent;
             Player.Toolbar.OnChanged += (slot, index) => SetTexture(slot, index);
             toolTextures = new Dictionary<string, Texture2D>();
 
             buttonBackgroud = new BorderBrush(new Color(Color.Black, 0.5f));
             activeBackground = new BorderBrush(new Color(Color.Black, 0.5f), LineType.Dotted, Color.Red, 3);
 
-            foreach (Definitions.IDefinition item in screenManager.Game.DefinitionManager.Definitions)
+            foreach (IDefinition item in definitionManager.Definitions)
             {
-                Texture2D texture = screenManager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
+                Texture2D texture = assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
             }
 
@@ -137,7 +139,7 @@ namespace OctoAwesome.Client.Controls
 
             var definitionName = inventorySlot.Definition.GetType().FullName;
 
-            if (toolTextures.TryGetValue(definitionName, out Texture2D texture)) 
+            if (toolTextures.TryGetValue(definitionName, out Texture2D texture))
                 images[index].Texture = texture;
             else
                 images[index].Texture = null;

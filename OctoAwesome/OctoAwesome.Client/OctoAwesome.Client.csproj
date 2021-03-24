@@ -20,33 +20,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Components\buttonLong_brown_disabled.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Components\buttonLong_brown_disabled.png" />
     <EngeniousContentReference Include="Content\Content.ecp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Components\background.png" />
-    <EmbeddedResource Include="Assets\Components\background_new.png" />
-    <EmbeddedResource Include="Assets\Crew\crew.xml" />
-    <EmbeddedResource Include="Assets\Controls\compass.png" />
-    <EmbeddedResource Include="Assets\FallbackTexture.png" />
-    <EmbeddedResource Include="Assets\Controls\octocross.png" />
-    <EmbeddedResource Include="Assets\Components\panel.png" />
-    <EmbeddedResource Include="Assets\Components\sun.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_beige.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_beige_pressed.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_brown.png" />
-    <EmbeddedResource Include="Assets\Components\buttonLong_brown_pressed.png" />
-    <EmbeddedResource Include="Assets\Components\iconCheck_brown.png" />
-    <EmbeddedResource Include="Assets\Components\progress_background.png" />
-    <EmbeddedResource Include="Assets\Components\progress_red.png" />
-    <EmbeddedResource Include="Assets\Crew\manuelhu.png" />
-    <EmbeddedResource Include="Assets\Crew\blackorca.png" />
-    <EmbeddedResource Include="Assets\Crew\base.png" />
-    <EmbeddedResource Include="Assets\Crew\bobstriker.png" />
     <Content Include="Content\simple.fx" />
     <Content Include="Content\BoldFont.png" />
     <Content Include="Content\GameFont.png" />
@@ -73,6 +49,7 @@
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.UI.csproj" />
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
   </ItemGroup>

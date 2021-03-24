@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using engenious.UI;
-using OctoAwesome.Client.Components;
 using engenious;
 using engenious.Graphics;
+using OctoAwesome.UI.Components;
 
-namespace OctoAwesome.Client.Controls
+namespace OctoAwesome.UI.Controls
 {
-    class CrosshairControl : Control
+    public class CrosshairControl : Control
     {
         public Texture2D Texture;
         public float Transparency;
@@ -17,9 +17,9 @@ namespace OctoAwesome.Client.Controls
 
         AssetComponent assets;
 
-        public CrosshairControl(ScreenComponent manager) : base(manager)
+        public CrosshairControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
         {
-            assets = manager.Game.Assets;
+            assets = asset;
 
             Transparency = 0.5f;
             Color = Color.White;

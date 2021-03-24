@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OctoAwesome.Client.Languages {
+namespace OctoAwesome.UI.Languages {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace OctoAwesome.Client.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class OctoClient {
+    public class OctoClient {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace OctoAwesome.Client.Languages {
         ///   Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OctoAwesome.Client.Languages.OctoClient", typeof(OctoClient).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OctoAwesome.UI.Languages.OctoClient", typeof(OctoClient).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace OctoAwesome.Client.Languages {
         ///   Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Achievements ähnelt.
         /// </summary>
-        internal static string Achievements {
+        public static string Achievements {
             get {
                 return ResourceManager.GetString("Achievements", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Active Controls ähnelt.
         /// </summary>
-        internal static string ActiveControls {
+        public static string ActiveControls {
             get {
                 return ResourceManager.GetString("ActiveControls", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Active Item/Tool ähnelt.
         /// </summary>
-        internal static string ActiveItemTool {
+        public static string ActiveItemTool {
             get {
                 return ResourceManager.GetString("ActiveItemTool", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Add ähnelt.
         /// </summary>
-        internal static string Add {
+        public static string Add {
             get {
                 return ResourceManager.GetString("Add", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Anwenden ähnelt.
         /// </summary>
-        internal static string Apply {
+        public static string Apply {
             get {
                 return ResourceManager.GetString("Apply", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Back ähnelt.
         /// </summary>
-        internal static string Back {
+        public static string Back {
             get {
                 return ResourceManager.GetString("Back", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Blocks ähnelt.
         /// </summary>
-        internal static string Blocks {
+        public static string Blocks {
             get {
                 return ResourceManager.GetString("Blocks", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
         /// </summary>
-        internal static string Cancel {
+        public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Change Path ähnelt.
         /// </summary>
-        internal static string ChangePath {
+        public static string ChangePath {
             get {
                 return ResourceManager.GetString("ChangePath", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Close ähnelt.
         /// </summary>
-        internal static string Close {
+        public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Connect ähnelt.
         /// </summary>
-        internal static string Connect {
+        public static string Connect {
             get {
                 return ResourceManager.GetString("Connect", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Create ähnelt.
         /// </summary>
-        internal static string Create {
+        public static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Create Universe ähnelt.
         /// </summary>
-        internal static string CreateUniverse {
+        public static string CreateUniverse {
             get {
                 return ResourceManager.GetString("CreateUniverse", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Credits / Crew ähnelt.
         /// </summary>
-        internal static string CreditsCrew {
+        public static string CreditsCrew {
             get {
                 return ResourceManager.GetString("CreditsCrew", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
         /// </summary>
-        internal static string Delete {
+        public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Deleted... ähnelt.
         /// </summary>
-        internal static string Deleted {
+        public static string Deleted {
             get {
                 return ResourceManager.GetString("Deleted", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete Map ähnelt.
         /// </summary>
-        internal static string DeleteMap {
+        public static string DeleteMap {
             get {
                 return ResourceManager.GetString("DeleteMap", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Development Version ähnelt.
         /// </summary>
-        internal static string DevelopmentVersion {
+        public static string DevelopmentVersion {
             get {
                 return ResourceManager.GetString("DevelopmentVersion", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Disable ähnelt.
         /// </summary>
-        internal static string Disable {
+        public static string Disable {
             get {
                 return ResourceManager.GetString("Disable", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Disable persistence ähnelt.
         /// </summary>
-        internal static string DisablePersistence {
+        public static string DisablePersistence {
             get {
                 return ResourceManager.GetString("DisablePersistence", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Down ähnelt.
         /// </summary>
-        internal static string Down {
+        public static string Down {
             get {
                 return ResourceManager.GetString("Down", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Enable ähnelt.
         /// </summary>
-        internal static string Enable {
+        public static string Enable {
             get {
                 return ResourceManager.GetString("Enable", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Enable Fullscreen Mode on Startup ähnelt.
         /// </summary>
-        internal static string EnableFullscreenOnStartup {
+        public static string EnableFullscreenOnStartup {
             get {
                 return ResourceManager.GetString("EnableFullscreenOnStartup", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
         /// </summary>
-        internal static string Error {
+        public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Exit ähnelt.
         /// </summary>
-        internal static string Exit {
+        public static string Exit {
             get {
                 return ResourceManager.GetString("Exit", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Extensions ähnelt.
         /// </summary>
-        internal static string Extensions {
+        public static string Extensions {
             get {
                 return ResourceManager.GetString("Extensions", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Flymode enabled ähnelt.
         /// </summary>
-        internal static string FlymodeEnabled {
+        public static string FlymodeEnabled {
             get {
                 return ResourceManager.GetString("FlymodeEnabled", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Game ähnelt.
         /// </summary>
-        internal static string Game {
+        public static string Game {
             get {
                 return ResourceManager.GetString("Game", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory ähnelt.
         /// </summary>
-        internal static string Inventory {
+        public static string Inventory {
             get {
                 return ResourceManager.GetString("Inventory", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Items ähnelt.
         /// </summary>
-        internal static string Items {
+        public static string Items {
             get {
                 return ResourceManager.GetString("Items", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Key Bindings ähnelt.
         /// </summary>
-        internal static string KeyBindings {
+        public static string KeyBindings {
             get {
                 return ResourceManager.GetString("KeyBindings", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Links ähnelt.
         /// </summary>
-        internal static string Links {
+        public static string Links {
             get {
                 return ResourceManager.GetString("Links", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Dirty/Loaded ChunkColumn ähnelt.
         /// </summary>
-        internal static string LoadedChunks {
+        public static string LoadedChunks {
             get {
                 return ResourceManager.GetString("LoadedChunks", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Multiplayer ähnelt.
         /// </summary>
-        internal static string Multiplayer {
+        public static string Multiplayer {
             get {
                 return ResourceManager.GetString("Multiplayer", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
         /// </summary>
-        internal static string Name {
+        public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Options ähnelt.
         /// </summary>
-        internal static string Options {
+        public static string Options {
             get {
                 return ResourceManager.GetString("Options", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Pixels ähnelt.
         /// </summary>
-        internal static string Pixels {
+        public static string Pixels {
             get {
                 return ResourceManager.GetString("Pixels", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Play ähnelt.
         /// </summary>
-        internal static string Play {
+        public static string Play {
             get {
                 return ResourceManager.GetString("Play", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Press key... ähnelt.
         /// </summary>
-        internal static string PressKey {
+        public static string PressKey {
             get {
                 return ResourceManager.GetString("PressKey", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Really? ähnelt.
         /// </summary>
-        internal static string Really {
+        public static string Really {
             get {
                 return ResourceManager.GetString("Really", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Remove ähnelt.
         /// </summary>
-        internal static string Remove {
+        public static string Remove {
             get {
                 return ResourceManager.GetString("Remove", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Resolution ähnelt.
         /// </summary>
-        internal static string Resolution {
+        public static string Resolution {
             get {
                 return ResourceManager.GetString("Resolution", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Resource Packs ähnelt.
         /// </summary>
-        internal static string ResourcePacks {
+        public static string ResourcePacks {
             get {
                 return ResourceManager.GetString("ResourcePacks", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Restart game to apply changes ähnelt.
         /// </summary>
-        internal static string RestartGameToApplyChanges {
+        public static string RestartGameToApplyChanges {
             get {
                 return ResourceManager.GetString("RestartGameToApplyChanges", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Resume ähnelt.
         /// </summary>
-        internal static string Resume {
+        public static string Resume {
             get {
                 return ResourceManager.GetString("Resume", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Seed ähnelt.
         /// </summary>
-        internal static string Seed {
+        public static string Seed {
             get {
                 return ResourceManager.GetString("Seed", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Select Target ähnelt.
         /// </summary>
-        internal static string SelectTarget {
+        public static string SelectTarget {
             get {
                 return ResourceManager.GetString("SelectTarget", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Select Universe ähnelt.
         /// </summary>
-        internal static string SelectUniverse {
+        public static string SelectUniverse {
             get {
                 return ResourceManager.GetString("SelectUniverse", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Please select a universe first! ähnelt.
         /// </summary>
-        internal static string SelectUniverseFirst {
+        public static string SelectUniverseFirst {
             get {
                 return ResourceManager.GetString("SelectUniverseFirst", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Start ähnelt.
         /// </summary>
-        internal static string Start {
+        public static string Start {
             get {
                 return ResourceManager.GetString("Start", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
         /// </summary>
-        internal static string Teleport {
+        public static string Teleport {
             get {
                 return ResourceManager.GetString("Teleport", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Temperature ähnelt.
         /// </summary>
-        internal static string Temperature {
+        public static string Temperature {
             get {
                 return ResourceManager.GetString("Temperature", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die To Main Menu ähnelt.
         /// </summary>
-        internal static string ToMainMenu {
+        public static string ToMainMenu {
             get {
                 return ResourceManager.GetString("ToMainMenu", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Tool Count ähnelt.
         /// </summary>
-        internal static string ToolCount {
+        public static string ToolCount {
             get {
                 return ResourceManager.GetString("ToolCount", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Up ähnelt.
         /// </summary>
-        internal static string Up {
+        public static string Up {
             get {
                 return ResourceManager.GetString("Up", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Viewrange ähnelt.
         /// </summary>
-        internal static string Viewrange {
+        public static string Viewrange {
             get {
                 return ResourceManager.GetString("Viewrange", resourceCulture);
             }

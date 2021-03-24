@@ -1,21 +1,20 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
 using System;
 
 namespace OctoAwesome.Client.Controls
 {
     internal sealed class ExtensionsOptionControl : Panel
     {
-        private Button enableButton;
-        private Button disableButton;
-        private Button applyButton;
-        private Listbox<IExtension> loadedExtensionsList;
-        private Listbox<IExtension> activeExtensionsList;
-        private Label infoLabel;
+        private readonly Button enableButton;
+        private readonly Button disableButton;
+        private readonly Button applyButton;
+        private readonly Listbox<IExtension> loadedExtensionsList;
+        private readonly Listbox<IExtension> activeExtensionsList;
+        private readonly Label infoLabel;
 
-        public ExtensionsOptionControl(ScreenComponent manager) : base(manager)
+        public ExtensionsOptionControl(BaseScreenComponent manager, IExtensionLoader extensionLoader) : base(manager)
         {
             Grid grid = new Grid(manager)
             {
@@ -40,19 +39,19 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            enableButton = new TextButton(manager, Languages.OctoClient.Enable);
+            enableButton = new TextButton(manager, UI.Languages.OctoClient.Enable);
             enableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             enableButton.Visible = false;
             buttons.Controls.Add(enableButton);
 
-            disableButton = new TextButton(manager, Languages.OctoClient.Disable);
+            disableButton = new TextButton(manager, UI.Languages.OctoClient.Disable);
             disableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             disableButton.Visible = false;
             buttons.Controls.Add(disableButton);
 
             #endregion
 
-            applyButton = new TextButton(manager, Languages.OctoClient.Apply);
+            applyButton = new TextButton(manager, UI.Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);
@@ -112,12 +111,12 @@ namespace OctoAwesome.Client.Controls
             applyButton.LeftMouseClick += (s, e) =>
             {
                 //TODO: Apply
-                manager.Game.ExtensionLoader.ApplyExtensions(loadedExtensionsList.Items);
+                extensionLoader.ApplyExtensions(loadedExtensionsList.Items);
                 Program.Restart();
             };
 
             // Daten laden
-            var loader = manager.Game.ExtensionLoader;
+            var loader = extensionLoader;
             foreach (var item in loader.LoadedExtensions)
                 loadedExtensionsList.Items.Add(item);
 

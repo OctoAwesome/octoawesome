@@ -1,22 +1,23 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
+using OctoAwesome.UI;
+using OctoAwesome.UI.Components;
 
 namespace OctoAwesome.Client.Controls
 {
     internal sealed class ResourcePacksOptionControl : Panel
     {
-        private Button addButton;
-        private Button removeButton;
-        private Button moveUpButton;
-        private Button moveDownButton;
-        private Button applyButton;
-        private Listbox<ResourcePack> loadedPacksList;
-        private Listbox<ResourcePack> activePacksList;
-        private Label infoLabel;
+        private readonly Button addButton;
+        private readonly Button removeButton;
+        private readonly Button moveUpButton;
+        private readonly Button moveDownButton;
+        private readonly Button applyButton;
+        private readonly Listbox<ResourcePack> loadedPacksList;
+        private readonly Listbox<ResourcePack> activePacksList;
+        private readonly Label infoLabel;
 
-        public ResourcePacksOptionControl(ScreenComponent manager) : base(manager)
+        public ResourcePacksOptionControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
         {
             Grid grid = new Grid(manager)
             {
@@ -41,29 +42,29 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            addButton = new TextButton(manager, Languages.OctoClient.Add);
+            addButton = new TextButton(manager, UI.Languages.OctoClient.Add);
             addButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             addButton.Visible = false;
             buttons.Controls.Add(addButton);
 
-            removeButton = new TextButton(manager, Languages.OctoClient.Remove);
+            removeButton = new TextButton(manager, UI.Languages.OctoClient.Remove);
             removeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             removeButton.Visible = false;
             buttons.Controls.Add(removeButton);
 
-            moveUpButton = new TextButton(manager, Languages.OctoClient.Up);
+            moveUpButton = new TextButton(manager, UI.Languages.OctoClient.Up);
             moveUpButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             moveUpButton.Visible = false;
             buttons.Controls.Add(moveUpButton);
 
-            moveDownButton = new TextButton(manager, Languages.OctoClient.Down);
+            moveDownButton = new TextButton(manager, UI.Languages.OctoClient.Down);
             moveDownButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             moveDownButton.Visible = false;
             buttons.Controls.Add(moveDownButton);
 
             #endregion
 
-            applyButton = new TextButton(manager, Languages.OctoClient.Apply);
+            applyButton = new TextButton(manager, UI.Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);
@@ -186,17 +187,17 @@ namespace OctoAwesome.Client.Controls
 
             applyButton.LeftMouseClick += (s, e) =>
             {
-                manager.Game.Assets.ApplyResourcePacks(activePacksList.Items);
+                asset.ApplyResourcePacks(activePacksList.Items);
                 Program.Restart();
             };
 
             // Daten laden
 
-            AssetComponent assets = manager.Game.Assets;
+            AssetComponent assets = asset;
             foreach (var item in assets.LoadedResourcePacks)
                 loadedPacksList.Items.Add(item);
 
-            foreach (var item in manager.Game.Assets.ActiveResourcePacks)
+            foreach (var item in asset.ActiveResourcePacks)
             {
                 activePacksList.Items.Add(item);
                 if (loadedPacksList.Items.Contains(item))

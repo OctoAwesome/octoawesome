@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OctoAwesome.Client.Languages {
+namespace OctoAwesome.UI.Languages {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace OctoAwesome.Client.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class OctoKeys {
+    public class OctoKeys {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace OctoAwesome.Client.Languages {
         ///   Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OctoAwesome.Client.Languages.OctoKeys", typeof(OctoKeys).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OctoAwesome.UI.Languages.OctoKeys", typeof(OctoKeys).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace OctoAwesome.Client.Languages {
         ///   Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Apply ähnelt.
         /// </summary>
-        internal static string apply {
+        public static string apply {
             get {
                 return ResourceManager.GetString("apply", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Move Backward ähnelt.
         /// </summary>
-        internal static string backward {
+        public static string backward {
             get {
                 return ResourceManager.GetString("backward", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die DEBUG: All Blocktypes in Inventory ähnelt.
         /// </summary>
-        internal static string debug_allblocks {
+        public static string debug_allblocks {
             get {
                 return ResourceManager.GetString("debug_allblocks", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die DEBUG: Show/Hide Debug Control ähnelt.
         /// </summary>
-        internal static string debug_control {
+        public static string debug_control {
             get {
                 return ResourceManager.GetString("debug_control", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Exit ähnelt.
         /// </summary>
-        internal static string exit {
+        public static string exit {
             get {
                 return ResourceManager.GetString("exit", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Flymode ähnelt.
         /// </summary>
-        internal static string flymode {
+        public static string flymode {
             get {
                 return ResourceManager.GetString("flymode", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Move Forward ähnelt.
         /// </summary>
-        internal static string forward {
+        public static string forward {
             get {
                 return ResourceManager.GetString("forward", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Free/Capture Mouse ähnelt.
         /// </summary>
-        internal static string freemouse {
+        public static string freemouse {
             get {
                 return ResourceManager.GetString("freemouse", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Toggle Full Screen Mode ähnelt.
         /// </summary>
-        internal static string fullscreen {
+        public static string fullscreen {
             get {
                 return ResourceManager.GetString("fullscreen", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Head Down ähnelt.
         /// </summary>
-        internal static string headdown {
+        public static string headdown {
             get {
                 return ResourceManager.GetString("headdown", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Head Left ähnelt.
         /// </summary>
-        internal static string headleft {
+        public static string headleft {
             get {
                 return ResourceManager.GetString("headleft", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Head Right ähnelt.
         /// </summary>
-        internal static string headright {
+        public static string headright {
             get {
                 return ResourceManager.GetString("headright", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Head Up ähnelt.
         /// </summary>
-        internal static string headup {
+        public static string headup {
             get {
                 return ResourceManager.GetString("headup", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Hide all Controls ähnelt.
         /// </summary>
-        internal static string hidecontrols {
+        public static string hidecontrols {
             get {
                 return ResourceManager.GetString("hidecontrols", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Interact ähnelt.
         /// </summary>
-        internal static string interact {
+        public static string interact {
             get {
                 return ResourceManager.GetString("interact", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory ähnelt.
         /// </summary>
-        internal static string inventory {
+        public static string inventory {
             get {
                 return ResourceManager.GetString("inventory", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Jump ähnelt.
         /// </summary>
-        internal static string jump {
+        public static string jump {
             get {
                 return ResourceManager.GetString("jump", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Move Left ähnelt.
         /// </summary>
-        internal static string left {
+        public static string left {
             get {
                 return ResourceManager.GetString("left", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Move Right ähnelt.
         /// </summary>
-        internal static string right {
+        public static string right {
             get {
                 return ResourceManager.GetString("right", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 0 ähnelt.
         /// </summary>
-        internal static string slot0 {
+        public static string slot0 {
             get {
                 return ResourceManager.GetString("slot0", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 1 ähnelt.
         /// </summary>
-        internal static string slot1 {
+        public static string slot1 {
             get {
                 return ResourceManager.GetString("slot1", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 2 ähnelt.
         /// </summary>
-        internal static string slot2 {
+        public static string slot2 {
             get {
                 return ResourceManager.GetString("slot2", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 3 ähnelt.
         /// </summary>
-        internal static string slot3 {
+        public static string slot3 {
             get {
                 return ResourceManager.GetString("slot3", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 4 ähnelt.
         /// </summary>
-        internal static string slot4 {
+        public static string slot4 {
             get {
                 return ResourceManager.GetString("slot4", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 5 ähnelt.
         /// </summary>
-        internal static string slot5 {
+        public static string slot5 {
             get {
                 return ResourceManager.GetString("slot5", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 6 ähnelt.
         /// </summary>
-        internal static string slot6 {
+        public static string slot6 {
             get {
                 return ResourceManager.GetString("slot6", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 7 ähnelt.
         /// </summary>
-        internal static string slot7 {
+        public static string slot7 {
             get {
                 return ResourceManager.GetString("slot7", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 8 ähnelt.
         /// </summary>
-        internal static string slot8 {
+        public static string slot8 {
             get {
                 return ResourceManager.GetString("slot8", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Inventory Slot 9 ähnelt.
         /// </summary>
-        internal static string slot9 {
+        public static string slot9 {
             get {
                 return ResourceManager.GetString("slot9", resourceCulture);
             }
@@ -324,33 +324,27 @@ namespace OctoAwesome.Client.Languages {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
         /// </summary>
-        internal static string teleport {
+        public static string teleport {
             get {
                 return ResourceManager.GetString("teleport", resourceCulture);
             }
         }
-
-
+        
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Toggle Ambient Occlusion ähnelt.
         /// </summary>
-        internal static string ambientOcclusion
-        {
-            get
-            {
-                return ResourceManager.GetString("ambientOcclusion", resourceCulture);
+        public static string toggleAmbientOcclusion {
+            get {
+                return ResourceManager.GetString("toggleAmbientOcclusion", resourceCulture);
             }
         }
-
-
+        
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Teleport ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Toggle Wireframe ähnelt.
         /// </summary>
-        internal static string wireFrame
-        {
-            get
-            {
-                return ResourceManager.GetString("wireFrame", resourceCulture);
+        public static string toggleWireFrame {
+            get {
+                return ResourceManager.GetString("toggleWireFrame", resourceCulture);
             }
         }
     }
