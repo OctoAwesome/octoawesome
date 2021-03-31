@@ -76,12 +76,12 @@ namespace OctoAwesome
             OnInitialize(mananger);
         }
 
-        public void Interact(GameTime gameTime)
+        public void Interact(GameTime gameTime, Entity entity)
         {
-            OnInteract(gameTime);
+            OnInteract(gameTime, entity);
         }
 
-        protected abstract void OnInteract(GameTime gameTime);
+        protected abstract void OnInteract(GameTime gameTime, Entity entity);
 
         protected virtual void OnInitialize(IResourceManager manager)
         {

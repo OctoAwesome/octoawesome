@@ -87,8 +87,8 @@ namespace OctoAwesome.Client
             Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
-            int width = Settings.Get("Width", 1080);
-            int height = Settings.Get("Height", 720);
+            int width = Settings.Get("Width", 1680);
+            int height = Settings.Get("Height", 1050);
             Window.ClientSize = new Size(width, height);
 
             Window.Fullscreen = Settings.Get("EnableFullscreen", false);

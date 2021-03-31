@@ -311,7 +311,7 @@ namespace OctoAwesome.Runtime
                         awaiter.SetResult(player);
                         return awaiter;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // File.Delete(file);
                     }

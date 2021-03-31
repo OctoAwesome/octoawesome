@@ -18,7 +18,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
         public Chest(Coordinate position)
         {
             inventoryComponent = new InventoryComponent();
-            transferUiComponent = new TransferUIComponent();
+            transferUiComponent = new TransferUIComponent(inventoryComponent);
 
             Components.AddComponent(inventoryComponent);
             Components.AddComponent(new PositionComponent()
@@ -31,11 +31,19 @@ namespace OctoAwesome.Basics.FunctionBlocks
             Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchest", BaseZRotation = -90 }, true);
             Components.AddComponent(transferUiComponent, true);
 
+            //Simulation.Entities.FirstOrDefault(x=>x.)
         }
 
-        protected override void OnInteract(GameTime gameTime)
+        protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            transferUiComponent.Show();
+            if (entity is Player p)
+            {
+                transferUiComponent.Show(p);
+            }
+            else
+            {
+
+            }
         }
     }
 }

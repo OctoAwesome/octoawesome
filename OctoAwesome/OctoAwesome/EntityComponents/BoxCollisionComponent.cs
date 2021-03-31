@@ -15,6 +15,11 @@ namespace OctoAwesome.EntityComponents
 
         private readonly BoundingBox[] boundingBoxes;
 
+        public BoxCollisionComponent()
+        {
+
+        }
+
         public BoxCollisionComponent(BoundingBox[] boundingBoxes)
         {
             this.boundingBoxes = boundingBoxes;
