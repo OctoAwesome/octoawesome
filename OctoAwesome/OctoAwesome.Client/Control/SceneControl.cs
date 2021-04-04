@@ -555,7 +555,7 @@ namespace OctoAwesome.Client.Controls
             var viewProjC = camera.Projection * camera.View;
             DrawChunks(chunkOffset, viewProjC);
 
-            entities.Draw(camera.View, camera.Projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
+            entities.Draw(gameTime, camera.View, camera.Projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
 
             if (player.SelectedBox.HasValue)
             {

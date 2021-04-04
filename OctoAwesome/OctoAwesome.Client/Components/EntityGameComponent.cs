@@ -1,7 +1,9 @@
 ﻿using engenious;
 using engenious.Graphics;
 using engenious.Helper;
+
 using OctoAwesome.EntityComponents;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +44,7 @@ namespace OctoAwesome.Client.Components
         }
 
         private int i = 0;
-        public void Draw(Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
+        public void Draw(GameTime gameTime, Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize)
         {
             effect.Projection = projection;
             effect.View = view;
@@ -124,6 +126,7 @@ namespace OctoAwesome.Client.Components
                             continue;
 
                         var positioncomp = functionalBlock.Components.GetComponent<PositionComponent>();
+                        var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
                         var position = positioncomp.Position;
                         var body = functionalBlock.Components.GetComponent<BodyComponent>();
 
@@ -139,11 +142,19 @@ namespace OctoAwesome.Client.Components
                         Matrix world = Matrix.CreateTranslation(
                             shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
                             shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
+                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z - 0.5f) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
                         effect.World = world;
                         effect.Texture = modelinfo.texture;
                         modelinfo.model.Transform = world;
-
+                        modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
+                        if (animationcomp is not null)
+                        {
+                            animationcomp.MaxTime = modelinfo.model.CurrentAnimation?.MaxTime ?? 0f;
+                            animationcomp.Update(gameTime, modelinfo.model);
+                        }
+                        //modelinfo.model.CurrentAnimation.MaxTime
+                        //modelinfo.model.UpdateAnimation((float)(gameTime.TotalGameTime.TotalMilliseconds / 20));
+                        //modelinfo.model.CurrentAnimation?.Update(DateTime.Now.Second);
                         modelinfo.model.Draw(effect);
                     }
                 }

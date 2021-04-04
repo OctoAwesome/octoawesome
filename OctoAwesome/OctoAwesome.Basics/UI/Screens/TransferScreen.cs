@@ -13,6 +13,8 @@ namespace OctoAwesome.Basics.UI.Screens
 {
     public class TransferScreen : Screen
     {
+        public event EventHandler<NavigationEventArgs> Closed;
+
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inventoryA;
@@ -122,6 +124,12 @@ namespace OctoAwesome.Basics.UI.Screens
             }
 
             base.OnKeyDown(args);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs args)
+        {
+            base.OnNavigatedFrom(args);
+            Closed?.Invoke(this, args);
         }
     }
 }

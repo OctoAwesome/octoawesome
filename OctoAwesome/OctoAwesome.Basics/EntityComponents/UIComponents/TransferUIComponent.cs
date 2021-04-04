@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Basics.UI.Screens;
+﻿using engenious.UI;
+
+using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,8 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
 {
     public class TransferUIComponent : UIComponent
     {
+        public event EventHandler<NavigationEventArgs> Closed;
+
         private readonly TransferScreen transferScreen;
         private readonly InventoryComponent chestInventory;
 
@@ -17,6 +21,12 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
         {
             this.chestInventory = chestInventory;
             transferScreen = new TransferScreen(ScreenComponent, AssetComponent, chestInventory, new InventoryComponent());
+            transferScreen.Closed += TransferScreen_Closed;
+        }
+
+        private void TransferScreen_Closed(object sender, engenious.UI.NavigationEventArgs e)
+        {
+            Closed?.Invoke(sender, e);
         }
 
         public void Show(Player p)
@@ -24,7 +34,6 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
             var playerInventory = p.Components.GetComponent<InventoryComponent>();
             if (playerInventory is null) 
                 return;
-
             transferScreen.Rebuild(chestInventory, playerInventory);
 
             if (ScreenComponent.ActiveScreen != transferScreen)
