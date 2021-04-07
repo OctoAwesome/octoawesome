@@ -288,8 +288,6 @@ namespace OctoAwesome
             {
                 if (component is IHoldComponent<Entity> holdComponent)
                     holdComponent.Remove(entity);
-                else
-                    ;
             }
 
             entities.Remove(entity);

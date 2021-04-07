@@ -24,7 +24,7 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
             transferScreen.Closed += TransferScreen_Closed;
         }
 
-        private void TransferScreen_Closed(object sender, engenious.UI.NavigationEventArgs e)
+        private void TransferScreen_Closed(object sender, NavigationEventArgs e)
         {
             Closed?.Invoke(sender, e);
         }
@@ -32,8 +32,10 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
         public void Show(Player p)
         {
             var playerInventory = p.Components.GetComponent<InventoryComponent>();
+
             if (playerInventory is null) 
                 return;
+
             transferScreen.Rebuild(chestInventory, playerInventory);
 
             if (ScreenComponent.ActiveScreen != transferScreen)

@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -58,7 +59,15 @@ namespace OctoAwesome.EntityComponents
             foreach (var slot in Inventory)
             {
                 writer.Write(slot.Item.GetType().FullName!);
-                writer.Write(slot.Amount);
+                if (slot.Item is ISerializable serializable)
+                {
+
+                }
+                else
+                {
+                    writer.Write(slot.Amount);
+                }
+
             }
         }
 
@@ -85,7 +94,7 @@ namespace OctoAwesome.EntityComponents
             {
                 slot.Amount += quantity;
             }
-            
+
         }
 
         /// <summary>

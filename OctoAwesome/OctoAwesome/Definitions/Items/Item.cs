@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using engenious;
+using OctoAwesome.Serialization;
+using System.Collections.Generic;
+using System.IO;
 
 namespace OctoAwesome.Definitions.Items
 {
     /// <summary>
     /// Basisklasse für alle nicht-lebendigen Spielelemente (für lebendige Spielelemente siehe <see cref="Entity"/>
     /// </summary>
-    public abstract class Item : IItem, IInventoryable
+    public abstract class Item : IItem, IInventoryable, ISerializable
     {
         /// <summary>
         /// Der Zustand des Items
@@ -25,6 +28,8 @@ namespace OctoAwesome.Definitions.Items
 
         public virtual int StackLimit => 1;
 
+        private readonly IDefinitionManager definitionManager;
+
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Item.
         /// </summary>
@@ -33,6 +38,8 @@ namespace OctoAwesome.Definitions.Items
             Definition = definition;
             Material = material;
             Condition = 99;
+
+            definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
 
         public virtual int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
@@ -53,6 +60,45 @@ namespace OctoAwesome.Definitions.Items
 
             //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
+        }
+
+        public virtual void Serialize(BinaryWriter writer)
+        {
+            writer.Write(Condition);
+            writer.Write(Position.HasValue);
+            if (Position.HasValue)
+            {
+                writer.Write(Position.Value.Planet);
+                writer.Write(Position.Value.GlobalBlockIndex.X);
+                writer.Write(Position.Value.GlobalBlockIndex.Y);
+                writer.Write(Position.Value.GlobalBlockIndex.Z);
+                writer.Write(Position.Value.BlockPosition.X);
+                writer.Write(Position.Value.BlockPosition.Y);
+                writer.Write(Position.Value.BlockPosition.Z);
+            }
+
+            writer.Write(Definition.GetType().FullName!);
+            writer.Write(Material.GetType().FullName!);
+        }
+
+        public virtual void Deserialize(BinaryReader reader)
+        {
+            Condition = reader.ReadInt32();
+            if (reader.ReadBoolean())
+            {
+                // Position
+                int planet = reader.ReadInt32();
+                int blockX = reader.ReadInt32();
+                int blockY = reader.ReadInt32();
+                int blockZ = reader.ReadInt32();
+                float posX = reader.ReadSingle();
+                float posY = reader.ReadSingle();
+                float posZ = reader.ReadSingle();
+
+                Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+            }
+
+            //Definition = definitionManager.
         }
     }
 }
