@@ -38,6 +38,8 @@ namespace OctoAwesome.Basics.Definitions.Items
             };
 
             updateHub.Push(notification, DefaultChannels.Simulation);
+
+            //updateHub.Push(notification, DefaultChannels.Network);
             return 0;
         }
     }

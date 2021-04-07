@@ -86,12 +86,27 @@ namespace OctoAwesome.Client.Screens
                 Margin = Border.All(10, 0, 0, 0),
             };
 
-            nameLabel = new Label(manager);
+            nameLabel = new Label(manager) 
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch, 
+                HorizontalTextAlignment = HorizontalAlignment.Center
+            };
             infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label(manager);
+
+            massLabel = new Label(manager) 
+            { 
+                HorizontalAlignment = HorizontalAlignment.Stretch, 
+                HorizontalTextAlignment = HorizontalAlignment.Center 
+            };
             infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label(manager);
+
+            volumeLabel = new Label(manager) 
+            { 
+                HorizontalAlignment = HorizontalAlignment.Stretch, 
+                HorizontalTextAlignment = HorizontalAlignment.Center
+            };
             infoPanel.Controls.Add(volumeLabel);
+
             grid.AddControl(infoPanel, 1, 0);
 
             Grid toolbar = new Grid(manager)

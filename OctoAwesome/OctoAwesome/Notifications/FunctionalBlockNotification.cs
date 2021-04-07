@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
+
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,10 +24,15 @@ namespace OctoAwesome.Notifications
             }
         }
 
+        public PropertyChangedNotification Notification { get; set; }
+
         private FunctionalBlock block;
+
+        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         public FunctionalBlockNotification()
         {
+            propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
         public FunctionalBlockNotification(Guid id) : this()
@@ -38,10 +45,26 @@ namespace OctoAwesome.Notifications
             Type = (ActionType)reader.ReadInt32();
 
 
-            if (Type == ActionType.Add) { }
-            //Block = Serializer.Deserialize()
+            if (Type == ActionType.Add)
+            {
+                var typeName = reader.ReadString();
+                var t = System.Type.GetType(typeName);
+                var deMethod = typeof(Serializer).GetMethod(nameof(Serializer.Deserialize), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                deMethod = deMethod.MakeGenericMethod(t);
+                var blockBytes = reader.ReadBytes(reader.ReadInt32());
+
+                var parameterArr = new object[1];
+                parameterArr[0] = blockBytes;
+                Block = (FunctionalBlock)deMethod.Invoke(null, parameterArr);
+                BlockId = Block.Id;
+            }
             else
                 BlockId = new Guid(reader.ReadBytes(16));
+
+            var isNotification = reader.ReadBoolean();
+            if (isNotification)
+                Notification = Serializer.DeserializePoolElement(
+                    propertyChangedNotificationPool, reader.ReadBytes(reader.ReadInt32()));
 
         }
 
@@ -51,15 +74,22 @@ namespace OctoAwesome.Notifications
 
             if (Type == ActionType.Add)
             {
+                writer.Write(Block.GetType().AssemblyQualifiedName);
                 var bytes = Serializer.Serialize(Block);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }
             else
-            {
                 writer.Write(BlockId.ToByteArray());
+
+            var subNotification = Notification != null;
+            writer.Write(subNotification);
+            if (subNotification)
+            {
+                var bytes = Serializer.Serialize(Notification);
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
             }
-           
         }
 
         protected override void OnRelease()

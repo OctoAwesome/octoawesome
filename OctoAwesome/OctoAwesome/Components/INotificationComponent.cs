@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Components
 {
-    public interface IEntityNotificationComponent : IEntityComponent, INotificationSubject<SerializableNotification>
-    {
-    }
+    //public interface INotificationComponent : IEntityComponent, IFunctionalBlockComponent, INotificationSubject<SerializableNotification>
+    //{
+    //}
 }

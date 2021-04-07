@@ -33,6 +33,8 @@ namespace OctoAwesome
             typeContainer.Register<Pool<BlocksChangedNotification>, Pool<BlocksChangedNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<Pool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<FunctionalBlockNotification>, Pool<FunctionalBlockNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<FunctionalBlockNotification>, Pool<FunctionalBlockNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehaviour.Singleton);

@@ -33,7 +33,7 @@ namespace OctoAwesome
         /// <summary>
         /// Contains only Components with notification interface implementation.
         /// </summary>
-        //private readonly ComponentList<IEntityNotificationComponent> notificationComponents;
+        private readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
@@ -41,7 +41,7 @@ namespace OctoAwesome
         public FunctionalBlock()
         {
             Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
-            //notificationComponents = new();
+            notificationComponents = new();
             Id = Guid.Empty;
         }
 
@@ -52,11 +52,11 @@ namespace OctoAwesome
 
         private void OnAddComponent(IFunctionalBlockComponent component)
         {
-            if (component is InstanceComponent<FunctionalBlock> instanceComponent)
+            if (component is InstanceComponent<INotificationSubject<SerializableNotification>> instanceComponent)
                 instanceComponent.SetInstance(this);
 
-            //if (component is IEntityNotificationComponent nofiticationComponent)
-            //    notificationComponents.AddComponent(nofiticationComponent);
+            if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
+                notificationComponents.Add(nofiticationComponent);
         }
 
         private void ValidateAddComponent(IFunctionalBlockComponent component)
@@ -130,8 +130,8 @@ namespace OctoAwesome
 
         public virtual void Push(SerializableNotification notification)
         {
-            //foreach (var component in notificationComponents)
-            //    component?.OnNotification(notification);
+            foreach (var component in notificationComponents)
+                component?.OnNotification(notification);
         }
 
         public bool ContainsComponent<T>()

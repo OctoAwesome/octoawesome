@@ -22,6 +22,7 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
             this.chestInventory = chestInventory;
             transferScreen = new TransferScreen(ScreenComponent, AssetComponent, chestInventory, new InventoryComponent());
             transferScreen.Closed += TransferScreen_Closed;
+            Serializeable = false;
         }
 
         private void TransferScreen_Closed(object sender, engenious.UI.NavigationEventArgs e)

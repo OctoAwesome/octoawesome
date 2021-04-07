@@ -2,6 +2,9 @@
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +18,15 @@ namespace OctoAwesome.Basics.FunctionBlocks
         private readonly InventoryComponent inventoryComponent;
         private readonly AnimationComponent animationComponent;
         private readonly TransferUIComponent transferUiComponent;
+        private readonly IPool<FunctionalBlockNotification> functionalBlockNotificationPool;
 
-        public Chest(Coordinate position)
+        public Chest()
+        {
+            functionalBlockNotificationPool = TypeContainer.Get<IPool<FunctionalBlockNotification>>();
+
+        }
+
+        public Chest(Coordinate position) :this()
         {
             inventoryComponent = new InventoryComponent();
             animationComponent = new AnimationComponent();
@@ -41,6 +51,21 @@ namespace OctoAwesome.Basics.FunctionBlocks
         {
             animationComponent.AnimationSpeed = -60f;
         }
+
+        public override void OnNotification(SerializableNotification notification)
+        {
+            base.OnNotification(notification);
+
+            var functionalBlockNotification = functionalBlockNotificationPool.Get();
+            functionalBlockNotification.Block = this;
+            functionalBlockNotification.Type = FunctionalBlockNotification.ActionType.Update;
+            functionalBlockNotification.Notification = notification as PropertyChangedNotification;
+
+            Simulation?.OnUpdate(functionalBlockNotification);
+            functionalBlockNotification.Release();
+        }
+
+
 
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {

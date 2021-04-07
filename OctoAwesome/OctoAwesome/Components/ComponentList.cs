@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Serialization;
+
 using OpenTK.Graphics.OpenGL;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -139,9 +141,11 @@ namespace OctoAwesome
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         public virtual void Serialize(BinaryWriter writer)
         {
-            writer.Write(components.Count);
+            writer.Write(components.Count(x=>x.Value.Serializeable));
             foreach (var componente in components)
             {
+                if (!componente.Value.Serializeable)
+                    continue;
                 writer.Write(componente.Key.AssemblyQualifiedName!);
                 componente.Value.Serialize(writer);
 

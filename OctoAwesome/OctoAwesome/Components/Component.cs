@@ -1,5 +1,8 @@
-﻿using OctoAwesome.Components;
+﻿
+using OctoAwesome.Components;
 using OctoAwesome.Serialization;
+
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -10,13 +13,17 @@ namespace OctoAwesome
     /// </summary>
     public abstract class Component : IComponent
     {
+        public const int Size = sizeof(bool);
+
         public bool Enabled { get; set; }
         public bool Sendable { get; set; }
+        public bool Serializeable { get; set; }
 
         public Component()
         {
             Enabled = true;
             Sendable = false;
+            Serializeable = true;
         }
 
         /// <summary>
@@ -26,6 +33,11 @@ namespace OctoAwesome
         public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(Enabled); 
+        }
+
+        protected virtual void Serialize(Span<byte> writer)
+        {
+            BitConverter.TryWriteBytes(writer,Enabled);
         }
 
         /// <summary>

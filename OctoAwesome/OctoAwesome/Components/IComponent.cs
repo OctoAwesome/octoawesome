@@ -11,5 +11,7 @@ namespace OctoAwesome.Components
     {
         bool Sendable { get; set; }
         bool Enabled { get; set; }
+        bool Serializeable { get; set; }
+
     }
 }

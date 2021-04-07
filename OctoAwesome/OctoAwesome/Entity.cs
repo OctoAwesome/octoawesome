@@ -4,6 +4,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome
@@ -31,7 +32,7 @@ namespace OctoAwesome
         /// <summary>
         /// Contains only Components with notification interface implementation.
         /// </summary>
-        private readonly ComponentList<IEntityNotificationComponent> notificationComponents;
+        private readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
@@ -50,7 +51,7 @@ namespace OctoAwesome
 
         private void OnAddComponent(IEntityComponent component)
         {
-            if (component is InstanceComponent<Entity> instanceComponent)
+            if (component is InstanceComponent<INotificationSubject<SerializableNotification>> instanceComponent)
                 instanceComponent.SetInstance(this);
 
             //HACK: Remove PositionComponent Dependency
@@ -67,8 +68,8 @@ namespace OctoAwesome
                 cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
             }
 
-            if (component is IEntityNotificationComponent nofiticationComponent)
-                notificationComponents.AddComponent(nofiticationComponent);
+            if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
+                notificationComponents.Add(nofiticationComponent);
         }
 
         private void ValidateAddComponent(IEntityComponent component)

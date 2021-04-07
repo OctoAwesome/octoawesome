@@ -56,6 +56,7 @@ namespace OctoAwesome
         private readonly List<FunctionalBlock> functionalBlocks = new ();
         private readonly IDisposable simulationSubscription;
         private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly IPool<FunctionalBlockNotification> functionalBlockNotificationPool;
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Simulation.
@@ -65,6 +66,7 @@ namespace OctoAwesome
             ResourceManager = resourceManager;
             simulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            functionalBlockNotificationPool = TypeContainer.Get<IPool<FunctionalBlockNotification>>();
 
 
             this.extensionResolver = extensionResolver;
@@ -257,6 +259,7 @@ namespace OctoAwesome
                 if (component is IHoldComponent<FunctionalBlock> holdComponent)
                     holdComponent.Add(block);
             }
+
         }
 
         /// <summary>
@@ -348,12 +351,22 @@ namespace OctoAwesome
                         Add(entityNotification.Entity);
                     else if (entityNotification.Type == EntityNotification.ActionType.Update)
                         EntityUpdate(entityNotification);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Request)
+                    else if (entityNotification.Type == EntityNotification.ActionType.Request) {
+                        Console.WriteLine("Incomming Entity Request");
                         RequestEntity(entityNotification);
+                    }
                     break;
                 case FunctionalBlockNotification functionalBlockNotification:
                     if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Add)
+                    {
                         Add(functionalBlockNotification.Block);
+                        if (!IsServerSide)
+                            ResourceManager.UpdateHub.Push(functionalBlockNotification, DefaultChannels.Network);
+                    }
+                    else if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Update)
+                    {
+                        FunctionalBlockUpdate(functionalBlockNotification);
+                    }
                     break;
                 default:
                     break;
@@ -385,6 +398,20 @@ namespace OctoAwesome
                 entityNotification.Type = EntityNotification.ActionType.Request;
                 ResourceManager.UpdateHub.Push(entityNotification, DefaultChannels.Network);
                 entityNotification.Release();
+            }
+            else
+            {
+                entity.Push(notification.Notification);
+            }
+        }
+
+
+        private void FunctionalBlockUpdate(FunctionalBlockNotification notification)
+        {
+            var entity = functionalBlocks.FirstOrDefault(e => e.Id == notification.BlockId);
+            if (entity == null)
+            {
+                return;
             }
             else
             {
