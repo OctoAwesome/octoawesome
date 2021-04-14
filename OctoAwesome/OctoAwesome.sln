@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database", "Oct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database.Tests", "Tests\OctoAwesome.Database.Tests\OctoAwesome.Database.Tests.csproj", "{6592E6FB-A005-45B7-A526-6598D7CF26BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.UI", "OctoAwesome.Client.UI\OctoAwesome.UI.csproj", "{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.UI", "OctoAwesome.Client.UI\OctoAwesome.UI.csproj", "{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

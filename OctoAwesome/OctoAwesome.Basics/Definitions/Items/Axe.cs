@@ -19,6 +19,11 @@ namespace OctoAwesome.Basics.Definitions.Items
             polynomial = new Polynomial(0, 3f / 8f, 1f / 800f, -1f / 320000f);
         }
 
+        public Axe() : base(null, null)
+        {
+
+        }
+
         public Axe(AxeDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
@@ -29,10 +34,10 @@ namespace OctoAwesome.Basics.Definitions.Items
         {
             //⁅𝑥^2/800+3𝑥/8+(−𝑥^3)/320000⁆
             var baseEfficiency = base.Hit(material, blockInfo, volumeRemaining, volumePerHit);
-
+            //typeof(Item).GUID
             if (material is ISolidMaterialDefinition solid && baseEfficiency > 0)
             {
-                var fractureEfficiency = polynomial.Evaluate(solid.FractureToughness); 
+                var fractureEfficiency = polynomial.Evaluate(solid.FractureToughness);
                 return (int)(baseEfficiency * (fractureEfficiency) / 100);
             }
 

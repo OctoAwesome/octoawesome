@@ -20,9 +20,9 @@ namespace OctoAwesome.Definitions.Items
         /// </summary>
         public Coordinate? Position { get; set; }
 
-        public IItemDefinition Definition { get; }
+        public IItemDefinition Definition { get; protected set; }
 
-        public IMaterialDefinition Material { get; set; }
+        public IMaterialDefinition Material { get; protected set; }
 
         public virtual int VolumePerUnit => 1;
 
@@ -98,7 +98,8 @@ namespace OctoAwesome.Definitions.Items
                 Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
             }
 
-            //Definition = definitionManager.
+            Definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
+            Material = definitionManager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
         }
     }
 }
