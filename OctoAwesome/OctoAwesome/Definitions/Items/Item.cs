@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Serialization;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -64,6 +65,14 @@ namespace OctoAwesome.Definitions.Items
 
         public virtual void Serialize(BinaryWriter writer)
         {
+            writer.Write(Definition.GetType().FullName!);
+            writer.Write(Material.GetType().FullName!);
+
+            InternalSerialize(writer);
+        }
+
+        protected void InternalSerialize(BinaryWriter writer)
+        {
             writer.Write(Condition);
             writer.Write(Position.HasValue);
             if (Position.HasValue)
@@ -76,12 +85,25 @@ namespace OctoAwesome.Definitions.Items
                 writer.Write(Position.Value.BlockPosition.Y);
                 writer.Write(Position.Value.BlockPosition.Z);
             }
+        }
 
-            writer.Write(Definition.GetType().FullName!);
-            writer.Write(Material.GetType().FullName!);
+        public static void Serialize(BinaryWriter writer, Item item)
+        {
+            writer.Write(item.Definition.GetType().FullName!);
+            writer.Write(item.Material.GetType().FullName!);
+
+            item.InternalSerialize(writer);
         }
 
         public virtual void Deserialize(BinaryReader reader)
+        {
+            Definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
+            Material = definitionManager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+
+            InternalDeserialize(reader);
+        }
+
+        protected void InternalDeserialize(BinaryReader reader)
         {
             Condition = reader.ReadInt32();
             if (reader.ReadBoolean())
@@ -97,9 +119,17 @@ namespace OctoAwesome.Definitions.Items
 
                 Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
             }
+        }
 
-            Definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
-            Material = definitionManager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+        public static Item Deserialize(BinaryReader reader, Type itemType, IDefinitionManager manager)
+        {
+            var definition = manager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
+            var material = manager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+
+            var item = Activator.CreateInstance(itemType, new object[] {definition, material } ) as Item;
+
+            item.InternalDeserialize(reader);
+            return item;
         }
     }
 }

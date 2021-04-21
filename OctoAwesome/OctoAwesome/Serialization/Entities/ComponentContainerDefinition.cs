@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Database;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Database;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,18 +7,18 @@ using System.Linq;
 
 namespace OctoAwesome.Serialization.Entities
 {
-    public sealed class EntityDefinition : ISerializable
+    public sealed class ComponentContainerDefinition<TContainer> : ISerializable where TContainer : IComponent
     {
         public Type Type { get;  set; }
         public Guid Id { get;  set; }
         public int ComponentsCount { get;  set; }
         public IEnumerable<Type> Components { get;  set; }
 
-        public EntityDefinition()
+        public ComponentContainerDefinition()
         {
 
         }
-        public EntityDefinition(Entity entity)
+        public ComponentContainerDefinition(ComponentContainer<TContainer> entity)
         {
             Type = entity.GetType();
             Id = entity.Id;
@@ -49,19 +50,19 @@ namespace OctoAwesome.Serialization.Entities
             Components = list;
         }
 
-        public sealed class EntityDefinitionContext : SerializableDatabaseContext<GuidTag<EntityDefinition>, EntityDefinition>
+        public sealed class ComponentContainerDefinitionContext<TContainer> : SerializableDatabaseContext<GuidTag<ComponentContainerDefinition<TContainer>>, ComponentContainerDefinition<TContainer>> where TContainer : IComponent
         {
-            public EntityDefinitionContext(Database<GuidTag<EntityDefinition>> database) : base(database)
+            public ComponentContainerDefinitionContext(Database<GuidTag<ComponentContainerDefinition<TContainer>>> database) : base(database)
             {
             }
 
-            public override void AddOrUpdate(EntityDefinition value)
-                => InternalAddOrUpdate(new GuidTag<EntityDefinition>(value.Id), value);
+            public override void AddOrUpdate(ComponentContainerDefinition<TContainer> value)
+                => InternalAddOrUpdate(new GuidTag<ComponentContainerDefinition<TContainer>>(value.Id), value);
 
-            public IEnumerable<GuidTag<EntityDefinition>> GetAllKeys() => Database.Keys;
+            public IEnumerable<GuidTag<ComponentContainerDefinition<TContainer>>> GetAllKeys() => Database.Keys;
 
-            public override void Remove(EntityDefinition value)
-                => InternalRemove(new GuidTag<EntityDefinition>(value.Id));
+            public override void Remove(ComponentContainerDefinition<TContainer> value)
+                => InternalRemove(new GuidTag<ComponentContainerDefinition<TContainer>>(value.Id));
         }
     }
 }

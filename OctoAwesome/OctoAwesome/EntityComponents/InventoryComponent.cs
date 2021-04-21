@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
@@ -51,12 +52,20 @@ namespace OctoAwesome.EntityComponents
                     if (type is null)
                         continue;
 
-                    var instance = Activator.CreateInstance(type)!;
-
-                    if (instance is ISerializable serializable)
+                    object instance;
+                    if (type.IsAssignableTo(typeof(Item)))
                     {
-                        serializable.Deserialize(reader);
+                        instance = Item.Deserialize(reader, type, definitionManager);
                     }
+                    else
+                    {
+                        instance = Activator.CreateInstance(type)!;
+                        if (instance is ISerializable serializable)
+                        {
+                            serializable.Deserialize(reader);
+                        }
+                    }
+
 
                     if (instance is IInventoryable inventoryObject)
                     {
@@ -83,7 +92,12 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)
             {
-                if (slot.Item is ISerializable serializable)
+                if (slot.Item is Item item)
+                {
+                    writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
+                    Item.Serialize(writer, item);
+                }
+                else if (slot.Item is ISerializable serializable)
                 {
                     writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
                     serializable.Serialize(writer);

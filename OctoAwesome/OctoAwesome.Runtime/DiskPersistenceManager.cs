@@ -157,7 +157,7 @@ namespace OctoAwesome.Runtime
 
         public void SaveEntity(Entity entity, Guid universe)
         {
-            var context = new EntityDbContext(databaseProvider, universe);
+            var context = new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universe);
             context.AddOrUpdate(entity);
         }
 
@@ -276,8 +276,8 @@ namespace OctoAwesome.Runtime
 
         public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
-            var entityContext = new EntityDbContext(databaseProvider, universeGuid);
-            entity = entityContext.Get(new GuidTag<Entity>(entityId));
+            var entityContext = new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid);
+            entity = (Entity)entityContext.Get(new GuidTag<ComponentContainer<IEntityComponent>>(entityId));
 
             var awaiter = awaiterPool.Get();
             awaiter.SetResult(entity);
@@ -322,17 +322,17 @@ namespace OctoAwesome.Runtime
         }
 
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => new EntityDbContext(databaseProvider, universeGuid).GetEntitiesWithComponent<T>();
+            => new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerWithComponent<T>().OfType<Entity>();
 
         public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => new EntityDbContext(databaseProvider, universeGuid).GetEntityIdsFromComponent<T>().Select(i => i.Tag);
+            => new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerIdsFromComponent<T>().Select(i => i.Tag);
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
-            => new EntityDbContext(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
+            => new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
         public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
         {
             foreach (var entityId in entityIds)
-                yield return (entityId, new EntityComponentsDbContext(databaseProvider, universeGuid).Get<T>(entityId));
+                yield return (entityId, new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid).Get<T>(entityId));
         }
 
         public void Dispose()
