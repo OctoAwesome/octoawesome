@@ -8,27 +8,45 @@ namespace OctoAwesome.PoC
 {
     public class DependencyTree
     {
-        private readonly List<DependencyLeaf> roots;
+        private readonly List<DependencyLeaf> leaves;
 
-        public DependencyTree()
+        public DependencyTree(List<DependencyLeaf> leaves)
         {
-            roots = new();
+            this.leaves = leaves;
         }
 
-        public void Add(DependencyLeaf leaf)
+        //False and True
+        public bool IsValid()
         {
+            foreach (var leave in leaves)
+            {
+                foreach (var child in leave.Children)
+                {
+                    if (child.Position <= leave.Position)
+                        return false;
+                }
+                foreach (var parent in leave.Parents)
+                {
+                    if (parent.Position >= leave.Position)
+                        return false;
+                }
+            }
 
+            foreach (var leave in leaves)
+            {
+                foreach (var child in leave.Children)
+                {
+                    if (leaves.IndexOf(child) < leaves.IndexOf(leave))
+                        return false;
+                }
+                foreach (var parent in leave.Parents)
+                {
+                    if (leaves.IndexOf(parent) > leaves.IndexOf(leave))
+                        return false;
+                }
+            }
+
+            return true;
         }
-
-        public DependencyLeaf Get(string name)
-        {
-            return default;
-        }
-
-        public void Remove(DependencyLeaf leaf)
-        {
-
-        }
-
     }
 }
