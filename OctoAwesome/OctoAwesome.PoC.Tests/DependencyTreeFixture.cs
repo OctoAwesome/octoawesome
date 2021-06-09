@@ -92,7 +92,7 @@ namespace OctoAwesome.PoC.Tests
 
                 Assert.That(result, Is.False);
             }
-                
+
             [Test]
             public void ReturnsFalseOnParentHasHigherPosition()
             {
@@ -164,8 +164,8 @@ namespace OctoAwesome.PoC.Tests
 
                 Leaf4.Position = 3;
 
-                Leaves.Remove(Leaf3);
-                Leaves.Add(Leaf3);
+                Leaves.Remove(Leaf3.ItemType);
+                Leaves.Add(Leaf3.ItemType, Leaf3);
 
                 var result = DependencyTree.IsValid();
 
@@ -186,8 +186,8 @@ namespace OctoAwesome.PoC.Tests
                 Leaf4.Position = 3;
                 Leaf4.Parents.Add(Leaf3);
 
-                Leaves.Remove(Leaf1);
-                Leaves.Add(Leaf1);
+                Leaves.Remove(Leaf1.Item.Type);
+                Leaves.Add(Leaf1.Item.Type, Leaf1);
 
                 var result = DependencyTree.IsValid();
 
@@ -203,20 +203,26 @@ namespace OctoAwesome.PoC.Tests
             public DependencyLeaf Leaf4 { get; private set; }
 
             public DependencyTree DependencyTree { get; private set; }
-            public List<DependencyLeaf> Leaves { get; private set; }
+            public Dictionary<Type, DependencyLeaf> Leaves { get; private set; }
 
             [SetUp]
             public void Setup()
             {
                 Leaf1
-                   = new DependencyLeaf(new(), new(), new(), 0);
+                   = new DependencyLeaf(new(typeof(string), nameof(Leaf1), new(), new()), new(), new(), 0);
                 Leaf2
-                    = new DependencyLeaf(new(), new(), new(), 0);
+                    = new DependencyLeaf(new(typeof(int), nameof(Leaf2), new(), new()), new(), new(), 0);
                 Leaf3
-                    = new DependencyLeaf(new(), new(), new(), 0);
+                    = new DependencyLeaf(new(typeof(short), nameof(Leaf3), new(), new()), new(), new(), 0);
                 Leaf4
-                    = new DependencyLeaf(new(), new(), new(), 0);
-                Leaves = new List<DependencyLeaf> { Leaf1, Leaf2, Leaf3, Leaf4 };
+                    = new DependencyLeaf(new(typeof(ushort), nameof(Leaf4), new(), new()), new(), new(), 0);
+                Leaves = new()
+                {
+                    { Leaf1.Item.Type, Leaf1 },
+                    { Leaf2.Item.Type, Leaf2 },
+                    { Leaf3.Item.Type, Leaf3 },
+                    { Leaf4.Item.Type, Leaf4 }
+                };
 
                 DependencyTree = new DependencyTree(Leaves);
             }

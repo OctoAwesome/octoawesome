@@ -30,6 +30,9 @@ namespace OctoAwesome.PoC
                 return default;
             }
 
+            //TValue Type C has to loaded
+            //A and B has to be loaded before
+
             Dictionary<int, Type> types = dependencyAgent.GetDependencyTypeOrder(key, cache.TypeOfTKey, cache.TypeOfTValue);
 
             return cache.Get<TKey, TValue>(key);

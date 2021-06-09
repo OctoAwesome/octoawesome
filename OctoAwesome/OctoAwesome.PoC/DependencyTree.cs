@@ -8,9 +8,9 @@ namespace OctoAwesome.PoC
 {
     public class DependencyTree
     {
-        private readonly List<DependencyLeaf> leaves;
+        private readonly Dictionary<Type, DependencyLeaf> leaves;
 
-        public DependencyTree(List<DependencyLeaf> leaves)
+        public DependencyTree(Dictionary<Type, DependencyLeaf> leaves)
         {
             this.leaves = leaves;
         }
@@ -18,6 +18,8 @@ namespace OctoAwesome.PoC
         //False and True
         public bool IsValid()
         {
+            var leaves = this.leaves.Values.ToList();
+
             foreach (var leave in leaves)
             {
                 foreach (var child in leave.Children)
@@ -28,20 +30,6 @@ namespace OctoAwesome.PoC
                 foreach (var parent in leave.Parents)
                 {
                     if (parent.Position >= leave.Position)
-                        return false;
-                }
-            }
-
-            foreach (var leave in leaves)
-            {
-                foreach (var child in leave.Children)
-                {
-                    if (leaves.IndexOf(child) < leaves.IndexOf(leave))
-                        return false;
-                }
-                foreach (var parent in leave.Parents)
-                {
-                    if (leaves.IndexOf(parent) > leaves.IndexOf(leave))
                         return false;
                 }
             }

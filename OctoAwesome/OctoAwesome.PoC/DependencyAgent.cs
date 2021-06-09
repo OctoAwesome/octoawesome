@@ -6,6 +6,13 @@ namespace OctoAwesome.PoC
 {
     public class DependencyAgent
     {
+        private readonly DependencyTree internalTree;
+
+        public DependencyAgent(DependencyTree tree)
+        {
+            internalTree = tree;
+        }
+
         internal Dictionary<int, Type> GetDependencyTypeOrder<TKey>(TKey key, Type typeOfTKey, Type typeOfTValue)
         {
             return null;
@@ -115,7 +122,12 @@ namespace OctoAwesome.PoC
                 CheckAndMove(item);
             }
 
-            return new(graph.OrderBy(r => r.Position).ToList());
+            var items
+                = graph
+                .OrderBy(r => r.Position)
+                .ToDictionary(l => l.Item.Type, l => l);
+
+            return new(items);
         }
 
         private static void CheckAndMove(DependencyLeaf item)

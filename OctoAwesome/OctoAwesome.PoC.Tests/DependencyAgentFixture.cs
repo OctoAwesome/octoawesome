@@ -72,7 +72,7 @@ namespace OctoAwesome.PoC.Tests
             [SetUp]
             public void Setup()
             {
-                DependencyAgent = new DependencyAgent();
+                DependencyAgent = new DependencyAgent(new DependencyTree(new Dictionary<Type, DependencyLeaf>()));
             }
 
             [TearDown]
