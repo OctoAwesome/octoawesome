@@ -22,11 +22,6 @@ namespace OctoAwesome.PoC
         /// </summary>
         public List<DependencyLeaf> Parents { get; }
 
-        public IReadOnlyList<DependencyLeaf> FlattenedParents
-        {
-            get => flattenedParents ??= GenerateFlattenedParents();
-        }
-
 
         public int Position { get; internal set; }
 
@@ -41,10 +36,6 @@ namespace OctoAwesome.PoC
         }
 
 
-        private IReadOnlyList<DependencyLeaf> GenerateFlattenedParents()
-        {
-
-        }
 
         private static bool HasCycle(IList<DependencyLeaf> dependencies)
         {

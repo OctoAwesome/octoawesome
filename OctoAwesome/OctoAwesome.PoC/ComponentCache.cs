@@ -1,4 +1,5 @@
-﻿using OctoAwesome.EntityComponents;
+﻿using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using OctoAwesome.EntityComponents;
 
 using System;
 
@@ -11,6 +12,13 @@ namespace OctoAwesome.PoC
         {
             throw new NotImplementedException();
         }
+
+      //  public Component[] TryFind<T>(T key)
+      //=> key switch
+      //{
+      //    int i => Array.Empty<Component>(),
+      //    _ => false
+      //};
     }
 
     public class EntityCache : Cache<int, Entity>//, IKeyFinder<Index3>
@@ -28,7 +36,7 @@ namespace OctoAwesome.PoC
             throw new NotImplementedException();
         }
 
-        
+
     }
 
     public class PositionComponentCache : ComponentCache//, IKeyFinder<Index3, PositionComponent>
@@ -41,6 +49,22 @@ namespace OctoAwesome.PoC
             throw new NotImplementedException();
 
         }
+
+        public PositionComponent TryFindFirst<T>(T key)
+        => key switch
+        {
+            Index3 i => null,
+            Index2 i2 => null,
+            _ => null
+        };
+            
+        //public PositionComponent[] TryFind<T>(T key)
+        //=> key switch
+        //{
+        //    Index3 i => Array.Empty<PositionComponent>(),
+        //    Index2 i2 => Array.Empty<PositionComponent>(),
+        //    _ => false
+        //};
     }
 
 

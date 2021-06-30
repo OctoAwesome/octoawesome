@@ -27,3 +27,23 @@ Beispiel ein Chunk wird geladen und gibt eine Position raus. Anhand dieser Posit
 Dieses Laden übernimmt ein Cache, welcher zum Programmierzeitpunkt angibt, mit welchen Daten er umgehen kann zum laden. 
 
 Welche Komponente Abhängigkeiten auf andere Komponenten hat wird in einer Datei gespeichert, welche menschlich lesbar sein sollte. Die Lesbarkeit wird darin begründet, dass es nachträglich durch einen Mod oder Menschen einfacher anpassbar wäre und die Fehleranalyse vereinfacht, wenn zum Beispiel nach dem hinzufügen eines Mods oder nach einer Code änderung eine Abhängigkeit fehlt. Vermutlich wird hierführ JSON genutzt. 
+
+## Lessons Learned
+- Dependency Tree ist kompliziert, löst 1 Problem bringt 2 neue (Wäre aber cool und Alghorithmen haben wir auch schon).
+- Entities laden ihren Components automatisch, deshalb eigentlich keine Child <=> Parent Beziehung notwendig, aber für einen Dependency Tree schon. Schwierig das zu trennen
+- Position Component ist was ganz besonderes, da viele Sachen anhand ihrer Position geladen/identifiert werden
+
+## Neuer Lösungsansatz
+- Caches und Cacheservice wird erstellt
+- Ctor Ladelogikfrei! (Softreferences), nur Übergabeparameter!
+- Mapping Position => Type
+    | Lösung 1 |Lösung 2|
+    |----------|--------|
+    | Mapping von TypeId, PositionComponentId und TypeType in zusätzlichen Type | Mapping mit Position, TypeId, TypeType|
+    | Position Component wird anfänglich geladen |  Nur Laden der Mappings und PositionComponents erst wenn diese von dem Abhängigkeitstypen geladen wird |
+
+- Ggf. zusätzliche Methode zum aufrufen um Softreferences zu laden
+- Planet in der Position auch bei Deserialize echtes Lazy Loading => Feld anlegen, Property mit get => _field ??= TryUpdatePlanet(planet) umsetzen
+- Cache befüllt sich beim 1. Aufruf mit benötigten Infos
+- Aufruf von PositionCache entweder auf GCC oder ChunkColumn oder ...
+- EntityService, FunctionalBlockService, ... können an Events subscriben und daraufhin zum Beispiel aus Caches laden

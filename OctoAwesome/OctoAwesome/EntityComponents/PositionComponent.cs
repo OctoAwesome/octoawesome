@@ -16,7 +16,8 @@ namespace OctoAwesome.EntityComponents
     {
         public Coordinate Position
         {
-            get => position; set
+            get => position; 
+            set
             {
                 var valueBlockX = ((int)(value.BlockPosition.X * 100)) / 100f;
                 var valueBlockY = ((int)(value.BlockPosition.Y * 100)) / 100f;

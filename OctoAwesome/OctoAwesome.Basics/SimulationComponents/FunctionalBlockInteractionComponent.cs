@@ -35,7 +35,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             controller
                 .Selection?
-                .Map(
+                .Visit(
                 blockInfo => { },
                 functionalBlock => InternalUpdate(controller, entity, functionalBlock),
                 entity => { }

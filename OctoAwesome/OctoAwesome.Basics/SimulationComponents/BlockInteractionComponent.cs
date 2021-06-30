@@ -39,9 +39,9 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             controller
                 .Selection?
-                .Map(
+                .Visit(
                 blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
-                functionalBlock => functionalBlock.Interact(gameTime, entity),
+                functionalBlock => functionalBlock?.Interact(gameTime, entity),
                 entity => { }
                 );
 
