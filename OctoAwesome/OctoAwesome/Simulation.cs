@@ -7,18 +7,19 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
-
+using OctoAwesome.Rx;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Resources;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Schnittstelle zwischen Applikation und Welt-Modell.
     /// </summary>
-    public sealed class Simulation : INotificationObserver
+    public sealed class Simulation : IDisposable
     {
         public IResourceManager ResourceManager { get; private set; }
 
@@ -52,10 +53,13 @@ namespace OctoAwesome
 
         private readonly IExtensionResolver extensionResolver;
 
-        private readonly List<Entity> entities = new ();
-        private readonly List<FunctionalBlock> functionalBlocks = new ();
-        private readonly IDisposable simulationSubscription;
+        private readonly List<Entity> entities = new();
+        private readonly List<FunctionalBlock> functionalBlocks = new();
         private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly Relay<Notification> networkRelay;
+
+        private IDisposable simulationSubscription;
+        private IDisposable networkSubscription;
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Simulation.
@@ -63,7 +67,8 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
         {
             ResourceManager = resourceManager;
-            simulationSubscription = resourceManager.UpdateHub.Subscribe(this, DefaultChannels.Simulation);
+            networkRelay = new Relay<Notification>();
+
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
 
 
@@ -141,6 +146,18 @@ namespace OctoAwesome
             if (State != SimulationState.Ready)
                 throw new Exception();
 
+            simulationSubscription
+                = ResourceManager
+                .UpdateHub
+                .ListenOn(DefaultChannels.Simulation)
+                .Subscribe(OnNext);
+
+            networkSubscription
+                = ResourceManager
+                .UpdateHub
+                .AddSource(networkRelay, DefaultChannels.Network);
+
+
             State = SimulationState.Running;
         }
 
@@ -193,6 +210,7 @@ namespace OctoAwesome
 
             ResourceManager.UnloadUniverse();
             simulationSubscription?.Dispose();
+            networkSubscription?.Dispose();
         }
 
         /// <summary>
@@ -358,19 +376,11 @@ namespace OctoAwesome
             }
         }
 
-        public void OnError(Exception error)
-        {
-            throw error;
-        }
-
-        public void OnCompleted()
-        {
-        }
 
         public void OnUpdate(SerializableNotification notification)
         {
             if (!IsServerSide)
-                ResourceManager.UpdateHub.Push(notification, DefaultChannels.Network);
+                networkRelay.OnNext(notification);
         }
 
         private void EntityUpdate(EntityNotification notification)
@@ -381,7 +391,7 @@ namespace OctoAwesome
                 var entityNotification = entityNotificationPool.Get();
                 entityNotification.EntityId = notification.EntityId;
                 entityNotification.Type = EntityNotification.ActionType.Request;
-                ResourceManager.UpdateHub.Push(entityNotification, DefaultChannels.Network);
+                networkRelay.OnNext(entityNotification);
                 entityNotification.Release();
             }
             else
@@ -409,9 +419,13 @@ namespace OctoAwesome
             newEntityNotification.Entity = remoteEntity;
             newEntityNotification.Type = EntityNotification.ActionType.Add;
 
-            ResourceManager.UpdateHub.Push(newEntityNotification, DefaultChannels.Network);
+            networkRelay.OnNext(newEntityNotification);
             newEntityNotification.Release();
         }
 
+        public void Dispose()
+        {
+            networkRelay.Dispose();
+        }
     }
 }

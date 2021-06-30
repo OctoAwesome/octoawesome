@@ -3,6 +3,7 @@ using OctoAwesome.Network;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 using System;
@@ -34,7 +35,7 @@ namespace OctoAwesome.Network
             blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
             packagePool = TypeContainer.Get<PackagePool>();
 
-            hubSubscription = updateHub.Subscribe(this, DefaultChannels.Network);
+            hubSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe<Notification>(OnNext, OnError, OnCompleted);
             clientSubscription = client.Subscribe(this);
             
         }

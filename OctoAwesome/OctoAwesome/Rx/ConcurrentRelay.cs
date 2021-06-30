@@ -1,24 +1,24 @@
-﻿using OctoAwesome.Database;
-using OctoAwesome.Network;
+﻿using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OctoAwesome.PoC.Rx
+namespace OctoAwesome.Rx
 {
-    public class Relay<T> : IObservable<T>, IObserver<T>, IDisposable
+    public class ConcurrentRelay<T> : IObservable<T>, IObserver<T>, IDisposable
     {
         private readonly List<RelaySubscription> subscriptions;
+        private readonly LockSemaphore lockSemaphore;
 
-        public Relay()
+        public ConcurrentRelay()
         {
+            lockSemaphore = new LockSemaphore(1, 1);
             subscriptions = new();
         }
 
         public void OnCompleted()
         {
+            using var scope = lockSemaphore.Wait();
+
             for (int i = 0; i < subscriptions.Count; i++)
             {
                 subscriptions[i]?.Observer.OnCompleted();
@@ -27,6 +27,8 @@ namespace OctoAwesome.PoC.Rx
 
         public void OnError(Exception error)
         {
+            using var scope = lockSemaphore.Wait();
+
             for (int i = 0; i < subscriptions.Count; i++)
             {
                 subscriptions[i]?.Observer.OnError(error);
@@ -35,6 +37,8 @@ namespace OctoAwesome.PoC.Rx
 
         public void OnNext(T value)
         {
+            using var scope = lockSemaphore.Wait();
+
             for (int i = 0; i < subscriptions.Count; i++)
             {
                 subscriptions[i]?.Observer.OnNext(value);
@@ -44,7 +48,10 @@ namespace OctoAwesome.PoC.Rx
         public IDisposable Subscribe(IObserver<T> observer)
         {
             var sub = new RelaySubscription(this, observer);
-            subscriptions.Add(sub);
+
+            using (var scope = lockSemaphore.Wait())
+                subscriptions.Add(sub);
+
             return sub;
         }
 
@@ -56,10 +63,13 @@ namespace OctoAwesome.PoC.Rx
             }
 
             subscriptions.Clear();
+            lockSemaphore.Dispose();
         }
 
         private void Unsubscribe(RelaySubscription subscription)
         {
+            using var scope = lockSemaphore.Wait();
+
             subscriptions.Remove(subscription);
         }
 
@@ -68,9 +78,9 @@ namespace OctoAwesome.PoC.Rx
         {
             public IObserver<T> Observer { get; }
 
-            private readonly Relay<T> relay;
+            private readonly ConcurrentRelay<T> relay;
 
-            public RelaySubscription(Relay<T> relay, IObserver<T> observer)
+            public RelaySubscription(ConcurrentRelay<T> relay, IObserver<T> observer)
             {
                 this.relay = relay;
 
