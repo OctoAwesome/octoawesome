@@ -4,6 +4,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.Serialization.Entities;
 
@@ -20,7 +21,7 @@ namespace OctoAwesome.Runtime
     /// <summary>
     /// Persistiert Chunks auf die Festplatte.
     /// </summary>
-    public class DiskPersistenceManager : IPersistenceManager, IDisposable, INotificationObserver
+    public class DiskPersistenceManager : IPersistenceManager, IDisposable
     {
         private const string UniverseFilename = "universe.info";
 
@@ -44,7 +45,7 @@ namespace OctoAwesome.Runtime
             databaseProvider = new DatabaseProvider(GetRoot(), TypeContainer.Get<ILogger>());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
-            chunkSubscription = updateHub.Subscribe(this, DefaultChannels.Chunk);
+            chunkSubscription = updateHub.ListenOn(DefaultChannels.Chunk).Subscribe(OnNext);
         }
 
         private string GetRoot()
@@ -340,11 +341,6 @@ namespace OctoAwesome.Runtime
             databaseProvider.Dispose();
             chunkSubscription.Dispose();
         }
-
-        public void OnCompleted() { }
-
-        public void OnError(Exception error)
-            => throw error;
 
         public void OnNext(Notification notification)
         {

@@ -110,8 +110,7 @@ namespace OctoAwesome.Client
                 persistenceManager = new DiskPersistenceManager(extensionResolver, settings, UpdateHub);
             }
 
-            resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager);
-            resourceManager.InsertUpdateHub(UpdateHub as UpdateHub);
+            resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager, UpdateHub);
 
             
 
@@ -131,12 +130,7 @@ namespace OctoAwesome.Client
 
         public void DeleteUniverse(Guid id) => resourceManager.DeleteUniverse(id);
 
-        public IPlanet GetPlanet(int planetId)
-        {
-            var planet = resourceManager.GetPlanet(planetId);
-            planet.UpdateHub = UpdateHub;
-            return planet;
-        }
+        public IPlanet GetPlanet(int planetId) => resourceManager.GetPlanet(planetId);
 
         public IUniverse GetUniverse() => resourceManager.GetUniverse();
 

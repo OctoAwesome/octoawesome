@@ -6,7 +6,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisinterface für einen Globalen Chunkcache
     /// </summary>
-    public interface IGlobalChunkCache : INotificationObserver
+    public interface IGlobalChunkCache 
     {
         event EventHandler<IChunkColumn> ChunkColumnChanged;
 
@@ -54,6 +54,5 @@ namespace OctoAwesome
 
         void OnUpdate(SerializableNotification notification);
         void Update(SerializableNotification notification);
-        void InsertUpdateHub(IUpdateHub updateHub);
     }
 }

@@ -49,7 +49,6 @@ namespace OctoAwesome.GameServer
         {
             logger.Debug("Hurra ein neuer Spieler");
             e.ServerSubscription = e.Subscribe(this);
-            e.NetworkChannelSubscription = UpdateHub.Subscribe(e, DefaultChannels.Network);
         }
 
         public async Task OnNext(Package value)

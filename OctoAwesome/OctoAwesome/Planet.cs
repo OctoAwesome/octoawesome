@@ -46,16 +46,6 @@ namespace OctoAwesome
         public IMapGenerator Generator { get; set; }
 
         public IGlobalChunkCache GlobalChunkCache { get; set; }
-        public IUpdateHub UpdateHub
-        {
-            get => updateHub; set
-            {
-
-                chunkSubscription = value.Subscribe(GlobalChunkCache, DefaultChannels.Chunk);
-                GlobalChunkCache.InsertUpdateHub(value);
-                updateHub = value;
-            }
-        }
 
         private IUpdateHub updateHub;
         private IDisposable chunkSubscription;
@@ -86,7 +76,7 @@ namespace OctoAwesome
         /// </summary>
         public Planet()
         {
-            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>());
+            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>());
         }
 
         /// <summary>

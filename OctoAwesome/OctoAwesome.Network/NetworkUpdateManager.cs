@@ -12,22 +12,25 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public class NetworkUpdateManager : IAsyncObserver<Package>, INotificationObserver
+    public class NetworkUpdateManager : IAsyncObserver<Package>, IDisposable
     {
         private readonly Client client;
-        private readonly IUpdateHub updateHub;
         private readonly ILogger logger;
         private readonly IDisposable hubSubscription;
+        private readonly IDisposable simulationSource;
+        private readonly IDisposable chunkSource;
         private readonly IDisposable clientSubscription;
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private readonly IPool<BlocksChangedNotification> blocksChangedNotificationPool;
         private readonly PackagePool packagePool;
 
+        private readonly Relay<Notification> simulation;
+        private readonly Relay<Notification> chunk;
+
         public NetworkUpdateManager(Client client, IUpdateHub updateHub)
         {
             this.client = client;
-            this.updateHub = updateHub;
 
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkUpdateManager));
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
@@ -35,7 +38,17 @@ namespace OctoAwesome.Network
             blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
             packagePool = TypeContainer.Get<PackagePool>();
 
-            hubSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe<Notification>(OnNext, OnError, OnCompleted);
+            simulation = new Relay<Notification>();
+            chunk = new Relay<Notification>();
+
+            hubSubscription 
+                = updateHub
+                .ListenOn(DefaultChannels.Network)
+                .Subscribe(OnNext, error => logger.Error(error.Message, error));
+
+            simulationSource = updateHub.AddSource(simulation, DefaultChannels.Simulation);
+            chunkSource = updateHub.AddSource(chunk, DefaultChannels.Chunk);
+
             clientSubscription = client.Subscribe(this);
             
         }
@@ -46,12 +59,13 @@ namespace OctoAwesome.Network
             {
                 case OfficialCommand.EntityNotification:
                     var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, package.Payload);
-                    updateHub.Push(entityNotification, DefaultChannels.Simulation);
+                    simulation.OnNext(entityNotification);
                     entityNotification.Release();
                     break;
                 case OfficialCommand.ChunkNotification:
                     var notificationType = (BlockNotificationType)package.Payload[0];
                     Notification chunkNotification;
+
                     switch (notificationType)
                     {
                         case BlockNotificationType.BlockChanged:
@@ -63,7 +77,8 @@ namespace OctoAwesome.Network
                         default:
                             throw new NotSupportedException($"This Type is not supported: {notificationType}");
                     }
-                    updateHub.Push(chunkNotification, DefaultChannels.Chunk);
+
+                    chunk.OnNext(chunkNotification);
                     chunkNotification.Release();
                     break;
                 default:
@@ -108,14 +123,13 @@ namespace OctoAwesome.Network
             return Task.CompletedTask;
         }
 
-        void INotificationObserver.OnCompleted()
+        public void Dispose()
         {
-            //hubSubscription.Dispose();
-        }
-
-        void INotificationObserver.OnError(Exception error)
-        {
-            logger.Error(error.Message, error);
+            hubSubscription?.Dispose();
+            simulationSource?.Dispose();
+            chunkSource?.Dispose();
+            chunk?.Dispose();
+            simulation?.Dispose();
         }
     }
 }

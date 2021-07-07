@@ -66,7 +66,6 @@ namespace OctoAwesome.Network
             extensionLoader.LoadExtensions();
 
             ResourceManager = TypeContainer.Get<ResourceManager>();
-            ResourceManager.InsertUpdateHub(updateHub);
 
             Service = new GameService(ResourceManager);
             simulation = new Simulation(ResourceManager, extensionLoader, Service)
@@ -121,12 +120,7 @@ namespace OctoAwesome.Network
             throw new NotImplementedException();
         }
 
-        public IPlanet GetPlanet(int planetId)
-        {
-            var planet = ResourceManager.GetPlanet(planetId);
-            planet.UpdateHub = updateHub;
-            return planet;
-        }
+        public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
 
         public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
             => ResourceManager.LoadChunkColumn(planet, index2);
