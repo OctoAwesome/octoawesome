@@ -3,19 +3,16 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using OctoAwesome.Components;
-using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
-using OctoAwesome.Threading;
 
 namespace OctoAwesome.Network
 {
-    public class NetworkPersistenceManager : IPersistenceManager, IAsyncObserver<Package>
+    public class NetworkPersistenceManager : IPersistenceManager, IDisposable
     {
         private readonly Client client;
         private readonly IDisposable subscription;
@@ -29,7 +26,7 @@ namespace OctoAwesome.Network
         public NetworkPersistenceManager(ITypeContainer typeContainer, Client client)
         {
             this.client = client;
-            subscription = client.Subscribe(this);
+            subscription = client.Packages.Subscribe(package => OnNext(package), ex =>  OnError(ex));
             this.typeContainer = typeContainer;
 
             packages = new ConcurrentDictionary<uint, Awaiter>();
@@ -127,7 +124,7 @@ namespace OctoAwesome.Network
         {
             var awaiter = awaiterPool.Get();
             awaiter.Serializable = serializable;
-
+         
             if (!packages.TryAdd(packageUId, awaiter))
             {
                 logger.Error($"Awaiter for package {packageUId} could not be added");
@@ -173,7 +170,7 @@ namespace OctoAwesome.Network
             //client.SendPackage(package);
         }
 
-        public Task OnNext(Package package)
+        public void OnNext(Package package)
         {
             logger.Trace($"Package with id:{package.UId} for Command: {package.OfficialCommand}");
 
@@ -186,7 +183,7 @@ namespace OctoAwesome.Network
                 case OfficialCommand.SaveColumn:
                     if (packages.TryRemove(package.UId, out var awaiter))
                     {
-                        if (awaiter.TrySetResult(package.Payload))
+                        if (!awaiter.TrySetResult(package.Payload))
                             logger.Warn($"Awaiter can not set result package {package.UId}");
                     }
                     else
@@ -196,22 +193,18 @@ namespace OctoAwesome.Network
                     break;
                 default:
                     logger.Warn($"Cant handle Command: {package.OfficialCommand}");
-                    return Task.CompletedTask;
+                    break;
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task OnError(Exception error)
+        public void OnError(Exception error)
         {
             logger.Error(error.Message, error);
-            return Task.CompletedTask;
         }
 
-        public Task OnCompleted()
+        public void Dispose()
         {
-            subscription.Dispose();
-            return Task.CompletedTask;
+            subscription?.Dispose();
         }
     }
 }

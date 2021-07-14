@@ -76,7 +76,7 @@ namespace OctoAwesome.Client
                     if (rawIpAddress[0] == '[') // IPV6 with Port
                     {
                         port = int.Parse(rawIpAddress.Split(':').Last());
-                        stringIpAddress = rawIpAddress.Substring(1, rawIpAddress.IndexOf(']') - 1);
+                        stringIpAddress = rawIpAddress[1..rawIpAddress.IndexOf(']')];
                     }
                     else if (rawIpAddress.Contains(':') && 
                         IPAddress.TryParse(rawIpAddress.Substring(0, rawIpAddress.IndexOf(':')), out iPAddress)) //IPV4 with Port

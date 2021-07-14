@@ -26,6 +26,8 @@ namespace OctoAwesome.Basics.Definitions.Items
             : base(definition, materialDefinition)
         {
             var updateHub = TypeContainer.Get<IUpdateHub>();
+            simulationRelay = new Relay<Notification>();
+
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
@@ -47,6 +49,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public void Dispose()
         {
             simulationSource.Dispose();
+            simulationRelay?.Dispose();
         }
     }
 }

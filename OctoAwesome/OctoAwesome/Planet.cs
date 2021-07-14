@@ -47,9 +47,6 @@ namespace OctoAwesome
 
         public IGlobalChunkCache GlobalChunkCache { get; set; }
 
-        private IUpdateHub updateHub;
-        private IDisposable chunkSubscription;
-
         private bool disposed;
 
         /// <summary>
@@ -115,12 +112,9 @@ namespace OctoAwesome
 
             disposed = true;
 
-            chunkSubscription.Dispose();
-
             if (GlobalChunkCache is IDisposable disposable)
                 disposable.Dispose();
 
-            chunkSubscription = null;
             GlobalChunkCache = null;
         }
     }

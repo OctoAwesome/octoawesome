@@ -5,14 +5,11 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
-using OctoAwesome.Threading;
 using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public class NetworkUpdateManager : IAsyncObserver<Package>, IDisposable
+    public class NetworkUpdateManager : IDisposable
     {
         private readonly Client client;
         private readonly ILogger logger;
@@ -49,11 +46,11 @@ namespace OctoAwesome.Network
             simulationSource = updateHub.AddSource(simulation, DefaultChannels.Simulation);
             chunkSource = updateHub.AddSource(chunk, DefaultChannels.Chunk);
 
-            clientSubscription = client.Subscribe(this);
+            clientSubscription = client.Packages.Subscribe(package => OnNext(package), err => OnError(err));
             
         }
 
-        public Task OnNext(Package package)
+        public void OnNext(Package package)
         {
             switch (package.OfficialCommand)
             {
@@ -85,7 +82,6 @@ namespace OctoAwesome.Network
                     break;
             }
 
-            return Task.CompletedTask;
         }
 
         public void OnNext(Notification value)
@@ -111,16 +107,9 @@ namespace OctoAwesome.Network
             client.SendPackageAndRelase(package);
         }
 
-        public Task OnError(Exception error)
+        public void OnError(Exception error)
         {
             logger.Error(error.Message, error);
-            return Task.CompletedTask;
-        }
-
-        public Task OnCompleted()
-        {
-            clientSubscription.Dispose();
-            return Task.CompletedTask;
         }
 
         public void Dispose()
@@ -130,6 +119,7 @@ namespace OctoAwesome.Network
             chunkSource?.Dispose();
             chunk?.Dispose();
             simulation?.Dispose();
+            clientSubscription?.Dispose();
         }
     }
 }

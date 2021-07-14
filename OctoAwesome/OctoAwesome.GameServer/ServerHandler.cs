@@ -2,18 +2,15 @@
 using OctoAwesome.Logging;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
-using OctoAwesome.Runtime;
-using OctoAwesome.Threading;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+using OctoAwesome.Rx;
+
 
 namespace OctoAwesome.GameServer
 {
-    public class ServerHandler : IAsyncObserver<Package>
+    public class ServerHandler
     {
         public SimulationManager SimulationManager { get; set; }
         public IUpdateHub UpdateHub { get; private set; }
@@ -48,10 +45,10 @@ namespace OctoAwesome.GameServer
         private void ServerOnClientConnected(object sender, ConnectedClient e)
         {
             logger.Debug("Hurra ein neuer Spieler");
-            e.ServerSubscription = e.Subscribe(this);
+            e.ServerSubscription = e.Packages.Subscribe(e => OnNext(e), ex => logger.Error(ex.Message, ex));
         }
 
-        public async Task OnNext(Package value)
+        public void OnNext(Package value)
         {
             if (value.Command == 0 && value.Payload.Length == 0)
             {
@@ -77,18 +74,11 @@ namespace OctoAwesome.GameServer
                 return;
             }
 
-           await value.BaseClient.SendPackageAsync(value);
+            logger.Debug("Start to send the package to client");
+            value.BaseClient.SendPackageAsync(value);
+            logger.Debug("Sended the package to client");
         }
 
-        public Task OnError(Exception error)
-        {
-            logger.Error(error.Message, error);
-            return Task.CompletedTask;
-        }
 
-        public Task OnCompleted()
-        {
-            return Task.CompletedTask;
-        }
     }
 }

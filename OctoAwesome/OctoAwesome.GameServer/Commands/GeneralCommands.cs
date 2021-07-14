@@ -27,12 +27,15 @@ namespace OctoAwesome.GameServer.Commands
         [Command((ushort)OfficialCommand.GetPlanet)]
         public static byte[] GetPlanet(CommandParameter parameter)
         {
+            Console.WriteLine("Just got in here");
+
             var planet = TypeContainer.Get<SimulationManager>().GetPlanet(0);
 
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
             {
                 planet.Serialize(writer);
+                Console.WriteLine("Sending Planet Result");
                 return memoryStream.ToArray();
             }
         }

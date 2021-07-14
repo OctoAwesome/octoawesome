@@ -28,6 +28,9 @@ namespace OctoAwesome.GameServer.Commands
         {
             var updateHub = TypeContainer.Get<IUpdateHub>();
 
+            simulationChannel = new ConcurrentRelay<Notification>();
+            networkChannel = new ConcurrentRelay<Notification>();
+
             simulationChannelSub = updateHub.AddSource(simulationChannel, DefaultChannels.Simulation);
             networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
         }

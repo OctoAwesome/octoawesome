@@ -88,6 +88,9 @@ namespace OctoAwesome
             newChunks = new Queue<CacheItem>();
             oldChunks = new Queue<CacheItem>();
 
+            networkRelay = new Relay<Notification>();
+            chunkRelay = new Relay<Notification>();
+
             tokenSource = new CancellationTokenSource();
             cleanupTask = new Task(async () => await BackgroundCleanup(tokenSource.Token), TaskCreationOptions.LongRunning);
             cleanupTask.Start(TaskScheduler.Default);
@@ -374,6 +377,8 @@ namespace OctoAwesome
             networkSource.Dispose();
             chunkSource.Dispose();
             tokenSource.Dispose();
+            networkRelay?.Dispose();
+            chunkRelay?.Dispose();
         }
 
         /// <summary>
