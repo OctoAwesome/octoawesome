@@ -2,6 +2,7 @@
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,18 +55,18 @@ namespace OctoAwesome
                 instanceComponent.SetInstance(this);
 
             //HACK: Remove PositionComponent Dependency
-            if (component is LocalChunkCacheComponent cacheComponent)
-            {
-                if (cacheComponent.LocalChunkCache != null)
-                    return;
+            //if (component is LocalChunkCacheComponent cacheComponent)
+            //{
+            //    if (cacheComponent.LocalChunkCache != null)
+            //        return;
 
-                var positionComponent = Components.GetComponent<PositionComponent>();
+            //    var positionComponent = Components.GetComponent<PositionComponent>();
 
-                if (positionComponent == null)
-                    return;
+            //    if (positionComponent == null)
+            //        return;
 
-                cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
-            }
+            //cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
+            //}
 
             if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
                 notificationComponents.Add(nofiticationComponent);
@@ -90,6 +91,22 @@ namespace OctoAwesome
 
         protected virtual void OnInitialize(IResourceManager manager)
         {
+            foreach (var component in Components)
+            {
+                if (component is LocalChunkCacheComponent localChunkCache)
+                {
+                    if (localChunkCache.LocalChunkCache != null)
+                        return;
+
+                    var positionComponent = Components.GetComponent<PositionComponent>();
+
+                    if (positionComponent == null)
+                        return;
+
+                    localChunkCache.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
+                }
+
+            }
         }
 
         /// <summary>

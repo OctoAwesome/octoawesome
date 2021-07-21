@@ -37,7 +37,7 @@ namespace OctoAwesome.Rx
 
         public void OnNext(T value)
         {
-            using var scope = lockSemaphore.Wait();
+            using var scope = lockSemaphore.Wait(); 
 
             for (int i = 0; i < subscriptions.Count; i++)
             {

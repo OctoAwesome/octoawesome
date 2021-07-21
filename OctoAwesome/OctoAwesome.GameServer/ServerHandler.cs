@@ -74,11 +74,7 @@ namespace OctoAwesome.GameServer
                 return;
             }
 
-            logger.Debug("Start to send the package to client");
             value.BaseClient.SendPackageAsync(value);
-            logger.Debug("Sended the package to client");
         }
-
-
     }
 }

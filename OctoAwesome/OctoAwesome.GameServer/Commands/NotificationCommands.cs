@@ -32,6 +32,10 @@ namespace OctoAwesome.GameServer.Commands
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
             blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
 
+            simulationChannel = new();
+            networkChannel = new();
+            chunkChannel = new();
+
             simulationChannelSub = updateHub.AddSource(simulationChannel, DefaultChannels.Simulation);
             networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
             chunkChannelSub = updateHub.AddSource(chunkChannel, DefaultChannels.Chunk);

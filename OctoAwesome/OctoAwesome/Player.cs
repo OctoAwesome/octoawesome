@@ -29,10 +29,6 @@ namespace OctoAwesome
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
         }
 
-        protected override void OnInitialize(IResourceManager manager)
-        {
-            //Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-        }
 
         /// <summary>
         /// Serialisiert den Player mit dem angegebenen BinaryWriter.

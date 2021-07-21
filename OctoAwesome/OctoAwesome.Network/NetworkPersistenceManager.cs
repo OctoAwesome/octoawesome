@@ -26,7 +26,7 @@ namespace OctoAwesome.Network
         public NetworkPersistenceManager(ITypeContainer typeContainer, Client client)
         {
             this.client = client;
-            subscription = client.Packages.Subscribe(package => OnNext(package), ex =>  OnError(ex));
+            subscription = client.Packages.Subscribe(package => OnNext(package), ex => OnError(ex));
             this.typeContainer = typeContainer;
 
             packages = new ConcurrentDictionary<uint, Awaiter>();
@@ -124,7 +124,7 @@ namespace OctoAwesome.Network
         {
             var awaiter = awaiterPool.Get();
             awaiter.Serializable = serializable;
-         
+
             if (!packages.TryAdd(packageUId, awaiter))
             {
                 logger.Error($"Awaiter for package {packageUId} could not be added");
