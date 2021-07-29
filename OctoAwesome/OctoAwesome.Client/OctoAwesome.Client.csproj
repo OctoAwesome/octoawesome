@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="engenious.CreatedContent.Content">
-      <HintPath>F:\Repos\octoawesome\OctoAwesome\OctoAwesome.Client\Content\engenious.CreatedContent.Content.dll</HintPath>
+      <HintPath>Content\engenious.CreatedContent.Content.dll</HintPath>
     </Reference>
   </ItemGroup>
 

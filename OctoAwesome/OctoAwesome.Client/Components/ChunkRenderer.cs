@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using OctoAwesome.Definitions;
 using engenious.Helper;
 using engenious.Utility;
+using engenious.UserDefined.Effects;
 
 namespace OctoAwesome.Client.Components
 {
@@ -27,7 +28,7 @@ namespace OctoAwesome.Client.Components
         public static float OverrideLightLevel { get; set; }
         public static bool WireFrame { get; set; }
 
-        private readonly Effect simple;
+        private readonly chunkEffect simple;
         private readonly GraphicsDevice graphicsDevice;
 
         private readonly Texture2DArray textures;
@@ -94,7 +95,7 @@ namespace OctoAwesome.Client.Components
                 };
         }
 
-        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, Effect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, chunkEffect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
         {
             _sceneControl = sceneControl;
             this.definitionManager = definitionManager;
@@ -188,14 +189,14 @@ namespace OctoAwesome.Client.Components
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
 
-            simple.Parameters["OverrideLightLevel"].SetValue(OverrideLightLevel);
-            simple.Parameters["WorldViewProj"].SetValue(worldViewProj);
-            simple.Parameters["BlockTextures"].SetValue(textures);
 
-            simple.Parameters["AmbientIntensity"].SetValue(0.4f);
-            simple.Parameters["AmbientColor"].SetValue(Color.White.ToVector4());
+            simple.Ambient.MainPass.Apply();
 
-
+            simple.Ambient.OverrideLightLevel = OverrideLightLevel;
+            simple.Ambient.WorldViewProj = worldViewProj;
+            simple.Ambient.BlockTextures = textures;
+            simple.Ambient.AmbientIntensity = 0.4f;
+            simple.Ambient.AmbientColor = Color.White.ToVector4();
 
             lock (this)
             {
@@ -204,12 +205,32 @@ namespace OctoAwesome.Client.Components
 
                 graphicsDevice.RasterizerState = WireFrame ? wireFrameState : RasterizerState.CullCounterClockwise;
                 graphicsDevice.VertexBuffer = VertexBuffer;
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
+            }
+        }
+        public void DrawShadow(Matrix viewProj, Index3 shift)
+        {
+            if (!Loaded)
+                return;
 
-                foreach (var pass in simple.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
-                }
+            Matrix worldViewProj = viewProj * Matrix.CreateTranslation(
+                shift.X * Chunk.CHUNKSIZE_X,
+                shift.Y * Chunk.CHUNKSIZE_Y,
+                shift.Z * Chunk.CHUNKSIZE_Z);
+
+            simple.Shadow.MainPass.Apply();
+
+            simple.Shadow.WorldViewProj = worldViewProj;
+
+            lock (this)
+            {
+                if (VertexBuffer == null)
+                    return;
+
+                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                graphicsDevice.VertexBuffer = VertexBuffer;
+
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
             }
         }
 
@@ -385,7 +406,7 @@ namespace OctoAwesome.Client.Components
 
 
             Span<ushort> blocks = stackalloc ushort[27];
- 
+
             ushort topBlock, bottomBlock, southBlock, northBlock, westBlock, eastBlock;
             if (getFromManager)
             {
