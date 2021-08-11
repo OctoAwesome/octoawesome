@@ -23,11 +23,6 @@
     <EngeniousContentReference Include="Content\Content.ecp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\simple.fx" />
-    <Content Include="Content\BoldFont.png" />
-    <Content Include="Content\GameFont.png" />
-    <Content Include="Content\HeadlineFont.png" />
-    <Content Include="Content\Hud.png" />
     <Content Include="Copyright.txt" />
     <None Include="de\LoadingScreenQuotes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

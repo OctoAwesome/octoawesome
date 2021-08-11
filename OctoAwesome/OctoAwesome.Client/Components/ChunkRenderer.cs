@@ -179,19 +179,28 @@ namespace OctoAwesome.Client.Components
             _sceneControl.Enqueue(this);
         }
 
-        public void Draw(Matrix viewProj, Index3 shift)
+        public void Draw(Matrix viewProj, Matrix cropMatrix, Index3 shift)
         {
             if (!Loaded)
                 return;
-
-            Matrix worldViewProj = viewProj * Matrix.CreateTranslation(
+            var shiftMatrix = Matrix.CreateTranslation(
                 shift.X * Chunk.CHUNKSIZE_X,
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
 
+            Matrix worldViewProj = viewProj * shiftMatrix;
+
+            var biasMatrix = new Matrix(
+                0.5f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.5f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f
+                );
+
+            var depthBiasWorldViewProj = biasMatrix * cropMatrix * shiftMatrix;
 
             simple.Ambient.MainPass.Apply();
-
+            simple.Ambient.DepthBiasWorldViewProj = depthBiasWorldViewProj;
             simple.Ambient.OverrideLightLevel = OverrideLightLevel;
             simple.Ambient.WorldViewProj = worldViewProj;
             simple.Ambient.BlockTextures = textures;
