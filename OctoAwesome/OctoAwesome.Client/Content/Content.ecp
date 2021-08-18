@@ -15,9 +15,16 @@
             <CreateUserEffect>True</CreateUserEffect>
           </Settings>
         </ContentFile>
+        <ContentFile>
+          <Name>entityEffect.glsl</Name>
+          <Processor>EffectProcessor</Processor>
+          <Importer>Effect Importer</Importer>
+          <Settings>
+            <CreateUserEffect>True</CreateUserEffect>
+          </Settings>
+        </ContentFile>
       </Contents>
     </ContentFolder>
-   
     <ContentFile>
       <Name>texdog.png</Name>
       <Processor>BitmapProcessor</Processor>

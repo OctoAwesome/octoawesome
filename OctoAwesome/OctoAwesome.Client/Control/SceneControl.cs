@@ -251,7 +251,8 @@ namespace OctoAwesome.Client.Controls
             };
 
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
-            ShadowMap = new RenderTarget2D(manager.GraphicsDevice, 8192, 8192, PixelInternalFormat.DepthComponent32);
+            const int multiply = 1;
+            ShadowMap = new RenderTarget2D(manager.GraphicsDevice, 8192* multiply, 8192* multiply, PixelInternalFormat.DepthComponent32);
             ShadowMap.SamplerState = new SamplerState() { AddressU = TextureWrapMode.ClampToEdge, AddressV = TextureWrapMode.ClampToEdge, TextureCompareMode = TextureCompareMode.CompareRefToTexture, TextureCompareFunction = TextureCompareFunc.LessOrEequal };
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
         }
@@ -482,7 +483,7 @@ namespace OctoAwesome.Client.Controls
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
 
 
-            float octoDaysPerEarthDay = 360f;
+            float octoDaysPerEarthDay = 3600f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
             float playerPosX = player.Position.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X) * MathHelper.TwoPi;
@@ -512,11 +513,11 @@ namespace OctoAwesome.Client.Controls
             var cropMatrix = CreateCropMatrix(player.Position.Position.LocalPosition, sunDirection, casters, casters);
 
             DrawMiniMap(chunkOffset, cropMatrix, background);
-            DrawShadowMap(sunDirection, chunkOffset, cropMatrix);
+            DrawShadowMap(gameTime, sunDirection, chunkOffset, cropMatrix);
             DrawWorld(gameTime, sunDirection, chunkOffset, background, cropMatrix);
         }
 
-        private void DrawShadowMap(Vector3 sunDirection, Index3 chunkOffset, Matrix cropMatrix)
+        private void DrawShadowMap(GameTime gameTime, Vector3 sunDirection, Index3 chunkOffset, Matrix cropMatrix)
         {
             Manager.GraphicsDevice.SetRenderTarget(ShadowMap);
             Manager.GraphicsDevice.Clear(ClearBufferMask.DepthBufferBit);
@@ -524,7 +525,9 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.BlendState = BlendState.Opaque;
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
+
             DrawChunksShadow(chunkOffset, cropMatrix);
+            entities.DrawShadow(gameTime, cropMatrix, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
         }
 
         private BoundingBox CreateTransformedAABB(BoundingBox boundingBox, ref Matrix transformation)
@@ -648,12 +651,12 @@ namespace OctoAwesome.Client.Controls
             var viewProjC = camera.Projection * camera.View;
             DrawChunks(chunkOffset, viewProjC, cropMatrix);
 
-            entities.Draw(gameTime, camera.View, camera.Projection, chunkOffset, new Index2(planet.Size.X, planet.Size.Z));
+            entities.Draw(gameTime, ShadowMap, camera.View, camera.Projection, cropMatrix, chunkOffset, new Index2(planet.Size.X, planet.Size.Z), sunDirection);
 
             DrawSelectionBox(chunkOffset);
 
 
-            Manager.GraphicsDevice.Debug.RenderBoundingFrustum(new BoundingFrustum(cropMatrix), Matrix.CreateTranslation(chunkOffset * new Vector3(Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Chunk.CHUNKSIZE_Z)), camera.View, camera.Projection);
+            Manager.GraphicsDevice.Debug.RenderBoundingFrustum(new BoundingFrustum(cropMatrix), Matrix.Identity, camera.View, camera.Projection);
 
             Manager.GraphicsDevice.SetRenderTarget(null);
         }
@@ -719,7 +722,7 @@ namespace OctoAwesome.Client.Controls
             sunEffect.CurrentTechnique.Passes[0].Apply();
             sunEffect.Texture = sunTexture;
             Matrix billboard = Matrix.Invert(camera.View);
-            billboard.Translation = player.Position.Position.LocalPosition + (sunDirection * -10);
+            billboard.Translation = player.Position.Position.LocalPosition + player.CurrentEntityHead.Offset + (sunDirection * -10);
             sunEffect.World = billboard;
             sunEffect.View = camera.View;
             sunEffect.Projection = camera.Projection;
@@ -751,7 +754,6 @@ namespace OctoAwesome.Client.Controls
         }
         private void DrawChunksShadow(Index3 chunkOffset, Matrix viewProj)
         {
-            var spherePos = camera.PickRay.Position + (camera.PickRay.Direction * sphereRadius);
 
             foreach (var renderer in chunkRenderer)
             {
@@ -760,13 +762,6 @@ namespace OctoAwesome.Client.Controls
 
                 Index3 shift = renderer.GetShift(chunkOffset, planet);
 
-                var chunkPos = new Vector3(
-                    (shift.X * Chunk.CHUNKSIZE_X) + (Chunk.CHUNKSIZE_X / 2),
-                    (shift.Y * Chunk.CHUNKSIZE_Y) + (Chunk.CHUNKSIZE_Y / 2),
-                    (shift.Z * Chunk.CHUNKSIZE_Z) + (Chunk.CHUNKSIZE_Z / 2));
-
-                //var frustumDist = spherePos - chunkPos;
-                //if (frustumDist.LengthSquared < sphereRadiusSquared)
                 renderer.DrawShadow(viewProj, shift);
             }
         }

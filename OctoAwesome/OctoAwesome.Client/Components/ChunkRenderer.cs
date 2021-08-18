@@ -236,7 +236,7 @@ namespace OctoAwesome.Client.Components
                 if (VertexBuffer == null)
                     return;
 
-                graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
                 graphicsDevice.VertexBuffer = VertexBuffer;
 
                 graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
