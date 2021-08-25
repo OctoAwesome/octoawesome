@@ -2,7 +2,7 @@
 
 uniform mat4 World;
 uniform mat4 ViewProjection;
-uniform mat4 DepthBiasWorldViewProj;
+uniform mat4 DepthBiasViewProj;
 
 in vec3 position;
 in vec3 normal;
@@ -18,5 +18,5 @@ void main()
 	psTextureCoord = textureCoord;
 
 	gl_Position = (ViewProjection * World) * vec4(position, 1.0);
-	psShadowCoord = DepthBiasWorldViewProj * vec4(position, 1.0);
+	psShadowCoord = (DepthBiasViewProj * World) * vec4(position, 1.0);
 }

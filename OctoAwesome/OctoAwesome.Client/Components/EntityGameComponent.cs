@@ -109,7 +109,15 @@ namespace OctoAwesome.Client.Components
         public void Draw(GameTime gameTime, RenderTarget2D shadowMap, Matrix view, Matrix projection, Matrix cropMatrix, Index3 chunkOffset, Index2 planetSize, Vector3 sunDirection)
         {
             var viewProj = projection * view;
+            var biasMatrix = new Matrix(
+              0.5f, 0.0f, 0.0f, 0.0f,
+              0.0f, 0.5f, 0.0f, 0.0f,
+              0.0f, 0.0f, 0.5f, 0.0f,
+              0.5f, 0.5f, 0.5f, 1.0f
+              );
+            var depthBiasWorldViewProj = biasMatrix * cropMatrix;
 
+            effect.Ambient.DepthBiasViewProj = depthBiasWorldViewProj;
             effect.CurrentTechnique = effect.Ambient;
             effect.Ambient.AmbientIntensity = 0.4f;
             effect.Ambient.AmbientColor = Color.White.ToVector4();
@@ -130,7 +138,7 @@ namespace OctoAwesome.Client.Components
                     if (!success)
                         continue;
 
-                    SetTransforms(cropMatrix, chunkOffset, planetSize, entity, rendercomp, modelinfo);
+                    SetTransforms(chunkOffset, planetSize, entity, rendercomp, modelinfo);
                     modelinfo.model.Draw(effect);
                 }
 
@@ -142,7 +150,7 @@ namespace OctoAwesome.Client.Components
                         continue;
 
                     var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
-                    SetTransforms(cropMatrix, chunkOffset, planetSize, functionalBlock, rendercomp, modelinfo, -0.5f);
+                    SetTransforms(chunkOffset, planetSize, functionalBlock, rendercomp, modelinfo, -0.5f);
                     modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
                     if (animationcomp is not null)
                     {
@@ -158,7 +166,7 @@ namespace OctoAwesome.Client.Components
         {
             effect.CurrentTechnique = effect.Shadow;
             effect.Shadow.ViewProjection = cropMatrix;
-            graphicsDevice.RasterizerState = RasterizerState.CullNone;
+            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
             foreach (var pass in effect.CurrentTechnique.Passes)
             {
@@ -194,18 +202,10 @@ namespace OctoAwesome.Client.Components
         }
 
 
-        private void SetTransforms<T>(Matrix cropMatrix, Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) where T : IComponent
+        private void SetTransforms<T>(Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) where T : IComponent
         {
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
-            var biasMatrix = new Matrix(
-                  0.5f, 0.0f, 0.0f, 0.0f,
-                  0.0f, 0.5f, 0.0f, 0.0f,
-                  0.0f, 0.0f, 0.5f, 0.0f,
-                  0.5f, 0.5f, 0.5f, 1.0f
-                  );
-            var depthBiasWorldViewProj = biasMatrix * cropMatrix * world;
 
-            effect.Ambient.DepthBiasWorldViewProj = depthBiasWorldViewProj;
             effect.World = world;
             effect.Texture = modelinfo.texture;
             modelinfo.model.Transform = world;
@@ -216,7 +216,6 @@ namespace OctoAwesome.Client.Components
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
        
             effect.World = world;
-            effect.Texture = modelinfo.texture;
             modelinfo.model.Transform = world;
         }
 
