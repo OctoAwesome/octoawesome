@@ -366,6 +366,7 @@ namespace OctoAwesome
             foreach (var item in oldChunks.ToArray())
                 item.Dispose();
 
+
             cache.Clear();
             newChunks.Clear();
             oldChunks.Clear();
