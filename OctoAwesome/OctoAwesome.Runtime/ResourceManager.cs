@@ -438,5 +438,23 @@ namespace OctoAwesome.Runtime
                 return persistenceManager.GetEntityComponents<T>(CurrentUniverse.Id, entityIds).ToArray(); //Hack wird noch geänder
             }
         }
+
+        public (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new()
+        {
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                return persistenceManager.GetAllComponents<T>(CurrentUniverse.Id).ToArray(); //Hack wird noch geänder
+            }
+        }
+
+        public T GetComponent<T>(Guid id) where T : IComponent, new()
+        {
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                return persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
+            }
+        }
     }
 }

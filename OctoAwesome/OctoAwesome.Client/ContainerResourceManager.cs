@@ -167,5 +167,11 @@ namespace OctoAwesome.Client
 
         public (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new()
             => resourceManager.GetEntityComponents<T>(entityIds);
+
+        public (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new()
+            => resourceManager.GetAllComponents<T>();
+
+        public T GetComponent<T>(Guid id) where T : IComponent, new()
+            => resourceManager.GetComponent<T>(id);
     }
 }

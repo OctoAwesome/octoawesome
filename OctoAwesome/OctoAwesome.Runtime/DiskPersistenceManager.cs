@@ -337,6 +337,26 @@ namespace OctoAwesome.Runtime
                 yield return (entityId, new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid).Get<T>(entityId));
         }
 
+        public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
+        {
+            var context = new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid);
+
+            var keys = context.GetAllKeys<T>();
+
+            foreach (var key in keys)
+            {
+                yield return (key.Tag, context.Get<T>(key.Tag));
+            }
+        }
+
+        public  T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
+        {
+            var context 
+                = new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid);
+
+            return context.Get<T>(id);
+        }
+
         public void Dispose()
         {
             databaseProvider.Dispose();

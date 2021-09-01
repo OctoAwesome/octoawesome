@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Notifications;
 using OctoAwesome.PoC.Rx;
 using OctoAwesome.Runtime;
 using System;
@@ -11,6 +12,13 @@ namespace OctoAwesome.PoC
 
         static void Main()
         {
+
+            object a = 12;
+
+            var i 
+                = GenericCaster<int, object>
+                .Cast(a);
+
             using var network = new Relay<Notification>();
             using var hub = new Rx.UpdateHub();
 

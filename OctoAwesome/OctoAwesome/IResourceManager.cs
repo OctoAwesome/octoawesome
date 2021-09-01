@@ -90,5 +90,7 @@ namespace OctoAwesome
         IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent;
         IEnumerable<Guid> GetEntityIds();
         (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new();
+        (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new();
+        T GetComponent<T>(Guid id) where T : IComponent, new();
     }
 }

@@ -14,6 +14,8 @@ namespace OctoAwesome.Caching
         public abstract Type TypeOfTKey { get; }
         public abstract TValue Get<TKey, TValue>(TKey key);
 
+        internal abstract void Initialize();
+
         internal abstract void CleanUp();
     }
 
@@ -31,7 +33,7 @@ namespace OctoAwesome.Caching
     //{
     //    protected override ComponentContainer<TComponent> Load(Guid key)
     //    {
-            
+
     //        //DiskPersistanceManager.Load<TComponent>(out var component, ...);
     //    }
     //}
@@ -45,7 +47,7 @@ namespace OctoAwesome.Caching
 
         private readonly Dictionary<TKey, CacheItem> valueCache = new();
 
-        protected TValue GetBy(TKey key)
+        protected virtual TValue GetBy(TKey key)
         {
             if (valueCache.TryGetValue(key, out var value)
                 && value.LastAccessTime.Add(ClearTime) < DateTime.Now)
@@ -64,27 +66,50 @@ namespace OctoAwesome.Caching
 
         protected abstract TValue Load(TKey key);
 
+        protected CacheItem AddOrUpdate(TKey key, TValue value) 
+            => valueCache[key] = new(value);
+
+        internal override void Initialize()
+        {
+        }
+
         internal override void CleanUp()
         {
             for (int i = valueCache.Count - 1; i >= 0; i--)
             {
                 var element = valueCache.ElementAt(i);
                 if (element.Value.LastAccessTime.Add(ClearTime) < DateTime.Now)
-                    valueCache.Remove(element.Key);
+                    Remove(element.Key, out _);
             }
         }
 
-        internal bool Remove(TKey key)
+        internal virtual bool Remove(TKey key, out TValue value)
         {
-            return valueCache.Remove(key);
+            var returnValue
+                = valueCache
+                .Remove(key, out var cacheItem);
+
+            if (returnValue)
+            {
+                value = cacheItem!.Value;
+            }
+            else
+            {
+                value = default;
+            }
+
+            return returnValue;
         }
 
         public override TV Get<TK, TV>(TK key)
         {
-            return (TV)(object)GetBy((TKey)(object)key);
+            return GenericCaster<TV, TValue>
+                .Cast(
+                    GetBy(GenericCaster<TKey, TK>.Cast(key))
+                );
         }
 
-        internal class CacheItem
+        protected class CacheItem
         {
             internal DateTime LastAccessTime { get; set; }
             internal TValue Value { get; set; }
