@@ -1,10 +1,7 @@
-﻿using OctoAwesome.Components;
-using OctoAwesome.EntityComponents;
+﻿using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Caching
 {
@@ -14,29 +11,12 @@ namespace OctoAwesome.Caching
         public abstract Type TypeOfTKey { get; }
         public abstract TValue Get<TKey, TValue>(TKey key);
 
-        internal abstract void Initialize();
+        internal abstract void Start();
 
-        internal abstract void CleanUp();
+        internal abstract void Stop();
+
+        internal abstract void CollectGarbage();
     }
-
-    //public class PositionComponentCache : Cache<Guid, PositionComponent>
-    //{
-    //    //Planet
-    //    //Coord
-
-    //    //-> GetAll
-
-
-    //}
-
-    //public class ComponentContainerCache<TComponent> : Cache<Guid, ComponentContainer<TComponent>> where TComponent : IComponent
-    //{
-    //    protected override ComponentContainer<TComponent> Load(Guid key)
-    //    {
-
-    //        //DiskPersistanceManager.Load<TComponent>(out var component, ...);
-    //    }
-    //}
 
     public abstract class Cache<TKey, TValue> : Cache
     {
@@ -44,11 +24,14 @@ namespace OctoAwesome.Caching
         public override Type TypeOfTKey { get; } = typeof(TKey);
 
         protected TimeSpan ClearTime { get; set; } = TimeSpan.FromMinutes(15);
+        protected readonly LockSemaphore lockSemaphore = new(1,1);
 
         private readonly Dictionary<TKey, CacheItem> valueCache = new();
 
         protected virtual TValue GetBy(TKey key)
         {
+            using var @lock = lockSemaphore.Wait();
+
             if (valueCache.TryGetValue(key, out var value)
                 && value.LastAccessTime.Add(ClearTime) < DateTime.Now)
             {
@@ -66,25 +49,36 @@ namespace OctoAwesome.Caching
 
         protected abstract TValue Load(TKey key);
 
-        protected CacheItem AddOrUpdate(TKey key, TValue value) 
-            => valueCache[key] = new(value);
+        protected CacheItem AddOrUpdate(TKey key, TValue value)
+        {
+            using var @lock = lockSemaphore.Wait();
+            return valueCache[key] = new(value);
+        }
 
-        internal override void Initialize()
+        internal override void Start()
         {
         }
 
-        internal override void CleanUp()
+        internal override void Stop()
+        {
+        }
+
+        internal override void CollectGarbage()
         {
             for (int i = valueCache.Count - 1; i >= 0; i--)
             {
+                using var @lock = lockSemaphore.Wait();
+
                 var element = valueCache.ElementAt(i);
                 if (element.Value.LastAccessTime.Add(ClearTime) < DateTime.Now)
-                    Remove(element.Key, out _);
+                    valueCache.Remove(element.Key, out _);
             }
         }
 
         internal virtual bool Remove(TKey key, out TValue value)
         {
+            using var @lock = lockSemaphore.Wait();
+
             var returnValue
                 = valueCache
                 .Remove(key, out var cacheItem);

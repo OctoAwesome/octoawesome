@@ -158,6 +158,12 @@ namespace OctoAwesome.Client
 
         public Entity LoadEntity(Guid entityId) 
             => resourceManager.LoadEntity(entityId);
+
+        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+           where TContainer : ComponentContainer<TComponent>
+           where TComponent : IComponent
+            => resourceManager.LoadComponentContainer<TContainer, TComponent>(id);
+
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent
             => resourceManager.LoadEntitiesWithComponent<T>();
         public IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent

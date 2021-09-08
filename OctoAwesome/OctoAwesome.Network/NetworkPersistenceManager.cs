@@ -5,11 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using OctoAwesome.Components;
+using OctoAwesome.Database;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
+using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+using OctoAwesome.Serialization.Entities;
 
 namespace OctoAwesome.Network
 {
@@ -107,6 +110,20 @@ namespace OctoAwesome.Network
         public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
             entity = null;
+            return null;
+        }
+
+        public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            var package = packagePool.Get();
+            package.Command = (ushort)OfficialCommand.GetUniverse;
+
+            componentContainer = null;
+            //var awaiter = GetAwaiter(universe, package.UId);
+            client.SendPackageAndRelase(package);
+
             return null;
         }
 
@@ -212,9 +229,9 @@ namespace OctoAwesome.Network
         }
 
         public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
-        { 
+        {
             //TODO
-           return default;
+            return default;
         }
     }
 }

@@ -92,5 +92,8 @@ namespace OctoAwesome
         (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new();
         (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new();
         T GetComponent<T>(Guid id) where T : IComponent, new();
+        TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
     }
 }

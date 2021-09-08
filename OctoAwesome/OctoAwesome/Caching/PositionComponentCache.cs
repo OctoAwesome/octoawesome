@@ -1,7 +1,6 @@
 ﻿using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace OctoAwesome.Caching
 {
@@ -18,8 +17,10 @@ namespace OctoAwesome.Caching
             this.resourceManager = resourceManager;
         }
 
-        internal override void Initialize()
+        internal override void Start()
         {
+            using var @lock = lockSemaphore.Wait();
+
             var positionComponents
                 = resourceManager
                 .GetAllComponents<PositionComponent>();
@@ -33,6 +34,8 @@ namespace OctoAwesome.Caching
 
         internal override bool Remove(Guid key, out PositionComponent positionComponent)
         {
+            using var @lock = lockSemaphore.Wait();
+
             var returnValue = base.Remove(key, out positionComponent);
 
             if (returnValue)
@@ -52,6 +55,8 @@ namespace OctoAwesome.Caching
 
         protected PositionComponent GetBy(Coordinate position)
         {
+            using var @lock = lockSemaphore.Wait();
+
             var cacheItem = positionComponentByCoor[position];
             cacheItem.LastAccessTime = DateTime.Now;
             return cacheItem.Value;

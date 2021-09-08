@@ -91,5 +91,8 @@ namespace OctoAwesome
         IEnumerable<Guid> GetEntityIds(Guid universeGuid);
         IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new();
         T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new();
+        Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
     }
 }

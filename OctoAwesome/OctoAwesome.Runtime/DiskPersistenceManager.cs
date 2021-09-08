@@ -159,7 +159,8 @@ namespace OctoAwesome.Runtime
 
         public void SaveEntity(Entity entity, Guid universe)
         {
-            var context = new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universe);
+            var context
+               = new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universe);
             context.AddOrUpdate(entity);
         }
 
@@ -278,14 +279,25 @@ namespace OctoAwesome.Runtime
 
         public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
-            var entityContext = new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid);
-            entity = (Entity)entityContext.Get(new GuidTag<ComponentContainer<IEntityComponent>>(entityId));
+            var entityContext = new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid);
+            entity = entityContext.Get(new GuidTag<Entity>(entityId));
 
             var awaiter = awaiterPool.Get();
             awaiter.SetResult(entity);
             return awaiter;
         }
 
+        public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            var entityContext = new ComponentContainerDbContext<TContainer, TComponent>(databaseProvider, universeGuid);
+            componentContainer = entityContext.Get(new GuidTag<TContainer>(id));
+
+            var awaiter = awaiterPool.Get();
+            awaiter.SetResult(componentContainer);
+            return awaiter;
+        }
 
         /// <summary>
         /// Lädt einen Player.
@@ -324,12 +336,12 @@ namespace OctoAwesome.Runtime
         }
 
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerWithComponent<T>().OfType<Entity>();
+            => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerWithComponent<T>().OfType<Entity>();
 
         public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerIdsFromComponent<T>().Select(i => i.Tag);
+            => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerIdsFromComponent<T>().Select(i => i.Tag);
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
-            => new ComponentContainerDbContext<IEntityComponent>(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
+            => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
         public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
         {
@@ -349,9 +361,9 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public  T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
+        public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
         {
-            var context 
+            var context
                 = new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid);
 
             return context.Get<T>(id);

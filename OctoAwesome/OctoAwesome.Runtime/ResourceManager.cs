@@ -403,6 +403,29 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id) 
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent 
+        {
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
+            using (loadingSemaphore.EnterScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                var awaiter 
+                    = persistenceManager
+                    .Load<TContainer, TComponent>(out var container, CurrentUniverse.Id, id);
+
+                if (awaiter == null)
+                    return null;
+                else
+                    awaiter.WaitOnAndRelease();
+
+                return container;
+            }
+        }
+
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent
         {
             using (loadingSemaphore.EnterScope())
