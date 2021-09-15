@@ -2,14 +2,16 @@
 using OctoAwesome.Notifications;
 using OctoAwesome.PoC.Rx;
 using OctoAwesome.Runtime;
+using OpenTK.Graphics.ES11;
 using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.PoC
 {
     public static class Program
     {
-
         static void Main()
         {
 

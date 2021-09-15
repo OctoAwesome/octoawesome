@@ -1,8 +1,11 @@
-﻿using OctoAwesome.EntityComponents;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Components;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
+using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 
 using System;
@@ -12,6 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,7 +49,6 @@ namespace OctoAwesome
         private readonly Task cleanupTask;
         private readonly ILogger logger;
         private readonly ChunkPool chunkPool;
-        private readonly (Guid Id, PositionComponent Component)[] positionComponents;
         private readonly IDisposable chunkSubscription;
         private readonly IDisposable networkSource;
         private readonly IDisposable chunkSource;
@@ -74,12 +77,17 @@ namespace OctoAwesome
 
         public IPlanet Planet { get; }
 
+        private readonly CacheService cacheService;
+
         /// <summary>
         /// Create new instance of GlobalChunkCache
         /// </summary>
         /// <param name="resourceManager">the current <see cref="IResourceManager"/> to load ressources/></param>
         public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub)
         {
+            cacheService = new CacheService(planet, resourceManager, updateHub);
+            cacheService.Start();
+
             Planet = planet ?? throw new ArgumentNullException(nameof(planet));
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
 
@@ -96,9 +104,6 @@ namespace OctoAwesome
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
 
             chunkPool = TypeContainer.Get<ChunkPool>();
-
-            var ids = resourceManager.GetEntityIdsFromComponent<PositionComponent>().ToArray();
-            positionComponents = resourceManager.GetEntityComponents<PositionComponent>(ids);
 
             chunkSubscription = updateHub.ListenOn(DefaultChannels.Chunk).Subscribe(OnNext);
             networkSource = updateHub.AddSource(networkRelay, DefaultChannels.Network);
@@ -150,16 +155,17 @@ namespace OctoAwesome
                     //{
                     cacheItem.ChunkColumn = resourceManager.LoadChunkColumn(Planet, position);
                     var chunkIndex = new Index3(position, Planet.Id);
-
+                    var positionComponents
+                        = cacheService
+                        .Get<Index3, List<PositionComponent>>(chunkIndex);
+                    //TODO TypeIdProvider for the new SerializationId
                     foreach (var positionComponent in positionComponents)
                     {
-                        if (!(positionComponent.Component.Planet == Planet
-                            && positionComponent.Component.Position.ChunkIndex.X == chunkIndex.X
-                            && positionComponent.Component.Position.ChunkIndex.Y == chunkIndex.Y))
-                            continue;
 
-                        if (positionComponent.Component.Instance is Entity e)
-                            cacheItem.ChunkColumn.Add(resourceManager.LoadEntity(e.Id));
+                        if (positionComponent.Instance is Entity entity)
+                            cacheItem.ChunkColumn.Add(resourceManager.LoadComponentContainer<Entity, IEntityComponent>(entity.Id));
+                        //else if(positionComponent.Instance is FunctionalBlock functionalBlock)
+                        //cacheItem.ChunkColumn.Add(resourceManager.LoadComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(functionalBlock.Id));
                     }
 
                     using (updateSemaphore.Wait())
@@ -262,7 +268,6 @@ namespace OctoAwesome
 
             return Task.CompletedTask;
         }
-
 
         public void BeforeSimulationUpdate(Simulation simulation)
         {
@@ -379,6 +384,8 @@ namespace OctoAwesome
             tokenSource.Dispose();
             networkRelay?.Dispose();
             chunkRelay?.Dispose();
+
+            cacheService.Dispose();
         }
 
         /// <summary>

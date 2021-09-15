@@ -2,6 +2,7 @@
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.FunctionBlocks
 {
+    [SerializationId(1, 3)]
     public class Chest : FunctionalBlock
     {
         private readonly InventoryComponent inventoryComponent;

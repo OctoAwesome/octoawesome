@@ -24,7 +24,7 @@ namespace OctoAwesome.Caching
             var positionComponents
                 = resourceManager
                 .GetAllComponents<PositionComponent>();
-
+            
             foreach (var (id, component) in positionComponents)
             {
                 var cacheItem = AddOrUpdate(id, component);
@@ -62,11 +62,35 @@ namespace OctoAwesome.Caching
             return cacheItem.Value;
         }
 
+        protected List<PositionComponent> GetBy(Index3 position)
+        {
+            using var @lock = lockSemaphore.Wait();
+
+            var list = new List<PositionComponent>();
+
+            foreach (var components in positionComponentByCoor)
+            {
+                var key = components.Key;
+
+                if(key.Planet == position.Z
+                    && key.ChunkIndex.X == position.X
+                    && key.ChunkIndex.Y == position.Y)
+                {
+                    list.Add(components.Value.Value);
+                    components.Value.LastAccessTime = DateTime.Now;
+                }
+            }
+
+            return list;
+        }
+
         public override TV Get<TK, TV>(TK key)
             => key switch
             {
                 Guid guid => GenericCaster<TV, PositionComponent>.Cast(GetBy(guid)),
                 Coordinate coordinate => GenericCaster<TV, PositionComponent>.Cast(GetBy(coordinate)),
+                Index3 chunkColumnIndex => GenericCaster<TV, List<PositionComponent>>.Cast(GetBy(chunkColumnIndex)),
+                //(IPlanet, Index2) index => GenericCaster<TV, List<PositionComponent>>.Cast(GetBy(index)),
                 _ => throw new NotSupportedException()
             };
     }

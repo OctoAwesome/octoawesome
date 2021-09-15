@@ -10,6 +10,7 @@ namespace OctoAwesome
     /// </summary>
     public class Planet : IPlanet
     {
+
         /// <summary>
         /// ID des Planeten.
         /// </summary>
@@ -45,7 +46,7 @@ namespace OctoAwesome
         /// </summary>
         public IMapGenerator Generator { get; set; }
 
-        public IGlobalChunkCache GlobalChunkCache { get; set; }
+        public IGlobalChunkCache GlobalChunkCache { get; }
 
         private bool disposed;
 
@@ -115,7 +116,6 @@ namespace OctoAwesome
             if (GlobalChunkCache is IDisposable disposable)
                 disposable.Dispose();
 
-            GlobalChunkCache = null;
         }
     }
 }

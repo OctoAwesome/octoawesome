@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using OctoAwesome.Caching;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
@@ -403,9 +404,9 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id) 
+        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
             where TContainer : ComponentContainer<TComponent>
-            where TComponent : IComponent 
+            where TComponent : IComponent
         {
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
@@ -413,7 +414,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                var awaiter 
+                var awaiter
                     = persistenceManager
                     .Load<TContainer, TComponent>(out var container, CurrentUniverse.Id, id);
 
@@ -462,12 +463,29 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        class IdGuid
+        {
+            public const string PropertyName = "Id";
+            public static Type ForType = typeof(Guid);
+        }
+
         public (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new()
         {
             using (loadingSemaphore.EnterScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                return persistenceManager.GetAllComponents<T>(CurrentUniverse.Id).ToArray(); //Hack wird noch geänder
+
+
+                var retValues = persistenceManager.GetAllComponents<T>(CurrentUniverse.Id).ToArray(); //Hack wird noch geänder
+
+                if (typeof(T) == typeof(PositionComponent))
+                {
+                    foreach (var item in retValues)
+                    {
+                        GenericCaster<PositionComponent, T>.Cast(item.Component).Id = item.Id;
+                    }
+                }
+                return retValues;
             }
         }
 
@@ -476,7 +494,11 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                return persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
+                var component =  persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
+
+                if (component is PositionComponent posComponent)
+                    posComponent.Id = id;
+                return component;
             }
         }
     }

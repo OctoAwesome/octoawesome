@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.Entities
 {
+    [SerializationId(1, 2)]
     public class WauziEntity : UpdateableEntity
     {
         public int JumpTime { get; set; }

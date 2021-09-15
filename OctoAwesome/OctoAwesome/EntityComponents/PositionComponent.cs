@@ -14,6 +14,9 @@ namespace OctoAwesome.EntityComponents
 {
     public sealed class PositionComponent : InstanceComponent<INotificationSubject<SerializableNotification>>, IEntityComponent, IFunctionalBlockComponent
     {
+        public Guid Id { get; set; }
+
+
         public Coordinate Position
         {
             get => position;

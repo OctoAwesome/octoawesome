@@ -25,8 +25,9 @@ namespace OctoAwesome.Caching
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
 
             //TODO: In future we need a cool way to load all caches that explicit needed for this cache service
-
-            caches.Add(typeof(PositionComponent), new PositionComponentCache(resourceManager));
+            var posCompCache = new PositionComponentCache(resourceManager);
+            caches.Add(typeof(PositionComponent), posCompCache);
+            caches.Add(typeof(List<PositionComponent>), posCompCache);
             caches.Add(typeof(ChunkColumnCache), new ChunkColumnCache(resourceManager, planet));
             caches.Add(typeof(Entity), new ComponentContainerCache<Entity, IEntityComponent>(resourceManager));
             caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
@@ -80,7 +81,7 @@ namespace OctoAwesome.Caching
 
         public TValue Get<TKey, TValue>(TKey key)
         {
-            if(caches.TryGetValue(typeof(TKey), out var cache))
+            if(caches.TryGetValue(typeof(TValue), out var cache))
             {
                 return cache.Get<TKey, TValue>(key);
             }
