@@ -23,17 +23,18 @@ namespace OctoAwesome.Threading
             countLockObject = new object();
         }
 
-        public SuperScope Wait()
+        public SuperScope EnterExclusivScope()
         {
             lock (lockObject)
             {
                 mainLock.Wait();
+                superLock.Wait();
                 superLock.Reset();
             }
             return new SuperScope(this);
         }
 
-        public CountScope EnterScope()
+        public CountScope EnterCountScope()
         {
             lock (lockObject)
             {

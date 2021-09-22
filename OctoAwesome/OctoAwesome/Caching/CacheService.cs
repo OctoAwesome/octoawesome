@@ -26,9 +26,12 @@ namespace OctoAwesome.Caching
 
             //TODO: In future we need a cool way to load all caches that explicit needed for this cache service
             var posCompCache = new PositionComponentCache(resourceManager);
+            var chunkColumnCache = new ChunkColumnCache(resourceManager, planet);
+
             caches.Add(typeof(PositionComponent), posCompCache);
             caches.Add(typeof(List<PositionComponent>), posCompCache);
-            caches.Add(typeof(ChunkColumnCache), new ChunkColumnCache(resourceManager, planet));
+            caches.Add(typeof(ChunkColumn), chunkColumnCache);
+            caches.Add(typeof(IChunkColumn), chunkColumnCache);
             caches.Add(typeof(Entity), new ComponentContainerCache<Entity, IEntityComponent>(resourceManager));
             caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
         }
@@ -79,11 +82,11 @@ namespace OctoAwesome.Caching
             caches.Clear();
         }
 
-        public TValue Get<TKey, TValue>(TKey key)
+        public TValue Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
         {
             if(caches.TryGetValue(typeof(TValue), out var cache))
             {
-                return cache.Get<TKey, TValue>(key);
+                return cache.Get<TKey, TValue>(key, loadingMode);
             }
             else
             {

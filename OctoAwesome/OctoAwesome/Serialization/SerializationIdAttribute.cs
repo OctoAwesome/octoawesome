@@ -9,7 +9,6 @@ namespace OctoAwesome.Serialization
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
     public class SerializationIdAttribute : Attribute
     {
-        //Guid is a wish by Jvbsl
         public uint ModId { get; }
         public uint TypeId { get; }
 

@@ -21,7 +21,6 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
 
-
         public FunctionalBlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
@@ -36,9 +35,9 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                blockInfo => { },
-                functionalBlock => InternalUpdate(controller, entity, functionalBlock),
-                entity => { }
+                    blockInfo => { },
+                    functionalBlock => InternalUpdate(controller, entity, functionalBlock),
+                    entity => { }
                 );
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using OctoAwesome.Notifications;
@@ -59,7 +60,6 @@ namespace OctoAwesome
         /// <param name="seed">Seed des Zufallsgenerators.</param>
         public Planet(int id, Guid universe, Index3 size, int seed) : this()
         {
-
             Id = id;
             Universe = universe;
             Size = new Index3(

@@ -63,7 +63,6 @@ namespace OctoAwesome
         private void OnChunkChanged(IChunk arg1)
         {
             ChangeCounter++;
-            Changed?.Invoke(this, arg1);
         }
 
         /// <summary>
@@ -396,8 +395,6 @@ namespace OctoAwesome
                 }
             }
         }
-
-        public event Action<IChunkColumn, IChunk> Changed;
 
         public void OnUpdate(SerializableNotification notification)
         {

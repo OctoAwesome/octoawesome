@@ -19,7 +19,7 @@ namespace OctoAwesome.Caching
 
         internal override void Start()
         {
-            using var @lock = lockSemaphore.Wait();
+            using var @lock = lockSemaphore.EnterExclusivScope();
 
             var positionComponents
                 = resourceManager
@@ -34,7 +34,7 @@ namespace OctoAwesome.Caching
 
         internal override bool Remove(Guid key, out PositionComponent positionComponent)
         {
-            using var @lock = lockSemaphore.Wait();
+            using var @lock = lockSemaphore.EnterExclusivScope();
 
             var returnValue = base.Remove(key, out positionComponent);
 
@@ -55,7 +55,7 @@ namespace OctoAwesome.Caching
 
         protected PositionComponent GetBy(Coordinate position)
         {
-            using var @lock = lockSemaphore.Wait();
+            using var @lock = lockSemaphore.EnterExclusivScope();
 
             var cacheItem = positionComponentByCoor[position];
             cacheItem.LastAccessTime = DateTime.Now;
@@ -64,7 +64,7 @@ namespace OctoAwesome.Caching
 
         protected List<PositionComponent> GetBy(Index3 position)
         {
-            using var @lock = lockSemaphore.Wait();
+            using var @lock = lockSemaphore.EnterExclusivScope();
 
             var list = new List<PositionComponent>();
 
@@ -84,10 +84,19 @@ namespace OctoAwesome.Caching
             return list;
         }
 
-        public override TV Get<TK, TV>(TK key)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TK"></typeparam>
+        /// <typeparam name="TV"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="loadingMode">Is ignored, because this cache load everything on startup and therefore is always cached</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException"></exception>
+        public override TV Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
             => key switch
             {
-                Guid guid => GenericCaster<TV, PositionComponent>.Cast(GetBy(guid)),
+                Guid guid => GenericCaster<TV, PositionComponent>.Cast(GetBy(guid, loadingMode)),
                 Coordinate coordinate => GenericCaster<TV, PositionComponent>.Cast(GetBy(coordinate)),
                 Index3 chunkColumnIndex => GenericCaster<TV, List<PositionComponent>>.Cast(GetBy(chunkColumnIndex)),
                 //(IPlanet, Index2) index => GenericCaster<TV, List<PositionComponent>>.Cast(GetBy(index)),
