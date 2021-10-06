@@ -9,6 +9,7 @@ using System;
 using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions;
+using OctoAwesome.Basics.FunctionBlocks;
 
 namespace OctoAwesome.Basics
 {
@@ -39,7 +40,9 @@ namespace OctoAwesome.Basics
             extensionLoader.RegisterMapPopulator(new TreePopulator());
             extensionLoader.RegisterMapPopulator(new WauziPopulator());
 
-            extensionLoader.RegisterEntity<WauziEntity>();
+            extensionLoader.RegisterSerializationType<WauziEntity>();
+            extensionLoader.RegisterSerializationType<Chest>();
+
             extensionLoader.RegisterDefaultEntityExtender<WauziEntity>();
 
             extensionLoader.RegisterEntityExtender<Player>((p) =>

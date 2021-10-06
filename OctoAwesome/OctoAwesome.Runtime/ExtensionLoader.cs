@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,15 +16,15 @@ namespace OctoAwesome.Runtime
     {
         private const string SETTINGSKEY = "DisabledExtensions";
 
-        private List<Type> entities;
 
-        private Dictionary<Type, List<Action<Entity>>> entityExtender;
+        private readonly Dictionary<Type, List<Action<Entity>>> entityExtender;
 
-        private List<Action<Simulation>> simulationExtender;
+        private readonly List<Action<Simulation>> simulationExtender;
 
-        private List<IMapGenerator> mapGenerators;
+        private readonly List<IMapGenerator> mapGenerators;
 
-        private List<IMapPopulator> mapPopulators;
+        private readonly List<IMapPopulator> mapPopulators;
+        private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
         /// <summary>
         /// List of Loaded Extensions
@@ -45,13 +46,13 @@ namespace OctoAwesome.Runtime
         /// Constructor
         /// </summary>
         /// <param name="settings">Current Gamesettings</param>
-        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings)
+        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings, SerializationIdTypeProvider serializationIdTypeProvider)
         {
             this.settings = settings;
             this.typeContainer = typeContainer;
+            this.serializationIdTypeProvider = serializationIdTypeProvider;
             definitionTypeContainer = new StandaloneTypeContainer();
             definitionsLookup = new Dictionary<Type, List<Type>>();
-            entities = new List<Type>();
             entityExtender = new Dictionary<Type, List<Action<Entity>>>();
             simulationExtender = new List<Action<Simulation>>();
             mapGenerators = new List<IMapGenerator>();
@@ -180,13 +181,15 @@ namespace OctoAwesome.Runtime
         /// Registers a new Entity.
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
-        public void RegisterEntity<T>() where T : Entity
+        public void RegisterSerializationType<T>()
         {
             Type type = typeof(T);
-            if (entities.Contains(type))
-                throw new ArgumentException("Already registered");
+            var serId = type.SerializationId();
 
-            entities.Add(type);
+            if (serId == 0)
+                throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Name}, so it cant be registered.");
+
+            serializationIdTypeProvider.Register(serId, type);
         }
 
         /// <summary>
@@ -240,7 +243,7 @@ namespace OctoAwesome.Runtime
         /// <typeparam name="T"></typeparam>
         public void RemoveEntity<T>() where T : Entity
         {
-            entities.Remove(typeof(T));
+            throw new NotSupportedException();
         }
 
         /// <summary>

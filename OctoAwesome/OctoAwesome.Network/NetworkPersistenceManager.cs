@@ -174,7 +174,11 @@ namespace OctoAwesome.Network
             //throw new NotImplementedException();
         }
 
-        public void SaveEntity(Entity entity, Guid universe) { }
+        public void Save<TContainer, TComponent>(TContainer container, Guid universe)
+             where TContainer : ComponentContainer<TComponent>
+             where TComponent : IComponent
+        {
+        }
 
         public void SendChangedChunkColumn(IChunkColumn chunkColumn)
         {

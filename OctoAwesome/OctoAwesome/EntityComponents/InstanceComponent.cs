@@ -10,12 +10,14 @@ namespace OctoAwesome.EntityComponents
     /// Base Class for all Entity Components.
     /// </summary>
     public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification> 
-        where T: INotificationSubject<SerializableNotification>
+        where T: ComponentContainer
     {
         /// <summary>
         /// Reference to the Entity.
         /// </summary>
         public T Instance { get; private set; }
+
+        public Guid InstanceId { get; set; }
 
         public ulong InstanceTypeId { get; private set; }
 
@@ -27,9 +29,12 @@ namespace OctoAwesome.EntityComponents
         {
             var type = instance.GetType();
             if (Instance != null)
+            {
                 throw new NotSupportedException("Can not change the " + type.Name);
+            }
             
             InstanceTypeId = type.SerializationId();
+            InstanceId = instance.Id;
             Instance = instance;
             OnSetInstance();
         }
@@ -37,7 +42,7 @@ namespace OctoAwesome.EntityComponents
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
-
+            writer.Write(InstanceId.ToByteArray());
             writer.Write(InstanceTypeId);
         }
 
@@ -45,6 +50,7 @@ namespace OctoAwesome.EntityComponents
         {
             base.Deserialize(reader);
 
+            InstanceId = new Guid(reader.ReadBytes(16));
             InstanceTypeId = reader.ReadUInt64();
         }
 

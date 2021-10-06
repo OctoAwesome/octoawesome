@@ -83,7 +83,9 @@ namespace OctoAwesome
 
         Player CurrentPlayer { get; }
 
-        void SaveEntity(Entity entity);
+        void SaveComponentContainer<TContainer, TComponent>(TContainer componentContainer)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
 
         void SaveChunkColumn(IChunkColumn value);
 

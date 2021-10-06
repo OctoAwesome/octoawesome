@@ -9,11 +9,19 @@ namespace OctoAwesome.Caching
     {
         public abstract Type TypeOfTValue { get; }
         public abstract Type TypeOfTKey { get; }
+        public bool IsStarted { get; internal set; }
+
         public abstract TValue Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists);
 
-        internal abstract void Start();
+        internal virtual void Start()
+        {
+            IsStarted = true;
+        }
 
-        internal abstract void Stop();
+        internal virtual void Stop()
+        {
+            IsStarted = false;
+        }
 
         internal abstract void CollectGarbage();
     }
@@ -69,14 +77,7 @@ namespace OctoAwesome.Caching
             using var @lock = lockSemaphore.EnterExclusivScope();
             return valueCache[key] = new(value);
         }
-
-        internal override void Start()
-        {
-        }
-
-        internal override void Stop()
-        {
-        }
+               
 
         internal override void CollectGarbage()
         {

@@ -84,7 +84,10 @@ namespace OctoAwesome
         /// <param name="player">Der Player.</param>
         void SavePlayer(Guid universeGuid, Player player);
         IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent;
-        void SaveEntity(Entity entity, Guid universe);
+        void Save<TContainer, TComponent>(TContainer container, Guid universe)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
+   
         Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId);
         IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent;
         IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new();

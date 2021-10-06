@@ -19,17 +19,18 @@ namespace OctoAwesome.Caching
 
         internal override void Start()
         {
-            using var @lock = lockSemaphore.EnterExclusivScope();
-
             var positionComponents
                 = resourceManager
                 .GetAllComponents<PositionComponent>();
-            
+
             foreach (var (id, component) in positionComponents)
             {
                 var cacheItem = AddOrUpdate(id, component);
+                using var @lock = lockSemaphore.EnterExclusivScope();
                 positionComponentByCoor.Add(component.Position, cacheItem);
             }
+
+            base.Start();
         }
 
         internal override bool Remove(Guid key, out PositionComponent positionComponent)
@@ -40,9 +41,9 @@ namespace OctoAwesome.Caching
 
             if (returnValue)
             {
-               return returnValue 
-                    && positionComponentByCoor
-                        .Remove(positionComponent.Position);
+                return returnValue
+                     && positionComponentByCoor
+                         .Remove(positionComponent.Position);
             }
             else
             {
@@ -72,7 +73,7 @@ namespace OctoAwesome.Caching
             {
                 var key = components.Key;
 
-                if(key.Planet == position.Z
+                if (key.Planet == position.Z
                     && key.ChunkIndex.X == position.X
                     && key.ChunkIndex.Y == position.Y)
                 {

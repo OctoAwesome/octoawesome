@@ -38,10 +38,10 @@ namespace OctoAwesome
         void RemoveDefinition<T>() where T : IDefinition;
 
         /// <summary>
-        /// Registers a new Entity.
+        /// Registers a Type with the required SerializationId attribute.
         /// </summary>
-        /// <typeparam name="T">Entity Type</typeparam>
-        void RegisterEntity<T>() where T : Entity;
+        /// <typeparam name="T">Type</typeparam>
+        void RegisterSerializationType<T>();
 
         /// <summary>
         /// Removes an existing Entity Type.

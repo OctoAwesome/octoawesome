@@ -157,11 +157,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public void SaveEntity(Entity entity, Guid universe)
+        public void Save<TContainer, TComponent>(TContainer container, Guid universe)
+           where TContainer : ComponentContainer<TComponent>
+           where TComponent : IComponent
         {
             var context
-               = new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universe);
-            context.AddOrUpdate(entity);
+               = new ComponentContainerDbContext<TContainer, TComponent>(databaseProvider, universe);
+            context.AddOrUpdate(container);
         }
 
         /// <summary>

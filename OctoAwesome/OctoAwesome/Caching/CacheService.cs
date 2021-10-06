@@ -49,11 +49,15 @@ namespace OctoAwesome.Caching
             
             foreach (var item in caches.Values)
             {
+                if (item.IsStarted)
+                    continue;
+
                 item.Start();
             }
 
             garbageCollectionTask = new Task(() => GarbageCollection(token), token, TaskCreationOptions.LongRunning);
             garbageCollectionTask.Start();
+
         }
 
         public void Stop()
@@ -63,6 +67,9 @@ namespace OctoAwesome.Caching
 
             foreach (var item in caches.Values)
             {
+                if (!item.IsStarted)
+                    continue;
+
                 item.Stop();
             }
         }

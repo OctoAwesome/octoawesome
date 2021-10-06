@@ -284,7 +284,7 @@ namespace OctoAwesome.Runtime
             // Load from disk
             Awaiter awaiter;
             IChunkColumn column11;
-
+            
             do
             {
                 using (loadingSemaphore.EnterCountScope())
@@ -390,17 +390,20 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public void SaveEntity(Entity entity)
+        public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
+    where TContainer : ComponentContainer<TComponent>
+    where TComponent : IComponent
+        
         {
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
             using (loadingSemaphore.EnterCountScope())
             {
-                if (entity is Player player)
+                if (container is Player player)
                     SavePlayer(player);
                 else
-                    persistenceManager.SaveEntity(entity, CurrentUniverse.Id);
+                    persistenceManager.Save<TContainer, TComponent>(container, CurrentUniverse.Id);
             }
         }
 
@@ -474,7 +477,7 @@ namespace OctoAwesome.Runtime
                 {
                     foreach (var item in retValues)
                     {
-                        GenericCaster<PositionComponent, T>.Cast(item.Component).Id = item.Id;
+                        GenericCaster<PositionComponent, T>.Cast(item.Component).InstanceId = item.Id;
                     }
                 }
                 return retValues;
@@ -489,7 +492,7 @@ namespace OctoAwesome.Runtime
                 var component =  persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
 
                 if (component is PositionComponent posComponent)
-                    posComponent.Id = id;
+                    posComponent.InstanceId = id;
                 return component;
             }
         }

@@ -5,6 +5,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,16 @@ namespace OctoAwesome.Basics.FunctionBlocks
     [SerializationId(1, 3)]
     public class Chest : FunctionalBlock
     {
-        private readonly InventoryComponent inventoryComponent;
-        private readonly AnimationComponent animationComponent;
-        private readonly TransferUIComponent transferUiComponent;
+        private InventoryComponent inventoryComponent;
+        private AnimationComponent animationComponent;
+        private TransferUIComponent transferUiComponent;
+
+
+        public override void Deserialize(BinaryReader reader)
+        {
+            base.Deserialize(reader);
+            //Doesnt get called
+        }
 
         public Chest(Coordinate position)
         {

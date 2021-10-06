@@ -12,13 +12,8 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
-    public abstract class ComponentContainer<TComponent> : ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification> where TComponent : IComponent
+    public abstract class ComponentContainer: ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification> 
     {
-        /// <summary>
-        /// Contains all Components.
-        /// </summary>
-        public ComponentList<TComponent> Components { get; private set; }
-
         /// <summary>
         /// Id
         /// </summary>
@@ -32,16 +27,63 @@ namespace OctoAwesome
         /// <summary>
         /// Contains only Components with notification interface implementation.
         /// </summary>
-        private readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
+        protected readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
 
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
         public ComponentContainer()
         {
-            Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
             notificationComponents = new();
             Id = Guid.Empty;
+        }
+      
+
+        public virtual void RegisterDefault()
+        {
+
+        }
+
+        public override int GetHashCode()
+            => Id.GetHashCode();
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Entity entity)
+                return entity.Id == Id;
+
+            return base.Equals(obj);
+        }
+
+        public virtual void OnNotification(SerializableNotification notification)
+        {
+        }
+
+        public virtual void Push(SerializableNotification notification)
+        {
+            foreach (var component in notificationComponents)
+                component?.OnNotification(notification);
+        }
+
+        public abstract void Serialize(BinaryWriter writer);
+        public abstract void Deserialize(BinaryReader reader);
+        public abstract bool ContainsComponent<T>();
+        public abstract T GetComponent<T>();
+    }
+
+    public abstract class ComponentContainer<TComponent> : ComponentContainer where TComponent : IComponent
+    {
+        /// <summary>
+        /// Contains all Components.
+        /// </summary>
+        public ComponentList<TComponent> Components { get; private set; }
+
+        /// <summary>
+        /// Entity die regelmäßig eine Updateevent bekommt
+        /// </summary>
+        public ComponentContainer() : base()
+        {
+            Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
         }
 
         protected void OnRemoveComponent(TComponent component)
@@ -51,7 +93,7 @@ namespace OctoAwesome
 
         protected virtual void OnAddComponent(TComponent component)
         {
-            if (component is InstanceComponent<INotificationSubject<SerializableNotification>> instanceComponent)
+            if (component is InstanceComponent<ComponentContainer> instanceComponent)
                 instanceComponent.SetInstance(this);
 
             //HACK: Remove PositionComponent Dependency
@@ -113,7 +155,7 @@ namespace OctoAwesome
         /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
         /// </summary>
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
-        public virtual void Serialize(BinaryWriter writer)
+        public override void Serialize(BinaryWriter writer)
         {
             writer.Write(Id.ToByteArray());
 
@@ -124,41 +166,15 @@ namespace OctoAwesome
         /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
         /// </summary>
         /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
-        public virtual void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader)
         {
             Id = new Guid(reader.ReadBytes(16));
             Components.Deserialize(reader);
         }
 
-        public virtual void RegisterDefault()
-        {
-
-        }
-
-        public override int GetHashCode()
-            => Id.GetHashCode();
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Entity entity)
-                return entity.Id == Id;
-
-            return base.Equals(obj);
-        }
-
-        public virtual void OnNotification(SerializableNotification notification)
-        {
-        }
-
-        public virtual void Push(SerializableNotification notification)
-        {
-            foreach (var component in notificationComponents)
-                component?.OnNotification(notification);
-        }
-
-        public bool ContainsComponent<T>()
+        public override bool ContainsComponent<T>()
             => Components.ContainsComponent<T>();
-        public T GetComponent<T>()
+        public override T GetComponent<T>()
             => Components.GetComponent<T>();
     }
 }

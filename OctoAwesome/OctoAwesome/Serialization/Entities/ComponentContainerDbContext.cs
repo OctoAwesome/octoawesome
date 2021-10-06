@@ -41,7 +41,6 @@ namespace OctoAwesome.Serialization.Entities
             var definition = entityDefinitionContext.Get(new GuidTag<ComponentContainerDefinition<TComponent>>(key.Tag));
             var entity = (TContainer)Activator.CreateInstance(definition.Type);
             entity!.Id = definition.Id;
-
             foreach (Type component in definition.Components)
             {
                 MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(component);

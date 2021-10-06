@@ -142,7 +142,11 @@ namespace OctoAwesome.Client
 
         public Guid NewUniverse(string name, int seed) => resourceManager.NewUniverse(name, seed);
 
-        public void SaveEntity(Entity entity) => resourceManager.SaveEntity(entity);
+        public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
+           where TContainer : ComponentContainer<TComponent>
+           where TComponent : IComponent
+            => resourceManager.SaveComponentContainer<TContainer, TComponent>(container);
+
 
         public void SavePlayer(Player player) => resourceManager.SavePlayer(player);
 

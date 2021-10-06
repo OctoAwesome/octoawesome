@@ -34,6 +34,7 @@ namespace OctoAwesome
         /// </summary>
         private readonly CancellationTokenSource tokenSource;
         private readonly IResourceManager resourceManager;
+        private readonly SerializationIdTypeProvider typeProvider;
 
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
@@ -79,15 +80,14 @@ namespace OctoAwesome
         /// Create new instance of GlobalChunkCache
         /// </summary>
         /// <param name="resourceManager">the current <see cref="IResourceManager"/> to load ressources/></param>
-        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub)
+        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub, SerializationIdTypeProvider typeProvider)
         {
             cacheService = new CacheService(planet, resourceManager, updateHub);
             cacheService.Start();
 
             Planet = planet ?? throw new ArgumentNullException(nameof(planet));
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
-
-
+            this.typeProvider = typeProvider;
             networkRelay = new Relay<Notification>();
             chunkRelay = new Relay<Notification>();
 
@@ -115,11 +115,33 @@ namespace OctoAwesome
             var positionComponents
                         = cacheService
                         .Get<Index3, List<PositionComponent>>(chunkIndex);
+
             //TODO TypeIdProvider for the new SerializationId
             foreach (var positionComponent in positionComponents)
             {
-                if (positionComponent.Instance is Entity entity)
-                    column.Add(resourceManager.LoadComponentContainer<Entity, IEntityComponent>(entity.Id));
+                if (!typeProvider.TryGet(positionComponent.InstanceTypeId, out var type))
+                    continue;
+
+                if(type.IsAssignableTo(typeof(Entity)))
+                {
+                    var entity 
+                        = cacheService
+                        .Get<Guid, Entity>(positionComponent.InstanceId);
+
+                    positionComponent.SetInstance(entity);
+                    column.Add(entity);
+                }
+
+                if (type.IsAssignableTo(typeof(FunctionalBlock)))
+                {
+                    var functionalBlock
+                        = cacheService
+                        .Get<Guid, FunctionalBlock>(positionComponent.InstanceId);
+
+                    positionComponent.SetInstance(functionalBlock);
+                    //column.Add(functionalBlock);
+                }
+
                 //else if(positionComponent.Instance is FunctionalBlock functionalBlock)
                 //cacheItem.ChunkColumn.Add(resourceManager.LoadComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(functionalBlock.Id));
             }
