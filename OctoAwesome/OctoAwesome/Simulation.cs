@@ -261,9 +261,9 @@ namespace OctoAwesome
 
             if (functionalBlocks.Contains(block))
                 return;
-         
 
-            //extensionResolver.ExtendEntity(entity);
+
+            extensionResolver.ExtendEntity(block);
             block.Initialize(ResourceManager);
             block.Simulation = this;
 

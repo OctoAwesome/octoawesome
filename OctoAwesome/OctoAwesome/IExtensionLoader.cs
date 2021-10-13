@@ -47,20 +47,20 @@ namespace OctoAwesome
         /// Removes an existing Entity Type.
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
-        void RemoveEntity<T>() where T : Entity;
+        void RemoveEntity<T>() where T : ComponentContainer;
 
         /// <summary>
         /// Adds a new Extender for the given Entity Type.
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity;
+        void RegisterEntityExtender<T>(Action<ComponentContainer> extenderDelegate) where T : ComponentContainer;
 
         /// <summary>
         /// Adds the Default Extender for the given Entity Type.
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
-        void RegisterDefaultEntityExtender<T>() where T : Entity;
+        void RegisterDefaultEntityExtender<T>() where T : ComponentContainer;
 
         /// <summary>
         /// Adds a new Extender for the simulation.

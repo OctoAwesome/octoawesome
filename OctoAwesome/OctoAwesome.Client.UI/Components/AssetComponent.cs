@@ -1,5 +1,7 @@
 ﻿using engenious;
 using engenious.Graphics;
+using engenious.UI;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +14,7 @@ namespace OctoAwesome.UI.Components
 {
     public sealed class AssetComponent : DrawableGameComponent
     {
+        private readonly BaseScreenComponent screenComponent;
         private readonly ISettings settings;
 
         public const string INFOFILENAME = "packinfo.xml";
@@ -45,8 +48,9 @@ namespace OctoAwesome.UI.Components
         /// </summary>
         public IEnumerable<ResourcePack> ActiveResourcePacks => activePacks.AsEnumerable();
 
-        public AssetComponent(IGame game, ISettings settings) : base(game)
+        public AssetComponent(BaseScreenComponent screenComponent, ISettings settings) : base(screenComponent.Game)
         {
+            this.screenComponent = screenComponent;
             this.settings = settings;
 
             Ready = false;
@@ -145,26 +149,48 @@ namespace OctoAwesome.UI.Components
         }
         public Texture2D LoadTexture(string key)
         {
-            lock (textures)
-            {
+            Texture2D texture2D = default;
+
+            if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
                 return Load(typeof(AssetComponent), key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
-            }
+
+            screenComponent.Invoke(() =>
+            {
+                texture2D = Load(typeof(AssetComponent), key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
+            });
+
+            return texture2D;
         }
 
         public Texture2D LoadTexture(Type baseType, string key)
         {
-            lock (textures)
-            {
+            Texture2D texture2D = default;
+
+            if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
                 return Load(baseType, key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
-            }
+
+            screenComponent.Invoke(() =>
+            {
+                texture2D = Load(baseType, key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
+            });
+
+            return texture2D;
+
         }
 
         public Bitmap LoadBitmap(Type baseType, string key)
         {
-            lock (bitmaps)
-            {
+            Bitmap bitmap = default;
+
+            if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
                 return Load(baseType, key, textureTypes, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
-            }
+
+            screenComponent.Invoke(() =>
+            {
+                bitmap = Load(baseType, key, textureTypes, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
+            });
+
+            return bitmap;
         }
 
         public Stream LoadStream(Type baseType, string key, params string[] fileTypes)
@@ -198,8 +224,12 @@ namespace OctoAwesome.UI.Components
 
             // Cache fragen
             T result = default(T);
-            if (cache != null && cache.TryGetValue(fullkey, out result))
-                return result;
+
+            lock (textures)
+            {
+                if (cache != null && cache.TryGetValue(fullkey, out result))
+                    return result;
+            }
 
             // Versuche Datei zu laden
             foreach (var resourcePack in activePacks)
@@ -254,10 +284,13 @@ namespace OctoAwesome.UI.Components
                     result = callback(stream);
                 }
             }
+            lock (textures)
+            {
 
-            // In Cache speichern
-            if (result != null && cache != null)
-                cache[fullkey] = result;
+                // In Cache speichern
+                if (result != null && cache != null)
+                    cache[fullkey] = result;
+            }
 
             return result;
         }

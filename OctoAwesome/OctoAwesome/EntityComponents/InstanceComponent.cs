@@ -27,6 +27,9 @@ namespace OctoAwesome.EntityComponents
 
         public void SetInstance(T instance)
         {
+            if (instance is not null && Instance?.Id == instance.Id)
+                return;
+
             var type = instance.GetType();
             if (Instance != null)
             {

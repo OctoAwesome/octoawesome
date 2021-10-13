@@ -49,9 +49,10 @@ namespace OctoAwesome
         private readonly IDisposable chunkSubscription;
         private readonly IDisposable networkSource;
         private readonly IDisposable chunkSource;
-
+        private readonly IDisposable simulationSource;
         private readonly Relay<Notification> networkRelay;
         private readonly Relay<Notification> chunkRelay;
+        private readonly Relay<Notification> simulationRelay;
 
         /// <summary>
         /// Gibt die Anzahl der aktuell geladenen Chunks zurück.
@@ -90,6 +91,8 @@ namespace OctoAwesome
             this.typeProvider = typeProvider;
             networkRelay = new Relay<Notification>();
             chunkRelay = new Relay<Notification>();
+            simulationRelay = new Relay<Notification>();
+
 
             tokenSource = new CancellationTokenSource();
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(GlobalChunkCache));
@@ -99,6 +102,7 @@ namespace OctoAwesome
             chunkSubscription = updateHub.ListenOn(DefaultChannels.Chunk).Subscribe(OnNext);
             networkSource = updateHub.AddSource(networkRelay, DefaultChannels.Network);
             chunkSource = updateHub.AddSource(chunkRelay, DefaultChannels.Chunk);
+            simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
         /// <summary>
@@ -122,14 +126,20 @@ namespace OctoAwesome
                 if (!typeProvider.TryGet(positionComponent.InstanceTypeId, out var type))
                     continue;
 
-                if(type.IsAssignableTo(typeof(Entity)))
+                if (type.IsAssignableTo(typeof(Entity)))
                 {
-                    var entity 
+                    var entity
                         = cacheService
                         .Get<Guid, Entity>(positionComponent.InstanceId);
 
                     positionComponent.SetInstance(entity);
-                    column.Add(entity);
+                    var notification = new EntityNotification
+                    {
+                        Entity = entity,
+                        Type = EntityNotification.ActionType.Add
+                    };
+
+                    simulationRelay.OnNext(notification);
                 }
 
                 if (type.IsAssignableTo(typeof(FunctionalBlock)))
@@ -137,8 +147,16 @@ namespace OctoAwesome
                     var functionalBlock
                         = cacheService
                         .Get<Guid, FunctionalBlock>(positionComponent.InstanceId);
-
+                    if (functionalBlock.Components.TryGetComponent<PositionComponent>(out var poscomp))
+                        Debug.WriteLine(poscomp.Position.ToString());
                     positionComponent.SetInstance(functionalBlock);
+                    var notification = new FunctionalBlockNotification
+                    {
+                        Block = functionalBlock,
+                        Type = FunctionalBlockNotification.ActionType.Add
+                    };
+
+                    simulationRelay.OnNext(notification);
                     //column.Add(functionalBlock);
                 }
 
@@ -160,7 +178,7 @@ namespace OctoAwesome
             => cacheService.Get<Index2, ChunkColumn>(position, LoadingMode.OnlyCached);
 
 
-  
+
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>

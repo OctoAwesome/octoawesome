@@ -69,16 +69,19 @@ namespace OctoAwesome.Caching
 
             var list = new List<PositionComponent>();
 
-            foreach (var components in positionComponentByCoor)
+            foreach (var component in positionComponentByCoor)
             {
-                var key = components.Key;
+                var key = component.Key;
+                var normalizedChunkIndex = key.ChunkIndex;
+                normalizedChunkIndex.NormalizeXY(component.Value.Value.Planet.Size);
+
 
                 if (key.Planet == position.Z
-                    && key.ChunkIndex.X == position.X
-                    && key.ChunkIndex.Y == position.Y)
+                    && normalizedChunkIndex.X == position.X
+                    && normalizedChunkIndex.Y == position.Y)
                 {
-                    list.Add(components.Value.Value);
-                    components.Value.LastAccessTime = DateTime.Now;
+                    list.Add(component.Value.Value);
+                    component.Value.LastAccessTime = DateTime.Now;
                 }
             }
 

@@ -43,8 +43,17 @@ namespace OctoAwesome.Serialization.Entities
             entity!.Id = definition.Id;
             foreach (Type component in definition.Components)
             {
-                MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(component);
-                entity.Components.AddComponent((TComponent)genericMethod.Invoke(componentsDbContext, new object[] { entity }));
+                try
+                {
+                    MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(component);
+                    entity.Components.AddComponent((TComponent)genericMethod.Invoke(componentsDbContext, new object[] { entity }));
+                }
+                catch (Exception)
+                {
+//HACK: TransferUiComponent shouldn't be serialized and deserialized
+                }
+
+             
             }
 
             return entity;

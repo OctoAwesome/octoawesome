@@ -55,7 +55,7 @@ namespace OctoAwesome.Caching
                 item.Start();
             }
 
-            garbageCollectionTask = new Task(async () => await GarbageCollection(token), token, TaskCreationOptions.LongRunning);
+            garbageCollectionTask = new Task(() => GarbageCollection(token), token, TaskCreationOptions.LongRunning);
             garbageCollectionTask.Start();
 
         }

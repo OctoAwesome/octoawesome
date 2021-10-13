@@ -74,7 +74,7 @@ namespace OctoAwesome.Client
             Settings = typeContainer.Get<Settings>();
 
             KeyMapper = new KeyMapper(Screen, Settings);
-            Assets = new AssetComponent(this, Settings);
+            Assets = new AssetComponent(Screen, Settings);
 
             typeContainer.Register(Assets);
 

@@ -15,9 +15,9 @@ namespace OctoAwesome.Basics.FunctionBlocks
     [SerializationId(1, 3)]
     public class Chest : FunctionalBlock
     {
-        private InventoryComponent inventoryComponent;
-        private AnimationComponent animationComponent;
-        private TransferUIComponent transferUiComponent;
+        internal InventoryComponent inventoryComponent;
+        internal AnimationComponent animationComponent;
+        internal TransferUIComponent transferUiComponent;
 
         public Chest()
         {
@@ -32,26 +32,17 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         public Chest(Coordinate position)
         {
-            inventoryComponent = new InventoryComponent();
-            animationComponent = new AnimationComponent();
-            transferUiComponent = new TransferUIComponent(inventoryComponent);
-            transferUiComponent.Closed += TransferUiComponentClosed;
-            Components.AddComponent(inventoryComponent);
+
             Components.AddComponent(new PositionComponent()
             {
                 Position = position
             });
 
-            Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
-            Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
-            Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 }, true);
-            Components.AddComponent(transferUiComponent, true);
-            Components.AddComponent(animationComponent);
 
             //Simulation.Entities.FirstOrDefault(x=>x.)
         }
 
-        private void TransferUiComponentClosed(object sender, engenious.UI.NavigationEventArgs e)
+        internal void TransferUiComponentClosed(object sender, engenious.UI.NavigationEventArgs e)
         {
             animationComponent.AnimationSpeed = -60f;
         }
