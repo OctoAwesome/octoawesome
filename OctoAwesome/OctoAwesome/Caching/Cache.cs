@@ -50,7 +50,11 @@ namespace OctoAwesome.Caching
             {
                 cacheItem.LastAccessTime = DateTime.Now;
             }
-            else if (loadingMode == LoadingMode.LoadIfNotExists)
+
+            if (result)
+                return cacheItem.Value;
+
+            if (loadingMode == LoadingMode.LoadIfNotExists)
             {
                 var loadedValue = Load(key);
                 cacheItem = new(loadedValue);

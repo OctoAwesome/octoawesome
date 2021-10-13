@@ -55,7 +55,7 @@ namespace OctoAwesome.Caching
                 item.Start();
             }
 
-            garbageCollectionTask = new Task(() => GarbageCollection(token), token, TaskCreationOptions.LongRunning);
+            garbageCollectionTask = new Task(async () => await GarbageCollection(token), token, TaskCreationOptions.LongRunning);
             garbageCollectionTask.Start();
 
         }
@@ -101,7 +101,7 @@ namespace OctoAwesome.Caching
             }
         }
 
-        private void GarbageCollection(CancellationToken cancellationToken)
+        private async Task GarbageCollection(CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -110,6 +110,8 @@ namespace OctoAwesome.Caching
                 {
                     item.CollectGarbage();
                 }
+
+                await Task.Delay(30000);
             }
         }
     }

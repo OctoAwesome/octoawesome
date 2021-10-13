@@ -19,6 +19,10 @@ namespace OctoAwesome.Basics.FunctionBlocks
         private AnimationComponent animationComponent;
         private TransferUIComponent transferUiComponent;
 
+        public Chest()
+        {
+
+        }
 
         public override void Deserialize(BinaryReader reader)
         {

@@ -51,6 +51,11 @@ namespace OctoAwesome
 
         private bool disposed;
 
+        private static int NextId => ++nextId;
+        private static int nextId = 0;
+
+        private int secretId = NextId;
+
         /// <summary>
         /// Initialisierung des Planeten.
         /// </summary>
