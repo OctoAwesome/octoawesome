@@ -1,4 +1,6 @@
+using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Concurrent;
@@ -74,19 +76,35 @@ namespace OctoAwesome
         /// <param name="planetId">Die Planteten-ID des gewünschten Planeten</param>
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
+
         ConcurrentDictionary<int, IPlanet> Planets { get; }
 
         IUpdateHub UpdateHub { get; }
 
         Player CurrentPlayer { get; }
 
-        void SaveEntity(Entity entity);
+        void SaveComponentContainer<TContainer, TComponent>(TContainer componentContainer)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
+
         void SaveChunkColumn(IChunkColumn value);
+
         IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
+
         Entity LoadEntity(Guid entityId);
-        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : EntityComponent;
-        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : EntityComponent;
-        IEnumerable<Guid> GetEntityIds();
-        (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : EntityComponent, new();
+
+        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent;
+
+        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent;
+
+        (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new();
+
+        (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new();
+
+        T GetComponent<T>(Guid id) where T : IComponent, new();
+
+        TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
     }
 }

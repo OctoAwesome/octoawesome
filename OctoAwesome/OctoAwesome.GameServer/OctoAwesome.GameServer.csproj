@@ -4,10 +4,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>warnings</Nullable>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandManagementSystem" Version="3.0.0-alpha3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.14" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
 
 </Project>

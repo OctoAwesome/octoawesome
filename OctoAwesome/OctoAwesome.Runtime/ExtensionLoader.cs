@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,15 +16,15 @@ namespace OctoAwesome.Runtime
     {
         private const string SETTINGSKEY = "DisabledExtensions";
 
-        private List<Type> entities;
 
-        private Dictionary<Type, List<Action<Entity>>> entityExtender;
+        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
 
-        private List<Action<Simulation>> simulationExtender;
+        private readonly List<Action<Simulation>> simulationExtender;
 
-        private List<IMapGenerator> mapGenerators;
+        private readonly List<IMapGenerator> mapGenerators;
 
-        private List<IMapPopulator> mapPopulators;
+        private readonly List<IMapPopulator> mapPopulators;
+        private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
         /// <summary>
         /// List of Loaded Extensions
@@ -45,14 +46,14 @@ namespace OctoAwesome.Runtime
         /// Constructor
         /// </summary>
         /// <param name="settings">Current Gamesettings</param>
-        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings)
+        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings, SerializationIdTypeProvider serializationIdTypeProvider)
         {
             this.settings = settings;
             this.typeContainer = typeContainer;
+            this.serializationIdTypeProvider = serializationIdTypeProvider;
             definitionTypeContainer = new StandaloneTypeContainer();
             definitionsLookup = new Dictionary<Type, List<Type>>();
-            entities = new List<Type>();
-            entityExtender = new Dictionary<Type, List<Action<Entity>>>();
+            componentContainerExtender = new Dictionary<Type, List<Action<ComponentContainer>>>();
             simulationExtender = new List<Action<Simulation>>();
             mapGenerators = new List<IMapGenerator>();
             mapPopulators = new List<IMapPopulator>();
@@ -92,8 +93,9 @@ namespace OctoAwesome.Runtime
                     {
                         try
                         {
-                            IExtension extension = (IExtension)Activator.CreateInstance(type);
-                            extension!.Register(typeContainer);
+                            IExtension extension = (IExtension)Activator.CreateInstance(type)!;
+
+                            extension.Register(typeContainer);
                             extension.Register(this, typeContainer);
 
                             if (disabledExtensions.Contains(type.FullName))
@@ -179,13 +181,15 @@ namespace OctoAwesome.Runtime
         /// Registers a new Entity.
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
-        public void RegisterEntity<T>() where T : Entity
+        public void RegisterSerializationType<T>()
         {
             Type type = typeof(T);
-            if (entities.Contains(type))
-                throw new ArgumentException("Already registered");
+            var serId = type.SerializationId();
 
-            entities.Add(type);
+            if (serId == 0)
+                throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Name}, so it cant be registered.");
+
+            serializationIdTypeProvider.Register(serId, type);
         }
 
         /// <summary>
@@ -193,19 +197,19 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        public void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity
+        public void RegisterEntityExtender<T>(Action<ComponentContainer> extenderDelegate) where T : ComponentContainer
         {
             Type type = typeof(T);
-            List<Action<Entity>> list;
-            if (!entityExtender.TryGetValue(type, out list))
+            List<Action<ComponentContainer>> list;
+            if (!componentContainerExtender.TryGetValue(type, out list))
             {
-                list = new List<Action<Entity>>();
-                entityExtender.Add(type, list);
+                list = new List<Action<ComponentContainer>>();
+                componentContainerExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
 
-        public void RegisterDefaultEntityExtender<T>() where T : Entity
+        public void RegisterDefaultEntityExtender<T>() where T : ComponentContainer
             => RegisterEntityExtender<T>((e) => e.RegisterDefault());
 
         /// <summary>
@@ -237,9 +241,9 @@ namespace OctoAwesome.Runtime
         /// Removes an existing Entity Type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void RemoveEntity<T>() where T : Entity
+        public void RemoveEntity<T>() where T : ComponentContainer
         {
-            entities.Remove(typeof(T));
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -274,7 +278,7 @@ namespace OctoAwesome.Runtime
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public void ExtendEntity(Entity entity)
+        public void ExtendEntity(ComponentContainer entity)
         {
             List<Type> stack = new List<Type>();
             Type t = entity.GetType();
@@ -284,13 +288,13 @@ namespace OctoAwesome.Runtime
                 t = t!.BaseType;
                 stack.Add(t);
             }
-            while (t != typeof(Entity));
+            while (t != typeof(ComponentContainer));
             stack.Reverse();
 
             foreach (var type in stack)
             {
-                List<Action<Entity>> list;
-                if (!entityExtender.TryGetValue(type, out list))
+                List<Action<ComponentContainer>> list;
+                if (!componentContainerExtender.TryGetValue(type, out list))
                     continue;
 
                 foreach (var item in list)

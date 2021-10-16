@@ -1,48 +1,85 @@
-﻿using OctoAwesome.Definitions;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public class InventoryComponent : EntityComponent
+    public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         /// <summary>
         /// Das Inventar der Entity
         /// </summary>
         public List<InventorySlot> Inventory { get; set; }
 
+        private readonly IDefinitionManager definitionManager;
+
         public InventoryComponent()
         {
             Inventory = new List<InventorySlot>();
+            definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
 
         public override void Deserialize(BinaryReader reader)
         {
-            IDefinitionManager definitionManager;
-
-            if (!TypeContainer.TryResolve(out definitionManager))
-                return;
-
             base.Deserialize(reader);
 
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
                 string name = reader.ReadString();
-                var definition = definitionManager.Definitions.FirstOrDefault(d => d.GetType().FullName == name);
-                var amount = reader.ReadDecimal();
 
-                if (definition == null || !(definition is IInventoryable))
+                var definition = definitionManager.Definitions.FirstOrDefault(d => d.GetType().FullName == name);
+
+                decimal amount = 1;
+                IInventoryable inventoryItem = default;
+                if (definition is not null && definition is IInventoryable inventoryable)
+                {
+                    amount = reader.ReadDecimal();
+                    inventoryItem = inventoryable;
+                }
+                else
+                {
+                    var type = Type.GetType(name);
+
+                    if (type is null)
+                        continue;
+
+                    object instance;
+                    if (type.IsAssignableTo(typeof(Item)))
+                    {
+                        instance = Item.Deserialize(reader, type, definitionManager);
+                    }
+                    else
+                    {
+                        instance = Activator.CreateInstance(type)!;
+                        if (instance is ISerializable serializable)
+                        {
+                            serializable.Deserialize(reader);
+                        }
+                    }
+
+
+                    if (instance is IInventoryable inventoryObject)
+                    {
+                        inventoryItem = inventoryObject;
+                    }
+                }
+
+                if (inventoryItem == default)
                     continue;
 
                 var slot = new InventorySlot()
                 {
                     Amount = amount,
-                    Item = (IInventoryable)definition,
+                    Item = inventoryItem,
                 };
 
                 Inventory.Add(slot);
@@ -52,12 +89,25 @@ namespace OctoAwesome.EntityComponents
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
-
             writer.Write(Inventory.Count);
             foreach (var slot in Inventory)
             {
-                writer.Write(slot.Item.GetType().FullName!);
-                writer.Write(slot.Amount);
+                if (slot.Item is Item item)
+                {
+                    writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
+                    Item.Serialize(writer, item);
+                }
+                else if (slot.Item is ISerializable serializable)
+                {
+                    writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
+                    serializable.Serialize(writer);
+                }
+                else
+                {
+                    writer.Write(slot.Item.GetType().FullName!);
+                    writer.Write(slot.Amount);
+                }
+
             }
         }
 
@@ -84,7 +134,7 @@ namespace OctoAwesome.EntityComponents
             {
                 slot.Amount += quantity;
             }
-            
+
         }
 
         /// <summary>
@@ -94,17 +144,43 @@ namespace OctoAwesome.EntityComponents
         /// <returns>Gibt an, ob das entfernen der Einheit aus dem Inventar funktioniert hat. False, z.B. wenn nicht genügend Volumen (weniger als VolumePerUnit) übrig ist-</returns>
         public bool RemoveUnit(InventorySlot slot)
         {
-            if (!(slot.Item is IInventoryable definition))
+            if (slot.Item is not IInventoryable definition)
                 return false;
 
             if (slot.Amount >= definition.VolumePerUnit) // Wir können noch einen Block setzen
             {
                 slot.Amount -= definition.VolumePerUnit;
                 if (slot.Amount <= 0)
-                    Inventory.Remove(slot);
+                    return Inventory.Remove(slot);
                 return true;
             }
             return false;
+        }
+
+        public bool RemoveSlot(InventorySlot inventorySlot)
+        {
+            return Inventory.Remove(inventorySlot);
+        }
+
+        public void AddSlot(InventorySlot inventorySlot)
+        {
+            var slot = Inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
+               s.Amount < s.Item.VolumePerUnit * s.Item.StackLimit);
+
+            // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+            if (slot == null)
+            {
+                slot = new InventorySlot()
+                {
+                    Item = inventorySlot.Item,
+                    Amount = inventorySlot.Amount,
+                };
+                Inventory.Add(slot);
+            }
+            else
+            {
+                slot.Amount += inventorySlot.Amount;
+            }
         }
     }
 }

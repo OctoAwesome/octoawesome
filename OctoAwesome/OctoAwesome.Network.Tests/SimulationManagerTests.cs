@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using NUnit.Framework;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Network.Tests
 {

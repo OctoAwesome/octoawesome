@@ -1,17 +1,15 @@
 ﻿using OctoAwesome.Network.Pooling;
-using OctoAwesome.Pooling;
-using OctoAwesome.Threading;
+using OctoAwesome.Rx;
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public abstract class BaseClient : IAsyncObservable<Package>
+    public abstract class BaseClient : IDisposable
     {
         private static uint NextId => ++nextId;
         private static uint nextId;
@@ -22,6 +20,8 @@ namespace OctoAwesome.Network
         }
         public uint Id { get; }
 
+        public IObservable<Package> Packages => packages;
+
         protected Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
 
@@ -29,7 +29,6 @@ namespace OctoAwesome.Network
         private byte nextSendQueueWriteIndex;
         private bool sending;
         private Package currentPackage;
-        private readonly ConcurrentBag<IAsyncObserver<Package>> observers;
         private readonly PackagePool packagePool;
         private readonly SocketAsyncEventArgs sendArgs;
 
@@ -37,8 +36,12 @@ namespace OctoAwesome.Network
         private readonly object sendLock;
         private readonly CancellationTokenSource cancellationTokenSource;
 
+        private readonly ConcurrentRelay<Package> packages;
+
         protected BaseClient()
-        {            
+        {
+            packages = new ConcurrentRelay<Package>();
+
             sendQueue = new (byte[] data, int len)[256];
             sendLock = new object();
             ReceiveArgs = new SocketAsyncEventArgs();
@@ -49,7 +52,6 @@ namespace OctoAwesome.Network
             sendArgs = new SocketAsyncEventArgs();
             sendArgs.Completed += OnSent;
 
-            observers = new ConcurrentBag<IAsyncObserver<Package>>();
             cancellationTokenSource = new CancellationTokenSource();
 
             Id = NextId;
@@ -73,11 +75,6 @@ namespace OctoAwesome.Network
 
         public void Stop()
         {
-            foreach (var observer in observers)
-            {
-                observer.OnCompleted();
-            }
-
             cancellationTokenSource.Cancel();
         }
 
@@ -117,18 +114,13 @@ namespace OctoAwesome.Network
             package.Release();
         }
 
-        public Task<IDisposable> Subscribe(IAsyncObserver<Package> observer)
-        {
-            observers.Add(observer);
-            return Task.FromResult( new Subscription<Package>(this, observer) as IDisposable);
-        }
-
         private void SendInternal(byte[] data, int len)
         {
             while (true)
             {
                 sendArgs.SetBuffer(data, 0, len);
 
+                Console.WriteLine("Send now a package");
                 if (Socket.SendAsync(sendArgs))
                     return;
 
@@ -229,18 +221,21 @@ namespace OctoAwesome.Network
             if (currentPackage.IsComplete)
             {
                 var package = currentPackage;
-                Task.Run(() =>
-                {
-                    foreach (var observer in observers)
-                        observer.OnNext(package);
 
-                    package.Release();
-                });
-
+                Debug.WriteLine("Package:  " + package.UId);
+                packages.OnNext(package);
                 currentPackage = null;
             }
 
             return offset;
+        }
+
+        public void Dispose()
+        {
+            packages?.Dispose();
+            ReceiveArgs?.Dispose();
+            sendArgs?.Dispose();
+            cancellationTokenSource?.Dispose();
         }
     }
 }

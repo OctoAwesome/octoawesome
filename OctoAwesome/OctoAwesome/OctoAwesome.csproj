@@ -17,8 +17,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.0.10-alpha" />
-    <PackageReference Include="NLog" Version="4.7.5" />
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotVariant" Version="0.3.1" />
+    <PackageReference Include="engenious" Version="0.5.1.4-alpha" />
+    <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
   </ItemGroup>
 
@@ -26,4 +33,5 @@
     <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
   </ItemGroup>
 
+  
 </Project>

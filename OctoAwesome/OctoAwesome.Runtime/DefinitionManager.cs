@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace OctoAwesome.Runtime
 {
@@ -78,7 +79,20 @@ namespace OctoAwesome.Runtime
         /// <returns>Index der Block Definition</returns>
         public ushort GetDefinitionIndex<T>() where T : IDefinition
         {
-            IDefinition definition = Definitions.SingleOrDefault(d => d.GetType() == typeof(T));
+            int i = 0;
+            IDefinition definition = default;
+            foreach (var  d in Definitions)
+            {
+                if (i > 0 && d.GetType() == typeof(T))
+                {
+                    throw new InvalidOperationException("Multiple Object where found that match the condition");
+                }
+                else if (i == 0 && d.GetType() == typeof(T))
+                {
+                    definition = d;
+                    ++i;
+                }
+            }
             return GetDefinitionIndex(definition);
         }
 
@@ -89,8 +103,40 @@ namespace OctoAwesome.Runtime
         /// <returns>Auflistung von Instanzen</returns>
         public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
         {
-            // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary)
+            // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary (+1 von Maxi am 07.04.2021))
             return extensionResolver.GetDefinitions<T>();
+        }
+
+        public T GetDefinitionByTypeName<T>(string typeName) where T : IDefinition
+        {
+            var searchedType = typeof(T);
+            if (typeof(IBlockDefinition).IsAssignableFrom(searchedType))
+            {
+                return GetDefinitionFromArrayByTypeName<T>(typeName, BlockDefinitions);
+            }
+            else if (typeof(IItemDefinition).IsAssignableFrom(searchedType))
+            {
+                return GetDefinitionFromArrayByTypeName<T>(typeName, ItemDefinitions);
+            }
+            else if (typeof(IMaterialDefinition).IsAssignableFrom(searchedType))
+            {
+                return GetDefinitionFromArrayByTypeName<T>(typeName, MaterialDefinitions);
+            }
+            else
+            {
+                return default;
+            }
+        }
+
+        private static T GetDefinitionFromArrayByTypeName<T>(string typeName, IDefinition[] array) where T : IDefinition
+        {
+            foreach (var definition in array)
+            {
+                if (string.Equals(definition.GetType().FullName, typeName))
+                    return (T)definition;
+            }
+
+            return default;
         }
     }
 }

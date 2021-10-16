@@ -18,7 +18,7 @@ namespace OctoAwesome
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        void ExtendEntity(Entity entity);
+        void ExtendEntity(ComponentContainer entity);
 
         /// <summary>
         /// Return a List of Definitions

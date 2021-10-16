@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Components;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -81,11 +83,19 @@ namespace OctoAwesome
         /// <param name="universeGuid">Die Guid des Universums.</param>
         /// <param name="player">Der Player.</param>
         void SavePlayer(Guid universeGuid, Player player);
-        IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent;
-        void SaveEntity(Entity entity, Guid universe);
+        IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent;
+        void Save<TContainer, TComponent>(TContainer container, Guid universe)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
+   
         Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId);
-        IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent;
-        IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new();
+        IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent;
+        IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new();
         IEnumerable<Guid> GetEntityIds(Guid universeGuid);
+        IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new();
+        T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new();
+        Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
     }
 }

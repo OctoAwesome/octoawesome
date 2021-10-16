@@ -59,11 +59,11 @@ namespace OctoAwesome.Logging
             => internalLogger.Trace(message);
 
         public void Fatal(string message)
-            => internalLogger.Trace(message);
+            => internalLogger.Fatal(message);
         public void Fatal(string message, Exception exception)
-            => internalLogger.Trace(exception, message);
+            => internalLogger.Fatal(exception, message);
         public void Fatal<T>(T message)
-            => internalLogger.Trace(message);
+            => internalLogger.Fatal(message);
 
         public ILogger As(string loggerName)
         {

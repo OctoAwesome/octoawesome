@@ -2,6 +2,7 @@
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
@@ -13,17 +14,31 @@ namespace OctoAwesome.GameServer.Commands
 {
     public static class NotificationCommands
     {
-        private static readonly IUpdateHub updateHub;
         private static readonly IPool<EntityNotification> entityNotificationPool;
         private static readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private static readonly IPool<BlocksChangedNotification> blocksChangedNotificationPool;
 
+        private static readonly ConcurrentRelay<Notification> simulationChannel;
+        private static readonly ConcurrentRelay<Notification> networkChannel;
+        private static readonly ConcurrentRelay<Notification> chunkChannel;
+        private static readonly IDisposable simulationChannelSub;
+        private static readonly IDisposable networkChannelSub;
+        private static readonly IDisposable chunkChannelSub;
+
         static NotificationCommands()
         {
-            updateHub = TypeContainer.Get<IUpdateHub>();
+            var updateHub = TypeContainer.Get<IUpdateHub>();
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
             blocksChangedNotificationPool = TypeContainer.Get<IPool<BlocksChangedNotification>>();
+
+            simulationChannel = new();
+            networkChannel = new();
+            chunkChannel = new();
+
+            simulationChannelSub = updateHub.AddSource(simulationChannel, DefaultChannels.Simulation);
+            networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
+            chunkChannelSub = updateHub.AddSource(chunkChannel, DefaultChannels.Chunk);
         }
 
         [Command((ushort)OfficialCommand.EntityNotification)]
@@ -31,8 +46,10 @@ namespace OctoAwesome.GameServer.Commands
         {
             var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, parameter.Data);
             entityNotification.SenderId = parameter.ClientId;
-            updateHub.Push(entityNotification, DefaultChannels.Simulation);
-            updateHub.Push(entityNotification, DefaultChannels.Network);
+
+            simulationChannel.OnNext(entityNotification);
+            networkChannel.OnNext(entityNotification);
+
             entityNotification.Release();
             return null;
         }
@@ -55,8 +72,10 @@ namespace OctoAwesome.GameServer.Commands
             }
 
             chunkNotification.SenderId = parameter.ClientId;
-            updateHub.Push(chunkNotification, DefaultChannels.Chunk);
-            updateHub.Push(chunkNotification, DefaultChannels.Network);
+
+            chunkChannel.OnNext(chunkNotification);
+            networkChannel.OnNext(chunkNotification);
+
             chunkNotification.Release();
 
             return null;

@@ -35,6 +35,7 @@ namespace OctoAwesome
             typeContainer.Register<Pool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
             typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehaviour.Singleton);
             typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehaviour.Singleton);
             typeContainer.Register<BlockCollectionService>(InstanceBehaviour.Singleton);
@@ -47,13 +48,13 @@ namespace OctoAwesome
             switch (clientType)
             {
                 case ClientType.DesktopClient:
-                    config.AddRule(LogLevel.Debug, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
+                    config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
                         FileName = $"./logs/octoClient-{DateTime.Now:ddMMyy_hhmmss}.log"
                     });
                     break;
                 case ClientType.GameServer:
-                    config.AddRule(LogLevel.Debug, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
+                    config.AddRule(LogLevel.Trace, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
                     config.AddRule(LogLevel.Debug, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
                         FileName = $"./logs/server-{DateTime.Now:ddMMyy_hhmmss}.log"

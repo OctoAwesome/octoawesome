@@ -6,20 +6,17 @@ using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.Entities
 {
+    [SerializationId(1, 2)]
     public class WauziEntity : UpdateableEntity
     {
         public int JumpTime { get; set; }
 
         public WauziEntity() : base()
         {
-        }
-
-        protected override void OnInitialize(IResourceManager manager)
-        {
-            //Cache = new LocalChunkCache(manager.GlobalChunkCache, true, 2, 1);
         }
 
         public override void Update(GameTime gameTime)
@@ -53,7 +50,7 @@ namespace OctoAwesome.Basics.Entities
             Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
             Components.AddComponent(new MoveableComponent());
-            Components.AddComponent(new BoxCollisionComponent());
+            Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
             Components.AddComponent(new ControllableComponent());
             Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 2, 1));

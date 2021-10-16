@@ -1,12 +1,16 @@
-﻿using OctoAwesome.Database;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Database;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.Serialization.Entities;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -18,7 +22,7 @@ namespace OctoAwesome.Runtime
     /// <summary>
     /// Persistiert Chunks auf die Festplatte.
     /// </summary>
-    public class DiskPersistenceManager : IPersistenceManager, IDisposable, INotificationObserver
+    public class DiskPersistenceManager : IPersistenceManager, IDisposable
     {
         private const string UniverseFilename = "universe.info";
 
@@ -42,7 +46,7 @@ namespace OctoAwesome.Runtime
             databaseProvider = new DatabaseProvider(GetRoot(), TypeContainer.Get<ILogger>());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
-            chunkSubscription = updateHub.Subscribe(this, DefaultChannels.Chunk);
+            chunkSubscription = updateHub.ListenOn(DefaultChannels.Chunk).Subscribe(OnNext);
         }
 
         private string GetRoot()
@@ -153,10 +157,13 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public void SaveEntity(Entity entity, Guid universe)
+        public void Save<TContainer, TComponent>(TContainer container, Guid universe)
+           where TContainer : ComponentContainer<TComponent>
+           where TComponent : IComponent
         {
-            var context = new EntityDbContext(databaseProvider, universe);
-            context.AddOrUpdate(entity);
+            var context
+               = new ComponentContainerDbContext<TContainer, TComponent>(databaseProvider, universe);
+            context.AddOrUpdate(container);
         }
 
         /// <summary>
@@ -274,7 +281,7 @@ namespace OctoAwesome.Runtime
 
         public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
-            var entityContext = new EntityDbContext(databaseProvider, universeGuid);
+            var entityContext = new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid);
             entity = entityContext.Get(new GuidTag<Entity>(entityId));
 
             var awaiter = awaiterPool.Get();
@@ -282,6 +289,17 @@ namespace OctoAwesome.Runtime
             return awaiter;
         }
 
+        public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            var entityContext = new ComponentContainerDbContext<TContainer, TComponent>(databaseProvider, universeGuid);
+            componentContainer = entityContext.Get(new GuidTag<TContainer>(id));
+
+            var awaiter = awaiterPool.Get();
+            awaiter.SetResult(componentContainer);
+            return awaiter;
+        }
 
         /// <summary>
         /// Lädt einen Player.
@@ -309,7 +327,7 @@ namespace OctoAwesome.Runtime
                         awaiter.SetResult(player);
                         return awaiter;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // File.Delete(file);
                     }
@@ -319,18 +337,38 @@ namespace OctoAwesome.Runtime
             return null;
         }
 
-        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
-            => new EntityDbContext(databaseProvider, universeGuid).GetEntitiesWithComponent<T>();
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
+            => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerWithComponent<T>().OfType<Entity>();
 
-        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
-            => new EntityDbContext(databaseProvider, universeGuid).GetEntityIdsFromComponent<T>().Select(i => i.Tag);
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
+            => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetComponentContainerIdsFromComponent<T>().Select(i => i.Tag);
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
-            => new EntityDbContext(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
+            => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Tag);
 
-        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new()
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
         {
             foreach (var entityId in entityIds)
-                yield return (entityId, new EntityComponentsDbContext(databaseProvider, universeGuid).Get<T>(entityId));
+                yield return (entityId, new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid).Get<T>(entityId));
+        }
+
+        public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
+        {
+            var context = new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid);
+
+            var keys = context.GetAllKeys<T>();
+
+            foreach (var key in keys)
+            {
+                yield return (key.Tag, context.Get<T>(key.Tag));
+            }
+        }
+
+        public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
+        {
+            var context
+                = new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid);
+
+            return context.Get<T>(id);
         }
 
         public void Dispose()
@@ -338,11 +376,6 @@ namespace OctoAwesome.Runtime
             databaseProvider.Dispose();
             chunkSubscription.Dispose();
         }
-
-        public void OnCompleted() { }
-
-        public void OnError(Exception error)
-            => throw error;
 
         public void OnNext(Notification notification)
         {

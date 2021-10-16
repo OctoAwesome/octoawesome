@@ -2,19 +2,21 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using OctoAwesome.Basics;
+using OctoAwesome.Components;
+using OctoAwesome.Database;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
+using OctoAwesome.Runtime;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
-using OctoAwesome.Threading;
+using OctoAwesome.Serialization.Entities;
 
 namespace OctoAwesome.Network
 {
-    public class NetworkPersistenceManager : IPersistenceManager, IAsyncObserver<Package>
+    public class NetworkPersistenceManager : IPersistenceManager, IDisposable
     {
         private readonly Client client;
         private readonly IDisposable subscription;
@@ -23,11 +25,13 @@ namespace OctoAwesome.Network
         private readonly ILogger logger;
         private readonly IPool<Awaiter> awaiterPool;
         private readonly PackagePool packagePool;
+        private readonly ITypeContainer typeContainer;
 
-        public NetworkPersistenceManager(Client client)
+        public NetworkPersistenceManager(ITypeContainer typeContainer, Client client)
         {
             this.client = client;
-            subscription = client.Subscribe(this);
+            subscription = client.Packages.Subscribe(package => OnNext(package), ex => OnError(ex));
+            this.typeContainer = typeContainer;
 
             packages = new ConcurrentDictionary<uint, Awaiter>();
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkPersistenceManager));
@@ -69,7 +73,7 @@ namespace OctoAwesome.Network
         {
             var package = packagePool.Get();
             package.Command = (ushort)OfficialCommand.GetPlanet;
-            planet = new ComplexPlanet();
+            planet = typeContainer.Get<IPlanet>();
             var awaiter = GetAwaiter(planet, package.UId);
             client.SendPackageAndRelase(package);
 
@@ -109,16 +113,33 @@ namespace OctoAwesome.Network
             return null;
         }
 
-        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : EntityComponent
-            => Array.Empty<Entity>();
+        public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            var package = packagePool.Get();
+            package.Command = (ushort)OfficialCommand.GetUniverse;
 
-        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : EntityComponent
-            => Array.Empty<Guid>();
+            componentContainer = null;
+            //var awaiter = GetAwaiter(universe, package.UId);
+            client.SendPackageAndRelase(package);
+
+            return null;
+        }
+
+        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
+            => Enumerable.Empty<Entity>();
+
+        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
+            => Enumerable.Empty<Guid>();
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
-            => Array.Empty<Guid>();
+            => Enumerable.Empty<Guid>();
 
-        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : EntityComponent, new()
-            => Array.Empty<(Guid, T)>();
+        public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
+            => Enumerable.Empty<(Guid Id, T Component)>();
+
+        public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
+            => Enumerable.Empty<(Guid Id, T Component)>();
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
@@ -153,7 +174,11 @@ namespace OctoAwesome.Network
             //throw new NotImplementedException();
         }
 
-        public void SaveEntity(Entity entity, Guid universe) { }
+        public void Save<TContainer, TComponent>(TContainer container, Guid universe)
+             where TContainer : ComponentContainer<TComponent>
+             where TComponent : IComponent
+        {
+        }
 
         public void SendChangedChunkColumn(IChunkColumn chunkColumn)
         {
@@ -170,7 +195,7 @@ namespace OctoAwesome.Network
             //client.SendPackage(package);
         }
 
-        public Task OnNext(Package package)
+        public void OnNext(Package package)
         {
             logger.Trace($"Package with id:{package.UId} for Command: {package.OfficialCommand}");
 
@@ -183,7 +208,7 @@ namespace OctoAwesome.Network
                 case OfficialCommand.SaveColumn:
                     if (packages.TryRemove(package.UId, out var awaiter))
                     {
-                        if (awaiter.TrySetResult(package.Payload))
+                        if (!awaiter.TrySetResult(package.Payload))
                             logger.Warn($"Awaiter can not set result package {package.UId}");
                     }
                     else
@@ -193,22 +218,24 @@ namespace OctoAwesome.Network
                     break;
                 default:
                     logger.Warn($"Cant handle Command: {package.OfficialCommand}");
-                    return Task.CompletedTask;
+                    break;
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task OnError(Exception error)
+        public void OnError(Exception error)
         {
             logger.Error(error.Message, error);
-            return Task.CompletedTask;
         }
 
-        public Task OnCompleted()
+        public void Dispose()
         {
-            subscription.Dispose();
-            return Task.CompletedTask;
+            subscription?.Dispose();
+        }
+
+        public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
+        {
+            //TODO
+            return default;
         }
     }
 }

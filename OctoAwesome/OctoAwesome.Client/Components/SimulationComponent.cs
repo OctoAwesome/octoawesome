@@ -80,8 +80,9 @@ namespace OctoAwesome.Client.Components
                 throw new NotSupportedException();
 
             Player player = resourceManager.LoadPlayer(playerName);
+
             player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            Simulation.AddEntity(player);
+            Simulation.Add(player);
 
 
             return player;
@@ -95,7 +96,7 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            Simulation.RemoveEntity(player);
+            Simulation.Remove(player);
         }
     }
 }

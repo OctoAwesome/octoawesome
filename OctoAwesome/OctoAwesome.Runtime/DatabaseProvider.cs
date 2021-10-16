@@ -45,7 +45,7 @@ namespace OctoAwesome.Runtime
                 else
                 {
                     Database<T> tmpDatabase = CreateDatabase<T>(rootPath, fixedValueSize);
-                    
+
                     try
                     {
                         tmpDatabase.Open();
@@ -74,7 +74,7 @@ namespace OctoAwesome.Runtime
                 else
                 {
                     Database<T> tmpDatabase = CreateDatabase<T>(Path.Combine(rootPath, universeGuid.ToString()), fixedValueSize);
-                    
+
                     try
                     {
                         tmpDatabase.Open();
@@ -107,7 +107,7 @@ namespace OctoAwesome.Runtime
                     {
                         tmpDatabase.Open();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         tmpDatabase.Dispose();
                         logger.Error($"Can not Open Database for [{universeGuid}]{planetId}, {typeof(T).Name}", ex);
@@ -148,7 +148,7 @@ namespace OctoAwesome.Runtime
             if (typeName == null)
                 typeName = type.Name;
 
-            string name;
+            string name = "";
 
             foreach (var c in Path.GetInvalidFileNameChars())
             {
@@ -157,12 +157,25 @@ namespace OctoAwesome.Runtime
 
             if (type.IsGenericType)
             {
-                Type firstType = type.GenericTypeArguments.FirstOrDefault();
 
-                if (firstType != default)
-                    name = $"{typeName}_{firstType.Name}";
-                else
-                    name = typeName;
+                do
+                {
+                    path = Path.Combine(path, typeName!);
+                    type = type.GenericTypeArguments.First();
+
+                    if (type.GenericTypeArguments.Length == 0)
+                    {
+                        name = type.Name;
+                        break;
+                    }
+
+                    typeName = type.Name;
+
+                } while (type != default);
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
             }
             else
             {

@@ -1,4 +1,5 @@
 ﻿using engenious;
+using OctoAwesome.Components;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using System;
@@ -11,11 +12,12 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
-    public sealed class PositionComponent : EntityComponent
+    public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IFunctionalBlockComponent
     {
         public Coordinate Position
         {
-            get => position; set
+            get => position;
+            set
             {
                 var valueBlockX = ((int)(value.BlockPosition.X * 100)) / 100f;
                 var valueBlockY = ((int)(value.BlockPosition.Y * 100)) / 100f;
@@ -26,15 +28,20 @@ namespace OctoAwesome.EntityComponents
                     || position.BlockPosition.Z != value.BlockPosition.Z;
 
                 SetValue(ref position, value);
-                TryUpdatePlanet(value.Planet);
+                planet = TryGetPlanet(value.Planet);
             }
         }
 
         public float Direction { get; set; }
-        public IPlanet Planet { get; private set; }
+        public IPlanet Planet
+        {
+            get => planet ??= TryGetPlanet(position.Planet);
+            private set => planet = value;
+        }
 
         private Coordinate position;
         private bool posUpdate;
+        private IPlanet planet;
         private readonly IResourceManager resourceManager;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
@@ -72,16 +79,14 @@ namespace OctoAwesome.EntityComponents
             float posZ = reader.ReadSingle();
 
             position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
-            TryUpdatePlanet(planet);
         }
 
-        private bool TryUpdatePlanet(int planetId)
+        private IPlanet TryGetPlanet(int planetId)
         {
-            if (Planet != null && Planet.Id == planetId)
-                return false;
+            if (planet != null && planet.Id == planetId)
+                return planet;
 
-            Planet = resourceManager.GetPlanet(planetId);
-            return true;
+            return resourceManager.GetPlanet(planetId);
         }
 
         protected override void OnPropertyChanged<T>(T value, string callerName)
@@ -102,13 +107,13 @@ namespace OctoAwesome.EntityComponents
                     updateNotification.Value = stream.ToArray();
                 }
 
-                Update(updateNotification);
+                Push(updateNotification);
             }
         }
 
-        public override void OnUpdate(SerializableNotification notification)
+        public override void OnNotification(SerializableNotification notification)
         {
-            base.OnUpdate(notification);
+            base.OnNotification(notification);
 
             if (notification is PropertyChangedNotification changedNotification)
             {

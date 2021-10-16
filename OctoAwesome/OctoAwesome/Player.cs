@@ -6,12 +6,14 @@ using System.Linq;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Entität, die der menschliche Spieler mittels Eingabegeräte steuern kann.
     /// </summary>
+    [SerializationId(1, 1)]
     public sealed class Player : Entity
     {
         /// <summary>
@@ -29,10 +31,6 @@ namespace OctoAwesome
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
         }
 
-        protected override void OnInitialize(IResourceManager manager)
-        {
-            //Cache = new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-        }
 
         /// <summary>
         /// Serialisiert den Player mit dem angegebenen BinaryWriter.
@@ -48,9 +46,9 @@ namespace OctoAwesome
         public override void Deserialize(BinaryReader reader)
             => base.Deserialize(reader); // Entity
 
-        public override void OnUpdate(SerializableNotification notification)
+        public override void OnNotification(SerializableNotification notification)
         {
-            base.OnUpdate(notification);
+            base.OnNotification(notification);
 
             var entityNotification = entityNotificationPool.Get();
             entityNotification.Entity = this;

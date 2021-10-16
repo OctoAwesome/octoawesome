@@ -18,8 +18,8 @@ namespace OctoAwesome.Definitions
         /// </summary>
         int Condition { get; set; }
         IItemDefinition Definition { get; }
-        IMaterialDefinition Material { get; set; }
+        IMaterialDefinition Material { get;  }
 
-        int Hit(IMaterialDefinition material, decimal volumeRemaining, int volumePerHit);
+        int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit);
     }
 }
