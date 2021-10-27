@@ -88,6 +88,11 @@ namespace OctoAwesome.Caching
             return list;
         }
 
+        internal override void CollectGarbage()
+        {
+            //Intended, no garbage collection neccessary and needed
+        }
+
         /// <summary>
         /// 
         /// </summary>
