@@ -99,7 +99,6 @@ namespace OctoAwesome
                         = cacheService
                         .Get<Index3, List<PositionComponent>>(chunkIndex);
 
-            //TODO TypeIdProvider for the new SerializationId
             foreach (var positionComponent in positionComponents)
             {
                 if (!typeProvider.TryGet(positionComponent.InstanceTypeId, out var type))
@@ -136,11 +135,7 @@ namespace OctoAwesome
                     };
 
                     simulationRelay.OnNext(notification);
-                    //column.Add(functionalBlock);
                 }
-
-                //else if(positionComponent.Instance is FunctionalBlock functionalBlock)
-                //cacheItem.ChunkColumn.Add(resourceManager.LoadComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(functionalBlock.Id));
             }
 
             return column;
@@ -247,72 +242,5 @@ namespace OctoAwesome
         public void AfterSimulationUpdate(Simulation simulation)
         {
         }
-
-        /// <summary>
-        /// Element für den Cache
-        /// </summary>
-        //private class CacheItem : IDisposable
-        //{
-        //    private ChunkPool chunkPool;
-        //    private IChunkColumn _chunkColumn;
-        //    private readonly LockSemaphore internalSemaphore;
-
-        //    public IPlanet Planet { get; set; }
-
-        //    public Index2 Index { get; set; }
-
-        //    /// <summary>
-        //    /// Gets or sets the number of references this cache item is referenced by.
-        //    /// </summary>
-        //    public int References { get; set; }
-
-
-        //    /// <summary>
-        //    /// Gets or sets the <see cref="CacheItem"/> the cache item references.
-        //    /// </summary>
-        //    public IChunkColumn ChunkColumn
-        //    {
-        //        get => _chunkColumn;
-        //        set
-        //        {
-        //            _chunkColumn = value;
-        //        }
-        //    }
-
-        //    private bool disposed;
-
-        //    public CacheItem(ChunkPool chunkPool)
-        //    {
-        //        internalSemaphore = new LockSemaphore(1, 1);
-
-        //        this.chunkPool = chunkPool;
-        //    }
-
-        //    public LockSemaphore.SemaphoreLock Wait()
-        //        => internalSemaphore.Wait();
-
-        //    public void Dispose()
-        //    {
-        //        if (disposed)
-        //            return;
-
-        //        disposed = true;
-
-        //        internalSemaphore.Dispose();
-
-        //        foreach (var chunk in _chunkColumn.Chunks)
-        //        {
-        //            chunkPool.Push(chunk);
-        //        }
-
-        //        if (_chunkColumn is IDisposable disposable)
-        //            disposable.Dispose();
-
-        //        _chunkColumn = null;
-        //        Planet = null;
-        //    }
-
-        //}
-
     }
 }
