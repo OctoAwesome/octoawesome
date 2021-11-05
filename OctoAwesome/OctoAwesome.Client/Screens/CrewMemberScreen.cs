@@ -8,7 +8,7 @@ using engenious.Graphics;
 using System.Diagnostics;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -32,7 +32,7 @@ namespace OctoAwesome.Client.Screens
             SetDefaultBackground();
 
             //The Panel
-            Texture2D panelBackground = assets.LoadTexture( "panel");
+            Texture2D panelBackground = assets.LoadTexture("panel");
             Panel panel = new Panel(manager)
             {
                 MaxWidth = 750,                
@@ -60,8 +60,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(0, 0, 10, 0)
             };
             if (member.PictureFilename == null)
-                profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "base");
-            else profileImage.Texture = assets.LoadTexture(typeof(CrewMember), member.PictureFilename);
+                profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "Crew.base");
+            else profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "Crew." + member.PictureFilename);
             horizontalStack.Controls.Add(profileImage);
 
             //The Text Stack
@@ -119,7 +119,7 @@ namespace OctoAwesome.Client.Screens
                 if (CheckHttpUrl(link.Url))
                 {
                     Button linkButton = new TextButton(manager, link.Title);
-                    linkButton.LeftMouseClick += (s, e) => Process.Start(link.Url);
+                    linkButton.LeftMouseClick += (s, e) => UI.Tools.OpenUrl(link.Url);
                     linkStack.Controls.Add(linkButton);
                 }
             }

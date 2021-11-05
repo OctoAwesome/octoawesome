@@ -5,9 +5,9 @@ using System.Text;
 using engenious.UI;
 using engenious;
 using engenious.Graphics;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
-namespace OctoAwesome.UI.Controls
+namespace OctoAwesome.Client.UI.Controls
 {
     public class CrosshairControl : Control
     {

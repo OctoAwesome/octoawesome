@@ -3,7 +3,7 @@ using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 using System;
 
 namespace OctoAwesome.Client.Screens
@@ -56,7 +56,7 @@ namespace OctoAwesome.Client.Screens
             };
             spanel.Controls.Add(closeButton);
 
-            panel.Background = NineTileBrush.FromSingleTexture(assets.LoadTexture( "panel"), 30, 30);
+            panel.Background = NineTileBrush.FromSingleTexture(assets.LoadTexture("panel"), 30, 30);
         }
     }
 }
