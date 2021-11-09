@@ -17,12 +17,34 @@ namespace OctoAwesome.Client.UI.Controls
 
         AssetComponent assets;
 
+        private static int crosshairSize = 8;
+
+        /// <summary>
+        /// Die Größe des Crosshair
+        /// </summary>
+        public static int CrosshairSize
+        {
+            get => crosshairSize;
+            set => crosshairSize = Math.Clamp(value, 0, MaxSize);
+        }
+
+        /// <summary>
+        /// Die Farbe des Crosshair
+        /// </summary>
+        public static Color CrosshairColor { get; set; }
+
+
+        /// <summary>
+        /// Maximum Größe des Crosshair
+        /// </summary>
+        public const int MaxSize = 100;
+
+
         public CrosshairControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
         {
             assets = asset;
 
             Transparency = 0.5f;
-            Color = Color.White;
 
             Texture = assets.LoadTexture(GetType(), "octocross");
         }
@@ -31,6 +53,9 @@ namespace OctoAwesome.Client.UI.Controls
         {
             if (!assets.Ready)
                 return;
+
+            Color = CrosshairColor = base.ScreenManager.se;
+            Width = Height = CrosshairSize;
 
             batch.Draw(Texture, contentArea, Color * Transparency);
         }
