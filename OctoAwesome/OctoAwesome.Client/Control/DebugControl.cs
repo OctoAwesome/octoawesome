@@ -4,9 +4,9 @@ using engenious.Helper;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.Runtime;
-using OctoAwesome.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace OctoAwesome.UI.Controls
             //Creating all Labels
             devText = new Label(ScreenManager)
             {
-                Text = UI.Languages.OctoClient.DevelopmentVersion
+                Text = Client.UI.Languages.OctoClient.DevelopmentVersion
             };
             leftView.Controls.Add(devText);
 
@@ -161,7 +161,7 @@ namespace OctoAwesome.UI.Controls
             bufferindex %= buffersize;
 
             //Draw Control Info
-            controlInfo.Text = UI.Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
+            controlInfo.Text = Client.UI.Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
 
             //Draw Position
             var pos = "pos: " + Player.Position.Position.ToString();
@@ -180,7 +180,7 @@ namespace OctoAwesome.UI.Controls
 
             //Draw Loaded Chunks
             loadedChunks.Text = string.Format("{0}: {1}/{2}",
-                UI.Languages.OctoClient.LoadedChunks,
+                Client.UI.Languages.OctoClient.LoadedChunks,
                 resourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.DirtyChunkColumn,
                 resourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.LoadedChunkColumns);
 
@@ -189,16 +189,16 @@ namespace OctoAwesome.UI.Controls
                 assets.LoadedTextures);
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + definitionManager.ItemDefinitions.Count() + " " + UI.Languages.OctoClient.Items + " - " +
-                definitionManager.BlockDefinitions.Count() + " " + UI.Languages.OctoClient.Blocks;
+            loadedInfo.Text = "" + definitionManager.ItemDefinitions.Count() + " " + Client.UI.Languages.OctoClient.Items + " - " +
+                definitionManager.BlockDefinitions.Count() + " " + Client.UI.Languages.OctoClient.Blocks;
 
             //Additional Play Information
 
             //Active Tool
             if (Player.Toolbar.ActiveTool != null)
-                activeTool.Text = UI.Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.Name + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
+                activeTool.Text = Client.UI.Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.Name + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
 
-            toolCount.Text = UI.Languages.OctoClient.ToolCount + ": " + Player.Toolbar.Tools.Count(slot => slot != null);
+            toolCount.Text = Client.UI.Languages.OctoClient.ToolCount + ": " + Player.Toolbar.Tools.Count(slot => slot != null);
 
             ////Fly Info
             //if (Player.ActorHost.Player.FlyMode) flyInfo.Text = UI.Languages.OctoClient.FlymodeEnabled;
@@ -206,7 +206,7 @@ namespace OctoAwesome.UI.Controls
 
             IPlanet planet = resourceManager.GetPlanet(Player.Position.Position.Planet);
             // Temperature Info
-            temperatureInfo.Text = UI.Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.Position.Position.GlobalBlockIndex);
+            temperatureInfo.Text = Client.UI.Languages.OctoClient.Temperature + ": " + planet.ClimateMap.GetTemperature(Player.Position.Position.GlobalBlockIndex);
 
             // Precipitation Info
             precipitationInfo.Text = "Precipitation: " + planet.ClimateMap.GetPrecipitation(Player.Position.Position.GlobalBlockIndex);

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -118,7 +118,7 @@ namespace OctoAwesome.Client.Controls
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
             simpleShader = manager.Game.Content.Load<Effect>("simple");
-            sunTexture = assets.LoadTexture( "sun");
+            sunTexture = assets.LoadTexture("sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = Manager.Game.DefinitionManager.BlockDefinitions;

@@ -7,8 +7,8 @@ using engenious;
 using OctoAwesome.EntityComponents;
 using engenious.UI.Controls;
 using OctoAwesome.Definitions;
-using OctoAwesome.UI.Components;
-using OctoAwesome.UI.Controls;
+using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Screens
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
 
-            Texture2D panelBackground = assets.LoadTexture( "panel");
+            Texture2D panelBackground = assets.LoadTexture("panel");
 
             Grid grid = new Grid(manager)
             {

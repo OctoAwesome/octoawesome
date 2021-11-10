@@ -2,10 +2,10 @@
 using System;
 using engenious;
 using engenious.Graphics;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 using OctoAwesome.EntityComponents;
 
-namespace OctoAwesome.UI.Controls
+namespace OctoAwesome.Client.UI.Controls
 {
     public class CompassControl : Control
     {

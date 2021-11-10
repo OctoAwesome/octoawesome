@@ -3,10 +3,10 @@ using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Definitions;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 using System.Collections.Generic;
 
-namespace OctoAwesome.UI.Controls
+namespace OctoAwesome.Client.UI.Controls
 {
     public sealed class InventoryControl : Panel
     {

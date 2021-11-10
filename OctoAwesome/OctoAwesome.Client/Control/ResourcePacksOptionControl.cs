@@ -1,8 +1,8 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.UI;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Controls
 {

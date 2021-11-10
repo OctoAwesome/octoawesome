@@ -1,6 +1,7 @@
 ﻿using engenious;
 using engenious.Graphics;
 using engenious.UI;
+using OctoAwesome.Client.UI;
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace OctoAwesome.UI.Components
+namespace OctoAwesome.Client.UI.Components
 {
     public sealed class AssetComponent : DrawableGameComponent
     {
@@ -59,13 +60,13 @@ namespace OctoAwesome.UI.Components
             ScanForResourcePacks();
 
             // Load list of active Resource Packs
-            List<ResourcePack> toLoad = new List<ResourcePack>();
+            var toLoad = new List<ResourcePack>();
             if (settings.KeyExists(SETTINGSKEY))
             {
-                string activePackPathes = settings.Get<string>(SETTINGSKEY);
+                var activePackPathes = settings.Get<string>(SETTINGSKEY);
                 if (!string.IsNullOrEmpty(activePackPathes))
                 {
-                    string[] packPathes = activePackPathes.Split(';');
+                    var packPathes = activePackPathes.Split(';');
                     foreach (var packPath in packPathes)
                     {
                         ResourcePack resourcePack = loadedPacks.FirstOrDefault(p => p.Path.Equals(packPath));
@@ -81,22 +82,21 @@ namespace OctoAwesome.UI.Components
         {
             loadedPacks.Clear();
             if (Directory.Exists(RESOURCEPATH))
-            {
                 foreach (var directory in Directory.GetDirectories(RESOURCEPATH))
                 {
-                    DirectoryInfo info = new DirectoryInfo(directory);
+                    var info = new DirectoryInfo(directory);
                     if (File.Exists(Path.Combine(directory, INFOFILENAME)))
                     {
                         // Scan info File
-                        XmlSerializer serializer = new XmlSerializer(typeof(ResourcePack));
+                        var serializer = new XmlSerializer(typeof(ResourcePack));
                         using Stream stream = File.OpenRead(Path.Combine(directory, INFOFILENAME));
-                        ResourcePack pack = (ResourcePack)serializer.Deserialize(stream);
+                        var pack = (ResourcePack)serializer.Deserialize(stream);
                         pack!.Path = info.FullName;
                         loadedPacks.Add(pack);
                     }
                     else
                     {
-                        ResourcePack pack = new ResourcePack()
+                        var pack = new ResourcePack()
                         {
                             Path = info.FullName,
                             Name = info.Name
@@ -105,7 +105,6 @@ namespace OctoAwesome.UI.Components
                         loadedPacks.Add(pack);
                     }
                 }
-            }
         }
 
         public void ApplyResourcePacks(IEnumerable<ResourcePack> packs)
@@ -197,9 +196,9 @@ namespace OctoAwesome.UI.Components
         {
             return Load(baseType, key, fileTypes, null, (stream) =>
             {
-                MemoryStream result = new MemoryStream();
-                byte[] buffer = new byte[1024];
-                int count = 0;
+                var result = new MemoryStream();
+                var buffer = new byte[1024];
+                var count = 0;
                 do
                 {
                     count = stream.Read(buffer, 0, buffer.Length);
@@ -216,35 +215,31 @@ namespace OctoAwesome.UI.Components
                 throw new ArgumentNullException();
 
             if (string.IsNullOrEmpty(key))
-                return default(T);
+                return default;
 
-            string fullkey = string.Format("{0}.{1}", baseType.Namespace, key);
+            var fullkey = $"{baseType.Namespace}.{key}";
 
-            string basefolder = baseType.Namespace!.Replace('.', Path.DirectorySeparatorChar);
+            var basefolder = baseType.Namespace!.Replace('.', Path.DirectorySeparatorChar);
 
             // Cache fragen
-            T result = default(T);
+            var result = default(T);
 
             lock (textures)
-            {
                 if (cache != null && cache.TryGetValue(fullkey, out result))
                     return result;
-            }
 
             // Versuche Datei zu laden
             foreach (var resourcePack in activePacks)
             {
-                string localFolder = Path.Combine(resourcePack.Path, basefolder);
+                var localFolder = Path.Combine(resourcePack.Path, basefolder);
 
                 foreach (var fileType in fileTypes)
                 {
-                    string filename = Path.Combine(localFolder, string.Format("{0}.{1}", key, fileType));
+                    var filename = Path.Combine(localFolder, $"{key}.{fileType}");
                     if (File.Exists(filename))
                     {
                         using (var stream = File.Open(filename, FileMode.Open))
-                        {
                             result = callback(stream);
-                        }
                         break;
                     }
                 }
@@ -254,45 +249,53 @@ namespace OctoAwesome.UI.Components
             }
 
             // Resource Fallback
-            if (result == null)
+            if (result is null)
             {
-                var assemblyName = baseType.Assembly.GetName().Name!;
-
-                // Spezialfall Client
-                if (assemblyName.Equals("OctoClient"))
-                    assemblyName = "OctoAwesome.Client";
-
-                var resKey = fullkey.Replace(assemblyName, string.Format("{0}.Assets", assemblyName));
-                foreach (var fileType in fileTypes)
+                result = LoadFrom(baseType, key, fileTypes, callback, assemblyName =>
                 {
-                    using (var stream = baseType.Assembly.GetManifestResourceStream(string.Format("{0}.{1}", resKey, fileType)))
+                    return assemblyName switch
                     {
-                        if (stream != null)
-                        {
-                            result = callback(stream);
-                            break;
-                        }
-                    }
-                }
+                        "OctoClient" => "OctoAwesome.Client",
+                        _ => assemblyName,
+                    };
+                });
             }
 
+            // Aus OctoAwesome.Client.UI laden
+            if (result is null)
+                result = LoadFrom(typeof(ResourcePack), key, fileTypes, callback);
+
             if (result == null)
-            {
                 // Im worstcase CheckerTex laden
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("OctoAwesome.Client.Assets.FallbackTexture.png"))
-                {
                     result = callback(stream);
-                }
-            }
             lock (textures)
-            {
 
                 // In Cache speichern
                 if (result != null && cache != null)
                     cache[fullkey] = result;
-            }
 
             return result;
+        }
+
+        private TOut LoadFrom<TOut>(Type baseType, string ressourceKey, string[] fileExtensions, Func<Stream, TOut> callback, Func<string, string> replaceAssemblyName = null)
+        {
+            var fullkey = $"{baseType.Namespace}.{ressourceKey}";
+            var assemblyName = baseType.Assembly.GetName().Name!;
+            var resKey = fullkey.Replace(assemblyName, "");
+
+            if (replaceAssemblyName is not null)
+                assemblyName = replaceAssemblyName(assemblyName);
+
+            resKey = $"{assemblyName}.Assets{resKey}";
+            foreach (var fileExtension in fileExtensions)
+            {
+                using var stream = baseType.Assembly.GetManifestResourceStream($"{resKey}.{fileExtension}");
+                if (stream is not null)
+                    return callback(stream);
+            }
+
+            return default;
         }
     }
 }

@@ -2,7 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {

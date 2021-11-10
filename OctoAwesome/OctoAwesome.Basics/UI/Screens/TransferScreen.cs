@@ -3,9 +3,9 @@ using engenious.Graphics;
 using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
+using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.UI.Components;
-using OctoAwesome.UI.Controls;
 using System;
 using System.Collections.Generic;
 

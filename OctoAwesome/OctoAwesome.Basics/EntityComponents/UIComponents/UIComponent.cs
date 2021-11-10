@@ -1,6 +1,6 @@
 ﻿using engenious.UI;
+using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Components;
-using OctoAwesome.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;

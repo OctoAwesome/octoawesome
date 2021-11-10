@@ -1,4 +1,4 @@
-﻿namespace OctoAwesome.UI.Components
+﻿namespace OctoAwesome.Client.UI.Components
 {
     /// <summary>
     /// Interface für alle Componenten, die mit Assets aus dem Asset 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.UI.Controls
+namespace OctoAwesome.Client.UI.Controls
 {
     public class HealthBarControl : ProgressBar
     {

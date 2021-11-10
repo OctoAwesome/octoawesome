@@ -8,7 +8,7 @@ using engenious.Graphics;
 using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -35,8 +35,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(20, 20, 20, 20),
                 Width = 700,
                 TabPageBackground = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-                TabBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture( "buttonLong_brown"), 15, 15),
-                TabActiveBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture( "buttonLong_beige"), 15, 15),
+                TabBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture("buttonLong_brown"), 15, 15),
+                TabActiveBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture("buttonLong_beige"), 15, 15),
             };
             Controls.Add(tabs);
 
