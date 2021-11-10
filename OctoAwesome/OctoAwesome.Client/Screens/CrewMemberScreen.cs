@@ -35,7 +35,7 @@ namespace OctoAwesome.Client.Screens
             Texture2D panelBackground = assets.LoadTexture("panel");
             Panel panel = new Panel(manager)
             {
-                MaxWidth = 750,                
+                MaxWidth = 750,
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = new Border(15, 15, 15, 15),
             };
@@ -59,9 +59,7 @@ namespace OctoAwesome.Client.Screens
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Padding = new Border(0, 0, 10, 0)
             };
-            if (member.PictureFilename == null)
-                profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "Crew.base");
-            else profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "Crew." + member.PictureFilename);
+            profileImage.Texture = assets.LoadTexture(typeof(CrewMember), $"Crew.{member.PictureFilename ?? "base"}");
             horizontalStack.Controls.Add(profileImage);
 
             //The Text Stack
@@ -97,7 +95,7 @@ namespace OctoAwesome.Client.Screens
 
             Label achievementsTitle = new Label(manager) { Text = UI.Languages.OctoClient.Achievements + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
             achievementStack.Controls.Add(achievementsTitle);
-            Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };            
+            Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };
             achievementStack.Controls.Add(achievements);
 
             // Links
@@ -115,7 +113,7 @@ namespace OctoAwesome.Client.Screens
             linkStack.Controls.Add(linkTitle);
 
             foreach (var link in member.Links)
-            {                
+            {
                 if (CheckHttpUrl(link.Url))
                 {
                     Button linkButton = new TextButton(manager, link.Title);
@@ -148,7 +146,7 @@ namespace OctoAwesome.Client.Screens
 
         private bool CheckHttpUrl(string url)
         {
-            Uri tmp;            
+            Uri tmp;
             return Uri.TryCreate(url, UriKind.Absolute, out tmp) && (tmp.Scheme == Uri.UriSchemeHttp || tmp.Scheme == Uri.UriSchemeHttps);
         }
     }
