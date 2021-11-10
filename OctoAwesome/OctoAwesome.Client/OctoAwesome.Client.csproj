@@ -4,37 +4,35 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>warnings</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\bin\Release\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
   <ItemGroup>
-    <EngeniousContentReference Include="Content\Content.ecp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\simple.fx" />
-    <Content Include="Content\BoldFont.png" />
-    <Content Include="Content\GameFont.png" />
-    <Content Include="Content\HeadlineFont.png" />
-    <Content Include="Content\Hud.png" />
+    <Content Include="Content\**" />
     <Content Include="Copyright.txt" />
+
     <None Include="de\LoadingScreenQuotes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+
     <Content Include="FEEDBACK.txt" />
     <Content Include="octoawesome.ico" />
     <Content Include="TODO.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Content\engenious.CreatedContent.Content.dll" />
+    <Compile Remove="Content\bin\**" />
+    <Compile Remove="Content\obj\**" />
+    <EmbeddedResource Remove="Content\bin\**" />
+    <EmbeddedResource Remove="Content\obj\**" />
+    <None Remove="Content\bin\**" />
+    <None Remove="Content\obj\**" />
+    <Content Remove="Content\bin\**" />
+    <Content Remove="Content\obj\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,14 +46,18 @@
     <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
+
   <ItemGroup>
+    <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
     <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
   </ItemGroup>
+
   <ItemGroup>
+    <EngeniousContentReference Include="Content\Content.ecp" />
     <Reference Include="engenious.CreatedContent.Content">
-      <HintPath>F:\Repos\octoawesome\OctoAwesome\OctoAwesome.Client\Content\engenious.CreatedContent.Content.dll</HintPath>
+      <HintPath>Content\engenious.CreatedContent.Content.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -91,8 +91,6 @@ namespace OctoAwesome.Client.Screens
             crosshair = new CrosshairControl(manager, assets);
             crosshair.HorizontalAlignment = HorizontalAlignment.Center;
             crosshair.VerticalAlignment = VerticalAlignment.Center;
-            crosshair.Width = 8;
-            crosshair.Height = 8;
             Controls.Add(crosshair);
 
             Title = UI.Languages.OctoClient.Game;

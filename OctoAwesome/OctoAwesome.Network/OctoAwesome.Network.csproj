@@ -21,14 +21,6 @@
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\bin\Debug\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\bin\Release\</OutputPath>
-  </PropertyGroup>
-
   <!-- Fix adapted from https://jaylee.org/archive/2019/03/31/using-span-of-t-in-xamarin-cross-targeted-projects.html
     Remove System.Memory/System.Buffers if mono is installed at default location
 -->

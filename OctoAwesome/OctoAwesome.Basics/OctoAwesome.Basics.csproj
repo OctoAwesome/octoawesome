@@ -3,75 +3,21 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>warnings</Nullable>
-    
-    <DocumentationFile>..\bin\Debug\OctoAwesome.Basics.XML</DocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\bin\Debug\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\bin\Release\</OutputPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Assets\Definitions\Items\axe_iron.png" />
-    <None Remove="Assets\Definitions\Items\bucket.png" />
-    <None Remove="Assets\Definitions\Items\chest.png" />
-    <None Remove="Assets\Definitions\Items\hammer_iron.png" />
-    <None Remove="Assets\Definitions\Items\hoe_iron.png" />
-    <None Remove="Assets\Definitions\Items\shovel_iron.png" />
-    <None Remove="Assets\Definitions\Items\sword_iron.png" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="dotVariant" Version="0.3.1" />
     <PackageReference Include="engenious" Version="0.5.1.4-alpha" />
     <PackageReference Include="engenious.UI" Version="0.5.1.1-alpha" />
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Definitions\Blocks\dirt.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\brick_grey.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\brick_red.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cactus_inside.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cactus_side.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cactus_top.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_blue.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_green.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_red.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\cotton_tan.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\dirt_grass.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\dirt_snow.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\grass_top.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\gravel.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\greystone.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\ice.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\leaves.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\leaves_orange.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\birch_wood_side.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\birch_wood_top.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\planks.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\planks_red.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\redstone.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\axe_iron.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\bucket.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\chest.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\hammer_iron.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\hoe_iron.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\pick_iron.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\sand.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\snow.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\stone.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\water.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\wood_side.png" />
-    <EmbeddedResource Include="Assets\Definitions\Blocks\wood_top.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\shovel_iron.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\sword_iron.png" />
-    <EmbeddedResource Include="Assets\Definitions\Items\wauziegg.png" />
+    <EmbeddedResource Include="Assets\**" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
   </ItemGroup>
-  
+
 </Project>

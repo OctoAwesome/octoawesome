@@ -1,8 +1,13 @@
 ﻿using engenious;
+using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -15,15 +20,16 @@ namespace OctoAwesome.Client.Screens
 
         private readonly ISettings settings;
 
+        private bool firstTimeFocusNameBox = true;
+
         public CreateUniverseScreen(ScreenComponent manager) : base(manager)
         {
             Manager = manager;
             settings = manager.Game.Settings;
 
             Padding = new Border(0, 0, 0, 0);
-
             Title = UI.Languages.OctoClient.CreateUniverse;
-
+            TabStop = false;
             SetDefaultBackground();
 
             var panel = new Panel(manager)
@@ -32,14 +38,16 @@ namespace OctoAwesome.Client.Screens
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Margin = Border.All(50),
                 Background = new BorderBrush(Color.White * 0.5f),
-                Padding = Border.All(10)
+                Padding = Border.All(10),
+                TabStop = false
             };
             Controls.Add(panel);
 
             var grid = new Grid(manager)
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                TabStop = false,
             };
             panel.Controls.Add(grid);
 
@@ -51,20 +59,29 @@ namespace OctoAwesome.Client.Screens
             {
                 createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
             };
+            nameInput.TabOrder = 1;
             AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Name), nameInput);
 
             seedInput = GetTextbox();
+            seedInput.TabOrder = 2;
             AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Seed), seedInput);
 
-            createButton = new TextButton(manager, UI.Languages.OctoClient.Create);
-            createButton.HorizontalAlignment = HorizontalAlignment.Right;
-            createButton.VerticalAlignment = VerticalAlignment.Bottom;
-            createButton.Visible = false;
+            // HACK: Till engenious has working tabbing
+            nameInput.LostFocus += (s, e) => seedInput.Focus();
+            seedInput.LostFocus += (s, e) => nameInput.Focus();
+
+            createButton = new TextButton(manager, UI.Languages.OctoClient.Create)
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Visible = false,
+                TabStop = false,
+            };
             createButton.LeftMouseClick += (s, e) =>
             {
                 if (string.IsNullOrEmpty(nameInput.Text))
                     return;
-                
+
                 manager.Player.SetEntity(null);
 
                 Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
@@ -79,13 +96,25 @@ namespace OctoAwesome.Client.Screens
 
         }
 
+        protected override void OnUpdate(GameTime gameTime)
+        {
+            base.OnUpdate(gameTime);
+
+            if (nameInput is not null && firstTimeFocusNameBox)
+            {
+                nameInput.Focus();
+                firstTimeFocusNameBox = false;
+            }
+        }
+
         private Textbox GetTextbox()
         {
             var t = new Textbox(Manager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black)
+                Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black),
+                TabStop = true
             };
             return t;
         }
