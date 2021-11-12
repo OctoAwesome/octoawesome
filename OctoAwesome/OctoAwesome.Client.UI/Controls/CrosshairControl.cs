@@ -31,7 +31,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// <summary>
         /// Die Farbe des Crosshair
         /// </summary>
-        public static Color CrosshairColor { get; set; }
+        public static Color CrosshairColor { get; set; } = Color.White;
 
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OctoAwesome.Client.UI.Controls
             if (!assets.Ready)
                 return;
 
-            Color = CrosshairColor = base.ScreenManager.se;
+            Color = CrosshairColor;
             Width = Height = CrosshairSize;
 
             batch.Draw(Texture, contentArea, Color * Transparency);
