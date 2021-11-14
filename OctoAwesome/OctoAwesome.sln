@@ -1,31 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31825.309
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome", "OctoAwesome\OctoAwesome.csproj", "{93601DB8-F134-418E-8B35-11E30CFEC31C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Basics", "OctoAwesome.Basics\OctoAwesome.Basics.csproj", "{739F0779-A605-49C9-A298-FE30DC628C9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Basics", "OctoAwesome.Basics\OctoAwesome.Basics.csproj", "{739F0779-A605-49C9-A298-FE30DC628C9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Runtime", "OctoAwesome.Runtime\OctoAwesome.Runtime.csproj", "{31D774C6-E5D9-40B7-8D63-942E28FE1D94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Runtime", "OctoAwesome.Runtime\OctoAwesome.Runtime.csproj", "{31D774C6-E5D9-40B7-8D63-942E28FE1D94}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D269F5F0-2B6A-471A-8A44-253DEF5D98A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Tests", "OctoAwesome.Tests\OctoAwesome.Tests.csproj", "{0468B67C-E076-4B19-833C-382513606A5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Tests", "OctoAwesome.Tests\OctoAwesome.Tests.csproj", "{0468B67C-E076-4B19-833C-382513606A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Client", "OctoAwesome.Client\OctoAwesome.Client.csproj", "{FBCB341A-ACD0-4511-AD71-006779B90151}"
 	ProjectSection(ProjectDependencies) = postProject
 		{739F0779-A605-49C9-A298-FE30DC628C9E} = {739F0779-A605-49C9-A298-FE30DC628C9E}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E2A2D607-9959-4BAD-AE4D-238B9B951BC6}"
-	ProjectSection(SolutionItems) = preProject
-		libs\MonoGameUi.dll = libs\MonoGameUi.dll
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Docs", "OctoAwesome.Docs\OctoAwesome.Docs.csproj", "{A144F0E6-716C-40C1-83DD-A1039DA7F73B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Docs", "OctoAwesome.Docs\OctoAwesome.Docs.csproj", "{A144F0E6-716C-40C1-83DD-A1039DA7F73B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Community", "OctoAwesome.Community\OctoAwesome.Community.csproj", "{016407F4-814F-4183-855F-FA32C7378261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Community", "OctoAwesome.Community\OctoAwesome.Community.csproj", "{016407F4-814F-4183-855F-FA32C7378261}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Network", "OctoAwesome.Network\OctoAwesome.Network.csproj", "{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Network.Tests", "OctoAwesome.Network.Tests\OctoAwesome.Network.Tests.csproj", "{762E8B0C-2EF8-4EC6-BF47-8926871973D6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.GameServer", "OctoAwesome.GameServer\OctoAwesome.GameServer.csproj", "{38EAE0E6-FCCF-4A33-B500-C9ED28717388}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database", "OctoAwesome.Database\OctoAwesome.Database.csproj", "{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Database.Tests", "Tests\OctoAwesome.Database.Tests\OctoAwesome.Database.Tests.csproj", "{6592E6FB-A005-45B7-A526-6598D7CF26BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Client.UI", "OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj", "{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.PoC", "OctoAwesome.PoC\OctoAwesome.PoC.csproj", "{800CE73C-CAAF-48EC-988B-E32DA7561814}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.PoC.Tests", "OctoAwesome.PoC.Tests\OctoAwesome.PoC.Tests.csproj", "{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,12 +101,79 @@ Global
 		{016407F4-814F-4183-855F-FA32C7378261}.Release|Any CPU.Build.0 = Release|Any CPU
 		{016407F4-814F-4183-855F-FA32C7378261}.Release|x86.ActiveCfg = Release|Any CPU
 		{016407F4-814F-4183-855F-FA32C7378261}.Release|x86.Build.0 = Release|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Debug|x86.Build.0 = Debug|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|x86.ActiveCfg = Release|Any CPU
+		{B1F4D7BB-7F56-4E96-87DD-EBEBAE9CF336}.Release|x86.Build.0 = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Debug|x86.Build.0 = Debug|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6}.Release|x86.Build.0 = Release|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Debug|x86.Build.0 = Debug|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|x86.ActiveCfg = Release|Any CPU
+		{38EAE0E6-FCCF-4A33-B500-C9ED28717388}.Release|x86.Build.0 = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Debug|x86.Build.0 = Debug|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|x86.ActiveCfg = Release|Any CPU
+		{62D15DAB-1934-43CD-BB04-4E7D28B7F02E}.Release|x86.Build.0 = Release|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Debug|x86.Build.0 = Debug|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|x86.ActiveCfg = Release|Any CPU
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC}.Release|x86.Build.0 = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Debug|x86.Build.0 = Debug|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|x86.ActiveCfg = Release|Any CPU
+		{91D82287-0C1A-4C5B-B0E5-83153DB78EC6}.Release|x86.Build.0 = Release|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Debug|x86.Build.0 = Debug|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Release|x86.ActiveCfg = Release|Any CPU
+		{800CE73C-CAAF-48EC-988B-E32DA7561814}.Release|x86.Build.0 = Release|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Debug|x86.Build.0 = Debug|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|x86.ActiveCfg = Release|Any CPU
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0468B67C-E076-4B19-833C-382513606A5A} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
+		{762E8B0C-2EF8-4EC6-BF47-8926871973D6} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
+		{6592E6FB-A005-45B7-A526-6598D7CF26BC} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
+		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944} = {D269F5F0-2B6A-471A-8A44-253DEF5D98A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0BE45E2B-9F0C-49A7-AC90-A9B87EC9D7EA}

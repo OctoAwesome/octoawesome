@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using OctoAwesome.Definitions;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Ein Slot in einem Inventar
@@ -8,11 +10,28 @@
         /// <summary>
         /// Das Item das in dem Slot ist.
         /// </summary>
-        public IInventoryableDefinition Definition { get; set; }
+        public IInventoryable Item
+        {
+            get => item; set
+            {
+                if (value is IDefinition definition)
+                    Definition = definition;
+                else if (value is IItem item)
+                    Definition = item.Definition;
+                else
+                    Definition = null;
+
+                item = value;
+            }
+        }
+
+        private IInventoryable item;
 
         /// <summary>
-        /// Volumen des Elementes <see cref="Definition"/> in diesem Slot in dm³.
+        /// Volumen des Elementes <see cref="Item"/> in diesem Slot in dm³.
         /// </summary>
         public decimal Amount { get; set; }
+
+        public IDefinition Definition { get; set; }
     }
 }

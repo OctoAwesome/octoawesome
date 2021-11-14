@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO;
-using MonoGameUi;
+using engenious.UI;
 using OctoAwesome.Client.Components;
 using System;
 
@@ -42,7 +42,7 @@ namespace OctoAwesome.Client.Crew
         internal static List<CrewMember> getCrew(ScreenComponent manager)
         {
 
-            using (Stream stream = manager.Game.Assets.LoadStream(typeof(CrewMember), "crew", "xml"))
+            using (Stream stream = manager.Game.Assets.LoadStream(typeof(CrewMember), "Crew.crew", "xml"))
             {
                 try
                 {

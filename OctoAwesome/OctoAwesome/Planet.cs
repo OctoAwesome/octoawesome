@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -9,6 +11,7 @@ namespace OctoAwesome
     /// </summary>
     public class Planet : IPlanet
     {
+
         /// <summary>
         /// ID des Planeten.
         /// </summary>
@@ -44,6 +47,15 @@ namespace OctoAwesome
         /// </summary>
         public IMapGenerator Generator { get; set; }
 
+        public IGlobalChunkCache GlobalChunkCache { get; }
+
+        private bool disposed;
+
+        private static int NextId => ++nextId;
+        private static int nextId = 0;
+
+        private int secretId = NextId;
+
         /// <summary>
         /// Initialisierung des Planeten.
         /// </summary>
@@ -51,7 +63,7 @@ namespace OctoAwesome
         /// <param name="universe">ID des Universums.</param>
         /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
         /// <param name="seed">Seed des Zufallsgenerators.</param>
-        public Planet(int id, Guid universe, Index3 size, int seed)
+        public Planet(int id, Guid universe, Index3 size, int seed) : this()
         {
             Id = id;
             Universe = universe;
@@ -67,43 +79,48 @@ namespace OctoAwesome
         /// </summary>
         public Planet()
         {
-
+            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>(), TypeContainer.Get<SerializationIdTypeProvider>());
         }
 
         /// <summary>
         /// Serialisiert den Planeten in den angegebenen Stream.
         /// </summary>
         /// <param name="stream">Zielstream</param>
-        public virtual void Serialize(Stream stream)
+        public virtual void Serialize(BinaryWriter writer)
         {
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.Write(Id);
-                writer.Write(Seed);
-                writer.Write(Gravity);
-                writer.Write(Size.X);
-                writer.Write(Size.Y);
-                writer.Write(Size.Z);
-                writer.Write(Universe.ToByteArray());
-                //writer.Write(Generator.GetType().FullName);
-            }
+            writer.Write(Id);
+            writer.Write(Seed);
+            writer.Write(Gravity);
+            writer.Write(Size.X);
+            writer.Write(Size.Y);
+            writer.Write(Size.Z);
+            writer.Write(Universe.ToByteArray());
         }
 
         /// <summary>
         /// Deserialisiert den Planeten aus dem angegebenen Stream.
         /// </summary>
         /// <param name="stream">Quellstream</param>
-        public virtual void Deserialize(Stream stream)
+        public virtual void Deserialize(BinaryReader reader)
         {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
-            {
-                Id = reader.ReadInt32();
-                Seed = reader.ReadInt32();
-                Gravity = reader.ReadSingle();
-                Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                Universe = new Guid(reader.ReadBytes(16));
-                //var name = reader.ReadString();
-            }
+            Id = reader.ReadInt32();
+            Seed = reader.ReadInt32();
+            Gravity = reader.ReadSingle();
+            Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            Universe = new Guid(reader.ReadBytes(16));
+            //var name = reader.ReadString();
+        }
+
+        public void Dispose()
+        {
+            if (disposed)
+                return;
+
+            disposed = true;
+
+            if (GlobalChunkCache is IDisposable disposable)
+                disposable.Dispose();
+
         }
     }
 }

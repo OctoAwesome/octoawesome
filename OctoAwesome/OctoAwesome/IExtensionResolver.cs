@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OctoAwesome.Definitions;
+using System.Collections.Generic;
 
 namespace OctoAwesome
 {
@@ -17,14 +18,14 @@ namespace OctoAwesome
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        void ExtendEntity(Entity entity);
+        void ExtendEntity(ComponentContainer entity);
 
         /// <summary>
         /// Return a List of Definitions
         /// </summary>
         /// <typeparam name="T">Definitiontype</typeparam>
         /// <returns>List</returns>
-        IEnumerable<T> GetDefinitions<T>() where T : IDefinition;
+        IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition;
 
         /// <summary>
         /// Return a List of MapGenerators

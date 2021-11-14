@@ -1,4 +1,4 @@
-﻿using MonoGameUi;
+﻿using engenious.UI;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Runtime;
 using System;
@@ -7,19 +7,21 @@ using System.Linq;
 using System.Text;
 using engenious;
 using engenious.Input;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
     internal class LoadScreen : BaseScreen
     {
-        private new ScreenComponent Manager;
+        private new readonly ScreenComponent Manager;
+        private readonly Button deleteButton;
+        private readonly Button createButton;
+        private readonly Button playButton;
+        private readonly Grid mainStack;
+        private readonly Listbox<IUniverse> levelList;
+        private readonly Label seedLabel;
 
-        Button deleteButton, createButton, playButton;
-        Grid mainStack;
-        Listbox<IUniverse> levelList;
-        Label seedLabel;
-
-        private ISettings settings;
+        private readonly ISettings settings;
 
         public LoadScreen(ScreenComponent manager) : base(manager)
         {
@@ -28,7 +30,7 @@ namespace OctoAwesome.Client.Screens
 
             Padding = new Border(0, 0, 0, 0);
 
-            Title = Languages.OctoClient.SelectUniverse;
+            Title = UI.Languages.OctoClient.SelectUniverse;
 
             SetDefaultBackground();
 
@@ -44,12 +46,14 @@ namespace OctoAwesome.Client.Screens
             Controls.Add(mainStack);
 
             //Level Stack
-            levelList = new Listbox<IUniverse>(manager);
-            levelList.Background = new BorderBrush(Color.White * 0.5f);
-            levelList.VerticalAlignment = VerticalAlignment.Stretch;
-            levelList.HorizontalAlignment = HorizontalAlignment.Stretch;
-            levelList.Margin = Border.All(10);
-            levelList.SelectedItemBrush = new BorderBrush(Color.SaddleBrown * 0.7f);
+            levelList = new Listbox<IUniverse>(manager)
+            {
+                Background = new BorderBrush(Color.White * 0.5f),
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = Border.All(10),
+                SelectedItemBrush = new BorderBrush(Color.SaddleBrown * 0.7f)
+            };
             levelList.TemplateGenerator += (x) =>
             {
                 var li = new Label(manager)
@@ -65,7 +69,14 @@ namespace OctoAwesome.Client.Screens
             {
                 seedLabel.Text = "";
                 if (levelList.SelectedItem != null)
+                {
                     seedLabel.Text = "Seed: " + levelList.SelectedItem.Seed;
+                    deleteButton.Enabled = true;
+                }
+                else
+                {
+                    deleteButton.Enabled = false;
+                }
             };
             mainStack.AddControl(levelList, 0, 0);
 
@@ -94,18 +105,11 @@ namespace OctoAwesome.Client.Screens
             //renameButton = getButton("Rename");
             //buttonStack.Controls.Add(renameButton);
 
-            deleteButton = GetButton(Languages.OctoClient.Delete);
+            deleteButton = GetButton(UI.Languages.OctoClient.Delete);
+            deleteButton.Enabled = false;
             buttonStack.Controls.Add(deleteButton);
             deleteButton.LeftMouseClick += (s, e) =>
             {
-                if (levelList.SelectedItem == null)
-                {
-                    MessageScreen msg = new MessageScreen(manager, Languages.OctoClient.Error, Languages.OctoClient.SelectUniverseFirst);
-                    manager.NavigateToScreen(msg);
-
-                    return;
-                }
-
                 // Sicherstellen, dass universe nicht geladen ist
                 if (Manager.Game.ResourceManager.CurrentUniverse != null &&
                     Manager.Game.ResourceManager.CurrentUniverse.Id == levelList.SelectedItem.Id)
@@ -118,18 +122,18 @@ namespace OctoAwesome.Client.Screens
                 settings.Set("LastUniverse", "");
             };
 
-            createButton = GetButton(Languages.OctoClient.Create);
+            createButton = GetButton(UI.Languages.OctoClient.Create);
             createButton.LeftMouseClick += (s, e) => manager.NavigateToScreen(new CreateUniverseScreen(manager));
             buttonStack.Controls.Add(createButton);
 
-            playButton = GetButton(Languages.OctoClient.Play);
+            playButton = GetButton(UI.Languages.OctoClient.Play);
             playButton.LeftMouseClick += (s, e) =>
             {
                 if (levelList.SelectedItem == null)
                 {
-                    MessageScreen msg = new MessageScreen(manager, Languages.OctoClient.Error, Languages.OctoClient.SelectUniverseFirst);
+                    MessageScreen msg = new MessageScreen(manager, manager.Game.Assets, UI.Languages.OctoClient.Error, UI.Languages.OctoClient.SelectUniverseFirst);
                     manager.NavigateToScreen(msg);
-                    
+
                     return;
                 }
 
@@ -147,19 +151,13 @@ namespace OctoAwesome.Client.Screens
             Guid lastUniverseId;
             if (Guid.TryParse(settings.Get<string>("LastUniverse"), out lastUniverseId))
             {
-                var lastlevel =  levelList.Items.FirstOrDefault(u => u.Id == lastUniverseId);
+                var lastlevel = levelList.Items.FirstOrDefault(u => u.Id == lastUniverseId);
                 if (lastlevel != null)
                     levelList.SelectedItem = lastlevel;
 
             }
         }
 
-        private Button GetButton(string title)
-        {
-            Button button = Button.TextButton(Manager, title);
-            button.HorizontalAlignment = HorizontalAlignment.Stretch;
-            return button;
-        }
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
@@ -181,11 +179,10 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
             settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
 
-            Player player = Manager.Game.Simulation.LoginPlayer(Guid.Empty);
+            Player player = Manager.Game.Simulation.LoginPlayer("");
             Manager.Game.Player.SetEntity(player);
 
-
-            Manager.NavigateToScreen(new GameScreen(Manager));
+            Manager.NavigateToScreen(new LoadingScreen(Manager));
         }
     }
 }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OctoAwesome.Client.Components;
-using MonoGameUi;
+using engenious.UI;
 using engenious;
 using OctoAwesome.Client.Crew;
+using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -15,7 +16,7 @@ namespace OctoAwesome.Client.Screens
         {
             Padding = new Border(0, 0, 0, 0);
 
-            Title = Languages.OctoClient.CreditsCrew;
+            Title = UI.Languages.OctoClient.CreditsCrew;
 
             SetDefaultBackground();
 
@@ -30,6 +31,7 @@ namespace OctoAwesome.Client.Screens
 
             StackPanel crewList = new StackPanel(manager) {
                 MinWidth = 700,
+                Padding = new Border(10, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Orientation = Orientation.Vertical,
             };
@@ -37,7 +39,7 @@ namespace OctoAwesome.Client.Screens
 
             foreach(CrewMember member in crew)
             {
-                Button memberButton = Button.TextButton(manager, member.Username);
+                Button memberButton = new TextButton(manager, member.Username);
                 memberButton.HorizontalAlignment = HorizontalAlignment.Stretch;
                 memberButton.Margin = new Border(5, 5, 5, 5);
 

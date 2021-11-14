@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Notifications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,10 +30,14 @@ namespace OctoAwesome.Tests
             }
         }
 
+        public IPlanet Planet => throw new NotImplementedException();
+
         public TestGlobalCache()
         {
             Loaded = new List<PlanetIndex3>();
         }
+
+        public event EventHandler<IChunkColumn> ChunkColumnChanged;
 
         public void Reset()
         {
@@ -41,16 +46,18 @@ namespace OctoAwesome.Tests
             Loaded.Clear();
         }
 
-        public void Release(int planet,Index2 position, bool passiv)
+        public void Release(int planet, Index2 position, bool passiv)
         {
             SaveCounter++;
         }
 
-        public IChunkColumn Subscribe(int planet, Index2 position,bool passiv)
+        public IChunkColumn Subscribe(IPlanet planet, Index2 position,bool passiv)
         {
             LoadCounter++;
             return new ChunkColumn(new IChunk[] {new Chunk(new Index3(position,0),planet),new Chunk(new Index3(position,1),planet),new Chunk(new Index3(position,2),planet) },planet, position);
         }
+
+        public IChunkColumn Subscribe(Index2 position) => throw new NotImplementedException();
 
         public IChunkColumn Peek(int planet, Index2 position)
         {
@@ -81,5 +88,17 @@ namespace OctoAwesome.Tests
         {
             throw new NotImplementedException();
         }
+
+        public void OnUpdate(SerializableNotification notification) => throw new NotImplementedException();
+        public void Update(SerializableNotification notification) => throw new NotImplementedException();
+        public void InsertUpdateHub(IUpdateHub updateHub) => throw new NotImplementedException();
+        public void OnCompleted() => throw new NotImplementedException();
+        public void OnError(Exception error) => throw new NotImplementedException();
+        public void OnNext(Notification value) => throw new NotImplementedException();
+        public IChunkColumn Subscribe(Index2 position, bool passive) => throw new NotImplementedException();
+        public bool IsChunkLoaded(Index2 position) => throw new NotImplementedException();
+        public IChunkColumn Peek(Index2 position) => throw new NotImplementedException();
+        public void Release(Index2 position, bool passive) => throw new NotImplementedException();
+        public void Release(Index2 position) => throw new NotImplementedException();
     }
 }

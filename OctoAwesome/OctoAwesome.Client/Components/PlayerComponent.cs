@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.SumTypes;
 
 namespace OctoAwesome.Client.Components
 {
@@ -49,7 +50,7 @@ namespace OctoAwesome.Client.Components
         public PositionComponent Position { get; private set; }
 
         // public ActorHost ActorHost { get; private set; }
-
+        public Selection Selection { get; set; }
         public Index3? SelectedBox { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
@@ -69,11 +70,8 @@ namespace OctoAwesome.Client.Components
 
         public void SetEntity(Entity entity)
         {
-            CurrentEntity = entity;
 
-
-
-            if (CurrentEntity == null)
+            if (entity == null)
             {
                 CurrentEntityHead = null;
             }
@@ -83,18 +81,23 @@ namespace OctoAwesome.Client.Components
 
                 CurrentController = entity.Components.GetComponent<ControllableComponent>();
 
-                CurrentEntityHead = CurrentEntity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead == null) CurrentEntityHead = new HeadComponent();
+                CurrentEntityHead = entity.Components.GetComponent<HeadComponent>();
+                if (CurrentEntityHead is null) 
+                    CurrentEntityHead = new() { Offset = new(0, 0, 3.2f) };
 
-                Inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
-                if (Inventory == null) Inventory = new InventoryComponent();
+                Inventory = entity.Components.GetComponent<InventoryComponent>();
+                if (Inventory is null) 
+                    Inventory = new();
 
-                Toolbar = CurrentEntity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar == null) Toolbar = new ToolBarComponent();
+                Toolbar = entity.Components.GetComponent<ToolBarComponent>();
+                if (Toolbar is null) 
+                    Toolbar = new();
 
-                Position = CurrentEntity.Components.GetComponent<PositionComponent>();
-                if (Position == null) Position = new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
+                Position = entity.Components.GetComponent<PositionComponent>();
+                if (Position is null) 
+                    Position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
+            CurrentEntity = entity;
         }
 
         public override void Update(GameTime gameTime)
@@ -117,8 +120,14 @@ namespace OctoAwesome.Client.Components
             JumpInput = false;
 
             if (InteractInput && SelectedBox.HasValue)
+                CurrentController.Selection = Selection;
+            else
+                CurrentController.Selection = null;
+                       
+            if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;
-            InteractInput = false;
+            else
+                CurrentController.InteractBlock = null;
 
             if (ApplyInput && SelectedBox.HasValue)
             {
@@ -127,60 +136,34 @@ namespace OctoAwesome.Client.Components
             }
 
             ApplyInput = false;
-
             //if (FlymodeInput)
             //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             //FlymodeInput = false;
 
             if (Toolbar.Tools != null && Toolbar.Tools.Length > 0)
             {
-                if (Toolbar.ActiveTool == null) Toolbar.ActiveTool = Toolbar.Tools[0];
                 for (int i = 0; i < Math.Min(Toolbar.Tools.Length, SlotInput.Length); i++)
                 {
                     if (SlotInput[i])
-                        Toolbar.ActiveTool = Toolbar.Tools[i];
+                        Toolbar.ActiveIndex = i;
                     SlotInput[i] = false;
                 }
             }
 
-            //Index des aktiven Werkzeugs ermitteln
-            int activeTool = -1;
-            List<int> toolIndices = new List<int>();
-            if (Toolbar.Tools != null)
-            {
-                for (int i = 0; i < Toolbar.Tools.Length; i++)
-                {
-                    if (Toolbar.Tools[i] != null)
-                        toolIndices.Add(i);
-
-                    if (Toolbar.Tools[i] == Toolbar.ActiveTool)
-                        activeTool = toolIndices.Count - 1;
-                }
-            }
-
+            //Index des aktiven Werkzeugs ermitteln   
             if (SlotLeftInput)
             {
-                if (activeTool > -1)
-                    activeTool--;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[toolIndices.Count - 1];
+                Toolbar.ActiveIndex--;
             }
             SlotLeftInput = false;
 
             if (SlotRightInput)
             {
-                if (activeTool > -1)
-                    activeTool++;
-                else if (toolIndices.Count > 0)
-                    activeTool = toolIndices[0];
+                Toolbar.ActiveIndex++;
             }
             SlotRightInput = false;
 
-            if (activeTool > -1)
-            {
-                activeTool = (activeTool + toolIndices.Count) % toolIndices.Count;
-                Toolbar.ActiveTool = Toolbar.Tools[toolIndices[activeTool]];
-            }
+
         }
 
         /// <summary>
@@ -192,13 +175,20 @@ namespace OctoAwesome.Client.Components
             if (inventory == null)
                 return;
 
-            var blockDefinitions = resourceManager.DefinitionManager.GetBlockDefinitions();
+            var blockDefinitions = resourceManager.DefinitionManager.BlockDefinitions;
             foreach (var blockDefinition in blockDefinitions)
-                inventory.AddUnit(blockDefinition);
+                inventory.AddUnit(blockDefinition.VolumePerUnit, blockDefinition);
 
-            var itemDefinitions = resourceManager.DefinitionManager.GetItemDefinitions();
+            var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
+            var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Wood");
+            var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Stone");
             foreach (var itemDefinition in itemDefinitions)
-                inventory.AddUnit(itemDefinition);
+            {
+                var woodItem = itemDefinition.Create(wood);
+                inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+                var stoneItem = itemDefinition.Create(stone);
+                inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+            }
         }
     }
 }

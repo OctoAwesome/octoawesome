@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Components;
+using OctoAwesome.Definitions.Items;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// EntityComponent, die eine Werkzeug-Toolbar für den Apieler bereitstellt.
     /// </summary>
-    public class ToolBarComponent : EntityComponent
+    public class ToolBarComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gibt die Anzahl Tools in der Toolbar an.
@@ -25,14 +27,30 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Derzeit aktives Werkzeug des Spielers
         /// </summary>
-        public InventorySlot ActiveTool { get; set; }
+        public InventorySlot ActiveTool => Tools[activeIndex] ?? HandSlot;
+
+        public InventorySlot HandSlot { get; }
+
+        public int ActiveIndex
+        {
+            get => activeIndex;
+            set => activeIndex = (value + TOOLCOUNT) % TOOLCOUNT;
+        }
+
+        public event Action<InventorySlot, int> OnChanged;
+
+
+        private int activeIndex;
+
 
         /// <summary>
         /// Erzeugte eine neue ToolBarComponent
         /// </summary>
         public ToolBarComponent()
         {
+            HandSlot = new InventorySlot { Item = new Hand(new HandDefinition()) };
             Tools = new InventorySlot[TOOLCOUNT];
+            ActiveIndex = 0;
         }
 
         /// <summary>
@@ -44,10 +62,12 @@ namespace OctoAwesome.EntityComponents
             for (int i = 0; i < Tools.Length; i++)
             {
                 if (Tools[i] == slot)
+                {
                     Tools[i] = null;
+                    OnChanged?.Invoke(HandSlot, i);
+                    break;
+                }
             }
-            if (ActiveTool == slot)
-                ActiveTool = null;
         }
 
         /// <summary>
@@ -60,6 +80,7 @@ namespace OctoAwesome.EntityComponents
             RemoveSlot(slot);
 
             Tools[index] = slot;
+            OnChanged?.Invoke(slot, index);
         }
 
         /// <summary>
@@ -87,6 +108,7 @@ namespace OctoAwesome.EntityComponents
                 if (Tools[i] == null)
                 {
                     Tools[i] = slot;
+                    OnChanged?.Invoke(slot, i);
                     break;
                 }
             }

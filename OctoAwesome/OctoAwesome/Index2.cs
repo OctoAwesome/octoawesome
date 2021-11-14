@@ -1,4 +1,5 @@
 ﻿using System;
+
 using engenious;
 
 namespace OctoAwesome
@@ -6,7 +7,7 @@ namespace OctoAwesome
     /// <summary>
     /// Struktur zur Definierung einer zweidimensionalen Index-Position.
     /// </summary>
-    public struct Index2
+    public struct Index2 : IEquatable<Index2>
     {
         /// <summary>
         /// X Anteil
@@ -231,9 +232,10 @@ namespace OctoAwesome
         public static int NormalizeAxis(int value, int size)
         {
             // Sicherheitsabfrage für die Normalisierungsgröße
+#if DEBUG
             if (size < 1)
                 throw new ArgumentException("Size darf nicht kleiner als 1 sein");
-
+#endif
             value %= size;
 
             if (value < 0)
@@ -278,12 +280,8 @@ namespace OctoAwesome
         /// <param name="obj"></param>
         /// <returns></returns>
         public override bool Equals(object obj)
-        {
-            if (obj is Index2 other)
-                return other.X == X && other.Y == Y;
+            =>obj is Index2 other && Equals(other);
 
-            return false;
-        }
 
         /// <summary>
         /// Gibt einen möglichst eindeutigen Hashwert für den aktuellen Index2 zurück.
@@ -291,6 +289,9 @@ namespace OctoAwesome
         /// <returns></returns>
         public override int GetHashCode()
             => (X << 16) + Y;
+
+        public bool Equals(Index2 other)
+            => other.X == X && other.Y == Y;
 
         /// <summary>
         /// Null-Index

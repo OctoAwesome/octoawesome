@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OctoAwesome.Definitions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -42,6 +43,6 @@ namespace OctoAwesome
         /// <param name="planetId">Der Index des Planeten</param>
         /// <param name="index">Die Position der Säule</param>
         /// <returns></returns>
-        IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index);
+        IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index);
     }
 }

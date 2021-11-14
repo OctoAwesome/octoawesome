@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using OctoAwesome.Basics.Definitions.Blocks;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics
 {
@@ -12,25 +13,25 @@ namespace OctoAwesome.Basics
     {
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
-            Planet planet = new Planet(id, universe, new Index3(4, 4, 3), seed);
+            Planet planet = new Planet(id, universe, new Index3(5, 5, 4), seed);
             planet.Generator = this;
             return planet;
         }
 
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IDefinition[] definitions = definitionManager.GetDefinitions().ToArray();
+            IDefinition[] definitions = definitionManager.Definitions.ToArray();
 
             IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().First();
             ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
-            ChunkColumn column = new ChunkColumn(result, planet.Id, index);
+            ChunkColumn column = new ChunkColumn(result, planet, index);
 
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
-                result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet.Id);
+                result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet);
 
             int part = (planet.Size.Z * Chunk.CHUNKSIZE_Z) / 4;
 
@@ -61,16 +62,18 @@ namespace OctoAwesome.Basics
         public IPlanet GeneratePlanet(Stream stream)
         {
             IPlanet planet = new Planet();
-            planet.Deserialize(stream);
+            using (var reader = new BinaryReader(stream))
+                planet.Deserialize(reader);
             return planet;
         }
 
 
 
-        public IChunkColumn GenerateColumn(Stream stream, IDefinitionManager definitionManager, int planetId, Index2 index)
+        public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
-            IChunkColumn column = new ChunkColumn();
-            column.Deserialize(stream, definitionManager, planetId, index);
+            IChunkColumn column = new ChunkColumn(planet);
+            using (var reader = new BinaryReader(stream))
+                column.Deserialize(reader);
             return column;
         }
     }

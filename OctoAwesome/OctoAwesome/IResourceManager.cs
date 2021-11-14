@@ -1,4 +1,10 @@
+using OctoAwesome.Components;
+using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Notifications;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace OctoAwesome
 {
@@ -21,7 +27,7 @@ namespace OctoAwesome
         /// Lädt das Universum für die angegebene GUID.
         /// </summary>
         /// <param name="universeId">Die Guid des Universums.</param>
-        void LoadUniverse(Guid universeId);
+        bool TryLoadUniverse(Guid universeId);
 
         /// <summary>
         /// Das aktuell geladene Universum.
@@ -71,11 +77,34 @@ namespace OctoAwesome
         /// <returns>Der gewünschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
 
-        /// <summary>
-        /// Cache der für alle Chunks verwaltet und diese an lokale Caches weiter gibt.
-        /// </summary>
-        IGlobalChunkCache GlobalChunkCache { get; }
+        ConcurrentDictionary<int, IPlanet> Planets { get; }
 
-        void SaveEntity(Entity entity);
+        IUpdateHub UpdateHub { get; }
+
+        Player CurrentPlayer { get; }
+
+        void SaveComponentContainer<TContainer, TComponent>(TContainer componentContainer)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
+
+        void SaveChunkColumn(IChunkColumn value);
+
+        IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
+
+        Entity LoadEntity(Guid entityId);
+
+        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent;
+
+        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent;
+
+        (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new();
+
+        (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new();
+
+        T GetComponent<T>(Guid id) where T : IComponent, new();
+
+        TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
     }
 }

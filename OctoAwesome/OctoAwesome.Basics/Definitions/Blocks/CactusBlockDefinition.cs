@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -12,11 +14,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override string Name => Languages.OctoBasics.Cactus;
 
-        public override string[] Textures => new[] {
-                    "cactus_inside",
-                    "cactus_side",
-                    "cactus_top"
-                };
+        public override string[] Textures { get; }
+
+        public CactusBlockDefinition()
+        {
+            Textures = new[] {"cactus_inside","cactus_side","cactus_top" };
+        }
 
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
             int x, int y, int z)
@@ -197,20 +200,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return new PhysicalProperties()
-            {
-                Density = 2f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
-        }
+        public override IMaterialDefinition Material { get; }
 
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
+        public CactusBlockDefinition(CactusMaterialDefinition material) : this()
         {
-            throw new NotImplementedException();
+            Material = material;
         }
     }
 }

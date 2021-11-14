@@ -5,46 +5,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using engenious;
+using OctoAwesome.Services;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.Definitions;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-    [EntityFilter(typeof(ControllableComponent), typeof(InventoryComponent))]
-    public class BlockInteractionComponent : SimulationComponent<ControllableComponent, InventoryComponent>
+    public class BlockInteractionComponent : SimulationComponent<
+        Entity,
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
+        ControllableComponent,
+        InventoryComponent>
     {
-        private Simulation simulation;
+        private readonly Simulation simulation;
+        private readonly BlockCollectionService service;
 
-        public BlockInteractionComponent(Simulation simulation)
+
+        public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
+            service = interactionService;
         }
 
-        protected override bool AddEntity(Entity entity)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
         {
-            return true;
-        }
+            var entity = value.Value;
+            var controller = value.Component1;
+            var inventory = value.Component2;
 
-        protected override void RemoveEntity(Entity entity)
-        {
-
-        }
-
-        protected override void UpdateEntity(GameTime gameTime, Entity entity, ControllableComponent controller, InventoryComponent inventory)
-        {
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
+            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
 
-            if (controller.InteractBlock.HasValue)
-            {
-                ushort lastBlock = entity.Cache.GetBlock(controller.InteractBlock.Value);
-                entity.Cache.SetBlock(controller.InteractBlock.Value, 0);
-
-                if (lastBlock != 0)
-                {
-                    var blockDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(lastBlock);
-                    if (blockDefinition is IInventoryableDefinition invDef)
-                        inventory.AddUnit(invDef);
-                }
-                controller.InteractBlock = null;
-            }
+            controller
+                .Selection?
+                .Visit(
+                blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                functionalBlock => functionalBlock?.Interact(gameTime, entity),
+                entity => { }
+                );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
             {
@@ -61,12 +60,10 @@ namespace OctoAwesome.Basics.SimulationComponents
                         case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
                     }
 
-                    if (toolbar.ActiveTool.Definition is IBlockDefinition)
+                    if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
-                        IBlockDefinition definition = toolbar.ActiveTool.Definition as IBlockDefinition;
-
                         Index3 idx = controller.ApplyBlock.Value + add;
-                        var boxes = definition.GetCollisionBoxes(entity.Cache, idx.X, idx.Y, idx.Z);
+                        var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
                         bool intersects = false;
                         var positioncomponent = entity.Components.GetComponent<PositionComponent>();
@@ -87,8 +84,9 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 );
 
                             // Nicht in sich selbst reinbauen
-                            foreach (var box in boxes)
+                            for (var i = 0; i < boxes.Length; i++)
                             {
+                                var box = boxes[i];
                                 var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
                                 if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
                                     newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
@@ -101,7 +99,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                         {
                             if (inventory.RemoveUnit(toolbar.ActiveTool))
                             {
-                                entity.Cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                cache.SetBlockMeta(idx, (int)controller.ApplySide);
                                 if (toolbar.ActiveTool.Amount <= 0)
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
                             }
@@ -109,6 +108,42 @@ namespace OctoAwesome.Basics.SimulationComponents
                     }
                 }
                 controller.ApplyBlock = null;
+            }
+        }
+
+        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool.Item is IItem item)
+                {
+                    activeItem = item;
+                }
+                else
+                {
+                    activeItem = toolbar.HandSlot.Item as IItem;
+                }
+
+                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+
+                if (blockHitInformation.Valid)
+                    foreach (var (Quantity, Definition) in blockHitInformation.List)
+                    {
+                        if (activeItem is IFluidInventory fluidInventory
+                            && Definition is IBlockDefinition fluidBlock
+                            && fluidBlock.Material is IFluidMaterialDefinition)
+                        {
+                            fluidInventory.AddFluid(Quantity, fluidBlock);
+                        }
+                        else if (Definition is IInventoryable invDef)
+                        {
+                            inventory.AddUnit(Quantity, invDef);
+                        }
+
+                    }
+
+
             }
         }
     }

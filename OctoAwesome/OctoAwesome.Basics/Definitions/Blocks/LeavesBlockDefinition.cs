@@ -1,5 +1,8 @@
-﻿using System;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Definitions;
+using System;
 using System.Drawing;
+using OctoAwesome.Basics.Definitions.Materials;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -16,30 +19,14 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
 
-        public override string[] Textures
+        public override string[] Textures { get; } = new[] {"leaves"};
+
+        public override IMaterialDefinition Material { get; }
+
+        public LeavesBlockDefinition(LeaveMaterialDefinition material)
         {
-            get
-            {
-                return new[] {
-                    "leaves"
-                };
-            }
+            Material = material;
         }
 
-        public override PhysicalProperties GetProperties(ILocalChunkCache manager, int x, int y, int z)
-        {
-            return new PhysicalProperties()
-            {
-                Density = 2f,
-                FractureToughness = 0.3f,
-                Granularity = 0.9f,
-                Hardness = 0.1f
-            };
-        }
-
-        public override void Hit(IBlockDefinition block, PhysicalProperties itemProperties)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using OctoAwesome.Definitions;
+using OctoAwesome.Serialization;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace OctoAwesome.Runtime
 {
@@ -13,17 +16,15 @@ namespace OctoAwesome.Runtime
     {
         private const string SETTINGSKEY = "DisabledExtensions";
 
-        private List<IDefinition> definitions;
 
-        private List<Type> entities;
+        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
 
-        private Dictionary<Type, List<Action<Entity>>> entityExtender;
+        private readonly List<Action<Simulation>> simulationExtender;
 
-        private List<Action<Simulation>> simulationExtender;
+        private readonly List<IMapGenerator> mapGenerators;
 
-        private List<IMapGenerator> mapGenerators;
-
-        private List<IMapPopulator> mapPopulators;
+        private readonly List<IMapPopulator> mapPopulators;
+        private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
         /// <summary>
         /// List of Loaded Extensions
@@ -35,18 +36,24 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public List<IExtension> ActiveExtensions { get; private set; }
 
-        private ISettings settings;
+        private readonly Dictionary<Type, List<Type>> definitionsLookup;
+
+        private readonly ISettings settings;
+        private readonly ITypeContainer typeContainer;
+        private readonly ITypeContainer definitionTypeContainer;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings">Current Gamesettings</param>
-        public ExtensionLoader(ISettings settings)
+        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings, SerializationIdTypeProvider serializationIdTypeProvider)
         {
             this.settings = settings;
-            definitions = new List<IDefinition>();
-            entities = new List<Type>();
-            entityExtender = new Dictionary<Type, List<Action<Entity>>>();
+            this.typeContainer = typeContainer;
+            this.serializationIdTypeProvider = serializationIdTypeProvider;
+            definitionTypeContainer = new StandaloneTypeContainer();
+            definitionsLookup = new Dictionary<Type, List<Type>>();
+            componentContainerExtender = new Dictionary<Type, List<Action<ComponentContainer>>>();
             simulationExtender = new List<Action<Simulation>>();
             mapGenerators = new List<IMapGenerator>();
             mapPopulators = new List<IMapPopulator>();
@@ -60,37 +67,46 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void LoadExtensions()
         {
-            List<Assembly> assemblies = new List<Assembly>();
-            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            List<Assembly> assemblies = new();
+            var tempAssembly = Assembly.GetEntryAssembly();
+
+            if (tempAssembly == null)
+                tempAssembly = Assembly.GetAssembly(GetType());
+
+            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly!.Location!)!);
             assemblies.AddRange(LoadAssemblies(dir));
 
-            DirectoryInfo plugins = new DirectoryInfo(Path.Combine(dir.FullName, "plugins"));
+            DirectoryInfo plugins = new (Path.Combine(dir.FullName, "plugins"));
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
-            var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : new string[0];
+            var disabledExtensions = settings.KeyExists(SETTINGSKEY) ? settings.GetArray<string>(SETTINGSKEY) : Array.Empty<string>();
 
-            List<Type> result = new List<Type>();
             foreach (var assembly in assemblies)
             {
-                foreach (var type in assembly.GetTypes())
+                var types = assembly
+                    .GetTypes();
+
+                foreach (var type in types)
                 {
-                    if (!typeof(IExtension).IsAssignableFrom(type))
-                        continue;
-
-                    try
+                    if (typeof(IExtension).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     {
-                        IExtension extension = (IExtension)Activator.CreateInstance(type);
-                        extension.Register(this);
+                        try
+                        {
+                            IExtension extension = (IExtension)Activator.CreateInstance(type)!;
 
-                        if (disabledExtensions.Contains(type.FullName))
-                            LoadedExtensions.Add(extension);
-                        else
-                            ActiveExtensions.Add(extension);
-                    }
-                    catch (Exception)
-                    {
-                        // TODO: Logging
+                            extension.Register(typeContainer);
+                            extension.Register(this, typeContainer);
+
+                            if (disabledExtensions.Contains(type.FullName))
+                                LoadedExtensions.Add(extension);
+                            else
+                                ActiveExtensions.Add(extension);
+                        }
+                        catch 
+                        {
+                            // TODO: Logging
+                        }
                     }
                 }
             }
@@ -103,7 +119,7 @@ namespace OctoAwesome.Runtime
             {
                 try
                 {
-                    var assembly = Assembly.LoadFile(file.FullName);
+                    var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
                     assemblies.Add(assembly);
                 }
                 catch (Exception)
@@ -130,16 +146,26 @@ namespace OctoAwesome.Runtime
         /// Registers a new Definition.
         /// </summary>
         /// <param name="definition">Definition Instance</param>
-        public void RegisterDefinition(IDefinition definition)
+        public void RegisterDefinition(Type definition)
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition));
 
-            // TODO: Replace? Ignore?
-            if (definitions.Any(d => d.GetType() == definition.GetType()))
-                throw new ArgumentException("Already registered");
+            var interfaceTypes = definition.GetInterfaces();
 
-            definitions.Add(definition);
+            foreach (var interfaceType in interfaceTypes)
+            {
+                if (definitionsLookup.TryGetValue(interfaceType, out var typeList))
+                {
+                    typeList.Add(definition);
+                }
+                else
+                {
+                    definitionsLookup.Add(interfaceType, new List<Type> { definition });
+                }
+            }
+
+            definitionTypeContainer.Register(definition, definition, InstanceBehaviour.Singleton);
         }
 
         /// <summary>
@@ -148,22 +174,22 @@ namespace OctoAwesome.Runtime
         /// <typeparam name="T">Definition Type</typeparam>
         public void RemoveDefinition<T>() where T : IDefinition
         {
-            var definition = definitions.FirstOrDefault(d => d.GetType() == typeof(T));
-            if (definition != null)
-                definitions.Remove(definition);
+            throw new NotSupportedException("Currently not supported by TypeContainer");
         }
 
         /// <summary>
         /// Registers a new Entity.
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
-        public void RegisterEntity<T>() where T : Entity
+        public void RegisterSerializationType<T>()
         {
             Type type = typeof(T);
-            if (entities.Contains(type))
-                throw new ArgumentException("Already registered");
+            var serId = type.SerializationId();
 
-            entities.Add(type);
+            if (serId == 0)
+                throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Name}, so it cant be registered.");
+
+            serializationIdTypeProvider.Register(serId, type);
         }
 
         /// <summary>
@@ -171,19 +197,19 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Entity Type</typeparam>
         /// <param name="extenderDelegate">Extender Delegate</param>
-        public void RegisterEntityExtender<T>(Action<Entity> extenderDelegate) where T : Entity
+        public void RegisterEntityExtender<T>(Action<ComponentContainer> extenderDelegate) where T : ComponentContainer
         {
             Type type = typeof(T);
-            List<Action<Entity>> list;
-            if (!entityExtender.TryGetValue(type, out list))
+            List<Action<ComponentContainer>> list;
+            if (!componentContainerExtender.TryGetValue(type, out list))
             {
-                list = new List<Action<Entity>>();
-                entityExtender.Add(type, list);
+                list = new List<Action<ComponentContainer>>();
+                componentContainerExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
 
-        public void RegisterDefaultEntityExtender<T>() where T : Entity 
+        public void RegisterDefaultEntityExtender<T>() where T : ComponentContainer
             => RegisterEntityExtender<T>((e) => e.RegisterDefault());
 
         /// <summary>
@@ -215,9 +241,9 @@ namespace OctoAwesome.Runtime
         /// Removes an existing Entity Type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void RemoveEntity<T>() where T : Entity
+        public void RemoveEntity<T>() where T : ComponentContainer
         {
-            entities.Remove(typeof(T));
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -252,23 +278,23 @@ namespace OctoAwesome.Runtime
         /// Extend a Entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public void ExtendEntity(Entity entity)
+        public void ExtendEntity(ComponentContainer entity)
         {
             List<Type> stack = new List<Type>();
             Type t = entity.GetType();
             stack.Add(t);
             do
             {
-                t = t.BaseType;
+                t = t!.BaseType;
                 stack.Add(t);
             }
-            while (t != typeof(Entity));
+            while (t != typeof(ComponentContainer));
             stack.Reverse();
 
             foreach (var type in stack)
             {
-                List<Action<Entity>> list;
-                if (!entityExtender.TryGetValue(type, out list))
+                List<Action<ComponentContainer>> list;
+                if (!componentContainerExtender.TryGetValue(type, out list))
                     continue;
 
                 foreach (var item in list)
@@ -281,9 +307,13 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <typeparam name="T">Definitiontype</typeparam>
         /// <returns>List</returns>
-        public IEnumerable<T> GetDefinitions<T>() where T : IDefinition
+        public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
         {
-            return definitions.OfType<T>();
+            if (definitionsLookup.TryGetValue(typeof(T), out var definitionTypes))
+            {
+                foreach (var type in definitionTypes)
+                    yield return (T)definitionTypeContainer.Get(type);
+            }
         }
 
         /// <summary>

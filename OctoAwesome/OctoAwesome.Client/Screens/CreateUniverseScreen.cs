@@ -1,21 +1,26 @@
-﻿using MonoGameUi;
+﻿using engenious;
+using engenious.Graphics;
+using engenious.UI;
+using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using engenious;
 
 namespace OctoAwesome.Client.Screens
 {
     class CreateUniverseScreen : BaseScreen
     {
-        new ScreenComponent Manager;
+        new readonly ScreenComponent Manager;
+        private readonly Textbox nameInput;
+        private readonly Textbox seedInput;
+        readonly Button createButton;
 
-        Textbox nameInput, seedInput;
-        Button createButton;
+        private readonly ISettings settings;
 
-        private ISettings settings;
+        private bool firstTimeFocusNameBox = true;
 
         public CreateUniverseScreen(ScreenComponent manager) : base(manager)
         {
@@ -23,78 +28,94 @@ namespace OctoAwesome.Client.Screens
             settings = manager.Game.Settings;
 
             Padding = new Border(0, 0, 0, 0);
-
-            Title = Languages.OctoClient.CreateUniverse;
-
+            Title = UI.Languages.OctoClient.CreateUniverse;
+            TabStop = false;
             SetDefaultBackground();
 
-            Panel panel = new Panel(manager);
-            panel.VerticalAlignment = VerticalAlignment.Stretch;
-            panel.HorizontalAlignment = HorizontalAlignment.Stretch;
-            panel.Margin = Border.All(50);
-            panel.Background = new BorderBrush(Color.White * 0.5f);
-            panel.Padding = Border.All(10);
+            var panel = new Panel(manager)
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = Border.All(50),
+                Background = new BorderBrush(Color.White * 0.5f),
+                Padding = Border.All(10),
+                TabStop = false
+            };
             Controls.Add(panel);
 
-            Grid grid = new Grid(manager);
-            grid.VerticalAlignment = VerticalAlignment.Stretch;
-            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            var grid = new Grid(manager)
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                TabStop = false,
+            };
             panel.Controls.Add(grid);
 
             grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Auto });
-            grid.Columns.Add(new ColumnDefinition() { Width = 1,ResizeMode = ResizeMode.Parts });
+            grid.Columns.Add(new ColumnDefinition() { Width = 1, ResizeMode = ResizeMode.Parts });
 
             nameInput = GetTextbox();
-            nameInput.TextChanged += (s, e) => {
+            nameInput.TextChanged += (s, e) =>
+            {
                 createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
             };
-            AddLabeledControl(grid, string.Format("{0}: ", Languages.OctoClient.Name), nameInput);
+            nameInput.TabOrder = 1;
+            AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Name), nameInput);
 
             seedInput = GetTextbox();
-            AddLabeledControl(grid, string.Format("{0}: ", Languages.OctoClient.Seed), seedInput);
+            seedInput.TabOrder = 2;
+            AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Seed), seedInput);
 
-            createButton = Button.TextButton(manager, Languages.OctoClient.Create);
-            createButton.HorizontalAlignment = HorizontalAlignment.Right;
-            createButton.VerticalAlignment = VerticalAlignment.Bottom;
-            createButton.Visible = false;
+            // HACK: Till engenious has working tabbing
+            nameInput.LostFocus += (s, e) => seedInput.Focus();
+            seedInput.LostFocus += (s, e) => nameInput.Focus();
+
+            createButton = new TextButton(manager, UI.Languages.OctoClient.Create)
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Visible = false,
+                TabStop = false,
+            };
             createButton.LeftMouseClick += (s, e) =>
             {
                 if (string.IsNullOrEmpty(nameInput.Text))
                     return;
 
-                int? seed = null;
-                int textseed;
-                if (int.TryParse(seedInput.Text, out textseed))
-                    seed = textseed;
-
                 manager.Player.SetEntity(null);
 
-                Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seed);
+                Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
                 settings.Set("LastUniverse", guid.ToString());
 
-                Player player = manager.Game.Simulation.LoginPlayer(Guid.Empty);
+                Player player = manager.Game.Simulation.LoginPlayer("");
                 manager.Game.Player.SetEntity(player);
 
-                manager.NavigateToScreen(new GameScreen(manager));
+                manager.NavigateToScreen(new LoadingScreen(manager));
             };
             panel.Controls.Add(createButton);
 
         }
 
-        private void AddLabeledControl(Grid grid, String name, Control c)
+        protected override void OnUpdate(GameTime gameTime)
         {
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto });
-            grid.AddControl(new Label(Manager) { Text = name }, 0, grid.Rows.Count -1);
-            grid.AddControl(c, 1, grid.Rows.Count - 1);
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 10 });
+            base.OnUpdate(gameTime);
+
+            if (nameInput is not null && firstTimeFocusNameBox)
+            {
+                nameInput.Focus();
+                firstTimeFocusNameBox = false;
+            }
         }
 
         private Textbox GetTextbox()
         {
-            Textbox t = new Textbox(Manager);
-            t.HorizontalAlignment = HorizontalAlignment.Stretch;
-            t.VerticalAlignment = VerticalAlignment.Stretch;
-            t.Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black);
+            var t = new Textbox(Manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black),
+                TabStop = true
+            };
             return t;
         }
     }

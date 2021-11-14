@@ -6,7 +6,7 @@ namespace OctoAwesome
     /// <summary>
     /// Struktur zur Definierung einer dreidimensionalen Index-Position.
     /// </summary>
-    public struct Index3
+    public struct Index3 : IEquatable<Index3>
     {
         /// <summary>
         /// X Anteil
@@ -345,19 +345,18 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is Index3 other)
-                return other.X == X && other.Y == Y && other.Z == Z;
+        public override bool Equals(object obj) 
+            => obj is Index3 other && Equals(other);
 
-            return false;
-        }
-
+        public bool Equals(Index3 other)
+            => other.X == X && other.Y == Y && other.Z == Z;
+        
         /// <summary>
         /// Gibt einen möglichst eindeutigen Hashwert für den aktuellen Index3 zurück.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode() => (X << 20) + (Y << 10) + Z;
+
 
         /// <summary>
         /// Null-Index

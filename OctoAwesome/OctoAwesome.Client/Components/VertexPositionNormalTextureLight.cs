@@ -12,7 +12,9 @@ namespace OctoAwesome.Client.Components
         public static readonly VertexDeclaration VertexDeclaration;
         static VertexPositionNormalTextureLight()
         {
-            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2, new VertexElement(0, VertexElementFormat.Rgba32, VertexElementUsage.Position, 0), new VertexElement(sizeof(uint), VertexElementFormat.Rgba32, VertexElementUsage.Normal, 0));
+            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2, 
+                new VertexElement(0, VertexElementFormat.Single, VertexElementUsage.Position, 0), 
+                new VertexElement(sizeof(uint), VertexElementFormat.Single, VertexElementUsage.Normal, 0));
         }
         public VertexPositionNormalTextureLight(Vector3 position, Vector3 normal, Vector2 uv,byte layer,uint light)
         {
@@ -42,6 +44,11 @@ namespace OctoAwesome.Client.Components
             uint uvExpanded = ((uint)uv.X << 1) | ((uint)uv.Y);
             PackedValue = (posX & 0xFF) | ((posY & 0xFF) << 8) | ((posZ & 0xFF) << 16) | ((uint)layer << 24);
             PackedValue2 = light | (normalPacked << 24) | (uvExpanded << 28);
+        }
+        public VertexPositionNormalTextureLight(uint packedValue1, uint packedValue2)
+        {
+            PackedValue = packedValue1;
+            PackedValue2 = packedValue2;
         }
         public uint PackedValue { get; private set; }
         public uint PackedValue2 { get; private set; }

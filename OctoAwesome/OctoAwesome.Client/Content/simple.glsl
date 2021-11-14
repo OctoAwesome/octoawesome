@@ -8,7 +8,7 @@
 
             </Shader>
             <Attributes>
-                <attribute name="inputData">Position</attribute>
+                <attribute name="inputData1">Position</attribute>
               <attribute name="inputData2">Normal</attribute>
             </Attributes>
         </Pass>

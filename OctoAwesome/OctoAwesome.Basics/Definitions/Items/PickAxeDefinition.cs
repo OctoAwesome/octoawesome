@@ -1,9 +1,12 @@
 ﻿using OctoAwesome.Basics.Properties;
+using OctoAwesome.Information;
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
@@ -41,22 +44,20 @@ namespace OctoAwesome.Basics.Definitions.Items
             }
         }
 
-        decimal IInventoryableDefinition.VolumePerUnit => 1;
 
-        public PhysicalProperties GetProperties(IItem item)
+        public bool CanMineMaterial(IMaterialDefinition material)
         {
-            return new PhysicalProperties()
+            if(material is ISolidMaterialDefinition solid)
             {
-                Density = 1f,
-                FractureToughness = 1f,
-                Granularity = 1f,
-                Hardness = 1f
-            };
+                return true;
+            }
+
+            return false;
         }
 
-        public void Hit(IItem item, PhysicalProperties itemProperties)
+        public Item Create(IMaterialDefinition material)
         {
-            // item.Condition--;
+            return new Pickaxe(this, material);
         }
     }
 }

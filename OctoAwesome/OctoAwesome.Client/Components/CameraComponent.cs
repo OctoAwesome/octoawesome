@@ -101,5 +101,7 @@ namespace OctoAwesome.Client.Components
         public Ray PickRay { get; private set; }
 
         public BoundingFrustum Frustum { get; private set; }
+        public float NearPlaneDistance => 0.1f;
+        public float FarPlaneDistance => 10000.0f;
     }
 }

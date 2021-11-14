@@ -1,22 +1,29 @@
-﻿using System;
+﻿using engenious;
+
+using OctoAwesome.Common;
+using OctoAwesome.Components;
+using OctoAwesome.Database;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Logging;
+using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using engenious;
-using OctoAwesome.EntityComponents;
+using System.Resources;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Schnittstelle zwischen Applikation und Welt-Modell.
     /// </summary>
-    public sealed class Simulation
+    public sealed class Simulation : IDisposable
     {
-        // private List<ActorHost> actorHosts = new List<ActorHost>();
-        // private Stopwatch watch = new Stopwatch();
-        // private Thread thread;
-
         public IResourceManager ResourceManager { get; private set; }
+
+        public bool IsServerSide { get; set; }
 
         /// <summary>
         /// List of all Simulation Components.
@@ -34,31 +41,47 @@ namespace OctoAwesome
         public Guid UniverseId { get; private set; }
 
         /// <summary>
+        /// Dienste des Spiels.
+        /// </summary>
+        public IGameService Service { get; }
+
+        /// <summary>
         /// List of all Entities.
         /// </summary>
-        public List<Entity> Entities => entities.ToList();
-
-        private int nextId = 1;
+        public IReadOnlyList<Entity> Entities => entities;
+        public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly IExtensionResolver extensionResolver;
 
-        private HashSet<Entity> entities = new HashSet<Entity>();
+        private readonly List<Entity> entities = new();
+        private readonly List<FunctionalBlock> functionalBlocks = new();
+        private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly Relay<Notification> networkRelay;
+
+        private IDisposable simulationSubscription;
+        private IDisposable networkSubscription;
 
         /// <summary>
-        /// Erzeugt eine neue Instaz der Klasse Simulation.
+        /// Erzeugt eine neue Instanz der Klasse Simulation.
         /// </summary>
-        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver)
+        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
         {
             ResourceManager = resourceManager;
+            networkRelay = new Relay<Notification>();
+
+            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+
 
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
+            Service = service;
 
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, null, null);
 
             extensionResolver.ExtendSimulation(this);
+
         }
 
         private void ValidateAddComponent(SimulationComponent component)
@@ -77,17 +100,28 @@ namespace OctoAwesome
         /// Erzeugt ein neues Spiel (= Universum)
         /// </summary>
         /// <param name="name">Name des Universums.</param>
-        /// <param name="seed">Seed für den Weltgenerator.</param>
+        /// <param name="rawSeed">Seed für den Weltgenerator.</param>
         /// <returns>Die Guid des neuen Universums.</returns>
-        public Guid NewGame(string name, int? seed = null)
+        public Guid NewGame(string name, string rawSeed)
         {
-            if (seed == null)
+            int numericSeed;
+
+            if (string.IsNullOrWhiteSpace(rawSeed))
             {
-                Random rand = new Random();
-                seed = rand.Next(int.MaxValue);
+                var rand = new Random();
+                numericSeed = rand.Next(int.MaxValue);
+            }
+            else if (int.TryParse(rawSeed, out var seed))
+            {
+                numericSeed = seed;
+            }
+            else
+            {
+                numericSeed = rawSeed.GetHashCode();
             }
 
-            Guid guid = ResourceManager.NewUniverse(name, seed.Value);
+
+            Guid guid = ResourceManager.NewUniverse(name, numericSeed);
 
             Start();
 
@@ -98,16 +132,31 @@ namespace OctoAwesome
         /// Lädt ein Spiel (= Universum).
         /// </summary>
         /// <param name="guid">Die Guid des Universums.</param>
-        public void LoadGame(Guid guid)
+        public bool TryLoadGame(Guid guid)
         {
-            ResourceManager.LoadUniverse(guid);
+            if (!ResourceManager.TryLoadUniverse(guid))
+                return false;
+
             Start();
+            return true;
         }
 
         private void Start()
         {
             if (State != SimulationState.Ready)
                 throw new Exception();
+
+            simulationSubscription
+                = ResourceManager
+                .UpdateHub
+                .ListenOn(DefaultChannels.Simulation)
+                .Subscribe(OnNext);
+
+            networkSubscription
+                = ResourceManager
+                .UpdateHub
+                .AddSource(networkRelay, DefaultChannels.Network);
+
 
             State = SimulationState.Running;
         }
@@ -118,20 +167,27 @@ namespace OctoAwesome
         /// <param name="gameTime">Spielzeit</param>
         public void Update(GameTime gameTime)
         {
-            if (State == SimulationState.Running)
+            if (State != SimulationState.Running)
+                return;
+
+            foreach (var planet in ResourceManager.Planets)
+                planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
+
+            //Update all Entities
+            for (var i = 0; i < entities.Count; i++)
             {
-                ResourceManager.GlobalChunkCache.BeforeSimulationUpdate(this);
+                var entity = entities[i];
+                if (entity is UpdateableEntity updateableEntity)
+                    updateableEntity.Update(gameTime);
+            }
 
-                //Update all Entities
-                foreach (var entity in Entities.OfType<UpdateableEntity>())
-                    entity.Update(gameTime);
-
-                // Update all Components
-                foreach (var component in Components.Where(c => c.Enabled))
+            // Update all Components
+            foreach (var component in Components)
+                if (component.Enabled)
                     component.Update(gameTime);
 
-                ResourceManager.GlobalChunkCache.AfterSimulationUpdate(this);
-            }
+            foreach (var planet in ResourceManager.Planets)
+                planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
         }
 
         /// <summary>
@@ -144,8 +200,9 @@ namespace OctoAwesome
 
             State = SimulationState.Paused;
 
-            //TODO: unschön
-            Entities.ForEach(entity => RemoveEntity(entity));
+            //TODO: unschön, Dispose Entity's, Reset Extensions
+            entities.ToList().ForEach(entity => Remove(entity));
+            functionalBlocks.ToList().ForEach(functionalBlock => Remove(functionalBlock));
             //while (entites.Count > 0)
             //    RemoveEntity(Entities.First());
 
@@ -153,13 +210,15 @@ namespace OctoAwesome
             // thread.Join();
 
             ResourceManager.UnloadUniverse();
+            simulationSubscription?.Dispose();
+            networkSubscription?.Dispose();
         }
 
         /// <summary>
         /// Fügt eine Entity der Simulation hinzu
         /// </summary>
         /// <param name="entity">Neue Entity</param>
-        public void AddEntity(Entity entity)
+        public void Add(Entity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -167,7 +226,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
-            if (entity.Simulation != null)
+            if (entity.Simulation != null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
             if (entities.Contains(entity))
@@ -176,24 +235,61 @@ namespace OctoAwesome
             extensionResolver.ExtendEntity(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
-            entity.Id = nextId++;
+
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
             entities.Add(entity);
 
             foreach (var component in Components)
-                component.Add(entity);
+            {
+                if (component is IHoldComponent<Entity> holdComponent)
+                    holdComponent.Add(entity);
+            }
+        }
+
+        public void Add(FunctionalBlock block)
+        {
+            if (block is null)
+                throw new ArgumentNullException(nameof(block));
+
+            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+                throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
+
+            if (block.Simulation != null && block.Simulation != this)
+                throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be part of more than one simulation");
+
+            if (functionalBlocks.Contains(block))
+                return;
+
+
+            extensionResolver.ExtendEntity(block);
+            block.Initialize(ResourceManager);
+            block.Simulation = this;
+
+            if (block.Id == Guid.Empty)
+                block.Id = Guid.NewGuid();
+
+            functionalBlocks.Add(block);
+
+            foreach (var component in Components)
+            {
+                if (component is IHoldComponent<FunctionalBlock> holdComponent)
+                    holdComponent.Add(block);
+            }
         }
 
         /// <summary>
         /// Entfernt eine Entity aus der Simulation
         /// </summary>
         /// <param name="entity">Entity die entfert werden soll</param>
-        public void RemoveEntity(Entity entity)
+        public void Remove(Entity entity)
         {
-            if (entity.Id == 0)
-                return;
-
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
+
+            if (entity.Id == Guid.Empty)
+                return;
 
             if (entity.Simulation != this)
             {
@@ -204,16 +300,135 @@ namespace OctoAwesome
             }
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
-                throw new NotSupportedException("Adding Entities only allowed in running or paused state");
+                throw new NotSupportedException("Removing Entities only allowed in running or paused state");
+
+            ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
 
             foreach (var component in Components)
-                component.Remove(entity);
+            {
+                if (component is IHoldComponent<Entity> holdComponent)
+                    holdComponent.Remove(entity);
+            }
 
             entities.Remove(entity);
-            entity.Id = 0;
+            entity.Id = Guid.Empty;
             entity.Simulation = null;
 
-            ResourceManager.SaveEntity(entity);
+        }
+
+        public void Remove(FunctionalBlock block)
+        {
+            if (block == null)
+                throw new ArgumentNullException(nameof(block));
+
+            if (block.Id == Guid.Empty)
+                return;
+
+            if (block.Simulation != this)
+            {
+                if (block.Simulation == null)
+                    return;
+
+                throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be removed from a foreign simulation");
+            }
+
+            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+                throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
+
+            
+            ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
+
+            foreach (var component in Components)
+            {
+                if (component is IHoldComponent<FunctionalBlock> holdComponent)
+                    holdComponent.Remove(block);
+            }
+
+            functionalBlocks.Remove(block);
+            block.Id = Guid.Empty;
+            block.Simulation = null;
+
+        }
+
+        public void RemoveEntity(Guid entityId)
+            => Remove(entities.First(e => e.Id == entityId));
+
+        public void OnNext(Notification value)
+        {
+            if (entities.Count < 1 && !IsServerSide)
+                return;
+
+            switch (value)
+            {
+                case EntityNotification entityNotification:
+                    if (entityNotification.Type == EntityNotification.ActionType.Remove)
+                        RemoveEntity(entityNotification.EntityId);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Add)
+                        Add(entityNotification.Entity);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Update)
+                        EntityUpdate(entityNotification);
+                    else if (entityNotification.Type == EntityNotification.ActionType.Request)
+                        RequestEntity(entityNotification);
+                    break;
+                case FunctionalBlockNotification functionalBlockNotification:
+                    if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Add)
+                        Add(functionalBlockNotification.Block);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+        public void OnUpdate(SerializableNotification notification)
+        {
+            if (!IsServerSide)
+                networkRelay.OnNext(notification);
+        }
+
+        private void EntityUpdate(EntityNotification notification)
+        {
+            var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
+            if (entity == null)
+            {
+                var entityNotification = entityNotificationPool.Get();
+                entityNotification.EntityId = notification.EntityId;
+                entityNotification.Type = EntityNotification.ActionType.Request;
+                networkRelay.OnNext(entityNotification);
+                entityNotification.Release();
+            }
+            else
+            {
+                entity.Push(notification.Notification);
+            }
+        }
+
+        private void RequestEntity(EntityNotification entityNotification)
+        {
+            if (!IsServerSide)
+                return;
+
+            var entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
+
+            if (entity == null)
+                return;
+
+            var remoteEntity = new RemoteEntity(entity);
+            remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            remoteEntity.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            remoteEntity.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+
+            var newEntityNotification = entityNotificationPool.Get();
+            newEntityNotification.Entity = remoteEntity;
+            newEntityNotification.Type = EntityNotification.ActionType.Add;
+
+            networkRelay.OnNext(newEntityNotification);
+            newEntityNotification.Release();
+        }
+
+        public void Dispose()
+        {
+            networkRelay.Dispose();
         }
     }
 }

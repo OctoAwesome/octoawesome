@@ -1,16 +1,18 @@
-﻿using System;
+﻿using OctoAwesome.Pooling;
+
+using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basis-Schnittstelle für alle Implementierungen eines Chunks.
     /// </summary>
-    public interface IChunk
+    public interface IChunk : IPoolElement
     {
         /// <summary>
         /// Referenz auf den Planeten.
         /// </summary>
-        int Planet { get; }
+        IPlanet Planet { get; }
 
         /// <summary>
         /// Chunk-Position innerhalb des Planeten.
@@ -19,26 +21,17 @@ namespace OctoAwesome
 
         /// <summary>
         /// Array das alle Blöcke eines Chunks enthält. Jeder eintrag entspricht einer Block-ID.
-        /// Der Index ist derselbe wie bei <see cref="MetaData"/> und <see cref="Resources"/>.
+        /// Der Index ist derselbe wie bei <see cref="MetaData"/>.
         /// </summary>
         ushort[] Blocks { get; }
 
         /// <summary>
         /// Array, das die Metadaten zu den Blöcken eines Chunks enthält.
-        /// Der Index ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
+        /// Der Index ist derselbe wie bei <see cref="Blocks"/>.
         /// </summary>
         int[] MetaData { get; }
 
-        /// <summary>
-        /// Verzweigtes Array, das die Ressourcen zu den Blöcken eines Chunks enthält.
-        /// Der Index der ersten Dimension ist derselbe wie bei <see cref="Blocks"/> und <see cref="Resources"/>.
-        /// </summary>
-        ushort[][] Resources { get; }
-
-        /// <summary>
-        /// Veränderungs-Counter zur Ermittlung von Änderungen.<para/>
-        /// </summary>
-        int ChangeCounter { get; set; }
+        int Version { get; set; }
 
         /// <summary>
         /// Liefet den Block an der angegebenen Koordinate zurück.
@@ -73,6 +66,8 @@ namespace OctoAwesome
         /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         /// <param name="block">Die neue Block-ID</param>
         void SetBlock(int x, int y, int z, ushort block, int meta = 0);
+
+        void SetBlock(int flatIndex, BlockInfo blockInfo);
 
         /// <summary>
         /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
@@ -110,6 +105,12 @@ namespace OctoAwesome
         /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
         void SetBlockResources(int x, int y, int z, ushort[] resources);
 
-        event Action<IChunk, int> Changed;
+        void SetColumn(IChunkColumn chunkColumn);
+        void Update(Notifications.SerializableNotification notification);
+        void OnUpdate(Notifications.SerializableNotification notification);
+        void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos);
+
+        event Action<IChunk> Changed;
+        void FlagDirty();
     }
 }

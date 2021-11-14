@@ -2,16 +2,16 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Xunit;
+using NUnit.Framework;
 
 namespace OctoAwesome.Tests
 {
     public class SettingsManagerTests
     {
-        [Fact]
+        [Test]
         public void ReadWrite()
         {
-            Settings settings = new Settings(true);
+            Settings settings = new Settings();
 
             string[] testArray = new string[] { "foo", "bar" };
             settings.Set("foo", testArray);
@@ -41,51 +41,51 @@ namespace OctoAwesome.Tests
             settings.Set("inputString", inputString);
 
 
-            Assert.Equal(inputString, settings.Get<string>("inputString"));
+            Assert.Equals(inputString, settings.Get<string>("inputString"));
 
 
             int inputInt = new Random().Next();
             settings.Set("inputInt", inputInt);
 
-            Assert.Equal(inputInt, settings.Get<int>("inputInt"));
+            Assert.Equals(inputInt, settings.Get<int>("inputInt"));
 
 
             bool inputBool = true;
             settings.Set("inputBool", inputBool);
 
-            Assert.Equal(inputBool, settings.Get<bool>("inputBool"));
+            Assert.Equals(inputBool, settings.Get<bool>("inputBool"));
         }
 
-        [Fact]
+        [Test]
         public void UnsetTest()
         {
-            Settings settings = new Settings(true);
+            Settings settings = new Settings();
 
             int testInt = settings.Get<int>("foobarnotset");
-            Assert.Equal(0, testInt);
+            Assert.Equals(0, testInt);
 
             string testString = settings.Get<string>("foobarnotset");
-            Assert.Equal(null, testString);
+            Assert.Equals(null, testString);
 
             int testIntDefault = settings.Get("foobarnotset", 42);
-            Assert.Equal(42, testIntDefault);
+            Assert.Equals(42, testIntDefault);
 
             string testStringDefault = settings.Get("foobarnotset", "ABC");
-            Assert.Equal("ABC", testStringDefault);
+            Assert.Equals("ABC", testStringDefault);
         }
 
-        [Fact]
+        [Test]
         public void DeleteTest()
         {
-            Settings settings = new Settings(true);
+            Settings settings = new Settings();
 
             settings.Set("test", 1);
             int test1 = settings.Get<int>("test");
-            Assert.Equal(1, test1);
+            Assert.Equals(1, test1);
 
             settings.Delete("test");
             int test2 = settings.Get<int>("test");
-            Assert.Equal(0, test2);
+            Assert.Equals(0, test2);
         }
     }
 }

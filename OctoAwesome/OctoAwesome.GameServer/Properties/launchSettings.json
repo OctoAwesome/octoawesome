@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OctoAwesome.GameServer": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

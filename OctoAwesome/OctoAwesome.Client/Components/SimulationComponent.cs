@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Runtime;
 using System;
 using engenious;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Common;
 
 namespace OctoAwesome.Client.Components
 {
@@ -12,6 +14,8 @@ namespace OctoAwesome.Client.Components
 
         public Simulation Simulation { get; private set; }
 
+        public IGameService Service { get; }
+
         public SimulationState State
         {
             get
@@ -22,13 +26,14 @@ namespace OctoAwesome.Client.Components
             }
         }
 
-        public SimulationComponent(Game game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
+        public SimulationComponent(OctoGame game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
         {
+            Service = game.Service;
             this.extensionResolver = extensionResolver;
             this.resourceManager = resourceManager;
         }
 
-        public Guid NewGame(string name, int? seed = null)
+        public Guid NewGame(string name, string seed)
         {
             if (Simulation != null)
             {
@@ -36,7 +41,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(resourceManager, extensionResolver);
+            Simulation = new Simulation(resourceManager, extensionResolver, Service);
             return Simulation.NewGame(name, seed);
         }
 
@@ -48,8 +53,8 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(resourceManager, extensionResolver);
-            Simulation.LoadGame(guid);
+            Simulation = new Simulation(resourceManager, extensionResolver, Service);
+            Simulation.TryLoadGame(guid);
         }
 
         public override void Update(GameTime gameTime)
@@ -66,7 +71,7 @@ namespace OctoAwesome.Client.Components
             Simulation = null;
         }
 
-        public Player LoginPlayer(Guid id)
+        public Player LoginPlayer(string playerName)
         {
             if (Simulation == null)
                 throw new NotSupportedException();
@@ -74,9 +79,12 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            //TODO: [Network] Anstelle von ID einen einstellbaren Playernamen implementieren
-            Player player = resourceManager.LoadPlayer(id.ToString());
-            Simulation.AddEntity(player);
+            Player player = resourceManager.LoadPlayer(playerName);
+
+            player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            Simulation.Add(player);
+
+
             return player;
         }
 
@@ -88,7 +96,7 @@ namespace OctoAwesome.Client.Components
             if (Simulation.State != SimulationState.Running && Simulation.State != SimulationState.Paused)
                 throw new NotSupportedException();
 
-            Simulation.RemoveEntity(player);
+            Simulation.Remove(player);
         }
     }
 }
