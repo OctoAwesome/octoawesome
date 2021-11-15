@@ -396,7 +396,7 @@ namespace OctoAwesome.Client.UI.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Planet.
         /// </summary>
-        internal static string Planet {
+        public static string Planet {
             get {
                 return ResourceManager.GetString("Planet", resourceCulture);
             }
@@ -516,6 +516,15 @@ namespace OctoAwesome.Client.UI.Languages {
         public static string Start {
             get {
                 return ResourceManager.GetString("Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Targeted Block.
+        /// </summary>
+        public static string TargetedBlock {
+            get {
+                return ResourceManager.GetString("TargetedBlock", resourceCulture);
             }
         }
         

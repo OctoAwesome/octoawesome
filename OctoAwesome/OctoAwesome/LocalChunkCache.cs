@@ -389,11 +389,11 @@ namespace OctoAwesome
             => (((y & (mask)) << limit) | ((x & (mask))));
 
         /// <summary>
-        /// Gibt das Höhenniveua der angegebenen Position zurück.
+        /// Returns the highest global z block position for the given global block position
         /// </summary>
-        /// <param name="x">Globale X-Koordinate in Blöcken.</param>
-        /// <param name="y">Globale Y-Koordinate in Blöcken.</param>
-        /// <returns>Git die Höhe in Blöcken zurück, oder -1 falls der zugehörige Chunk nicht geladen ist.</returns>
+        /// <param name="x">global x block position</param>
+        /// <param name="y">global y block position</param>
+        /// <returns>The highest global z position, or -1 if chunk was not loaded</returns>
         public int GroundLevel(int x, int y)
         {
             if (Planet == null)

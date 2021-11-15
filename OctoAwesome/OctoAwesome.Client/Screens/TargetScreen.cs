@@ -3,7 +3,9 @@ using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Client.Controls;
 using OctoAwesome.Client.UI.Components;
+using OctoAwesome.EntityComponents;
 using System;
 
 namespace OctoAwesome.Client.Screens
@@ -41,82 +43,89 @@ namespace OctoAwesome.Client.Screens
             };
             spanel.Controls.Add(headLine);
 
-            StackPanel vstack = new StackPanel(manager);
-            vstack.Orientation = Orientation.Vertical;
-            spanel.Controls.Add(vstack);
+            var grid = new Grid(manager);
+            grid.Rows.Add(new RowDefinition() { Height = 1, ResizeMode = ResizeMode.Auto });
+            grid.Rows.Add(new RowDefinition() { Height = 1, ResizeMode = ResizeMode.Auto });
+            grid.Rows.Add(new RowDefinition() { Height = 1, ResizeMode = ResizeMode.Auto });
+            grid.Columns.Add(new ColumnDefinition() { Width = 1, ResizeMode = ResizeMode.Auto });
+            grid.Columns.Add(new ColumnDefinition() { Width = 1, ResizeMode = ResizeMode.Auto });
 
-            StackPanel pStack = new StackPanel(manager);
-            pStack.Orientation = Orientation.Horizontal;
-            vstack.Controls.Add(pStack);
+            grid.AddControl(new Label(manager)
+            {
+                Text = $"{UI.Languages.OctoClient.Planet}:"
+            }, 0, 0);
 
-            Label pLabel = new Label(manager);
-            pLabel.Text = Languages.OctoClient.Planet + ":";
-            pStack.Controls.Add(pLabel);
-
-            Textbox pText = new Textbox(manager)
+            var pText = new NumericTextbox(manager)
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
                 Margin = new Border(2, 10, 2, 10),
                 Text = position.Planet.ToString()
             };
-            pStack.Controls.Add(pText);
+            grid.AddControl(pText, 1, 0);
 
-            StackPanel xStack = new StackPanel(manager);
-            xStack.Orientation = Orientation.Horizontal;
-            vstack.Controls.Add(xStack);
+            grid.AddControl(new Label(manager)
+            {
+                Text = "X:"
+            }, 0, 1);
 
-            Label xLabel = new Label(manager);
-            xLabel.Text = "X:";
-            xStack.Controls.Add(xLabel);
-
-            Textbox xText = new Textbox(manager)
+            var xText = new NumericTextbox(manager)
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
                 Margin = new Border(2, 10, 2, 10),
                 Text = position.GlobalBlockIndex.X.ToString()
             };
-            xStack.Controls.Add(xText);
+            grid.AddControl(xText, 1, 1);
 
-            StackPanel yStack = new StackPanel(manager);
-            yStack.Orientation = Orientation.Horizontal;
-            vstack.Controls.Add(yStack);
+            grid.AddControl(new Label(manager)
+            {
+                Text = "Y:"
+            }, 0, 2);
 
-            Label yLabel = new Label(manager);
-            yLabel.Text = "Y:";
-            yStack.Controls.Add(yLabel);
-
-            Textbox yText = new Textbox(manager)
+            var yText = new NumericTextbox(manager)
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
                 Margin = new Border(2, 10, 2, 10),
                 Text = position.GlobalBlockIndex.Y.ToString()
             };
-            yStack.Controls.Add(yText);
+            grid.AddControl(yText, 1, 2);
 
-            Button closeButton = new TextButton(manager, UI.Languages.OctoClient.Teleport);
-            closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Button closeButton = new TextButton(manager, UI.Languages.OctoClient.Teleport)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
             closeButton.LeftMouseClick += (s, e) =>
             {
                 int planet = int.Parse(pText.Text);
                 int x = int.Parse(xText.Text);
                 int y = int.Parse(yText.Text);
+                var coordinate = new Coordinate(planet, new Index3(x, y, 0), Vector3.Zero);
 
-                var c = new LocalChunkCache(manager.Game.ResourceManager.GlobalChunkCache, false, 2, 1);
-                c.SetCenter(planet, new Index2(x, y), (b) =>
+                var player = manager.Game.Player;
+                var c = new LocalChunkCache(player.Position.Planet.GlobalChunkCache, 2, 1);
+                c.SetCenter(coordinate.ChunkIndex.XY, (b) =>
                 {
-                    var gl = c.GroundLevel(x, y);
-                    c.Flush();
+                    Manager.Invoke(() =>
+                    {
+                        var gl = c.GroundLevel(x, y);
+                        c.Flush();
 
-                    var coordinate = new Coordinate(planet, new Index3(x, y, gl + 2), new Vector3());
-                    if (tp != null)
-                        tp(coordinate);
-                    else
-                        manager.NavigateBack();
+                        var playerHeight = player.CurrentEntity.GetComponent<BodyComponent>()?.Height ?? 4;
+                        var offset = (int)Math.Round(playerHeight * 2, MidpointRounding.ToPositiveInfinity);
+
+                        coordinate.GlobalBlockIndex += new Index3(0, 0, gl + offset);
+                        coordinate.NormalizeChunkIndexXY(c.Planet.Size);
+                        if (tp != null)
+                            tp(coordinate);
+                        else
+                            manager.NavigateBack();
+                    });
                 });
             };
+
+            spanel.Controls.Add(grid);
             spanel.Controls.Add(closeButton);
 
             KeyDown += (s, e) =>
