@@ -6,10 +6,6 @@ Vielen Dank, dass Du bei OctoAwesome mitmachen möchtest und ein Teil davon werd
 
 Bitte beachte bei allem immer unseren [Code of Conduct](CODE_OF_CONDUCT.md), damit wir gemeinsam friedlich zusammenarbeiten können.
 
-## Coding
-
-Wenn Du mit programmieren möchtest, beachte bitte unsere Richtlinien zum [Codestyle](http://wiki.octoawesome.net/wiki/Coding_Styles) und unseren [Code of Conduct](CODE_OF_CONDUCT.md).
-
 ## Beitragen
 
 Natürlich sind keine Programmierkenntnisse für die Mitarbeit notwending. 
