@@ -24,8 +24,8 @@
 * Getrennte Öfen für Essen und Materialschmelzung?
     - Ofen für Essen aufgrund von Bauweise weniger Heiß
         - Teig in diesen Ofen => Brot
-        - ~50 - ~300°C
-    - Ofen für Materialschmelzung heißer
+        - ~50 - ~477°C
+    - Schmelzofen für Materialschmelzung heißer
         - Teig in diesen Ofen => Kohle
 * Hilfsmittel?
     - Pfanne
@@ -37,3 +37,23 @@
     - Input, output
     - Dauer (kJ/kg, Sekunden, ?)
     - Welches Format? (YAML, JSON, XML, HTML, MD, XAML, PostScript, RTF, Binär, LaTeX, TeX, SGML)
+
+
+TODOS:
+1. Componentsystem erweitern um UI Components 
+    - Teil von ScreenComponent
+    - Entity und Functionalblock Components sind Dataholder
+    - Updates gehen (nur) über SimulationComponents
+    - UIComponents sind quasi SimulationComponents für die UI (Bsp: ITransferScreenComponent für Entity sorgt für Anzeige einer UI Component)
+2. Componentsystem dokumentieren
+    - IEntity/FunctionalBlockComponent => DataHolder
+    - SimulationComponent => Logik / Update
+    - UI Component => UI 
+3. Ofen braucht:
+    - OvenSimulationComponent
+    - OvenUIComponent
+      - OvenUI
+    - Ofen Model
+    - Ofen Item
+4. Rezepte
+5. Datenbank
