@@ -35,6 +35,11 @@ namespace OctoAwesome.Client.Components
 
         }
 
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
+
         public void Exit()
         {
             Game.Exit();

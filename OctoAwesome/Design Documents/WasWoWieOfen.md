@@ -45,6 +45,11 @@ TODOS:
     - Entity und Functionalblock Components sind Dataholder
     - Updates gehen (nur) über SimulationComponents
     - UIComponents sind quasi SimulationComponents für die UI (Bsp: ITransferScreenComponent für Entity sorgt für Anzeige einer UI Component)
+    - Ui Component bekommt die Logik (Bsp: Item Transfer von Inventory A zu Inventory B)
+    - Screens sollte UI only sein
+    - Screens können der Component eine Änderung mitteilen
+    - UI Component sollte Update bekommen um kein Missverständnis zu verursachen
+    - Quasi Screen View und UI Component View Model (Wo das Model ist müssen wir noch schauen (nicht ernst gemeint))
 2. Componentsystem dokumentieren
     - IEntity/FunctionalBlockComponent => DataHolder
     - SimulationComponent => Logik / Update
@@ -57,3 +62,4 @@ TODOS:
     - Ofen Item
 4. Rezepte
 5. Datenbank
+

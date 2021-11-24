@@ -130,10 +130,6 @@ namespace OctoAwesome.Client.Components
                         var position = positioncomp.Position;
                         var body = functionalBlock.Components.GetComponent<BodyComponent>();
 
-                        HeadComponent head = new HeadComponent();
-                        if (functionalBlock.Components.ContainsComponent<HeadComponent>())
-                            head = functionalBlock.Components.GetComponent<HeadComponent>();
-
                         Index3 shift = chunkOffset.ShortestDistanceXY(
                        position.ChunkIndex, planetSize);
 
