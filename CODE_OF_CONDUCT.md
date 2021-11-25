@@ -47,34 +47,6 @@ Wir erwarten von allen Communitymitgliedern diesen Verhaltenskodex bei allen Ver
 
 Der Kodex findet auch auf unannehmbares Verhalten Anwendung, die außerhalb der Community auftreten, wenn dieses Verhalten die Sicherheit und das Wohlergehen der Community oder ihrer Mitglieder gefährdet.
 
-# Die Grundregeln
-
-Tom hat 500 Folgen OctoAwesome produziert, das Projekt initiiert und wesentlich geprägt. Er hat sich damals Grundregeln aufgelegt, die hier als Verweis und Erinnerung erwähnt werden sollen:
-
-* __Das Projekt ist deutschsprachig.__ Stream auf deutsch, deutsche Texte, deutsche Doku also effektiv deutsche Lernsprache. Dass der Quellcode englisch ist, ist schlichtweg dem Sprachdesign geschuldet.
-
-* __Alles passiert on Screen -__ sogar das googeln nach der Lösung. Die Idee ist, dass alles (zumindest wichtige einschneidende Dinge) per Stream oder Video nachvollziehbar gemacht werden soll. 
-
-* __Es handelt sich um eine Spielwiese, nicht um ein Tutorial.__ Das hat zur Folge, dass Dinge nicht perfekt gelöst sind, aber nun mal funktionieren. Auch wenn etwas anfangs über einen unschönen oder auch unperformanten Umweg erledigt wird, heißt es nicht, dass dadurch kein Wissen vermittelt werden konnte und außerdem kann Es gerne später überarbeitet werden.  
-
-Diese Grundregeln zufolge möchten wir uns an folgendes Credo halten.
-
-# OctoAwesome Credo
-
-__Das Projekt ist deutschprachig aber nicht nur__ Ja wir sind eine deutsche Community und wir werden auf Deutsch streamen, deutsche Texte bereitstellen und eine deutsche Doku zur Verfügung stellen. Wir sind aber uns darüber im Klaren, dass die übliche Programmiersprache Englisch ist. Und wir wissen um den Effekt der Muttersprache, wenn es um das lernen geht. Deutsch werden wir als primäre Sprache beibehalten und fördern dennoch möchten wir dafür sorge tragen, dass niemand anderes ausgeschlossen ist, nur weil er eine andere Sprache spricht.
-
-__Alles passiert on Screen - zumindest alles öffentlich__ Der Ansatz von OctoAwesome ist die Nachvollziehbarkeit und Transparenz. Ja selbst ein Googeln, eine Idee oder andere Dinge werden festgehalten. Wir fassen die Sache mit dem on Screen etwas weiter. Im Sinne der Community, die davon lebt, ist es mehr als wünschenswert, wenn du getreu dem Motto arbeitest "tue Gutes und rede darüber". Wenn du was für OctoAwesome machst, dann halte es fest und berichte darüber. Video, Vortrag, Stream oder Blogeintrag es gibt keine Grenzen. Auch wenn es nicht perfekt ist oder du in eine Sackgasse rennst, andere können davon lernen und auch du selbst kannst davon profitieren.
-
-__Es handelt sich um eine Spielwiese, nicht um ein Tutorial.__ Das ist wichtig zu sagen, wir machen das alles nur aus Spaß und aus den Gründen, die hier genannt sind. Sicher hat noch jeder eigene Gründe, die er mitbringt. Wir sind kein Team, das aus lauter Profis besteht, es geht nicht darum alles Perfekt zu machen, Geld zu verdienen oder einen Wettbewerb zu gewinnen. Und das ist auch gut so.
-
-__Wir arbeiten Miteinander__ Wir sind eine Community. Das heißt, wir arbeiten zusammen für das gleiche Projekt und machen keine Alleingänge, weil wir daran glauben, dass wir alle voneinander lernen und profitieren können.
-
-__Der Weg ist das Ziel__ OctoAwesome ist ein Projekt, das von seiner Arbeit daran lebt und nicht von seiner "Fertigstellung". Wir haben uns entschieden, dass das Spiel nie fertig sein wird. Der Weg ist das Ziel.
-
-__Wir Teilen unser Wissen__ Es gehört ja auch zum Miteinander aber es will noch mal separat genannt werden, wir teilen unser Wissen, weil wir glauben, das wir durch geteiltes Wissen unser Wissen mehrt. Das heißt das niemand davon profitiert wenn er nur für sich selber dinge lernt sondern wir können alle voneinander lernen. ^^
-
-Mehr gibt es wohl nicht zu sagen. Außer viel Spaß beim Coden.
-
 # License and attribution
 
 Weil teilweise von GitHub ausgeliehen folgender Hinweis zu diesem Dokument:
