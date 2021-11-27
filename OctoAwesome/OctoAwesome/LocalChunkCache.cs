@@ -83,7 +83,6 @@ namespace OctoAwesome
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(LocalChunkCache));
         }
 
-
         /// <summary>
         /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
         /// </summary>
@@ -341,7 +340,7 @@ namespace OctoAwesome
             => GetBlockMeta(index.X, index.Y, index.Z);
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
         /// </summary>
         /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
         /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
@@ -356,7 +355,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate. 
+        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
         /// </summary>
         /// <param name="index">Block-Koordinate</param>
         /// <param name="meta">Die neuen Metadaten</param>
@@ -381,7 +380,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt einen falchen Index um auf das Array <see cref="chunkColumns"/> zu zu greiffen
+        /// Gibt einen flachen Index um auf das Array <see cref="chunkColumns"/> zu zu greiffen
         /// </summary>
         /// <param name="x">Die X-Koordinate</param>
         /// <param name="y">Die Y-Koordinate</param>
@@ -389,5 +388,26 @@ namespace OctoAwesome
         private int FlatIndex(int x, int y)
             => (((y & (mask)) << limit) | ((x & (mask))));
 
+        /// <summary>
+        /// Returns the highest global z block position for the given global block position
+        /// </summary>
+        /// <param name="x">global x block position</param>
+        /// <param name="y">global y block position</param>
+        /// <returns>The highest global z position, or -1 if chunk was not loaded</returns>
+        public int GroundLevel(int x, int y)
+        {
+            if (Planet == null)
+                return -1;
+
+            x = Index2.NormalizeAxis(x, Planet.Size.X);
+            y = Index2.NormalizeAxis(y, Planet.Size.Y);
+
+            IChunkColumn column = chunkColumns[FlatIndex(x >> Chunk.LimitX, y >> Chunk.LimitY)];
+
+            if (column == null)
+                return -1;
+
+            return column.Heights[(x & (Chunk.CHUNKSIZE_X - 1)), (y & (Chunk.CHUNKSIZE_Y - 1))];
+        }
     }
 }

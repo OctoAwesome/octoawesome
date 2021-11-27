@@ -263,7 +263,7 @@ namespace OctoAwesome.Client.Controls
         {
             base.OnResolutionChanged();
 
-            if (ControlTexture != null)
+            if (ControlTexture != null && Manager.GraphicsDevice.Viewport.Width != 0 && Manager.GraphicsDevice.Viewport.Height != 0)
             {
                 ControlTexture.Dispose();
                 ControlTexture = null;

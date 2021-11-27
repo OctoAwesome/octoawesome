@@ -279,10 +279,16 @@
   <data name="Up" xml:space="preserve">
     <value>Nach oben</value>
   </data>
+  <data name="Planet" xml:space="preserve">
+    <value>Planet</value>
+  </data>
   <data name="Multiplayer" xml:space="preserve">
     <value>Mehrspieler</value>
   </data>
   <data name="Connect" xml:space="preserve">
     <value>Verbinden</value>
+  </data>
+  <data name="TargetedBlock" xml:space="preserve">
+    <value>Anvisierter Block</value>
   </data>
 </root>

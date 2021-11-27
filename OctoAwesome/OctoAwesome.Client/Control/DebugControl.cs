@@ -6,9 +6,11 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.Runtime;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OctoAwesome.UI.Controls
@@ -29,7 +31,7 @@ namespace OctoAwesome.UI.Controls
         public PlayerComponent Player { get; set; }
 
         private readonly StackPanel leftView, rightView;
-        private readonly Label devText, position, rotation, fps, box, controlInfo, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo, gravityInfo;
+        private readonly Label devText, position, rotation, fps, box, controlInfo, targetedBlockName, targetedBlockPosition, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo, gravityInfo;
 
         public DebugControl(BaseScreenComponent screenManager, AssetComponent assets, PlayerComponent playerComponent,
             IResourceManager resourceManager, IDefinitionManager definitionManager)
@@ -87,6 +89,17 @@ namespace OctoAwesome.UI.Controls
 
             controlInfo = new Label(ScreenManager);
             leftView.Controls.Add(controlInfo);
+
+            leftView.Controls.Add(new Label(ScreenManager)
+            {
+                Text = Client.UI.Languages.OctoClient.TargetedBlock + ": " + Environment.NewLine
+            });
+
+            targetedBlockName = new Label(ScreenManager);
+            leftView.Controls.Add(targetedBlockName);
+
+            targetedBlockPosition = new Label(ScreenManager);
+            leftView.Controls.Add(targetedBlockPosition);
 
             temperatureInfo = new Label(ScreenManager);
             rightView.Controls.Add(temperatureInfo);
@@ -162,6 +175,22 @@ namespace OctoAwesome.UI.Controls
 
             //Draw Control Info
             controlInfo.Text = Client.UI.Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
+
+            // Draw targeted block info
+            Player.Selection?.Visit(
+            blockInfo =>
+            {
+                targetedBlockName.Text = definitionManager.GetBlockDefinitionByIndex(blockInfo.Block)?.Name ?? "";
+                targetedBlockPosition.Text = blockInfo.Position == default ? "" : blockInfo.Position.ToString();
+            },
+            functionalBlock => SetTargetedBlockInfo(functionalBlock),
+            entity => SetTargetedBlockInfo(entity));
+
+            void SetTargetedBlockInfo(ComponentContainer container)
+            {
+                targetedBlockName.Text = container.GetType()?.Name ?? "";
+                targetedBlockPosition.Text = container.GetComponent<PositionComponent>()?.Position.ToString() ?? "";
+            }
 
             //Draw Position
             var pos = "pos: " + Player.Position.Position.ToString();

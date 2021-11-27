@@ -37,6 +37,11 @@ namespace OctoAwesome
         }
 
         /// <summary>
+        /// Gets the X and Y components
+        /// </summary>
+        public Index2 XY => new(X, Y);
+
+        /// <summary>
         /// Initialisierung
         /// </summary>
         /// <param name="index">2D-Basis</param>
