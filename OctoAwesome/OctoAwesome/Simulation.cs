@@ -202,6 +202,7 @@ namespace OctoAwesome
 
             //TODO: unschön, Dispose Entity's, Reset Extensions
             entities.ToList().ForEach(entity => Remove(entity));
+            functionalBlocks.ToList().ForEach(functionalBlock => Remove(functionalBlock));
             //while (entites.Count > 0)
             //    RemoveEntity(Entities.First());
 
@@ -261,7 +262,8 @@ namespace OctoAwesome
             if (functionalBlocks.Contains(block))
                 return;
 
-            //extensionResolver.ExtendEntity(entity);
+
+            extensionResolver.ExtendEntity(block);
             block.Initialize(ResourceManager);
             block.Simulation = this;
 
@@ -300,7 +302,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Removing Entities only allowed in running or paused state");
 
-            ResourceManager.SaveEntity(entity);
+            ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
 
             foreach (var component in Components)
             {
@@ -333,7 +335,8 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-            //ResourceManager.SaveEntity(block);
+            
+            ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
 
             foreach (var component in Components)
             {

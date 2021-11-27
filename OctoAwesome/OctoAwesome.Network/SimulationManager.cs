@@ -123,7 +123,7 @@ namespace OctoAwesome.Network
         public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
 
         public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
-            => ResourceManager.LoadChunkColumn(planet, index2);
+            => planet.GlobalChunkCache.Subscribe(index2);
         public IChunkColumn LoadColumn(int planetId, Index2 index2)
             => LoadColumn(GetPlanet(planetId), index2);
 

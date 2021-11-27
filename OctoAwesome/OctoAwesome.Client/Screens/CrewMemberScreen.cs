@@ -8,7 +8,7 @@ using engenious.Graphics;
 using System.Diagnostics;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -32,10 +32,10 @@ namespace OctoAwesome.Client.Screens
             SetDefaultBackground();
 
             //The Panel
-            Texture2D panelBackground = assets.LoadTexture( "panel");
+            Texture2D panelBackground = assets.LoadTexture("panel");
             Panel panel = new Panel(manager)
             {
-                MaxWidth = 750,                
+                MaxWidth = 750,
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = new Border(15, 15, 15, 15),
             };
@@ -59,9 +59,7 @@ namespace OctoAwesome.Client.Screens
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Padding = new Border(0, 0, 10, 0)
             };
-            if (member.PictureFilename == null)
-                profileImage.Texture = assets.LoadTexture(typeof(CrewMember), "base");
-            else profileImage.Texture = assets.LoadTexture(typeof(CrewMember), member.PictureFilename);
+            profileImage.Texture = assets.LoadTexture(typeof(CrewMember), $"Crew.{member.PictureFilename ?? "base"}");
             horizontalStack.Controls.Add(profileImage);
 
             //The Text Stack
@@ -97,7 +95,7 @@ namespace OctoAwesome.Client.Screens
 
             Label achievementsTitle = new Label(manager) { Text = UI.Languages.OctoClient.Achievements + ": ", Font = boldFont, HorizontalAlignment = HorizontalAlignment.Left };
             achievementStack.Controls.Add(achievementsTitle);
-            Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };            
+            Label achievements = new Label(manager) { Text = achievementString, HorizontalAlignment = HorizontalAlignment.Left };
             achievementStack.Controls.Add(achievements);
 
             // Links
@@ -115,11 +113,11 @@ namespace OctoAwesome.Client.Screens
             linkStack.Controls.Add(linkTitle);
 
             foreach (var link in member.Links)
-            {                
+            {
                 if (CheckHttpUrl(link.Url))
                 {
                     Button linkButton = new TextButton(manager, link.Title);
-                    linkButton.LeftMouseClick += (s, e) => Process.Start(link.Url);
+                    linkButton.LeftMouseClick += (s, e) => UI.Tools.OpenUrl(link.Url);
                     linkStack.Controls.Add(linkButton);
                 }
             }
@@ -148,7 +146,7 @@ namespace OctoAwesome.Client.Screens
 
         private bool CheckHttpUrl(string url)
         {
-            Uri tmp;            
+            Uri tmp;
             return Uri.TryCreate(url, UriKind.Absolute, out tmp) && (tmp.Scheme == Uri.UriSchemeHttp || tmp.Scheme == Uri.UriSchemeHttps);
         }
     }

@@ -42,7 +42,7 @@ namespace OctoAwesome.Client.Crew
         internal static List<CrewMember> getCrew(ScreenComponent manager)
         {
 
-            using (Stream stream = manager.Game.Assets.LoadStream(typeof(CrewMember), "crew", "xml"))
+            using (Stream stream = manager.Game.Assets.LoadStream(typeof(CrewMember), "Crew.crew", "xml"))
             {
                 try
                 {

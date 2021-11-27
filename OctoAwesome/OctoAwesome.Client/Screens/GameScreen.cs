@@ -6,8 +6,9 @@ using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
 using OctoAwesome.UI.Controls;
-using OctoAwesome.UI.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.Client.UI.Controls;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -90,8 +91,6 @@ namespace OctoAwesome.Client.Screens
             crosshair = new CrosshairControl(manager, assets);
             crosshair.HorizontalAlignment = HorizontalAlignment.Center;
             crosshair.VerticalAlignment = VerticalAlignment.Center;
-            crosshair.Width = 8;
-            crosshair.Height = 8;
             Controls.Add(crosshair);
 
             Title = UI.Languages.OctoClient.Game;

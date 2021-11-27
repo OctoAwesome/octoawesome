@@ -142,7 +142,11 @@ namespace OctoAwesome.Client
 
         public Guid NewUniverse(string name, int seed) => resourceManager.NewUniverse(name, seed);
 
-        public void SaveEntity(Entity entity) => resourceManager.SaveEntity(entity);
+        public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
+           where TContainer : ComponentContainer<TComponent>
+           where TComponent : IComponent
+            => resourceManager.SaveComponentContainer<TContainer, TComponent>(container);
+
 
         public void SavePlayer(Player player) => resourceManager.SavePlayer(player);
 
@@ -158,14 +162,25 @@ namespace OctoAwesome.Client
 
         public Entity LoadEntity(Guid entityId) 
             => resourceManager.LoadEntity(entityId);
+
+        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+           where TContainer : ComponentContainer<TComponent>
+           where TComponent : IComponent
+            => resourceManager.LoadComponentContainer<TContainer, TComponent>(id);
+
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent
             => resourceManager.LoadEntitiesWithComponent<T>();
         public IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent
             => resourceManager.GetEntityIdsFromComponent<T>();       
-        public IEnumerable<Guid> GetEntityIds()
-            => resourceManager.GetEntityIds();
+       
 
         public (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new()
             => resourceManager.GetEntityComponents<T>(entityIds);
+
+        public (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new()
+            => resourceManager.GetAllComponents<T>();
+
+        public T GetComponent<T>(Guid id) where T : IComponent, new()
+            => resourceManager.GetComponent<T>(id);
     }
 }

@@ -36,7 +36,7 @@ namespace OctoAwesome.Serialization.Entities
         public T Get<T>(ComponentContainer<TContainer> entity) where T : IComponent, new()
             => Get<T>(entity.Id);
 
-        public IEnumerable<GuidTag<T>> GetAllKeys<T>() where T : IComponent
+        public IReadOnlyList<GuidTag<T>> GetAllKeys<T>() where T : IComponent
             => databaseProvider.GetDatabase<GuidTag<T>>(universeGuid, false).Keys;
 
         public void Remove<T>(ComponentContainer<TContainer> entity) where T : IComponent

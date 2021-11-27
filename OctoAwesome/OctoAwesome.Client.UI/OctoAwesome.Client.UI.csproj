@@ -6,9 +6,6 @@
 
   <ItemGroup>
     <None Remove="Assets\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Assets\**" />
   </ItemGroup>
 

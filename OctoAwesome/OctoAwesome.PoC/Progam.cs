@@ -1,16 +1,26 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Notifications;
 using OctoAwesome.PoC.Rx;
 using OctoAwesome.Runtime;
+using OpenTK.Graphics.ES11;
 using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.PoC
 {
     public static class Program
     {
-
         static void Main()
         {
+
+            object a = 12;
+
+            var i 
+                = GenericCaster<int, object>
+                .Cast(a);
+
             using var network = new Relay<Notification>();
             using var hub = new Rx.UpdateHub();
 

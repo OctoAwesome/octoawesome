@@ -2,7 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -21,9 +21,12 @@ namespace OctoAwesome.Client.Screens
         {
             if (Manager.CanGoBack)
             {
-                BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back);
-                BackButton.VerticalAlignment = VerticalAlignment.Top;
-                BackButton.HorizontalAlignment = HorizontalAlignment.Left;
+                BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back)
+                {
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    TabStop = false,
+                };
                 BackButton.LeftMouseClick += (s, e) =>
                 {
                     Manager.NavigateBack();
@@ -41,7 +44,7 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnKeyPress(KeyEventArgs args)
         {
-            if (Manager.CanGoBack && args.Key == Keys.Back)
+            if (Manager.CanGoBack && (args.Key == Keys.Back || args.Key == Keys.Escape))
             {
                 args.Handled = true;
                 Manager.NavigateBack();
@@ -53,7 +56,7 @@ namespace OctoAwesome.Client.Screens
         protected void AddLabeledControl(Grid grid, string name, Control c)
         {
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto });
-            grid.AddControl(new Label(Manager) { Text = name }, 0, grid.Rows.Count - 1);
+            grid.AddControl(new Label(Manager) { Text = name, TabStop = false }, 0, grid.Rows.Count - 1);
             grid.AddControl(c, 1, grid.Rows.Count - 1);
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 10 });
         }

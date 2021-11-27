@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome
 {
@@ -98,6 +99,23 @@ namespace OctoAwesome
                 return components.Any(x => type.IsAssignableFrom(x.Key));
             }
             return components.ContainsKey(type);
+        }
+
+        /// <summary>
+        /// Tries to return the Component of the given Type or null
+        /// </summary>
+        /// <typeparam name="V">Component Type</typeparam>
+        /// <returns>True if the component was found, false otherwise</returns>
+        public bool TryGetComponent<V>(out V component) where V : T
+        {
+            var contains = components.TryGetValue(typeof(V), out T result);
+            component = default;
+            if (!contains)
+                return contains;
+
+            component = GenericCaster<V, T>.Cast(result);
+
+            return contains;
         }
 
         /// <summary>

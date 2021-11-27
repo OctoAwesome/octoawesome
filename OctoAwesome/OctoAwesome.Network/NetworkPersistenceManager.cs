@@ -2,13 +2,17 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using OctoAwesome.Components;
+using OctoAwesome.Database;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
+using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+using OctoAwesome.Serialization.Entities;
 
 namespace OctoAwesome.Network
 {
@@ -109,16 +113,33 @@ namespace OctoAwesome.Network
             return null;
         }
 
+        public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            var package = packagePool.Get();
+            package.Command = (ushort)OfficialCommand.GetUniverse;
+
+            componentContainer = null;
+            //var awaiter = GetAwaiter(universe, package.UId);
+            client.SendPackageAndRelase(package);
+
+            return null;
+        }
+
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => Array.Empty<Entity>();
+            => Enumerable.Empty<Entity>();
 
         public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => Array.Empty<Guid>();
+            => Enumerable.Empty<Guid>();
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
-            => Array.Empty<Guid>();
+            => Enumerable.Empty<Guid>();
 
         public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
-            => Array.Empty<(Guid, T)>();
+            => Enumerable.Empty<(Guid Id, T Component)>();
+
+        public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
+            => Enumerable.Empty<(Guid Id, T Component)>();
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
@@ -153,7 +174,11 @@ namespace OctoAwesome.Network
             //throw new NotImplementedException();
         }
 
-        public void SaveEntity(Entity entity, Guid universe) { }
+        public void Save<TContainer, TComponent>(TContainer container, Guid universe)
+             where TContainer : ComponentContainer<TComponent>
+             where TComponent : IComponent
+        {
+        }
 
         public void SendChangedChunkColumn(IChunkColumn chunkColumn)
         {
@@ -205,6 +230,12 @@ namespace OctoAwesome.Network
         public void Dispose()
         {
             subscription?.Dispose();
+        }
+
+        public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
+        {
+            //TODO
+            return default;
         }
     }
 }

@@ -4,7 +4,7 @@ using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Screens;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
 using System.Linq;
 
 namespace OctoAwesome.Client.Controls

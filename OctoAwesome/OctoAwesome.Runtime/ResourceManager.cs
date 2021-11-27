@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using OctoAwesome.Caching;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
@@ -89,7 +90,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse != null)
                 UnloadUniverse();
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 tokenSource?.Dispose();
                 tokenSource = new CancellationTokenSource();
@@ -129,7 +130,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse != null)
                 UnloadUniverse();
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 tokenSource?.Dispose();
                 tokenSource = new CancellationTokenSource();
@@ -156,10 +157,10 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void UnloadUniverse()
         {
-            using (loadingSemaphore.Wait())
+            using (loadingSemaphore.EnterExclusivScope())
                 tokenSource.Cancel();
 
-            using (loadingSemaphore.Wait())
+            using (loadingSemaphore.EnterExclusivScope())
             {
                 if (CurrentUniverse == null)
                     return;
@@ -211,7 +212,7 @@ namespace OctoAwesome.Runtime
 
 
             using (semaphoreSlim.Wait())
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
 
@@ -251,7 +252,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
                 var awaiter = persistenceManager.Load(out Player player, CurrentUniverse.Id, playername);
@@ -274,7 +275,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
                 persistenceManager.SavePlayer(CurrentUniverse.Id, player);
         }
 
@@ -283,10 +284,10 @@ namespace OctoAwesome.Runtime
             // Load from disk
             Awaiter awaiter;
             IChunkColumn column11;
-
+            
             do
             {
-                using (loadingSemaphore.EnterScope())
+                using (loadingSemaphore.EnterCountScope())
                 {
                     currentToken.ThrowIfCancellationRequested();
                     awaiter = persistenceManager.Load(out column11, CurrentUniverse.Id, planet, index);
@@ -366,7 +367,7 @@ namespace OctoAwesome.Runtime
             if (disablePersistence)
                 return;
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
                 persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
         }
 
@@ -375,7 +376,7 @@ namespace OctoAwesome.Runtime
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
                 var awaiter = persistenceManager.Load(out Entity entity, CurrentUniverse.Id, entityId);
@@ -389,23 +390,49 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        public void SaveEntity(Entity entity)
+        public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
+    where TContainer : ComponentContainer<TComponent>
+    where TComponent : IComponent
+        
         {
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
 
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
-                if (entity is Player player)
+                if (container is Player player)
                     SavePlayer(player);
                 else
-                    persistenceManager.SaveEntity(entity, CurrentUniverse.Id);
+                    persistenceManager.Save<TContainer, TComponent>(container, CurrentUniverse.Id);
+            }
+        }
+
+        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
+            using (loadingSemaphore.EnterCountScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                var awaiter
+                    = persistenceManager
+                    .Load<TContainer, TComponent>(out var container, CurrentUniverse.Id, id);
+
+                if (awaiter == null)
+                    return null;
+                else
+                    awaiter.WaitOnAndRelease();
+
+                return container;
             }
         }
 
         public IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent
         {
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
                 return persistenceManager.LoadEntitiesWithComponent<T>(CurrentUniverse.Id);
@@ -414,28 +441,59 @@ namespace OctoAwesome.Runtime
 
         public IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent
         {
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
                 return persistenceManager.GetEntityIdsFromComponent<T>(CurrentUniverse.Id);
             }
         }
 
-        public IEnumerable<Guid> GetEntityIds()
-        {
-            using (loadingSemaphore.EnterScope())
-            {
-                currentToken.ThrowIfCancellationRequested();
-                return persistenceManager.GetEntityIds(CurrentUniverse.Id);
-            }
-        }
 
         public (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new()
         {
-            using (loadingSemaphore.EnterScope())
+            using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
                 return persistenceManager.GetEntityComponents<T>(CurrentUniverse.Id, entityIds).ToArray(); //Hack wird noch geänder
+            }
+        }
+
+        class IdGuid
+        {
+            public const string PropertyName = "Id";
+            public static Type ForType = typeof(Guid);
+        }
+
+        public (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new()
+        {
+            using (loadingSemaphore.EnterCountScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+
+
+                var retValues = persistenceManager.GetAllComponents<T>(CurrentUniverse.Id).ToArray(); //Hack wird noch geänder
+
+                if (typeof(T) == typeof(PositionComponent))
+                {
+                    foreach (var item in retValues)
+                    {
+                        GenericCaster<PositionComponent, T>.Cast(item.Component).InstanceId = item.Id;
+                    }
+                }
+                return retValues;
+            }
+        }
+
+        public T GetComponent<T>(Guid id) where T : IComponent, new()
+        {
+            using (loadingSemaphore.EnterCountScope())
+            {
+                currentToken.ThrowIfCancellationRequested();
+                var component =  persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
+
+                if (component is PositionComponent posComponent)
+                    posComponent.InstanceId = id;
+                return component;
             }
         }
     }

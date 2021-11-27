@@ -9,6 +9,8 @@ using System;
 using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions;
+using OctoAwesome.Basics.FunctionBlocks;
+using OctoAwesome.Basics.EntityComponents.UIComponents;
 
 namespace OctoAwesome.Basics
 {
@@ -21,7 +23,7 @@ namespace OctoAwesome.Basics
 
         public void Register(ITypeContainer typeContainer)
         {
-            
+
         }
 
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
@@ -29,7 +31,7 @@ namespace OctoAwesome.Basics
             typeContainer.Register<IPlanet, ComplexPlanet>();
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
-            {                
+            {
                 if (!t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t))
                     extensionLoader.RegisterDefinition(t);
             }
@@ -39,11 +41,14 @@ namespace OctoAwesome.Basics
             extensionLoader.RegisterMapPopulator(new TreePopulator());
             extensionLoader.RegisterMapPopulator(new WauziPopulator());
 
-            extensionLoader.RegisterEntity<WauziEntity>();
+            extensionLoader.RegisterSerializationType<WauziEntity>();
+            extensionLoader.RegisterSerializationType<Chest>();
+
             extensionLoader.RegisterDefaultEntityExtender<WauziEntity>();
 
-            extensionLoader.RegisterEntityExtender<Player>((p) =>
+            extensionLoader.RegisterEntityExtender<Player>((player) =>
             {
+                var p = (Player)player;
                 var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
                 p.Components.AddComponent(posComponent);
@@ -57,7 +62,55 @@ namespace OctoAwesome.Basics
 
             });
 
-            
+            extensionLoader.RegisterEntityExtender<Chest>((chest) =>
+            {
+                var c = (Chest)chest;
+
+                if (c is null)
+                    return;
+
+                if (!c.ContainsComponent<PositionComponent>())
+                {
+                    var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0));
+                    c.Components.AddComponent(new PositionComponent()
+                    {
+                        Position = pos
+                    });
+
+                }
+
+                if (!c.Components.TryGetComponent<AnimationComponent>(out var animationComponent))
+                {
+                    c.animationComponent = new AnimationComponent();
+                    c.Components.AddComponent(c.animationComponent);
+                }
+                else
+                    c.animationComponent = animationComponent;
+
+                if (!c.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
+                {
+                    inventoryComponent = new InventoryComponent();
+                    c.inventoryComponent = inventoryComponent;
+                    c.Components.AddComponent(inventoryComponent);
+                }
+                else
+                    c.inventoryComponent = inventoryComponent;
+
+                if (!c.ContainsComponent<TransferUIComponent>())
+                {
+                    c.transferUiComponent = new TransferUIComponent(inventoryComponent);
+                    c.transferUiComponent.Closed += c.TransferUiComponentClosed;
+                    c.Components.AddComponent(c.transferUiComponent, true);
+                }
+
+
+                c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
+                c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
+                c.Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 }, true);
+
+            });
+
+
             extensionLoader.RegisterSimulationExtender((s) =>
             {
                 s.Components.AddComponent(new WattMoverComponent());

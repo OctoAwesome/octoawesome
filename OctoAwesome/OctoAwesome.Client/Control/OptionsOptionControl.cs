@@ -2,11 +2,18 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Screens;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.UI.Controls;
 using System;
 
 namespace OctoAwesome.Client.Controls
 {
+    record ComboBoxColor(Color Color)
+    {
+        public static implicit operator ComboBoxColor(Color color) => new(color);
+        public static implicit operator Color(ComboBoxColor comboBoxColor) => comboBoxColor.Color;
+    }
+
     internal sealed class OptionsOptionControl : Panel
     {
         private readonly Label rangeTitle;
@@ -29,6 +36,65 @@ namespace OctoAwesome.Client.Controls
                 Width = 650
             };
             Controls.Add(settingsStack);
+
+            #region Crosshair settings
+            var crosshairGroupBox = new GroupBox(manager)
+            {
+                Headline = "Crosshair settings",
+            };
+
+            settingsStack.Controls.Add(crosshairGroupBox);
+
+            var crosshairCurrentLabel = new Label(manager)
+            {
+                Text = $"Size:{CrosshairControl.CrosshairSize}"
+            };
+            crosshairGroupBox.Children.Add(crosshairCurrentLabel);
+            var crosshairSizeSlider = new Slider(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height = 20,
+                Range = CrosshairControl.MaxSize,
+                Value = CrosshairControl.CrosshairSize
+            };
+
+            crosshairSizeSlider.ValueChanged += crosshairValue =>
+            {
+                crosshairCurrentLabel.Text = $"Size:{crosshairValue}";
+                CrosshairControl.CrosshairSize = crosshairValue;
+            };
+            crosshairGroupBox.Children.Add(crosshairSizeSlider);
+
+            crosshairGroupBox.Children.Add(new Label(manager)
+            {
+                Text = "Color"
+            });
+
+            var crosshairColor = new Combobox<ComboBoxColor>(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            crosshairGroupBox.Children.Add(crosshairColor);
+            crosshairColor.TemplateGenerator = item =>
+            {
+                return new Panel(manager)
+                {
+                    Background = new SolidColorBrush(item),
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    Height = 20,
+                };
+            };
+
+            crosshairColor.SelectedItemChanged += (s, e) => CrosshairControl.CrosshairColor = e.NewItem;
+
+            crosshairColor.Items.Add(Color.White);
+            crosshairColor.Items.Add(Color.Black);
+            crosshairColor.Items.Add(Color.Red);
+            crosshairColor.Items.Add(Color.Green);
+            crosshairColor.Items.Add(Color.Blue);
+            crosshairColor.SelectedItem = CrosshairControl.CrosshairColor;
+            #endregion
 
             //////////////////////Viewrange//////////////////////
             string viewrange = settings.Get<string>("Viewrange");

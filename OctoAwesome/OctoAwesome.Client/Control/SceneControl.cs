@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.UI.Components;
 using OctoAwesome.Database;
 using engenious.UserDefined.Effects;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Controls
 {

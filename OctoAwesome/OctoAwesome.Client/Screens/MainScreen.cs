@@ -1,8 +1,8 @@
 ﻿using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Runtime;
-using OctoAwesome.UI.Components;
 using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
@@ -17,7 +17,7 @@ namespace OctoAwesome.Client.Screens
 
             Padding = new Border(0,0,0,0);
 
-            Background = new TextureBrush(assets.LoadTexture( "background"), TextureBrushMode.Stretch);
+            Background = new TextureBrush(assets.LoadTexture("background"), TextureBrushMode.Stretch);
 
             StackPanel stack = new StackPanel(manager);
             Controls.Add(stack);
@@ -66,7 +66,7 @@ namespace OctoAwesome.Client.Screens
             webButton.Margin = new Border(10, 10, 10, 10);
             webButton.LeftMouseClick += (s, e) =>
             {
-                Process.Start("http://octoawesome.net/");
+               UI.Tools.OpenUrl("http://octoawesome.net/");
             };
             Controls.Add(webButton);
 

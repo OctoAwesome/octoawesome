@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome.Rx
 {
@@ -57,17 +58,14 @@ namespace OctoAwesome.Rx
 
         public void Dispose()
         {
-            foreach (var subscription in subscriptions)
-            {
-                subscription.Dispose();
-            }
-
+     
             subscriptions.Clear();
             lockSemaphore.Dispose();
         }
 
         private void Unsubscribe(RelaySubscription subscription)
         {
+
             using var scope = lockSemaphore.Wait();
 
             subscriptions.Remove(subscription);
