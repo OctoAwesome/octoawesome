@@ -483,13 +483,14 @@ namespace OctoAwesome.Client.Controls
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
 
 
-            float octoDaysPerEarthDay = 3600f;
+            float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
             float playerPosX = player.Position.Position.GlobalPosition.X / (planet.Size.X * Chunk.CHUNKSIZE_X) * MathHelper.TwoPi;
             float playerPosY = player.Position.Position.GlobalPosition.Y / (planet.Size.Y * Chunk.CHUNKSIZE_Y) * MathHelper.TwoPi;
 
-            TimeSpan diff = DateTime.UtcNow - new DateTime(888, 8, 8);
+            TimeSpan diff = gameTime.TotalGameTime + TimeSpan.FromMinutes(1); // +1 Minute, so the Game starts with a sunrise
+            // DateTime.UtcNow - new DateTime(888, 8, 8);
 
             float inclination = ((float)Math.Sin(playerPosY) * inclinationVariance) + MathHelper.Pi / 6f;
 
@@ -655,9 +656,9 @@ namespace OctoAwesome.Client.Controls
 
             DrawSelectionBox(chunkOffset);
 
-
+#if DEBUG
             Manager.GraphicsDevice.Debug.RenderBoundingFrustum(new BoundingFrustum(cropMatrix), Matrix.Identity, camera.View, camera.Projection);
-
+#endif
             Manager.GraphicsDevice.SetRenderTarget(null);
         }
 
