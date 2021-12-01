@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.EntityComponents.UIComponents
 {
-    public abstract class UIComponent : Component, IEntityComponent, IFunctionalBlockComponent
-    {
-        protected BaseScreenComponent ScreenComponent { get; }
-        public AssetComponent AssetComponent { get; }
+    //public abstract class UIComponent : Component, IEntityComponent, IFunctionalBlockComponent
+    //{
+    //    protected BaseScreenComponent ScreenComponent { get; }
+    //    public AssetComponent AssetComponent { get; }
 
-        public UIComponent()
-        {
-            ScreenComponent = TypeContainer.Get<BaseScreenComponent>();
-            AssetComponent = TypeContainer.Get<AssetComponent>();
-        }
+    //    public UIComponent()
+    //    {
+    //        ScreenComponent = TypeContainer.Get<BaseScreenComponent>();
+    //        AssetComponent = TypeContainer.Get<AssetComponent>();
+    //    }
 
-    }
+    //}
 }

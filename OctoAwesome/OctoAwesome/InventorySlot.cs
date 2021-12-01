@@ -12,7 +12,7 @@ namespace OctoAwesome
         /// </summary>
         public IInventoryable Item
         {
-            get => item; set
+            get => item; init
             {
                 if (value is IDefinition definition)
                     Definition = definition;
@@ -30,8 +30,8 @@ namespace OctoAwesome
         /// <summary>
         /// Volumen des Elementes <see cref="Item"/> in diesem Slot in dm³.
         /// </summary>
-        public decimal Amount { get; set; }
+        public decimal Amount { get; internal set; }
 
-        public IDefinition Definition { get; set; }
+        public IDefinition Definition { get; init; }
     }
 }

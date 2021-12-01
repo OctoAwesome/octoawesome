@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
-    public abstract class ComponentContainer: ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification> 
+    public abstract class ComponentContainer : ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification>, IEquatable<ComponentContainer>
     {
         /// <summary>
         /// Id
@@ -37,23 +37,14 @@ namespace OctoAwesome
             notificationComponents = new();
             Id = Guid.Empty;
         }
-      
+
 
         public virtual void RegisterDefault()
         {
 
         }
 
-        public override int GetHashCode()
-            => Id.GetHashCode();
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Entity entity)
-                return entity.Id == Id;
-
-            return base.Equals(obj);
-        }
 
         public virtual void OnNotification(SerializableNotification notification)
         {
@@ -69,6 +60,13 @@ namespace OctoAwesome
         public abstract void Deserialize(BinaryReader reader);
         public abstract bool ContainsComponent<T>();
         public abstract T GetComponent<T>();
+
+        public override bool Equals(object obj) => Equals(obj as ComponentContainer);
+        public bool Equals(ComponentContainer other) => other is not null && Id.Equals(other.Id);
+        public override int GetHashCode() => HashCode.Combine(Id);
+
+        public static bool operator ==(ComponentContainer left, ComponentContainer right) => EqualityComparer<ComponentContainer>.Default.Equals(left, right);
+        public static bool operator !=(ComponentContainer left, ComponentContainer right) => !(left == right);
     }
 
     public abstract class ComponentContainer<TComponent> : ComponentContainer where TComponent : IComponent
@@ -176,5 +174,8 @@ namespace OctoAwesome
             => Components.ContainsComponent<T>();
         public override T GetComponent<T>()
             => Components.GetComponent<T>();
+        public bool TryGetComponent<T>(out T component) where T : TComponent
+            => Components.TryGetComponent<T>(out component);
+
     }
 }

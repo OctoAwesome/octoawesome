@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.EntityComponents.UIComponents
 {
-    public class TransferUIComponent : UIComponent
+    public class TransferUIComponent
     {
         public event EventHandler<NavigationEventArgs> Closed;
 
@@ -33,7 +33,7 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
         {
             if (transferScreen is null)
             {
-                transferScreen = new TransferScreen(ScreenComponent, AssetComponent, chestInventory, new InventoryComponent());
+                transferScreen = new TransferScreen(ScreenComponent, AssetComponent, p.GetComponent<TransferComponent>());
                 transferScreen.Closed += TransferScreen_Closed;
             }
 

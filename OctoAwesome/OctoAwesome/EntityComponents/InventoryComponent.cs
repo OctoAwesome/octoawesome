@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
@@ -19,7 +20,10 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public List<InventorySlot> Inventory { get; set; }
 
+        public int Version => version;
+
         private readonly IDefinitionManager definitionManager;
+        private int version;
 
         public InventoryComponent()
         {
@@ -134,6 +138,7 @@ namespace OctoAwesome.EntityComponents
             {
                 slot.Amount += quantity;
             }
+            _ = Interlocked.Increment(ref version);
 
         }
 
@@ -144,6 +149,7 @@ namespace OctoAwesome.EntityComponents
         /// <returns>Gibt an, ob das entfernen der Einheit aus dem Inventar funktioniert hat. False, z.B. wenn nicht genügend Volumen (weniger als VolumePerUnit) übrig ist-</returns>
         public bool RemoveUnit(InventorySlot slot)
         {
+            _ = Interlocked.Increment(ref version);
             if (slot.Item is not IInventoryable definition)
                 return false;
 
@@ -159,6 +165,7 @@ namespace OctoAwesome.EntityComponents
 
         public bool RemoveSlot(InventorySlot inventorySlot)
         {
+            _ = Interlocked.Increment(ref version);
             return Inventory.Remove(inventorySlot);
         }
 
@@ -181,6 +188,7 @@ namespace OctoAwesome.EntityComponents
             {
                 slot.Amount += inventorySlot.Amount;
             }
+            _ = Interlocked.Increment(ref version);
         }
     }
 }

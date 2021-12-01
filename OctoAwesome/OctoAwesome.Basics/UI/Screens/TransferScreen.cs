@@ -3,11 +3,15 @@ using engenious.Graphics;
 using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
+
+using OctoAwesome.Rx;
+using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Controls;
 using System;
 using System.Collections.Generic;
+using NLog.Targets;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -15,6 +19,7 @@ namespace OctoAwesome.Basics.UI.Screens
     {
         public event EventHandler<NavigationEventArgs> Closed;
 
+        private readonly IDisposable subscription;
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inventoryA;
@@ -26,13 +31,16 @@ namespace OctoAwesome.Basics.UI.Screens
         private InventoryComponent componentA;
         private InventoryComponent componentB;
 
-        public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent, InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB) : base(manager)
+        //TODO Where and how to initialize this screen?
+
+        public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent, TransferUIComponent transferComponent) : base(manager)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
             IsOverlay = true;
             this.assetComponent = assetComponent;
-            componentA = inventoryComponentA;
-            componentB = inventoryComponentB;
+            //componentA = inventoryComponentA;
+            //componentB = inventoryComponentB;
+            subscription =  transferComponent.Changes.Subscribe(InventoryChanged);
 
             panelBackground = this.assetComponent.LoadTexture("panel");
             var grid = new Grid(manager)
@@ -89,6 +97,11 @@ namespace OctoAwesome.Basics.UI.Screens
             volumeLabel = new Label(manager);
             infoPanel.Controls.Add(volumeLabel);
             grid.AddControl(infoPanel, 1, 0, 1, 3);
+        }
+
+        private void InventoryChanged(TransferModel transferModel)
+        {
+            Rebuild(transferModel.InventoryA, transferModel.InventoryB);
         }
 
         private void OnInventoryDrop(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, DragEventArgs e)
