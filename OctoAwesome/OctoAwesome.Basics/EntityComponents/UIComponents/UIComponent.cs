@@ -28,5 +28,5 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
             AssetComponent = TypeContainer.Get<AssetComponent>();
         }
 
-    }
+    //}
 }

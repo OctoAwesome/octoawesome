@@ -64,7 +64,7 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
                 p.Components.AddComponent(new EntityCollisionComponent());
                 p.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
-
+                p.Components.AddComponent(new TransferComponent());
             });
 
             extensionLoader.RegisterEntityExtender<Chest>((chest) =>

@@ -55,14 +55,13 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// <inheritdoc />
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (entity is Player p)
+            if (entity.TryGetComponent(out TransferComponent component))
             {
-                transferUiComponent.Show(p);
+                component.Target = inventoryComponent;
+                component.Transfering = true;
+
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;
-            }
-            else
-            {
             }
         }
     }

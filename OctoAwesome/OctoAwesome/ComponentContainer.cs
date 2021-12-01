@@ -79,6 +79,8 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public abstract bool ContainsComponent<T>();
+        public abstract T GetComponent<T>();
+    }
 
         /// <inheritdoc />
         public abstract T? GetComponent<T>();
@@ -219,5 +221,8 @@ namespace OctoAwesome
         /// <inheritdoc />
         public override T? GetComponent<T>() where T : default
             => Components.GetComponent<T>();
+        public bool TryGetComponent<T>(out T component) where T : TComponent
+            => Components.TryGetComponent<T>(out component);
+
     }
 }
