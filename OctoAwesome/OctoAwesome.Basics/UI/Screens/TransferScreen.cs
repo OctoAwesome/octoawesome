@@ -12,6 +12,7 @@ using OctoAwesome.EntityComponents;
 using System;
 using System.Collections.Generic;
 using NLog.Targets;
+using System.Diagnostics;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -27,15 +28,20 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private readonly IDisposable subscription;
         private readonly AssetComponent assetComponent;
+        private readonly TransferUIComponent transferComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inventoryA;
         private readonly InventoryControl inventoryB;
         private readonly Label nameLabel;
         private readonly Label massLabel;
         private readonly Label volumeLabel;
+        private TransferModel currentTransferModel;
 
-        private InventoryComponent componentA;
-        private InventoryComponent componentB;
+        enum TransferDirection
+        {
+            AToB,
+            BToA
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransferScreen"/> class.
@@ -49,9 +55,8 @@ namespace OctoAwesome.Basics.UI.Screens
             Background = new BorderBrush(Color.Black * 0.3f);
             IsOverlay = true;
             this.assetComponent = assetComponent;
-            //componentA = inventoryComponentA;
-            //componentB = inventoryComponentB;
-            subscription =  transferComponent.Changes.Subscribe(InventoryChanged);
+            this.transferComponent = transferComponent;
+            subscription = transferComponent.Changes.Subscribe(InventoryChanged);
 
             panelBackground = this.assetComponent.LoadTexture("panel");
             var grid = new Grid(manager)
@@ -68,7 +73,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             Controls.Add(grid);
 
-            inventoryA = new InventoryControl(manager, assetComponent, componentA.Inventory)
+            inventoryA = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -76,10 +81,10 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryA.EndDrop += (s, e) => OnInventoryDrop(inventoryB, componentB, inventoryA, componentA, e);
+            inventoryA.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
             inventoryA.LeftMouseClick += (s, e) => OnMouseClick(inventoryA, componentA, inventoryB, componentB, e);
 
-            inventoryB = new InventoryControl(manager, assetComponent, componentB.Inventory)
+            inventoryB = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -87,7 +92,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryB.EndDrop += (s, e) => OnInventoryDrop(inventoryA, componentA, inventoryB, componentB, e);
+            inventoryB.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.AToB, e);
             inventoryB.LeftMouseClick += (s, e) => OnMouseClick(inventoryB, componentB, inventoryA, componentA, e);
 
             grid.AddControl(inventoryA, 0, 0);
@@ -130,14 +135,28 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private void InventoryChanged(TransferModel transferModel)
         {
+            if(transferModel.Transferring && Manager.ActiveScreen != this)
+            {
+                _ = Manager.NavigateToScreen(this);
+            }
+
+            currentTransferModel = transferModel;
             Rebuild(transferModel.InventoryA, transferModel.InventoryB);
         }
 
-        private static void OnInventoryDrop(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, DragEventArgs e)
+        private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
         {
             if (e.Content is IInventorySlot slot)
             {
                 e.Handled = true;
+                if (transferDirection == TransferDirection.AToB)
+                    transferComponent.Transfer(currentTransferModel.InventoryA, currentTransferModel.InventoryB, slot);
+                else if (transferDirection == TransferDirection.BToA)
+                    transferComponent.Transfer(currentTransferModel.InventoryB, currentTransferModel.InventoryA, slot);
+                else
+                    Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
+                //if (source.RemoveSlot(slot))
+                //    target.AddSlot(slot);
                 MoveSlot(slot, sourceControl, source, targetControl, target);
             }
         }
@@ -152,23 +171,19 @@ namespace OctoAwesome.Basics.UI.Screens
 
             var addedAddedAmount= target.Add(item, toAddAndRemove);
             Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
-            sourceControl.Rebuild(source.Inventory);
-            targetControl.Rebuild(target.Inventory);
+            //sourceControl.Rebuild(source.Inventory);
+            //targetControl.Rebuild(target.Inventory);
         }
 
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
         {
-            componentA = inventoryComponentA;
-            componentB = inventoryComponentB;
-
-            inventoryA.Rebuild(componentA.Inventory);
-            inventoryB.Rebuild(componentB.Inventory);
+            inventoryA.Rebuild(inventoryComponentA.Inventory);
+            inventoryB.Rebuild(inventoryComponentB.Inventory);
         }
 
         /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs args)
         {
-
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
                 args.Handled = true;

@@ -118,7 +118,7 @@ namespace OctoAwesome.Client.Controls
             applyButton.LeftMouseClick += (s, e) =>
             {
                 //TODO: Apply
-                extensionLoader.ApplyExtensions(loadedExtensionsList.Items);
+                extensionLoader.Apply(loadedExtensionsList.Items);
                 Program.Restart();
             };
 
