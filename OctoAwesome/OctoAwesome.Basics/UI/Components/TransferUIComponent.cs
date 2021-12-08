@@ -18,10 +18,10 @@ public class TransferUIComponent : UIComponent<TransferModel, UiComponentRecord<
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2, TransferModel lastModel, out TransferModel model)
     {
         model = default;
-        if ((lastModel != default 
-                && component2.Transfering == lastModel.Transferring) 
+        if ((lastModel != default
+                && component2.Transfering == lastModel.Transferring)
             || component2.Target is null
-            || (lastModel.InventoryA.Version == lastModel.VersionA 
+            || (lastModel.InventoryA.Version == lastModel.VersionA
                 && lastModel.InventoryB.Version == lastModel.VersionB))
         {
             return false;
@@ -30,5 +30,11 @@ public class TransferUIComponent : UIComponent<TransferModel, UiComponentRecord<
         model = new(component, component.Version, component2.Target, component2.Target.Version, component2.Transfering);
 
         return true;
+    }
+
+    internal void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
+    {
+        if (source.RemoveSlot(slot))
+            target.AddSlot(slot);
     }
 }

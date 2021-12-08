@@ -12,6 +12,7 @@ using OctoAwesome.UI.Controls;
 using System;
 using System.Collections.Generic;
 using NLog.Targets;
+using System.Diagnostics;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -21,15 +22,20 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private readonly IDisposable subscription;
         private readonly AssetComponent assetComponent;
+        private readonly TransferUIComponent transferComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inventoryA;
         private readonly InventoryControl inventoryB;
         private readonly Label nameLabel;
         private readonly Label massLabel;
         private readonly Label volumeLabel;
+        private TransferModel currentTransferModel;
 
-        private InventoryComponent componentA;
-        private InventoryComponent componentB;
+        enum TransferDirection
+        {
+            AToB,
+            BToA
+        }
 
         //TODO Where and how to initialize this screen?
 
@@ -38,9 +44,8 @@ namespace OctoAwesome.Basics.UI.Screens
             Background = new BorderBrush(Color.Black * 0.3f);
             IsOverlay = true;
             this.assetComponent = assetComponent;
-            //componentA = inventoryComponentA;
-            //componentB = inventoryComponentB;
-            subscription =  transferComponent.Changes.Subscribe(InventoryChanged);
+            this.transferComponent = transferComponent;
+            subscription = transferComponent.Changes.Subscribe(InventoryChanged);
 
             panelBackground = this.assetComponent.LoadTexture("panel");
             var grid = new Grid(manager)
@@ -57,7 +62,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             Controls.Add(grid);
 
-            inventoryA = new InventoryControl(manager, assetComponent, componentA.Inventory)
+            inventoryA = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -65,9 +70,9 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryA.EndDrop += (s, e) => OnInventoryDrop(inventoryB, componentB, inventoryA, componentA, e);
+            inventoryA.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA , e);
 
-            inventoryB = new InventoryControl(manager, assetComponent, componentB.Inventory)
+            inventoryB = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -75,7 +80,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryB.EndDrop += (s, e) => OnInventoryDrop(inventoryA, componentA, inventoryB, componentB, e);
+            inventoryB.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.AToB, e);
 
             grid.AddControl(inventoryA, 0, 0);
             grid.AddControl(inventoryB, 0, 2);
@@ -101,35 +106,43 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private void InventoryChanged(TransferModel transferModel)
         {
+            if(transferModel.Transferring && Manager.ActiveScreen != this)
+            {
+                _ = Manager.NavigateToScreen(this);
+            }
+
+            currentTransferModel = transferModel;
             Rebuild(transferModel.InventoryA, transferModel.InventoryB);
         }
 
-        private void OnInventoryDrop(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, DragEventArgs e)
+        private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
         {
             if (e.Content is InventorySlot slot)
             {
                 e.Handled = true;
-                if (source.RemoveSlot(slot))
-                    target.AddSlot(slot);
+                if (transferDirection == TransferDirection.AToB)
+                    transferComponent.Transfer(currentTransferModel.InventoryA, currentTransferModel.InventoryB, slot);
+                else if (transferDirection == TransferDirection.BToA)
+                    transferComponent.Transfer(currentTransferModel.InventoryB, currentTransferModel.InventoryA, slot);
+                else
+                    Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
+                //if (source.RemoveSlot(slot))
+                //    target.AddSlot(slot);
 
-                sourceControl.Rebuild(source.Inventory);
-                targetControl.Rebuild(target.Inventory);
+                //sourceControl.Rebuild(source.Inventory);
+                //targetControl.Rebuild(target.Inventory);
             }
 
         }
 
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
         {
-            componentA = inventoryComponentA;
-            componentB = inventoryComponentB;
-
-            inventoryA.Rebuild(componentA.Inventory);
-            inventoryB.Rebuild(componentB.Inventory);
+            inventoryA.Rebuild(inventoryComponentA.Inventory);
+            inventoryB.Rebuild(inventoryComponentB.Inventory);
         }
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
-
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
                 args.Handled = true;

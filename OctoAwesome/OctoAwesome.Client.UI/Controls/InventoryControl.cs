@@ -21,7 +21,7 @@ namespace OctoAwesome.UI.Controls
         private readonly ScrollContainer scroll;
         private readonly AssetComponent assets;
 
-        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, List<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, ICollection<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
         {
             scroll = new ScrollContainer(manager)
             {
@@ -43,7 +43,7 @@ namespace OctoAwesome.UI.Controls
             Rebuild(inventorySlots, columns);
         }
 
-        public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
+        public void Rebuild(ICollection<InventorySlot> inventorySlots, int columns = COLUMNS)
         {
             grid = new Grid(ScreenManager)
             {

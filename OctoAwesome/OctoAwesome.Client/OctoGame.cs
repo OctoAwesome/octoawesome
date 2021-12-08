@@ -63,6 +63,7 @@ namespace OctoAwesome.Client
             //Icon = Properties.Resources.octoawesome;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
+            //Register List<IExtender>();
             Screen = new ScreenComponent(this);
 
             typeContainer.Register<BaseScreenComponent>(Screen);
@@ -80,6 +81,7 @@ namespace OctoAwesome.Client
 
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
+
 
             ExtensionLoader = typeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
