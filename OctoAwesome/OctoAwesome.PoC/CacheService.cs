@@ -8,8 +8,6 @@ namespace OctoAwesome.PoC
         private readonly DependencyAgent dependencyAgent;
 
         private readonly Dictionary<Type, Cache> caches;
-
-
         public CacheService(DependencyAgent dependencyAgent)
         {
             this.dependencyAgent = dependencyAgent;
@@ -38,6 +36,6 @@ namespace OctoAwesome.PoC
             return cache.Get<TKey, TValue>(key);
         }
 
-        //TODO: CleaupTask
+        //TODO: CleanupTask
     }
 }

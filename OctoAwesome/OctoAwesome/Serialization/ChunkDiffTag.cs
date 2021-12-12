@@ -2,25 +2,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Serialization
 {
+
     public struct ChunkDiffTag : ITag, IEquatable<ChunkDiffTag>
     {
         public int Length => sizeof(int) * 4;
 
-        public Index3 ChunkPositon { get; set; }
-        public int FlatIndex { get; set; }
+        public Index3 ChunkPositon { get; private set; }
+        
+        public int FlatIndex { get; private set; }
 
         public ChunkDiffTag(Index3 chunkPosition, int flatIndex)
         {
             ChunkPositon = chunkPosition;
             FlatIndex = flatIndex;
         }
-
         public void FromBytes(byte[] array, int startIndex)
         {
             var x = BitConverter.ToInt32(array, startIndex);
@@ -29,7 +27,6 @@ namespace OctoAwesome.Serialization
             FlatIndex = BitConverter.ToInt32(array, startIndex + sizeof(int) * 3);
             ChunkPositon = new Index3(x, y, z);
         }
-
         public byte[] GetBytes()
         {
             var array = new byte[Length];
@@ -50,15 +47,12 @@ namespace OctoAwesome.Serialization
             BitConverter.TryWriteBytes(span[(intSize * 2)..(intSize * 3)], ChunkPositon.Z);
             BitConverter.TryWriteBytes(span[(intSize * 3)..(intSize * 4)], FlatIndex);
         }
-
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is ChunkDiffTag tag && Equals(tag);
-
         public bool Equals(ChunkDiffTag other)
             => Length == other.Length &&
                 FlatIndex == other.FlatIndex && 
                 EqualityComparer<Index3>.Default.Equals(ChunkPositon, other.ChunkPositon);
-
 
         public override int GetHashCode()
         {

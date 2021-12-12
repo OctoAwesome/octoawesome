@@ -1,18 +1,17 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Pooling;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Services
 {
+
     public sealed class BlockVolumeState : IPoolElement
     {
-        public BlockInfo BlockInfo { get; set; }
-        public IBlockDefinition BlockDefinition { get; set; }
+
+        public BlockInfo BlockInfo { get; private set; }
+        public IBlockDefinition BlockDefinition { get; private set; }
         public decimal VolumeRemaining { get; internal set; }
+
         public DateTimeOffset ValidUntil { get; set; }
 
         private IPool pool;
@@ -24,15 +23,13 @@ namespace OctoAwesome.Services
             VolumeRemaining = blockDefinition.VolumePerUnit;
             ValidUntil = validUntil;
         }
-
         public void Init(IPool pool)
         {
             this.pool = pool;
         }
-
         public void Release()
         {
-            pool.Push(this);
+            pool.Return(this);
         }
 
         internal bool TryReset()

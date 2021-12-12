@@ -2,50 +2,48 @@
 using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
+
     public class Awaiter : IPoolElement, IDisposable
     {
-        public ISerializable Serializable { get; set; }
-        public bool Timeouted { get; private set; }
+
+        public ISerializable? Result { get; set; }
+        public bool TimedOut { get; private set; }
         private readonly ManualResetEventSlim manualReset;
         private readonly LockSemaphore semaphore;
         private bool alreadyDeserialized;
         private IPool pool;
         private bool isPooled;
-
         public Awaiter()
         {
             manualReset = new ManualResetEventSlim(false);
             semaphore = new LockSemaphore(1, 1);
         }
 
-        public ISerializable WaitOn()
+        public ISerializable? WaitOn()
         {
             if (!alreadyDeserialized)
-                Timeouted = !manualReset.Wait(10000);
+                TimedOut = !manualReset.Wait(10000);
 
-            return Serializable;
+            return Result;
         }
 
-        public void WaitOnAndRelease()
+        public ISerializable? WaitOnAndRelease()
         {
-            WaitOn();
+            var res = WaitOn();
             Release();
+            return res;
         }
 
-        public void SetResult(ISerializable serializable)
+        public void SetResult(ISerializable result)
         {
             using (semaphore.Wait())
             {
-                Serializable = serializable;
+                Result = result;
                 manualReset.Set();
                 alreadyDeserialized = true;
             }
@@ -57,39 +55,36 @@ namespace OctoAwesome
             {
                 using (semaphore.Wait())
                 {
-                    if (Timeouted)
+                    if (TimedOut)
                         return false;
 
-                    if (Serializable == null)
-                        throw new ArgumentNullException(nameof(Serializable));
+                    if (Result == null)
+                        throw new ArgumentNullException(nameof(Result));
 
                     using (var stream = new MemoryStream(bytes))
                     using (var reader = new BinaryReader(stream))
                     {
-                        Serializable.Deserialize(reader);
+                        Result.Deserialize(reader);
                     }
                     manualReset.Set();
                     return alreadyDeserialized = true;
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ;
                 return false;
             }
         }
-
         public void Init(IPool pool)
         {
             this.pool = pool;
-            Timeouted = false;
+            TimedOut = false;
             isPooled = false;
             alreadyDeserialized = false;
-            Serializable = null;
+            Result = null;
             manualReset.Reset();
         }
-
         public void Release()
         {
             using (semaphore.Wait())
@@ -99,10 +94,9 @@ namespace OctoAwesome
 
                 isPooled = true;
 
-                pool.Push(this);
+                pool.Return(this);
             }
         }
-
         public void Dispose()
         {
             manualReset.Dispose();

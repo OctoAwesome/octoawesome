@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Components;
@@ -12,6 +10,7 @@ using SimulationComponentRecord = OctoAwesome.Components.SimulationComponentReco
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
+
     public sealed class AccelerationComponent : SimulationComponent<
         Entity,
         AccelerationComponent.AcceleratedEntity,
@@ -46,8 +45,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                 var a3 = a2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 
                 //DEBUGGING
-
-
                 // Calculate Velocity change
                 Vector3 velocityChange = ((2.0f / entity.Body.Mass) * power) *
                     (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -61,14 +58,11 @@ namespace OctoAwesome.Basics.SimulationComponents
                 // Calculate Move Vector for the upcoming frame
                 entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
-
         protected override AcceleratedEntity OnAdd(Entity entity) 
             => new AcceleratedEntity(
                 entity,
                 entity.Components.GetComponent<MoveableComponent>(),
                 entity.Components.GetComponent<BodyComponent>());
-
-
         public record AcceleratedEntity(Entity Entity, MoveableComponent Move, BodyComponent Body)
             : SimulationComponentRecord(Entity, Move, Body);
     }

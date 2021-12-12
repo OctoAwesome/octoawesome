@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace OctoAwesome.Database
 {
@@ -32,8 +28,7 @@ namespace OctoAwesome.Database
 
         internal Key<TTag> AddValue<TTag>(TTag tag, Value value) where TTag : ITag, new()
         {
-            
-            var key = new Key<TTag>(tag, writer.ToEnd(), value.Content.Length);
+            var key = new Key<TTag>(tag, writer.ToEnd(), value.Content.Length, -1);
             //TODO: Hash, Sync
             key.WriteBytes(writer);
             writer.WriteAndFlush(value.Content, 0, value.Content.Length);

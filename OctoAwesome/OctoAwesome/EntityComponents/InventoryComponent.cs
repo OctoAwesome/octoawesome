@@ -6,27 +6,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
+
     public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         /// <summary>
         /// Das Inventar der Entity
         /// </summary>
-        public List<InventorySlot> Inventory { get; set; }
+        public List<InventorySlot> Inventory { get; }
 
         private readonly IDefinitionManager definitionManager;
-
         public InventoryComponent()
         {
             Inventory = new List<InventorySlot>();
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
@@ -65,8 +61,6 @@ namespace OctoAwesome.EntityComponents
                             serializable.Deserialize(reader);
                         }
                     }
-
-
                     if (instance is IInventoryable inventoryObject)
                     {
                         inventoryItem = inventoryObject;
@@ -76,16 +70,14 @@ namespace OctoAwesome.EntityComponents
                 if (inventoryItem == default)
                     continue;
 
-                var slot = new InventorySlot()
+                var slot = new InventorySlot(inventoryItem)
                 {
                     Amount = amount,
-                    Item = inventoryItem,
                 };
 
                 Inventory.Add(slot);
             }
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
@@ -95,7 +87,7 @@ namespace OctoAwesome.EntityComponents
                 if (slot.Item is Item item)
                 {
                     writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
-                    Item.Serialize(writer, item);
+                    item.Serialize(writer);
                 }
                 else if (slot.Item is ISerializable serializable)
                 {
@@ -123,9 +115,8 @@ namespace OctoAwesome.EntityComponents
             // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
             if (slot == null)
             {
-                slot = new InventorySlot()
+                slot = new InventorySlot(item)
                 {
-                    Item = item,
                     Amount = quantity,
                 };
                 Inventory.Add(slot);
@@ -156,7 +147,6 @@ namespace OctoAwesome.EntityComponents
             }
             return false;
         }
-
         public bool RemoveSlot(InventorySlot inventorySlot)
         {
             return Inventory.Remove(inventorySlot);
@@ -170,9 +160,8 @@ namespace OctoAwesome.EntityComponents
             // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
             if (slot == null)
             {
-                slot = new InventorySlot()
+                slot = new InventorySlot(inventorySlot.Item)
                 {
-                    Item = inventorySlot.Item,
                     Amount = inventorySlot.Amount,
                 };
                 Inventory.Add(slot);

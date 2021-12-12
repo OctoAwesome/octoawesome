@@ -19,11 +19,6 @@ namespace OctoAwesome.Model.Tests
             Assert.Equals(21, i2.X);
             Assert.Equals(32, i2.Y);
 
-            // Index2-Parameter
-            Index2 i3 = new Index2(new Index2(-2, 80));
-            Assert.Equals(-2, i3.X);
-            Assert.Equals(80, i3.Y);
-
             // Index3 Parameter
             Index2 i4 = new Index2(new Index3(int.MinValue, int.MaxValue, 0));
             Assert.Equals(int.MinValue, i4.X);

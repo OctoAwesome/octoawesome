@@ -3,11 +3,12 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>warnings</Nullable>
+    <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,9 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.5.1.4-alpha" />
-    <PackageReference Include="engenious.ContentTool" Version="0.5.1.11-alpha" />
-    <PackageReference Include="engenious.UI" Version="0.5.1.1-alpha" />
+    <PackageReference Include="engenious" Version="0.6.0.7-alpha" />
+    <PackageReference Include="engenious.ContentTool" Version="0.6.0.5-alpha" />
+    <PackageReference Include="engenious.UI" Version="0.6.0.1-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="OpenAL.Soft" Version="1.19.1" Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Windows')))"/>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OctoAwesome.Database
+﻿namespace OctoAwesome.Database
 {
-    public abstract class DatabaseContext<Tag, TObject> : IDatabaseContext<Tag, TObject> where Tag : ITag, new()
-    {
-        protected Database<Tag> Database { get; }
 
-        protected DatabaseContext(Database<Tag> database)
+    public abstract class DatabaseContext<TTag, TObject> : IDatabaseContext<TTag, TObject> where TTag : ITag, new()
+    {
+
+        protected Database<TTag> Database { get; }
+
+        protected DatabaseContext(Database<TTag> database)
         {
             Database = database;
         }
-
-        public abstract TObject Get(Tag key);
-
+        public abstract TObject? Get(TTag key);
         public abstract void AddOrUpdate(TObject value);
-
         public abstract void Remove(TObject value);
     }
 }

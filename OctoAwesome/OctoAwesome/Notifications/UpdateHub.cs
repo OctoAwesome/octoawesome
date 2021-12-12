@@ -1,25 +1,22 @@
-﻿using OctoAwesome.Notifications;
-using OctoAwesome.Rx;
+﻿using OctoAwesome.Rx;
 using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Notifications
 {
+
     public class UpdateHub : IDisposable, IUpdateHub
     {
         private readonly Dictionary<string, ConcurrentRelay<Notification>> channels;
         private readonly LockSemaphore lockSemaphore;
-
         public UpdateHub()
         {
             channels = new();
             lockSemaphore = new LockSemaphore(1, 1);
         }
-
         public IObservable<Notification> ListenOn(string channel)
             => GetChannelRelay(channel);
-
         public IDisposable AddSource(IObservable<Notification> notification, string channel) 
             => notification.Subscribe(GetChannelRelay(channel));
 
@@ -35,7 +32,6 @@ namespace OctoAwesome.Notifications
 
             return channelRelay;
         }
-
         public void Dispose()
         {
             foreach (var channel in channels)

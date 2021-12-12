@@ -44,11 +44,9 @@ namespace OctoAwesome
         [XmlIgnore]
         public Index3 ChunkIndex
         {
-            get
-            {
-                return new Index3(block.X >> Chunk.LimitX, block.Y >> Chunk.LimitY,
+            get =>
+                new Index3(block.X >> Chunk.LimitX, block.Y >> Chunk.LimitY,
                     block.Z >> Chunk.LimitZ);
-            }
             set
             {
                 Index3 localBlockIndex = LocalBlockIndex;
@@ -99,13 +97,11 @@ namespace OctoAwesome
         [XmlIgnore]
         public Vector3 GlobalPosition
         {
-            get
-            {
-                return new Vector3(
+            get =>
+                new Vector3(
                     block.X + position.X,
                     block.Y + position.Y,
                     block.Z + position.Z);
-            }
             set
             {
                 block = Index3.Zero;
@@ -145,7 +141,7 @@ namespace OctoAwesome
         /// </summary>
         public Vector3 BlockPosition
         {
-            get { return position; }
+            get => position;
             set
             {
                 position = value;
@@ -206,25 +202,23 @@ namespace OctoAwesome
         /// Stellt die Coordinate-Instanz als string dar.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $@"({ Planet }/{(block.X + position.X).ToString("0.000000")}/{(block.Y + position.Y).ToString("0.000000")}/{(block.Z + position.Z).ToString("0.000000")})";
+        public override string ToString() => $@"({ Planet }/{(block.X + position.X):0.000000}/{(block.Y + position.Y):0.000000}/{(block.Z + position.Z):0.000000})";
 
         /// <summary>
         /// Compare this object with an other object
         /// </summary>
         /// <param name="obj">a other object</param>
         /// <returns>true if both objects are equal</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if(obj is Coordinate coordinate)
-                return base.Equals(obj) || 
-                   ( Planet == coordinate.Planet &&
-                     position == coordinate.position &&
-                     block == coordinate.block
-                   );
+            if (obj is Coordinate coordinate)
+                return (Planet == coordinate.Planet &&
+                        position == coordinate.position &&
+                        block == coordinate.block
+                    );
 
             return base.Equals(obj);
         }
-
         public override int GetHashCode() => base.GetHashCode();
     }
 }

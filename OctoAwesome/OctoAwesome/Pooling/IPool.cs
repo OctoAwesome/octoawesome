@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome.Pooling
+﻿namespace OctoAwesome.Pooling
 {
+
     public interface IPool
     {
-        void Push(IPoolElement obj);
+        void Return(IPoolElement obj);
     }
     public interface IPool<T> : IPool where T : IPoolElement
     {
-        T Get();
 
-        void Push(T obj);
+        T Rent();
+
+        void Return(T obj);
     }
 }

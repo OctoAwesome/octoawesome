@@ -7,11 +7,11 @@ using System.IO;
 
 namespace OctoAwesome.Client.Cache
 {
-    internal partial class VerticesForChunk : IDisposable, ISerializable
+    internal class VerticesForChunk : IDisposable, ISerializable
     {
         public int Version { get; set; }
         public Index3 ChunkPosition { get; set; }
-        public VertexPositionNormalTextureLight[] Vertices { get; set; }
+        public VertexPositionNormalTextureLight[]? Vertices { get; set; }
 
         public VerticesForChunk()
         {
@@ -23,8 +23,6 @@ namespace OctoAwesome.Client.Cache
             ChunkPosition = chunkPosition;
             Vertices = vertices;
         }
-
-
         public void Deserialize(BinaryReader reader)
         {
             Version = reader.ReadInt32();
@@ -48,6 +46,13 @@ namespace OctoAwesome.Client.Cache
             writer.Write(ChunkPosition.X);
             writer.Write(ChunkPosition.Y);
             writer.Write(ChunkPosition.Z);
+
+            if (Vertices == null)
+            {
+                writer.Write(0);
+                return;
+            }
+            
             writer.Write(Vertices.Length);
             foreach (var vert in Vertices)
             {

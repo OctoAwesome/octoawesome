@@ -1,5 +1,4 @@
 ﻿using OctoAwesome.Components;
-using OctoAwesome.Serialization;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -10,10 +9,10 @@ namespace OctoAwesome
     /// </summary>
     public abstract class Component : IComponent
     {
+
         public bool Enabled { get; set; }
         public bool Sendable { get; set; }
-
-        public Component()
+        protected Component()
         {
             Enabled = true;
             Sendable = false;
@@ -37,12 +36,11 @@ namespace OctoAwesome
             Enabled = reader.ReadBoolean();
         }
 
-        protected virtual void OnPropertyChanged<T>(T value, string callerName)
+        protected virtual void OnPropertyChanged<T>(T value, string propertyName)
         {
 
         }
-
-        protected void SetValue<T>(ref T field, T value, [CallerMemberName]string callerName = "")
+        protected void SetValue<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
             if (field != null)
             {
@@ -52,7 +50,7 @@ namespace OctoAwesome
 
             field = value;
 
-            OnPropertyChanged(field, callerName);
+            OnPropertyChanged(field, propertyName);
         }
     }
 }

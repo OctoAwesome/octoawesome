@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace OctoAwesome.Database
 {
@@ -10,17 +7,17 @@ namespace OctoAwesome.Database
     {
 
         private readonly FileInfo fileInfo;
-
         public Reader(FileInfo fileInfo)
         {
             this.fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
         }
+        
         public Reader(string path) : this(new FileInfo(path))
         {
 
         }
 
-        internal byte[] Read(long index, int length)
+        public byte[] Read(long position, int length)
         {
             if (length < 0)
             {
@@ -31,7 +28,7 @@ namespace OctoAwesome.Database
             var array = new byte[length];
             using (var fileStream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                fileStream.Seek(index, SeekOrigin.Begin);
+                fileStream.Seek(position, SeekOrigin.Begin);
                 fileStream.Read(array, 0, length);
             }
             return array;

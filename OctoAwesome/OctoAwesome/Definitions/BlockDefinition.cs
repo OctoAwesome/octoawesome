@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using engenious;
-using System.Collections.Generic;
+﻿using engenious;
 using OctoAwesome.Information;
 using OctoAwesome.Services;
 using System;
@@ -12,6 +10,7 @@ namespace OctoAwesome.Definitions
     /// </summary>
     public abstract class BlockDefinition : IBlockDefinition
     {
+
         public virtual uint SolidWall => 0x3f;
 
         /// <summary>
@@ -33,7 +32,6 @@ namespace OctoAwesome.Definitions
         /// Gibt das Volumen für eine Einheit an.
         /// </summary>
         public virtual int VolumePerUnit => 125;
-
         public virtual int VolumePerHit => 25;
 
         /// <summary>
@@ -45,7 +43,6 @@ namespace OctoAwesome.Definitions
         /// Zeigt, ob der Block-Typ Metadaten besitzt
         /// </summary>
         public virtual bool HasMetaData => false;
-
         public virtual TimeSpan TimeToVolumeReset { get; } = TimeSpan.FromSeconds(10);
 
         /// <summary>
@@ -78,11 +75,8 @@ namespace OctoAwesome.Definitions
         /// <returns>Ein Array von Kollisionsboxen</returns>
         public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
             => defaultCollisionBoxes;
-
         public virtual int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
-
         public virtual int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
-
         public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
 
     }

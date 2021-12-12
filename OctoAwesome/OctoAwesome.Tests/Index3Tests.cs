@@ -26,12 +26,6 @@ namespace OctoAwesome.Model.Tests
             Assert.Equals(-2, i3.X);
             Assert.Equals(80, i3.Y);
             Assert.Equals(76, i3.Z);
-
-            // Index3 Parameter
-            Index3 i4 = new Index3(new Index3(int.MinValue, int.MaxValue, 3));
-            Assert.Equals(int.MinValue, i4.X);
-            Assert.Equals(int.MaxValue, i4.Y);
-            Assert.Equals(3, i4.Z);
         }
 
         [Test]

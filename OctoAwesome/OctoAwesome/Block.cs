@@ -3,19 +3,11 @@ using engenious;
 
 namespace OctoAwesome
 {
-    /// <summary>
-    /// Helferklasse für die Kollisionserkennung mit Blöcken.
-    /// </summary>
+
     public static class Block
     {
-        /// <summary>
-        /// Kollisionsmethode, in der die Selektion der Blöcke vom Spieler aus geprüft wird
-        /// </summary>
-        /// <param name="collisionBoxes">Kollisionsboxen des Blocks</param>
-        /// <param name="boxPosition">Die Position, wo sich die BoundingBox befindet</param>
-        /// <param name="ray">Der Selektionsstrahl, der vom Spieler ausgeht</param>
-        /// <param name="collisionAxis">Welche Achse von der Kollision betroffen ist</param>
-        /// <returns>Die Entfernung zwischen der Kollision und der Kollisionsbox der Entität</returns>
+
+
         public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
@@ -83,15 +75,6 @@ namespace OctoAwesome
             return null;
         }
 
-        /// <summary>
-        /// Prüft, ob die Kollisionsbox einer Entität mit den Kollisionsboxen eines Blocks kollidieren
-        /// </summary>
-        /// <param name="collisionBoxes">Kollisionsboxen des Blocks</param>
-        /// <param name="boxPosition">Die Position, wo sich der Block befindet</param>
-        /// <param name="player">Die Kollisionsbox einer Entität</param>
-        /// <param name="move">Die befegungsrichtung der Entität</param>
-        /// <param name="collisionAxis">Welche Achse von der Kollision betroffen ist</param>
-        /// <returns>Die Entfernung zwischen der Kollision und der Kollisionsbox der Entität</returns>
         public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
         {
             Vector3 playerCorner = new Vector3(

@@ -1,19 +1,16 @@
-﻿using NLog.Targets.Wrappers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
+
     public sealed class BlocksChangedNotification : SerializableNotification, IChunkNotification
     {
+
         public ICollection<BlockInfo> BlockInfos { get; set; }
         public Index3 ChunkPos { get; internal set; }
         public int Planet { get; internal set; }
-
         public override void Deserialize(BinaryReader reader)
         {
             if (reader.ReadByte() != (byte)BlockNotificationType.BlocksChanged)//Read type of the notification
@@ -38,8 +35,9 @@ namespace OctoAwesome.Notifications
                     block: reader.ReadUInt16(),
                     meta: reader.ReadInt32()));
             }
-        }
 
+            BlockInfos = list;
+        }
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((byte)BlockNotificationType.BlocksChanged); //indicate that this is a multi Block Notification
@@ -58,7 +56,6 @@ namespace OctoAwesome.Notifications
                 writer.Write(block.Meta);
             }
         }
-
         protected override void OnRelease()
         {
             BlockInfos = default;

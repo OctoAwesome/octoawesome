@@ -4,8 +4,6 @@ namespace OctoAwesome.Network
 {
     public class OctoNetworkStream
     {
-        public int Length => writeBuffer.Length;
-
         private byte[] readBuffer;
         private byte[] writeBuffer;
 
@@ -38,7 +36,6 @@ namespace OctoAwesome.Network
             readLock = new object();
             writeLock = new object();
         }
-
         public int Write(byte[] buffer, int offset, int count)
         {
             writingProcess = true;
@@ -65,7 +62,6 @@ namespace OctoAwesome.Network
 
             return count;
         }
-
         public int Write(byte data)
         {
             writingProcess = true;
@@ -85,7 +81,6 @@ namespace OctoAwesome.Network
 
             return 1;
         }
-
         public int Read(byte[] buffer, int offset, int count)
         {
             if (!writingProcess)
@@ -106,7 +101,6 @@ namespace OctoAwesome.Network
 
             return count;
         }
-
         public int DataAvailable(int count)
         {
             if (!writingProcess)
@@ -129,19 +123,15 @@ namespace OctoAwesome.Network
                 lock (writeLock)
                 {
                     if (readPosition > maxReadCount)
-                        throw new IndexOutOfRangeException("ReadPositin is greater than MaxReadCount in OctoNetworkStream");
-                    else if (readPosition < maxReadCount)
+                        throw new IndexOutOfRangeException("ReadPosition is greater than MaxReadCount in OctoNetworkStream");
+                    if (readPosition < maxReadCount)
                         return;
 
-                    var refBuf = writeBuffer;
-                    writeBuffer = readBuffer;
-                    readBuffer = refBuf;
+                    (writeBuffer, readBuffer) = (readBuffer, writeBuffer);
                     maxReadCount = writePosition;
                     writePosition = 0;
                     readPosition = 0;
                 }
         }
-
-
     }
 }

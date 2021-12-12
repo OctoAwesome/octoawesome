@@ -1,14 +1,10 @@
 ﻿using engenious;
-using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -81,8 +77,6 @@ namespace OctoAwesome.Client.Screens
 
             quoteUpdate = Task.Run(async () => await UpdateLabel(text, loadingQuoteProvider, TimeSpan.FromSeconds(1.5), tokenSource.Token));
             mainGrid.AddControl(text, 1, 1);
-
-
             //Buttons
             var buttonStack = new StackPanel(manager)
             {
@@ -109,11 +103,9 @@ namespace OctoAwesome.Client.Screens
                 gameScreen.Unload();
                 manager.NavigateBack();
             };
-
-
         }
 
-        private void SwitchToGame(object sender, System.EventArgs args)
+        private void SwitchToGame(object? sender, System.EventArgs args)
         {
             Manager.Invoke(() =>
             {

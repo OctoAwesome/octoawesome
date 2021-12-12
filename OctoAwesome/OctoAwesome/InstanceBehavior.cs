@@ -1,6 +1,6 @@
 ﻿namespace OctoAwesome
 {
-    public enum InstanceBehaviour
+    public enum InstanceBehavior
     {
         Instance,
         Singleton

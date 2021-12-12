@@ -1,25 +1,22 @@
 ﻿using OctoAwesome.Database.Checks;
 using OctoAwesome.Database.Threading;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 
 namespace OctoAwesome.Database
 {
+
     public abstract class Database : IDisposable
     {
+
         public Type TagType { get; }
 
         protected Database(Type tagType)
         {
             TagType = tagType;
         }
-
         public abstract void Open();
         public abstract void Close();
         public abstract void Dispose();
@@ -33,6 +30,7 @@ namespace OctoAwesome.Database
 
     public sealed class Database<TTag> : Database where TTag : ITag, new()
     {
+
         public bool FixedValueLength => valueStore.FixedValueLength;
         public IReadOnlyList<TTag> Keys
         {
@@ -42,7 +40,6 @@ namespace OctoAwesome.Database
                     return keyStore.Tags;
             }
         }
-
         public bool IsOpen { get; private set; }
 
         /// <summary>
@@ -64,7 +61,7 @@ namespace OctoAwesome.Database
         private readonly DatabaseLockMonitor databaseLockMonitor;
         private readonly SemaphoreSlim dbLockSemaphore;
 
-        public Database(FileInfo keyFile, FileInfo valueFile, bool fixedValueLength) : base(typeof(TTag))
+        public Database(FileInfo keyFile, FileInfo valueFile, bool fixedValueLength = false) : base(typeof(TTag))
         {
             dbLockSemaphore = new SemaphoreSlim(1, 1);
             databaseLockMonitor = new DatabaseLockMonitor();
@@ -78,11 +75,6 @@ namespace OctoAwesome.Database
             startDefragFunc = defragmentation.StartDefragmentation;
             checkFunc = fileCheck.Check;
         }
-        public Database(FileInfo keyFile, FileInfo valueFile) : this(keyFile, valueFile, false)
-        {
-
-        }
-
         public override void Open()
         {
             IsOpen = true;
@@ -95,7 +87,7 @@ namespace OctoAwesome.Database
                 keyStore.Open();
             }
             catch (Exception ex)
-                when (ex is KeyInvalidException || ex is ArgumentException)
+                when (ex is InvalidKeyException || ex is ArgumentException)
             {
                 keyStore.Close();
                 defragmentation.RecreateKeyFile();
@@ -105,22 +97,18 @@ namespace OctoAwesome.Database
             valueStore.Open();
 
             if (Threshold >= 0 && keyStore.EmptyKeys >= Threshold)
-                Defragmentation();
+                Defragment();
         }
-
         public override void Close()
         {
             IsOpen = false;
             keyStore.Close();
             valueStore.Close();
         }
-
         public void Validate()
             => ExecuteOperationOnKeyValueStore(checkFunc);
-
-        public void Defragmentation()
+        public void Defragment()
             => ExecuteOperationOnKeyValueStore(startDefragFunc);
-
         public Value GetValue(TTag tag)
         {
             using (databaseLockMonitor.StartOperation(Operation.Read))
@@ -129,7 +117,6 @@ namespace OctoAwesome.Database
                 return valueStore.GetValue(key);
             }
         }
-
         public void AddOrUpdate(TTag tag, Value value)
         {
             using (databaseLockMonitor.StartOperation(Operation.Write))
@@ -157,7 +144,6 @@ namespace OctoAwesome.Database
                     keyStore.Add(newKey);
             }
         }
-
         public bool ContainsKey(TTag tag)
         {
             using (databaseLockMonitor.StartOperation(Operation.Read))
@@ -172,7 +158,6 @@ namespace OctoAwesome.Database
                 valueStore.Remove(key);
             }
         }
-
         public override DatabaseLock Lock(Operation mode)
         {
             //Read -> Blocks Write && Other read is ok
@@ -197,7 +182,6 @@ namespace OctoAwesome.Database
                 dbLockSemaphore.Release();
             }
         }
-
         public override void Dispose()
         {
             keyStore.Dispose();

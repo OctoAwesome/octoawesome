@@ -1,18 +1,14 @@
 ﻿using CommandManagementSystem.Attributes;
 using OctoAwesome.Network;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.GameServer.Commands
 {
     public static class GeneralCommands
     {
         [Command((ushort)OfficialCommand.GetUniverse)]
-        public static byte[] GetUniverse(CommandParameter parameter)
+        public static byte[] GetUniverse(CommandParameter parameter) // TODO: use parameter for multi universe server?
         {
             var universe = TypeContainer.Get<SimulationManager>().GetUniverse();
             
@@ -23,9 +19,8 @@ namespace OctoAwesome.GameServer.Commands
                 return memoryStream.ToArray();
             }
         }
-
         [Command((ushort)OfficialCommand.GetPlanet)]
-        public static byte[] GetPlanet(CommandParameter parameter)
+        public static byte[] GetPlanet(CommandParameter parameter) // TODO: use parameter for actual planet server?
         {
             Console.WriteLine("Just got in here");
 

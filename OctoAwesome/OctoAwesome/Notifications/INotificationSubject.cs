@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome.Notifications
+﻿namespace OctoAwesome.Notifications
 {
-    public interface INotificationSubject<TNotification> where TNotification : Notification
+    public interface INotificationSubject<in TNotification> where TNotification : Notification
     {
         void OnNotification(TNotification notification);
 

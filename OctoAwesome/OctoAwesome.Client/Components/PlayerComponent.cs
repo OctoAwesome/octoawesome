@@ -1,8 +1,6 @@
-﻿using OctoAwesome.Runtime;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.SumTypes;
@@ -37,20 +35,61 @@ namespace OctoAwesome.Client.Components
 
         #endregion
 
-        public Entity CurrentEntity { get; private set; }
+        public Entity? CurrentEntity { get; private set; }
 
-        public HeadComponent CurrentEntityHead { get; private set; }
+        private HeadComponent? currentEntityHead;
+        private ControllableComponent? currentController;
+        private InventoryComponent? inventory;
+        private ToolBarComponent? toolbar;
+        private PositionComponent? position;
 
-        public ControllableComponent CurrentController { get; private set; }
+        public HeadComponent CurrentEntityHead
+        {
+            get
+            {
+                Debug.Assert(currentEntityHead != null, nameof(currentEntityHead) + " != null");
+                return currentEntityHead;
+            }
+        }
 
-        public InventoryComponent Inventory { get; private set; }
+        public ControllableComponent CurrentController
+        {
+            get
+            {
+                Debug.Assert(currentController != null, nameof(currentController) + " != null");
+                return currentController;
+            }
+        }
 
-        public ToolBarComponent Toolbar { get; private set; }
+        public InventoryComponent Inventory
+        {
+            get
+            {
+                Debug.Assert(inventory != null, nameof(inventory) + " != null");
+                return inventory;
+            }
+        }
 
-        public PositionComponent Position { get; private set; }
+        public ToolBarComponent Toolbar
+        {
+            get
+            {
+                Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
+                return toolbar;
+            }
+        }
+
+        public PositionComponent Position
+        {
+            get
+            {
+                Debug.Assert(position != null, nameof(position) + " != null");
+                return position;
+            }
+        }
 
         // public ActorHost ActorHost { get; private set; }
-        public Selection Selection { get; set; }
+        public Selection? Selection { get; set; }
         public Index3? SelectedBox { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
@@ -68,34 +107,33 @@ namespace OctoAwesome.Client.Components
             Game = game;
         }
 
-        public void SetEntity(Entity entity)
+        public void SetEntity(Entity? entity)
         {
-
             if (entity == null)
             {
-                CurrentEntityHead = null;
+                currentEntityHead = null;
             }
             else
             {
                 // Map other Components
 
-                CurrentController = entity.Components.GetComponent<ControllableComponent>();
+                currentController = entity.Components.GetComponent<ControllableComponent>();
 
-                CurrentEntityHead = entity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead is null) 
-                    CurrentEntityHead = new() { Offset = new(0, 0, 3.2f) };
+                currentEntityHead = entity.Components.GetComponent<HeadComponent>();
+                if (currentEntityHead is null) 
+                    currentEntityHead = new() { Offset = new(0, 0, 3.2f) };
 
-                Inventory = entity.Components.GetComponent<InventoryComponent>();
-                if (Inventory is null) 
-                    Inventory = new();
+                inventory = entity.Components.GetComponent<InventoryComponent>();
+                if (inventory is null) 
+                    inventory = new();
 
-                Toolbar = entity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar is null) 
-                    Toolbar = new();
+                toolbar = entity.Components.GetComponent<ToolBarComponent>();
+                if (toolbar is null) 
+                    toolbar = new();
 
-                Position = entity.Components.GetComponent<PositionComponent>();
-                if (Position is null) 
-                    Position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
+                position = entity.Components.GetComponent<PositionComponent>();
+                if (position is null) 
+                    position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
             CurrentEntity = entity;
         }
@@ -107,6 +145,9 @@ namespace OctoAwesome.Client.Components
 
             if (CurrentEntity == null)
                 return;
+
+            Debug.Assert(CurrentEntityHead != null, $"{nameof(CurrentEntityHead)} not set despite {nameof(CurrentEntity)} being set");
+            Debug.Assert(CurrentController != null, $"{nameof(CurrentEntityHead)} not set despite {nameof(CurrentEntity)} being set");
 
             CurrentEntityHead.Angle += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.X;
             CurrentEntityHead.Tilt += (float)gameTime.ElapsedGameTime.TotalSeconds * HeadInput.Y;
@@ -150,7 +191,7 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-            //Index des aktiven Werkzeugs ermitteln   
+            // Determine index of the active tool   
             if (SlotLeftInput)
             {
                 Toolbar.ActiveIndex--;
@@ -162,8 +203,6 @@ namespace OctoAwesome.Client.Components
                 Toolbar.ActiveIndex++;
             }
             SlotRightInput = false;
-
-
         }
 
         /// <summary>
@@ -171,7 +210,7 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         internal void AllBlocksDebug()
         {
-            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            var inventory = CurrentEntity?.Components.GetComponent<InventoryComponent>();
             if (inventory == null)
                 return;
 

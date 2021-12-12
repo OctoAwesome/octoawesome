@@ -2,6 +2,7 @@
 
 namespace OctoAwesome.Client.UI
 {
+
     public static class Tools
     {
         /// <summary>
@@ -13,7 +14,7 @@ namespace OctoAwesome.Client.UI
             Process.Start(new ProcessStartInfo(url)
             {
                 UseShellExecute = true
-            }).Dispose();
+            })?.Dispose();
         }
     }
 }

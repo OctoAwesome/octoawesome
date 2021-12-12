@@ -1,10 +1,7 @@
-﻿using OctoAwesome;
-using OctoAwesome.Client.Components;
+﻿using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
-using System.Configuration;
-using System.Linq;
 using engenious.UI;
 using EventArgs = System.EventArgs;
 using engenious;
@@ -26,29 +23,29 @@ namespace OctoAwesome.Client
 
         //GraphicsDeviceManager graphics;
 
-        public CameraComponent Camera { get; private set; }
+        public CameraComponent Camera { get; }
 
-        public PlayerComponent Player { get; private set; }
+        public PlayerComponent Player { get; }
 
-        public SimulationComponent Simulation { get; private set; }
+        public SimulationComponent Simulation { get; }
 
-        public GameService Service { get; private set; }
+        public GameService Service { get; }
 
-        public ScreenComponent Screen { get; private set; }
+        public ScreenComponent Screen { get; }
 
-        public KeyMapper KeyMapper { get; private set; }
+        public KeyMapper KeyMapper { get; }
 
-        public AssetComponent Assets { get; private set; }
+        public AssetComponent Assets { get; }
 
-        public Settings Settings { get; private set; }
+        public Settings Settings { get; }
 
-        public IDefinitionManager DefinitionManager { get; private set; }
+        public IDefinitionManager DefinitionManager { get; }
 
-        public IResourceManager ResourceManager { get; private set; }
+        public IResourceManager ResourceManager { get; }
 
-        public ExtensionLoader ExtensionLoader { get; private set; }
+        public ExtensionLoader ExtensionLoader { get; }
 
-        public EntityGameComponent Entity { get; private set; }
+        public EntityGameComponent Entity { get; }
 
         public OctoGame() : base()
         {
@@ -103,21 +100,15 @@ namespace OctoAwesome.Client
                 SceneControl.VIEWRANGE = viewrange;
             }
 
-
-
            
             Components.Add(Assets);
             Components.Add(Screen);
-
-
             #region GameComponents
             DefinitionManager = typeContainer.Get<DefinitionManager>();
 
             //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
             //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
             ResourceManager = typeContainer.Get<ContainerResourceManager>();
-
-
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
             Components.Add(Player);
@@ -154,20 +145,20 @@ namespace OctoAwesome.Client
 
         private static void Register(ITypeContainer typeContainer)
         {
-            typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<GameService>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
-            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Settings>(InstanceBehavior.Singleton);
+            typeContainer.Register<ISettings, Settings>(InstanceBehavior.Singleton);
+            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
+            typeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehavior.Singleton);
+            typeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehavior.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<ContainerResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
+            typeContainer.Register<IGameService, GameService>(InstanceBehavior.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
         }
 
         private void SetKeyBindings()

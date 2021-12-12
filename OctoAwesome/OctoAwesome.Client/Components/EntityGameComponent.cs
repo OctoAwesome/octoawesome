@@ -3,13 +3,9 @@ using engenious.Graphics;
 using engenious.Helper;
 
 using OctoAwesome.EntityComponents;
-
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.Components
 {
@@ -24,11 +20,7 @@ namespace OctoAwesome.Client.Components
         private GraphicsDevice graphicsDevice;
         private BasicEffect effect;
         public SimulationComponent Simulation { get; private set; }
-
-
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
-
-
         public List<Entity> Entities { get; set; }
         public List<FunctionalBlock> FunctionalBlocks { get; set; }
 
@@ -51,7 +43,7 @@ namespace OctoAwesome.Client.Components
             effect.TextureEnabled = true;
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
             using (var writer = File.AppendText(Path.Combine(".", "render.log")))
-                foreach (var pass in effect.CurrentTechnique.Passes)
+                foreach (var pass in effect.CurrentTechnique!.Passes)
                 {
                     pass.Apply();
                     i++;
@@ -63,8 +55,6 @@ namespace OctoAwesome.Client.Components
                         }
 
                         var rendercomp = entity.Components.GetComponent<RenderComponent>();
-
-
                         if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
                         {
                             modelinfo = new ModelInfo()
@@ -110,8 +100,6 @@ namespace OctoAwesome.Client.Components
                         }
 
                         var rendercomp = functionalBlock.Components.GetComponent<RenderComponent>();
-
-
                         if (!models.TryGetValue(rendercomp.Name, out ModelInfo modelinfo))
                         {
                             modelinfo = new ModelInfo()

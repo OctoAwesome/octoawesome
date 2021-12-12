@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>warnings</Nullable>
+    <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
@@ -10,11 +10,14 @@
     <Compile Remove="Properties\**" />
     <EmbeddedResource Remove="Properties\**" />
     <None Remove="Properties\**" />
+    <Compile Remove="Components\Comparer.cs" />
+    <Compile Remove="Components\IContainsComponents.cs" />
+    <Compile Remove="InstanceBehaviour.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="dotVariant" Version="0.3.1" />
-    <PackageReference Include="engenious" Version="0.5.1.4-alpha" />
+    <PackageReference Include="engenious" Version="0.6.0.7-alpha" />
     <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
   </ItemGroup>

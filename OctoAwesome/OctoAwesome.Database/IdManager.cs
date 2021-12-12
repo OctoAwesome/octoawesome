@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Database
 {
@@ -10,14 +9,10 @@ namespace OctoAwesome.Database
         private readonly Queue<int> freeIds;
         private readonly HashSet<int> reservedIds;
         private int nextId;
-
-        public IdManager() : this(Array.Empty<int>())
+        
+        public IdManager(IEnumerable<int>? alreadyUsedIds = null)
         {
-        }
-        public IdManager(IEnumerable<int> alreadyUsedIds)
-        {
-            if (alreadyUsedIds == null)
-                alreadyUsedIds = Array.Empty<int>();
+            alreadyUsedIds ??= Array.Empty<int>();
 
             freeIds = new Queue<int>();
             reservedIds = new HashSet<int>();

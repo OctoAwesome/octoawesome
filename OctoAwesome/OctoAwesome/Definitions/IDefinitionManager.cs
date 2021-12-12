@@ -31,8 +31,9 @@ namespace OctoAwesome.Definitions
         /// </summary>
         /// <param name="index">Index der BlockDefinition</param>
         /// <returns>BlockDefinition</returns>
-        IBlockDefinition GetBlockDefinitionByIndex(ushort index);
-        T GetDefinitionByTypeName<T>(string typeName) where T : IDefinition;
+        IBlockDefinition? GetBlockDefinitionByIndex(ushort index);
+
+        T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition;
 
         /// <summary>
         /// Liefert den Index der angegebenen BlockDefinition.

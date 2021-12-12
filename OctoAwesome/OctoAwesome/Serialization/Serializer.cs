@@ -1,17 +1,11 @@
-﻿using NLog.Internal;
-
-using OctoAwesome.Pooling;
-
-using System;
-using System.Collections.Generic;
+﻿using OctoAwesome.Pooling;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Serialization
 {
+
     public static class Serializer
     {
         public static byte[] Serialize<T>(T obj) where T : ISerializable
@@ -41,7 +35,6 @@ namespace OctoAwesome.Serialization
                 }
             }
         }
-
         public static byte[] SerializeCompressed<T>(T obj, int capacity) where T : ISerializable
         {
             using (var stream = new MemoryStream(capacity))
@@ -71,14 +64,14 @@ namespace OctoAwesome.Serialization
 
         public static T DeserializePoolElement<T>(byte[] data) where T : ISerializable, IPoolElement, new()
         {
-            var obj = TypeContainer.Get<IPool<T>>().Get();
+            var obj = TypeContainer.Get<IPool<T>>().Rent();
             InternalDeserialize(ref obj, data);
             return obj;
         }
 
         public static T DeserializePoolElement<T>(IPool<T> pool, byte[] data) where T : ISerializable, IPoolElement, new()
         {
-            var obj = pool.Get();
+            var obj = pool.Rent();
             InternalDeserialize(ref obj, data);
             return obj;
         }

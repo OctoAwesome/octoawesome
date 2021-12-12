@@ -2,12 +2,13 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Components;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OctoAwesome.Client.UI.Controls
 {
+
     public sealed class InventoryControl : Panel
     {
         private const int COLUMNS = 8;
@@ -20,7 +21,6 @@ namespace OctoAwesome.Client.UI.Controls
         private Grid grid;
         private readonly ScrollContainer scroll;
         private readonly AssetComponent assets;
-
         public InventoryControl(BaseScreenComponent manager, AssetComponent assets, List<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
         {
             scroll = new ScrollContainer(manager)
@@ -42,7 +42,6 @@ namespace OctoAwesome.Client.UI.Controls
             Controls.Add(scroll);
             Rebuild(inventorySlots, columns);
         }
-
         public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
         {
             grid = new Grid(ScreenManager)
@@ -68,19 +67,17 @@ namespace OctoAwesome.Client.UI.Controls
                     continue;
                 else
                     texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
-
-
                 var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-                image.MouseEnter += (s, e) => { HoveredSlot = inventorySlot; };
-                image.MouseLeave += (s, e) => { HoveredSlot = null; };
-                image.StartDrag += (c, e) =>
+                image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
+                image.MouseLeave += (_, _) => { HoveredSlot = null; };
+                image.StartDrag += (_, e) =>
                 {
                     e.Handled = true;
                     e.Icon = texture;
                     e.Content = inventorySlot;
                     e.Sender = image;
                 };
-                var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
+                var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(CultureInfo.CurrentCulture), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
                 grid.AddControl(image, column, row);
                 grid.AddControl(label, column, row);
 

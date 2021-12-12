@@ -1,6 +1,4 @@
 ﻿using engenious;
-
-
 namespace OctoAwesome.Runtime
 {
     /// <summary>
@@ -32,25 +30,9 @@ namespace OctoAwesome.Runtime
         /// Gibt an, ob der Spieler auf dem Boden steht.
         /// </summary>
         bool OnGround { get; }
-
-        /// <summary>
-        /// Winkel der Kopfstellung.
-        /// </summary>
         float Tilt { get; }
-
-        /// <summary>
-        /// Bewegungsvektor des Spielers.
-        /// </summary>
         Vector2 Move { get; set; }
-
-        /// <summary>
-        /// Kopfbewegeungsvektor des Spielers.
-        /// </summary>
         Vector2 Head { get; set; }
-
-        /// <summary>
-        /// Den Spieler hüpfen lassen.
-        /// </summary>
         void Jump();
 
         /// <summary>

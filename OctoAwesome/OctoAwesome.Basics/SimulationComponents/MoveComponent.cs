@@ -1,19 +1,20 @@
 ﻿using System;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
-using System.Linq;
 using OctoAwesome.EntityComponents;
 using engenious.Helper;
 using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
+
     public sealed class MoveComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
         MoveableComponent,
         PositionComponent>
     {
+
         protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
@@ -25,7 +26,6 @@ namespace OctoAwesome.Basics.SimulationComponents
             cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
             return new SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>(entity, movecomp, poscomp);
         }
-
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> value)
         {
             var entity = value.Value;
@@ -85,8 +85,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                 return;
 
             BodyComponent bc = entity.Components.GetComponent<BodyComponent>();
-
-
             Coordinate position = poscomp.Position;
 
             Vector3 move = movecomp.PositionMove;

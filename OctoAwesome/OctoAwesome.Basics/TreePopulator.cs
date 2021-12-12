@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Basics
 {
+
     public class TreePopulator : MapPopulator
     {
-        private IEnumerable<ITreeDefinition> treeDefinitions = null;
-
+        private IEnumerable<ITreeDefinition>? treeDefinitions = null;
         public TreePopulator()
         {
             Order = 10;
         }
 
-        private static IChunkColumn getColumn(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
+        private static IChunkColumn GetColumn(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
         {
             IChunkColumn column;
             if (x >= Chunk.CHUNKSIZE_X && y >= Chunk.CHUNKSIZE_Y)
@@ -25,14 +24,11 @@ namespace OctoAwesome.Basics
                 column = column10;
             else
                 column = column00;
-
-
             return column;
         }
-
         public override void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
         {
-            // Tree Definitions initialisieren
+            // Initialize tree definitions
             if (treeDefinitions == null)
             {
                 treeDefinitions = resourceManager.DefinitionManager.GetDefinitions<ITreeDefinition>().OrderBy(d => d.Order).ToArray();

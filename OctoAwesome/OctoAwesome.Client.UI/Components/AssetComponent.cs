@@ -1,8 +1,6 @@
 ﻿using engenious;
 using engenious.Graphics;
 using engenious.UI;
-using OctoAwesome.Client.UI;
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,15 +11,13 @@ using System.Xml.Serialization;
 
 namespace OctoAwesome.Client.UI.Components
 {
+
     public sealed class AssetComponent : DrawableGameComponent
     {
         private readonly BaseScreenComponent screenComponent;
         private readonly ISettings settings;
-
         public const string INFOFILENAME = "packinfo.xml";
-
         public const string SETTINGSKEY = "ActiveResourcePacks";
-
         public const string RESOURCEPATH = "Resources";
         readonly Dictionary<string, Texture2D> textures;
         readonly Dictionary<string, Bitmap> bitmaps;
@@ -48,7 +44,6 @@ namespace OctoAwesome.Client.UI.Components
         /// Auflistung aller aktuell aktiven Resource Packs.
         /// </summary>
         public IEnumerable<ResourcePack> ActiveResourcePacks => activePacks.AsEnumerable();
-
         public AssetComponent(BaseScreenComponent screenComponent, ISettings settings) : base(screenComponent.Game)
         {
             this.screenComponent = screenComponent;
@@ -77,7 +72,6 @@ namespace OctoAwesome.Client.UI.Components
 
             ApplyResourcePacks(toLoad);
         }
-
         public void ScanForResourcePacks()
         {
             loadedPacks.Clear();
@@ -191,14 +185,13 @@ namespace OctoAwesome.Client.UI.Components
 
             return bitmap;
         }
-
         public Stream LoadStream(Type baseType, string key, params string[] fileTypes)
         {
             return Load(baseType, key, fileTypes, null, (stream) =>
             {
                 var result = new MemoryStream();
                 var buffer = new byte[1024];
-                var count = 0;
+                int count;
                 do
                 {
                     count = stream.Read(buffer, 0, buffer.Length);

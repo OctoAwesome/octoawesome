@@ -1,4 +1,5 @@
-﻿using engenious;
+﻿using System;
+using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
@@ -6,12 +7,8 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Definitions;
-using OctoAwesome.EntityComponents;
-using OctoAwesome.Runtime;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.UI.Controls
 {
@@ -28,7 +25,7 @@ namespace OctoAwesome.UI.Controls
         private readonly IResourceManager resourceManager;
         private readonly IDefinitionManager definitionManager;
 
-        public PlayerComponent Player { get; set; }
+        public PlayerComponent Player { get; }
 
         private readonly StackPanel leftView, rightView;
         private readonly Label devText, position, rotation, fps, box, controlInfo, targetedBlockName, targetedBlockPosition, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo, gravityInfo;
@@ -157,7 +154,7 @@ namespace OctoAwesome.UI.Controls
             if (!Visible || !Enabled || !assets.Ready)
                 return;
 
-            if (Player == null || Player.CurrentEntity == null)
+            if (Player.CurrentEntity == null || Player.CurrentEntityHead == null)
                 return;
 
             //Calculate FPS
@@ -174,7 +171,7 @@ namespace OctoAwesome.UI.Controls
             bufferindex %= buffersize;
 
             //Draw Control Info
-            controlInfo.Text = Client.UI.Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen.Controls.Count;
+            controlInfo.Text = Client.UI.Languages.OctoClient.ActiveControls + ": " + ScreenManager.ActiveScreen!.Controls.Count;
 
             // Draw targeted block info
             Player.Selection?.Visit(
@@ -214,8 +211,7 @@ namespace OctoAwesome.UI.Controls
                 resourceManager.GetPlanet(Player.Position.Position.Planet).GlobalChunkCache.LoadedChunkColumns);
 
             // Draw Loaded Textures
-            loadedTextures.Text = string.Format("Loaded Textures: {0}",
-                assets.LoadedTextures);
+            loadedTextures.Text = $"Loaded Textures: {assets.LoadedTextures}";
 
             //Get Number of Loaded Items/Blocks
             loadedInfo.Text = "" + definitionManager.ItemDefinitions.Count() + " " + Client.UI.Languages.OctoClient.Items + " - " +
@@ -244,14 +240,10 @@ namespace OctoAwesome.UI.Controls
             gravityInfo.Text = "Gravity" + ": " + planet.Gravity;
 
             //Draw Box Information
-            if (Player.SelectedBox.HasValue && Player.SelectedPoint.HasValue)
+            if (Player.SelectedBox.HasValue)
             {
-                var selection = "box: " +
-                    Player.SelectedBox.Value.ToString() + " on " +
-                    Player.SelectedSide.ToString() + " (" +
-                    Player.SelectedPoint.Value.X.ToString("0.000000") + "/" +
-                    Player.SelectedPoint.Value.Y.ToString("0.000000") + ") -> " +
-                    Player.SelectedEdge.ToString() + " -> " + Player.SelectedCorner.ToString();
+                var selection =
+                    $"box: {Player.SelectedBox.Value} on {Player.SelectedSide} ({Player.SelectedPoint?.X:0.000000}/{Player.SelectedPoint?.Y:0.000000}) -> {Player.SelectedEdge} -> {Player.SelectedCorner}";
                 box.Text = selection;
             }
             else

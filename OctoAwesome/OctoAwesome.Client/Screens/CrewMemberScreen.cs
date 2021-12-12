@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using engenious.UI;
 using OctoAwesome.Client.Components;
 using engenious.Graphics;
-using System.Diagnostics;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
 using OctoAwesome.Client.UI.Components;
@@ -25,7 +22,7 @@ namespace OctoAwesome.Client.Screens
 
             Title = UI.Languages.OctoClient.CreditsCrew + ": " + member.Username;
 
-            SpriteFont boldFont = manager.Content.Load<SpriteFont>("Fonts/BoldFont");
+            SpriteFont boldFont = Skin.Current.BoldFont;
 
             Padding = new Border(0, 0, 0, 0);
 
@@ -48,8 +45,6 @@ namespace OctoAwesome.Client.Screens
                 Orientation = Orientation.Horizontal
             };
             panel.Controls.Add(horizontalStack);
-
-
             //The Profile Image
             Image profileImage = new Image(manager)
             {
@@ -76,7 +71,7 @@ namespace OctoAwesome.Client.Screens
             Label username = new Label(manager)
             {
                 Text = usernameText,
-                Font = manager.Content.Load<SpriteFont>("Fonts/HeadlineFont"),
+                Font = Skin.Current.HeadlineFont,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
@@ -146,8 +141,7 @@ namespace OctoAwesome.Client.Screens
 
         private bool CheckHttpUrl(string url)
         {
-            Uri tmp;
-            return Uri.TryCreate(url, UriKind.Absolute, out tmp) && (tmp.Scheme == Uri.UriSchemeHttp || tmp.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(url, UriKind.Absolute, out var tmp) && (tmp.Scheme == Uri.UriSchemeHttp || tmp.Scheme == Uri.UriSchemeHttps);
         }
     }
 }

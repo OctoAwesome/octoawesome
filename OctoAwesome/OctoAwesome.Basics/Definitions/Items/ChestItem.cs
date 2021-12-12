@@ -5,23 +5,13 @@ using OctoAwesome.Definitions.Items;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
     public class ChestItem : Item, IDisposable
     {
-        public override int VolumePerUnit => base.VolumePerUnit;
-
-        public override int StackLimit => base.StackLimit;
-
-
         private readonly Relay<Notification> simulationRelay;
         private readonly IDisposable simulationSource;
-
         public ChestItem(ChestItemDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
@@ -30,7 +20,6 @@ namespace OctoAwesome.Basics.Definitions.Items
 
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
-
         public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             //TODO: Implement Place Chest and remove this item
@@ -45,11 +34,10 @@ namespace OctoAwesome.Basics.Definitions.Items
             simulationRelay.OnNext(notification);
             return 0;
         }
-
         public void Dispose()
         {
             simulationSource.Dispose();
-            simulationRelay?.Dispose();
+            simulationRelay.Dispose();
         }
     }
 }

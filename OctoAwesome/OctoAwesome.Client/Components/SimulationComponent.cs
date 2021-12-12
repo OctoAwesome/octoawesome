@@ -1,5 +1,4 @@
-﻿using OctoAwesome.Runtime;
-using System;
+﻿using System;
 using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Common;
@@ -12,19 +11,11 @@ namespace OctoAwesome.Client.Components
 
         private readonly IResourceManager resourceManager;
 
-        public Simulation Simulation { get; private set; }
+        public Simulation? Simulation { get; private set; }
 
         public IGameService Service { get; }
 
-        public SimulationState State
-        {
-            get
-            {
-                if (Simulation != null)
-                    return Simulation.State;
-                return SimulationState.Undefined;
-            }
-        }
+        public SimulationState State => Simulation?.State ?? SimulationState.Undefined;
 
         public SimulationComponent(OctoGame game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
         {
@@ -83,8 +74,6 @@ namespace OctoAwesome.Client.Components
 
             player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             Simulation.Add(player);
-
-
             return player;
         }
 

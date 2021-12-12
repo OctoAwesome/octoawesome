@@ -1,16 +1,13 @@
 ﻿using CommandManagementSystem.Attributes;
 using OctoAwesome.Network;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.GameServer.Commands
 {
-    public class ChunkCommands
+    public static class ChunkCommands
     {
+
         [Command((ushort)OfficialCommand.LoadColumn)]
         public static byte[] LoadColumn(CommandParameter parameter)
         {
@@ -35,7 +32,6 @@ namespace OctoAwesome.GameServer.Commands
                 return memoryStream.ToArray();
             }
         }
-
         [Command((ushort)OfficialCommand.SaveColumn)]
         public static byte[] SaveColumn(CommandParameter parameter)
         {

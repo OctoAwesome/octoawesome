@@ -3,10 +3,10 @@ using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.UI.Controls
 {
+
     public class GroupBox : Control
     {
         private Brush borderColor = SolidColorBrush.Black;
-
         public Brush BorderColor
         {
             get => borderColor;
@@ -19,7 +19,6 @@ namespace OctoAwesome.Client.UI.Controls
         }
 
         private Border border = Border.All(2);
-
         public Border Border
         {
             get => border;
@@ -31,7 +30,6 @@ namespace OctoAwesome.Client.UI.Controls
             }
         }
         private Orientation orientation = Orientation.Vertical;
-
         public Orientation Orientation
         {
             get => orientation;
@@ -44,48 +42,43 @@ namespace OctoAwesome.Client.UI.Controls
         }
 
         private string headline;
-
         public string Headline
         {
             get => headline;
             set
             {
+                headline = value ?? string.Empty;
                 if (headlineLabel is not null)
                 {
-                    headlineLabel.Height = string.IsNullOrEmpty(value) ? 0 : null;
-                    headlineLabel.Text = value;
+                    headlineLabel.Height = string.IsNullOrEmpty(headline) ? 0 : null;
+                    headlineLabel.Text = headline;
                 }
-                headline = value;
             }
         }
-
         public new ControlCollection Children => contentPanel.Controls;
 
         private readonly StackPanel outerPanel;
-        private readonly StackPanel innerPanel;
         private readonly StackPanel contentPanel;
-        private readonly StackPanel headlinePanel;
         private readonly Label headlineLabel;
-
         public GroupBox(BaseScreenComponent manager, string style = "") : base(manager, style)
         {
             outerPanel = new(manager)
-            {
-                Padding = Border,
-                Background = BorderColor
-            };
+                         {
+                             Padding = Border,
+                             Background = BorderColor
+                         };
 
-            innerPanel = new StackPanel(manager)
-            {
-                Orientation = Orientation.Vertical,
-                Background = SolidColorBrush.White,
-            };
+            var innerPanel = new StackPanel(manager)
+                             {
+                                 Orientation = Orientation.Vertical,
+                                 Background = SolidColorBrush.White,
+                             };
 
-            headlinePanel = new(manager)
-            {
-                Orientation= Orientation.Vertical,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-            };
+            StackPanel headlinePanel = new(manager)
+                                       {
+                                           Orientation= Orientation.Vertical,
+                                           HorizontalAlignment = HorizontalAlignment.Stretch,
+                                       };
 
             headlineLabel = new Label(manager)
             {

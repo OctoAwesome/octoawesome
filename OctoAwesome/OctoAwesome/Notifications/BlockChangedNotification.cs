@@ -3,12 +3,13 @@ using System.IO;
 
 namespace OctoAwesome.Notifications
 {
+
     public sealed class BlockChangedNotification : SerializableNotification, IChunkNotification
     {
+
         public BlockInfo BlockInfo { get; set; }
         public Index3 ChunkPos { get; internal set; }
         public int Planet { get; internal set; }
-
         public override void Deserialize(BinaryReader reader)
         {
             if (reader.ReadByte() != (byte)BlockNotificationType.BlockChanged)//Read type of the notification
@@ -30,7 +31,6 @@ namespace OctoAwesome.Notifications
 
             Planet = reader.ReadInt32();
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((byte)BlockNotificationType.BlockChanged); //indicate that this is a single Block Notification
@@ -46,7 +46,6 @@ namespace OctoAwesome.Notifications
             writer.Write(ChunkPos.Z);
             writer.Write(Planet);
         }
-
         protected override void OnRelease()
         {
             BlockInfo = default;

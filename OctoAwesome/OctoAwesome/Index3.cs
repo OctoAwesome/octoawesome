@@ -35,7 +35,7 @@ namespace OctoAwesome
             Y = y;
             Z = z;
         }
-
+        
         /// <summary>
         /// Gets the X and Y components
         /// </summary>
@@ -49,18 +49,12 @@ namespace OctoAwesome
         public Index3(Index2 index, int z) : this(index.X, index.Y, z) { }
 
         /// <summary>
-        /// Initialisierung
-        /// </summary>
-        /// <param name="index">3D-Basis</param>
-        public Index3(Index3 index) : this(index.X, index.Y, index.Z) { }
-
-        /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
         /// </summary>
         /// <param name="size">Maximalwert für X</param>
         public void NormalizeX(int size)
             => X = Index2.NormalizeAxis(X, size);
-
+        
         /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
         /// </summary>
@@ -115,10 +109,10 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="x">X-Anteil</param>
         /// <param name="y">Y-Anteil</param>
-        public void NormalizeXY(int x, int y)
+        public void NormalizeXY(int sizeX, int sizeY)
         {
-            NormalizeX(x);
-            NormalizeY(y);
+            NormalizeX(sizeX);
+            NormalizeY(sizeY);
         }
 
         /// <summary>
@@ -141,11 +135,11 @@ namespace OctoAwesome
         /// <param name="x">X-Anteil</param>
         /// <param name="y">Y-Anteil</param>
         /// <param name="z">Z-Anteil</param>
-        public void NormalizeXYZ(int x, int y, int z)
+        public void NormalizeXYZ(int sizeX, int sizeY, int sizeZ)
         {
-            NormalizeX(x);
-            NormalizeY(y);
-            NormalizeZ(z);
+            NormalizeX(sizeX);
+            NormalizeY(sizeY);
+            NormalizeZ(sizeZ);
         }
 
         /// <summary>
@@ -153,8 +147,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="size">2D-Size</param>
         /// <param name="z">Z-Anteil</param>
-        public void NormalizeXYZ(Index2 size, int z)
-            => NormalizeXYZ(size.X, size.Y, z);
+        public void NormalizeXYZ(Index2 size, int sizeZ)
+            => NormalizeXYZ(size.X, size.Y, sizeZ);
 
         /// <summary>
         /// Normalisiert die X-, Y- und Z-Achse auf die angegebene Größe.
@@ -162,7 +156,7 @@ namespace OctoAwesome
         /// <param name="size">Maximalwert für X, Y und Z</param>
         public void NormalizeXYZ(Index3 size)
             => NormalizeXYZ(size.X, size.Y, size.Z);
-
+        
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten X-Achse.
         /// </summary>
@@ -171,7 +165,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceX(int x, int size)
             => Index2.ShortestDistanceOnAxis(X, x, size);
-
+        
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten Y-Achse.
         /// </summary>
@@ -180,7 +174,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceY(int y, int size)
             => Index2.ShortestDistanceOnAxis(Y, y, size);
-
+        
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten Z-Achse.
         /// </summary>
@@ -269,7 +263,7 @@ namespace OctoAwesome
         /// <returns></returns>
         public static Index3 operator +(Index3 i1, Index2 i2)
             => new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z);
-
+        
         /// <summary>
         /// Subtrahiert zwei Indices3
         /// </summary>
@@ -278,7 +272,7 @@ namespace OctoAwesome
         /// <returns></returns>
         public static Index3 operator -(Index3 i1, Index3 i2)
             => new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z - i2.Z);
-
+        
         /// <summary>
         /// Subtrahiert einen Index2 von einem Index3
         /// </summary>
@@ -350,9 +344,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) 
+        public override bool Equals(object? obj) 
             => obj is Index3 other && Equals(other);
-
         public bool Equals(Index3 other)
             => other.X == X && other.Y == Y && other.Z == Z;
         

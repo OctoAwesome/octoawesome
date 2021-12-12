@@ -6,13 +6,11 @@ using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
-    public abstract class ComponentContainer: ISerializable, IIdentification, IContainsComponents, INotificationSubject<SerializableNotification> 
+
+    public abstract class ComponentContainer : ISerializable, IIdentification, IComponentContainer, INotificationSubject<SerializableNotification> 
     {
         /// <summary>
         /// Id
@@ -22,7 +20,7 @@ namespace OctoAwesome
         /// <summary>
         /// Reference to the active Simulation.
         /// </summary>
-        public Simulation Simulation { get; internal set; }
+        public Simulation? Simulation { get; internal set; }
 
         /// <summary>
         /// Contains only Components with notification interface implementation.
@@ -32,56 +30,49 @@ namespace OctoAwesome
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
-        public ComponentContainer()
+        protected ComponentContainer()
         {
             notificationComponents = new();
             Id = Guid.Empty;
         }
       
-
         public virtual void RegisterDefault()
         {
 
         }
-
         public override int GetHashCode()
             => Id.GetHashCode();
-
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Entity entity)
                 return entity.Id == Id;
 
-            return base.Equals(obj);
+            return ReferenceEquals(this, obj);
         }
-
         public virtual void OnNotification(SerializableNotification notification)
         {
         }
-
         public virtual void Push(SerializableNotification notification)
         {
             foreach (var component in notificationComponents)
                 component?.OnNotification(notification);
         }
-
         public abstract void Serialize(BinaryWriter writer);
         public abstract void Deserialize(BinaryReader reader);
         public abstract bool ContainsComponent<T>();
-        public abstract T GetComponent<T>();
+        public abstract T? GetComponent<T>();
     }
-
     public abstract class ComponentContainer<TComponent> : ComponentContainer where TComponent : IComponent
     {
         /// <summary>
         /// Contains all Components.
         /// </summary>
-        public ComponentList<TComponent> Components { get; private set; }
-
+        public ComponentList<TComponent> Components { get; }
+        
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>
-        public ComponentContainer() : base()
+        protected ComponentContainer()
         {
             Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
         }
@@ -113,22 +104,20 @@ namespace OctoAwesome
             if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
                 notificationComponents.Add(nofiticationComponent);
         }
-
         protected virtual void ValidateAddComponent(TComponent component)
         {
             if (Simulation is not null)
                 throw new NotSupportedException("Can't add components during simulation");
         }
-
         protected virtual void ValidateRemoveComponent(TComponent component)
         {
             if (Simulation is not null)
                 throw new NotSupportedException("Can't remove components during simulation");
         }
 
-        public void Initialize(IResourceManager mananger)
+        public void Initialize(IResourceManager manager)
         {
-            OnInitialize(mananger);
+            OnInitialize(manager);
         }
 
         protected virtual void OnInitialize(IResourceManager manager)
@@ -171,10 +160,9 @@ namespace OctoAwesome
             Id = new Guid(reader.ReadBytes(16));
             Components.Deserialize(reader);
         }
-
         public override bool ContainsComponent<T>()
             => Components.ContainsComponent<T>();
-        public override T GetComponent<T>()
+        public override T? GetComponent<T>() where T : default
             => Components.GetComponent<T>();
     }
 }

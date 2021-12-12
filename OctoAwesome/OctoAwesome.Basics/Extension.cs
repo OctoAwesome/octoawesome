@@ -1,10 +1,8 @@
-﻿using OctoAwesome.Basics.Definitions.Blocks;
-using OctoAwesome.Basics.Entities;
+﻿using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.SimulationComponents;
 using OctoAwesome.EntityComponents;
 using System.Reflection;
-using System.Linq;
 using System;
 using engenious;
 using OctoAwesome.Services;
@@ -14,18 +12,17 @@ using OctoAwesome.Basics.EntityComponents.UIComponents;
 
 namespace OctoAwesome.Basics
 {
+
     public sealed class Extension : IExtension
     {
+
         public string Description => Languages.OctoBasics.ExtensionDescription;
-
         public string Name => Languages.OctoBasics.ExtensionName;
-
 
         public void Register(ITypeContainer typeContainer)
         {
-
+            
         }
-
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {
             typeContainer.Register<IPlanet, ComplexPlanet>();
@@ -49,7 +46,7 @@ namespace OctoAwesome.Basics
             extensionLoader.RegisterEntityExtender<Player>((player) =>
             {
                 var p = (Player)player;
-                var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
+                var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0)) };
 
                 p.Components.AddComponent(posComponent);
                 p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
@@ -71,7 +68,7 @@ namespace OctoAwesome.Basics
 
                 if (!c.ContainsComponent<PositionComponent>())
                 {
-                    var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0));
+                    var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0));
                     c.Components.AddComponent(new PositionComponent()
                     {
                         Position = pos
@@ -90,11 +87,8 @@ namespace OctoAwesome.Basics
                 if (!c.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
                 {
                     inventoryComponent = new InventoryComponent();
-                    c.inventoryComponent = inventoryComponent;
                     c.Components.AddComponent(inventoryComponent);
                 }
-                else
-                    c.inventoryComponent = inventoryComponent;
 
                 if (!c.ContainsComponent<TransferUIComponent>())
                 {
@@ -102,15 +96,11 @@ namespace OctoAwesome.Basics
                     c.transferUiComponent.Closed += c.TransferUiComponentClosed;
                     c.Components.AddComponent(c.transferUiComponent, true);
                 }
-
-
                 c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
-                c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
+                c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }), true);
                 c.Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 }, true);
 
             });
-
-
             extensionLoader.RegisterSimulationExtender((s) =>
             {
                 s.Components.AddComponent(new WattMoverComponent());

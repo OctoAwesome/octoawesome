@@ -1,10 +1,8 @@
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
-using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace OctoAwesome
 {
@@ -13,18 +11,19 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+
         IDefinitionManager DefinitionManager { get; }
 
         /// <summary>
         /// Erzuegt ein neues Universum.
         /// </summary>
         /// <param name="name">Name des neuen Universums.</param>
-        /// <param name="seed">Weltgenerator-Seed für das neue Universum.</param>
+        /// <param name="seed">Weltgenerator-Seed fï¿½r das neue Universum.</param>
         /// <returns>Die Guid des neuen Universums.</returns>
         Guid NewUniverse(string name, int seed);
 
         /// <summary>
-        /// Lädt das Universum für die angegebene GUID.
+        /// Lï¿½dt das Universum fï¿½r die angegebene GUID.
         /// </summary>
         /// <param name="universeId">Die Guid des Universums.</param>
         bool TryLoadUniverse(Guid universeId);
@@ -32,31 +31,31 @@ namespace OctoAwesome
         /// <summary>
         /// Das aktuell geladene Universum.
         /// </summary>
-        IUniverse CurrentUniverse { get; }
+        IUniverse? CurrentUniverse { get; }
 
         /// <summary>
-        /// Entlädt das aktuelle Universum.
+        /// Entlï¿½dt das aktuelle Universum.
         /// </summary>
         void UnloadUniverse();
 
         /// <summary>
-        /// Gibt alle Universen zurück, die geladen werden können.
+        /// Gibt alle Universen zurï¿½ck, die geladen werden kï¿½nnen.
         /// </summary>
         /// <returns>Die Liste der Universen.</returns>
         IUniverse[] ListUniverses();
 
         /// <summary>
-        /// Löscht ein Universum.
+        /// Lï¿½scht ein Universum.
         /// </summary>
         /// <param name="id">Die Guid des Universums.</param>
         void DeleteUniverse(Guid id);
 
         /// <summary>
-        /// Lädt einen Player.
+        /// Lï¿½dt einen Player.
         /// </summary>
         /// <param name="playername">Der Name des Players.</param>
         /// <returns></returns>
-        Player LoadPlayer(string playername);
+        Player LoadPlayer(string playerName);
 
         /// <summary>
         /// Speichert einen Player.
@@ -65,22 +64,13 @@ namespace OctoAwesome
         void SavePlayer(Player player);
 
         /// <summary>
-        /// Entlädt das aktuelle Universum
+        /// Gibt den Planeten mit der angegebenen ID zurï¿½ck
         /// </summary>
-        /// <returns>Das gewünschte Universum, falls es existiert</returns>
-        IUniverse GetUniverse();
-
-        /// <summary>
-        /// Gibt den Planeten mit der angegebenen ID zurück
-        /// </summary>
-        /// <param name="planetId">Die Planteten-ID des gewünschten Planeten</param>
-        /// <returns>Der gewünschte Planet, falls er existiert</returns>
+        /// <param name="planetId">Die Planteten-ID des gewï¿½nschten Planeten</param>
+        /// <returns>Der gewï¿½nschte Planet, falls er existiert</returns>
         IPlanet GetPlanet(int planetId);
-
         ConcurrentDictionary<int, IPlanet> Planets { get; }
-
         IUpdateHub UpdateHub { get; }
-
         Player CurrentPlayer { get; }
 
         void SaveComponentContainer<TContainer, TComponent>(TContainer componentContainer)
@@ -90,20 +80,12 @@ namespace OctoAwesome
         void SaveChunkColumn(IChunkColumn value);
 
         IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
-
-        Entity LoadEntity(Guid entityId);
-
-        IEnumerable<Entity> LoadEntitiesWithComponent<T>() where T : IEntityComponent;
-
-        IEnumerable<Guid> GetEntityIdsFromComponent<T>() where T : IEntityComponent;
-
-        (Guid Id, T Component)[] GetEntityComponents<T>(Guid[] entityIds) where T : IEntityComponent, new();
-
+        Entity? LoadEntity(Guid entityId);
         (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new();
 
         T GetComponent<T>(Guid id) where T : IComponent, new();
 
-        TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+        TContainer? LoadComponentContainer<TContainer, TComponent>(Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent;
     }

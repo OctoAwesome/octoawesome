@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Caching
 {
+
     public class CacheService : IDisposable
     {
         private readonly Dictionary<Type, Cache> caches;
@@ -15,7 +16,6 @@ namespace OctoAwesome.Caching
         private readonly IResourceManager resourceManager;
         private CancellationTokenSource cancellationTokenSource;
         private Task garbageCollectionTask;
-
 
         public CacheService(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub)
         {
@@ -36,6 +36,7 @@ namespace OctoAwesome.Caching
             caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
         }
         
+
         public void Start()
         {
             if(cancellationTokenSource is not null)
@@ -59,7 +60,6 @@ namespace OctoAwesome.Caching
             garbageCollectionTask.Start();
 
         }
-
         public void Stop()
         {
             cancellationTokenSource.Cancel();
@@ -73,7 +73,6 @@ namespace OctoAwesome.Caching
                 item.Stop();
             }
         }
-
         public void Dispose()
         {
             Stop();
@@ -89,16 +88,14 @@ namespace OctoAwesome.Caching
             caches.Clear();
         }
 
-        public TValue Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+        public TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
         {
             if(caches.TryGetValue(typeof(TValue), out var cache))
             {
                 return cache.Get<TKey, TValue>(key, loadingMode);
             }
-            else
-            {
-                return default;
-            }
+
+            return default;
         }
 
         private async Task GarbageCollection(CancellationToken cancellationToken)
@@ -111,7 +108,7 @@ namespace OctoAwesome.Caching
                     item.CollectGarbage();
                 }
 
-                await Task.Delay(30000);
+                await Task.Delay(30000, cancellationToken);
             }
         }
     }

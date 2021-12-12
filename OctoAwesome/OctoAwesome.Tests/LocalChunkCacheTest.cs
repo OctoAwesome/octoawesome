@@ -131,6 +131,4 @@ namespace OctoAwesome.Tests
         //    Assert.Equals(chunk.Index, new Index3(15, 15, 0));
         //}
     }
-
-
 }

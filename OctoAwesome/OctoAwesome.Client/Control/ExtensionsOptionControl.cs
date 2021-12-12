@@ -2,6 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using System;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -94,7 +95,9 @@ namespace OctoAwesome.Client.Controls
 
             enableButton.LeftMouseClick += (s, e) =>
             {
-                IExtension ext = loadedExtensionsList.SelectedItem;
+                var ext = loadedExtensionsList.SelectedItem;
+                if (ext == null)
+                    throw new NullReferenceException("Enable button should not be clickable when no item is selected.");
                 loadedExtensionsList.Items.Remove(ext);
                 activeExtensionsList.Items.Add(ext);
                 activeExtensionsList.SelectedItem = ext;
@@ -102,7 +105,9 @@ namespace OctoAwesome.Client.Controls
 
             disableButton.LeftMouseClick += (s, e) =>
             {
-                IExtension ext = activeExtensionsList.SelectedItem;
+                var ext = activeExtensionsList.SelectedItem;
+                if (ext == null)
+                    throw new NullReferenceException("Disable button should not be clickable when no item is selected.");
                 activeExtensionsList.Items.Remove(ext);
                 loadedExtensionsList.Items.Add(ext);
                 loadedExtensionsList.SelectedItem = ext;
@@ -128,14 +133,15 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private Control ListTemplateGenerator(IExtension ext)
+        private Control ListTemplateGenerator(IExtension? ext)
         {
+            Debug.Assert(ext != null, nameof(ext) + " != null");
             return new Label(ScreenManager)
-            {
-                Text = ext.Name,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                HorizontalTextAlignment = HorizontalAlignment.Left
-            };
+                   {
+                       Text = ext.Name,
+                       HorizontalAlignment = HorizontalAlignment.Stretch,
+                       HorizontalTextAlignment = HorizontalAlignment.Left
+                   };
         }
 
         private void loadedList_SelectedItemChanged(Control control, SelectionEventArgs<IExtension> e)
@@ -172,10 +178,10 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void SetPackInfo(IExtension ext)
+        private void SetPackInfo(IExtension? ext)
         {
             if (ext != null)
-                infoLabel.Text = string.Format("{0}{1}{2}", ext.Name, Environment.NewLine, ext.Description);
+                infoLabel.Text = $"{ext.Name}{Environment.NewLine}{ext.Description}";
             else
                 infoLabel.Text = string.Empty;
         }

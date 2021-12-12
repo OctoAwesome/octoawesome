@@ -1,32 +1,29 @@
 ﻿using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
+
     public sealed class EntityNotification : SerializableNotification
     {
+
         public ActionType Type { get; set; }
         public Guid EntityId { get; set; }
         public Entity Entity
         {
-            get => entity; set
+            get => entity;
+            set
             {
                 entity = value;
                 EntityId = value?.Id ?? default;
             }
         }
-
-        public PropertyChangedNotification Notification { get; set; }
+        public PropertyChangedNotification? Notification { get; set; }
 
         private Entity entity;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
-
         public EntityNotification()
         {
             propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
@@ -36,12 +33,9 @@ namespace OctoAwesome.Notifications
         {
             EntityId = id;
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             Type = (ActionType)reader.ReadInt32();
-
-
             if (Type == ActionType.Add)
                 Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
             else
@@ -52,7 +46,6 @@ namespace OctoAwesome.Notifications
                 Notification = Serializer.DeserializePoolElement(
                     propertyChangedNotificationPool, reader.ReadBytes(reader.ReadInt32()));
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((int)Type);
@@ -77,7 +70,6 @@ namespace OctoAwesome.Notifications
                 writer.Write(bytes);
             }
         }
-
         protected override void OnRelease()
         {
             Notification?.Release();
@@ -88,13 +80,17 @@ namespace OctoAwesome.Notifications
 
             base.OnRelease();
         }
-
         public enum ActionType
         {
+
             None,
+
             Add,
+
             Remove,
+
             Update,
+
             Request
         }
     }

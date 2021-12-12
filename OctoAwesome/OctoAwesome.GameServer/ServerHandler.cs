@@ -4,29 +4,25 @@ using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using System;
 using System.Net;
-using System.Threading.Tasks;
 using OctoAwesome.Rx;
-
-
 namespace OctoAwesome.GameServer
 {
     public class ServerHandler
     {
-        public SimulationManager SimulationManager { get; set; }
-        public IUpdateHub UpdateHub { get; private set; }
+        public SimulationManager SimulationManager { get; }
+        public IUpdateHub UpdateHub { get; }
 
         private readonly ILogger logger;
         private readonly Server server;
         private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
-
         public ServerHandler()
         {
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
 
-            TypeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<Server>(InstanceBehaviour.Singleton);
-            TypeContainer.Register<SimulationManager>(InstanceBehaviour.Singleton);
+            TypeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
+            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
+            TypeContainer.Register<Server>(InstanceBehavior.Singleton);
+            TypeContainer.Register<SimulationManager>(InstanceBehavior.Singleton);
 
             SimulationManager = TypeContainer.Get<SimulationManager>();
             UpdateHub = TypeContainer.Get<IUpdateHub>();
@@ -34,7 +30,6 @@ namespace OctoAwesome.GameServer
 
             defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
-
         public void Start()
         {
             SimulationManager.Start(); //Temp
@@ -45,7 +40,7 @@ namespace OctoAwesome.GameServer
         private void ServerOnClientConnected(object sender, ConnectedClient e)
         {
             logger.Debug("Hurra ein neuer Spieler");
-            e.ServerSubscription = e.Packages.Subscribe(e => OnNext(e), ex => logger.Error(ex.Message, ex));
+            e.ServerSubscription = e.Packages.Subscribe(OnNext, ex => logger.Error(ex.Message, ex));
         }
 
         public void OnNext(Package value)

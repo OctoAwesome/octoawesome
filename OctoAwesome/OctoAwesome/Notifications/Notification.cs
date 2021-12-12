@@ -1,14 +1,11 @@
 ﻿using OctoAwesome.Pooling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
+
     public abstract class Notification : IPoolElement
     {
+
         public uint SenderId { get; set; }
 
         private IPool pool;
@@ -17,18 +14,16 @@ namespace OctoAwesome.Notifications
         {
             return true;
         }
-
         public void Init(IPool pool)
         {
             this.pool = pool;
             OnInit();
         }
-
         public void Release()
         {
             SenderId = 0;
             OnRelease();
-            pool.Push(this);
+            pool.Return(this);
         }
 
         /// <summary>

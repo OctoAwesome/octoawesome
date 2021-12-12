@@ -1,10 +1,9 @@
 ﻿#region Using Statements
-using OctoAwesome.Client.Cache;
+
 using OctoAwesome.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+
 #endregion
 
 namespace OctoAwesome.Client
@@ -14,7 +13,7 @@ namespace OctoAwesome.Client
     /// </summary>
     public static class Program
     {
-        static OctoGame game;
+        static OctoGame? game;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -34,7 +33,11 @@ namespace OctoAwesome.Client
                         Path.Combine(".", "logs", $"client-dump-{DateTime.Now:ddMMyy_hhmmss}.txt"),
                         e.ExceptionObject.ToString());
 
-                    logger.Fatal($"Unhandled Exception: {e.ExceptionObject}", e.ExceptionObject as Exception);
+                    string message = $"Unhandled Exception: {e.ExceptionObject}";
+                    if (e.ExceptionObject is Exception exception)
+                        logger.Fatal(message, exception);
+                    else
+                        logger.Fatal(message);
                     logger.Flush();
                 };
 
@@ -42,10 +45,9 @@ namespace OctoAwesome.Client
                     game.Run(60, 60);
             }
         }
-
         public static void Restart()
         {
-            game.Exit();
+            game?.Exit();
             using (game = new OctoGame())
                 game.Run(60, 60);
         }

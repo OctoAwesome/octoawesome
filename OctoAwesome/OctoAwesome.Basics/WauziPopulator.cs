@@ -1,31 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.Entities;
-using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
     public class WauziPopulator : IMapPopulator
     {
-
-        Random r = new Random();
-
-        public int Order
-        {
-            get
-            {
-                return 11;
-            }
-        }
+        private readonly Random r = new();
+        public int Order => 11;
 
         int ispop = 10;
-
-        public void Populate(IResourceManager resourcemanager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11)
+        public void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11)
         {
             //HACK: Activate Wauzi
             return;

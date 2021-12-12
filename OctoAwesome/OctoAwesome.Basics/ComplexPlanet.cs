@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Basics.Biomes;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace OctoAwesome.Basics
@@ -9,13 +10,15 @@ namespace OctoAwesome.Basics
         // Die Gravitationskonstante ist absichtlich so "groß", vgl. Issue #220
         private const double GravitationalConstant = 6.67e-7;
 
-        public int HEIGHTMAPDETAILS = 8;
-
-        public float[,] Heightmap { get; private set; }
-
-        public float[,,] CloudMap { get; private set; }
-
-        public SurfaceBiomeGenerator BiomeGenerator { get; private set; }
+        private SurfaceBiomeGenerator? biomeGenerator;
+        public SurfaceBiomeGenerator BiomeGenerator
+        {
+            get
+            {
+                Debug.Assert(biomeGenerator != null, nameof(biomeGenerator) + " != null");
+                return biomeGenerator;
+            }
+        }
         
         /// <summary>
         /// Konstruktor des komplexen Map-Generators
@@ -35,24 +38,22 @@ namespace OctoAwesome.Basics
             // der Annahme einer Kugel mit gleicher Oberfläche wie der rechteckige Planet.
             var radius = Math.Sqrt((Size.X * Size.Y) / (16 * Math.PI));
             Gravity = (float)((4f / 3f) * Math.PI * GravitationalConstant * averageDensity * radius);
-            Initalize();
+            Initialize();
         }
-
-        public ComplexPlanet() : base()
+        public ComplexPlanet()
         {
             //Initalize();
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
-            Initalize();
+            Initialize();
         }
 
-        private void Initalize()
+        private void Initialize()
         {
-            BiomeGenerator = new SurfaceBiomeGenerator(this, 40);
-            ClimateMap = new Climate.ComplexClimateMap(this);
+            biomeGenerator = new SurfaceBiomeGenerator(this, 40);
+            climateMap = new Climate.ComplexClimateMap(this);
         }
     }
 }

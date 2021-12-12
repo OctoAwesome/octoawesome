@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace OctoAwesome.Runtime
 {
@@ -46,7 +45,6 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <returns></returns>
         public IBlockDefinition[] BlockDefinitions { get; }
-
         public IMaterialDefinition[] MaterialDefinitions { get; }
 
         /// <summary>
@@ -54,7 +52,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="index">Index der BlockDefinition</param>
         /// <returns>BlockDefinition</returns>
-        public IBlockDefinition GetBlockDefinitionByIndex(ushort index)
+        public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)
         {
             if (index == 0)
                 return null;
@@ -80,20 +78,21 @@ namespace OctoAwesome.Runtime
         public ushort GetDefinitionIndex<T>() where T : IDefinition
         {
             int i = 0;
-            IDefinition definition = default;
+            IDefinition? definition = default;
             foreach (var  d in Definitions)
             {
                 if (i > 0 && d.GetType() == typeof(T))
                 {
                     throw new InvalidOperationException("Multiple Object where found that match the condition");
                 }
-                else if (i == 0 && d.GetType() == typeof(T))
+
+                if (i == 0 && d.GetType() == typeof(T))
                 {
                     definition = d;
                     ++i;
                 }
             }
-            return GetDefinitionIndex(definition);
+            return definition == null ?  (ushort)0 : GetDefinitionIndex(definition);
         }
 
         /// <summary>
@@ -106,26 +105,25 @@ namespace OctoAwesome.Runtime
             // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary (+1 von Maxi am 07.04.2021))
             return extensionResolver.GetDefinitions<T>();
         }
-
-        public T GetDefinitionByTypeName<T>(string typeName) where T : IDefinition
+        public T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition
         {
             var searchedType = typeof(T);
             if (typeof(IBlockDefinition).IsAssignableFrom(searchedType))
             {
                 return GetDefinitionFromArrayByTypeName<T>(typeName, BlockDefinitions);
             }
-            else if (typeof(IItemDefinition).IsAssignableFrom(searchedType))
+
+            if (typeof(IItemDefinition).IsAssignableFrom(searchedType))
             {
                 return GetDefinitionFromArrayByTypeName<T>(typeName, ItemDefinitions);
             }
-            else if (typeof(IMaterialDefinition).IsAssignableFrom(searchedType))
+
+            if (typeof(IMaterialDefinition).IsAssignableFrom(searchedType))
             {
                 return GetDefinitionFromArrayByTypeName<T>(typeName, MaterialDefinitions);
             }
-            else
-            {
-                return default;
-            }
+
+            return default;
         }
 
         private static T GetDefinitionFromArrayByTypeName<T>(string typeName, IDefinition[] array) where T : IDefinition

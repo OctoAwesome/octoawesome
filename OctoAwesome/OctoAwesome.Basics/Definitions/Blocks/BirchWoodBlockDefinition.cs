@@ -1,35 +1,20 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
-using OctoAwesome.Basics.Properties;
 using OctoAwesome.Definitions;
-using OctoAwesome.Information;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
     public sealed class BirchWoodBlockDefinition : BlockDefinition
     {
         public override string Name => Languages.OctoBasics.BirchWood;
-
         public override string Icon => "birch_wood_top";
-
         public override bool HasMetaData => true;
-
-        public override string[] Textures{ get; } = new[] {
-                "birch_wood_top",
-                "birch_wood_side" };
-
+        public override string[] Textures{ get; } = { "birch_wood_top",
+                                                      "birch_wood_side" };
         public override IMaterialDefinition Material { get; }
-
-
         public BirchWoodBlockDefinition(WoodMaterialDefinition material)
         {
             Material = material;
         }
-
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
             int x, int y, int z)
         {
@@ -95,7 +80,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             // Assert here
             return -1;
         }
-
         public override int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
             OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);

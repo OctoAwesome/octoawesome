@@ -1,5 +1,4 @@
 ﻿using OctoAwesome.Notifications;
-using OctoAwesome.PoC.Rx;
 using System;
 using System.Collections.Generic;
 

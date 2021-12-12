@@ -2,8 +2,6 @@
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
-using OctoAwesome.Runtime;
-using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {

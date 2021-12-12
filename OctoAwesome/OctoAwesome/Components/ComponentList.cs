@@ -1,9 +1,9 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Serialization;
-using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using OctoAwesome.Caching;
@@ -23,21 +23,10 @@ namespace OctoAwesome
 
         private readonly Dictionary<Type, T> components = new Dictionary<Type, T>();
 
-        public T this[Type type]
-        {
-            get
-            {
-                if (components.TryGetValue(type, out T result))
-                    return result;
-
-                return default;
-            }
-        }
-
+        public T? this[Type type] => components.TryGetValue(type, out var result) ? result : default;
         public ComponentList()
         {
         }
-
         public ComponentList(Action<T> insertValidator, Action<T> removeValidator, Action<T> onInserter, Action<T> onRemover)
         {
             this.insertValidator = insertValidator;
@@ -45,7 +34,6 @@ namespace OctoAwesome
             this.onInserter = onInserter;
             this.onRemover = onRemover;
         }
-
         public IEnumerator<T> GetEnumerator()
             => components.Values.GetEnumerator();
 
@@ -108,24 +96,23 @@ namespace OctoAwesome
         /// <returns>True if the component was found, false otherwise</returns>
         public bool TryGetComponent<V>(out V component) where V : T
         {
-            var contains = components.TryGetValue(typeof(V), out T result);
+            var contains = components.TryGetValue(typeof(V), out var result);
             component = default;
             if (!contains)
                 return contains;
 
-            component = GenericCaster<V, T>.Cast(result);
+            component = GenericCaster<T, V>.Cast(result!);
 
             return contains;
         }
-
         /// <summary>
         /// Returns the Component of the given Type or null
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>Component</returns>
-        public V GetComponent<V>()
+        public V? GetComponent<V>()
         {
-            if (components.TryGetValue(typeof(V), out T result))
+            if (components.TryGetValue(typeof(V), out var result))
                 return (V)(object)result;
 
             return default;
@@ -138,7 +125,7 @@ namespace OctoAwesome
         /// <returns></returns>
         public bool RemoveComponent<V>() where V : T
         {
-            if (!components.TryGetValue(typeof(V), out T component))
+            if (!components.TryGetValue(typeof(V), out var component))
                 return false;
 
             removeValidator?.Invoke(component);
@@ -179,9 +166,7 @@ namespace OctoAwesome
 
                 var type = Type.GetType(name);
 
-                T component;
-
-                if (!components.TryGetValue(type, out component))
+                if (!components.TryGetValue(type, out var component))
                 {
                     component = (T)TypeContainer.GetUnregistered(type);
                     //components.Add(type, component);

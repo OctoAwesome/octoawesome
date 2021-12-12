@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Screens
 
             var playerNameInput = new Textbox(manager)
             {
-                Text = game.Settings.Get("player", "USERNAME"),
+                Text = game.Settings.Get("player", "USERNAME")!,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black)
 

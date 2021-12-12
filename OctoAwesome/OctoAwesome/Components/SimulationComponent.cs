@@ -1,10 +1,5 @@
 ﻿using engenious;
-using OctoAwesome.EntityComponents;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Components
 {
@@ -90,68 +85,63 @@ namespace OctoAwesome.Components
         /// <returns>Ergebnis</returns>
         protected abstract void OnRemove(T value);
     }
-
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T, S, C1> : SimulationComponent, IHoldComponent<T>
-        where T : IContainsComponents
-        where S : SimulationComponentRecord<T, C1>
-        where C1 : Component
+    public abstract class SimulationComponent<TContainer, TCachedContainer, TComponent> : SimulationComponent, IHoldComponent<TContainer>
+        where TContainer : IComponentContainer
+        where TCachedContainer : SimulationComponentRecord<TContainer, TComponent>
+        where TComponent : Component
     {
-
-        protected readonly List<S> values = new();
-
+        protected readonly List<TCachedContainer> values = new();
+        
         /// <summary>
         /// Adds a new value of <typeparamref name="T"/> to this Component
         /// </summary>
         /// <param name="value">an instance of <typeparamref name="T"/> to add</param>
-        public void Add(T value)
+        public void Add(TContainer value)
         {
             if (Match(value))
             {
                 values.Add(OnAdd(value));
             }
         }
-
-
+        
 
         /// <summary>
         /// Is called during <see cref="Add(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
         /// </summary>
         /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
-        protected virtual S OnAdd(T value)
-            => (S)new SimulationComponentRecord<T, C1>(value, value.GetComponent<C1>());
-
+        protected virtual TCachedContainer OnAdd(TContainer value)
+            => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent>(value, value.GetComponent<TComponent>());
+        
         /// <summary>
         /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
         /// </summary>
         /// <param name="value">an instance of <typeparamref name="T"/> to Remove</param>
-        public void Remove(T value)
+        public void Remove(TContainer value)
         {
             OnRemove(value);
             values.RemoveAll(c => Compare(c, value));
         }
-
         /// <summary>
         /// Is called during <see cref="Remove(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
         /// </summary>
         /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
-        protected virtual void OnRemove(T value) { }
+        protected virtual void OnRemove(TContainer value) { }
 
-        protected virtual bool Compare(S left, T right)
+        protected virtual bool Compare(TCachedContainer left, TContainer right)
             => Equals(left.Value, right);
-
         /// <summary>
         /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
         /// </summary>
         /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected virtual bool Match(T value)
-            => value.ContainsComponent<C1>();
-
+        protected virtual bool Match(TContainer value)
+            => value.ContainsComponent<TComponent>();
+        
         /// <summary>
         /// Updatemethode der Entity
         /// </summary>
@@ -161,32 +151,30 @@ namespace OctoAwesome.Components
             foreach (var value in values)
                 UpdateValue(gameTime, value);
         }
-
         /// <summary>
         /// Internes Event, für das Updaten der Simulationskomponente
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
         /// <param name="value">Entity die geupdatet werden muss</param>
-        protected abstract void UpdateValue(GameTime gameTime, S value);
+        protected abstract void UpdateValue(GameTime gameTime, TCachedContainer value);
 
     }
 
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T, S, C1, C2> : SimulationComponent, IHoldComponent<T>
-        where T : IContainsComponents
-        where S : SimulationComponentRecord<T, C1, C2>
-        where C1 : Component
-        where C2 : Component
+    public abstract class SimulationComponent<TContainer, TCachedContainer, TComponent1, TComponent2> : SimulationComponent, IHoldComponent<TContainer>
+        where TContainer : IComponentContainer
+        where TCachedContainer : SimulationComponentRecord<TContainer, TComponent1, TComponent2>
+        where TComponent1 : Component
+        where TComponent2 : Component
     {
-        protected readonly List<S> values = new();
-
+        protected readonly List<TCachedContainer> values = new();
         /// <summary>
         /// Adds a new value of <typeparamref name="T"/> to this Component
         /// </summary>
         /// <param name="value">an instance of <typeparamref name="T"/> to add</param>
-        public void Add(T value)
+        public void Add(TContainer value)
         {
             if (Match(value))
             {
@@ -199,14 +187,14 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
-        protected virtual S OnAdd(T value)
-            => (S)new SimulationComponentRecord<T, C1, C2>(value, value.GetComponent<C1>(), value.GetComponent<C2>());
-
+        protected virtual TCachedContainer OnAdd(TContainer value)
+            => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
+        
         /// <summary>
         /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
         /// </summary>
         /// <param name="value">an instance of <typeparamref name="T"/> to Remove</param>
-        public void Remove(T value)
+        public void Remove(TContainer value)
         {
             OnRemove(value);
             values.RemoveAll(c => Compare(c, value));
@@ -217,9 +205,9 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
-        protected virtual void OnRemove(T value) { }
+        protected virtual void OnRemove(TContainer value) { }
 
-        protected virtual bool Compare(S left, T right)
+        protected virtual bool Compare(TCachedContainer left, TContainer right)
             => Equals(left.Value, right);
 
         /// <summary>
@@ -227,9 +215,9 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected virtual bool Match(T value)
-            => value.ContainsComponent<C1>()
-                && value.ContainsComponent<C2>();
+        protected virtual bool Match(TContainer value)
+            => value.ContainsComponent<TComponent1>()
+                && value.ContainsComponent<TComponent2>();
 
         /// <summary>
         /// Updatemethode der Entity
@@ -247,28 +235,27 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
         /// <param name="value">Entity die geupdatet werden muss</param>
-        protected abstract void UpdateValue(GameTime gameTime, S value);
+        protected abstract void UpdateValue(GameTime gameTime, TCachedContainer value);
 
     }
 
     /// <summary>
     /// Basisklasse für Simulationskomponenten
     /// </summary>
-    public abstract class SimulationComponent<T, S, C1, C2, C3> : SimulationComponent, IHoldComponent<T>
-        where T : IContainsComponents
-        where S : SimulationComponentRecord<T, C1, C2, C3>
-        where C1 : Component
-        where C2 : Component
-        where C3 : Component
+    public abstract class SimulationComponent<TContainer, TCachedContainer, TComponent1, TComponent2, TComponent3> : SimulationComponent, IHoldComponent<TContainer>
+        where TContainer : IComponentContainer
+        where TCachedContainer : SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>
+        where TComponent1 : Component
+        where TComponent2 : Component
+        where TComponent3 : Component
     {
-
-        protected readonly List<S> values = new();
-
+        protected readonly List<TCachedContainer> values = new();
+        
         /// <summary>
         /// Adds a new value of <typeparamref name="T"/> to this Component
         /// </summary>
         /// <param name="value">an instance of <typeparamref name="T"/> to add</param>
-        public void Add(T value)
+        public void Add(TContainer value)
         {
             if (Match(value))
             {
@@ -282,14 +269,14 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
-        protected virtual S OnAdd(T value)
-            => (S)new SimulationComponentRecord<T, C1, C2, C3>(value, value.GetComponent<C1>(), value.GetComponent<C2>(), value.GetComponent<C3>());
-
+        protected virtual TCachedContainer OnAdd(TContainer value)
+            => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>(), value.GetComponent<TComponent3>());
+        
         /// <summary>
         /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
         /// </summary>
         /// <param name="value">an instance of <typeparamref name="T"/> to Remove</param>
-        public void Remove(T value)
+        public void Remove(TContainer value)
         {
             OnRemove(value);
             values.RemoveAll(c => Compare(c, value));
@@ -300,10 +287,8 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
-        protected virtual void OnRemove(T value) { }
-
-
-        protected virtual bool Compare(S left, T right)
+        protected virtual void OnRemove(TContainer value) { }
+        protected virtual bool Compare(TCachedContainer left, TContainer right)
             => Equals(left.Value, right);
 
         /// <summary>
@@ -311,10 +296,10 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected virtual bool Match(T value)
-            => value.ContainsComponent<C1>()
-                && value.ContainsComponent<C2>()
-                && value.ContainsComponent<C3>();
+        protected virtual bool Match(TContainer value)
+            => value.ContainsComponent<TComponent1>()
+                && value.ContainsComponent<TComponent2>()
+                && value.ContainsComponent<TComponent3>();
 
         /// <summary>
         /// Updatemethode der Entity
@@ -332,12 +317,11 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
         /// <param name="value">Entity die geupdatet werden muss</param>
-        protected abstract void UpdateValue(GameTime gameTime, S value);
+        protected abstract void UpdateValue(GameTime gameTime, TCachedContainer value);
 
     }
-
-    public record SimulationComponentRecord<T, C1>(T Value, C1 Component);
-    public record SimulationComponentRecord<T, C1, C2>(T Value, C1 Component1, C2 Component2);
-    public record SimulationComponentRecord<T, C1, C2, C3>(T Value, C1 Component1, C2 Component2, C3 Component3);
+    public record SimulationComponentRecord<TContainer, TComponent>(TContainer Value, TComponent Component);
+    public record SimulationComponentRecord<TContainer, TComponent1, TComponent2>(TContainer Value, TComponent1 Component1, TComponent2 Component2);
+    public record SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(TContainer Value, TComponent1 Component1, TComponent2 Component2, TComponent3 Component3);
 }
 

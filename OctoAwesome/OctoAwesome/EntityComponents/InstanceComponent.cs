@@ -1,5 +1,4 @@
-﻿using OctoAwesome.Components;
-using OctoAwesome.Notifications;
+﻿using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using System;
 using System.IO;
@@ -10,24 +9,25 @@ namespace OctoAwesome.EntityComponents
     /// Base Class for all Entity Components.
     /// </summary>
     public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification> 
-        where T: ComponentContainer
+        where T : ComponentContainer
     {
         /// <summary>
         /// Reference to the Entity.
         /// </summary>
         public T Instance { get; private set; }
-
         public Guid InstanceId { get; set; }
 
         public ulong InstanceTypeId { get; private set; }
-
         public InstanceComponent()
         {
         }
 
         public void SetInstance(T instance)
         {
-            if (instance is not null && Instance?.Id == instance.Id)
+            if (instance is null)
+                throw new ArgumentNullException(nameof(instance));
+            
+            if (Instance?.Id == instance.Id)
                 return;
 
             var type = instance.GetType();
@@ -41,14 +41,12 @@ namespace OctoAwesome.EntityComponents
             Instance = instance;
             OnSetInstance();
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
             writer.Write(InstanceId.ToByteArray());
             writer.Write(InstanceTypeId);
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
@@ -56,7 +54,6 @@ namespace OctoAwesome.EntityComponents
             InstanceId = new Guid(reader.ReadBytes(16));
             InstanceTypeId = reader.ReadUInt64();
         }
-
         protected virtual void OnSetInstance()
         {
 

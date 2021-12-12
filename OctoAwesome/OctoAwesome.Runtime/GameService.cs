@@ -2,8 +2,8 @@
 using OctoAwesome.Common;
 using OctoAwesome.Definitions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+
 namespace OctoAwesome.Runtime
 {
     // sealed -> prevent abuse of third party´s
@@ -39,7 +39,7 @@ namespace OctoAwesome.Runtime
         public ILocalChunkCache GetLocalCache(bool passive, int dimensions, int range)
         {
             //new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-            return null;
+            throw new NotImplementedException();
         }
         /// <summary>
         /// Berechnet die Geschwindigkeit einer <see cref="Entity"/> nach der Kollision mit der Welt. (Original Lassi)
@@ -56,8 +56,7 @@ namespace OctoAwesome.Runtime
         public Vector3 WorldCollision(GameTime gameTime, Coordinate position, ILocalChunkCache cache, float radius, float height, 
             Vector3 deltaPosition, Vector3 velocity)
         {
-            if (cache == null)
-                throw new ArgumentNullException(nameof(cache));
+            Debug.Assert(cache != null, nameof(cache) + " != null");
 
             Vector3 move = deltaPosition;
 

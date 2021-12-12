@@ -2,18 +2,14 @@
 using OctoAwesome.Components;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
+
     public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IFunctionalBlockComponent
     {
+
         public Coordinate Position
         {
             get => position;
@@ -31,27 +27,21 @@ namespace OctoAwesome.EntityComponents
                 planet = TryGetPlanet(value.Planet);
             }
         }
-
         public float Direction { get; set; }
-        public IPlanet Planet
-        {
-            get => planet ??= TryGetPlanet(position.Planet);
-            private set => planet = value;
-        }
+
+        public IPlanet Planet => planet ??= TryGetPlanet(position.Planet);
 
         private Coordinate position;
         private bool posUpdate;
-        private IPlanet planet;
+        private IPlanet? planet;
         private readonly IResourceManager resourceManager;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
-
         public PositionComponent()
         {
             Sendable = true;
             resourceManager = TypeContainer.Get<IResourceManager>();
             propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
@@ -64,7 +54,6 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
@@ -88,17 +77,16 @@ namespace OctoAwesome.EntityComponents
 
             return resourceManager.GetPlanet(planetId);
         }
-
-        protected override void OnPropertyChanged<T>(T value, string callerName)
+        protected override void OnPropertyChanged<T>(T value, string propertyName)
         {
-            base.OnPropertyChanged(value, callerName);
+            base.OnPropertyChanged(value, propertyName);
 
-            if (callerName == nameof(Position) && posUpdate)
+            if (propertyName == nameof(Position) && posUpdate)
             {
-                var updateNotification = propertyChangedNotificationPool.Get();
+                var updateNotification = propertyChangedNotificationPool.Rent();
 
                 updateNotification.Issuer = nameof(PositionComponent);
-                updateNotification.Property = callerName;
+                updateNotification.Property = propertyName;
 
                 using (var stream = new MemoryStream())
                 using (var writer = new BinaryWriter(stream))
@@ -110,7 +98,6 @@ namespace OctoAwesome.EntityComponents
                 Push(updateNotification);
             }
         }
-
         public override void OnNotification(SerializableNotification notification)
         {
             base.OnNotification(notification);

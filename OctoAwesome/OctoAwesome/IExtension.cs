@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome
+﻿namespace OctoAwesome
 {
     /// <summary>
     /// Interface for all Mod Plugin Extensions.
@@ -26,6 +20,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="extensionLoader">ExtensionsLoader</param>
         void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer);
+
         void Register(ITypeContainer typeContainer);
     }
 }

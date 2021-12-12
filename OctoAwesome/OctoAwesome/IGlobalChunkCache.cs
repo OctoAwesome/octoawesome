@@ -1,5 +1,4 @@
 ﻿using OctoAwesome.Notifications;
-using System;
 
 namespace OctoAwesome
 {
@@ -28,14 +27,13 @@ namespace OctoAwesome
         /// <returns>Den neu abonnierten Chunk</returns>
         IChunkColumn Subscribe(Index2 position);
         
-
         /// <summary>
         /// Liefert den Chunk, sofern geladen.
         /// </summary>
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des zurückzugebenden Chunks</param>
         /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
-        IChunkColumn Peek(Index2 position);
+        IChunkColumn? Peek(Index2 position);
         
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
@@ -44,9 +42,11 @@ namespace OctoAwesome
         void Release(Index2 position);
 
         void BeforeSimulationUpdate(Simulation simulation);
+
         void AfterSimulationUpdate(Simulation simulation);
 
         void OnUpdate(SerializableNotification notification);
+
         void Update(SerializableNotification notification);
     }
 }

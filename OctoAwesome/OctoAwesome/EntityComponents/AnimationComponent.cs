@@ -4,25 +4,21 @@ using engenious.Graphics;
 using OctoAwesome.Components;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
+
     public class AnimationComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
+
         public float CurrentTime { get; set; }
         public float MaxTime { get; set; }
         public float AnimationSpeed { get; set; }
-
         public AnimationComponent()
         {
             Sendable = true;
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write(CurrentTime);
@@ -30,7 +26,6 @@ namespace OctoAwesome.EntityComponents
             writer.Write(AnimationSpeed);
             base.Serialize(writer);
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             CurrentTime = reader.ReadSingle();
@@ -47,7 +42,6 @@ namespace OctoAwesome.EntityComponents
                 return BitConverter.Int32BitsToSingle(BitConverter.SingleToInt32Bits(value) - 1);
             return -float.Epsilon;
         }
-
         public void Update(GameTime gameTime, Model model)
         {
             if (model.CurrentAnimation is null)

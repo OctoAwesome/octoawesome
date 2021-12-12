@@ -8,12 +8,11 @@ namespace OctoAwesome.Client.Components
     internal sealed class CameraComponent : DrawableGameComponent
     {
         private PlayerComponent player;
-
-
         public CameraComponent(OctoGame game)
             : base(game)
         {
             player = game.Player;
+            Frustum = new BoundingFrustum(Matrix.Identity);
         }
 
         public override void Initialize()
@@ -83,7 +82,7 @@ namespace OctoAwesome.Client.Components
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);
-            Frustum = new BoundingFrustum(Projection*View);
+            Frustum.Matrix = Projection*View;
         }
 
         public Index3 CameraChunk { get; private set; }

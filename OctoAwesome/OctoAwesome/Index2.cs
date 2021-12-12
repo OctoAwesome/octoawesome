@@ -33,12 +33,6 @@ namespace OctoAwesome
         /// <summary>
         /// Initialisierung
         /// </summary>
-        /// <param name="value">Initialwerte</param>
-        public Index2(Index2 value) : this(value.X, value.Y) { }
-
-        /// <summary>
-        /// Initialisierung
-        /// </summary>
         /// <param name="value">Initialwerte (X und Y Anteil wird übernommen)</param>
         public Index2(Index3 value) : this(value.X, value.Y) { }
 
@@ -47,8 +41,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="size">Maximalwert für X</param>
         public void NormalizeX(int size)
-            => X = NormalizeAxis(X, size);
-
+            => X = Index2.NormalizeAxis(X, size);
+        
         /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
         /// </summary>
@@ -68,7 +62,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="size">Maximalwert für Y</param>
         public void NormalizeY(int size)
-            => Y = NormalizeAxis(Y, size);
+            => Y = Index2.NormalizeAxis(Y, size);
 
         /// <summary>
         /// Normalisiert die Y-Achse auf die angegebene Größe.
@@ -89,10 +83,10 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="x">Größe in X-Richtung</param>
         /// <param name="y">Größe in Y-Richtung</param>
-        public void NormalizeXY(int x, int y)
+        public void NormalizeXY(int sizeX, int sizeY)
         {
-            NormalizeX(x);
-            NormalizeY(y);
+            NormalizeX(sizeX);
+            NormalizeY(sizeY);
         }
 
         /// <summary>
@@ -119,7 +113,7 @@ namespace OctoAwesome
             index.NormalizeXY(size);
             return index;
         }
-
+        
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten X-Achse.
         /// </summary>
@@ -128,7 +122,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceX(int x, int size)
             => ShortestDistanceOnAxis(X, x, size);
-
+        
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten Y-Achse.
         /// </summary>
@@ -251,13 +245,13 @@ namespace OctoAwesome
         /// <param name="destination">Zielwert</param>
         /// <param name="size">Normalisierungsgröße</param>
         /// <returns></returns>
-        public static int ShortestDistanceOnAxis(int origin, int destination, int size)
+        public static int ShortestDistanceOnAxis(int source, int destination, int size)
         {
-            origin = NormalizeAxis(origin, size);
+            source = NormalizeAxis(source, size);
             destination = NormalizeAxis(destination, size);
 
             int half = size / 2;
-            int distance = destination - origin;
+            int distance = destination - source;
 
             if (distance > half)
                 distance -= size;
@@ -279,7 +273,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             =>obj is Index2 other && Equals(other);
 
 
@@ -289,7 +283,6 @@ namespace OctoAwesome
         /// <returns></returns>
         public override int GetHashCode()
             => (X << 16) + Y;
-
         public bool Equals(Index2 other)
             => other.X == X && other.Y == Y;
 

@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using OctoAwesome.Basics.Definitions.Materials;
+﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
+
     public class CactusBlockDefinition : BlockDefinition
     {
         public override string Icon => "cactus_inside";
-
+        
         public override string Name => Languages.OctoBasics.Cactus;
+        
+        public override string[] Textures { get; } = {"cactus_inside","cactus_side","cactus_top" };
+        
+        public override IMaterialDefinition Material { get; }
 
-        public override string[] Textures { get; }
-
-        public CactusBlockDefinition()
+        public CactusBlockDefinition(CactusMaterialDefinition material)
         {
-            Textures = new[] {"cactus_inside","cactus_side","cactus_top" };
+            Material = material;
         }
-
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
             int x, int y, int z)
         {
@@ -157,7 +154,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             // Assert here
             return -1;
         }
-
         public override int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
 
@@ -198,13 +194,6 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 default:
                     return base.GetTextureRotation(wall, manager, x, y, z); //should never ever happen
             }
-        }
-
-        public override IMaterialDefinition Material { get; }
-
-        public CactusBlockDefinition(CactusMaterialDefinition material) : this()
-        {
-            Material = material;
         }
     }
 }

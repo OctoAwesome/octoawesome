@@ -1,8 +1,6 @@
 ﻿using engenious;
-using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using System;
 
@@ -12,7 +10,7 @@ namespace OctoAwesome.Client.Screens
     {
         private readonly Panel panel;
 
-        public MessageScreen(BaseScreenComponent manager, AssetComponent assets, string title, string content, string buttonText = "OK", Action<Control, MouseEventArgs> buttonClick = null) : base(manager)
+        public MessageScreen(BaseScreenComponent manager, AssetComponent assets, string title, string content, string buttonText = "OK", Action<Control, MouseEventArgs>? buttonClick = null) : base(manager)
         {
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.5f);

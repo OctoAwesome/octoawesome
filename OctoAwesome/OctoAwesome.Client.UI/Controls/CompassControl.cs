@@ -7,32 +7,32 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.UI.Controls
 {
+
     public class CompassControl : Control
     {
         private readonly Texture2D compassTexture;
 
         private readonly AssetComponent assets;
 
-        public HeadComponent HeadComponent { get; set; }
+        private readonly HeadComponent headComponent;
 
         public CompassControl(BaseScreenComponent screenManager, AssetComponent assets, HeadComponent headComponent ) : base(screenManager)
         {
             this.assets = assets;
 
-            HeadComponent = headComponent;
+            this.headComponent = headComponent;
             Padding = Border.All(7);
 
             Texture2D background = assets.LoadTexture( "buttonLong_brown_pressed");
             Background = NineTileBrush.FromSingleTexture(background, 7, 7);
             compassTexture = assets.LoadTexture(GetType(), "compass");
         }
-
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (HeadComponent is null  || !assets.Ready)
+            if (headComponent is null  || !assets.Ready)
                 return;
 
-            float compassValue = HeadComponent.Angle / (float)(2 * Math.PI);
+            float compassValue = headComponent.Angle / (float)(2 * Math.PI);
             compassValue %= 1f;
             if (compassValue < 0)
                 compassValue += 1f;

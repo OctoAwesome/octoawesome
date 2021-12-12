@@ -181,8 +181,6 @@ namespace OctoAwesome.Client.Screens
             Manager.Player.InteractInput = false;
             base.OnNavigateFrom(args);
         }
-
-
         #endregion
 
         #region Keyboard Input

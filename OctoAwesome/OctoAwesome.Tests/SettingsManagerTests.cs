@@ -19,37 +19,25 @@ namespace OctoAwesome.Tests
             string[] newArray = settings.GetArray<string>("foo");
 
             Assert.True(testArray.SequenceEqual(newArray));
-
-
             int[] testArrayInt = new int[] { 3, 5, 333, 456, 3457 };
             settings.Set("fooInt", testArrayInt);
 
             int[] newArrayInt = settings.GetArray<int>("fooInt");
 
             Assert.True(testArray.SequenceEqual(newArray));
-
-
             bool[] testArrayBool = new bool[] { true, false };
             settings.Set("fooBool", testArrayBool);
 
             bool[] newArrayBool = settings.GetArray<bool>("fooBool");
 
             Assert.True(testArray.SequenceEqual(newArray));
-
-
             String inputString = "randomStringWith§$%&/()=Charakters";
             settings.Set("inputString", inputString);
-
-
             Assert.Equals(inputString, settings.Get<string>("inputString"));
-
-
             int inputInt = new Random().Next();
             settings.Set("inputInt", inputInt);
 
             Assert.Equals(inputInt, settings.Get<int>("inputInt"));
-
-
             bool inputBool = true;
             settings.Set("inputBool", inputBool);
 

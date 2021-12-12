@@ -1,5 +1,4 @@
 ﻿using OctoAwesome.Logging;
-using OctoAwesome.Network;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
@@ -9,6 +8,7 @@ using System;
 
 namespace OctoAwesome.Network
 {
+
     public class NetworkUpdateManager : IDisposable
     {
         private readonly Client client;
@@ -24,7 +24,6 @@ namespace OctoAwesome.Network
 
         private readonly Relay<Notification> simulation;
         private readonly Relay<Notification> chunk;
-
         public NetworkUpdateManager(Client client, IUpdateHub updateHub)
         {
             this.client = client;
@@ -101,17 +100,16 @@ namespace OctoAwesome.Network
                 default:
                     return;
             }
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Command = command;
             package.Payload = payload;
-            client.SendPackageAndRelase(package);
+            client.SendPackageAndRelease(package);
         }
 
         public void OnError(Exception error)
         {
             logger.Error(error.Message, error);
         }
-
         public void Dispose()
         {
             hubSubscription?.Dispose();
