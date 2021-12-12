@@ -16,20 +16,20 @@ namespace OctoAwesome.Client.UI.Controls
 
         private readonly HeadComponent headComponent;
 
-        public CompassControl(BaseScreenComponent screenManager, AssetComponent assets, HeadComponent headComponent ) : base(screenManager)
+        public CompassControl(BaseScreenComponent screenManager, AssetComponent assets, HeadComponent headComponent) : base(screenManager)
         {
             this.assets = assets;
 
             this.headComponent = headComponent;
             Padding = Border.All(7);
 
-            Texture2D background = assets.LoadTexture( "buttonLong_brown_pressed");
+            Texture2D background = assets.LoadTexture("buttonLong_brown_pressed");
             Background = NineTileBrush.FromSingleTexture(background, 7, 7);
             compassTexture = assets.LoadTexture(GetType(), "compass");
         }
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (headComponent is null  || !assets.Ready)
+            if (headComponent is null || !assets.Ready)
                 return;
 
             float compassValue = headComponent.Angle / (float)(2 * Math.PI);
@@ -39,9 +39,9 @@ namespace OctoAwesome.Client.UI.Controls
 
             int offset = (int)(compassTexture.Width * compassValue);
             offset -= contentArea.Width / 2;
-            int offsetY = (compassTexture.Height -contentArea.Height) / 2;
+            int offsetY = (compassTexture.Height - contentArea.Height) / 2;
 
-            batch.Draw(compassTexture, new Rectangle(contentArea.X,contentArea.Y-offsetY,contentArea.Width,contentArea.Height), new Rectangle(offset, 0, contentArea.Width, contentArea.Height+offsetY), Color.White * alpha);
+            batch.Draw(compassTexture, new Rectangle(contentArea.X, contentArea.Y - offsetY, contentArea.Width, contentArea.Height), new Rectangle(offset, 0, contentArea.Width, contentArea.Height + offsetY), Color.White * alpha);
         }
     }
 }

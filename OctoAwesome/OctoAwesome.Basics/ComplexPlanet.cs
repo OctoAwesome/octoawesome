@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics
                 return biomeGenerator;
             }
         }
-        
+
         /// <summary>
         /// Konstruktor des komplexen Map-Generators
         /// </summary>

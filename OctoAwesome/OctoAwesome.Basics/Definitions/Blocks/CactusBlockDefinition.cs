@@ -7,11 +7,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public class CactusBlockDefinition : BlockDefinition
     {
         public override string Icon => "cactus_inside";
-        
+
         public override string Name => Languages.OctoBasics.Cactus;
-        
-        public override string[] Textures { get; } = {"cactus_inside","cactus_side","cactus_top" };
-        
+
+        public override string[] Textures { get; } = { "cactus_inside", "cactus_side", "cactus_top" };
+
         public override IMaterialDefinition Material { get; }
 
         public CactusBlockDefinition(CactusMaterialDefinition material)

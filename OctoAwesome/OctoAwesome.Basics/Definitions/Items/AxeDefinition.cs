@@ -7,13 +7,13 @@ namespace OctoAwesome.Basics.Definitions.Items
     {
         public string Name => "Axe";
         public string Icon => "axe_iron";
-        
+
         public bool CanMineMaterial(IMaterialDefinition material)
         {
             return material is ISolidMaterialDefinition;
         }
-        
-        public Item Create(IMaterialDefinition material) 
+
+        public Item Create(IMaterialDefinition material)
             => new Axe(this, material);
     }
 }

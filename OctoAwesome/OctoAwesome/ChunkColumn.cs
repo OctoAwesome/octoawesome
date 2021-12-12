@@ -205,7 +205,7 @@ namespace OctoAwesome
             foreach (var item in blockInfos.GroupBy(x => x.Position.Z / Chunk.CHUNKSIZE_Z))
             {
                 Chunks[item.Key].SetBlocks(issueNotification, item.ToArray());
-            }            
+            }
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace OctoAwesome
             for (var y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     Heights[x, y] = reader.ReadUInt16();
-            
+
             // Phase 2 (Block Definitionen)
             int typecount = longIndex ? reader.ReadUInt16() : reader.ReadByte();
             var types = new List<IDefinition>();
@@ -360,7 +360,7 @@ namespace OctoAwesome
                 IDefinition blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
                 types.Add(blockDefinition);
 
-                map[types.Count-1] = (ushort)(Array.IndexOf(definitions, blockDefinition) + 1);
+                map[types.Count - 1] = (ushort)(Array.IndexOf(definitions, blockDefinition) + 1);
             }
 
             // Phase 3 (Chunk Infos)
@@ -377,7 +377,7 @@ namespace OctoAwesome
                     chunk.MetaData[i] = 0;
                     if (typeIndex > 0)
                     {
-                        var definitionIndex = map[typeIndex-1];
+                        var definitionIndex = map[typeIndex - 1];
 
                         chunk.Blocks[i] = definitionIndex;
 

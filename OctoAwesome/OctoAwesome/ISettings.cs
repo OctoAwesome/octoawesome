@@ -11,7 +11,7 @@
         /// <param name="key">Der Schlüssel der Einstellung.</param>
         /// <returns>Der Wert der Einstellung.</returns>
         T Get<T>(string key);
-        
+
         /// <summary>
         /// Gibt den Wert einer Einstellung zurück.
         /// </summary>

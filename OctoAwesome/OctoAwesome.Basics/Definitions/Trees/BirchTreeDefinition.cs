@@ -9,13 +9,13 @@ namespace OctoAwesome.Basics.Definitions.Trees
         private ushort wood;
         private ushort leave;
         private ushort water;
-        
+
         public override int Order => 15;
-        
+
         public override float MaxTemperature => 30;
-        
+
         public override float MinTemperature => -5;
-        
+
         public override int GetDensity(IPlanet planet, Index3 index)
         {
             return 4;

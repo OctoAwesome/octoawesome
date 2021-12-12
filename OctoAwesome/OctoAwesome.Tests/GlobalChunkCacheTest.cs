@@ -6,7 +6,7 @@ namespace OctoAwesome.Tests
     /// <summary>
     /// Test für GlobalChunkCache
     /// </summary>
-    
+
     public class GlobalChunkCacheTest
     {
         public GlobalChunkCacheTest()
@@ -149,7 +149,7 @@ namespace OctoAwesome.Tests
         //    Assert.Equals(0, cache.LoadedChunkColumns);
         //    Assert.Equals(2, loadCallCounter);
         //    Assert.Equals(2, saveCallCounter);
-            
+
         //}
 
         //[Test]
@@ -229,5 +229,5 @@ namespace OctoAwesome.Tests
         //}
     }
 
-    
+
 }

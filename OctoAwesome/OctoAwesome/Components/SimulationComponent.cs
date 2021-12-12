@@ -94,7 +94,7 @@ namespace OctoAwesome.Components
         where TComponent : Component
     {
         protected readonly List<TCachedContainer> values = new();
-        
+
         /// <summary>
         /// Adds a new value of <typeparamref name="T"/> to this Component
         /// </summary>
@@ -106,7 +106,7 @@ namespace OctoAwesome.Components
                 values.Add(OnAdd(value));
             }
         }
-        
+
 
         /// <summary>
         /// Is called during <see cref="Add(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
@@ -115,7 +115,7 @@ namespace OctoAwesome.Components
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
             => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent>(value, value.GetComponent<TComponent>());
-        
+
         /// <summary>
         /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
         /// </summary>
@@ -141,7 +141,7 @@ namespace OctoAwesome.Components
         /// <returns>Ergebnis des Vergleiches</returns>
         protected virtual bool Match(TContainer value)
             => value.ContainsComponent<TComponent>();
-        
+
         /// <summary>
         /// Updatemethode der Entity
         /// </summary>
@@ -189,7 +189,7 @@ namespace OctoAwesome.Components
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
             => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
-        
+
         /// <summary>
         /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
         /// </summary>
@@ -250,7 +250,7 @@ namespace OctoAwesome.Components
         where TComponent3 : Component
     {
         protected readonly List<TCachedContainer> values = new();
-        
+
         /// <summary>
         /// Adds a new value of <typeparamref name="T"/> to this Component
         /// </summary>
@@ -271,7 +271,7 @@ namespace OctoAwesome.Components
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
             => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>(), value.GetComponent<TComponent3>());
-        
+
         /// <summary>
         /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
         /// </summary>

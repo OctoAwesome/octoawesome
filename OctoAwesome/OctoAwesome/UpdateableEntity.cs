@@ -12,6 +12,6 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="gameTime">Spielzeit</param>
         public abstract void Update(GameTime gameTime);
-        
+
     }
 }

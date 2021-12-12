@@ -35,11 +35,11 @@ namespace OctoAwesome.Caching
             caches.Add(typeof(Entity), new ComponentContainerCache<Entity, IEntityComponent>(resourceManager));
             caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
         }
-        
+
 
         public void Start()
         {
-            if(cancellationTokenSource is not null)
+            if (cancellationTokenSource is not null)
             {
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource.Dispose();
@@ -47,7 +47,7 @@ namespace OctoAwesome.Caching
 
             cancellationTokenSource = new CancellationTokenSource();
             var token = cancellationTokenSource.Token;
-            
+
             foreach (var item in caches.Values)
             {
                 if (item.IsStarted)
@@ -79,7 +79,7 @@ namespace OctoAwesome.Caching
 
             foreach (var item in caches.Values)
             {
-                if(item is IDisposable disposable)
+                if (item is IDisposable disposable)
                 {
                     disposable.Dispose();
                 }
@@ -90,7 +90,7 @@ namespace OctoAwesome.Caching
 
         public TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
         {
-            if(caches.TryGetValue(typeof(TValue), out var cache))
+            if (caches.TryGetValue(typeof(TValue), out var cache))
             {
                 return cache.Get<TKey, TValue>(key, loadingMode);
             }

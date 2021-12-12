@@ -71,10 +71,10 @@ namespace OctoAwesome.Runtime
             if (tempAssembly == null)
                 tempAssembly = Assembly.GetAssembly(GetType());
 
-            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly!.Location!)!);
+            DirectoryInfo dir = new(Path.GetDirectoryName(tempAssembly!.Location!)!);
             assemblies.AddRange(LoadAssemblies(dir));
 
-            DirectoryInfo plugins = new (Path.Combine(dir.FullName, "plugins"));
+            DirectoryInfo plugins = new(Path.Combine(dir.FullName, "plugins"));
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
@@ -101,7 +101,7 @@ namespace OctoAwesome.Runtime
                             else
                                 ActiveExtensions.Add(extension);
                         }
-                        catch 
+                        catch
                         {
                             // TODO: Logging
                         }

@@ -51,7 +51,7 @@ namespace OctoAwesome.Notifications
             {
                 writer.Write(BlockId.ToByteArray());
             }
-           
+
         }
         protected override void OnRelease()
         {
@@ -67,7 +67,7 @@ namespace OctoAwesome.Notifications
             Add,
             Remove,
             Update,
-            
+
 
             Request
         }

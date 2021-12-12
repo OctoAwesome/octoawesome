@@ -107,6 +107,6 @@ namespace OctoAwesome.Client.Screens
         {
             exitButton.Visible = true;
             exitButton.Enabled = true;
-        }        
+        }
     }
 }

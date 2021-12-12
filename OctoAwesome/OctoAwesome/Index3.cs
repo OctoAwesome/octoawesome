@@ -35,7 +35,7 @@ namespace OctoAwesome
             Y = y;
             Z = z;
         }
-        
+
         /// <summary>
         /// Gets the X and Y components
         /// </summary>
@@ -54,7 +54,7 @@ namespace OctoAwesome
         /// <param name="size">Maximalwert für X</param>
         public void NormalizeX(int size)
             => X = Index2.NormalizeAxis(X, size);
-        
+
         /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
         /// </summary>
@@ -156,7 +156,7 @@ namespace OctoAwesome
         /// <param name="size">Maximalwert für X, Y und Z</param>
         public void NormalizeXYZ(Index3 size)
             => NormalizeXYZ(size.X, size.Y, size.Z);
-        
+
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten X-Achse.
         /// </summary>
@@ -165,7 +165,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceX(int x, int size)
             => Index2.ShortestDistanceOnAxis(X, x, size);
-        
+
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten Y-Achse.
         /// </summary>
@@ -174,7 +174,7 @@ namespace OctoAwesome
         /// <returns>Entfernung</returns>
         public int ShortestDistanceY(int y, int size)
             => Index2.ShortestDistanceOnAxis(Y, y, size);
-        
+
         /// <summary>
         /// Ermittelt die kürzeste Entfernung zum Ziel auf einer normalisierten Z-Achse.
         /// </summary>
@@ -263,7 +263,7 @@ namespace OctoAwesome
         /// <returns></returns>
         public static Index3 operator +(Index3 i1, Index2 i2)
             => new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z);
-        
+
         /// <summary>
         /// Subtrahiert zwei Indices3
         /// </summary>
@@ -272,7 +272,7 @@ namespace OctoAwesome
         /// <returns></returns>
         public static Index3 operator -(Index3 i1, Index3 i2)
             => new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z - i2.Z);
-        
+
         /// <summary>
         /// Subtrahiert einen Index2 von einem Index3
         /// </summary>
@@ -344,11 +344,11 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object? obj) 
+        public override bool Equals(object? obj)
             => obj is Index3 other && Equals(other);
         public bool Equals(Index3 other)
             => other.X == X && other.Y == Y && other.Z == Z;
-        
+
         /// <summary>
         /// Gibt einen möglichst eindeutigen Hashwert für den aktuellen Index3 zurück.
         /// </summary>

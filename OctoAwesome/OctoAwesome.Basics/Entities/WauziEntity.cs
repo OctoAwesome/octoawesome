@@ -16,8 +16,8 @@ namespace OctoAwesome.Basics.Entities
         {
             _ = Components.GetComponent<BodyPowerComponent>();
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
-            controller.MoveInput = new Vector2(0.5f, 0.5f) ;
-            
+            controller.MoveInput = new Vector2(0.5f, 0.5f);
+
             if (JumpTime <= 0)
             {
                 controller.JumpInput = true;

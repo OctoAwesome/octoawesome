@@ -99,13 +99,13 @@ namespace OctoAwesome.Network
             package.SerializePackage(bytes, 0);
             await SendAsync(bytes, bytes.Length);
         }
-        
+
         public async Task SendPackageAndReleaseAsync(Package package)
         {
             await SendPackageAsync(package);
             package.Release();
         }
-        
+
         public void SendPackageAndRelease(Package package)
         {
             var task = Task.Run(async () => await SendPackageAsync(package));

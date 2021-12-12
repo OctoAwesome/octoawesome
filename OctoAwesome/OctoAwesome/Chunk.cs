@@ -164,7 +164,7 @@ namespace OctoAwesome
 
             for (int i = 0; i < Blocks.Length; i++)
                 Blocks[i] = 0;
-                
+
             for (int i = 0; i < MetaData.Length; i++)
                 MetaData[i] = 0;
         }

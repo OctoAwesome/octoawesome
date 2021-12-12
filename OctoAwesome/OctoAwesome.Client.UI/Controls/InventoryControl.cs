@@ -53,7 +53,7 @@ namespace OctoAwesome.Client.UI.Controls
 
             for (int i = 0; i < columns; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            
+
             int rows = (int)System.Math.Ceiling((float)inventorySlots.Count / columns);
             for (int i = 0; i < rows; i++)
                 grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });

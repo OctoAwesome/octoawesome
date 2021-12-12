@@ -83,7 +83,7 @@ namespace OctoAwesome.Client.Screens
 
                 manager.NavigateToScreen(new LoadingScreen(manager));
             };
-            
+
             nameInput.TextChanged += (s, e) =>
                                      {
                                          createButton.Visible = !string.IsNullOrEmpty(e.NewValue);

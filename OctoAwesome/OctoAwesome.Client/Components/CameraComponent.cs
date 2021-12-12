@@ -71,7 +71,7 @@ namespace OctoAwesome.Client.Components
                     position.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(head.Angle), 
+                    (float)Math.Cos(head.Angle),
                     (float)Math.Sin(-head.Angle), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
@@ -82,7 +82,7 @@ namespace OctoAwesome.Client.Components
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);
-            Frustum.Matrix = Projection*View;
+            Frustum.Matrix = Projection * View;
         }
 
         public Index3 CameraChunk { get; private set; }

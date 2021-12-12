@@ -7,7 +7,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     {
         public override string Name => Languages.OctoBasics.BlueCotton;
         public override string Icon => "cotton_blue";
-        public override string[] Textures { get; } = {"cotton_blue"};
+        public override string[] Textures { get; } = { "cotton_blue" };
         public override IMaterialDefinition Material { get; }
         public BlueCottonBlockDefinition(CottonMaterialDefinition material)
         {

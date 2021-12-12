@@ -8,19 +8,19 @@ namespace OctoAwesome.Basics.Biomes
     public abstract class BiomeBase : IBiome
     {
         public IPlanet Planet { get; }
-        
+
         public List<IBiome> SubBiomes { get; }
-        
+
         public INoise BiomeNoiseGenerator { get; }
-        
+
         public float MinValue { get; }
-        
+
         public float MaxValue { get; }
-        
+
         public float ValueRangeOffset { get; }
-        
+
         public float ValueRange { get; }
-        
+
         protected BiomeBase(IPlanet planet, float minValue, float maxValue, float valueRangeOffset, float valueRange, INoise biomeNoiseGenerator)
         {
             SubBiomes = new List<IBiome>();
@@ -31,7 +31,7 @@ namespace OctoAwesome.Basics.Biomes
             ValueRange = valueRange;
             BiomeNoiseGenerator = biomeNoiseGenerator;
         }
-        
+
         public virtual void GetHeightmap(Index2 chunkIndex, float[] heightmap)
         {
             chunkIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);

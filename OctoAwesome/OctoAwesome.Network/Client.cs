@@ -11,7 +11,7 @@ namespace OctoAwesome.Network
         public void Connect(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).FirstOrDefault();
-            if(address == default)
+            if (address == default)
             {
                 throw new ArgumentException(nameof(host));
             }

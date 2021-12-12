@@ -78,7 +78,7 @@ namespace OctoAwesome.Network
             return Payload.Length + HEAD_LENGTH;
         }
         public void Init(IPool pool)
-        {      
+        {
             Payload = Array.Empty<byte>();
             this.pool = pool;
         }

@@ -7,13 +7,13 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class WoodBlockDefinition : BlockDefinition
     {
         public override string Name => OctoBasics.Wood;
-        
+
         public override string Icon => "wood_top";
-        
+
         public override bool HasMetaData => true;
-        
+
         public override string[] Textures { get; } = { "wood_top", "wood_side" };
-        
+
         public override IMaterialDefinition Material { get; }
 
         public WoodBlockDefinition(WoodMaterialDefinition material)

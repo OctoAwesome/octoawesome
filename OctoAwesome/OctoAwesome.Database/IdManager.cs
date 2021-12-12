@@ -9,7 +9,7 @@ namespace OctoAwesome.Database
         private readonly Queue<int> freeIds;
         private readonly HashSet<int> reservedIds;
         private int nextId;
-        
+
         public IdManager(IEnumerable<int>? alreadyUsedIds = null)
         {
             alreadyUsedIds ??= Array.Empty<int>();
@@ -56,7 +56,7 @@ namespace OctoAwesome.Database
             reservedIds.Remove(id);
         }
 
-        public void ReserveId(int id) 
+        public void ReserveId(int id)
             => reservedIds.Add(id);
     }
 }

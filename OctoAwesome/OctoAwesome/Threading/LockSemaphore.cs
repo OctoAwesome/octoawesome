@@ -48,15 +48,15 @@ namespace OctoAwesome.Threading
             {
                 internalSemaphore.Release();
             }
-            public override bool Equals(object? obj) 
-                => obj is SemaphoreLock @lock 
+            public override bool Equals(object? obj)
+                => obj is SemaphoreLock @lock
                    && Equals(@lock);
-            public bool Equals(SemaphoreLock other) 
+            public bool Equals(SemaphoreLock other)
                 => EqualityComparer<LockSemaphore>.Default.Equals(internalSemaphore, other.internalSemaphore);
-            public override int GetHashCode() 
+            public override int GetHashCode()
                 => 37286538 + (internalSemaphore == null ? 0 : EqualityComparer<LockSemaphore>.Default.GetHashCode(internalSemaphore));
 
-            public static bool operator ==(SemaphoreLock left, SemaphoreLock right) 
+            public static bool operator ==(SemaphoreLock left, SemaphoreLock right)
                 => left.Equals(right);
 
             public static bool operator !=(SemaphoreLock left, SemaphoreLock right)

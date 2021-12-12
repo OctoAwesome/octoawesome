@@ -100,7 +100,7 @@ namespace OctoAwesome.Client
                 SceneControl.VIEWRANGE = viewrange;
             }
 
-           
+
             Components.Add(Assets);
             Components.Add(Screen);
             #region GameComponents

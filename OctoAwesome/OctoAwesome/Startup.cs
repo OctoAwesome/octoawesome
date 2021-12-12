@@ -62,7 +62,7 @@ namespace OctoAwesome
                         FileName = $"./logs/generic-{DateTime.Now:ddMMyy_hhmmss}.log"
                     });
                     break;
-            }            
+            }
 
             LogManager.Configuration = config;
         }

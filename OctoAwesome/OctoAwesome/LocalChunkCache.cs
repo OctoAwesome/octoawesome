@@ -68,7 +68,7 @@ namespace OctoAwesome
             if (1 << dimensions < (range * 2) + 1)
                 throw new ArgumentException("Range too big");
 
-            
+
             semaphore = new LockSemaphore(1, 1);
             taskSemaphore = new LockSemaphore(1, 1);
             Planet = globalCache.Planet;

@@ -349,7 +349,7 @@ namespace OctoAwesome.Client.Components
 
             if (block == 0 || _manager is null)
                 return;
-            
+
             var manager = _manager;
             var blockDefinition = definitionManager.GetBlockDefinitionByIndex(block);
 
@@ -396,7 +396,7 @@ namespace OctoAwesome.Client.Components
                     {
                         var blockDef =
                             definitionManager.GetBlockDefinitionByIndex(blocks[GetIndex(zOffset, yOffset, xOffset)]);
-                        
+
                         blockDefinitions[GetIndex(zOffset, yOffset, xOffset)] = blockDef;
                     }
 

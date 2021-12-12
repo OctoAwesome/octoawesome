@@ -7,6 +7,6 @@ namespace OctoAwesome
     /// </summary>
     public abstract class Entity : ComponentContainer<IEntityComponent>
     {
-       
+
     }
 }

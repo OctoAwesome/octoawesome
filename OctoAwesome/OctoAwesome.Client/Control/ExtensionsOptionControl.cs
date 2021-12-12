@@ -112,7 +112,7 @@ namespace OctoAwesome.Client.Controls
                 loadedExtensionsList.Items.Add(ext);
                 loadedExtensionsList.SelectedItem = ext;
             };
-            
+
             applyButton.LeftMouseClick += (s, e) =>
             {
                 //TODO: Apply
@@ -137,11 +137,11 @@ namespace OctoAwesome.Client.Controls
         {
             Debug.Assert(ext != null, nameof(ext) + " != null");
             return new Label(ScreenManager)
-                   {
-                       Text = ext.Name,
-                       HorizontalAlignment = HorizontalAlignment.Stretch,
-                       HorizontalTextAlignment = HorizontalAlignment.Left
-                   };
+            {
+                Text = ext.Name,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalTextAlignment = HorizontalAlignment.Left
+            };
         }
 
         private void loadedList_SelectedItemChanged(Control control, SelectionEventArgs<IExtension> e)

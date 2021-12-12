@@ -25,7 +25,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             if (material is ISolidMaterialDefinition solid && baseEfficiency > 0)
             {
                 var fractureEfficiency = polynomial.Evaluate(solid.FractureToughness);
-                
+
                 return (int)(baseEfficiency * (fractureEfficiency) / 100);
             }
 

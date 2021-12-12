@@ -18,7 +18,7 @@ namespace OctoAwesome
         {
             return types[serId];
         }
-        
+
         private static ulong SerIdFromModTypeId(uint modId, uint typeId) => ((ulong)modId << (sizeof(uint) * 8)) | typeId;
 
         public Type Get(uint modId, uint typeId)

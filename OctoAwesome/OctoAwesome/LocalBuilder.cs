@@ -93,7 +93,7 @@ namespace OctoAwesome
             y += originY;
             z += originZ;
             var column = GetColumn(column00, column10, column01, column11, x, y);
-            
+
             Debug.Assert(column != null, nameof(column) + " != null");
             var index = z / Chunk.CHUNKSIZE_Z;
             x %= Chunk.CHUNKSIZE_X;
@@ -115,7 +115,7 @@ namespace OctoAwesome
                         var y = b.Position.Y + originY;
                         var z = b.Position.Z + originZ;
                         var column = GetColumn(column00, column10, column01, column11, x, y);
-                        
+
                         Debug.Assert(column != null, nameof(column) + " != null");
                         var index = z / Chunk.CHUNKSIZE_Z;
                         x %= Chunk.CHUNKSIZE_X;

@@ -80,12 +80,12 @@ namespace OctoAwesome.Client.Controls
                                                {
                                                    Debug.Assert(item != null, nameof(item) + " != null");
                                                    return new Panel(manager)
-                                                          {
-                                                              Background = new SolidColorBrush(item),
-                                                              HorizontalAlignment = HorizontalAlignment.Stretch,
-                                                              VerticalAlignment = VerticalAlignment.Stretch,
-                                                              Height = 20,
-                                                          };
+                                                   {
+                                                       Background = new SolidColorBrush(item),
+                                                       HorizontalAlignment = HorizontalAlignment.Stretch,
+                                                       VerticalAlignment = VerticalAlignment.Stretch,
+                                                       Height = 20,
+                                                   };
                                                };
 
             crosshairColor.SelectedItemChanged += (s, e) =>

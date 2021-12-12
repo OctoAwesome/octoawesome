@@ -43,7 +43,7 @@ namespace OctoAwesome.Threading
                         mainLock.Reset();
                 }
             }
-            
+
             return new CountScope(this);
         }
         public void Dispose()
@@ -88,7 +88,7 @@ namespace OctoAwesome.Threading
 
             public static bool operator ==(CountScope left, CountScope right)
                 => left.Equals(right);
-            
+
             public static bool operator !=(CountScope left, CountScope right)
                 => !(left == right);
         }
@@ -109,9 +109,9 @@ namespace OctoAwesome.Threading
                 => EqualityComparer<CountedScopeSemaphore>.Default.Equals(internalSemaphore, other.internalSemaphore);
             public override int GetHashCode()
                 => 37296538 + EqualityComparer<CountedScopeSemaphore>.Default.GetHashCode(internalSemaphore);
-            
+
             public static bool operator ==(ExclusiveScope left, ExclusiveScope right) => left.Equals(right);
-            
+
             public static bool operator !=(ExclusiveScope left, ExclusiveScope right) => !(left == right);
         }
     }

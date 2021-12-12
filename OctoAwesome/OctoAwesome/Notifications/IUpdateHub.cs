@@ -3,7 +3,7 @@
 namespace OctoAwesome.Notifications
 {
 
-    public interface IUpdateHub 
+    public interface IUpdateHub
     {
 
         IDisposable AddSource(IObservable<Notification> notification, string channel);

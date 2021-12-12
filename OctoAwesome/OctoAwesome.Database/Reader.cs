@@ -11,7 +11,7 @@ namespace OctoAwesome.Database
         {
             this.fileInfo = fileInfo ?? throw new ArgumentNullException(nameof(fileInfo));
         }
-        
+
         public Reader(string path) : this(new FileInfo(path))
         {
 

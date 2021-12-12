@@ -37,7 +37,7 @@ namespace OctoAwesome.Network
             simulation = new Relay<Notification>();
             chunk = new Relay<Notification>();
 
-            hubSubscription 
+            hubSubscription
                 = updateHub
                 .ListenOn(DefaultChannels.Network)
                 .Subscribe(OnNext, error => logger.Error(error.Message, error));
@@ -46,7 +46,7 @@ namespace OctoAwesome.Network
             chunkSource = updateHub.AddSource(chunk, DefaultChannels.Chunk);
 
             clientSubscription = client.Packages.Subscribe(package => OnNext(package), err => OnError(err));
-            
+
         }
 
         public void OnNext(Package package)

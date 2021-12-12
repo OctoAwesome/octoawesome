@@ -107,8 +107,8 @@ namespace OctoAwesome.Client.Screens
                 levelList.InvalidateDimensions();
                 settings.Set("LastUniverse", "");
             };
-            
-            
+
+
             levelList.SelectedItemChanged += (s, e) =>
             {
                 seedLabel.Text = "";

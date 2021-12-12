@@ -14,7 +14,7 @@ namespace OctoAwesome.Network.Pooling
             internalStack = new Stack<Package>();
             semaphoreExtended = new LockSemaphore(1, 1);
         }
-        
+
         public Package Rent()
         {
             Package obj;
@@ -61,6 +61,6 @@ namespace OctoAwesome.Network.Pooling
             {
                 throw new InvalidCastException("Can not push object from type: " + obj.GetType());
             }
-        }       
+        }
     }
 }

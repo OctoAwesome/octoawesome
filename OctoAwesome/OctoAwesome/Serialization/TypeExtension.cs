@@ -12,7 +12,7 @@ namespace OctoAwesome.Serialization
             var attr = type.GetCustomAttribute<SerializationIdAttribute>();
             if (attr is null)
                 return 0;
-            
+
             return attr.CombinedId;
         }
     }

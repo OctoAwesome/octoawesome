@@ -37,7 +37,7 @@
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
         void GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY,
             float[] noiseArray);
-        
+
 
         /// <summary>
         /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück
@@ -77,14 +77,14 @@
         /// <param name="thickness">Dicke(Tiefe 2.Grades) der Noise-Map</param>
         /// <returns>Gibt ein 4D-float-Array einer 4D-Noise zurück</returns>
         float[,,,] GetNoiseMap4D(int startX, int startY, int startZ, int startW, int width, int height, int depth, int thickness);
-        
+
         /// <summary>
         /// Gibt ein float-Wert einer 1D-Noise an gegebener Position zurück
         /// </summary>
         /// <param name="x">Position, für welche die Noise ausgegeben wird</param>
         /// <returns>Gibt ein float-Wert einer 1D Noise zurück</returns>
         float GetNoise(int x);
-        
+
         /// <summary>
         /// Gibt ein float-Wert einer 2D-Noise an gegebener Position zurück
         /// </summary>
@@ -101,7 +101,7 @@
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <returns>Gibt ein float-Wert einer 2D Noise zurück, welche kachelbar ist</returns>
         float GetTileableNoise2D(int x, int y, int tileSizeX, int tileSizeY);
-        
+
         /// <summary>
         /// Gibt ein float-Wert einer 3D-Noise an gegebener Position zurück
         /// </summary>

@@ -260,13 +260,13 @@ namespace OctoAwesome.Runtime
             // Load from disk
             Awaiter awaiter;
             IChunkColumn column11;
-            
+
             do
             {
                 using (loadingSemaphore.EnterCountScope())
                 {
                     currentToken.ThrowIfCancellationRequested();
-                    
+
                     awaiter = persistenceManager.Load(out var loadedColumn, CurrentUniverse.Id, planet, index);
                     if (awaiter == null)
                     {
@@ -349,7 +349,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterCountScope())
                 persistenceManager.SaveColumn(CurrentUniverse.Id, chunkColumn.Planet, chunkColumn);
         }
-        
+
         public Entity? LoadEntity(Guid entityId)
         {
             if (CurrentUniverse == null)
@@ -371,7 +371,7 @@ namespace OctoAwesome.Runtime
         public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
     where TContainer : ComponentContainer<TComponent>
     where TComponent : IComponent
-        
+
         {
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
@@ -384,7 +384,7 @@ namespace OctoAwesome.Runtime
                     persistenceManager.Save<TContainer, TComponent>(container, CurrentUniverse.Id);
             }
         }
-        
+
         public TContainer? LoadComponentContainer<TContainer, TComponent>(Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent
@@ -434,7 +434,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                var component =  persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
+                var component = persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
 
                 if (component is PositionComponent posComponent)
                     posComponent.InstanceId = id;

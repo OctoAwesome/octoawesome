@@ -11,7 +11,7 @@ namespace OctoAwesome.Serialization
         public int Length => sizeof(int) * 4;
 
         public Index3 ChunkPositon { get; private set; }
-        
+
         public int FlatIndex { get; private set; }
 
         public ChunkDiffTag(Index3 chunkPosition, int flatIndex)
@@ -51,7 +51,7 @@ namespace OctoAwesome.Serialization
             => obj is ChunkDiffTag tag && Equals(tag);
         public bool Equals(ChunkDiffTag other)
             => Length == other.Length &&
-                FlatIndex == other.FlatIndex && 
+                FlatIndex == other.FlatIndex &&
                 EqualityComparer<Index3>.Default.Equals(ChunkPositon, other.ChunkPositon);
 
         public override int GetHashCode()

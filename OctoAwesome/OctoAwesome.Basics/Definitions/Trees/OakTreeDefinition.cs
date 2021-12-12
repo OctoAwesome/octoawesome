@@ -9,13 +9,13 @@ namespace OctoAwesome.Basics.Definitions.Trees
         private ushort wood;
         private ushort leave;
         private ushort water;
-        
+
         public override int Order => 10;
-        
+
         public override float MaxTemperature => 27;
-        
+
         public override float MinTemperature => -5;
-        
+
         public override void Init(IDefinitionManager definitionManager)
         {
             wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>();
@@ -37,7 +37,7 @@ namespace OctoAwesome.Basics.Definitions.Trees
 
             builder.FillSphere(0, 0, height, radius, leave);
 
-            var infos = new BlockInfo[height +2];
+            var infos = new BlockInfo[height + 2];
             for (int i = 0; i < height + 2; i++)
             {
                 infos[i] = (0, 0, i, wood);

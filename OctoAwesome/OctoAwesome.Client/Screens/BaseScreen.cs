@@ -16,11 +16,11 @@ namespace OctoAwesome.Client.Screens
         {
             assets = manager.Game.Assets;
             BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back)
-                         {
-                             VerticalAlignment = VerticalAlignment.Top,
-                             HorizontalAlignment = HorizontalAlignment.Left,
-                             TabStop = false,
-                         };
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                TabStop = false,
+            };
             BackButton.LeftMouseClick += (s, e) =>
                                          {
                                              Manager.NavigateBack();

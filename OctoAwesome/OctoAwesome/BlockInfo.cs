@@ -20,7 +20,7 @@ namespace OctoAwesome
             Block = block;
             Meta = meta;
         }
-        
+
         public BlockInfo(int x, int y, int z, ushort block, int meta = 0) : this(new Index3(x, y, z), block, meta)
         {
         }

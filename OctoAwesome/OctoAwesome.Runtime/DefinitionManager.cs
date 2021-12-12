@@ -20,7 +20,7 @@ namespace OctoAwesome.Runtime
 
             // collect items
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
-            
+
             // collect blocks
             BlockDefinitions = Definitions.OfType<IBlockDefinition>().ToArray();
 
@@ -79,7 +79,7 @@ namespace OctoAwesome.Runtime
         {
             int i = 0;
             IDefinition? definition = default;
-            foreach (var  d in Definitions)
+            foreach (var d in Definitions)
             {
                 if (i > 0 && d.GetType() == typeof(T))
                 {
@@ -92,7 +92,7 @@ namespace OctoAwesome.Runtime
                     ++i;
                 }
             }
-            return definition == null ?  (ushort)0 : GetDefinitionIndex(definition);
+            return definition == null ? (ushort)0 : GetDefinitionIndex(definition);
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         {
             //TODO: Implement Place Chest and remove this item
             var position = blockInfo.Position;
-            Chest chest = new(new Coordinate(0, new (position.X, position.Y, position.Z + 1), new Vector3(0.5f, 0.5f, 0.5f)));
+            Chest chest = new(new Coordinate(0, new(position.X, position.Y, position.Z + 1), new Vector3(0.5f, 0.5f, 0.5f)));
             var notification = new FunctionalBlockNotification
             {
                 Block = chest,

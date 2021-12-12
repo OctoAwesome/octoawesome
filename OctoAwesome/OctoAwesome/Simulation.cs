@@ -46,7 +46,7 @@ namespace OctoAwesome
         /// List of all Entities.
         /// </summary>
         public IReadOnlyList<Entity> Entities => entities;
-        
+
 
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
@@ -242,7 +242,7 @@ namespace OctoAwesome
         public void Add(FunctionalBlock block)
         {
             Debug.Assert(block is not null, nameof(block) + " != null");
-            
+
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
 
@@ -321,7 +321,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-            
+
             ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
 
             foreach (var component in Components)

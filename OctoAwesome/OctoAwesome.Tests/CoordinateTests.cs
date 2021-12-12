@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace OctoAwesome.Tests
 {
-    
+
     public class CoordinateTests
     {
         /// <summary>
@@ -246,7 +246,7 @@ namespace OctoAwesome.Tests
             AssertEx.Equals(new Vector3(76.3f, 109.4f, 142.5f), c.GlobalPosition);
             Assert.Equals(new Index3(12, 13, 14), c.LocalBlockIndex);
             AssertEx.Equals(new Vector3(12.3f, 13.4f, 14.5f), c.LocalPosition);
-            
+
             // Overflow (Positiv)
             c = new Coordinate();
             c.Planet = 42;
@@ -260,7 +260,7 @@ namespace OctoAwesome.Tests
             AssertEx.Equals(new Vector3(78.3f, 112.4f, 146.5f), c.GlobalPosition);
             Assert.Equals(new Index3(14, 16, 18), c.LocalBlockIndex);
             AssertEx.Equals(new Vector3(14.3f, 16.4f, 18.5f), c.LocalPosition);
-            
+
             //// Overflow (Negativ)
             c = new Coordinate();
             c.Planet = 42;

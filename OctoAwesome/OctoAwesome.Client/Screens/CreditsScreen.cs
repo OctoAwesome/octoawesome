@@ -25,7 +25,8 @@ namespace OctoAwesome.Client.Screens
                 CanFocus = false
             };
 
-            StackPanel crewList = new StackPanel(manager) {
+            StackPanel crewList = new StackPanel(manager)
+            {
                 MinWidth = 700,
                 Padding = new Border(10, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -33,7 +34,7 @@ namespace OctoAwesome.Client.Screens
             };
             crewScroll.Content = crewList;
 
-            foreach(CrewMember member in crew)
+            foreach (CrewMember member in crew)
             {
                 Button memberButton = new TextButton(manager, member.Username);
                 memberButton.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -46,7 +47,7 @@ namespace OctoAwesome.Client.Screens
 
                 crewList.Controls.Add(memberButton);
             }
-            
+
 
             Controls.Add(crewScroll);
         }

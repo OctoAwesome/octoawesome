@@ -18,12 +18,12 @@ namespace OctoAwesome.Serialization
         {
             var byteArray = new byte[Length];
             BitConverter.TryWriteBytes(byteArray[0..sizeof(int)], Index.X);
-            BitConverter.TryWriteBytes(byteArray[sizeof(int)..(sizeof(int)*2)], Index.Y);
+            BitConverter.TryWriteBytes(byteArray[sizeof(int)..(sizeof(int) * 2)], Index.Y);
             return byteArray;
         }
-        public override bool Equals(object? obj) 
+        public override bool Equals(object? obj)
             => obj is Index2Tag tag && Equals(tag);
-        public bool Equals(Index2Tag other) 
+        public bool Equals(Index2Tag other)
             => Length == other.Length && Index.Equals(other.Index);
         public override int GetHashCode()
         {
@@ -38,10 +38,10 @@ namespace OctoAwesome.Serialization
             BitConverter.TryWriteBytes(span[sizeof(int)..(sizeof(int) * 2)], Index.Y);
         }
 
-        public static bool operator ==(Index2Tag left, Index2Tag right) 
+        public static bool operator ==(Index2Tag left, Index2Tag right)
             => left.Equals(right);
 
-        public static bool operator !=(Index2Tag left, Index2Tag right) 
+        public static bool operator !=(Index2Tag left, Index2Tag right)
             => !(left == right);
     }
 }

@@ -24,7 +24,7 @@ namespace OctoAwesome
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         public virtual void Serialize(BinaryWriter writer)
         {
-            writer.Write(Enabled); 
+            writer.Write(Enabled);
         }
 
         /// <summary>

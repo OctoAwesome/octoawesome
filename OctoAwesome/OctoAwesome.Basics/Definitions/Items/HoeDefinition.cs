@@ -7,7 +7,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     {
         public string Name => "Hoe";
         public string Icon => "hoe_iron";
-        
+
         public bool CanMineMaterial(IMaterialDefinition material)
         {
             return false;

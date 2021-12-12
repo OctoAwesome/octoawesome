@@ -3,7 +3,7 @@ using System;
 
 namespace OctoAwesome.Model.Tests
 {
-    
+
     public class Index3Tests
     {
         [Test]
@@ -200,9 +200,9 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index3MultiplikationTest()
         {
-            Index3 i1 = new Index3(20, 15,-7); // Startwert
-            Index3 i2 = new Index3(60, 45,-21); // Multiplikation mit 3
-            Index3 i3 = new Index3(-40, -30,14); // Multi mit -2
+            Index3 i1 = new Index3(20, 15, -7); // Startwert
+            Index3 i2 = new Index3(60, 45, -21); // Multiplikation mit 3
+            Index3 i3 = new Index3(-40, -30, 14); // Multi mit -2
 
             Assert.Equals(i2, i1 * 3);
             Assert.Equals(i3, i1 * -2);
@@ -211,9 +211,9 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index3DivisionTest()
         {
-            Index3 i1 = new Index3(42, 30,-66); // Startwert
-            Index3 i2 = new Index3(7, 5,-11); // Division mit 6
-            Index3 i3 = new Index3(-21, -15,33); // Multi mit -2
+            Index3 i1 = new Index3(42, 30, -66); // Startwert
+            Index3 i2 = new Index3(7, 5, -11); // Division mit 6
+            Index3 i3 = new Index3(-21, -15, 33); // Multi mit -2
 
             Assert.Equals(i2, i1 / 6);
             Assert.Equals(i3, i1 / -2);
@@ -223,24 +223,24 @@ namespace OctoAwesome.Model.Tests
         public void Index3LengthTest()
         {
             int length = 2;
-            Index3 i1 = new Index3(length,0,0);
-            Index3 i2 = new Index3(0,length,0);
-            Index3 i3 = new Index3(0,0,length);
+            Index3 i1 = new Index3(length, 0, 0);
+            Index3 i2 = new Index3(0, length, 0);
+            Index3 i3 = new Index3(0, 0, length);
 
-            Assert.Equals(i1.LengthSquared(),4.0);
-            Assert.Equals(i2.LengthSquared(),4.0);
-            Assert.Equals(i3.LengthSquared(),4.0);
+            Assert.Equals(i1.LengthSquared(), 4.0);
+            Assert.Equals(i2.LengthSquared(), 4.0);
+            Assert.Equals(i3.LengthSquared(), 4.0);
 
-            Assert.Equals(i1.Length(),2.0);
-            Assert.Equals(i2.Length(),2.0);
-            Assert.Equals(i3.Length(),2.0);
+            Assert.Equals(i1.Length(), 2.0);
+            Assert.Equals(i2.Length(), 2.0);
+            Assert.Equals(i3.Length(), 2.0);
 
-            Index3 i4 = new Index3(3,2,4);
-            Index3 i5 = new Index3(3,4,2);
-            Index3 i6 = new Index3(4,2,3);
-            Assert.Equals(i4.LengthSquared(),29.0);
-            Assert.Equals(i5.LengthSquared(),29.0);
-            Assert.Equals(i6.LengthSquared(),29.0);
+            Index3 i4 = new Index3(3, 2, 4);
+            Index3 i5 = new Index3(3, 4, 2);
+            Index3 i6 = new Index3(4, 2, 3);
+            Assert.Equals(i4.LengthSquared(), 29.0);
+            Assert.Equals(i5.LengthSquared(), 29.0);
+            Assert.Equals(i6.LengthSquared(), 29.0);
         }
 
         /// <summary>

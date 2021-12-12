@@ -59,7 +59,7 @@ namespace OctoAwesome.Logging
             internalLogger = LogManager.GetLogger(loggerName);
             return this;
         }
-        public ILogger As(Type type) 
+        public ILogger As(Type type)
             => As(type.FullName);
         public void Flush()
         {

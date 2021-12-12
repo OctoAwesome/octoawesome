@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Cache
                 writer.Write(0);
                 return;
             }
-            
+
             writer.Write(Vertices.Length);
             foreach (var vert in Vertices)
             {

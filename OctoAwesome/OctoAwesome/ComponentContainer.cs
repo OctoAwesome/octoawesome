@@ -10,7 +10,7 @@ using System.IO;
 namespace OctoAwesome
 {
 
-    public abstract class ComponentContainer : ISerializable, IIdentification, IComponentContainer, INotificationSubject<SerializableNotification> 
+    public abstract class ComponentContainer : ISerializable, IIdentification, IComponentContainer, INotificationSubject<SerializableNotification>
     {
         /// <summary>
         /// Id
@@ -35,7 +35,7 @@ namespace OctoAwesome
             notificationComponents = new();
             Id = Guid.Empty;
         }
-      
+
         public virtual void RegisterDefault()
         {
 
@@ -68,7 +68,7 @@ namespace OctoAwesome
         /// Contains all Components.
         /// </summary>
         public ComponentList<TComponent> Components { get; }
-        
+
         /// <summary>
         /// Entity die regelmäßig eine Updateevent bekommt
         /// </summary>

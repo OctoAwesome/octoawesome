@@ -120,19 +120,19 @@ namespace OctoAwesome.Client.Components
                 currentController = entity.Components.GetComponent<ControllableComponent>();
 
                 currentEntityHead = entity.Components.GetComponent<HeadComponent>();
-                if (currentEntityHead is null) 
+                if (currentEntityHead is null)
                     currentEntityHead = new() { Offset = new(0, 0, 3.2f) };
 
                 inventory = entity.Components.GetComponent<InventoryComponent>();
-                if (inventory is null) 
+                if (inventory is null)
                     inventory = new();
 
                 toolbar = entity.Components.GetComponent<ToolBarComponent>();
-                if (toolbar is null) 
+                if (toolbar is null)
                     toolbar = new();
 
                 position = entity.Components.GetComponent<PositionComponent>();
-                if (position is null) 
+                if (position is null)
                     position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
             CurrentEntity = entity;
@@ -164,7 +164,7 @@ namespace OctoAwesome.Client.Components
                 CurrentController.Selection = Selection;
             else
                 CurrentController.Selection = null;
-                       
+
             if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;
             else

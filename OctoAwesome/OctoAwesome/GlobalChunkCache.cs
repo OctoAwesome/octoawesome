@@ -27,7 +27,7 @@ namespace OctoAwesome
         private readonly CancellationTokenSource tokenSource;
         private readonly IResourceManager resourceManager;
         private readonly SerializationIdTypeProvider typeProvider;
-        
+
         /// <summary>
         /// Objekt, das für die Locks benutzt wird
         /// </summary>

@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
     {
         protected BaseScreenComponent ScreenComponent { get; }
         public AssetComponent AssetComponent { get; }
-        
+
         protected UIComponent()
         {
             ScreenComponent = TypeContainer.Get<BaseScreenComponent>();

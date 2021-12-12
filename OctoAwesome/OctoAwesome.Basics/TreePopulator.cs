@@ -40,7 +40,7 @@ namespace OctoAwesome.Basics
             Random random = new Random(planet.Seed + salt);
 
             Index3 sample = new Index3(column00.Index.X * Chunk.CHUNKSIZE_X, column00.Index.Y * Chunk.CHUNKSIZE_Y, column00.Heights[0, 0]);
-            
+
             foreach (var treeDefinition in treeDefinitions)
             {
                 int density = treeDefinition.GetDensity(planet, sample);

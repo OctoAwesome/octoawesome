@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace OctoAwesome.Model.Tests
 {
-    
+
     public class Index2Tests
     {
         [Test]
@@ -255,21 +255,21 @@ namespace OctoAwesome.Model.Tests
         public void Index2LengthTest()
         {
             int length = 2;
-            Index2 i1 = new Index2(length,0);
-            Index2 i2 = new Index2(0,length);
+            Index2 i1 = new Index2(length, 0);
+            Index2 i2 = new Index2(0, length);
 
-            Assert.Equals(i1.LengthSquared(),4.0);
-            Assert.Equals(i2.LengthSquared(),4.0);
+            Assert.Equals(i1.LengthSquared(), 4.0);
+            Assert.Equals(i2.LengthSquared(), 4.0);
 
-            Assert.Equals(i1.Length(),2.0);
-            Assert.Equals(i2.Length(),2.0);
+            Assert.Equals(i1.Length(), 2.0);
+            Assert.Equals(i2.Length(), 2.0);
 
-            Index2 i3 = new Index2(3,4);
-            Index2 i4 = new Index2(4,3);
-            Assert.Equals(i3.LengthSquared(),25.0);
-            Assert.Equals(i4.LengthSquared(),25.0);
-            Assert.Equals(i3.Length(),5.0);
-            Assert.Equals(i4.Length(),5.0);
+            Index2 i3 = new Index2(3, 4);
+            Index2 i4 = new Index2(4, 3);
+            Assert.Equals(i3.LengthSquared(), 25.0);
+            Assert.Equals(i4.LengthSquared(), 25.0);
+            Assert.Equals(i3.Length(), 5.0);
+            Assert.Equals(i4.Length(), 5.0);
         }
 
         /// <summary>

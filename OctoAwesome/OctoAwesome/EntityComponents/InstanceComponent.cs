@@ -8,7 +8,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Base Class for all Entity Components.
     /// </summary>
-    public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification> 
+    public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification>
         where T : ComponentContainer
     {
         /// <summary>
@@ -26,7 +26,7 @@ namespace OctoAwesome.EntityComponents
         {
             if (instance is null)
                 throw new ArgumentNullException(nameof(instance));
-            
+
             if (Instance?.Id == instance.Id)
                 return;
 
@@ -35,7 +35,7 @@ namespace OctoAwesome.EntityComponents
             {
                 throw new NotSupportedException("Can not change the " + type.Name);
             }
-            
+
             InstanceTypeId = type.SerializationId();
             InstanceId = instance.Id;
             Instance = instance;
@@ -66,6 +66,6 @@ namespace OctoAwesome.EntityComponents
         {
             Instance?.OnNotification(notification);
         }
-        
+
     }
 }

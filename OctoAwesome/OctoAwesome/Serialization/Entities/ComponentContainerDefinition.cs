@@ -10,12 +10,12 @@ namespace OctoAwesome.Serialization.Entities
     public sealed class ComponentContainerDefinition<TComponent> : ISerializable where TComponent : IComponent
     {
 
-        public Type Type { get;  set; }
-        
+        public Type Type { get; set; }
 
-        public Guid Id { get;  set; }
-        public int ComponentsCount { get;  set; }
-        public IEnumerable<Type> Components { get;  set; }
+
+        public Guid Id { get; set; }
+        public int ComponentsCount { get; set; }
+        public IEnumerable<Type> Components { get; set; }
         public ComponentContainerDefinition()
         {
 

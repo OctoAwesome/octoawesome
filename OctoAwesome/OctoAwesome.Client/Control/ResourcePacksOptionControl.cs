@@ -216,11 +216,11 @@ namespace OctoAwesome.Client.Controls
         {
             Debug.Assert(pack != null, nameof(pack) + " != null");
             return new Label(ScreenManager)
-                   {
-                       Text = pack.Name,
-                       HorizontalAlignment = HorizontalAlignment.Stretch,
-                       HorizontalTextAlignment = HorizontalAlignment.Left
-                   };
+            {
+                Text = pack.Name,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalTextAlignment = HorizontalAlignment.Left
+            };
         }
 
         private void loadedList_SelectedItemChanged(Control control, SelectionEventArgs<ResourcePack> e)

@@ -9,7 +9,7 @@ namespace OctoAwesome.Tests
     /// <summary>
     /// Summary description for LocalChunkCacheTest
     /// </summary>
-    
+
     public class LocalChunkCacheTest
     {
         TestGlobalCache globalCache;

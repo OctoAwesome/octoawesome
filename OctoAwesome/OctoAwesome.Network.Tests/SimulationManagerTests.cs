@@ -45,7 +45,7 @@ namespace OctoAwesome.Network.Tests
             reset.WaitOne();
 
             simulationManager.Stop();
-            
+
         }
     }
 }

@@ -13,7 +13,7 @@ namespace OctoAwesome.PoC
 
             object a = 12;
 
-            var i 
+            var i
                 = GenericCaster<object, int>
                 .Cast(a);
 

@@ -6,13 +6,13 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class GrassBlockDefinition : BlockDefinition
     {
         public override string Name => Languages.OctoBasics.Grass;
-        
+
         public override string Icon => "grass_top";
-        
+
         public override string[] Textures { get; } = { "grass_top",
                                                          "dirt",
                                                          "dirt_grass" };
-        
+
         public override IMaterialDefinition Material { get; }
 
         public GrassBlockDefinition(DirtMaterialDefinition material)

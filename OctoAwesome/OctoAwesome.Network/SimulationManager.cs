@@ -11,13 +11,13 @@ namespace OctoAwesome.Network
     public class SimulationManager
     {
         public bool IsRunning { get; private set; }
-        
+
         public Simulation Simulation { get; }
-        
+
         public GameTime GameTime { get; private set; }
-        
+
         public ResourceManager ResourceManager { get; }
-        
+
         public GameService Service { get; }
 
         private readonly ExtensionLoader extensionLoader;
@@ -30,7 +30,7 @@ namespace OctoAwesome.Network
         private readonly object mainLock;
         public SimulationManager(ISettings settings, UpdateHub updateHub)
         {
-            mainLock = new object();           
+            mainLock = new object();
 
             this.settings = settings;
             this.updateHub = updateHub;
@@ -54,7 +54,7 @@ namespace OctoAwesome.Network
             {
                 IsServerSide = true
             };
-            
+
         }
         public void Start()
         {
@@ -101,7 +101,7 @@ namespace OctoAwesome.Network
         public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
         public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
             => planet.GlobalChunkCache.Subscribe(index2);
-        
+
 
         public IChunkColumn LoadColumn(int planetId, Index2 index2)
             => LoadColumn(GetPlanet(planetId), index2);

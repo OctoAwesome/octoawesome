@@ -19,7 +19,7 @@ namespace OctoAwesome.Client
 
         public IDefinitionManager DefinitionManager => ResourceManager.DefinitionManager;
         public IUniverse CurrentUniverse => ResourceManager.CurrentUniverse;
-        
+
 
         public bool IsMultiplayer { get; private set; }
         public Player CurrentPlayer => ResourceManager.CurrentPlayer;
@@ -86,7 +86,7 @@ namespace OctoAwesome.Client
                         port = int.Parse(rawIpAddress.Split(':').Last());
                         stringIpAddress = rawIpAddress[1..rawIpAddress.IndexOf(']')];
                     }
-                    else if (rawIpAddress.Contains(':') && 
+                    else if (rawIpAddress.Contains(':') &&
                         IPAddress.TryParse(rawIpAddress.Substring(0, rawIpAddress.IndexOf(':')), out iPAddress)) //IPV4 with Port
                     {
                         port = int.Parse(rawIpAddress.Split(':').Last());
@@ -120,7 +120,7 @@ namespace OctoAwesome.Client
 
             resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager, UpdateHub);
 
-            
+
 
             IsMultiplayer = multiplayer;
 
@@ -154,7 +154,7 @@ namespace OctoAwesome.Client
             if (ResourceManager is IDisposable disposable)
                 disposable.Dispose();
         }
-        public Entity LoadEntity(Guid entityId) 
+        public Entity LoadEntity(Guid entityId)
             => ResourceManager.LoadEntity(entityId);
         public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
            where TContainer : ComponentContainer<TComponent>

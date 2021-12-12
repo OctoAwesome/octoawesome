@@ -45,7 +45,7 @@ namespace OctoAwesome.Client.Screens
 
             Button closeButton = new TextButton(manager, buttonText);
             closeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            closeButton.LeftMouseClick += (s, e) => 
+            closeButton.LeftMouseClick += (s, e) =>
             {
                 if (buttonClick != null)
                     buttonClick(s, e);

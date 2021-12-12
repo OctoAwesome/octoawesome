@@ -22,7 +22,7 @@ namespace OctoAwesome.Client.Screens
         private readonly GameScreen gameScreen;
         private readonly CancellationTokenSource tokenSource;
         private readonly Task quoteUpdate;
-    
+
         public LoadingScreen(ScreenComponent manager) : base(manager)
         {
             Padding = new Border(0, 0, 0, 0);
@@ -31,7 +31,7 @@ namespace OctoAwesome.Client.Screens
             Title = "Loading";
 
             SetDefaultBackground();
-            
+
             //Main Panel
             var mainStack = new Grid(manager);
             mainStack.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 4 });
@@ -113,7 +113,7 @@ namespace OctoAwesome.Client.Screens
                 tokenSource.Dispose();
                 Manager.NavigateToScreen(gameScreen);
                 gameScreen.OnCenterChanged -= SwitchToGame;
-            });            
+            });
         }
 
         private static async Task UpdateLabel(Label label, QuoteProvider quoteProvider, TimeSpan timeSpan, CancellationToken token)

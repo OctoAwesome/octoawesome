@@ -21,10 +21,10 @@ namespace OctoAwesome.Database.Threading
         {
             lockMonitor.ReleaseLock(currentOperation);
         }
-        public override bool Equals(object? obj) 
+        public override bool Equals(object? obj)
             => obj is DatabaseLock @lock && Equals(@lock);
-        public bool Equals(DatabaseLock other) 
-            => EqualityComparer<DatabaseLockMonitor>.Default.Equals(lockMonitor, other.lockMonitor) 
+        public bool Equals(DatabaseLock other)
+            => EqualityComparer<DatabaseLockMonitor>.Default.Equals(lockMonitor, other.lockMonitor)
             && currentOperation == other.currentOperation;
         public override int GetHashCode()
         {
@@ -36,7 +36,7 @@ namespace OctoAwesome.Database.Threading
 
         public static bool operator ==(DatabaseLock left, DatabaseLock right)
             => left.Equals(right);
-        
+
         public static bool operator !=(DatabaseLock left, DatabaseLock right)
             => !(left == right);
     }

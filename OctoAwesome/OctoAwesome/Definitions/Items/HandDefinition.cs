@@ -11,7 +11,7 @@
         {
             hand = new Hand(this);
         }
-        public bool CanMineMaterial(IMaterialDefinition material) 
+        public bool CanMineMaterial(IMaterialDefinition material)
             => true;
         public Item Create(IMaterialDefinition material)
             => hand;

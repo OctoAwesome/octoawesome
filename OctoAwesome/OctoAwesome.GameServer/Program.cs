@@ -24,7 +24,7 @@ namespace OctoAwesome.GameServer
                 AppDomain.CurrentDomain.UnhandledException += (s, e) =>
                 {
                     File.WriteAllText(
-                        Path.Combine(".", "logs", $"server-dump-{DateTime.Now:ddMMyy_hhmmss}.txt"), 
+                        Path.Combine(".", "logs", $"server-dump-{DateTime.Now:ddMMyy_hhmmss}.txt"),
                         e.ExceptionObject.ToString());
 
                     string message = $"Unhandled Exception: {e.ExceptionObject}";
@@ -32,7 +32,7 @@ namespace OctoAwesome.GameServer
                         logger.Fatal(message, ex);
                     else
                         logger.Fatal(message);
-                    
+
                     logger.Flush();
                 };
 
@@ -41,7 +41,7 @@ namespace OctoAwesome.GameServer
                 logger.Info("Server start");
                 var fileInfo = new FileInfo(Path.Combine(".", "settings.json"));
                 Settings settings;
-                
+
                 if (!fileInfo.Exists)
                 {
                     logger.Debug("Create new Default Settings");
@@ -56,7 +56,7 @@ namespace OctoAwesome.GameServer
                     logger.Debug("Load Settings");
                     settings = new Settings(fileInfo);
                 }
-                
+
 
                 typeContainer.Register(settings);
                 typeContainer.Register<ISettings, Settings>(settings);

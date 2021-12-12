@@ -9,13 +9,13 @@ namespace OctoAwesome.Basics.Definitions.Trees
         private ushort wood;
         private ushort leave;
         private ushort water;
-        
+
         public override int Order => 15;
-        
+
         public override float MaxTemperature => 25;
-        
+
         public override float MinTemperature => -5;
-        
+
         public override int GetDensity(IPlanet planet, Index3 index)
         {
             return 4;
@@ -43,7 +43,7 @@ namespace OctoAwesome.Basics.Definitions.Trees
                 infos[i] = (0, 0, i, wood);
             }
             builder.SetBlocks(false, infos);
-         
+
         }
     }
 }

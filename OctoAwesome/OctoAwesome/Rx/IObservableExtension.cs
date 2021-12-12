@@ -14,9 +14,9 @@ namespace OctoAwesome.Rx
         public static IDisposable Subscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onException)
             => observable.Subscribe(new Observer<T>(onNext, onException));
 
-        public static IDisposable Subscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onException, Action onComplete) 
+        public static IDisposable Subscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onException, Action onComplete)
             => observable.Subscribe(new Observer<T>(onNext, onException, onComplete));
-        
+
 
         private class Observer<T> : IObserver<T>
         {
@@ -28,16 +28,16 @@ namespace OctoAwesome.Rx
             {
                 this.onNext = onNext;
                 this.onException = onException;
-                this.onComplete = onComplete ;
+                this.onComplete = onComplete;
             }
 
-            public void OnCompleted() 
+            public void OnCompleted()
                 => onComplete?.Invoke();
 
             public void OnError(Exception error)
                 => onException?.Invoke(error);
 
-            public void OnNext(T value) 
+            public void OnNext(T value)
                 => onNext?.Invoke(value);
         }
     }

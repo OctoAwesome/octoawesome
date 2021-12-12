@@ -24,7 +24,7 @@ namespace OctoAwesome.Client
                 _config = ConfigurationManager.OpenExeConfiguration(entryAssembly.Location);
             }
         }
-        
+
 
         public T? Get<T>(string key)
         {

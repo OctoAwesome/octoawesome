@@ -123,7 +123,7 @@ namespace OctoAwesome.Client.Screens
                     Padding = Border.All(2),
                 };
 
-                image.StartDrag += (c,e) =>
+                image.StartDrag += (c, e) =>
                 {
                     Debug.Assert(image.Tag != null, nameof(image.Tag) + " != null");
                     var slot = player.Toolbar.Tools[(int)image.Tag];
@@ -136,12 +136,12 @@ namespace OctoAwesome.Client.Screens
                     }
                 };
 
-                image.DropEnter += (c,e) => { image.Background = hoverBrush; };
-                image.DropLeave += (c,e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (c,e) =>
+                image.DropEnter += (c, e) => { image.Background = hoverBrush; };
+                image.DropLeave += (c, e) => { image.Background = backgroundBrush; };
+                image.EndDrop += (c, e) =>
                 {
                     e.Handled = true;
-                    
+
                     Debug.Assert(image.Tag != null, nameof(image.Tag) + " != null");
 
                     if (e.Sender is Grid && e.Content is InventorySlot sourceSlot) // && ShiftPressed
@@ -158,7 +158,7 @@ namespace OctoAwesome.Client.Screens
                             player.Toolbar.SetTool(targetSlot, sourceIndex);
                         }
                     }
-                    else if(e.Content is InventorySlot slot)
+                    else if (e.Content is InventorySlot slot)
                     {
                         // Inventory Drop
                         player.Toolbar.SetTool(slot, (int)image.Tag);

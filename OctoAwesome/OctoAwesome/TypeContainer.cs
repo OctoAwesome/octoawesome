@@ -28,7 +28,7 @@ namespace OctoAwesome
             => instance.Register<TRegistrar, T>(instanceBehavior);
         public static void Register(Type registrar, Type type, object singleton)
              => instance.Register(registrar, type, singleton);
-        
+
 
         public static void Register<T>(T singleton) where T : class
              => instance.Register(singleton);
@@ -40,7 +40,7 @@ namespace OctoAwesome
             => instance.TryGet(out resolvedInstance);
         public static object Get(Type type)
             => instance.Get(type);
-        
+
 
         public static T Get<T>() where T : class
             => instance.Get<T>();

@@ -31,13 +31,13 @@ namespace OctoAwesome
         /// <param name="pos1">Ecke 1</param>
         /// <param name="pos2">Ecke 2</param>
         /// <param name="normal">Normalenvektor</param>
-        public CollisionPlane(Vector3 pos1,Vector3 pos2, Vector3 normal)
+        public CollisionPlane(Vector3 pos1, Vector3 pos2, Vector3 normal)
         {
             this.normal = normal;
             this.edgepos1 = pos1;
             this.edgepos2 = pos2;
 
-            pos = (pos2 - pos1 ) /2f + pos1;
+            pos = (pos2 - pos1) / 2f + pos1;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OctoAwesome
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X, pos.Y, pos.Z),
-                    new Vector3(pos.X, pos.Y + 1f, pos.Z + 1f), 
+                    new Vector3(pos.X, pos.Y + 1f, pos.Z + 1f),
                     new Vector3(-1, 0));
             }
             else if (moveVector.X < 0)
@@ -75,7 +75,7 @@ namespace OctoAwesome
             else if (moveVector.Y < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X , pos.Y + 1f, pos.Z),
+                    new Vector3(pos.X, pos.Y + 1f, pos.Z),
                     new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z + 1f),
                     new Vector3(0, 1));
             }
@@ -84,15 +84,15 @@ namespace OctoAwesome
             if (moveVector.Z > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X, pos.Y , pos.Z ),
-                    new Vector3(pos.X + 1f, pos.Y + 1f , pos.Z ),
-                    new Vector3(0,0, -1));
+                    new Vector3(pos.X, pos.Y, pos.Z),
+                    new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z),
+                    new Vector3(0, 0, -1));
             }
             else if (moveVector.Z < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X , pos.Y  , pos.Z + 1f),
-                    new Vector3(pos.X + 1f, pos.Y +1f, pos.Z + 1f),
+                    new Vector3(pos.X, pos.Y, pos.Z + 1f),
+                    new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z + 1f),
                     new Vector3(0, 0, 1));
             }
         }
@@ -106,11 +106,11 @@ namespace OctoAwesome
         /// <param name="coordinate"><see cref="Coordinate"/> ot the <see cref="Entity"/></param>
         /// <param name="invertvelocity">Gibt an ob die geschwindigkeit invertiert werden soll</param>
         /// <returns></returns>
-        public static IEnumerable<CollisionPlane> GetEntityCollisionPlanes(float radius, float height, Vector3 velocity, 
+        public static IEnumerable<CollisionPlane> GetEntityCollisionPlanes(float radius, float height, Vector3 velocity,
             Coordinate coordinate, bool invertVelocity = true)
         {
             var pos = coordinate.BlockPosition;
-            Vector3 vel =  invertVelocity ? new Vector3(-velocity.X, -velocity.Y, - velocity.Z) : velocity;
+            Vector3 vel = invertVelocity ? new Vector3(-velocity.X, -velocity.Y, -velocity.Z) : velocity;
 
             //Ebene X
             if (vel.X > 0)
@@ -132,14 +132,14 @@ namespace OctoAwesome
             if (vel.Y > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z ),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z),
                     new Vector3(pos.X + radius, pos.Y - radius, pos.Z + height),
                     new Vector3(0, -1));
             }
             else if (vel.Y < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - radius, pos.Y + radius, pos.Z ),
+                    new Vector3(pos.X - radius, pos.Y + radius, pos.Z),
                     new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
                     new Vector3(0, 1));
             }
@@ -155,7 +155,7 @@ namespace OctoAwesome
             else if (vel.Z < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - radius, pos.Y - radius , pos.Z + height),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z + height),
                     new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
                     new Vector3(0, 0, 1));
             }
@@ -246,11 +246,11 @@ namespace OctoAwesome
         /// <returns>Ergebnis</returns>
         public static bool CheckDistance(Vector3 d1, Vector3 d2)
         {
-            
+
             if (d1.X == 0 || d1.Y == 0 || d1.Z == 0)
                 return true;
 
-            var diff = d1 - d2; 
+            var diff = d1 - d2;
 
             var rx = d1.X > 0 ? diff.X < 0 : diff.X > 0;
             var ry = d1.Y > 0 ? diff.Y < 0 : diff.Y > 0;
@@ -258,6 +258,6 @@ namespace OctoAwesome
             return rx || ry || rz;
         }
 
-       
+
     }
 }

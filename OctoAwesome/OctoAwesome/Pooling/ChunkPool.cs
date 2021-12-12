@@ -52,6 +52,6 @@ namespace OctoAwesome.Pooling
                 throw new InvalidCastException("Can not push object of type: " + obj.GetType());
             }
         }
-     
+
     }
 }

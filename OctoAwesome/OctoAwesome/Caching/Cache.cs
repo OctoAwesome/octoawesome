@@ -31,7 +31,7 @@ namespace OctoAwesome.Caching
 
         internal abstract void CollectGarbage();
     }
-    public abstract class Cache<TKey, TValue> : Cache 
+    public abstract class Cache<TKey, TValue> : Cache
         where TKey : notnull
     {
 
@@ -45,7 +45,7 @@ namespace OctoAwesome.Caching
         protected virtual TValue GetBy(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
         {
             Debug.Assert(IsStarted, IsStarted + " == true");
-            
+
             CacheItem? cacheItem;
             bool result;
             using (var @lock = lockSemaphore.EnterCountScope())
@@ -88,7 +88,7 @@ namespace OctoAwesome.Caching
             using var @lock = lockSemaphore.EnterExclusiveScope();
             return valueCache[key] = new(value);
         }
-               
+
 
         internal override void CollectGarbage()
         {
@@ -130,7 +130,7 @@ namespace OctoAwesome.Caching
                 : this(DateTime.Now, value)
             {
             }
-            
+
 
             public CacheItem(DateTime lastAccessTime, TValue value)
             {

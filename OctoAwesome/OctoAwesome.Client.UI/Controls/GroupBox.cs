@@ -63,22 +63,22 @@ namespace OctoAwesome.Client.UI.Controls
         public GroupBox(BaseScreenComponent manager, string style = "") : base(manager, style)
         {
             outerPanel = new(manager)
-                         {
-                             Padding = Border,
-                             Background = BorderColor
-                         };
+            {
+                Padding = Border,
+                Background = BorderColor
+            };
 
             var innerPanel = new StackPanel(manager)
-                             {
-                                 Orientation = Orientation.Vertical,
-                                 Background = SolidColorBrush.White,
-                             };
+            {
+                Orientation = Orientation.Vertical,
+                Background = SolidColorBrush.White,
+            };
 
             StackPanel headlinePanel = new(manager)
-                                       {
-                                           Orientation= Orientation.Vertical,
-                                           HorizontalAlignment = HorizontalAlignment.Stretch,
-                                       };
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
 
             headlineLabel = new Label(manager)
             {
@@ -97,7 +97,7 @@ namespace OctoAwesome.Client.UI.Controls
             {
                 Orientation = Orientation,
                 Background = SolidColorBrush.White,
-                HorizontalAlignment= HorizontalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
             };
 
             innerPanel.Controls.Add(contentPanel);

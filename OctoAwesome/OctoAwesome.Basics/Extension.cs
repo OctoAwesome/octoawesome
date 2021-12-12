@@ -21,7 +21,7 @@ namespace OctoAwesome.Basics
 
         public void Register(ITypeContainer typeContainer)
         {
-            
+
         }
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {

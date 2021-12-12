@@ -7,11 +7,11 @@ namespace OctoAwesome.Basics.Definitions.Items
     {
         public string Name => "Chest";
         public string Icon => "chest";
-        
-        public bool CanMineMaterial(IMaterialDefinition material) 
+
+        public bool CanMineMaterial(IMaterialDefinition material)
             => false;
-        
-        public Item Create(IMaterialDefinition material) 
+
+        public Item Create(IMaterialDefinition material)
             => new ChestItem(this, material);
     }
 }

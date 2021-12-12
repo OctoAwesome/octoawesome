@@ -5,7 +5,7 @@ namespace OctoAwesome.Database.Checks
     [Serializable]
     public sealed class InvalidKeyException : Exception
     {
-        public long Position { get;  }
+        public long Position { get; }
 
         public InvalidKeyException(string message, long position) : base($"{message} on Position {position}")
         {

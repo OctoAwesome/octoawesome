@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics.Biomes
 
             SortSubBiomes();
         }
-        
+
         public override void GetHeightmap(Index2 chunkIndex, float[] heightmap)
         {
             Index2 blockIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);

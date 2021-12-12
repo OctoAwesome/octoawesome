@@ -25,7 +25,7 @@ namespace OctoAwesome.Serialization
             var chunkColumn = new ChunkColumn(currentPlanet);
             using (var stream = new MemoryStream(Database.GetValue(key).Content))
             using (var zip = new GZipStream(stream, CompressionMode.Decompress))
-            using(var buffered = new BufferedStream(zip))
+            using (var buffered = new BufferedStream(zip))
             using (var reader = new BinaryReader(buffered))
             {
                 chunkColumn.Deserialize(reader);

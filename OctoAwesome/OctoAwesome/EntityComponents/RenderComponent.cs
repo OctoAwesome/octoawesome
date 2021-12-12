@@ -9,10 +9,10 @@ namespace OctoAwesome.EntityComponents
 
         public string Name { get; set; }
         public string ModelName { get; set; }
-        
+
 
         public string TextureName { get; set; }
-        
+
 
         public float BaseZRotation { get; set; }
         public RenderComponent()

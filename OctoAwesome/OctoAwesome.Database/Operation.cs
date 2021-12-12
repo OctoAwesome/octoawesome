@@ -16,6 +16,6 @@ namespace OctoAwesome.Database
         /// <summary>
         /// Indicates that lock is exclusive for this operation
         /// </summary>
-        Exclusive = 1 << 2 
+        Exclusive = 1 << 2
     }
 }

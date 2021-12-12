@@ -114,11 +114,11 @@ namespace OctoAwesome.Basics.SimulationComponents
                 {
                     activeItem = item;
                 }
-                else if(toolbar.HandSlot.Item is IItem handItem)
+                else if (toolbar.HandSlot.Item is IItem handItem)
                 {
                     activeItem = handItem;
                 }
-                
+
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
                 var blockHitInformation = service.Hit(lastBlock, activeItem, cache);

@@ -61,11 +61,11 @@ namespace OctoAwesome
         /// <param name="stream"></param>
         public void Serialize(BinaryWriter writer)
         {
-             writer.Write(Id.ToString());
-             writer.Write(Name);
-             writer.Write(Seed);
+            writer.Write(Id.ToString());
+            writer.Write(Name);
+            writer.Write(Seed);
         }
 
- 
+
     }
 }

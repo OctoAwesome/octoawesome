@@ -13,7 +13,7 @@ namespace OctoAwesome.Client.Screens
         {
             assets = manager.Game.Assets;
 
-            Padding = new Border(0,0,0,0);
+            Padding = new Border(0, 0, 0, 0);
 
             Background = new TextureBrush(assets.LoadTexture("background"), TextureBrushMode.Stretch);
 
@@ -64,7 +64,7 @@ namespace OctoAwesome.Client.Screens
             webButton.Margin = new Border(10, 10, 10, 10);
             webButton.LeftMouseClick += (s, e) =>
             {
-               UI.Tools.OpenUrl("http://octoawesome.net/");
+                UI.Tools.OpenUrl("http://octoawesome.net/");
             };
             Controls.Add(webButton);
 

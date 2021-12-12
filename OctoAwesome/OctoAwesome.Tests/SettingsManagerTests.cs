@@ -15,7 +15,7 @@ namespace OctoAwesome.Tests
 
             string[] testArray = new string[] { "foo", "bar" };
             settings.Set("foo", testArray);
-            
+
             string[] newArray = settings.GetArray<string>("foo");
 
             Assert.True(testArray.SequenceEqual(newArray));

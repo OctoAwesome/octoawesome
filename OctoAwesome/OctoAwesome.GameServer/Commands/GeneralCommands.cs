@@ -11,7 +11,7 @@ namespace OctoAwesome.GameServer.Commands
         public static byte[] GetUniverse(CommandParameter parameter) // TODO: use parameter for multi universe server?
         {
             var universe = TypeContainer.Get<SimulationManager>().GetUniverse();
-            
+
             using (var memoryStream = new MemoryStream())
             using (var writer = new BinaryWriter(memoryStream))
             {

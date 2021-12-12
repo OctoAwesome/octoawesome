@@ -12,12 +12,12 @@ namespace OctoAwesome.PoC
             throw new NotImplementedException();
         }
 
-      //  public Component[] TryFind<T>(T key)
-      //=> key switch
-      //{
-      //    int i => Array.Empty<Component>(),
-      //    _ => false
-      //};
+        //  public Component[] TryFind<T>(T key)
+        //=> key switch
+        //{
+        //    int i => Array.Empty<Component>(),
+        //    _ => false
+        //};
     }
 
     public class EntityCache : Cache<int, Entity>//, IKeyFinder<Index3>
@@ -54,7 +54,7 @@ namespace OctoAwesome.PoC
             Index2 i2 => null,
             _ => null
         };
-            
+
         //public PositionComponent[] TryFind<T>(T key)
         //=> key switch
         //{

@@ -16,7 +16,7 @@ namespace OctoAwesome.PoC.Rx
         public IObservable<Notification> ListenOn(string channel)
             => GetChannelRelay(channel);
 
-        public IDisposable AddSource(IObservable<Notification> notification, string channel) 
+        public IDisposable AddSource(IObservable<Notification> notification, string channel)
             => notification.Subscribe(GetChannelRelay(channel));
 
         private Relay<Notification> GetChannelRelay(string channel)

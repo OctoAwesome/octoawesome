@@ -18,7 +18,7 @@ namespace OctoAwesome.EntityComponents
         /// Tilt
         /// </summary>
         public float Tilt { get; set; }
-        
+
         /// <summary>
         /// Angle
         /// </summary>

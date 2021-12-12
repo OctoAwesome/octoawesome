@@ -8,7 +8,7 @@ using System.Reflection;
 namespace OctoAwesome.Serialization.Entities
 {
 
-    public sealed class ComponentContainerDbContext<TContainer, TComponent> 
+    public sealed class ComponentContainerDbContext<TContainer, TComponent>
         : IDatabaseContext<GuidTag<TContainer>, TContainer>
         where TContainer : ComponentContainer<TComponent>
         where TComponent : IComponent
@@ -47,10 +47,10 @@ namespace OctoAwesome.Serialization.Entities
                 }
                 catch (Exception)
                 {
-//HACK: TransferUiComponent shouldn't be serialized and deserialized
+                    //HACK: TransferUiComponent shouldn't be serialized and deserialized
                 }
 
-             
+
             }
 
             return entity;

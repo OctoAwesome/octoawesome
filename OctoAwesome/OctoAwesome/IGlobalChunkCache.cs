@@ -5,7 +5,7 @@ namespace OctoAwesome
     /// <summary>
     /// Basisinterface für einen Globalen Chunkcache
     /// </summary>
-    public interface IGlobalChunkCache 
+    public interface IGlobalChunkCache
     {
         //event EventHandler<IChunkColumn> ChunkColumnChanged;
 
@@ -26,7 +26,7 @@ namespace OctoAwesome
         /// <param name="position">Position des Chunks</param>
         /// <returns>Den neu abonnierten Chunk</returns>
         IChunkColumn Subscribe(Index2 position);
-        
+
         /// <summary>
         /// Liefert den Chunk, sofern geladen.
         /// </summary>
@@ -34,7 +34,7 @@ namespace OctoAwesome
         /// <param name="position">Die Position des zurückzugebenden Chunks</param>
         /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
         IChunkColumn? Peek(Index2 position);
-        
+
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
