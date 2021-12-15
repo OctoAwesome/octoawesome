@@ -2,7 +2,7 @@
 
 namespace OctoAwesome
 {
-    public class MapPopulatorRegistrar : BaseRegistrar<IMapPopulator, IMapPopulator>
+    public class MapPopulatorRegistrar : BaseRegistrar<IMapPopulator>
     {
         private List<IMapPopulator> mapPopulators;
 

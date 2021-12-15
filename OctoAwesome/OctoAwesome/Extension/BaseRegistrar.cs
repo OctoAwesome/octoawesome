@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace OctoAwesome
 {
-    public abstract class BaseRegistrar<TRegister, TUnregister> : IExtensionRegistrar<TRegister, TUnregister>
+    public abstract class BaseRegistrar<T> : IExtensionRegistrar<T>
     {
         private readonly ISettings settings;
 
@@ -25,7 +25,7 @@ namespace OctoAwesome
             settings.Set(IExtensionLoader.SETTINGSKEY, types);
         }
 
-        public abstract void Register(TRegister value);
-        public abstract void Unregister(TUnregister value);
+        public abstract void Register(T value);
+        public abstract void Unregister(T value);
     }
 }

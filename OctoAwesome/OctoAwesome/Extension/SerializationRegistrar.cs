@@ -4,7 +4,7 @@ using System;
 
 namespace OctoAwesome
 {
-    public class SerializationRegistrar : BaseRegistrar<Type, Type>
+    public class SerializationRegistrar : BaseRegistrar<Type>
     {
         private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 

@@ -60,7 +60,9 @@ namespace OctoAwesome.Runtime
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
-            var disabledExtensions = settings.KeyExists(IExtensionLoader.SETTINGSKEY) ? settings.GetArray<string>(IExtensionLoader.SETTINGSKEY) : Array.Empty<string>();
+            var disabledExtensions = settings.KeyExists(IExtensionLoader.SETTINGSKEY) 
+                ? settings.GetArray<string>(IExtensionLoader.SETTINGSKEY) 
+                : Array.Empty<string>();
 
             foreach (var assembly in assemblies)
             {

@@ -2,7 +2,7 @@
 
 namespace OctoAwesome
 {
-    public class MapGeneratorRegistrar : BaseRegistrar<IMapGenerator, IMapGenerator>
+    public class MapGeneratorRegistrar : BaseRegistrar<IMapGenerator>
     {
         private readonly List<IMapGenerator> mapGenerators;
 
