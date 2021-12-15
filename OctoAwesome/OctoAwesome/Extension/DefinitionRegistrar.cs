@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace OctoAwesome
 {
-    public class DefinitionRegister : BaseRegistrar<Type, IDefinition>
+    public class DefinitionRegistrar : BaseRegistrar<Type>
     {
         private readonly StandaloneTypeContainer definitionTypeContainer;
         private readonly Dictionary<Type, List<Type>> definitionsLookup;
 
-        public DefinitionRegister(ISettings settings) : base(settings)
+        public DefinitionRegistrar(ISettings settings) : base(settings)
         {
             definitionTypeContainer = new StandaloneTypeContainer();
             definitionsLookup = new Dictionary<Type, List<Type>>();
@@ -46,7 +46,7 @@ namespace OctoAwesome
         /// Removes an existing Definition Type.
         /// </summary>
         /// <typeparam name="T">Definition Type</typeparam>
-        public override void Unregister(IDefinition definition) 
+        public override void Unregister(Type definition) 
         {
             throw new NotSupportedException("Currently not supported by TypeContainer");
         }

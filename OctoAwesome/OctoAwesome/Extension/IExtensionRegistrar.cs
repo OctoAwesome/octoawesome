@@ -3,12 +3,12 @@
     /// <summary>
     /// Interface for the generic Extension Loader.
     /// </summary>
-    public interface IExtensionRegistrar<TRegister, TUnregister> : IExtensionLoader
+    public interface IExtensionRegistrar<T> : IExtensionLoader
     {
 
-        void Register(TRegister value);
+        void Register(T value);
 
-        void Unregister(TUnregister value);
+        void Unregister(T value);
 
     }
 }

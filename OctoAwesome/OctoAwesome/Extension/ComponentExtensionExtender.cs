@@ -69,3 +69,12 @@ namespace OctoAwesome
         }
     }
 }
+/*
+
+InheritanceDictionary<Type, T>
+
+.Add -> Type -> Tree
+
+GetValue(Type) 
+
+*/
