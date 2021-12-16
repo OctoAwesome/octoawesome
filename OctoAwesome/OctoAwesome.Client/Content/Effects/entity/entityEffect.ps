@@ -1,0 +1,48 @@
+#version 130
+uniform float AmbientIntensity;
+uniform vec4 AmbientColor;
+uniform float DiffuseIntensity;
+uniform vec4 DiffuseColor;
+uniform vec3 DiffuseDirection;
+uniform sampler2DShadow ShadowMap;
+uniform sampler2D Texture;
+
+in vec3 psNormal;
+in vec2 psTextureCoord;
+in vec4 psShadowCoord;
+
+out vec4 outColor;
+float random(vec4 seed)
+{
+	float dotProduct = dot(seed, vec4(12.9898,78.233,45.164,94.673));
+	return fract(sin(dotProduct) * 43758.5453);
+}
+float sampleShadow(float cosTheta)
+{
+	vec2 poissonDisk[4] = vec2[](
+      vec2( -0.94201624, -0.39906216 ),
+      vec2( 0.94558609, -0.76890725 ),
+      vec2( -0.094184101, -0.92938870 ),
+      vec2( 0.34495938, 0.29387760 )
+    );
+	
+	float bias = clamp(0.0005*tan(acos(cosTheta)), 0, 0.000005);
+	float visibility = 1.0;
+	for (int i=0;i<4;i++)
+	{
+		int index = int(16.0*random(vec4(gl_FragCoord.xyy, i))) % 4;
+		visibility -= (0.3/1) * (1.0 - texture(ShadowMap, vec3(psShadowCoord.xy + poissonDisk[index] / 7000.0, (psShadowCoord.z - bias) / psShadowCoord.w)));
+	}
+	return visibility;
+}
+
+void main()
+{
+	vec4 texColor = texture(Texture, psTextureCoord);
+	vec4 ambient = AmbientColor * AmbientIntensity;
+	float cosTheta = clamp(dot(-DiffuseDirection,psNormal),0.0,1.0);
+	vec4 diffuse = cosTheta * DiffuseColor * DiffuseIntensity;
+	float visibility = sampleShadow(cosTheta);
+
+	outColor = texColor * clamp(ambient + vec4(diffuse.rgb * visibility,1.0),0.0,1.0);
+}

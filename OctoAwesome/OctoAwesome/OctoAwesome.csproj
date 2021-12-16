@@ -22,6 +22,5 @@
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
   </ItemGroup>
-
   
 </Project>
