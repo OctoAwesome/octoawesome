@@ -68,7 +68,7 @@ namespace OctoAwesome.Client.UI.Controls
                 Background = BorderColor
             };
 
-            var innerPanel = new StackPanel(manager)
+            StackPanel innerPanel = new(manager)
             {
                 Orientation = Orientation.Vertical,
                 Background = SolidColorBrush.White,
