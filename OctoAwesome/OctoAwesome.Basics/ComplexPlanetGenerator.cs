@@ -48,7 +48,7 @@ namespace OctoAwesome.Basics
 
             var localHeightmap = ArrayPool<float>.Shared.Rent(Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
 
-            localPlanet.BiomeGenerator.GetHeightmap(index, localHeightmap);
+            localPlanet.BiomeGenerator.FillHeightmap(index, localHeightmap);
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)

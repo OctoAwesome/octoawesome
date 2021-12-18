@@ -18,21 +18,21 @@ namespace OctoAwesome.Basics.Biomes
             SortSubBiomes();
         }
 
-        public override void GetHeightmap(Index2 chunkIndex, float[] heightmap)
+        public override void FillHeightmap(Index2 chunkIndex, float[] heightmap)
         {
             Index2 blockIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);
 
             var regions = ArrayPool<float>.Shared.Rent(Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
             for (int i = 0; i < regions.Length; i++)
                 regions[i] = 0;
-            BiomeNoiseGenerator.GetTileableNoiseMap2D(blockIndex.X, blockIndex.Y, Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y, regions);
+            BiomeNoiseGenerator.FillTileableNoiseMap2D(blockIndex.X, blockIndex.Y, Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y, regions);
 
             float[] biomeValues = ArrayPool<float>.Shared.Rent(SubBiomes.Count * Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
 
             var tempArray = ArrayPool<float>.Shared.Rent(Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
             for (int i = 0; i < SubBiomes.Count; i++)
             {
-                SubBiomes[i].GetHeightmap(chunkIndex, tempArray);
+                SubBiomes[i].FillHeightmap(chunkIndex, tempArray);
                 Array.Copy(tempArray, 0, biomeValues, i * Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y, Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
             }
             ArrayPool<float>.Shared.Return(tempArray);

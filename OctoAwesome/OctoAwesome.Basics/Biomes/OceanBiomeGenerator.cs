@@ -7,7 +7,7 @@
             : base(planet, minValue, maxValue, valueRangeOffset, valueRange, null!) // TODO: currently no noise value is used for the biome floor
         {
         }
-        public override void GetHeightmap(Index2 chunkIndex, float[] heightmap)
+        public override void FillHeightmap(Index2 chunkIndex, float[] heightmap)
         {
 
             chunkIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);

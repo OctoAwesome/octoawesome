@@ -35,7 +35,7 @@
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <param name="noiseArray">Array in der größé sizeX * sizeY</param>
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
-        void GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY,
+        void FillTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY,
             float[] noiseArray);
 
 

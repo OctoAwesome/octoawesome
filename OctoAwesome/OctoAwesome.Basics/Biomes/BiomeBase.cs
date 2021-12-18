@@ -32,13 +32,13 @@ namespace OctoAwesome.Basics.Biomes
             BiomeNoiseGenerator = biomeNoiseGenerator;
         }
 
-        public virtual void GetHeightmap(Index2 chunkIndex, float[] heightmap)
+        public virtual void FillHeightmap(Index2 chunkIndex, float[] heightmap)
         {
             chunkIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);
             float[] heights = ArrayPool<float>.Shared.Rent(Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
             for (int i = 0; i < heights.Length; i++)
                 heights[i] = 0;
-            BiomeNoiseGenerator.GetTileableNoiseMap2D(chunkIndex.X, chunkIndex.Y, Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y, heights);
+            BiomeNoiseGenerator.FillTileableNoiseMap2D(chunkIndex.X, chunkIndex.Y, Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Planet.Size.X * Chunk.CHUNKSIZE_X, Planet.Size.Y * Chunk.CHUNKSIZE_Y, heights);
 
             for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
             {

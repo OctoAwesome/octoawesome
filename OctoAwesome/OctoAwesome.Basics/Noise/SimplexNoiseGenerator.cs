@@ -133,7 +133,7 @@ namespace OctoAwesome.Basics.Noise
         /// <param name="tileSizeX">Breite der Kachel</param>
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
-        public void GetTileableNoiseMap2D(int startX, int startY, int sizeX, int sizeY, int tileSizeX, int tileSizeY,
+        public void FillTileableNoiseMap2D(int startX, int startY, int sizeX, int sizeY, int tileSizeX, int tileSizeY,
             float[] array)
         {
             Parallel.For(0, sizeX, x =>
