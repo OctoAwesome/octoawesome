@@ -67,6 +67,7 @@ namespace OctoAwesome.Network
         {
             if (FileInfo == null)
                 throw new ArgumentException("No file info was specified");
+
             dictionary.Clear();
 
             foreach (var entry in InternalLoad(FileInfo))
@@ -76,6 +77,7 @@ namespace OctoAwesome.Network
         {
             if (FileInfo == null)
                 throw new ArgumentException("No file info was specified");
+
             FileInfo.Delete();
             using (var writer = new StreamWriter(FileInfo.OpenWrite()))
             {

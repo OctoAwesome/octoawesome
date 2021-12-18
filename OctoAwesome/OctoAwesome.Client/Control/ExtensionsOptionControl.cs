@@ -98,6 +98,7 @@ namespace OctoAwesome.Client.Controls
                 var ext = loadedExtensionsList.SelectedItem;
                 if (ext == null)
                     throw new NullReferenceException("Enable button should not be clickable when no item is selected.");
+
                 loadedExtensionsList.Items.Remove(ext);
                 activeExtensionsList.Items.Add(ext);
                 activeExtensionsList.SelectedItem = ext;
@@ -108,6 +109,7 @@ namespace OctoAwesome.Client.Controls
                 var ext = activeExtensionsList.SelectedItem;
                 if (ext == null)
                     throw new NullReferenceException("Disable button should not be clickable when no item is selected.");
+
                 activeExtensionsList.Items.Remove(ext);
                 loadedExtensionsList.Items.Add(ext);
                 loadedExtensionsList.SelectedItem = ext;

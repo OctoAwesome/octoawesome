@@ -147,6 +147,7 @@ namespace OctoAwesome.Client.Controls
                 var pack = loadedPacksList.SelectedItem;
                 if (pack == null)
                     throw new NullReferenceException("Add button should not be clickable when no item is selected.");
+
                 loadedPacksList.Items.Remove(pack);
                 activePacksList.Items.Add(pack);
                 activePacksList.SelectedItem = pack;
@@ -157,6 +158,7 @@ namespace OctoAwesome.Client.Controls
                 var pack = activePacksList.SelectedItem;
                 if (pack == null)
                     throw new NullReferenceException("Remove button should not be clickable when no item is selected.");
+
                 activePacksList.Items.Remove(pack);
                 loadedPacksList.Items.Add(pack);
                 loadedPacksList.SelectedItem = pack;

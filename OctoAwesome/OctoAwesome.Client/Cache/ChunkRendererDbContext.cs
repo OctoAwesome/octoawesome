@@ -15,6 +15,7 @@ namespace OctoAwesome.Client.Cache
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
+
             using (Database.Lock(Operation.Write))
                 Database.AddOrUpdate(new Index3Tag(value.ChunkPosition), new Value(Serializer.Serialize(value)));
         }
@@ -31,6 +32,7 @@ namespace OctoAwesome.Client.Cache
             using var stream = new MemoryStream(Database.GetValue(key).Content);
             using var buffered = new BufferedStream(stream);
             using var reader = new BinaryReader(buffered);
+
             verticesForChunk.Deserialize(reader);
             return verticesForChunk;
         }
@@ -39,6 +41,7 @@ namespace OctoAwesome.Client.Cache
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
+
             using (Database.Lock(Operation.Write))
                 Database.Remove(new Index3Tag(value.ChunkPosition));
         }

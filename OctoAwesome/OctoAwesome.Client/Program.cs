@@ -38,6 +38,7 @@ namespace OctoAwesome.Client
                         logger.Fatal(message, exception);
                     else
                         logger.Fatal(message);
+
                     logger.Flush();
                 };
 
