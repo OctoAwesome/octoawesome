@@ -9,9 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public string Icon => "bucket";
 
         public bool CanMineMaterial(IMaterialDefinition material)
-        {
-            return material is IFluidMaterialDefinition;
-        }
+            => material is IFluidMaterialDefinition;
 
         public Item Create(IMaterialDefinition material)
             => new Bucket(this, material);

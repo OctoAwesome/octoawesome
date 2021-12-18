@@ -20,13 +20,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             Material = material;
         }
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
-        {
-            return wall switch
+            => wall switch
             {
                 Wall.Top => 0,
                 Wall.Bottom => 1,
                 _ => 2
             };
-        }
     }
 }

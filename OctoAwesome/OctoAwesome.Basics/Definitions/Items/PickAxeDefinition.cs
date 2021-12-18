@@ -10,9 +10,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public string Name => "Pickaxe";
 
         public bool CanMineMaterial(IMaterialDefinition material)
-        {
-            return material is ISolidMaterialDefinition;
-        }
+            => material is ISolidMaterialDefinition;
 
         public Item Create(IMaterialDefinition material)
         {
