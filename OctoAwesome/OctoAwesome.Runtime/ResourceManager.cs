@@ -417,7 +417,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                var retValues = persistenceManager.GetAllComponents<T>(CurrentUniverse.Id).ToArray(); //TODO: HACK will be changed
+                var retValues = persistenceManager.GetAllComponents<T>(CurrentUniverse.Id).ToArray(); //HACK: will be changed
 
                 if (typeof(T) == typeof(PositionComponent))
                 {
