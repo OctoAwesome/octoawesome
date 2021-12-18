@@ -23,6 +23,8 @@ namespace OctoAwesome.Client.Cache
             ChunkPosition = chunkPosition;
             Vertices = vertices;
         }
+
+
         public void Deserialize(BinaryReader reader)
         {
             Version = reader.ReadInt32();

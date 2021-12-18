@@ -4,41 +4,30 @@ using System.Collections.Generic;
 namespace OctoAwesome.Components
 {
     /// <summary>
-    /// Baseclass of all SimulationComponents who extend the <see cref="Simulation"/>
+    /// Baseclass of all SimulationComponents who extend the <see cref="Simulation"/>.
     /// </summary>
     public abstract class SimulationComponent : Component
     {
-
         /// <summary>
-        /// Updatemethod of this Component
+        /// Update method of this <see cref="Component"/>.
         /// </summary>
-        /// <param name="gameTime">The current gametime</param>
+        /// <param name="gameTime">The current game time.</param>
         public abstract void Update(GameTime gameTime);
 
     }
 
     /// <summary>
-    /// Basisklasse für Simulationskomponenten
+    /// Base class for SimulationComponents who extend the <see cref="Simulation"/> and hold values of specific type.
     /// </summary>
+    /// <typeparam name="T">The type of the values to hold.</typeparam>
     public abstract class SimulationComponent<T> : SimulationComponent, IHoldComponent<T>
     {
         /// <summary>
-        /// Entities die durch diese Simulationkomponete simuliert werden
+        /// Entities simulated by this <see cref="SimulationComponent{T}"/>.
         /// </summary>
         protected readonly List<T> values = new();
 
-        /// <summary>
-        /// Konstruktor
-        /// </summary>
-        public SimulationComponent()
-        {
-
-        }
-
-        /// <summary>
-        /// Fügt eine neue Entity der Simulationskomponente hinzu
-        /// </summary>
-        /// <param name="value">Neue Entity</param>
+        /// <inheritdoc />
         public void Add(T value)
         {
             if (Match(value))
@@ -49,26 +38,22 @@ namespace OctoAwesome.Components
         }
 
         /// <summary>
-        /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
+        /// Checks whether the given entity can be added to the component.
         /// </summary>
-        /// <param name="value">Vergleichsentity</param>
-        /// <returns>Ergebnis des Vergleiches</returns>
+        /// <param name="value">The entity to check.</param>
+        /// <returns>A value indicating whether the given entity can be added to the component.</returns>
         protected virtual bool Match(T value)
         {
             return true;
         }
 
         /// <summary>
-        /// Internes Event, für das hinzufügen einer Entity
+        /// Internal method called when a new entity is added.
         /// </summary>
-        /// <param name="value">Neue Entity</param>
-        /// <returns>Ergebnis</returns>
+        /// <param name="value">The entity to add.</param>
         protected abstract void OnAdd(T value);
 
-        /// <summary>
-        /// Entfernt eine Entity aus der Simulationskomponente
-        /// </summary>
-        /// <param name="value"></param>
+        /// <inheritdoc />
         public void Remove(T value)
         {
             if (values.Contains(value))
@@ -79,26 +64,31 @@ namespace OctoAwesome.Components
         }
 
         /// <summary>
-        /// Internes Event, für das entfernen einer Entity
+        /// Is called during <see cref="Remove(T)"/>.
         /// </summary>
-        /// <param name="value">Neue Entity</param>
-        /// <returns>Ergebnis</returns>
+        /// <param name="value">Instance of <typeparamref name="T"/> to remove.</param>
         protected abstract void OnRemove(T value);
     }
+
     /// <summary>
-    /// Basisklasse für Simulationskomponenten
+    /// Base class for SimulationComponents who extend the <see cref="Simulation"/> and hold values of specific type.
     /// </summary>
+    /// <typeparam name="TContainer">The type of the component container.</typeparam>
+    /// <typeparam name="TCachedContainer">
+    /// The type which wraps the <typeparamref name="TContainer"/> container and caches <typeparamref name="TComponent"/>.
+    /// </typeparam>
+    /// <typeparam name="TComponent">The type of the component to cache for each container.</typeparam>
     public abstract class SimulationComponent<TContainer, TCachedContainer, TComponent> : SimulationComponent, IHoldComponent<TContainer>
         where TContainer : IComponentContainer
         where TCachedContainer : SimulationComponentRecord<TContainer, TComponent>
         where TComponent : Component
     {
+        /// <summary>
+        /// Entities simulated by this <see cref="SimulationComponent{T, S, C1}"/>.
+        /// </summary>
         protected readonly List<TCachedContainer> values = new();
 
-        /// <summary>
-        /// Adds a new value of <typeparamref name="T"/> to this Component
-        /// </summary>
-        /// <param name="value">an instance of <typeparamref name="T"/> to add</param>
+        /// <inheritdoc />
         public void Add(TContainer value)
         {
             if (Match(value))
@@ -107,73 +97,82 @@ namespace OctoAwesome.Components
             }
         }
 
-
         /// <summary>
-        /// Is called during <see cref="Add(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
+        /// Is called during <see cref="Add(TContainer)"/> to convert <paramref name="value"/> from <typeparamref name="TContainer"/> to <typeparamref name="TCachedContainer"/>
         /// </summary>
-        /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
-        /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
+        /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
+        /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
             => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent>(value, value.GetComponent<TComponent>());
 
-        /// <summary>
-        /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
-        /// </summary>
-        /// <param name="value">an instance of <typeparamref name="T"/> to Remove</param>
+        /// <inheritdoc />
         public void Remove(TContainer value)
         {
             OnRemove(value);
             values.RemoveAll(c => Compare(c, value));
         }
+
         /// <summary>
-        /// Is called during <see cref="Remove(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
+        /// Is called during <see cref="Remove(TContainer)"/> to convert <paramref name="value"/> from <typeparamref name="TContainer"/> to <typeparamref name="TCachedContainer"/>
         /// </summary>
-        /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
-        /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
+        /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
+        /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual void OnRemove(TContainer value) { }
 
+        /// <summary>
+        /// Checks whether the given cached container matches the given container.
+        /// </summary>
+        /// <param name="left">The cached container.</param>
+        /// <param name="right">The container.</param>
+        /// <returns>A value indicating whether the given cached container matches the given container.</returns>
         protected virtual bool Compare(TCachedContainer left, TContainer right)
             => Equals(left.Value, right);
+
         /// <summary>
-        /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
+        /// Checks whether the given entity can be added to the component.
         /// </summary>
-        /// <param name="value">Vergleichsentity</param>
-        /// <returns>Ergebnis des Vergleiches</returns>
+        /// <param name="value">The entity to check.</param>
+        /// <returns>A value indicating whether the given entity can be added to the component.</returns>
         protected virtual bool Match(TContainer value)
             => value.ContainsComponent<TComponent>();
 
-        /// <summary>
-        /// Updatemethode der Entity
-        /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
             foreach (var value in values)
                 UpdateValue(gameTime, value);
         }
+
         /// <summary>
-        /// Internes Event, für das Updaten der Simulationskomponente
+        /// Method to update contained entity.
         /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
-        /// <param name="value">Entity die geupdatet werden muss</param>
+        /// <param name="gameTime">The current game time.</param>
+        /// <param name="value">The entity to update.s</param>
         protected abstract void UpdateValue(GameTime gameTime, TCachedContainer value);
 
     }
 
     /// <summary>
-    /// Basisklasse für Simulationskomponenten
+    /// Base class for SimulationComponents who extend the <see cref="Simulation"/> and hold values of specific type.
     /// </summary>
+    /// <typeparam name="TContainer">The type of the component container.</typeparam>
+    /// <typeparam name="TCachedContainer">
+    /// The type which wraps the <typeparamref name="TContainer"/> container and caches <typeparamref name="TComponent1"/>.
+    /// </typeparam>
+    /// <typeparam name="TComponent1">The type of the first component to cache for each container.</typeparam>
+    /// <typeparam name="TComponent2">The type of the second component to cache for each container.</typeparam>
     public abstract class SimulationComponent<TContainer, TCachedContainer, TComponent1, TComponent2> : SimulationComponent, IHoldComponent<TContainer>
         where TContainer : IComponentContainer
         where TCachedContainer : SimulationComponentRecord<TContainer, TComponent1, TComponent2>
         where TComponent1 : Component
         where TComponent2 : Component
     {
-        protected readonly List<TCachedContainer> values = new();
         /// <summary>
-        /// Adds a new value of <typeparamref name="T"/> to this Component
+        /// Entities simulated by this <see cref="SimulationComponent{T, S, C1, C2}"/>.
         /// </summary>
-        /// <param name="value">an instance of <typeparamref name="T"/> to add</param>
+        protected readonly List<TCachedContainer> values = new();
+
+        /// <inheritdoc />
         public void Add(TContainer value)
         {
             if (Match(value))
@@ -183,17 +182,14 @@ namespace OctoAwesome.Components
         }
 
         /// <summary>
-        /// Is called during <see cref="Add(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
+        /// Is called during <see cref="Add(TContainer)"/> to convert <paramref name="value"/> from <typeparamref name="TContainer"/> to <typeparamref name="TCachedContainer"/>
         /// </summary>
-        /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
-        /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
+        /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
+        /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
             => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
 
-        /// <summary>
-        /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
-        /// </summary>
-        /// <param name="value">an instance of <typeparamref name="T"/> to Remove</param>
+        /// <inheritdoc />
         public void Remove(TContainer value)
         {
             OnRemove(value);
@@ -201,47 +197,55 @@ namespace OctoAwesome.Components
         }
 
         /// <summary>
-        /// Is called during <see cref="Remove(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
+        /// Is called during <see cref="Remove(TContainer)"/> to convert <paramref name="value"/> from <typeparamref name="TContainer"/> to <typeparamref name="TCachedContainer"/>
         /// </summary>
-        /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
-        /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
+        /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
+        /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual void OnRemove(TContainer value) { }
 
+        /// <summary>
+        /// Checks whether the given cached container matches the given container.
+        /// </summary>
+        /// <param name="left">The cached container.</param>
+        /// <param name="right">The container.</param>
+        /// <returns>A value indicating whether the given cached container matches the given container.</returns>
         protected virtual bool Compare(TCachedContainer left, TContainer right)
             => Equals(left.Value, right);
 
         /// <summary>
-        /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
+        /// Checks whether the given entity can be added to the component.
         /// </summary>
-        /// <param name="value">Vergleichsentity</param>
-        /// <returns>Ergebnis des Vergleiches</returns>
+        /// <param name="value">The entity to check.</param>
+        /// <returns>A value indicating whether the given entity can be added to the component.</returns>
         protected virtual bool Match(TContainer value)
             => value.ContainsComponent<TComponent1>()
                 && value.ContainsComponent<TComponent2>();
 
-        /// <summary>
-        /// Updatemethode der Entity
-        /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            //TODO: Ändern (Collection was modified in Multiplayer)
+            //TODO: Change (Collection was modified in Multiplayer)
             foreach (var value in values)
                 UpdateValue(gameTime, value);
         }
 
         /// <summary>
-        /// Internes Event, für das Updaten der Simulationskomponente
+        /// Method to update contained entity.
         /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
-        /// <param name="value">Entity die geupdatet werden muss</param>
+        /// <param name="gameTime">The current game time.</param>
+        /// <param name="value">The entity to update.s</param>
         protected abstract void UpdateValue(GameTime gameTime, TCachedContainer value);
 
     }
 
     /// <summary>
-    /// Basisklasse für Simulationskomponenten
+    /// Base class for SimulationComponents who extend the <see cref="Simulation"/> and hold values of specific type.
     /// </summary>
+    /// <typeparam name="TContainer">The type of the values to add and be transformed to <typeparamref name="TCachedContainer"/>.</typeparam>
+    /// <typeparam name="TCachedContainer">The type of the values to hold.</typeparam>
+    /// <typeparam name="TComponent1">The type of the first component to cache for each container.</typeparam>
+    /// <typeparam name="TComponent2">The type of the second component to cache for each container.</typeparam>
+    /// <typeparam name="TComponent3">The type of the third component to cache for each container.</typeparam>
     public abstract class SimulationComponent<TContainer, TCachedContainer, TComponent1, TComponent2, TComponent3> : SimulationComponent, IHoldComponent<TContainer>
         where TContainer : IComponentContainer
         where TCachedContainer : SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>
@@ -249,12 +253,12 @@ namespace OctoAwesome.Components
         where TComponent2 : Component
         where TComponent3 : Component
     {
+        /// <summary>
+        /// Entities simulated by this <see cref="SimulationComponent{T, S, C1, C2, C3}"/>.
+        /// </summary>
         protected readonly List<TCachedContainer> values = new();
 
-        /// <summary>
-        /// Adds a new value of <typeparamref name="T"/> to this Component
-        /// </summary>
-        /// <param name="value">an instance of <typeparamref name="T"/> to add</param>
+        /// <inheritdoc />
         public void Add(TContainer value)
         {
             if (Match(value))
@@ -265,17 +269,14 @@ namespace OctoAwesome.Components
 
 
         /// <summary>
-        /// Is called during <see cref="Add(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
+        /// Is called during <see cref="Add(TContainer)"/> to convert <paramref name="value"/> from <typeparamref name="TContainer"/> to <typeparamref name="TCachedContainer"/>
         /// </summary>
-        /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
-        /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
+        /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
+        /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
             => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>(), value.GetComponent<TComponent3>());
 
-        /// <summary>
-        /// Removes an instance of <typeparamref name="T"/> that is previouse added with <see cref="Add(T)"/>
-        /// </summary>
-        /// <param name="value">an instance of <typeparamref name="T"/> to Remove</param>
+        /// <inheritdoc />
         public void Remove(TContainer value)
         {
             OnRemove(value);
@@ -283,45 +284,80 @@ namespace OctoAwesome.Components
         }
 
         /// <summary>
-        /// Is called during <see cref="Remove(T)"/> to convert <paramref name="value"/> from <typeparamref name="T"/> to <typeparamref name="S"/>
+        /// Is called during <see cref="Remove(TContainer)"/> to convert <paramref name="value"/> from <typeparamref name="TContainer"/> to <typeparamref name="TCachedContainer"/>
         /// </summary>
-        /// <param name="value">instance of <typeparamref name="T"/> that is passed to <see cref="Add(T)"/></param>
-        /// <returns>Converted <paramref name="value"/> as <typeparamref name="S"/></returns>
+        /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
+        /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual void OnRemove(TContainer value) { }
+
+
+        /// <summary>
+        /// Checks whether the given cached container matches the given container.
+        /// </summary>
+        /// <param name="left">The cached container.</param>
+        /// <param name="right">The container.</param>
+        /// <returns>A value indicating whether the given cached container matches the given container.</returns>
         protected virtual bool Compare(TCachedContainer left, TContainer right)
             => Equals(left.Value, right);
 
         /// <summary>
-        /// Führt ein Vergleich durch, ob diese Entity in die Komponente eingefügt werden kann
+        /// Checks whether the given entity can be added to the component.
         /// </summary>
-        /// <param name="value">Vergleichsentity</param>
-        /// <returns>Ergebnis des Vergleiches</returns>
+        /// <param name="value">The entity to check.</param>
+        /// <returns>A value indicating whether the given entity can be added to the component.</returns>
         protected virtual bool Match(TContainer value)
             => value.ContainsComponent<TComponent1>()
                 && value.ContainsComponent<TComponent2>()
                 && value.ContainsComponent<TComponent3>();
 
-        /// <summary>
-        /// Updatemethode der Entity
-        /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            //TODO: Ändern
+            //TODO: change
             foreach (var value in values)
                 UpdateValue(gameTime, value);
         }
 
         /// <summary>
-        /// Internes Event, für das Updaten der Simulationskomponente
+        /// Method to update contained entity.
         /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
-        /// <param name="value">Entity die geupdatet werden muss</param>
+        /// <param name="gameTime">The current game time.</param>
+        /// <param name="value">The entity to update.s</param>
         protected abstract void UpdateValue(GameTime gameTime, TCachedContainer value);
 
     }
+
+    /// <summary>
+    /// Record for caching a single component of a component container.
+    /// </summary>
+    /// <param name="Value">The component container.</param>
+    /// <param name="Component">The component to cache.</param>
+    /// <typeparam name="TContainer">The type of the component container.</typeparam>
+    /// <typeparam name="TComponent">The type of the component to cache.</typeparam>
     public record SimulationComponentRecord<TContainer, TComponent>(TContainer Value, TComponent Component);
+
+    /// <summary>
+    /// Record for caching two components of a component container.
+    /// </summary>
+    /// <param name="Value">The component container.</param>
+    /// <param name="Component1">The first component to cache.</param>
+    /// <param name="Component2">The second component to cache.</param>
+    /// <typeparam name="TContainer">The type of the component container.</typeparam>
+    /// <typeparam name="TComponent1">The type of the first component to cache.</typeparam>
+    /// <typeparam name="TComponent2">The type of the second component to cache.</typeparam>
     public record SimulationComponentRecord<TContainer, TComponent1, TComponent2>(TContainer Value, TComponent1 Component1, TComponent2 Component2);
+
+    /// <summary>
+    /// Record for caching three components of a component container.
+    /// </summary>
+    /// <param name="Value">The component container.</param>
+    /// <param name="Component1">The first component to cache.</param>
+    /// <param name="Component2">The second component to cache.</param>
+    /// <param name="Component3">The third component to cache.</param>
+    /// <typeparam name="TContainer">The type of the component container.</typeparam>
+    /// <typeparam name="TComponent1">The type of the first component to cache.</typeparam>
+    /// <typeparam name="TComponent2">The type of the second component to cache.</typeparam>
+    /// <typeparam name="TComponent3">The type of the third component to cache.</typeparam>
     public record SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(TContainer Value, TComponent1 Component1, TComponent2 Component2, TComponent3 Component3);
 }
 

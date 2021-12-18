@@ -7,19 +7,32 @@ using System.Net.Sockets;
 
 namespace OctoAwesome.Network
 {
+    /// <summary>
+    /// OctoAwesome client implementation for handling connected clients in a <see cref="Server"/>.
+    /// </summary>
     public sealed class ConnectedClient : BaseClient
     {
         private readonly IDisposable networkSubscription;
+
+        /// <summary>
+        /// Gets or sets the <see cref="Server"/> package subscription associated with this client.
+        /// </summary>
         public IDisposable? ServerSubscription { get; set; }
 
         private readonly PackagePool packagePool;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectedClient"/> class.
+        /// </summary>
+        /// <param name="socket">The low level base socket.</param>
         public ConnectedClient(Socket socket) : base(socket)
         {
             packagePool = TypeContainer.Get<PackagePool>();
             var updateHub = TypeContainer.Get<IUpdateHub>();
             networkSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe(OnNext, OnError);
         }
+
+
         private void OnError(Exception error)
         {
             Socket.Close();
@@ -59,6 +72,8 @@ namespace OctoAwesome.Network
             package.Command = (ushort)officialCommand;
             SendPackageAndRelease(package);
         }
+
+        /// <inheritdoc />
         public override void Dispose()
         {
             base.Dispose();

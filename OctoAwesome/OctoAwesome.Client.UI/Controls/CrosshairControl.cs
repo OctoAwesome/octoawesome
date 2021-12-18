@@ -6,7 +6,9 @@ using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.UI.Controls
 {
-
+    /// <summary>
+    /// Control for displaying a crosshair.
+    /// </summary>
     public class CrosshairControl : Control
     {
         private readonly Texture2D texture;
@@ -17,7 +19,7 @@ namespace OctoAwesome.Client.UI.Controls
         private static int crosshairSize = 8;
 
         /// <summary>
-        /// Die Größe des Crosshair
+        /// Gets or sets the size of the crosshair cursor.
         /// </summary>
         public static int CrosshairSize
         {
@@ -26,15 +28,21 @@ namespace OctoAwesome.Client.UI.Controls
         }
 
         /// <summary>
-        /// Die Farbe des Crosshair
+        /// Gets or sets the color of the crosshair cursor.
         /// </summary>
         public static Color CrosshairColor { get; set; } = Color.White;
 
 
         /// <summary>
-        /// Maximum Größe des Crosshair
+        /// Maximum size of the crosshair cursor.
         /// </summary>
         public const int MaxSize = 100;
+
+        /// <summary>
+        /// Initializes a ne instance of the <see cref="CrosshairControl"/> control.
+        /// </summary>
+        /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
+        /// <param name="asset">The asset component to load resources from.</param>
         public CrosshairControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
         {
             assets = asset;
@@ -43,6 +51,8 @@ namespace OctoAwesome.Client.UI.Controls
 
             texture = assets.LoadTexture(GetType(), "octocross");
         }
+
+        /// <inheritdoc />
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             if (!assets.Ready)

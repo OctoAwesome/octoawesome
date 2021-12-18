@@ -3,13 +3,20 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome
 {
-    //TODO:Eventuell auslagern
+    //TODO: Perhaps outsource
 
+    /// <summary>
+    /// The base extension implementation.
+    /// </summary>
     public sealed class Extension : IExtension
     {
-
+        /// <inheritdoc />
         public string Description => "OctoAwesome";
+
+        /// <inheritdoc />
         public string Name => "OctoAwesome";
+
+        /// <inheritdoc />
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {
             extensionLoader.RegisterEntityExtender<Player>((player) =>
@@ -21,6 +28,8 @@ namespace OctoAwesome
                 p.Components.AddComponent(new ToolBarComponent());
             });
         }
+
+        /// <inheritdoc />
         public void Register(ITypeContainer typeContainer) { }
     }
 }

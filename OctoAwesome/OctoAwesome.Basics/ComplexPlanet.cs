@@ -5,12 +5,19 @@ using System.IO;
 
 namespace OctoAwesome.Basics
 {
+    /// <summary>
+    /// A complex planet implementation with complex features.
+    /// </summary>
     public class ComplexPlanet : Planet
     {
-        // Die Gravitationskonstante ist absichtlich so "groß", vgl. Issue #220
+        // The gravitational constant was chosen on purpose to be that "big", see Issue #220
         private const double GravitationalConstant = 6.67e-7;
 
         private SurfaceBiomeGenerator? biomeGenerator;
+
+        /// <summary>
+        /// Gets the biome generator used for generating biomes on the planet.
+        /// </summary>
         public SurfaceBiomeGenerator BiomeGenerator
         {
             get
@@ -21,29 +28,36 @@ namespace OctoAwesome.Basics
         }
 
         /// <summary>
-        /// Konstruktor des komplexen Map-Generators
+        /// Initializes a new instance of the <see cref="ComplexPlanet"/> class.
         /// </summary>
-        /// <param name="id">ID des Planeten</param>
-        /// <param name="universe">ID des Universums</param>
-        /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks</param>
-        /// <param name="generator">Instanz des Map-Generators</param>
-        /// <param name="seed">Seed des Zufallsgenerators</param>
-        /// <param name="averageDensity">Durchschnittliche Dichte des Planeten zur Berechnung der Gravitation in kg/m³. Erd- und Standardwert: 5510</param>
+        /// <param name="id">The planet id.</param>
+        /// <param name="universe">The id of the universe the planet resides in.</param>
+        /// <param name="size">The planet size in dualistic logarithmic scale.</param>
+        /// <param name="generator">The map generator to use for generating the planet</param>
+        /// <param name="seed">Seeding value for generating a unique planet.</param>
+        /// <param name="averageDensity">
+        /// Average planet density in kg/m³ for calculating planets gravity. Defaults to the value matching earth : 5510
+        /// </param>
         public ComplexPlanet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed, int averageDensity = 5510)
             : base(id, universe, size, seed)
         {
             Generator = generator;
 
-            // Berechnung der Gravitation auf Basis des Newton'schen Grundgesetzes und
-            // der Annahme einer Kugel mit gleicher Oberfläche wie der rechteckige Planet.
+            // Calculation of gravity based on newtonian laws and the assumption of a sphere with same surface as the planet.
             var radius = Math.Sqrt((Size.X * Size.Y) / (16 * Math.PI));
             Gravity = (float)((4f / 3f) * Math.PI * GravitationalConstant * averageDensity * radius);
             Initialize();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComplexPlanet"/> class.
+        /// </summary>
         public ComplexPlanet()
         {
             //Initalize();
         }
+
+        /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);

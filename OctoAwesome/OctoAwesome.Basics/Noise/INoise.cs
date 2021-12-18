@@ -1,134 +1,169 @@
 ﻿namespace OctoAwesome.Basics.Noise
 {
-
+    /// <summary>
+    /// Interface for seeded noise generators.
+    /// </summary>
     public interface INoise
     {
         /// <summary>
-        /// Gibt den Seed des Noisegenerators zurück
+        /// Gets the seed value of this noise generator.
         /// </summary>
         int Seed { get; }
 
         /// <summary>
-        /// Gibt ein float-Array einer 1D-Noise im angegebenem Bereich zurück
+        /// Gets a 1D noise float array for a given range.
         /// </summary>
-        /// <param name="startX">Startposition, ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Anzahl der gewollten Noise-Werte</param>
-        /// <returns>Gibt ein float-Array einer 1D Noise zurück</returns>
+        /// <param name="startX">The starting point for the noise.</param>
+        /// <param name="width">The number of noise values to sample.</param>
+        /// <returns>The 1D noise values.</returns>
         float[] GetNoiseMap(int startX, int width);
+
         /// <summary>
-        /// Gibt ein 2D-float-Array einer 2D-Noise im angegebem Bereich zurück
+        /// Gets a 2D noise float array for a given range.
         /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück</returns>
+        /// <param name="startX">The starting point for the noise on the x-axis.</param>
+        /// <param name="startY">The starting point for the noise on the y-axis.</param>
+        /// <param name="width">
+        /// The number of noise values to sample on the x-axis. Corresponds to the array size of the first dimension.
+        /// </param>
+        /// <param name="height">
+        /// The number of noise values to sample on the y-axis. Corresponds to the array size of the second dimension.
+        /// </param>
+        /// <returns>The 2D noise values.</returns>
         float[,] GetNoiseMap2D(int startX, int startY, int width, int height);
+
         /// <summary>
-        /// Gibt ein 2D-float-Array einer 2D-Noise im angegebem Bereich zurück, welche kachelbar ist
+        /// Gets a 2D tile-able noise float array for a given range.
         /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <param name="noiseArray">Array in der größé sizeX * sizeY</param>
-        /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
+        /// <param name="startX">The starting point for the noise on the x-axis.</param>
+        /// <param name="startY">The starting point for the noise on the y-axis.</param>
+        /// <param name="width">
+        ///     The number of noise values to sample on the x-axis. Corresponds to the array size of the first dimension.
+        /// </param>
+        /// <param name="height">
+        ///     The number of noise values to sample on the y-axis. Corresponds to the array size of the second dimension.
+        /// </param>
+        /// <param name="tileSizeX">The number of values on the x-axis after which the wraparound tiling should happen.</param>
+        /// <param name="tileSizeY">The number of values on the y-axis after which the wraparound tiling should happen.</param>
+        /// <param name="noiseArray">The array to write the 2D noise values to.</param>
         void FillTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY,
             float[] noiseArray);
 
+        /// <summary>
+        /// Gets a 3D noise float array for a given range.
+        /// </summary>
+        /// <param name="startX">The starting point for the noise on the x-axis.</param>
+        /// <param name="startY">The starting point for the noise on the y-axis.</param>
+        /// <param name="startZ">The starting point for the noise on the z-axis.</param>
+        /// <param name="width">
+        ///     The number of noise values to sample on the x-axis. Corresponds to the array size of the first dimension.
+        /// </param>
+        /// <param name="height">
+        ///     The number of noise values to sample on the y-axis. Corresponds to the array size of the second dimension.
+        /// </param>
+        /// <param name="depth">
+        ///     The number of noise values to sample on the z-axis. Corresponds to the array size of the third dimension.
+        /// </param>
+        /// <returns>The 3D noise values.</returns>
+        float[,,] GetNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth);
 
         /// <summary>
-        /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück
+        /// Gets a 3D tile-able noise float array for a given range.
         /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startZ">Startposition auf der Z-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <returns>Gibt ein 3D-float-Array einer 3D-Noise zurück</returns>
-        float[,,] GetNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth);
-        /// <summary>
-        /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück, welche in X und Y Richtung kachelbar ist
-        /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startZ">Startposition auf der Z-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein 3D-float-Array einer 3D-Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
+        /// <param name="startX">The starting point for the noise on the x-axis.</param>
+        /// <param name="startY">The starting point for the noise on the y-axis.</param>
+        /// <param name="startZ">The starting point for the noise on the z-axis.</param>
+        /// <param name="width">
+        ///     The number of noise values to sample on the x-axis. Corresponds to the array size of the first dimension.
+        /// </param>
+        /// <param name="height">
+        ///     The number of noise values to sample on the y-axis. Corresponds to the array size of the second dimension.
+        /// </param>
+        /// <param name="depth">
+        ///     The number of noise values to sample on the z-axis. Corresponds to the array size of the third dimension.
+        /// </param>
+        /// <param name="tileSizeX">The number of values on the x-axis after which the wraparound tiling should happen.</param>
+        /// <param name="tileSizeY">The number of values on the y-axis after which the wraparound tiling should happen.</param>
+        /// <returns>The 3D noise values.</returns>
+        /// <remarks>Tiles on the x and y axis.</remarks>
         float[,,] GetTileableNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth, int tileSizeX, int tileSizeY);
 
         /// <summary>
-        /// Gibt ein 4D-float-Array einer 4D-Noise im angegebem Bereich zurück
+        /// Gets a 4D noise float array for a given range.
         /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startZ">Startposition auf der Z-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startW">Startposition auf der W-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <param name="thickness">Dicke(Tiefe 2.Grades) der Noise-Map</param>
-        /// <returns>Gibt ein 4D-float-Array einer 4D-Noise zurück</returns>
+        /// <param name="startX">The starting point for the noise on the x-axis.</param>
+        /// <param name="startY">The starting point for the noise on the y-axis.</param>
+        /// <param name="startZ">The starting point for the noise on the z-axis.</param>
+        /// <param name="startW">The starting point for the noise on the w-axis.</param>
+        /// <param name="width">
+        ///     The number of noise values to sample on the x-axis. Corresponds to the array size of the first dimension.
+        /// </param>
+        /// <param name="height">
+        ///     The number of noise values to sample on the y-axis. Corresponds to the array size of the second dimension.
+        /// </param>
+        /// <param name="depth">
+        ///     The number of noise values to sample on the z-axis. Corresponds to the array size of the third dimension.
+        /// </param>
+        /// <param name="thickness">
+        ///     The number of noise values to sample on the w-axis. Corresponds to the array size of the fourth dimension.
+        /// </param>
+        /// <returns>The 4D noise values.</returns>
         float[,,,] GetNoiseMap4D(int startX, int startY, int startZ, int startW, int width, int height, int depth, int thickness);
 
         /// <summary>
-        /// Gibt ein float-Wert einer 1D-Noise an gegebener Position zurück
+        /// Gets a noise value for a given seeding value.
         /// </summary>
-        /// <param name="x">Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 1D Noise zurück</returns>
+        /// <param name="x">Position to sample the value at.</param>
+        /// <returns>The sampled noise value.</returns>
         float GetNoise(int x);
 
         /// <summary>
-        /// Gibt ein float-Wert einer 2D-Noise an gegebener Position zurück
+        /// Gets a noise value for a given 2D coordinate.
         /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 2D Noise zurück</returns>
+        /// <param name="x">X position to sample the value at.</param>
+        /// <param name="y">Y position to sample the value at.</param>
+        /// <returns>The sampled noise value.</returns>
         float GetNoise2D(int x, int y);
+
         /// <summary>
-        /// Gibt ein float-Wert einer 2D-Noise an gegebener Position zurück, welche kachelbar ist
+        /// Gets a tiled noise value for a given 2D coordinate.
         /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein float-Wert einer 2D Noise zurück, welche kachelbar ist</returns>
+        /// <param name="x">X position to sample the value at.</param>
+        /// <param name="y">Y position to sample the value at.</param>
+        /// <param name="tileSizeX">The number of values on the x-axis after which the wraparound tiling should happen.</param>
+        /// <param name="tileSizeY">The number of values on the y-axis after which the wraparound tiling should happen.</param>
+        /// <returns>The sampled noise value.</returns>
         float GetTileableNoise2D(int x, int y, int tileSizeX, int tileSizeY);
 
         /// <summary>
-        /// Gibt ein float-Wert einer 3D-Noise an gegebener Position zurück
+        /// Gets a noise value for a given 3D coordinate.
         /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 3D Noise zurück</returns>
+        /// <param name="x">X position to sample the value at.</param>
+        /// <param name="y">Y position to sample the value at.</param>
+        /// <param name="z">Z position to sample the value at.</param>
+        /// <returns>The sampled noise value.</returns>
         float GetNoise3D(int x, int y, int z);
+
         /// <summary>
-        /// Gibt ein float-Wert einer 3D-Noise an gegebener Position zurück, welche in X und Y Richtung kachelbar ist
+        /// Gets a tiled noise value for a given 3D coordinate.
         /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein float-Wert einer 3D Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
+        /// <param name="x">X position to sample the value at.</param>
+        /// <param name="y">Y position to sample the value at.</param>
+        /// <param name="z">Z position to sample the value at.</param>
+        /// <param name="tileSizeX">The number of values on the x-axis after which the wraparound tiling should happen.</param>
+        /// <param name="tileSizeY">The number of values on the y-axis after which the wraparound tiling should happen.</param>
+        /// <returns>The sampled noise value.</returns>
+        /// <remarks>Tiles on the x and y axis.</remarks>
         float GetTileableNoise3D(int x, int y, int z, int tileSizeX, int tileSizeY);
 
         /// <summary>
-        /// Gibt ein float-Wert einer 4D-Noise an gegebener Position zurück
+        /// Gets a noise value for a given 4D coordinate.
         /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="w">W-Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 4D Noise zurück</returns>
+        /// <param name="x">X position to sample the value at.</param>
+        /// <param name="y">Y position to sample the value at.</param>
+        /// <param name="z">Z position to sample the value at.</param>
+        /// <param name="w">W position to sample the value at.</param>
+        /// <returns>The sampled noise value.</returns>
         float GetNoise4D(int x, int y, int z, int w);
     }
 }

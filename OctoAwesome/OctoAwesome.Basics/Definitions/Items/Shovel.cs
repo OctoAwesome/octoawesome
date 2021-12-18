@@ -4,13 +4,23 @@ using System;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
+    /// <summary>
+    /// Shovel item for inventories.
+    /// </summary>
     public class Shovel : Item
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Shovel"/> class.
+        /// </summary>
+        /// <param name="definition">The shovel item definition.</param>
+        /// <param name="materialDefinition">The material definition the shovel is made out of.</param>
         public Shovel(ShovelDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 
         }
+
+        /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             if (!Definition.CanMineMaterial(material))

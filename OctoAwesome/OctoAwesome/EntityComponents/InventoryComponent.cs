@@ -9,20 +9,28 @@ using System.Linq;
 
 namespace OctoAwesome.EntityComponents
 {
-
+    /// <summary>
+    /// Component for inventories of entities/functional blocks.
+    /// </summary>
     public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
         /// <summary>
-        /// Das Inventar der Entity
+        /// Gets a list of inventory slots this inventory consists of.
         /// </summary>
         public List<InventorySlot> Inventory { get; }
 
         private readonly IDefinitionManager definitionManager;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InventoryComponent"/> class.
+        /// </summary>
         public InventoryComponent()
         {
             Inventory = new List<InventorySlot>();
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
+
+        /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
@@ -61,6 +69,8 @@ namespace OctoAwesome.EntityComponents
                             serializable.Deserialize(reader);
                         }
                     }
+
+
                     if (instance is IInventoryable inventoryObject)
                     {
                         inventoryItem = inventoryObject;
@@ -78,6 +88,8 @@ namespace OctoAwesome.EntityComponents
                 Inventory.Add(slot);
             }
         }
+
+        /// <inheritdoc />
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
@@ -104,15 +116,16 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Fügt ein Element des angegebenen Definitionstyps hinzu.
+        /// Adds a specific amount of an item into the inventory..
         /// </summary>
-        /// <param name="item">Die Definition.</param>
+        /// <param name="quantity">The amount to add to put into the inventory.</param>
+        /// <param name="item">The item that can be put into the inventory.</param>
         public void AddUnit(int quantity, IInventoryable item)
         {
             var slot = Inventory.FirstOrDefault(s => s.Item == item &&
                 s.Amount < item.VolumePerUnit * item.StackLimit);
 
-            // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+            // If there is no slot available, or the available one is full, then add a new slot.
             if (slot == null)
             {
                 slot = new InventorySlot(item)
@@ -129,16 +142,17 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Entfernt eine Einheit vom angegebenen Slot.
+        /// Removes a single unit amount from the inventory slot.
         /// </summary>
-        /// <param name="slot">Der Slot, aus dem entfernt werden soll.</param>
-        /// <returns>Gibt an, ob das entfernen der Einheit aus dem Inventar funktioniert hat. False, z.B. wenn nicht genügend Volumen (weniger als VolumePerUnit) übrig ist-</returns>
+        /// <param name="slot">The inventory slot to remove from.</param>
+        /// <returns>A value indicating whether removing a unit from the inventory slot was successful;
+        /// (e.g. <c>false</c> if not enough volume is available - less than <see cref="IInventoryable.VolumePerUnit"/>).</returns>
         public bool RemoveUnit(InventorySlot slot)
         {
             if (slot.Item is not IInventoryable definition)
                 return false;
 
-            if (slot.Amount >= definition.VolumePerUnit) // Wir können noch einen Block setzen
+            if (slot.Amount >= definition.VolumePerUnit) // We are able to place one block
             {
                 slot.Amount -= definition.VolumePerUnit;
                 if (slot.Amount <= 0)
@@ -147,17 +161,27 @@ namespace OctoAwesome.EntityComponents
             }
             return false;
         }
+
+        /// <summary>
+        /// Removes an inventory slot from the inventory.
+        /// </summary>
+        /// <param name="inventorySlot">The inventory slot to remove.</param>
+        /// <returns>A value indicating whether removing was successful.</returns>
         public bool RemoveSlot(InventorySlot inventorySlot)
         {
             return Inventory.Remove(inventorySlot);
         }
 
+        /// <summary>
+        /// Adds a new inventory slot.
+        /// </summary>
+        /// <param name="inventorySlot">The inventory slot to add.</param>
         public void AddSlot(InventorySlot inventorySlot)
         {
             var slot = Inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
                s.Amount < s.Item.VolumePerUnit * s.Item.StackLimit);
 
-            // Wenn noch kein Slot da ist oder der vorhandene voll, dann neuen Slot
+            // If there is no slot available, or the available one is full, then add a new slot.
             if (slot == null)
             {
                 slot = new InventorySlot(inventorySlot.Item)

@@ -122,7 +122,7 @@ namespace OctoAwesome.Client.Controls
                 Program.Restart();
             };
 
-            // Daten laden
+            // List loaded extensions
             var loader = extensionLoader;
             foreach (var item in loader.LoadedExtensions)
                 loadedExtensionsList.Items.Add(item);

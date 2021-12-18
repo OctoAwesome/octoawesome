@@ -4,28 +4,39 @@ using System;
 
 namespace OctoAwesome.Basics.Definitions.Trees
 {
+    /// <summary>
+    /// Tree definition for planting spruce trees.
+    /// </summary>
     public class SpruceTreeDefinition : TreeDefinition
     {
         private ushort wood;
         private ushort leave;
         private ushort water;
 
+        /// <inheritdoc />
         public override int Order => 15;
 
+        /// <inheritdoc />
         public override float MaxTemperature => 25;
 
+        /// <inheritdoc />
         public override float MinTemperature => -5;
 
+        /// <inheritdoc />
         public override int GetDensity(IPlanet planet, Index3 index)
         {
             return 4;
         }
+
+        /// <inheritdoc />
         public override void Init(IDefinitionManager definitionManager)
         {
             wood = definitionManager.GetDefinitionIndex<WoodBlockDefinition>();
             leave = definitionManager.GetDefinitionIndex<OrangeLeavesBlockDefinition>();
             water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();
         }
+
+        /// <inheritdoc />
         public override void PlantTree(IPlanet planet, Index3 index, LocalBuilder builder, int seed)
         {
             ushort ground = builder.GetBlock(0, 0, -1);

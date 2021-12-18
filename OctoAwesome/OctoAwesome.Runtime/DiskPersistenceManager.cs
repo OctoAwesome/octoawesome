@@ -17,7 +17,7 @@ using System.Reflection;
 namespace OctoAwesome.Runtime
 {
     /// <summary>
-    /// Persistiert Chunks auf die Festplatte.
+    /// Persists game data to disk drives.
     /// </summary>
     public class DiskPersistenceManager : IPersistenceManager, IDisposable
     {
@@ -36,6 +36,12 @@ namespace OctoAwesome.Runtime
         private readonly IExtensionResolver extensionResolver;
         private readonly DatabaseProvider databaseProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiskPersistenceManager"/> class.
+        /// </summary>
+        /// <param name="extensionResolver">The extension resolver.</param>
+        /// <param name="settings">The game settings.</param>
+        /// <param name="updateHub">The update hub.</param>
         public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings settings, IUpdateHub updateHub)
         {
             this.extensionResolver = extensionResolver;
@@ -67,10 +73,7 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        /// <summary>
-        /// Speichert das Universum.
-        /// </summary>
-        /// <param name="universe">Das zu speichernde Universum</param>
+        /// <inheritdoc />
         public void SaveUniverse(IUniverse universe)
         {
             string path = Path.Combine(GetRoot(), universe.Id.ToString());
@@ -85,21 +88,14 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        /// <summary>
-        /// Löscht ein Universum.
-        /// </summary>
-        /// <param name="universeGuid">Die Guid des Universums.</param>
+        /// <inheritdoc />
         public void DeleteUniverse(Guid universeGuid)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
             Directory.Delete(path, true);
         }
 
-        /// <summary>
-        /// Speichert einen Planeten.
-        /// </summary>
-        /// <param name="universeGuid">Guid des Universums</param>
-        /// <param name="planet">Zu speichernder Planet</param>
+        /// <inheritdoc />
         public void SavePlanet(Guid universeGuid, IPlanet planet)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString(), planet.Id.ToString());
@@ -121,29 +117,20 @@ namespace OctoAwesome.Runtime
                 planet.Serialize(writer);
         }
 
-        /// <summary>
-        /// Speichert eine <see cref="IChunkColumn"/>.
-        /// </summary>
-        /// <param name="universeGuid">GUID des Universums.</param>
-        /// <param name="planet">Index des Planeten.</param>
-        /// <param name="column">Zu serialisierende ChunkColumn.</param>
+        /// <inheritdoc />
         public void SaveColumn(Guid universeGuid, IPlanet planet, IChunkColumn column)
         {
             var chunkColumContext = new ChunkColumnDbContext(databaseProvider.GetDatabase<Index2Tag>(universeGuid, planet.Id, false), planet);
             chunkColumContext.AddOrUpdate(column);
         }
 
-        /// <summary>
-        /// Speichert einen Player
-        /// </summary>
-        /// <param name="universeGuid">Die Guid des Universums.</param>
-        /// <param name="player">Der Player.</param>
+        /// <inheritdoc />
         public void SavePlayer(Guid universeGuid, Player player)
         {
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
             Directory.CreateDirectory(path);
 
-            // TODO: Player Name berücksichtigen
+            // TODO: consider player name
             string file = Path.Combine(path, "player.info");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
@@ -153,6 +140,8 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
+
+        /// <inheritdoc />
         public void Save<TContainer, TComponent>(TContainer container, Guid universe)
            where TContainer : ComponentContainer<TComponent>
            where TComponent : IComponent
@@ -162,10 +151,7 @@ namespace OctoAwesome.Runtime
             context.AddOrUpdate(container);
         }
 
-        /// <summary>
-        /// Gibt alle Universen zurück, die geladen werden können.
-        /// </summary>
-        /// <returns>Die Liste der Universen.</returns>
+        /// <inheritdoc />
         public Awaiter Load(out SerializableCollection<IUniverse> universes)
         {
             string root = GetRoot();
@@ -186,11 +172,7 @@ namespace OctoAwesome.Runtime
             return awaiter;
         }
 
-        /// <summary>
-        /// Lädt das Universum mit der angegebenen Guid.
-        /// </summary>
-        /// <param name="universeGuid">Die Guid des Universums.</param>
-        /// <returns>Das geladene Universum.</returns>
+        /// <inheritdoc />
         public Awaiter? Load(out IUniverse universe, Guid universeGuid)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), UniverseFilename);
@@ -211,12 +193,7 @@ namespace OctoAwesome.Runtime
 
         }
 
-        /// <summary>
-        /// Lädt einen Planeten.
-        /// </summary>
-        /// <param name="universeGuid">Guid des Universums</param>
-        /// <param name="planetId">Index des Planeten</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public Awaiter? Load(out IPlanet planet, Guid universeGuid, int planetId)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetFilename);
@@ -237,6 +214,8 @@ namespace OctoAwesome.Runtime
 
             if (generator == null)
                 throw new Exception("Unknown Generator");
+
+
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
                 using (GZipStream zip = new GZipStream(stream, CompressionMode.Decompress))
@@ -249,13 +228,7 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        /// <summary>
-        /// Lädt eine <see cref="IChunkColumn"/>.
-        /// </summary>
-        /// <param name="universeGuid">GUID des Universums.</param>
-        /// <param name="planet">Index des Planeten.</param>
-        /// <param name="columnIndex">Zu serialisierende ChunkColumn.</param>
-        /// <returns>Die neu geladene ChunkColumn.</returns>
+        /// <inheritdoc />
         public Awaiter? Load(out IChunkColumn? column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
             var chunkColumContext = new ChunkColumnDbContext(databaseProvider.GetDatabase<Index2Tag>(universeGuid, planet.Id, false), planet);
@@ -272,6 +245,8 @@ namespace OctoAwesome.Runtime
             awaiter.SetResult(column);
             return awaiter;
         }
+
+        /// <inheritdoc />
         public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
             var entityContext = new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid);
@@ -281,6 +256,8 @@ namespace OctoAwesome.Runtime
             awaiter.SetResult(entity);
             return awaiter;
         }
+
+        /// <inheritdoc />
         public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent
@@ -293,12 +270,7 @@ namespace OctoAwesome.Runtime
             return awaiter;
         }
 
-        /// <summary>
-        /// Lädt einen Player.
-        /// </summary>
-        /// <param name="universeGuid">Die Guid des Universums.</param>
-        /// <param name="playername">Der Name des Spielers.</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public Awaiter? Load(out Player player, Guid universeGuid, string playerName)
         {
             //TODO: Replace with player name later on.
@@ -328,13 +300,19 @@ namespace OctoAwesome.Runtime
 
             return null;
         }
+
+        /// <inheritdoc />
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => new ComponentContainerDbContext<Entity, IEntityComponent>(databaseProvider, universeGuid).GetAllKeys().Select(i => i.Id);
+
+        /// <inheritdoc />
         public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
         {
             foreach (var entityId in entityIds)
                 yield return (entityId, new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid).Get<T>(entityId));
         }
+
+        /// <inheritdoc />
         public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
         {
             var context = new ComponentContainerComponentDbContext<T>(databaseProvider, universeGuid);
@@ -346,6 +324,8 @@ namespace OctoAwesome.Runtime
                 yield return (key.Id, context.Get<T>(key.Id));
             }
         }
+
+        /// <inheritdoc />
         public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
         {
             var context
@@ -353,12 +333,18 @@ namespace OctoAwesome.Runtime
 
             return context.Get<T>(id);
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             databaseProvider.Dispose();
             chunkSubscription.Dispose();
         }
 
+        /// <summary>
+        /// Gets called when a new notification is received.
+        /// </summary>
+        /// <param name="notification">The received notification.</param>
         public void OnNext(Notification notification)
         {
             if (notification is BlockChangedNotification blockChanged)

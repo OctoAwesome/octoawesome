@@ -1,18 +1,19 @@
 ﻿namespace OctoAwesome
 {
     /// <summary>
-    /// Basis-Interface für alle im Inventar-Verwaltbaren Definitionen.
+    /// Interface for all inventory manageable definitions.
     /// </summary>
     public interface IInventoryable
     {
         /// <summary>
-        /// Gibt das Volumen für eine Einheit an.
+        /// Gets the volume per unit.
         /// </summary>
         int VolumePerUnit { get; }
 
         /// <summary>
-        /// Gibt an, wie viele dieses Items im Inventar in einem Slot gestapelt werden können (in Anzahl der Blöcke, nicht in Vielfachen der <see cref="VolumePerUnit"/>!).
+        /// Gets a value indicating how many item units can be stacked in one inventory slot.
         /// </summary>
+        /// <remarks>Measured in block count not un multiples of <see cref="VolumePerUnit"/>!</remarks>
         int StackLimit { get; }
     }
 }

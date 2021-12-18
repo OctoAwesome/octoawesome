@@ -46,6 +46,10 @@ namespace OctoAwesome.Client
                     game.Run(60, 60);
             }
         }
+
+        /// <summary>
+        /// Restarts OctoAwesome.
+        /// </summary>
         public static void Restart()
         {
             game?.Exit();

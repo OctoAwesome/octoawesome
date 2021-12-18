@@ -8,7 +8,9 @@ using System;
 
 namespace OctoAwesome.Network
 {
-
+    /// <summary>
+    /// Manages updates received and to be sent over network.
+    /// </summary>
     public class NetworkUpdateManager : IDisposable
     {
         private readonly Client client;
@@ -24,6 +26,12 @@ namespace OctoAwesome.Network
 
         private readonly Relay<Notification> simulation;
         private readonly Relay<Notification> chunk;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkUpdateManager"/> class.
+        /// </summary>
+        /// <param name="client">The network client that is connected to the remote server.</param>
+        /// <param name="updateHub">The update hub to receive updates from.</param>
         public NetworkUpdateManager(Client client, IUpdateHub updateHub)
         {
             this.client = client;
@@ -49,6 +57,10 @@ namespace OctoAwesome.Network
 
         }
 
+        /// <summary>
+        /// Gets called when a new package is received.
+        /// </summary>
+        /// <param name="package">The received package.</param>
         public void OnNext(Package package)
         {
             switch (package.OfficialCommand)
@@ -83,6 +95,10 @@ namespace OctoAwesome.Network
 
         }
 
+        /// <summary>
+        /// Gets called when a new notification is received.
+        /// </summary>
+        /// <param name="value">The received notification.</param>
         public void OnNext(Notification value)
         {
             ushort command;
@@ -106,10 +122,16 @@ namespace OctoAwesome.Network
             client.SendPackageAndRelease(package);
         }
 
+        /// <summary>
+        /// Gets called when an error occured while receiving.
+        /// </summary>
+        /// <param name="error">The error that occured.</param>
         public void OnError(Exception error)
         {
             logger.Error(error.Message, error);
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             hubSubscription?.Dispose();

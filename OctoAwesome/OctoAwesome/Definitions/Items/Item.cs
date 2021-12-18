@@ -6,29 +6,35 @@ using System.IO;
 namespace OctoAwesome.Definitions.Items
 {
     /// <summary>
-    /// Basisklasse für alle nicht-lebendigen Spielelemente (für lebendige Spielelemente siehe <see cref="Entity"/>
+    /// Base class for items.
     /// </summary>
     public abstract class Item : IItem, IInventoryable, ISerializable
     {
-        /// <summary>
-        /// Der Zustand des Items
-        /// </summary>
+        /// <inheritdoc />
         public int Condition { get; set; }
 
-        /// <summary>
-        /// Die Koordinate, an der das Item in der Welt herumliegt, falls es nicht im Inventar ist
-        /// </summary>
+        /// <inheritdoc />
         public Coordinate? Position { get; set; }
+
+        /// <inheritdoc />
         public IItemDefinition Definition { get; private set; }
+
+        /// <inheritdoc />
         public IMaterialDefinition Material { get; private set; }
+
+        /// <inheritdoc />
         public virtual int VolumePerUnit => 1;
+
+        /// <inheritdoc />
         public virtual int StackLimit => 1;
 
         private readonly IDefinitionManager definitionManager;
 
         /// <summary>
-        /// Erzeugt eine neue Instanz der Klasse Item.
+        /// Initializes a new instance of the <see cref="Item"/> class.
         /// </summary>
+        /// <param name="definition">The item definition.</param>
+        /// <param name="material">The material definition.</param>
         public Item(IItemDefinition definition, IMaterialDefinition material)
         {
             Definition = definition;
@@ -37,9 +43,11 @@ namespace OctoAwesome.Definitions.Items
 
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
+
+        /// <inheritdoc />
         public virtual int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
-            //TODO Condition Berechnung
+            //TODO Condition calculation
 
             if (!Definition.CanMineMaterial(material))
                 return 0;
@@ -56,6 +64,8 @@ namespace OctoAwesome.Definitions.Items
             //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
         }
+
+        /// <inheritdoc />
         public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(Definition.GetType().FullName!);
@@ -64,6 +74,10 @@ namespace OctoAwesome.Definitions.Items
             InternalSerialize(writer);
         }
 
+        /// <summary>
+        /// Serializes <see cref="Condition"/>, and <see cref="Position"/> to a binary writer.
+        /// </summary>
+        /// <param name="writer">The binary writer to serialize to.</param>
         protected void InternalSerialize(BinaryWriter writer)
         {
             writer.Write(Condition);
@@ -80,14 +94,7 @@ namespace OctoAwesome.Definitions.Items
             }
         }
 
-        public static void Serialize(BinaryWriter writer, Item item)
-        {
-            writer.Write(item.Definition.GetType().FullName!);
-            writer.Write(item.Material.GetType().FullName!);
-
-            item.InternalSerialize(writer);
-        }
-
+        /// <inheritdoc />
         public virtual void Deserialize(BinaryReader reader)
         {
             Definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
@@ -96,6 +103,10 @@ namespace OctoAwesome.Definitions.Items
             InternalDeserialize(reader);
         }
 
+        /// <summary>
+        /// Deserializes <see cref="Condition"/>, and <see cref="Position"/> from a binary reader.
+        /// </summary>
+        /// <param name="reader">The binary reader to deserialize from.</param>
         protected void InternalDeserialize(BinaryReader reader)
         {
             Condition = reader.ReadInt32();
@@ -114,6 +125,18 @@ namespace OctoAwesome.Definitions.Items
             }
         }
 
+        /// <summary>
+        /// Deserializes an item of a given type from a binary reader.
+        /// </summary>
+        /// <param name="reader">The binary reader to deserialize the item from.</param>
+        /// <param name="itemType">The type of the item to deserialize.</param>
+        /// <param name="manager">
+        /// The definition manager to use for resolving <see cref="Material"/> and <see cref="Definition"/>.
+        /// </param>
+        /// <returns>The deserialized item.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the created type is not of type <see cref="Item"/>.
+        /// </exception>
         public static Item Deserialize(BinaryReader reader, Type itemType, IDefinitionManager manager)
         {
             var definition = manager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());

@@ -5,11 +5,17 @@ using System.Reflection;
 
 namespace OctoAwesome.Client
 {
-
+    /// <summary>
+    /// Manages the application settings.
+    /// </summary>
     public class Settings : ISettings
     {
         private Configuration _config;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Settings"/> class,
+        /// which loads the configuration file for the currently running application.
+        /// </summary>
         public Settings()
         {
             var entryAssembly = Assembly.GetEntryAssembly();
@@ -25,11 +31,13 @@ namespace OctoAwesome.Client
             }
         }
 
-
+        /// <inheritdoc/>
         public T? Get<T>(string key)
         {
             return Get<T>(key, default);
         }
+
+        /// <inheritdoc/>
         public T? Get<T>(string key, T? defaultValue)
         {
             var settingElement = _config.AppSettings.Settings[key];
@@ -39,16 +47,22 @@ namespace OctoAwesome.Client
 
             return (T)Convert.ChangeType(valueConfig, typeof(T));
         }
+
+        /// <inheritdoc/>
         public T[] GetArray<T>(string key)
         {
             var valueConfig = _config.AppSettings.Settings[key].Value;
 
             return DeserializeArray<T>(valueConfig);
         }
+
+        /// <inheritdoc/>
         public bool KeyExists(string key)
         {
             return _config.AppSettings.Settings.AllKeys.Contains(key);
         }
+
+        /// <inheritdoc/>
         public void Set(string key, string value)
         {
             if (_config.AppSettings.Settings.AllKeys.Contains(key))
@@ -57,14 +71,20 @@ namespace OctoAwesome.Client
                 _config.AppSettings.Settings.Add(key, value);
             _config.Save(ConfigurationSaveMode.Modified, false);
         }
+
+        /// <inheritdoc/>
         public void Set(string key, int value)
         {
             Set(key, Convert.ToString(value));
         }
+
+        /// <inheritdoc/>
         public void Set(string key, bool value)
         {
             Set(key, Convert.ToString(value));
         }
+
+        /// <inheritdoc/>
         public void Set(string key, string[] values)
         {
             // For string array serialization we serialize a string in json array format.
@@ -74,6 +94,8 @@ namespace OctoAwesome.Client
             string writeString = "[" + string.Join(",", values) + "]";
             Set(key, writeString);
         }
+
+        /// <inheritdoc/>
         public void Set(string key, int[] values)
         {
             string[] strValues = new string[values.Length];
@@ -81,6 +103,8 @@ namespace OctoAwesome.Client
                 strValues[i] = Convert.ToString(values[i]);
             Set(key, strValues);
         }
+
+        /// <inheritdoc/>
         public void Set(string key, bool[] values)
         {
             string[] stringValues = new string[values.Length];
@@ -88,6 +112,8 @@ namespace OctoAwesome.Client
                 stringValues[i] = Convert.ToString(values[i]);
             Set(key, stringValues);
         }
+
+
         private T[] DeserializeArray<T>(string arrayString)
         {
             arrayString = arrayString.Substring(1, arrayString.Length - 2);
@@ -99,6 +125,8 @@ namespace OctoAwesome.Client
 
             return tArray;
         }
+
+        /// <inheritdoc/>
         public void Delete(string key)
         {
             _config.AppSettings.Settings.Remove(key);

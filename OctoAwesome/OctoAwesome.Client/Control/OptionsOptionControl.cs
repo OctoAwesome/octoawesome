@@ -102,7 +102,7 @@ namespace OctoAwesome.Client.Controls
             crosshairColor.SelectedItem = CrosshairControl.CrosshairColor;
             #endregion
 
-            //////////////////////Viewrange//////////////////////
+            //////////////////////View range//////////////////////
             string viewrange = settings.Get<string>("Viewrange");
 
             rangeTitle = new Label(manager)
@@ -190,7 +190,7 @@ namespace OctoAwesome.Client.Controls
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
             fullscreenStack.Controls.Add(enableFullscreen);
 
-            //////////////////////Auflösung//////////////////////
+            //////////////////////Resolution//////////////////////
             StackPanel resolutionStack = new StackPanel(manager)
             {
                 Orientation = Orientation.Horizontal,

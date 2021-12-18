@@ -14,40 +14,48 @@ using System.Linq;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Schnittstelle zwischen Applikation und Welt-Modell.
+    /// Interface between application and world model.
     /// </summary>
     public sealed class Simulation : IDisposable
     {
+        /// <summary>
+        /// Gets the resource manager for managing resources.
+        /// </summary>
         public IResourceManager ResourceManager { get; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the simulation is server side or client side.
+        /// </summary>
         public bool IsServerSide { get; set; }
 
         /// <summary>
-        /// List of all Simulation Components.
+        /// Gets a list of simulation components.
         /// </summary>
         public ComponentList<SimulationComponent> Components { get; }
 
         /// <summary>
-        /// Der aktuelle Status der Simulation.
+        /// Gets the current state of the simulation.
         /// </summary>
         public SimulationState State { get; private set; }
 
         /// <summary>
-        /// Die Guid des aktuell geladenen Universums.
+        ///Gets the <see cref="Guid"/> of the currently loaded universe.
         /// </summary>
         public Guid UniverseId { get; }
 
         /// <summary>
-        /// Dienste des Spiels.
+        /// Gets the game service.
         /// </summary>
         public IGameService Service { get; }
 
         /// <summary>
-        /// List of all Entities.
+        /// Gets a list of all entities in the simulation.
         /// </summary>
         public IReadOnlyList<Entity> Entities => entities;
 
-
+        /// <summary>
+        /// Gets a list of all functional blocks in the simulation.
+        /// </summary>
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly IExtensionResolver extensionResolver;
@@ -61,14 +69,19 @@ namespace OctoAwesome
         private IDisposable networkSubscription;
 
         /// <summary>
-        /// Erzeugt eine neue Instanz der Klasse Simulation.
+        /// Initializes a new instance of the <see cref="Simulation"/> class.
         /// </summary>
+        /// <param name="resourceManager">The resource manager for managing resources.</param>
+        /// <param name="extensionResolver">The extension resolver for extending this simulation.</param>
+        /// <param name="service">The game service.</param>
         public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
         {
             ResourceManager = resourceManager;
             networkRelay = new Relay<Notification>();
 
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+
+
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
@@ -94,11 +107,11 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Erzeugt ein neues Spiel (= Universum)
+        /// Create a new game(<see cref="IUniverse"/>).
         /// </summary>
-        /// <param name="name">Name des Universums.</param>
-        /// <param name="rawSeed">Seed für den Weltgenerator.</param>
-        /// <returns>Die Guid des neuen Universums.</returns>
+        /// <param name="name">The name of the universe.</param>
+        /// <param name="rawSeed">The seed used for creating the universe.</param>
+        /// <returns>The <see cref="Guid"/> of the created universe.</returns>
         public Guid NewGame(string name, string rawSeed)
         {
             int numericSeed;
@@ -116,6 +129,8 @@ namespace OctoAwesome
             {
                 numericSeed = rawSeed.GetHashCode();
             }
+
+
             Guid guid = ResourceManager.NewUniverse(name, numericSeed);
 
             Start();
@@ -124,9 +139,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Lädt ein Spiel (= Universum).
+        /// Loads a game(<see cref="IUniverse"/>).
         /// </summary>
-        /// <param name="guid">Die Guid des Universums.</param>
+        /// <param name="guid">The <see cref="Guid"/> of the universe to load.</param>
         public bool TryLoadGame(Guid guid)
         {
             if (!ResourceManager.TryLoadUniverse(guid))
@@ -151,13 +166,15 @@ namespace OctoAwesome
                 = ResourceManager
                 .UpdateHub
                 .AddSource(networkRelay, DefaultChannels.Network);
+
+
             State = SimulationState.Running;
         }
 
         /// <summary>
-        /// Updatemethode der Simulation
+        /// Call to update and advance the simulation.
         /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
+        /// <param name="gameTime">The game time to advance the simulation by.</param>
         public void Update(GameTime gameTime)
         {
             if (State != SimulationState.Running)
@@ -184,8 +201,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Beendet das aktuelle Spiel (nicht die Applikation)
+        /// Exits the current simulation.
         /// </summary>
+        /// <remarks>This does not exit the application.</remarks>
         public void ExitGame()
         {
             if (State != SimulationState.Running && State != SimulationState.Paused)
@@ -193,7 +211,7 @@ namespace OctoAwesome
 
             State = SimulationState.Paused;
 
-            //TODO: unschön, Dispose Entity's, Reset Extensions
+            //TODO: ugly, Dispose Entity's, Reset Extensions
             entities.ToList().ForEach(entity => Remove(entity));
             functionalBlocks.ToList().ForEach(functionalBlock => Remove(functionalBlock));
             //while (entities.Count > 0)
@@ -208,9 +226,12 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Fügt eine Entity der Simulation hinzu
+        /// Adds an entity to the simulation.
         /// </summary>
-        /// <param name="entity">Neue Entity</param>
+        /// <param name="entity">The <see cref="Entity"/> to add.</param>
+        /// <exception cref="NotSupportedException">
+        /// Thrown if simulation is not running or paused. Or if entity is already part of another simulation.
+        /// </exception>
         public void Add(Entity entity)
         {
             Debug.Assert(entity is not null, nameof(entity) + " != null");
@@ -239,6 +260,14 @@ namespace OctoAwesome
                     holdComponent.Add(entity);
             }
         }
+
+        /// <summary>
+        /// Adds a functional block to the simulation.
+        /// </summary>
+        /// <param name="block">The <see cref="FunctionalBlock"/> to add.</param>
+        /// <exception cref="NotSupportedException">
+        /// Thrown if simulation is not running or paused. Or if entity is already part of another simulation.
+        /// </exception>
         public void Add(FunctionalBlock block)
         {
             Debug.Assert(block is not null, nameof(block) + " != null");
@@ -251,6 +280,8 @@ namespace OctoAwesome
 
             if (functionalBlocks.Contains(block))
                 return;
+
+
             extensionResolver.ExtendEntity(block);
             block.Initialize(ResourceManager);
             block.Simulation = this;
@@ -268,9 +299,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Entfernt eine Entity aus der Simulation
+        /// Removes an entity from the simulation.
         /// </summary>
-        /// <param name="entity">Entity die entfert werden soll</param>
+        /// <param name="entity">The <see cref="Entity"/> to remove.</param>
         public void Remove(Entity entity)
         {
             Debug.Assert(entity is not null, nameof(entity) + " != null");
@@ -303,6 +334,10 @@ namespace OctoAwesome
 
         }
 
+        /// <summary>
+        /// Removes a functional block from the simulation.
+        /// </summary>
+        /// <param name="block">The <see cref="FunctionalBlock"/> to remove.</param>
         public void Remove(FunctionalBlock block)
         {
             Debug.Assert(block is not null, nameof(block) + " != null");
@@ -336,9 +371,17 @@ namespace OctoAwesome
 
         }
 
+        /// <summary>
+        /// Remove an entity by a given id.
+        /// </summary>
+        /// <param name="entityId">The <see cref="Guid"/> of the entity to remove.</param>
         public void RemoveEntity(Guid entityId)
             => Remove(entities.First(e => e.Id == entityId));
 
+        /// <summary>
+        /// Gets called for receiving new notifications.
+        /// </summary>
+        /// <param name="value">The new notification.</param>
         public void OnNext(Notification value)
         {
             if (entities.Count < 1 && !IsServerSide)
@@ -364,6 +407,12 @@ namespace OctoAwesome
                     break;
             }
         }
+
+
+        /// <summary>
+        /// Called when an update notification was received.
+        /// </summary>
+        /// <param name="notification">The update notification.</param>
         public void OnUpdate(SerializableNotification notification)
         {
             if (!IsServerSide)
@@ -409,6 +458,8 @@ namespace OctoAwesome
             networkRelay.OnNext(newEntityNotification);
             newEntityNotification.Release();
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             networkRelay.Dispose();

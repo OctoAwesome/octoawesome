@@ -29,46 +29,46 @@ namespace OctoAwesome.Tests
 
         //    cache.SetCenter(planet, new Index2(15, 15));
         //    System.Threading.Thread.Sleep(150);
-        //    Assert.Equals(9, globalCache.LoadCounter);
-        //    Assert.Equals(0, globalCache.SaveCounter);
+        //    Assert.AreEqual(9, globalCache.LoadCounter);
+        //    Assert.AreEqual(0, globalCache.SaveCounter);
 
-        //    // Chunk im Zentrum
+        //    // Central chunk
         //    IChunk chunk = cache.GetChunk(15, 15, 1);
         //    Assert.NotNull(chunk);
-        //    Assert.Equals(chunk.Index, new Index3(15, 15, 1));
+        //    Assert.AreEqual(chunk.Index, new Index3(15, 15, 1));
 
-        //    // Chunk in der Ecke
+        //    // Chunk at the edge
         //    chunk = cache.GetChunk(14, 14, 0);
         //    Assert.NotNull(chunk);
-        //    Assert.Equals(chunk.Index, new Index3(14, 14, 0));
+        //    Assert.AreEqual(chunk.Index, new Index3(14, 14, 0));
 
-        //    // Chunk in der Ecke
+        //    // Chunk at the edge
         //    chunk = cache.GetChunk(16, 16, 2);
         //    Assert.NotNull(chunk);
-        //    Assert.Equals(chunk.Index, new Index3(16, 16, 2));
+        //    Assert.AreEqual(chunk.Index, new Index3(16, 16, 2));
 
-        //    // Chunk außerhalb des Centers
+        //    // Chunk outside of center
         //    chunk = cache.GetChunk(10, 10, 1);
         //    Assert.Null(chunk);
 
         //    cache.Flush();
 
-        //    Assert.Equals(9, globalCache.LoadCounter);
-        //    Assert.Equals(9, globalCache.SaveCounter);
+        //    Assert.AreEqual(9, globalCache.LoadCounter);
+        //    Assert.AreEqual(9, globalCache.SaveCounter);
 
-        //    // Chunk im Zentrum
+        //    // Chunk in center
         //    chunk = cache.GetChunk(15, 15, 1);
         //    Assert.Null(chunk);
 
-        //    // Chunk in der Ecke
+        //    // Chunk at the edge
         //    chunk = cache.GetChunk(14, 14, 0);
         //    Assert.Null(chunk);
 
-        //    // Chunk in der Ecke
+        //    // Chunk at the edge
         //    chunk = cache.GetChunk(16, 16, 2);
         //    Assert.Null(chunk);
 
-        //    // Chunk außerhalb des Centers
+        //    // Chunk outside the center
         //    chunk = cache.GetChunk(10, 10, 1);
         //    Assert.Null(chunk);
         //}
@@ -89,8 +89,8 @@ namespace OctoAwesome.Tests
 
         //    cache.SetCenter(planet, new Index2(15, 15)); // 15 - 1111
         //    System.Threading.Thread.Sleep(150);
-        //    Assert.Equals(9, globalCache.LoadCounter);
-        //    Assert.Equals(0, globalCache.SaveCounter);
+        //    Assert.AreEqual(9, globalCache.LoadCounter);
+        //    Assert.AreEqual(0, globalCache.SaveCounter);
 
         //    //    00    01    10    11
         //    // 00 16/16 --    14/16 15/16
@@ -100,8 +100,8 @@ namespace OctoAwesome.Tests
 
         //    cache.SetCenter(planet, new Index2(14, 15));
         //    System.Threading.Thread.Sleep(150);
-        //    Assert.Equals(12, globalCache.LoadCounter);
-        //    Assert.Equals(0, globalCache.SaveCounter);
+        //    Assert.AreEqual(12, globalCache.LoadCounter);
+        //    Assert.AreEqual(0, globalCache.SaveCounter);
 
         //    //    00    01    10    11
         //    // 00 16/16 13/16 14/16 15/16
@@ -111,8 +111,8 @@ namespace OctoAwesome.Tests
 
         //    cache.SetCenter(planet, new Index2(13, 15));
         //    System.Threading.Thread.Sleep(150);
-        //    Assert.Equals(15, globalCache.LoadCounter);
-        //    Assert.Equals(3, globalCache.SaveCounter);
+        //    Assert.AreEqual(15, globalCache.LoadCounter);
+        //    Assert.AreEqual(3, globalCache.SaveCounter);
 
         //    //    00    01    10    11
         //    // 00 12/16 13/16 14/16 15/16
@@ -120,15 +120,17 @@ namespace OctoAwesome.Tests
         //    // 10 12/14 13/14 14/14 15/14
         //    // 11 12/15 13/15 14/15 15/15
 
-        //    // Chunk im Zentrum
+        //    // Chunk in the center
         //    IChunk chunk = cache.GetChunk(13, 15, 0);
         //    Assert.NotNull(chunk);
-        //    Assert.Equals(chunk.Index, new Index3(13, 15, 0));
+        //    Assert.AreEqual(chunk.Index, new Index3(13, 15, 0));
 
-        //    // Chunk in der Ecke
+        //    // Chunk at the edge
         //    chunk = cache.GetChunk(15, 15, 0);
         //    Assert.NotNull(chunk);
-        //    Assert.Equals(chunk.Index, new Index3(15, 15, 0));
+        //    Assert.AreEqual(chunk.Index, new Index3(15, 15, 0));
         //}
     }
+
+
 }

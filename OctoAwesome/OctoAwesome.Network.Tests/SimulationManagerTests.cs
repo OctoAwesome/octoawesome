@@ -15,7 +15,7 @@ namespace OctoAwesome.Network.Tests
     [TestOf(typeof(SimulationManager))]
     public class SimulationManagerTests
     {
-        private SimulationManager simulationManager;
+        private readonly SimulationManager simulationManager;
 
         public SimulationManagerTests()
         {
@@ -39,6 +39,8 @@ namespace OctoAwesome.Network.Tests
             };
 
             timer.Elapsed += (s, e) => reset.Set();
+
+
             simulationManager.Start();
             timer.Start();
 

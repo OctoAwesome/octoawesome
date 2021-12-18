@@ -5,43 +5,42 @@ using System.IO;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Basisinterface für einen OctoAwesome-MapGenerator
+    /// Interface for OctoAwesome map generators.
     /// </summary>
     public interface IMapGenerator
     {
         /// <summary>
-        /// Generiert einen neuen Planeten
+        /// Generates a new planet.
         /// </summary>
-        /// <param name="universeGuid">Die Universums-ID, dem der Planet angehört</param>
-        /// <param name="planetId">Der Index des Planeten</param>
-        /// <param name="seed">Der Zuffalsseed, der für den Weltengenerator verwendet wird</param>
-        /// <returns>Den generierten Planeten</returns>
+        /// <param name="universeGuid">The <see cref="Guid"/> of the universe to generate the planet for.</param>
+        /// <param name="planetId">The id of the planet to generate.</param>
+        /// <param name="seed">The random seed to generate the planet with.</param>
+        /// <returns>The generated planet.</returns>
         IPlanet GeneratePlanet(Guid universeGuid, int planetId, int seed);
 
         /// <summary>
-        /// Generiert einen neuen Planeten aus dem angegebenen Stream
+        /// Generates a new planet.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns>Der generierte Planet</returns>
-        IPlanet GeneratePlanet(Stream stream);
+        /// <param name="stream">The stream to load the relevant data for planet generation from.</param>
+        /// <returns>The generated planet.</returns>
+        IPlanet GeneratePlanet(Stream stream); // TODO: rename?
 
         /// <summary>
-        /// Generiert eine Säule von Chunks in der Höhe des Planeten.
+        /// Generates a chunk column for a planet.
         /// </summary>
-        /// <param name="definitionManager">Referenz auf den Definition Manager</param>
-        /// <param name="planet">Der Planet für den der Chunk generiert wird</param>
-        /// <param name="index">Die Position des neu generierten Chunks</param>
-        /// <returns>Eine Säule von neu generierten Chunks</returns>
+        /// <param name="definitionManager">The definition manager for loading definitions.</param>
+        /// <param name="planet">The planet to generate the chunk column for.</param>
+        /// <param name="index">The index of the chunk column to generate.</param>
+        /// <returns>The generated chunk column.</returns>
         IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index);
 
         /// <summary>
-        /// Generiert eine Säule von Chunks in der Höhe des Planeten aus dem angegebenen Stream.
+        /// Generates a chunk column for a planet by using data from a given stream.
         /// </summary>
-        /// <param name="stream">Quellstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        /// <param name="planetId">Der Index des Planeten</param>
-        /// <param name="index">Die Position der Säule</param>
-        /// <returns></returns>
+        /// <param name="stream">The stream to load the relevant data from.</param>
+        /// <param name="planet">The planet to generate the chunk column for.</param>
+        /// <param name="index">The index of the chunk column to generate.</param>
+        /// <returns>The generated chunk column.</returns>
         IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index);
     }
 }

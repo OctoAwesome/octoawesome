@@ -8,7 +8,9 @@ using System.Linq;
 
 namespace OctoAwesome.Runtime
 {
-
+    /// <summary>
+    /// Provider for databases.
+    /// </summary>
     public sealed class DatabaseProvider : IDisposable, IDatabaseProvider
     {
         private readonly string rootPath;
@@ -19,6 +21,12 @@ namespace OctoAwesome.Runtime
         private readonly Dictionary<(Type Type, Guid Universe, int PlanetId), Database.Database> planetDatabaseRegister;
         private readonly Dictionary<(Type Type, Guid Universe), Database.Database> universeDatabaseRegister;
         private readonly Dictionary<Type, Database.Database> globalDatabaseRegister;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DatabaseProvider"/> class.
+        /// </summary>
+        /// <param name="rootPath">The root path to load databases from.</param>
+        /// <param name="logger">The logger to log messages to.</param>
         public DatabaseProvider(string rootPath, ILogger logger)
         {
             this.rootPath = rootPath;
@@ -30,6 +38,8 @@ namespace OctoAwesome.Runtime
             universeDatabaseRegister = new Dictionary<(Type Type, Guid Universe), Database.Database>();
             globalDatabaseRegister = new Dictionary<Type, Database.Database>();
         }
+
+        /// <inheritdoc />
         public Database<T> GetDatabase<T>(bool fixedValueSize) where T : ITag, new()
         {
             Type key = typeof(T);
@@ -58,6 +68,8 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
+
+        /// <inheritdoc />
         public Database<T> GetDatabase<T>(Guid universeGuid, bool fixedValueSize) where T : ITag, new()
         {
             (Type, Guid universeGuid) key = (typeof(T), universeGuid);
@@ -86,6 +98,8 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
+
+        /// <inheritdoc />
         public Database<T> GetDatabase<T>(Guid universeGuid, int planetId, bool fixedValueSize) where T : ITag, new()
         {
             (Type, Guid universeGuid, int planetId) key = (typeof(T), universeGuid, planetId);
@@ -113,6 +127,8 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             foreach (KeyValuePair<(Type Type, Guid Universe, int PlanetId), Database.Database> database in planetDatabaseRegister)

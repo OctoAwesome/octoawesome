@@ -1,6 +1,8 @@
 ﻿namespace OctoAwesome
 {
-
+    /// <summary>
+    /// Enumeration of block wall sides.
+    /// </summary>
     public enum Wall
     {
         /// <summary>

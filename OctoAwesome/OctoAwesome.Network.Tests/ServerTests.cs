@@ -48,7 +48,7 @@ namespace OctoAwesome.Network.Tests
             server.OnClientConnected += (s, e) =>
             {
                 //server.Clients.TryPeek(out Client client);
-                //client.OnMessageRecived += (c, args) =>
+                //client.OnMessageReceived += (c, args) =>
                 //{
                 //    Assert.AreEqual(42, args.data[0]);
                 resetEvent.Set();

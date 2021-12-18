@@ -3,21 +3,33 @@ using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
-
+    /// <summary>
+    /// Block definition for cactus blocks.
+    /// </summary>
     public class CactusBlockDefinition : BlockDefinition
     {
+        /// <inheritdoc />
         public override string Icon => "cactus_inside";
 
+        /// <inheritdoc />
         public override string Name => Languages.OctoBasics.Cactus;
 
+        /// <inheritdoc />
         public override string[] Textures { get; } = { "cactus_inside", "cactus_side", "cactus_top" };
 
+        /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.
+        /// </summary>
+        /// <param name="material">The material definition for this cactus block definition.</param>
         public CactusBlockDefinition(CactusMaterialDefinition material)
         {
             Material = material;
         }
+
+        /// <inheritdoc />
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
             int x, int y, int z)
         {
@@ -154,6 +166,8 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             // Assert here
             return -1;
         }
+
+        /// <inheritdoc />
         public override int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z)
         {
 

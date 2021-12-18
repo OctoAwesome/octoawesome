@@ -34,6 +34,8 @@ namespace OctoAwesome.PoC
         {
             throw new NotImplementedException();
         }
+
+
     }
 
     public class PositionComponentCache : ComponentCache//, IKeyFinder<Index3, PositionComponent>
@@ -63,6 +65,8 @@ namespace OctoAwesome.PoC
         //    _ => false
         //};
     }
+
+
     public class Index3PositionConverter //IKeyConverter<Index3, PositionComponent>, IKeyConverter<Index2, PositionComponent>
     {
         protected PositionComponent Convert(Index3 key)
@@ -76,6 +80,8 @@ namespace OctoAwesome.PoC
 
         }
     }
+
+
     public class ChunkColumnCache : Cache<Index3, ChunkColumn>
     {
         protected override ChunkColumn Load(Index3 key)

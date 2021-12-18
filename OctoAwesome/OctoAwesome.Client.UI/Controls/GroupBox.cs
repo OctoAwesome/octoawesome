@@ -3,10 +3,16 @@ using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.UI.Controls
 {
-
+    /// <summary>
+    /// Control for grouping other controls.
+    /// </summary>
     public class GroupBox : Control
     {
         private Brush borderColor = SolidColorBrush.Black;
+
+        /// <summary>
+        /// Gets or sets the border color brush.
+        /// </summary>
         public Brush BorderColor
         {
             get => borderColor;
@@ -19,6 +25,10 @@ namespace OctoAwesome.Client.UI.Controls
         }
 
         private Border border = Border.All(2);
+
+        /// <summary>
+        /// Gets or sets the border size.
+        /// </summary>
         public Border Border
         {
             get => border;
@@ -30,6 +40,10 @@ namespace OctoAwesome.Client.UI.Controls
             }
         }
         private Orientation orientation = Orientation.Vertical;
+
+        /// <summary>
+        /// Gets or sets the orientation for the inner stack panel.
+        /// </summary>
         public Orientation Orientation
         {
             get => orientation;
@@ -42,6 +56,10 @@ namespace OctoAwesome.Client.UI.Controls
         }
 
         private string headline;
+
+        /// <summary>
+        /// Gets or sets the head line for the group box.
+        /// </summary>
         public string Headline
         {
             get => headline;
@@ -55,11 +73,19 @@ namespace OctoAwesome.Client.UI.Controls
                 }
             }
         }
+
+        /// <inheritdoc cref="Control.Children"/>
         public new ControlCollection Children => contentPanel.Controls;
 
         private readonly StackPanel outerPanel;
         private readonly StackPanel contentPanel;
         private readonly Label headlineLabel;
+
+        /// <summary>
+        /// Initializes a ne instance of the <see cref="GroupBox"/> control.
+        /// </summary>
+        /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
+        /// <param name="style">The style to use for this control.</param>
         public GroupBox(BaseScreenComponent manager, string style = "") : base(manager, style)
         {
             outerPanel = new(manager)

@@ -6,10 +6,14 @@ using System.IO;
 
 namespace OctoAwesome.EntityComponents
 {
-
+    /// <summary>
+    /// Component for entities with an position.
+    /// </summary>
     public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IFunctionalBlockComponent
     {
-
+        /// <summary>
+        /// Gets or sets the position of the entity.
+        /// </summary>
         public Coordinate Position
         {
             get => position;
@@ -27,8 +31,14 @@ namespace OctoAwesome.EntityComponents
                 planet = TryGetPlanet(value.Planet);
             }
         }
-        public float Direction { get; set; }
 
+        /// <summary>
+        /// Gets or sets the direction the entity is facing.
+        /// </summary>
+        public float Direction { get; set; }
+        /// <summary>
+        /// Gets the planet the entity is on.
+        /// </summary>
         public IPlanet Planet => planet ??= TryGetPlanet(position.Planet);
 
         private Coordinate position;
@@ -36,12 +46,18 @@ namespace OctoAwesome.EntityComponents
         private IPlanet? planet;
         private readonly IResourceManager resourceManager;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PositionComponent"/> class.
+        /// </summary>
         public PositionComponent()
         {
             Sendable = true;
             resourceManager = TypeContainer.Get<IResourceManager>();
             propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
+
+        /// <inheritdoc />
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
@@ -54,6 +70,8 @@ namespace OctoAwesome.EntityComponents
             writer.Write(Position.BlockPosition.Y);
             writer.Write(Position.BlockPosition.Z);
         }
+
+        /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
             base.Deserialize(reader);
@@ -77,6 +95,8 @@ namespace OctoAwesome.EntityComponents
 
             return resourceManager.GetPlanet(planetId);
         }
+
+        /// <inheritdoc />
         protected override void OnPropertyChanged<T>(T value, string propertyName)
         {
             base.OnPropertyChanged(value, propertyName);
@@ -98,6 +118,8 @@ namespace OctoAwesome.EntityComponents
                 Push(updateNotification);
             }
         }
+
+        /// <inheritdoc />
         public override void OnNotification(SerializableNotification notification)
         {
             base.OnNotification(notification);

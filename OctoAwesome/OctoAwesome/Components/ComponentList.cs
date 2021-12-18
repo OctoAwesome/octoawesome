@@ -11,9 +11,9 @@ using OctoAwesome.Caching;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Base Class for all Component based Entities.
+    /// Base Class for all component based entities.
     /// </summary>
-    /// <typeparam name="T">Type of Component</typeparam>
+    /// <typeparam name="T">Type of the components contained in the list.</typeparam>
     public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializable
     {
         private readonly Action<T> insertValidator;
@@ -23,10 +23,26 @@ namespace OctoAwesome
 
         private readonly Dictionary<Type, T> components = new Dictionary<Type, T>();
 
+        /// <summary>
+        /// Gets a component of a specific type; or <c>null</c> if no matching component is found.
+        /// </summary>
+        /// <param name="type">The type to get the component for</param>
         public T? this[Type type] => components.TryGetValue(type, out var result) ? result : default;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComponentList{T}"/> class.
+        /// </summary>
         public ComponentList()
         {
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComponentList{T}"/> class.
+        /// </summary>
+        /// <param name="insertValidator">The validator for insertions.</param>
+        /// <param name="removeValidator">The validator for removals.</param>
+        /// <param name="onInserter">The method to call on insertion.</param>
+        /// <param name="onRemover">The method to call on removal.</param>
         public ComponentList(Action<T> insertValidator, Action<T> removeValidator, Action<T> onInserter, Action<T> onRemover)
         {
             this.insertValidator = insertValidator;
@@ -34,6 +50,8 @@ namespace OctoAwesome
             this.onInserter = onInserter;
             this.onRemover = onRemover;
         }
+
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
             => components.Values.GetEnumerator();
 
@@ -43,11 +61,20 @@ namespace OctoAwesome
         /// <summary>
         /// Adds a new Component to the List.
         /// </summary>
-        /// <param name="component">Component</param>
+        /// <param name="component">The component to add to the list.</param>
+        /// <typeparam name="V">The type of the component to add.</typeparam>
         public void AddComponent<V>(V component) where V : T
             => AddComponent(component, false);
 
 
+        /// <summary>
+        /// Adds or replaces a component.
+        /// </summary>
+        /// <param name="component">The component to add or replace.</param>
+        /// <param name="replace">
+        /// Whether to add the component when a component with the same type already exists in the list, or not add it if it does.
+        /// </param>
+        /// <typeparam name="V">The type of the component to add.</typeparam>
         public void AddComponent<V>(V component, bool replace) where V : T
         {
             Type type = component.GetType();
@@ -70,7 +97,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Checks wether the component of <typeparamref name="V"/> is present in the internal dictionary as a key
+        /// Checks whether the component of <typeparamref name="V"/> is present in the internal dictionary as a key.
         /// </summary>
         /// <typeparam name="V">The type to search in the internal dictionary</typeparam>
         /// <returns>
@@ -94,7 +121,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>True if the component was found, false otherwise</returns>
-        public bool TryGetComponent<V>(out V component) where V : T
+        public bool TryGetComponent<V>([MaybeNullWhen(false)] out V component) where V : T
         {
             var contains = components.TryGetValue(typeof(V), out var result);
             component = default;
@@ -105,6 +132,7 @@ namespace OctoAwesome
 
             return contains;
         }
+
         /// <summary>
         /// Returns the Component of the given Type or null
         /// </summary>
@@ -119,10 +147,10 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Removes the Component of the given Type.
+        /// Removes the Component of the given type.
         /// </summary>
-        /// <typeparam name="V">Component Type</typeparam>
-        /// <returns></returns>
+        /// <typeparam name="V">The type of the component to remove.</typeparam>
+        /// <returns>A value indicating whether the remove was successful or not.</returns>
         public bool RemoveComponent<V>() where V : T
         {
             if (!components.TryGetValue(typeof(V), out var component))
@@ -139,9 +167,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
+        /// Serializes the component list to a binary writer..
         /// </summary>
-        /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
+        /// <param name="writer">The binary writer to serialize the component list to.</param>
         public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(components.Count);
@@ -154,9 +182,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
+        /// Deserializes the component list from a binary reader..
         /// </summary>
-        /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
+        /// <param name="reader">The binary reader to deserialize the component list from.</param>
         public virtual void Deserialize(BinaryReader reader)
         {
             var count = reader.ReadInt32();

@@ -10,8 +10,8 @@ namespace OctoAwesome.PoC.Tests
     public static class DependencyAgentFixture
     {
         //TODO:
-        //Abhängigkeiten müssen als Baum korrekt zurückkommen (True, False, ArgumentNullException)
-        //Cycle Tests mit Cycle und Ohne Cycle
+        // Dependencies need to be returned correctly as a tree (True, False, ArgumentNullException)
+        // Cycle tests with cycles and without cycles
 
         [TestOf(nameof(DependencyAgent.TryCreateTree))]
         public class TryCreateTree : TestFixture

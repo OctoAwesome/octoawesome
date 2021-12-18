@@ -3,7 +3,7 @@
 namespace OctoAwesome
 {
     /// <summary>
-    /// Basisklasse für alle selbständigen Wesen
+    /// Base class for all entities.
     /// </summary>
     public abstract class Entity : ComponentContainer<IEntityComponent>
     {

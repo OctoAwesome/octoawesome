@@ -95,7 +95,7 @@ namespace OctoAwesome.Client.Screens
             buttonStack.Controls.Add(deleteButton);
             deleteButton.LeftMouseClick += (s, e) =>
             {
-                // Sicherstellen, dass universe nicht geladen ist
+                // Ensure that the universe is not loaded.
                 Debug.Assert(levelList.SelectedItem != null, "levelList.SelectedItem != null");
                 if (Manager.Game.ResourceManager.CurrentUniverse != null &&
                     Manager.Game.ResourceManager.CurrentUniverse.Id == levelList.SelectedItem.Id)
@@ -145,7 +145,7 @@ namespace OctoAwesome.Client.Screens
             foreach (var universe in Manager.Game.ResourceManager.ListUniverses())
                 levelList.Items.Add(universe);
 
-            // Erstes Element auswählen, oder falls vorhanden das letzte gespielte Universum
+            // Select first item, or if available - the last played universe
             if (levelList.Items.Count >= 1)
                 levelList.SelectedItem = levelList.Items[0];
 
@@ -158,6 +158,8 @@ namespace OctoAwesome.Client.Screens
 
             }
         }
+
+
         protected override void OnKeyDown(KeyEventArgs args)
         {
             if (args.Key == Keys.Enter)

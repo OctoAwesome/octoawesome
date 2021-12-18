@@ -77,6 +77,8 @@ namespace OctoAwesome.Client.Screens
 
             quoteUpdate = Task.Run(async () => await UpdateLabel(text, loadingQuoteProvider, TimeSpan.FromSeconds(1.5), tokenSource.Token));
             mainGrid.AddControl(text, 1, 1);
+
+
             //Buttons
             var buttonStack = new StackPanel(manager)
             {
@@ -103,6 +105,8 @@ namespace OctoAwesome.Client.Screens
                 gameScreen.Unload();
                 manager.NavigateBack();
             };
+
+
         }
 
         private void SwitchToGame(object? sender, System.EventArgs args)

@@ -4,15 +4,29 @@ using System.IO;
 
 namespace OctoAwesome.Database
 {
+    /// <summary>
+    /// Helper class for defregmentation key store and value store files.
+    /// </summary>
+    /// <typeparam name="TTag">The type of the tag contained in the store files.</typeparam>
     public sealed class Defragmentation<TTag> where TTag : ITag, new()
     {
         private readonly FileInfo keyStoreFile;
         private readonly FileInfo valueStoreFile;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Defragmentation{TTag}"/> class.
+        /// </summary>
+        /// <param name="keyStoreFile">The <see cref="FileInfo"/> to the key store file to defragment.</param>
+        /// <param name="valueStoreFile">The <see cref="FileInfo"/> to the value store file to defragment.</param>
         public Defragmentation(FileInfo keyStoreFile, FileInfo valueStoreFile)
         {
             this.keyStoreFile = keyStoreFile;
             this.valueStoreFile = valueStoreFile;
         }
+
+        /// <summary>
+        /// Defragments the key and value store files.
+        /// </summary>
         public void StartDefragmentation()
         {
             var newValueStoreFile = new FileInfo(Path.GetTempFileName());
@@ -26,6 +40,10 @@ namespace OctoAwesome.Database
             valueStoreFile.Delete();
             newValueStoreFile.MoveTo(valueStoreFile.FullName);
         }
+
+        /// <summary>
+        /// Recreates the key tag file from the value store.
+        /// </summary>
         public void RecreateKeyFile()
         {
             var keyBuffer = new byte[Key<TTag>.KEY_SIZE];

@@ -74,6 +74,8 @@ namespace OctoAwesome.Client.Components
 
             player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             Simulation.Add(player);
+
+
             return player;
         }
 

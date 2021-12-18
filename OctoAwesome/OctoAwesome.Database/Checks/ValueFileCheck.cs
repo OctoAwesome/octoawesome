@@ -3,14 +3,24 @@ using System.IO;
 
 namespace OctoAwesome.Database.Checks
 {
+    /// <summary>
+    /// Helper class for checking value store files.
+    /// </summary>
+    /// <typeparam name="TTag">The identifying tag type for the value store.</typeparam>
     public sealed class ValueFileCheck<TTag> : ICheckable where TTag : ITag, new()
     {
         private readonly FileInfo fileInfo;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueFileCheck{TTag}"/> class.
+        /// </summary>
+        /// <param name="fileInfo">The <see cref="FileInfo"/> to the value store file to check.</param>
         public ValueFileCheck(FileInfo fileInfo)
         {
             this.fileInfo = fileInfo;
         }
+
+        /// <inheritdoc />
         public void Check()
         {
             using var fileStream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.None);

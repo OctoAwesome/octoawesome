@@ -5,17 +5,25 @@ using System.Linq;
 
 namespace OctoAwesome
 {
-
+    /// <summary>
+    /// Implementation for a standalone type container.
+    /// </summary>
     public sealed class StandaloneTypeContainer : ITypeContainer
     {
         private readonly Dictionary<Type, TypeInformation> typeInformationRegister;
         private readonly Dictionary<Type, Type> typeRegister;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StandaloneTypeContainer"/> class.
+        /// </summary>
         public StandaloneTypeContainer()
         {
             typeInformationRegister = new Dictionary<Type, TypeInformation>();
             typeRegister = new Dictionary<Type, Type>();
         }
 
+
+        /// <inheritdoc />
         public void Register(Type registrar, Type type, InstanceBehavior instanceBehavior)
         {
             if (!typeInformationRegister.ContainsKey(type))
@@ -23,10 +31,16 @@ namespace OctoAwesome
 
             typeRegister.Add(registrar, type);
         }
+
+        /// <inheritdoc />
         public void Register<T>(InstanceBehavior instanceBehavior = InstanceBehavior.Instance) where T : class
             => Register(typeof(T), typeof(T), instanceBehavior);
+
+        /// <inheritdoc />
         public void Register<TRegistrar, T>(InstanceBehavior instanceBehavior = InstanceBehavior.Instance) where T : class
             => Register(typeof(TRegistrar), typeof(T), instanceBehavior);
+
+        /// <inheritdoc />
         public void Register(Type registrar, Type type, object singleton)
         {
             if (!typeInformationRegister.ContainsKey(type))
@@ -34,15 +48,23 @@ namespace OctoAwesome
 
             typeRegister.Add(registrar, type);
         }
+
+        /// <inheritdoc />
         public void Register<T>(T singleton) where T : class
             => Register(typeof(T), typeof(T), singleton);
+
+        /// <inheritdoc />
         public void Register<TRegistrar, T>(object singleton) where T : class
             => Register(typeof(TRegistrar), typeof(T), singleton);
+
+        /// <inheritdoc />
         public bool TryGet(Type type, [MaybeNullWhen(false)] out object instance)
         {
             instance = GetOrNull(type);
             return instance != null;
         }
+
+        /// <inheritdoc />
         public bool TryGet<T>([MaybeNullWhen(false)] out T instance) where T : class
         {
             var result = TryGet(typeof(T), out var obj);
@@ -52,10 +74,16 @@ namespace OctoAwesome
                 instance = null;
             return result;
         }
+
+        /// <inheritdoc />
         public object Get(Type type)
             => GetOrNull(type) ?? throw new KeyNotFoundException($"Type {type} was not found in Container");
+
+        /// <inheritdoc />
         public T Get<T>() where T : class
             => (T)Get(typeof(T));
+
+        /// <inheritdoc />
         public object? GetOrNull(Type type)
         {
             if (typeRegister.TryGetValue(type, out var searchType))
@@ -65,14 +93,22 @@ namespace OctoAwesome
             }
             return null;
         }
+
+        /// <inheritdoc />
         public T? GetOrNull<T>() where T : class
             => (T?)GetOrNull(typeof(T));
+
+        /// <inheritdoc />
         public object GetUnregistered(Type type)
             => GetOrNull(type)
                 ?? CreateObject(type)
                 ?? throw new InvalidOperationException($"Can not create unregistered type of {type}");
+
+        /// <inheritdoc />
         public T GetUnregistered<T>() where T : class
             => (T)GetUnregistered(typeof(T));
+
+        /// <inheritdoc />
         public object? CreateObject(Type type)
         {
             var tmpList = new List<object>();
@@ -116,8 +152,12 @@ namespace OctoAwesome
 
             return null;
         }
+
+        /// <inheritdoc />
         public T? CreateObject<T>() where T : class
             => (T?)CreateObject(typeof(T));
+
+        /// <inheritdoc />
         public void Dispose()
         {
             typeRegister.Clear();

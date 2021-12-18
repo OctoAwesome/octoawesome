@@ -4,10 +4,16 @@ using System.Linq;
 
 namespace OctoAwesome.Basics
 {
-
+    /// <summary>
+    /// Map populater to populate the world with trees.
+    /// </summary>
     public class TreePopulator : MapPopulator
     {
         private IEnumerable<ITreeDefinition>? treeDefinitions = null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreePopulator"/> class.
+        /// </summary>
         public TreePopulator()
         {
             Order = 10;
@@ -24,8 +30,12 @@ namespace OctoAwesome.Basics
                 column = column10;
             else
                 column = column00;
+
+
             return column;
         }
+
+        /// <inheritdoc />
         public override void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11)
         {
             // Initialize tree definitions

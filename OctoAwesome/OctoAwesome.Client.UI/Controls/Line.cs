@@ -2,11 +2,21 @@
 
 namespace OctoAwesome.Client.UI.Controls
 {
-
+    /// <summary>
+    /// Simple control for drawing lines.
+    /// </summary>
     public class Line : Control
     {
-
+        /// <summary>
+        /// Gets or sets the color of the line.
+        /// </summary>
         public Brush Color { get => Background; set => Background = value; }
+
+        /// <summary>
+        /// Initializes a new instance of teh <see cref="Line"/> class.
+        /// </summary>
+        /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
+        /// <param name="style">The style to use for this control.</param>
         public Line(BaseScreenComponent manager, string style = "") : base(manager, style)
         {
             Height = 1;

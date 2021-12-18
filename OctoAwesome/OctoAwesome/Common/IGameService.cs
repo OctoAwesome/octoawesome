@@ -5,26 +5,26 @@ using System;
 namespace OctoAwesome.Common
 {
     /// <summary>
-    /// Common Services for Extensions
+    /// Common services for extensions.
     /// </summary>
     public interface IGameService : IServiceProvider
     {
         /// <summary>
-        /// <see cref="IDefinitionManager"/> der lokalen Daten.
+        /// Gets the <see cref="IDefinitionManager"/> of the local data.
         /// </summary>
         IDefinitionManager DefinitionManager { get; }
+
         /// <summary>
-        /// Berechnet die Geschwindigkeit einer <see cref="Entity"/> nach der Kollision mit der Welt.
+        /// Calculates an entity's velocity after collision with the world. (Original Lassi)
         /// </summary>
-        /// <param name="gameTime">Simulation time</param>
-        /// <param name="position">Position der <see cref="Entity"/></param>
-        /// <param name="cache"><see cref="ILocalChunkCache"/> as workspace</param>
-        /// <param name="radius">Radius der <see cref="Entity"/></param>
-        /// <param name="height">Höhe der <see cref="Entity"/></param>
-        /// <param name="deltaPosition">Positionsänderung zwischen zwei Simulationsdurchläufen</param>
-        /// <param name="velocity">Berechnete Geschwindigkeit</param>
-        /// <exception cref="ArgumentNullException">Cache</exception>
-        /// <returns>Geschwindigkeit der <see cref="Entity"/> nach der Killisionsprüfung</returns>
+        /// <param name="gameTime">The simulation time.</param>
+        /// <param name="position">Position of the <see cref="Entity"/>.</param>
+        /// <param name="cache"><see cref="ILocalChunkCache"/> to calculate the collisions in.</param>
+        /// <param name="radius">The bounding collision radius of <see cref="Entity"/>.</param>
+        /// <param name="height">The height of the <see cref="Entity"/>.</param>
+        /// <param name="deltaPosition">The position change between two simulation steps.</param>
+        /// <param name="velocity">The velocity of the <see cref="Entity"/>.</param>
+        /// <returns>Calculated velocity <see cref="Entity"/> after the collision test.</returns>
         Vector3 WorldCollision(GameTime gameTime, Coordinate position, ILocalChunkCache cache, float radius, float height,
             Vector3 deltaPosition, Vector3 velocity);
 

@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Caching
 {
-
+    /// <summary>
+    /// Service for managing multiple caches.
+    /// </summary>
     public class CacheService : IDisposable
     {
         private readonly Dictionary<Type, Cache> caches;
@@ -17,6 +19,16 @@ namespace OctoAwesome.Caching
         private CancellationTokenSource cancellationTokenSource;
         private Task garbageCollectionTask;
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CacheService"/> class.
+        /// </summary>
+        /// <param name="planet">The planet to cache for.</param>
+        /// <param name="resourceManager">The resource manager for loading resource assets.</param>
+        /// <param name="updateHub">The update hub.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="planet"/> or <paramref name="resourceManager"/> were <c>null</c>.
+        /// </exception>
         public CacheService(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub)
         {
             caches = new Dictionary<Type, Cache>();
@@ -36,7 +48,9 @@ namespace OctoAwesome.Caching
             caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
         }
 
-
+        /// <summary>
+        /// Starts the service and all underlying caches.
+        /// </summary>
         public void Start()
         {
             if (cancellationTokenSource is not null)
@@ -60,6 +74,10 @@ namespace OctoAwesome.Caching
             garbageCollectionTask.Start();
 
         }
+
+        /// <summary>
+        /// Stops the service and all underlying caches.
+        /// </summary>
         public void Stop()
         {
             cancellationTokenSource.Cancel();
@@ -73,6 +91,8 @@ namespace OctoAwesome.Caching
                 item.Stop();
             }
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             Stop();
@@ -88,6 +108,14 @@ namespace OctoAwesome.Caching
             caches.Clear();
         }
 
+        /// <summary>
+        /// Gets a value from the cache service.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the identifying key to get the value by.</typeparam>
+        /// <typeparam name="TValue">The type of the value to get the value of.</typeparam>
+        /// <param name="key">The identifying key to get the value by.</param>
+        /// <param name="loadingMode">Is ignored, because this cache load everything on startup and therefore is always cached</param>
+        /// <returns>The value from the cache service.</returns>
         public TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
         {
             if (caches.TryGetValue(typeof(TValue), out var cache))

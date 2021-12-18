@@ -3,11 +3,27 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OctoAwesome
 {
-
+    /// <summary>
+    /// Interface for type containers.
+    /// </summary>
     public interface ITypeContainer : IDisposable
     {
-
+        /// <summary>
+        /// Creates an object of the specified type.
+        /// </summary>
+        /// <param name="type">The type of the object to create.</param>
+        /// <returns>The created object instance; or <c>null</c> if no instance could be created.</returns>
+        /// <seealso cref="CreateObject{T}"/>
+        /// <remarks>The type does not need to be registered, but the constructor parameter types do.</remarks>
         object? CreateObject(Type type);
+
+        /// <summary>
+        /// Creates an instance of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to create.</typeparam>
+        /// <returns>The created object instance; or <c>null</c> if no instance could be created.</returns>
+        /// <seealso cref="CreateObject"/>
+        /// <remarks>The type does not need to be registered, but the constructor parameter types do.</remarks>
         T? CreateObject<T>() where T : class;
 
         void Register(Type registrar, Type type, InstanceBehavior instanceBehavior);

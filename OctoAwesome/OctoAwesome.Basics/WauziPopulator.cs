@@ -5,15 +5,22 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
+    /// <summary>
+    /// Map populater to populate the world with wauzi mob entities.
+    /// </summary>
     public class WauziPopulator : IMapPopulator
     {
         private readonly Random r = new();
+
+        /// <inheritdoc />
         public int Order => 11;
 
         int ispop = 10;
+
+        /// <inheritdoc />
         public void Populate(IResourceManager resourceManager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11)
         {
-            //HACK: Activate Wauzi
+            // TODO: HACK: Deactivate Wauzi
             return;
 
             if (ispop-- <= 0)

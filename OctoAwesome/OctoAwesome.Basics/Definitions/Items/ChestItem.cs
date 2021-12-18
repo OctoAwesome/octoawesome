@@ -8,10 +8,19 @@ using System;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
+    /// <summary>
+    /// Chest item for inventories.
+    /// </summary>
     public class ChestItem : Item, IDisposable
     {
         private readonly Relay<Notification> simulationRelay;
         private readonly IDisposable simulationSource;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChestItem"/> class.
+        /// </summary>
+        /// <param name="definition">The chest item definition.</param>
+        /// <param name="materialDefinition">The material definition the chest is made out of.</param>
         public ChestItem(ChestItemDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
@@ -20,6 +29,8 @@ namespace OctoAwesome.Basics.Definitions.Items
 
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
+
+        /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             //TODO: Implement Place Chest and remove this item
@@ -34,6 +45,8 @@ namespace OctoAwesome.Basics.Definitions.Items
             simulationRelay.OnNext(notification);
             return 0;
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             simulationSource.Dispose();

@@ -7,7 +7,9 @@ using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Client.UI.Controls
 {
-
+    /// <summary>
+    /// A control for displaying a dynamic compass.
+    /// </summary>
     public class CompassControl : Control
     {
         private readonly Texture2D compassTexture;
@@ -16,6 +18,12 @@ namespace OctoAwesome.Client.UI.Controls
 
         private readonly HeadComponent headComponent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompassControl"/> class.
+        /// </summary>
+        /// <param name="screenManager">The <see cref="T:engenious.UI.BaseScreenComponent" />.</param>
+        /// <param name="assets">The asset component to load resource assets from.</param>
+        /// <param name="headComponent">The head component which determines the compass heading.</param>
         public CompassControl(BaseScreenComponent screenManager, AssetComponent assets, HeadComponent headComponent) : base(screenManager)
         {
             this.assets = assets;
@@ -27,6 +35,8 @@ namespace OctoAwesome.Client.UI.Controls
             Background = NineTileBrush.FromSingleTexture(background, 7, 7);
             compassTexture = assets.LoadTexture(GetType(), "compass");
         }
+
+        /// <inheritdoc />
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             if (headComponent is null || !assets.Ready)
