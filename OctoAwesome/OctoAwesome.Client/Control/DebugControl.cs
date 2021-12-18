@@ -35,7 +35,7 @@ namespace OctoAwesome.UI.Controls
             : base(screenManager)
         {
             framebuffer = new float[buffersize];
-            Player = playerComponent;
+            Player = playerComponent ?? throw new ArgumentNullException(nameof(playerComponent));
             this.assets = assets;
             this.resourceManager = resourceManager;
             this.definitionManager = definitionManager;
