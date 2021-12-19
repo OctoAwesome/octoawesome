@@ -6,6 +6,8 @@ using engenious.UserDefined.Effects;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -134,7 +136,7 @@ namespace OctoAwesome.Client.Components
                     if (!success)
                         continue;
 
-                    SetTransforms(chunkOffset, planetSize, entity, rendercomp, modelinfo);
+                    SetTransforms(chunkOffset, planetSize, entity, rendercomp!, modelinfo);
                     modelinfo.model.Draw(effect);
                 }
 
@@ -218,6 +220,7 @@ namespace OctoAwesome.Client.Components
         private static Matrix GetWorldMatrix<T>(Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, float zOffset = 0.0f) where T : IComponent
         {
             var positioncomp = componentContainer.Components.GetComponent<PositionComponent>();
+            Debug.Assert(positioncomp != null, nameof(positioncomp) + " != null");
             var position = positioncomp.Position;
             var body = componentContainer.Components.GetComponent<BodyComponent>();
 
@@ -233,7 +236,7 @@ namespace OctoAwesome.Client.Components
             return world;
         }
 
-        private bool TryGetRenderInfo<T>(ComponentContainer<T> componentContainer, out RenderComponent rendercomp, out ModelInfo modelinfo) where T : IComponent
+        private bool TryGetRenderInfo<T>(ComponentContainer<T> componentContainer, [MaybeNullWhen(false)] out RenderComponent rendercomp, out ModelInfo modelinfo) where T : IComponent
         {
             rendercomp = null;
             modelinfo = default;
@@ -244,6 +247,7 @@ namespace OctoAwesome.Client.Components
 
             rendercomp = componentContainer.Components.GetComponent<RenderComponent>();
 
+            Debug.Assert(rendercomp != null, nameof(rendercomp) + " != null");
             if (!models.TryGetValue(rendercomp.Name, out modelinfo))
             {
                 modelinfo = new ModelInfo()
