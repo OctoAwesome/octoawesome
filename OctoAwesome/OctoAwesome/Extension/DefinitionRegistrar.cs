@@ -7,6 +7,8 @@ namespace OctoAwesome
 {
     public class DefinitionRegistrar : BaseRegistrar<Type>
     {
+        public override string ChannelName => "Definition";
+
         private readonly StandaloneTypeContainer definitionTypeContainer;
         private readonly Dictionary<Type, List<Type>> definitionsLookup;
 
@@ -26,6 +28,8 @@ namespace OctoAwesome
                 throw new ArgumentNullException(nameof(type));
 
             var interfaceTypes = type.GetInterfaces();
+
+            //TODO: Check type for idefinition, otherwise throw exception
 
             foreach (var interfaceType in interfaceTypes)
             {

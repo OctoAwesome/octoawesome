@@ -3,6 +3,8 @@
 using OctoAwesome.Common;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
+using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
@@ -58,7 +60,8 @@ namespace OctoAwesome
         /// </summary>
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
-        private readonly IExtensionResolver extensionResolver;
+        private readonly ExtensionService extensionResolver;
+        //private readonly IExtensionResolver extensionResolver;
 
         private readonly List<Entity> entities = new();
         private readonly List<FunctionalBlock> functionalBlocks = new();
@@ -245,7 +248,7 @@ namespace OctoAwesome
             if (entities.Contains(entity))
                 return;
 
-            extensionResolver.ExtendEntity(entity);
+            extensionResolver.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
 
@@ -282,7 +285,7 @@ namespace OctoAwesome
                 return;
 
 
-            extensionResolver.ExtendEntity(block);
+            extensionResolver.ExecuteExtender(block);
             block.Initialize(ResourceManager);
             block.Simulation = this;
 

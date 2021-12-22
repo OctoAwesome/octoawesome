@@ -70,6 +70,11 @@ public class ExtensionService
 
     }
 
+    public void ExecuteExtender<T>(T toExtend)
+    {
+
+    }
+
     public void Register<TRegister>(TRegister value)
     {
 

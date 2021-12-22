@@ -5,11 +5,6 @@ using System.Linq;
 
 namespace OctoAwesome
 {
-    public interface IABCIExtensionExtender<TABC, TBCE, TDEF, TExtensionType> : IExtensionExtender<TExtensionType>
-    {
-
-    }
-
     public abstract class BaseExtensionExtender<TExtensionType> : IExtensionExtender<TExtensionType>
     {
         private readonly ISettings settings;

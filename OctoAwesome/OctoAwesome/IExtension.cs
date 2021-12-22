@@ -1,4 +1,12 @@
-﻿namespace OctoAwesome
+﻿using OctoAwesome.Extension;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Interface for all mod plugin extensions.
@@ -18,9 +26,8 @@
         /// <summary>
         /// Register the components in the extension loader.
         /// </summary>
-        /// <param name="extensionLoader">The extension loader the extension was registered into.</param>
-        /// <param name="typeContainer">The type container to get types with.</param>
-        void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer);
+        /// <param name="extensionService">ExtensionsLoader</param>
+        void Register(ExtensionService extensionService);
 
         /// <summary>
         /// Registers type in the given type container for this extension.
