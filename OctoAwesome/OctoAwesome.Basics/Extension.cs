@@ -11,6 +11,7 @@ using OctoAwesome.Services;
 using OctoAwesome.Definitions;
 using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics
 {
@@ -23,30 +24,29 @@ namespace OctoAwesome.Basics
 
         public void Register(ITypeContainer typeContainer)
         {
-
+            typeContainer.Register<IPlanet, ComplexPlanet>();
         }
 
-        public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
+        public void Register(ExtensionService extensionLoader)
         {
-            typeContainer.Register<IPlanet, ComplexPlanet>();
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (!t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t))
-                    extensionLoader.RegisterDefinition(t);
+                    extensionLoader.Register(t);
             }
 
-            extensionLoader.RegisterMapGenerator(new ComplexPlanetGenerator());
+            extensionLoader.Register(new ComplexPlanetGenerator());
 
-            extensionLoader.RegisterMapPopulator(new TreePopulator());
-            extensionLoader.RegisterMapPopulator(new WauziPopulator());
+            extensionLoader.Register(new TreePopulator());
+            extensionLoader.Register(new WauziPopulator());
 
-            extensionLoader.RegisterSerializationType<WauziEntity>();
-            extensionLoader.RegisterSerializationType<Chest>();
+            extensionLoader.Register(typeof(WauziEntity), "Serialization");
+            extensionLoader.Register(typeof(Chest), "Serialization");
 
-            extensionLoader.RegisterDefaultEntityExtender<WauziEntity>();
+            extensionLoader.Extend<WauziEntity>(wauziEntity => wauziEntity.RegisterDefault());
 
-            extensionLoader.RegisterEntityExtender<Player>((player) =>
+            extensionLoader.Extend<Player>((player) =>
             {
                 var p = (Player)player;
                 var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
@@ -62,9 +62,9 @@ namespace OctoAwesome.Basics
                 p.Components.AddComponent(new TransferComponent());
             });
 
-            extensionLoader.RegisterEntityExtender<Chest>((chest) =>
+            extensionLoader.Extend<Chest>((chest) =>
             {
-                var c = (Chest)chest;
+                var c = chest;
 
                 if (c is null)
                     return;
@@ -111,7 +111,7 @@ namespace OctoAwesome.Basics
             });
 
 
-            extensionLoader.RegisterSimulationExtender((s) =>
+            extensionLoader.Extend<Simulation>((s) =>
             {
                 s.Components.AddComponent(new WattMoverComponent());
                 s.Components.AddComponent(new NewtonGravitatorComponent());

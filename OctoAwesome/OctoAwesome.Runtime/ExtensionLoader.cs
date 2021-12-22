@@ -78,7 +78,7 @@ namespace OctoAwesome.Runtime
                             IExtension extension = (IExtension)Activator.CreateInstance(type)!;
 
                             extension.Register(typeContainer);
-                            extension.Register(this, typeContainer);
+                            extension.Register(this);
 
                             if (disabledExtensions.Contains(type.FullName))
                                 LoadedExtensions.Add(extension);

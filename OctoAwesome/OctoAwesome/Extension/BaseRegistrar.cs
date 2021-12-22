@@ -7,6 +7,17 @@ namespace OctoAwesome
     {
         private readonly ISettings settings;
 
+
+        /*
+                Caller          Registrat 
+ChannelName:    ""              ""              Ja
+                "Simulation"    ""              Ja
+                ""              "Simulation"    Ja
+                "Simulation"    "Simulation"    Ja
+                "Chest"         "Simulation"    Nein
+         */
+        public virtual string ChannelName => "";
+
         public List<IExtension> LoadedExtensions { get; }
         public List<IExtension> ActiveExtensions { get; }
 

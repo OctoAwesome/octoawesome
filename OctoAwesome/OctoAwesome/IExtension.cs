@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Extension;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +26,8 @@ namespace OctoAwesome
         /// <summary>
         /// Register the Components in the ExtensionsLoader
         /// </summary>
-        /// <param name="extensionLoader">ExtensionsLoader</param>
-        void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer);
+        /// <param name="extensionService">ExtensionsLoader</param>
+        void Register(ExtensionService extensionService);
         void Register(ITypeContainer typeContainer);
     }
 }

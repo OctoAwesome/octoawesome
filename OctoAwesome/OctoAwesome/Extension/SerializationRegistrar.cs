@@ -6,6 +6,8 @@ namespace OctoAwesome
 {
     public class SerializationRegistrar : BaseRegistrar<Type>
     {
+        public override string ChannelName => "Simulation";
+
         private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
         public SerializationRegistrar(ISettings settings, SerializationIdTypeProvider serializationIdTypeProvider) : base(settings)
