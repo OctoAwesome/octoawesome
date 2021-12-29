@@ -11,6 +11,8 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Common;
 using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Components;
+using OctoAwesome.UI.Components;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client
 {
@@ -43,9 +45,10 @@ namespace OctoAwesome.Client
 
         public IResourceManager ResourceManager { get; }
 
-        public ExtensionLoader ExtensionLoader { get; }
+        public ExtensionService ExtensionService { get; private set; }
 
-        public EntityGameComponent Entity { get; }
+        public EntityGameComponent Entity { get; private set; }
+        public ExtensionLoader ExtensionLoader { get; }
 
         public OctoGame() : base()
         {
@@ -80,8 +83,10 @@ namespace OctoAwesome.Client
             Screen.DrawOrder = 1;
 
 
-            ExtensionLoader = typeContainer.Get<ExtensionLoader>();
+            ExtensionLoader  = typeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
+
+            ExtensionService = typeContainer.Get<ExtensionService>();
 
             Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
@@ -120,7 +125,7 @@ namespace OctoAwesome.Client
             Components.Add(Player);
 
             Simulation = new Components.SimulationComponent(this,
-              ExtensionLoader, ResourceManager);
+              ExtensionService, ResourceManager);
 
             Entity = new Components.EntityGameComponent(this, Simulation);
             Entity.UpdateOrder = 2;
@@ -151,20 +156,19 @@ namespace OctoAwesome.Client
 
         private static void Register(ITypeContainer typeContainer)
         {
-            typeContainer.Register<Settings>(InstanceBehavior.Singleton);
-            typeContainer.Register<ISettings, Settings>(InstanceBehavior.Singleton);
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
-            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
-            typeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehavior.Singleton);
-            typeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehavior.Singleton);
-            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<ContainerResourceManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
-            typeContainer.Register<IGameService, GameService>(InstanceBehavior.Singleton);
-            typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
-            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
+            typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
         }
 
         private void SetKeyBindings()

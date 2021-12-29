@@ -10,7 +10,7 @@ namespace OctoAwesome
     {
         private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
 
-        public ComponentExtensionExtender(ISettings settings) : base(settings)
+        public ComponentExtensionExtender()
         {
             componentContainerExtender = new Dictionary<Type, List<Action<ComponentContainer>>>();
 
@@ -44,7 +44,7 @@ namespace OctoAwesome
         /// Extend a Entity
         /// </summary>
         /// <param name="instance">Entity</param>
-        public override void Extend<T>(T instance)
+        public override void Execute<T>(T instance)
         {
             List<Type> stack = new List<Type>();
             Type t = instance.GetType();
@@ -69,12 +69,3 @@ namespace OctoAwesome
         }
     }
 }
-/*
-
-InheritanceDictionary<Type, T>
-
-.Add -> Type -> Tree
-
-GetValue(Type) 
-
-*/

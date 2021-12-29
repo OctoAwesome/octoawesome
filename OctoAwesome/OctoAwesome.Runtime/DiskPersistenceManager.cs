@@ -33,7 +33,7 @@ namespace OctoAwesome.Runtime
         private readonly IPool<Awaiter> awaiterPool;
         private readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private readonly IDisposable chunkSubscription;
-        private readonly IExtensionResolver extensionResolver;
+        private readonly Extension.ExtensionService extensionService;
         private readonly DatabaseProvider databaseProvider;
 
         /// <summary>
@@ -42,10 +42,10 @@ namespace OctoAwesome.Runtime
         /// <param name="extensionResolver">The extension resolver.</param>
         /// <param name="settings">The game settings.</param>
         /// <param name="updateHub">The update hub.</param>
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings settings, IUpdateHub updateHub)
+        public DiskPersistenceManager(Extension.ExtensionService extensionService, ISettings Settings, IUpdateHub updateHub)
         {
-            this.extensionResolver = extensionResolver;
-            this.settings = settings;
+            this.extensionService = extensionService;
+            settings = Settings;
             databaseProvider = new DatabaseProvider(GetRoot(), TypeContainer.Get<ILogger>());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
@@ -208,7 +208,7 @@ namespace OctoAwesome.Runtime
                 using (BinaryReader bw = new BinaryReader(stream))
                 {
                     string generatorName = bw.ReadString();
-                    generator = extensionResolver.GetMapGenerators().FirstOrDefault(g => g.GetType().FullName!.Equals(generatorName));
+                    generator = extensionService.GetFromRegistrar<IMapGenerator>().FirstOrDefault(g => g.GetType().FullName!.Equals(generatorName));
                 }
             }
 

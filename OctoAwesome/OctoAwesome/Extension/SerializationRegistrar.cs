@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Serialization;
 
 using System;
+using System.Collections.Generic;
 
 namespace OctoAwesome
 {
@@ -10,7 +11,7 @@ namespace OctoAwesome
 
         private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
-        public SerializationRegistrar(ISettings settings, SerializationIdTypeProvider serializationIdTypeProvider) : base(settings)
+        public SerializationRegistrar(SerializationIdTypeProvider serializationIdTypeProvider)
         {
             this.serializationIdTypeProvider = serializationIdTypeProvider;
         }
@@ -30,5 +31,10 @@ namespace OctoAwesome
         }
 
         public override void Unregister(Type value) => throw new NotSupportedException();
+
+        public override IReadOnlyCollection<Type> Get()
+        {
+            throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
+        }
     }
 }

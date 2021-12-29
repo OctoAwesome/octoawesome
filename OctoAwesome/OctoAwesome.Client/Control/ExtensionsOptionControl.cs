@@ -1,6 +1,7 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
+using OctoAwesome.Runtime;
 using System;
 using System.Diagnostics;
 
@@ -15,7 +16,7 @@ namespace OctoAwesome.Client.Controls
         private readonly Listbox<IExtension> activeExtensionsList;
         private readonly Label infoLabel;
 
-        public ExtensionsOptionControl(BaseScreenComponent manager, IExtensionLoader extensionLoader) : base(manager)
+        public ExtensionsOptionControl(BaseScreenComponent manager, ExtensionLoader extensionLoader) : base(manager)
         {
             Grid grid = new Grid(manager)
             {

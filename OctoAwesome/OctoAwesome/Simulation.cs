@@ -60,7 +60,7 @@ namespace OctoAwesome
         /// </summary>
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
-        private readonly ExtensionService extensionResolver;
+        private readonly ExtensionService extensionService;
         //private readonly IExtensionResolver extensionResolver;
 
         private readonly List<Entity> entities = new();
@@ -77,7 +77,7 @@ namespace OctoAwesome
         /// <param name="resourceManager">The resource manager for managing resources.</param>
         /// <param name="extensionResolver">The extension resolver for extending this simulation.</param>
         /// <param name="service">The game service.</param>
-        public Simulation(IResourceManager resourceManager, IExtensionResolver extensionResolver, IGameService service)
+        public Simulation(IResourceManager resourceManager, ExtensionService extensionService, IGameService service)
         {
             ResourceManager = resourceManager;
             networkRelay = new Relay<Notification>();
@@ -85,7 +85,7 @@ namespace OctoAwesome
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
 
 
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
             Service = service;
@@ -93,8 +93,7 @@ namespace OctoAwesome
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, null, null);
 
-            extensionResolver.ExtendSimulation(this);
-
+            extensionService.ExecuteExtender(this);
         }
 
         private void ValidateAddComponent(SimulationComponent component)
@@ -248,7 +247,7 @@ namespace OctoAwesome
             if (entities.Contains(entity))
                 return;
 
-            extensionResolver.ExecuteExtender(entity);
+            extensionService.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
 
@@ -285,7 +284,7 @@ namespace OctoAwesome
                 return;
 
 
-            extensionResolver.ExecuteExtender(block);
+            extensionService.ExecuteExtender(block);
             block.Initialize(ResourceManager);
             block.Simulation = this;
 

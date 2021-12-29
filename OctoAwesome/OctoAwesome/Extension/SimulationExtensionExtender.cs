@@ -10,7 +10,7 @@ namespace OctoAwesome
     {
         private readonly List<Action<Simulation>> simulationExtender;
 
-        public SimulationExtensionExtender(ISettings settings) : base(settings)
+        public SimulationExtensionExtender()
         {
             simulationExtender = new();
         }
@@ -28,7 +28,7 @@ namespace OctoAwesome
         /// Extend a Simulation
         /// </summary>
         /// <param name="simulation">Simulation</param>
-        public override void Extend<T>(T simulation)
+        public override void Execute<T>(T simulation)
         {
             foreach (var extender in simulationExtender)
                 extender(simulation);

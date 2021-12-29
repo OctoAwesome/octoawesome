@@ -12,7 +12,7 @@ namespace OctoAwesome
         private readonly StandaloneTypeContainer definitionTypeContainer;
         private readonly Dictionary<Type, List<Type>> definitionsLookup;
 
-        public DefinitionRegistrar(ISettings settings) : base(settings)
+        public DefinitionRegistrar()
         {
             definitionTypeContainer = new StandaloneTypeContainer();
             definitionsLookup = new Dictionary<Type, List<Type>>();
@@ -54,13 +54,15 @@ namespace OctoAwesome
         {
             throw new NotSupportedException("Currently not supported by TypeContainer");
         }
+        public override IReadOnlyCollection<Type> Get() => throw new NotSupportedException();
+
 
         /// <summary>
         /// Return a List of Definitions
         /// </summary>
         /// <typeparam name="T">Definitiontype</typeparam>
         /// <returns>List</returns>
-        public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
+        public IEnumerable<T> Get<T>() where T : class, IDefinition
         {
             if (definitionsLookup.TryGetValue(typeof(T), out var definitionTypes))
             {

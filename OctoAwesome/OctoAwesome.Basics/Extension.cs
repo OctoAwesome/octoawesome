@@ -46,15 +46,15 @@ namespace OctoAwesome.Basics
             extensionLoader.Register(new TreePopulator());
             extensionLoader.Register(new WauziPopulator());
 
-            extensionLoader.Register(typeof(WauziEntity), "Serialization");
-            extensionLoader.Register(typeof(Chest), "Serialization");
+            extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
+            extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
 
             extensionLoader.Extend<WauziEntity>(wauziEntity => wauziEntity.RegisterDefault());
 
             extensionLoader.Extend<Player>((player) =>
             {
-                var p = (Player)player;
-                var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0)) };
+                var p = player;
+                var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
                 p.Components.AddComponent(posComponent);
                 p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
@@ -102,7 +102,8 @@ namespace OctoAwesome.Basics
                 {
                     c.transferUiComponent = new TransferUIComponent(inventoryComponent);
                     c.transferUiComponent.Closed += c.TransferUiComponentClosed;
-                    c.Components.AddComponent(c.transferUiComponent, true);
+                    //TODO: Fix this
+                    //c.Components.AddComponent(c.transferUiComponent, true);
                 }
 
 
@@ -121,7 +122,8 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new PowerAggregatorComponent());
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
-                s.Components.AddComponent(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
+                //TODO: Fix this
+                //s.Components.AddComponent(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?
