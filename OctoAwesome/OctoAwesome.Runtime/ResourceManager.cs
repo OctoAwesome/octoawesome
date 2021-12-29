@@ -49,8 +49,7 @@ namespace OctoAwesome.Runtime
         public IDefinitionManager DefinitionManager { get; private set; }
         public ConcurrentDictionary<int, IPlanet> Planets { get; }
 
-        private readonly IExtensionResolver extensionResolver;
-
+        private readonly Extension.ExtensionService extensionService;
         private readonly CountedScopeSemaphore loadingSemaphore;
         private CancellationToken currentToken;
         private CancellationTokenSource tokenSource;
@@ -58,20 +57,20 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Konstruktor
         /// </summary>
-        /// <param name="extensionResolver">ExetnsionResolver</param>
+        /// <param name="extensionService">ExetnsionResolver</param>
         /// <param name="definitionManager">DefinitionManager</param>
         /// <param name="settings">Einstellungen</param>
-        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager, IUpdateHub updateHub)
+        public ResourceManager(Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager, IUpdateHub updateHub)
         {
             semaphoreSlim = new LockSemaphore(1, 1);
             loadingSemaphore = new CountedScopeSemaphore();
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             DefinitionManager = definitionManager;
             this.persistenceManager = persistenceManager;
 
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ResourceManager));
 
-            populators = extensionResolver.GetMapPopulator().OrderBy(p => p.Order).ToList();
+            populators = extensionService.GetFromRegistrar<IMapPopulator>().OrderBy(p => p.Order).ToList();
 
             Planets = new ConcurrentDictionary<int, IPlanet>();
             UpdateHub = updateHub;
@@ -225,7 +224,7 @@ namespace OctoAwesome.Runtime
                     {
                         // Keiner da -> neu erzeugen
                         Random rand = new Random(CurrentUniverse.Seed + id);
-                        var generators = extensionResolver.GetMapGenerator().ToArray();
+                        var generators = extensionService.GetFromRegistrar<IMapGenerator>().ToArray();
                         int index = rand.Next(generators.Length - 1);
                         IMapGenerator generator = generators[index];
                         planet = generator.GeneratePlanet(CurrentUniverse.Id, id, CurrentUniverse.Seed + id);
@@ -284,7 +283,7 @@ namespace OctoAwesome.Runtime
             // Load from disk
             Awaiter awaiter;
             IChunkColumn column11;
-            
+
             do
             {
                 using (loadingSemaphore.EnterCountScope())
@@ -393,7 +392,7 @@ namespace OctoAwesome.Runtime
         public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
     where TContainer : ComponentContainer<TComponent>
     where TComponent : IComponent
-        
+
         {
             if (CurrentUniverse == null)
                 throw new Exception("No Universe loaded");
@@ -489,7 +488,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                var component =  persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
+                var component = persistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
 
                 if (component is PositionComponent posComponent)
                     posComponent.InstanceId = id;

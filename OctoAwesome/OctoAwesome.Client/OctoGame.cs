@@ -14,6 +14,7 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Common;
 using OctoAwesome.Definitions;
 using OctoAwesome.UI.Components;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client
 {
@@ -46,9 +47,10 @@ namespace OctoAwesome.Client
 
         public IResourceManager ResourceManager { get; private set; }
 
-        public ExtensionLoader ExtensionLoader { get; private set; }
+        public ExtensionService ExtensionService { get; private set; }
 
         public EntityGameComponent Entity { get; private set; }
+        public ExtensionLoader ExtensionLoader { get; }
 
         public OctoGame() : base()
         {
@@ -83,8 +85,10 @@ namespace OctoAwesome.Client
             Screen.DrawOrder = 1;
 
 
-            ExtensionLoader = typeContainer.Get<ExtensionLoader>();
+            ExtensionLoader  = typeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
+
+            ExtensionService = typeContainer.Get<ExtensionService>();
 
             Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
@@ -125,7 +129,7 @@ namespace OctoAwesome.Client
             Components.Add(Player);
 
             Simulation = new Components.SimulationComponent(this,
-              ExtensionLoader, ResourceManager);
+              ExtensionService, ResourceManager);
 
             Entity = new Components.EntityGameComponent(this, Simulation);
             Entity.UpdateOrder = 2;
@@ -159,9 +163,8 @@ namespace OctoAwesome.Client
             typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
             typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
             typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
             typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehaviour.Singleton);
             typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
             typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
             typeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);

@@ -3,12 +3,13 @@ using System;
 using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Common;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class SimulationComponent : GameComponent
     {
-        private readonly IExtensionResolver extensionResolver;
+        private readonly ExtensionService extensionService;
 
         private readonly IResourceManager resourceManager;
 
@@ -26,10 +27,10 @@ namespace OctoAwesome.Client.Components
             }
         }
 
-        public SimulationComponent(OctoGame game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
+        public SimulationComponent(OctoGame game, ExtensionService extensionService, IResourceManager resourceManager) : base(game)
         {
             Service = game.Service;
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             this.resourceManager = resourceManager;
         }
 
@@ -41,7 +42,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(resourceManager, extensionResolver, Service);
+            Simulation = new Simulation(resourceManager, extensionService, Service);
             return Simulation.NewGame(name, seed);
         }
 
@@ -53,7 +54,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(resourceManager, extensionResolver, Service);
+            Simulation = new Simulation(resourceManager, extensionService, Service);
             Simulation.TryLoadGame(guid);
         }
 

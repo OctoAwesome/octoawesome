@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,10 @@ namespace OctoAwesome.Runtime
     /// <summary>
     /// ExtensionLoader
     /// </summary>
-    public sealed class ExtensionLoader : IExtensionLoader
+    public sealed class ExtensionLoader
     {
+        private const string SETTINGSKEY = "DisabledExtensions";
+
         /// <summary>
         /// List of Loaded Extensions
         /// </summary>
@@ -26,20 +29,21 @@ namespace OctoAwesome.Runtime
 
 
         private readonly ISettings settings;
-
+        private readonly ExtensionService extensionService;
         private readonly ITypeContainer typeContainer;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings">Current Gamesettings</param>
-        public ExtensionLoader(ITypeContainer typeContainer, ISettings settings)
+        public ExtensionLoader(ExtensionService extensionService, ITypeContainer typeContainer, ISettings settings)
         {
             this.typeContainer = typeContainer;
             this.settings = settings;
+            this.extensionService = extensionService;
+
             LoadedExtensions = new List<IExtension>();
             ActiveExtensions = new List<IExtension>();
-
         }
 
         /// <summary>
@@ -53,16 +57,47 @@ namespace OctoAwesome.Runtime
             if (tempAssembly == null)
                 tempAssembly = Assembly.GetAssembly(GetType());
 
-            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly!.Location!)!);
+            DirectoryInfo dir = new(Path.GetDirectoryName(tempAssembly!.Location!)!);
             assemblies.AddRange(LoadAssemblies(dir));
 
-            DirectoryInfo plugins = new (Path.Combine(dir.FullName, "plugins"));
+            DirectoryInfo plugins = new(Path.Combine(dir.FullName, "plugins"));
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
-            var disabledExtensions = settings.KeyExists(IExtensionLoader.SETTINGSKEY) 
-                ? settings.GetArray<string>(IExtensionLoader.SETTINGSKEY) 
+            var disabledExtensions = settings.KeyExists(SETTINGSKEY)
+                ? settings.GetArray<string>(SETTINGSKEY)
                 : Array.Empty<string>();
+
+            foreach (var assembly in assemblies)
+            {
+                var types = assembly
+                    .GetTypes();
+
+                foreach (var type in types)
+                {
+                    if (type.IsInterface || type.IsAbstract)
+                    {
+                        continue;
+                    }
+
+                    ExtensionInformation information;
+
+                    if (typeof(IExtensionExtender<>).IsAssignableFrom(type))
+                    {
+                        information = new ExtensionInformation((IExtensionExtender)Activator.CreateInstance(type));
+                    }
+                    else if (typeof(IExtensionRegistrar<>).IsAssignableFrom(type))
+                    {
+                        information = new ExtensionInformation((IExtensionRegistrar)Activator.CreateInstance(type));
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    extensionService.AddExtensionLoader(information);
+                }
+            }
 
             foreach (var assembly in assemblies)
             {
@@ -78,20 +113,33 @@ namespace OctoAwesome.Runtime
                             IExtension extension = (IExtension)Activator.CreateInstance(type)!;
 
                             extension.Register(typeContainer);
-                            extension.Register(this);
+                            extension.Register(extensionService);
 
                             if (disabledExtensions.Contains(type.FullName))
                                 LoadedExtensions.Add(extension);
                             else
                                 ActiveExtensions.Add(extension);
+
+                            var extensionInformation = new ExtensionInformation(extension);
+                            extensionService.AddExtensionLoader(extensionInformation);
                         }
-                        catch 
+                        catch
                         {
                             // TODO: Logging
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Activate the Extenisons
+        /// </summary>
+        /// <param name="disabledExtensions">List of Extensions</param>
+        public void Apply(IList<IExtension> disabledExtensions)
+        {
+            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
+            settings.Set(SETTINGSKEY, types);
         }
 
         private IEnumerable<Assembly> LoadAssemblies(DirectoryInfo directory)

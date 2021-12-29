@@ -6,9 +6,9 @@ namespace OctoAwesome
     {
         private List<IMapPopulator> mapPopulators;
 
-        public MapPopulatorRegistrar(ISettings settings) : base(settings)
+        public MapPopulatorRegistrar()
         {
-        mapPopulators = new List<IMapPopulator>();
+            mapPopulators = new List<IMapPopulator>();
         }
 
         public override void Register(IMapPopulator populator)
@@ -25,10 +25,9 @@ namespace OctoAwesome
         /// Return a List of Populators
         /// </summary>
         /// <returns>List of Populators</returns>
-        public IReadOnlyCollection<IMapPopulator> GetMapPopulator()
+        public override IReadOnlyCollection<IMapPopulator> Get()
         {
             return mapPopulators;
         }
-
     }
 }

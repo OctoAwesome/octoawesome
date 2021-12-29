@@ -36,12 +36,12 @@ namespace OctoAwesome.Runtime
         private readonly IPool<Awaiter> awaiterPool;
         private readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
         private readonly IDisposable chunkSubscription;
-        private readonly IExtensionResolver extensionResolver;
+        private readonly Extension.ExtensionService extensionService;
         private readonly DatabaseProvider databaseProvider;
 
-        public DiskPersistenceManager(IExtensionResolver extensionResolver, ISettings Settings, IUpdateHub updateHub)
+        public DiskPersistenceManager(Extension.ExtensionService extensionService, ISettings Settings, IUpdateHub updateHub)
         {
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             settings = Settings;
             databaseProvider = new DatabaseProvider(GetRoot(), TypeContainer.Get<ILogger>());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
@@ -235,7 +235,7 @@ namespace OctoAwesome.Runtime
                 using (BinaryReader bw = new BinaryReader(stream))
                 {
                     string generatorName = bw.ReadString();
-                    generator = extensionResolver.GetMapGenerator().FirstOrDefault(g => g.GetType().FullName!.Equals(generatorName));
+                    generator = extensionService.GetFromRegistrar<IMapGenerator>().FirstOrDefault(g => g.GetType().FullName!.Equals(generatorName));
                 }
             }
 

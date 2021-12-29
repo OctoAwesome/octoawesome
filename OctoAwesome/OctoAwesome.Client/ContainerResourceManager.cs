@@ -2,6 +2,7 @@
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
@@ -30,7 +31,7 @@ namespace OctoAwesome.Client
 
         public ConcurrentDictionary<int, IPlanet> Planets => resourceManager.Planets;
 
-        private readonly IExtensionResolver extensionResolver;
+        private readonly ExtensionService extensionService;
         private readonly IDefinitionManager definitionManager;
         private readonly ISettings settings;
         private readonly ITypeContainer typeContainer;
@@ -38,11 +39,11 @@ namespace OctoAwesome.Client
         private ResourceManager resourceManager;
         private NetworkUpdateManager networkUpdateManager;
 
-        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
+        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings)
         {
             UpdateHub = updateHub;
             this.typeContainer = typeContainer;
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             this.definitionManager = definitionManager;
             this.settings = settings;
 
@@ -107,10 +108,10 @@ namespace OctoAwesome.Client
             }
             else
             {
-                persistenceManager = new DiskPersistenceManager(extensionResolver, settings, UpdateHub);
+                persistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
             }
 
-            resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager, UpdateHub);
+            resourceManager = new ResourceManager(extensionService, definitionManager, settings, persistenceManager, UpdateHub);
 
             
 

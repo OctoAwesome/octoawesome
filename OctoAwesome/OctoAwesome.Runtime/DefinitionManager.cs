@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,21 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class DefinitionManager : IDefinitionManager
     {
-        private readonly IExtensionResolver extensionResolver;
+        private readonly ExtensionService extensionService;
 
-        public DefinitionManager(IExtensionResolver extensionResolver)
+        public DefinitionManager(ExtensionService extensionService)
         {
-            this.extensionResolver = extensionResolver;
+            this.extensionService= extensionService;
 
-            Definitions = extensionResolver.GetDefinitions<IDefinition>().ToArray();
+            var definitions = new List<IDefinition>();
+
+            foreach (var item in extensionService.GetRegistrars(ChannelNames.Definitions))
+            {
+                if(item is DefinitionRegistrar registrar)
+                definitions.AddRange(registrar.Get<IDefinition>());
+            }
+
+            Definitions = definitions.ToArray(); 
 
             // collect items
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
@@ -102,9 +111,8 @@ namespace OctoAwesome.Runtime
         /// <typeparam name="T">Typ der Definition</typeparam>
         /// <returns>Auflistung von Instanzen</returns>
         public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
-        {
-            // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary (+1 von Maxi am 07.04.2021))
-            return extensionResolver.GetDefinitions<T>();
+        {          
+            return Definitions.OfType<T>();
         }
 
         public T GetDefinitionByTypeName<T>(string typeName) where T : IDefinition

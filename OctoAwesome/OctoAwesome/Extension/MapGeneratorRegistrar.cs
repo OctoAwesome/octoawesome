@@ -6,7 +6,7 @@ namespace OctoAwesome
     {
         private readonly List<IMapGenerator> mapGenerators;
 
-        public MapGeneratorRegistrar(ISettings settings) : base(settings)
+        public MapGeneratorRegistrar()
         {
             mapGenerators = new List<IMapGenerator>();
 
@@ -34,7 +34,7 @@ namespace OctoAwesome
         /// Return a List of MapGenerators
         /// </summary>
         /// <returns>List of Generators</returns>
-        public IReadOnlyCollection<IMapGenerator> GetMapGenerator()
+        public override IReadOnlyCollection<IMapGenerator> Get()
         {
             return mapGenerators;
         }
