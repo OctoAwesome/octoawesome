@@ -52,25 +52,25 @@ namespace OctoAwesome.Client
 
         public OctoGame() : base()
         {
-            //graphics = new GraphicsDeviceManager(this);
-            //graphics.PreferredBackBufferWidth = 1080;
-            //graphics.PreferredBackBufferHeight = 720;
-
-            //Content.RootDirectory = "Content";
-
             Title = "OctoAwesome";
             IsMouseVisible = true;
-            //Icon = Properties.Resources.octoawesome;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-            //Register List<IExtender>();
-            Screen = new ScreenComponent(this);
-
             typeContainer.Register<BaseScreenComponent>(Screen);
             typeContainer.Register<ScreenComponent>(Screen);
 
-            //Window.AllowUserResizing = true;
             Register(typeContainer);
+
+            ExtensionLoader = typeContainer.Get<ExtensionLoader>();
+            ExtensionLoader.LoadExtensions();
+
+            ExtensionService = typeContainer.Get<ExtensionService>();
+
+            DefinitionManager = typeContainer.Get<DefinitionManager>();
+
+            ResourceManager = typeContainer.Get<ContainerResourceManager>();
+
+            Screen = new ScreenComponent(this);
 
             Settings = typeContainer.Get<Settings>();
 
@@ -83,10 +83,6 @@ namespace OctoAwesome.Client
             Screen.DrawOrder = 1;
 
 
-            ExtensionLoader  = typeContainer.Get<ExtensionLoader>();
-            ExtensionLoader.LoadExtensions();
-
-            ExtensionService = typeContainer.Get<ExtensionService>();
 
             Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
@@ -113,12 +109,7 @@ namespace OctoAwesome.Client
 
 
             #region GameComponents
-            DefinitionManager = typeContainer.Get<DefinitionManager>();
-
-            //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
-            //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
-            ResourceManager = typeContainer.Get<ContainerResourceManager>();
-
+            
 
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;

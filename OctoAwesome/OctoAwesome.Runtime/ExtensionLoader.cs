@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -82,13 +83,13 @@ namespace OctoAwesome.Runtime
 
                     ExtensionInformation information;
 
-                    if (typeof(IExtensionExtender<>).IsAssignableFrom(type))
+                    if (typeof(IExtensionExtender).IsAssignableFrom(type))
                     {
-                        information = new ExtensionInformation((IExtensionExtender)Activator.CreateInstance(type));
+                        information = new ExtensionInformation((IExtensionExtender)TypeContainer.GetUnregistered(type));
                     }
-                    else if (typeof(IExtensionRegistrar<>).IsAssignableFrom(type))
+                    else if (typeof(IExtensionRegistrar).IsAssignableFrom(type))
                     {
-                        information = new ExtensionInformation((IExtensionRegistrar)Activator.CreateInstance(type));
+                        information = new ExtensionInformation((IExtensionRegistrar)TypeContainer.GetUnregistered(type));
                     }
                     else
                     {

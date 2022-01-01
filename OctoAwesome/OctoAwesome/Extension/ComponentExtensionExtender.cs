@@ -25,12 +25,17 @@ namespace OctoAwesome
         {
             Type type = typeof(T);
             List<Action<ComponentContainer>> list;
+            if (!typeof(ComponentContainer).IsAssignableFrom(typeof(T)))
+                return;
             if (!componentContainerExtender.TryGetValue(type, out list))
             {
                 list = new List<Action<ComponentContainer>>();
                 componentContainerExtender.Add(type, list);
             }
-            list.Add(GenericCaster<Action<ComponentContainer>, Action<T>>.Cast(extenderDelegate));
+            if (extenderDelegate is Action<ComponentContainer> ccAction)
+                list.Add(ccAction);
+            else
+                list.Add((ComponentContainer cc) => { extenderDelegate(GenericCaster<T, ComponentContainer>.Cast(cc)); });
         }
 
         /// <summary>

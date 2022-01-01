@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Extension;
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace OctoAwesome
 {
     public class DefinitionRegistrar : BaseRegistrar<Type>
     {
-        public override string ChannelName => "Definition";
+        public override string ChannelName => ChannelNames.Definitions;
 
         private readonly StandaloneTypeContainer definitionTypeContainer;
         private readonly Dictionary<Type, List<Type>> definitionsLookup;
