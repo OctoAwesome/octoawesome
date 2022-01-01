@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
+
 using OctoAwesome.Database;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,36 +79,63 @@ public class ExtensionService
     //TODO Return False or True based on success
     public void Extend<T>(Action<T> extend)
     {
-        var key = typeof(T);
-        if (!extender.TryGetValue(key, out var extenderInformation))
+        foreach (var key in GetAllBaseTypesAndInterfaces(typeof(T)))
         {
-            return;
-        }
-
-        foreach (var extender in extenderInformation.Extenders)
-        {
-            if (extender is IExtensionExtender<T> genericExtender)
+            if (!extender.TryGetValue(key, out var extenderInformation))
             {
-                genericExtender.RegisterExtender(extend);
+                continue;
             }
+
+            foreach (var extender in extenderInformation.Extenders)
+            {
+                if (extender is IExtensionExtender genericExtender)
+                {
+                    var method = extender.GetType().GetMethod("RegisterExtender");
+                    var genMethod = method.MakeGenericMethod(typeof(T));
+
+                    genMethod.Invoke(extender, new object[] { extend });
+                }
+            }
+        }
+    }
+
+    private IEnumerable<Type> GetAllBaseTypesAndInterfaces(Type t)
+    {
+        yield return t;
+        if (t.BaseType != null)
+        {
+            foreach (var item in GetAllBaseTypesAndInterfaces(t.BaseType))
+            {
+                yield return item;
+            }
+        }
+        foreach (var item in t.GetInterfaces())
+        {
+            yield return item;
         }
     }
 
     public void ExecuteExtender<T>(T toExtend)
     {
-        var key = typeof(T);
-        if (!extender.TryGetValue(key, out var extenderInformation))
+        foreach (var key in GetAllBaseTypesAndInterfaces(typeof(T)))
         {
-            return;
-        }
-
-        foreach (var extender in extenderInformation.Extenders)
-        {
-            if (extender is IExtensionExtender<T> genericExtender)
+            if (!extender.TryGetValue(key, out var extenderInformation))
             {
-                genericExtender.Execute(toExtend);
+                continue;
+            }
+
+            foreach (var extender in extenderInformation.Extenders)
+            {
+                if (extender is IExtensionExtender genericExtender)
+                {
+                    var method = extender.GetType().GetMethod("Execute");
+                    var genMethod = method.MakeGenericMethod(typeof(T));
+
+                    genMethod.Invoke(extender, new object[] { toExtend });
+                }
             }
         }
+
     }
 
     public void Register<TRegister>(TRegister value, string channelName = "")
@@ -177,7 +206,7 @@ public class ExtensionService
 
         foreach (var registrar in extenderInformation.Registrars)
         {
-            if (extender is IExtensionRegistrar<T> genericExtender
+            if (registrar is IExtensionRegistrar<T> genericExtender
                 && (string.IsNullOrEmpty(registrar.ChannelName)
                         || string.IsNullOrEmpty(channelName)
                         || registrar.ChannelName == channelName))

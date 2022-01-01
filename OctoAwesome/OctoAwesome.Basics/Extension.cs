@@ -12,6 +12,7 @@ using OctoAwesome.Definitions;
 using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome.Basics
 {
@@ -33,13 +34,13 @@ namespace OctoAwesome.Basics
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (!t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t))
-                    extensionLoader.Register(t);
+                    extensionLoader.Register(t, ChannelNames.Definitions);
             }
 
-            extensionLoader.Register(new ComplexPlanetGenerator());
+            extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
-            extensionLoader.Register(new TreePopulator());
-            extensionLoader.Register(new WauziPopulator());
+            extensionLoader.Register<IMapPopulator>(new TreePopulator());
+            extensionLoader.Register<IMapPopulator>(new WauziPopulator());
 
             extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
             extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
@@ -48,18 +49,17 @@ namespace OctoAwesome.Basics
 
             extensionLoader.Extend<Player>((player) =>
             {
-                var p = player;
                 var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
-                p.Components.AddComponent(posComponent);
-                p.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
-                p.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                p.Components.AddComponent(new GravityComponent());
-                p.Components.AddComponent(new MoveableComponent());
-                p.Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
-                p.Components.AddComponent(new EntityCollisionComponent());
-                p.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
-                p.Components.AddComponent(new TransferComponent());
+                player.Components.AddComponent(posComponent);
+                player.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
+                player.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+                player.Components.AddComponent(new GravityComponent());
+                player.Components.AddComponent(new MoveableComponent());
+                player.Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
+                player.Components.AddComponent(new EntityCollisionComponent());
+                player.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
+                player.Components.AddComponent(new TransferComponent());
             });
 
             extensionLoader.Extend<Chest>((chest) =>
