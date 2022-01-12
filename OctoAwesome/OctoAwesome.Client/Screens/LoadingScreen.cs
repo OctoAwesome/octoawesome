@@ -2,6 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.UI.Screens;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -22,8 +23,8 @@ namespace OctoAwesome.Client.Screens
         private readonly GameScreen gameScreen;
         private readonly CancellationTokenSource tokenSource;
         private readonly Task quoteUpdate;
-
-        public LoadingScreen(ScreenComponent manager) : base(manager)
+    
+        public LoadingScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             Padding = new Border(0, 0, 0, 0);
             tokenSource = new CancellationTokenSource();

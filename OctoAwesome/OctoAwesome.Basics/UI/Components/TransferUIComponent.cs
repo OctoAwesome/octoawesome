@@ -32,7 +32,7 @@ public class TransferUIComponent : UIComponent<TransferModel, UiComponentRecord<
         return true;
     }
 
-    internal void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
+    public virtual void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
     {
         if (source.RemoveSlot(slot))
             target.AddSlot(slot);

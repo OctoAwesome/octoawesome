@@ -1,6 +1,10 @@
 ﻿using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.Runtime;
+using OctoAwesome.UI.Components;
+using OctoAwesome.UI.Screens;
+using System.Diagnostics;
 using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
@@ -9,7 +13,7 @@ namespace OctoAwesome.Client.Screens
     {
         private AssetComponent assets;
 
-        public MainScreen(ScreenComponent manager) : base(manager)
+        public MainScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             assets = manager.Game.Assets;
 

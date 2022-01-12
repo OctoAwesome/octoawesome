@@ -85,11 +85,11 @@ namespace OctoAwesome.Runtime
 
                     if (typeof(IExtensionExtender).IsAssignableFrom(type))
                     {
-                        information = new ExtensionInformation((IExtensionExtender)TypeContainer.GetUnregistered(type));
+                        information = new ExtensionInformation((IExtensionExtender)typeContainer.GetUnregistered(type));
                     }
                     else if (typeof(IExtensionRegistrar).IsAssignableFrom(type))
                     {
-                        information = new ExtensionInformation((IExtensionRegistrar)TypeContainer.GetUnregistered(type));
+                        information = new ExtensionInformation((IExtensionRegistrar)typeContainer.GetUnregistered(type));
                     }
                     else
                     {
@@ -111,7 +111,7 @@ namespace OctoAwesome.Runtime
                     {
                         try
                         {
-                            IExtension extension = (IExtension)Activator.CreateInstance(type)!;
+                            IExtension extension = (IExtension)typeContainer.GetUnregistered(type)!;
 
                             extension.Register(typeContainer);
                             extension.Register(extensionService);

@@ -11,6 +11,10 @@ using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.Extension;
 using OctoAwesome.Caching;
+using OctoAwesome.UI.Components;
+using OctoAwesome.Basics.UI.Components;
+using OctoAwesome.Basics.UI.Screens;
+using engenious.UI;
 
 namespace OctoAwesome.Basics
 {
@@ -65,6 +69,7 @@ namespace OctoAwesome.Basics
                 player.Components.AddComponent(new EntityCollisionComponent());
                 player.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
                 player.Components.AddComponent(new TransferComponent());
+
             });
 
             extensionLoader.Extend<Chest>((chest) =>
@@ -98,13 +103,14 @@ namespace OctoAwesome.Basics
                     c.Components.AddComponent(inventoryComponent);
                 }
 
-                if (!c.ContainsComponent<TransferUIComponent>())
-                {
-                    c.transferUiComponent = new TransferUIComponent(inventoryComponent);
-                    c.transferUiComponent.Closed += c.TransferUiComponentClosed;
-                    //TODO: Fix this
-                    //c.Components.AddComponent(c.transferUiComponent, true);
-                }
+                //if (!c.ContainsComponent<TransferUIComponent>())
+                //{
+                //    c.transferUiComponent = new TransferUIComponent(inventoryComponent);
+                //    c.transferUiComponent.Closed += c.TransferUiComponentClosed;
+                //    //TODO: Fix this
+                //    //c.Components.AddComponent(c.transferUiComponent, true);
+                //}
+
 
 
                 c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
@@ -128,6 +134,12 @@ namespace OctoAwesome.Basics
                 //TODO: ugly
                 //TODO: TypeContainer?
             });
+            extensionLoader.Extend<IScreenComponent>((s) =>
+            {
+                s.Components.AddComponent(new TransferUIComponent());
+                s.Add(TypeContainer.GetUnregistered<TransferScreen>());
+            });
+
         }
     }
 }

@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
     public class Chest : FunctionalBlock
     {
         internal AnimationComponent animationComponent;
-        internal TransferUIComponent transferUiComponent;
+        //internal TransferUIComponent transferUiComponent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Chest"/> class.

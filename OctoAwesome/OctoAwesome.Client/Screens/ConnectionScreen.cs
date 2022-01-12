@@ -2,6 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.UI.Screens;
 using System;
 
 namespace OctoAwesome.Client.Screens
@@ -12,7 +13,7 @@ namespace OctoAwesome.Client.Screens
 
         private readonly OctoGame game;
 
-        public ConnectionScreen(ScreenComponent manager) : base(manager)
+        public ConnectionScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             game = Manager.Game;
             Padding = new Border(0, 0, 0, 0);

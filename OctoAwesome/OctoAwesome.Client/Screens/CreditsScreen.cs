@@ -3,12 +3,13 @@ using OctoAwesome.Client.Components;
 using engenious.UI;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
+using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Client.Screens
 {
     internal class CreditsScreen : BaseScreen
     {
-        public CreditsScreen(ScreenComponent manager) : base(manager)
+        public CreditsScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             Padding = new Border(0, 0, 0, 0);
 

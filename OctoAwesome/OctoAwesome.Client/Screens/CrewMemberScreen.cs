@@ -5,6 +5,8 @@ using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
+using OctoAwesome.UI.Components;
+using OctoAwesome.UI.Screens;
 using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
@@ -13,7 +15,7 @@ namespace OctoAwesome.Client.Screens
     {
         private readonly AssetComponent assets;
 
-        public CrewMemberScreen(ScreenComponent manager, CrewMember member) : base(manager)
+        public CrewMemberScreen(ScreenComponent manager, CrewMember member) : base(manager, manager.Game.Assets)
         {
             assets = manager.Game.Assets;
 
