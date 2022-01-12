@@ -9,6 +9,7 @@ using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
 using OctoAwesome.UI.Components;
+using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -18,7 +19,7 @@ namespace OctoAwesome.Client.Screens
         private readonly ISettings settings;
         private readonly Button exitButton;
 
-        public OptionsScreen(ScreenComponent manager) : base(manager)
+        public OptionsScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             assets = manager.Game.Assets;
             settings = manager.Game.Settings;

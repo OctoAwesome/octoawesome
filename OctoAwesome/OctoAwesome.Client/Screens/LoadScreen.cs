@@ -8,6 +8,7 @@ using System.Text;
 using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
+using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -23,7 +24,7 @@ namespace OctoAwesome.Client.Screens
 
         private readonly ISettings settings;
 
-        public LoadScreen(ScreenComponent manager) : base(manager)
+        public LoadScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             Manager = manager;
             settings = manager.Game.Settings;

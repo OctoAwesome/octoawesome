@@ -1,21 +1,30 @@
 ﻿using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
 using OctoAwesome.UI.Components;
+using System;
 
-namespace OctoAwesome.Client.Screens
+namespace OctoAwesome.UI.Screens
 {
-    internal abstract class BaseScreen : Screen
+    public abstract class BaseScreen : Screen
     {
         private readonly AssetComponent assets;
 
         protected Button BackButton;
 
-        public BaseScreen(ScreenComponent manager) : base(manager)
+        public BaseScreen(BaseScreenComponent manager, AssetComponent assets) : base(manager)
         {
-            assets = manager.Game.Assets;
+            this.assets = assets;
         }
+
+        public virtual void AddUiComponent(UIComponent uiComponent)
+        {
+
+        }
+        public virtual void RemoveUiComponent(UIComponent uiComponent)
+        {
+        }
+
 
         protected override void OnNavigatedTo(NavigationEventArgs args)
         {
@@ -57,6 +66,7 @@ namespace OctoAwesome.Client.Screens
             grid.AddControl(c, 1, grid.Rows.Count - 1);
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 10 });
         }
+
 
         protected Button GetButton(string title)
         {

@@ -13,22 +13,23 @@ using System;
 using System.Collections.Generic;
 using NLog.Targets;
 using System.Diagnostics;
+using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
-    public class TransferScreen : Screen
+    public class TransferScreen : BaseScreen
     {
         public event EventHandler<NavigationEventArgs> Closed;
 
-        private readonly IDisposable subscription;
         private readonly AssetComponent assetComponent;
-        private readonly TransferUIComponent transferComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inventoryA;
         private readonly InventoryControl inventoryB;
         private readonly Label nameLabel;
         private readonly Label massLabel;
         private readonly Label volumeLabel;
+        private IDisposable subscription;
+        private TransferUIComponent transferComponent;
         private TransferModel currentTransferModel;
 
         enum TransferDirection
@@ -39,13 +40,12 @@ namespace OctoAwesome.Basics.UI.Screens
 
         //TODO Where and how to initialize this screen?
 
-        public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent, TransferUIComponent transferComponent) : base(manager)
+        public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent) : base(manager, assetComponent)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
             IsOverlay = true;
             this.assetComponent = assetComponent;
-            this.transferComponent = transferComponent;
-            subscription = transferComponent.Changes.Subscribe(InventoryChanged);
+
 
             panelBackground = this.assetComponent.LoadTexture("panel");
             var grid = new Grid(manager)
@@ -70,7 +70,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryA.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA , e);
+            inventoryA.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
 
             inventoryB = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
@@ -104,9 +104,35 @@ namespace OctoAwesome.Basics.UI.Screens
             grid.AddControl(infoPanel, 1, 0, 1, 3);
         }
 
+        /// <inheritdoc/>
+        public override void AddUiComponent(UIComponent uiComponent)
+        {
+            if (uiComponent is not TransferUIComponent transferComponent)
+                return;
+
+            if (subscription is not null)
+                subscription.Dispose();
+
+            this.transferComponent = transferComponent;
+            subscription = transferComponent.Changes.Subscribe(InventoryChanged);
+        }
+        /// <inheritdoc/>
+
+        public override void RemoveUiComponent(UIComponent uiComponent)
+        {
+            if (uiComponent != transferComponent)
+                return;
+
+            if (subscription is not null)
+                subscription.Dispose();
+
+            transferComponent = null;
+            base.RemoveUiComponent(uiComponent);
+        }
+
         private void InventoryChanged(TransferModel transferModel)
         {
-            if(transferModel.Transferring && Manager.ActiveScreen != this)
+            if (transferModel.Transferring && Manager.ActiveScreen != this)
             {
                 _ = Manager.NavigateToScreen(this);
             }
@@ -117,7 +143,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
         {
-            if (e.Content is InventorySlot slot)
+            if (transferComponent is not null && e.Content is InventorySlot slot)
             {
                 e.Handled = true;
                 if (transferDirection == TransferDirection.AToB)
@@ -126,13 +152,7 @@ namespace OctoAwesome.Basics.UI.Screens
                     transferComponent.Transfer(currentTransferModel.InventoryB, currentTransferModel.InventoryA, slot);
                 else
                     Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
-                //if (source.RemoveSlot(slot))
-                //    target.AddSlot(slot);
-
-                //sourceControl.Rebuild(source.Inventory);
-                //targetControl.Rebuild(target.Inventory);
             }
-
         }
 
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)

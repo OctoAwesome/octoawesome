@@ -58,8 +58,7 @@ namespace OctoAwesome.Client
             IsMouseVisible = true;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-            typeContainer.Register<BaseScreenComponent>(Screen);
-            typeContainer.Register<ScreenComponent>(Screen);
+  
 
             Register(typeContainer);
 
@@ -72,18 +71,21 @@ namespace OctoAwesome.Client
 
             ResourceManager = typeContainer.Get<ContainerResourceManager>();
 
-            Screen = new ScreenComponent(this);
-
             Settings = typeContainer.Get<Settings>();
 
+            Screen = new ScreenComponent(this, ExtensionService);
             KeyMapper = new KeyMapper(Screen, Settings);
             Assets = new AssetComponent(Screen, Settings);
+
+            typeContainer.Register<BaseScreenComponent>(Screen);
+            typeContainer.Register<ScreenComponent>(Screen);
 
             typeContainer.Register(Assets);
 
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
 
+            ExtensionService.ExecuteExtender(Screen);
 
 
             Service = typeContainer.Get<GameService>();

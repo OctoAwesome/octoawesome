@@ -8,11 +8,15 @@ using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
 using OctoAwesome.Database;
 using System.Collections.Generic;
+using OctoAwesome.Extension;
+using engenious.UI.Controls;
+using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent
+    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent, IScreenComponent
     {
+        private readonly ExtensionService extensionService;
         private readonly IDisposable componentSubscription;
 
         public new OctoGame Game { get; private set; }
@@ -21,18 +25,25 @@ namespace OctoAwesome.Client.Components
 
         public CameraComponent Camera => Game.Camera;
 
-        public List<UIComponent> Components = new List<UIComponent>(); //TODO Via UI Extender like Simulation Extender
+        public ComponentList<UIComponent> Components { get; private set; }
+        private readonly List<BaseScreen> screens;
 
-        public ScreenComponent(OctoGame game) : base(game)
+        public ScreenComponent(OctoGame game, ExtensionService extensionService) : base(game)
         {
             Game = game;
             TitlePrefix = "OctoAwesome";
+
+            screens = new();
+            Components = new ComponentList<UIComponent>(null, null, Add, Remove);
+
+            this.extensionService = extensionService;
 
             componentSubscription
                 = game.ResourceManager
                 .UpdateHub
                 .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
+
         }
 
 
@@ -49,6 +60,16 @@ namespace OctoAwesome.Client.Components
 
             NavigateToScreen(new MainScreen(this));
 
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            foreach (var component in Components)
+            {
+                component.Update(gameTime);
+            }
+
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -100,30 +121,58 @@ namespace OctoAwesome.Client.Components
             }
         }
 
-        private void Add(FunctionalBlock block)
+        public void Add(BaseScreen screen)
         {
             foreach (var component in Components)
             {
                 if (component is not UIComponent uiComponent)
                     continue;
 
-                uiComponent.Add(block);
+                screen.AddUiComponent(uiComponent);
             }
+
+            screens.Add(screen);
+            extensionService.ExecuteExtender(screen);
         }
 
-        private void Add(Entity entity)
+        public void Remove(BaseScreen screen)
+        {
+            screens.Remove(screen);
+        }
+
+        public void Add(UIComponent uiComponent)
+        {
+            foreach (var screen in screens)
+            {
+                screen.AddUiComponent(uiComponent);
+            }
+
+            extensionService.ExecuteExtender(uiComponent);
+        }
+
+        public void Remove(UIComponent uiComponent)
+        {
+            foreach (var screen in screens)
+            {
+                screen.RemoveUiComponent(uiComponent);
+            }
+
+        }
+
+        private void Add(ComponentContainer componentContainer)
         {
             foreach (var component in Components)
             {
                 if (component is not UIComponent uiComponent)
                     continue;
 
-                uiComponent.Add(entity);
+                uiComponent.Add(componentContainer);
             }
         }
 
         private void RemoveEntity(Guid entityId)
         {
+            //TODO: Remove component container?
         }
     }
 }

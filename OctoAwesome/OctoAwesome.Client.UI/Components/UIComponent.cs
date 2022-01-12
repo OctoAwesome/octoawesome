@@ -18,8 +18,14 @@ namespace OctoAwesome.UI.Components
     public abstract class UIComponent : Component, IHoldComponent<ComponentContainer>
     {
         public bool Visible { get; set; }
+        public string ScreenKey { get; set; } 
 
         protected List<ComponentContainer> componentContainer = new();
+
+        public UIComponent()
+        {
+            ScreenKey = GetType().FullName;
+        }
 
         /// <summary>
         /// Displays the ui

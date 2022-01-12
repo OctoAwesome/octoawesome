@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
     {
         internal InventoryComponent inventoryComponent;
         internal AnimationComponent animationComponent;
-        internal TransferUIComponent transferUiComponent;
+        //internal TransferUIComponent transferUiComponent;
 
         public Chest()
         {
