@@ -40,7 +40,8 @@ namespace OctoAwesome.Client.Components
             this.extensionService = extensionService;
 
             componentSubscription
-                = game.ResourceManager
+                = game
+                .ResourceManager
                 .UpdateHub
                 .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
@@ -59,6 +60,8 @@ namespace OctoAwesome.Client.Components
             NavigateFromTransition = new AlphaTransition(Frame, Transition.Linear, TimeSpan.FromMilliseconds(200), 0f);
             NavigateToTransition = new AlphaTransition(Frame, Transition.Linear, TimeSpan.FromMilliseconds(200), 1f);
 
+            this.extensionService.ExecuteExtender(this);
+
             NavigateToScreen(new MainScreen(this));
 
         }
@@ -71,11 +74,6 @@ namespace OctoAwesome.Client.Components
             }
 
             base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
         }
 
         public void Exit()

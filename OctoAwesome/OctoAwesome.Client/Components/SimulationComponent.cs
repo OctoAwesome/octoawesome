@@ -3,6 +3,8 @@ using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Common;
 using OctoAwesome.Extension;
+using OctoAwesome.Notifications;
+using OctoAwesome.Rx;
 
 namespace OctoAwesome.Client.Components
 {
@@ -11,6 +13,8 @@ namespace OctoAwesome.Client.Components
         private readonly ExtensionService extensionService;
 
         private readonly IResourceManager resourceManager;
+        private readonly Relay<Notification> simulationRelay;
+        private readonly IDisposable simulationSource;
 
         public Simulation? Simulation { get; private set; }
 
@@ -23,6 +27,8 @@ namespace OctoAwesome.Client.Components
             Service = game.Service;
             this.extensionService = extensionService;
             this.resourceManager = resourceManager;
+            simulationRelay = new Relay<Notification>();
+            simulationSource = resourceManager.UpdateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
         public Guid NewGame(string name, string seed)
@@ -74,8 +80,8 @@ namespace OctoAwesome.Client.Components
             Player player = resourceManager.LoadPlayer(playerName);
 
             player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            Simulation.Add(player);
-
+            
+            simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add,  player));
 
             return player;
         }

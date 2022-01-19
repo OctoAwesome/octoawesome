@@ -58,6 +58,12 @@ namespace OctoAwesome.Notifications
             EntityId = id;
         }
 
+        public EntityNotification(ActionType type, Entity entity) : this(entity.Id)
+        {
+            Type = type;
+            Entity = entity;
+        }
+
         /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {

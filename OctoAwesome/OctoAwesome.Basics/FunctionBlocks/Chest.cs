@@ -13,6 +13,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
     public class Chest : FunctionalBlock
     {
         internal AnimationComponent animationComponent;
+        private TransferComponent lastUsedTransferComponent;
         //internal TransferUIComponent transferUiComponent;
 
         /// <summary>
@@ -55,10 +56,10 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// <inheritdoc />
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (entity.TryGetComponent(out TransferComponent component))
+            if (entity.TryGetComponent(out lastUsedTransferComponent))
             {
-                component.Target = inventoryComponent;
-                component.Transfering = true;
+                lastUsedTransferComponent.Target = inventoryComponent;
+                lastUsedTransferComponent.Transfering = true;
 
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;
