@@ -174,6 +174,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
+            transferComponent.OnClose();
             base.OnNavigatedFrom(args);
             Closed?.Invoke(this, args);
         }

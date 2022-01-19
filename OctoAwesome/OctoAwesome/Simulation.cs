@@ -356,7 +356,7 @@ namespace OctoAwesome
 
         public void OnNext(Notification value)
         {
-            if (entities.Count < 1 && !IsServerSide)
+            if (entities.Count < 0 && !IsServerSide)
                 return;
 
             switch (value)

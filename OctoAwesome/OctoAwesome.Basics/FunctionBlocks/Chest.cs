@@ -17,6 +17,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
     {
         internal InventoryComponent inventoryComponent;
         internal AnimationComponent animationComponent;
+        private TransferComponent lastUsedTransferComponent;
         //internal TransferUIComponent transferUiComponent;
 
         public Chest()
@@ -42,6 +43,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
             //Simulation.Entities.FirstOrDefault(x=>x.)
         }
 
+
         internal void TransferUiComponentClosed(object sender, engenious.UI.NavigationEventArgs e)
         {
             animationComponent.AnimationSpeed = -60f;
@@ -49,10 +51,10 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (entity.TryGetComponent(out TransferComponent component))
+            if (entity.TryGetComponent(out lastUsedTransferComponent))
             {
-                component.Target = inventoryComponent;
-                component.Transfering = true;
+                lastUsedTransferComponent.Target = inventoryComponent;
+                lastUsedTransferComponent.Transfering = true;
 
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;

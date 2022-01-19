@@ -85,7 +85,6 @@ namespace OctoAwesome.Client
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
 
-            ExtensionService.ExecuteExtender(Screen);
 
 
             Service = typeContainer.Get<GameService>();

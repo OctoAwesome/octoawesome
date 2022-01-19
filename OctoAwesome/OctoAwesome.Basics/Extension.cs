@@ -127,7 +127,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
                 //TODO: Fix this
-                //s.Components.AddComponent(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
+                s.Components.AddComponent(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
 
                 //TODO: unschön
                 //TODO: TypeContainer?

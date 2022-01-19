@@ -113,7 +113,7 @@ namespace OctoAwesome.UI.Components
         where TComponent1 : Component
         where TComponent2 : Component
     {
-        readonly Dictionary<ComponentContainer, UiComponentRecord<TModel, TComponent1, TComponent2>> componentCache = new();
+        protected readonly Dictionary<ComponentContainer, UiComponentRecord<TModel, TComponent1, TComponent2>> componentCache = new();
 
         public sealed override void Update(GameTime gameTime)
         {

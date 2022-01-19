@@ -23,12 +23,18 @@ namespace OctoAwesome.UI.Controls
 
         public InventoryControl(BaseScreenComponent manager, AssetComponent assets, ICollection<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
         {
+            Background = new SolidColorBrush(Color.Transparent);
             scroll = new ScrollContainer(manager)
             {
+                Background = new SolidColorBrush(Color.Transparent),
                 Margin = new Border(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalScrollbarVisibility = ScrollbarVisibility.Never,
+                VerticalScrollbarEnabled = true
+                
             };
+            scroll.VerticalScrollbar.Background = new SolidColorBrush(Color.Transparent);
 
             grid = new Grid(manager)
             {

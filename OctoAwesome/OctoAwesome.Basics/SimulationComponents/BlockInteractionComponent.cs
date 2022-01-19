@@ -40,9 +40,9 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
-                functionalBlock => functionalBlock?.Interact(gameTime, entity),
-                entity => { }
+                    blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                    functionalBlock => functionalBlock?.Interact(gameTime, entity),
+                    entity => { }
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
@@ -142,7 +142,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                         }
 
                     }
-
 
             }
         }
