@@ -1,7 +1,12 @@
 ﻿using engenious;
+
+using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome.Basics.FunctionBlocks
@@ -38,19 +43,17 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// <param name="position">The position the chest is at.</param>
         public Chest(Coordinate position)
         {
-
             Components.AddComponent(new PositionComponent()
             {
                 Position = position
             });
-
-
-            //Simulation.Entities.FirstOrDefault(x=>x.)
         }
 
         internal void TransferUiComponentClosed(object? sender, engenious.UI.NavigationEventArgs e)
-        {
+        { 
             animationComponent.AnimationSpeed = -60f;
+            lastUsedTransferComponent.TransferingChanged -= TransferUiComponentClosed;
+
         }
 
         /// <inheritdoc />
@@ -60,6 +63,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
             {
                 lastUsedTransferComponent.Target = inventoryComponent;
                 lastUsedTransferComponent.Transfering = true;
+                lastUsedTransferComponent.TransferingChanged += TransferUiComponentClosed;
 
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;

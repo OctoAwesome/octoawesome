@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Extension;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace OctoAwesome
 {
     public class SerializationRegistrar : BaseRegistrar<Type>
     {
-        public override string ChannelName => "Simulation";
+        public override string ChannelName => ChannelNames.Serialization;
 
         private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
@@ -32,9 +33,6 @@ namespace OctoAwesome
 
         public override void Unregister(Type value) => throw new NotSupportedException();
 
-        public override IReadOnlyCollection<Type> Get()
-        {
-            throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
-        }
+        public override IReadOnlyCollection<Type> Get() => throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
     }
 }

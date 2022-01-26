@@ -23,6 +23,7 @@
         /// <summary>
         /// The chunk channel.
         /// </summary>
+        public const string UI = "ui";
         public const string Chunk = "chunk";
     }
 }
