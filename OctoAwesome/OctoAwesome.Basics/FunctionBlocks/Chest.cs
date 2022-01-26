@@ -1,8 +1,10 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,28 +27,24 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         }
 
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-            //Doesnt get called
-        }
+        public override void Deserialize(BinaryReader reader) => base.Deserialize(reader);//Doesnt get called
 
         public Chest(Coordinate position)
         {
-
             Components.AddComponent(new PositionComponent()
             {
                 Position = position
             });
-
-
-            //Simulation.Entities.FirstOrDefault(x=>x.)
         }
 
 
-        internal void TransferUiComponentClosed(object sender, engenious.UI.NavigationEventArgs e)
+        internal void TransferUiComponentClosed(object sender, bool e)
         {
+            if (e)
+                return;
             animationComponent.AnimationSpeed = -60f;
+            lastUsedTransferComponent.TransferingChanged -= TransferUiComponentClosed;
+
         }
 
         protected override void OnInteract(GameTime gameTime, Entity entity)
@@ -55,6 +53,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
             {
                 lastUsedTransferComponent.Target = inventoryComponent;
                 lastUsedTransferComponent.Transfering = true;
+                lastUsedTransferComponent.TransferingChanged += TransferUiComponentClosed;
 
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;

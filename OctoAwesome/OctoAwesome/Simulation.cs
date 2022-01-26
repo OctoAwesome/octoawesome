@@ -9,6 +9,7 @@ using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -59,9 +60,11 @@ namespace OctoAwesome
         private readonly List<FunctionalBlock> functionalBlocks = new();
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly Relay<Notification> networkRelay;
+        private readonly Relay<Notification> uiRelay;
 
         private IDisposable simulationSubscription;
         private IDisposable networkSubscription;
+        private IDisposable uiSubscription;
 
         /// <summary>
         /// Erzeugt eine neue Instanz der Klasse Simulation.
@@ -70,6 +73,7 @@ namespace OctoAwesome
         {
             ResourceManager = resourceManager;
             networkRelay = new Relay<Notification>();
+            uiRelay = new Relay<Notification>();
 
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
 
@@ -158,6 +162,11 @@ namespace OctoAwesome
                 .UpdateHub
                 .AddSource(networkRelay, DefaultChannels.Network);
 
+            uiSubscription
+                = ResourceManager
+                .UpdateHub
+                .AddSource(uiRelay, DefaultChannels.UI);
+
 
             State = SimulationState.Running;
         }
@@ -213,6 +222,7 @@ namespace OctoAwesome
             ResourceManager.UnloadUniverse();
             simulationSubscription?.Dispose();
             networkSubscription?.Dispose();
+            uiSubscription?.Dispose();
         }
 
         /// <summary>
@@ -336,7 +346,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-            
+
             ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
 
             foreach (var component in Components)
@@ -370,10 +380,14 @@ namespace OctoAwesome
                         EntityUpdate(entityNotification);
                     else if (entityNotification.Type == EntityNotification.ActionType.Request)
                         RequestEntity(entityNotification);
+
+                    uiRelay.OnNext(value);
                     break;
                 case FunctionalBlockNotification functionalBlockNotification:
                     if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Add)
                         Add(functionalBlockNotification.Block);
+
+                    uiRelay.OnNext(value);
                     break;
                 default:
                     break;
@@ -429,6 +443,7 @@ namespace OctoAwesome
 
         public void Dispose()
         {
+            uiRelay.Dispose();
             networkRelay.Dispose();
         }
     }

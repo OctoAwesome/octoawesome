@@ -1,16 +1,18 @@
-﻿using engenious.UI;
+﻿using engenious;
+using engenious.UI;
+using engenious.UI.Controls;
+
 using OctoAwesome.Client.Screens;
-using System;
-using engenious;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Database;
+using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
-using OctoAwesome.Database;
-using System.Collections.Generic;
-using OctoAwesome.Extension;
-using engenious.UI.Controls;
+using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Screens;
+
+using System;
+using System.Collections.Generic;
 
 namespace OctoAwesome.Client.Components
 {
@@ -21,7 +23,7 @@ namespace OctoAwesome.Client.Components
 
         public new OctoGame Game { get; private set; }
 
-        public PlayerComponent Player { get { return Game.Player; } }
+        public PlayerComponent Player => Game.Player;
 
         public CameraComponent Camera => Game.Camera;
 
@@ -42,7 +44,7 @@ namespace OctoAwesome.Client.Components
                 = game
                 .ResourceManager
                 .UpdateHub
-                .ListenOn(DefaultChannels.Simulation)
+                .ListenOn(DefaultChannels.UI)
                 .Subscribe(OnNext);
 
         }
@@ -75,10 +77,7 @@ namespace OctoAwesome.Client.Components
             base.Update(gameTime);
         }
 
-        public void Exit()
-        {
-            Game.Exit();
-        }
+        public void Exit() => Game.Exit();
 
         public void UnloadAssets()
         {
@@ -133,10 +132,7 @@ namespace OctoAwesome.Client.Components
             extensionService.ExecuteExtender(screen);
         }
 
-        public void Remove(BaseScreen screen)
-        {
-            screens.Remove(screen);
-        }
+        public void Remove(BaseScreen screen) => screens.Remove(screen);
 
         public void Add(UIComponent uiComponent)
         {
