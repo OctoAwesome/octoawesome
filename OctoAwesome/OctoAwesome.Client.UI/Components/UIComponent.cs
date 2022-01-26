@@ -18,13 +18,16 @@ namespace OctoAwesome.UI.Components
     public abstract class UIComponent : Component, IHoldComponent<ComponentContainer>
     {
         public bool Visible { get; set; }
-        public string ScreenKey { get; set; } 
+        public string ScreenKey { get; set; }
 
         protected List<ComponentContainer> componentContainer = new();
+        public Relay<Unit> Changes { get; protected set; }
+
 
         public UIComponent()
         {
             ScreenKey = GetType().FullName;
+            Changes = new Relay<Unit>();
         }
 
         /// <summary>
@@ -54,28 +57,15 @@ namespace OctoAwesome.UI.Components
         protected virtual void OnRemove(ComponentContainer value) { }
 
 
-        protected virtual bool Match(ComponentContainer value)
-        {
-            return true;
-        }
-    }
-    public abstract class UIComponent<T> : UIComponent
-    {
-        public Relay<T> Changes { get; protected set; }
-
-        public UIComponent()
-        {
-            Changes = new Relay<T>();
-        }
-
+        protected virtual bool Match(ComponentContainer value) => true;
     }
 
 
-    public abstract class UIComponent<TModel, TComponentRecord, TComponent1> : UIComponent<TModel>
-        where TComponentRecord : UiComponentRecord<TModel, TComponent1>
+    public abstract class UIComponent<TComponentRecord, TComponent1> : UIComponent
+        where TComponentRecord : UiComponentRecord<TComponent1>
         where TComponent1 : Component
     {
-        readonly Dictionary<ComponentContainer, UiComponentRecord<TModel, TComponent1>> componentCache = new();
+        private readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1>> componentCache = new();
 
         public sealed override void Update(GameTime gameTime)
         {
@@ -83,21 +73,15 @@ namespace OctoAwesome.UI.Components
             {
                 if (TryUpdate(
                     cachedComponent.Key,
-                    cachedComponent.Value.Component1,
-                    cachedComponent.Value.Model,
-                    out var model))
+                    cachedComponent.Value.Component1))
                 {
-                    componentCache[cachedComponent.Key] = cachedComponent.Value with { Model = model };
-                    Changes.OnNext(model);
+                    Changes.OnNext(new Unit());
                 }
             }
         }
-        protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component, TModel lastModel, out TModel model);
+        protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component);
 
-        protected sealed override void OnAdd(ComponentContainer value)
-        {
-            componentCache[value] = new UiComponentRecord<TModel, TComponent1>(default, value.GetComponent<TComponent1>());
-        }
+        protected sealed override void OnAdd(ComponentContainer value) => componentCache[value] = new UiComponentRecord<TComponent1>(value.GetComponent<TComponent1>());
 
         protected sealed override void OnRemove(ComponentContainer value)
         {
@@ -108,12 +92,12 @@ namespace OctoAwesome.UI.Components
         protected override bool Match(ComponentContainer value) => value.ContainsComponent<TComponent1>();
 
     }
-    public abstract class UIComponent<TModel, TComponentRecord, TComponent1, TComponent2> : UIComponent<TModel>
-        where TComponentRecord : UiComponentRecord<TModel, TComponent1, TComponent2>
+    public abstract class UIComponent<TComponentRecord, TComponent1, TComponent2> : UIComponent
+        where TComponentRecord : UiComponentRecord<TComponent1, TComponent2>
         where TComponent1 : Component
         where TComponent2 : Component
     {
-        protected readonly Dictionary<ComponentContainer, UiComponentRecord<TModel, TComponent1, TComponent2>> componentCache = new();
+        protected readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1, TComponent2>> componentCache = new();
 
         public sealed override void Update(GameTime gameTime)
         {
@@ -122,21 +106,15 @@ namespace OctoAwesome.UI.Components
                 if (TryUpdate(
                     cachedComponent.Key,
                     cachedComponent.Value.Component1,
-                    cachedComponent.Value.Component2,
-                    cachedComponent.Value.Model,
-                    out var model))
+                    cachedComponent.Value.Component2))
                 {
-                    componentCache[cachedComponent.Key] = cachedComponent.Value with { Model = model };
-                    Changes.OnNext(model);
+                    Changes.OnNext(new Unit());
                 }
             }
         }
-        protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component, TComponent2 component2, TModel lastModel, out TModel model);
+        protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component, TComponent2 component2);
 
-        protected sealed override void OnAdd(ComponentContainer value)
-        {
-            componentCache[value] = new UiComponentRecord<TModel, TComponent1, TComponent2>(default, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
-        }
+        protected sealed override void OnAdd(ComponentContainer value) => componentCache[value] = new UiComponentRecord<TComponent1, TComponent2>(value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
 
         protected sealed override void OnRemove(ComponentContainer value)
         {
@@ -147,13 +125,13 @@ namespace OctoAwesome.UI.Components
     }
 
 
-    public abstract class UIComponent<TModel, TComponentRecord, TComponent1, TComponent2, TComponent3> : UIComponent<TModel>
-        where TComponentRecord : UiComponentRecord<TModel, TComponent1, TComponent2, TComponent3>
+    public abstract class UIComponent<TComponentRecord, TComponent1, TComponent2, TComponent3> : UIComponent
+        where TComponentRecord : UiComponentRecord<TComponent1, TComponent2, TComponent3>
         where TComponent1 : Component
         where TComponent2 : Component
         where TComponent3 : Component
     {
-        readonly Dictionary<ComponentContainer, UiComponentRecord<TModel, TComponent1, TComponent2, TComponent3>> componentCache = new();
+        private readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1, TComponent2, TComponent3>> componentCache = new();
 
         public sealed override void Update(GameTime gameTime)
         {
@@ -162,21 +140,17 @@ namespace OctoAwesome.UI.Components
                 if (TryUpdate(cachedComponent.Key,
                         cachedComponent.Value.Component1,
                         cachedComponent.Value.Component2,
-                        cachedComponent.Value.Component3,
-                        cachedComponent.Value.Model,
-                        out var model))
+                        cachedComponent.Value.Component3))
                 {
-                    componentCache[cachedComponent.Key] = cachedComponent.Value with { Model = model };
-                    Changes.OnNext(model);
+                    Changes.OnNext(new Unit());
                 }
             }
         }
-        protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component, TComponent2 component2, TComponent3 component3, TModel lastModel, out TModel model);
+        protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component, TComponent2 component2, TComponent3 component3);
         protected sealed override void OnAdd(ComponentContainer value)
         {
             componentCache[value]
-                = new UiComponentRecord<TModel, TComponent1, TComponent2, TComponent3>(
-                    default,
+                = new UiComponentRecord<TComponent1, TComponent2, TComponent3>(
                     value.GetComponent<TComponent1>(),
                     value.GetComponent<TComponent2>(),
                     value.GetComponent<TComponent3>());
@@ -192,9 +166,9 @@ namespace OctoAwesome.UI.Components
             => value.ContainsComponent<TComponent1>() && value.ContainsComponent<TComponent2>() && value.ContainsComponent<TComponent3>();
     }
 
-    public record UiComponentRecord<TModel, TComponent1>(TModel Model, TComponent1 Component1);
-    public record UiComponentRecord<TModel, TComponent1, TComponent2>(TModel Model, TComponent1 Component1, TComponent2 Component2);
-    public record UiComponentRecord<TModel, TComponent1, TComponent2, TComponent3>(TModel Model, TComponent1 Component1, TComponent2 Component2, TComponent3 Component3);
+    public record UiComponentRecord<TComponent1>(TComponent1 Component1);
+    public record UiComponentRecord<TComponent1, TComponent2>(TComponent1 Component1, TComponent2 Component2);
+    public record UiComponentRecord<TComponent1, TComponent2, TComponent3>(TComponent1 Component1, TComponent2 Component2, TComponent3 Component3);
 
 
 }

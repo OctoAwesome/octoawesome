@@ -10,24 +10,29 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.UI.Components;
 
-public record struct TransferModel(InventoryComponent InventoryA, int VersionA, InventoryComponent InventoryB, int VersionB, bool Transferring);
-
-public class TransferUIComponent : UIComponent<TransferModel, UiComponentRecord<TransferModel, InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
+public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
+    public InventoryComponent InventoryA { get; private set; }
+    public int VersionA { get; private set; }
+    public InventoryComponent InventoryB { get; private set; }
+    public int VersionB { get; private set; }
+    public bool Transferring { get; private set; }
 
-    protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2, TransferModel lastModel, out TransferModel model)
+    protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        model = default;
         if (component2.Target is null
-            || (lastModel != default
-                && component2.Transfering == lastModel.Transferring
-                && (lastModel.InventoryA?.Version ?? -1) == lastModel.VersionA
-                && (lastModel.InventoryB?.Version ?? -1) == lastModel.VersionB))
+            || (component2.Transfering == Transferring
+                && (InventoryA?.Version ?? -1) == VersionA
+                && (InventoryB?.Version ?? -1) == VersionB))
         {
             return false;
         }
 
-        model = new(component, component.Version, component2.Target, component2.Target.Version, component2.Transfering);
+        InventoryA = component;
+        InventoryB = component2.Target;
+        VersionA = InventoryA.Version;
+        VersionB = InventoryB.Version;
+        Transferring = component2.Transfering;
 
         return true;
     }
