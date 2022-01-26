@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
-using OctoAwesome.Client.Components;
-using System.Drawing.Imaging;
-using engenious;
+﻿using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
+using engenious.UserDefined;
+
+using OctoAwesome.Client.Components;
+using OctoAwesome.Definitions;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Database;
 using engenious.UserDefined.Effects;
 using OctoAwesome.Client.UI.Components;
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -307,17 +314,10 @@ namespace OctoAwesome.Client.Controls
             Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
-            Index3? selected;
-            Axis? selectedAxis;
-            Vector3? selectionPoint;
+            var selBlock = GetSelectedBlock(centerblock, renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out var bestBlockDistance);
+            var funcBlock = GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint, out var bestFunctionalBlockDistance);
 
-            var selBlock = GetSelectedBlock(centerblock, renderOffset, out selected, out selectedAxis, out selectionPoint);
-            var funcBlock = GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint);
-
-
-
-            //TODO Distance check, so entity doesnt always get selected if a block is in front of it
-            if (selectedFunc.HasValue && selectionFuncPoint.HasValue)
+            if (bestBlockDistance > bestFunctionalBlockDistance)
             {
                 selected = selectedFunc;
                 selectionPoint = selectionFuncPoint;
@@ -335,9 +335,15 @@ namespace OctoAwesome.Client.Controls
                 player.SelectedBox = selected;
                 switch (selectedAxis)
                 {
-                    case Axis.X: player.SelectedSide = (camera.PickRay.Direction.X > 0 ? OrientationFlags.SideWest : OrientationFlags.SideEast); break;
-                    case Axis.Y: player.SelectedSide = (camera.PickRay.Direction.Y > 0 ? OrientationFlags.SideSouth : OrientationFlags.SideNorth); break;
-                    case Axis.Z: player.SelectedSide = (camera.PickRay.Direction.Z > 0 ? OrientationFlags.SideBottom : OrientationFlags.SideTop); break;
+                    case Axis.X:
+                        player.SelectedSide = (camera.PickRay.Direction.X > 0 ? OrientationFlags.SideWest : OrientationFlags.SideEast);
+                        break;
+                    case Axis.Y:
+                        player.SelectedSide = (camera.PickRay.Direction.Y > 0 ? OrientationFlags.SideSouth : OrientationFlags.SideNorth);
+                        break;
+                    case Axis.Z:
+                        player.SelectedSide = (camera.PickRay.Direction.Z > 0 ? OrientationFlags.SideBottom : OrientationFlags.SideTop);
+                        break;
                 }
 
                 player.SelectedPoint = new Vector2();
@@ -399,12 +405,12 @@ namespace OctoAwesome.Client.Controls
             base.OnUpdate(gameTime);
         }
 
-        private BlockInfo GetSelectedBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
+        private BlockInfo GetSelectedBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
         {
             selected = null;
             selectedAxis = null;
             selectionPoint = null;
-            float bestDistance = 9999;
+            bestDistance = float.MaxValue;
             BlockInfo block = default;
             //var pickEndPost = centerblock + (camera.PickRay.Position + (camera.PickRay.Direction * Player.SELECTIONRANGE));
             //var pickStartPos = centerblock + camera.PickRay.Position;
@@ -466,16 +472,15 @@ namespace OctoAwesome.Client.Controls
 
                 var posComponent = funcBlock.GetComponent<PositionComponent>();
                 var boxCollisionComponent = funcBlock.GetComponent<BoxCollisionComponent>();
+                Index3 shortestDistance = centerblock.ShortestDistanceXY(posComponent.Position.GlobalBlockIndex, planet.Size);
 
-                if (posComponent.Position.GlobalPosition.X - Player.SELECTIONRANGE < centerblock.X
-                    && posComponent.Position.GlobalPosition.X + Player.SELECTIONRANGE > centerblock.X
-                    && posComponent.Position.GlobalPosition.Y - Player.SELECTIONRANGE < centerblock.Y
-                    && posComponent.Position.GlobalPosition.Y + Player.SELECTIONRANGE > centerblock.Y
-                    && posComponent.Position.GlobalPosition.Z - Player.SELECTIONRANGE < centerblock.Z
-                    && posComponent.Position.GlobalPosition.Z + Player.SELECTIONRANGE > centerblock.Z)
+                if (Math.Abs(shortestDistance.X) < Player.SELECTIONRANGE
+                    && Math.Abs(shortestDistance.Y) < Player.SELECTIONRANGE
+                    && Math.Abs(shortestDistance.Z) < Player.SELECTIONRANGE)
                 {
+                    var localBlockSpace = renderOffset.ShortestDistanceXY(posComponent.Position.GlobalBlockIndex, planet.Size);
 
-                    float? distance = Block.Intersect(boxCollisionComponent.BoundingBoxes, posComponent.Position.GlobalBlockIndex - renderOffset, camera.PickRay, out Axis? collisionAxis);
+                    float? distance = Block.Intersect(boxCollisionComponent.BoundingBoxes, localBlockSpace, camera.PickRay, out Axis? collisionAxis);
 
                     if (distance.HasValue && distance.Value < bestDistance)
                     {
@@ -906,8 +911,10 @@ namespace OctoAwesome.Client.Controls
                 Index3 comparationIndex = player.Position.Position.ChunkIndex;
                 orderedChunkRenderer.Sort((x, y) =>
                 {
-                    if (!x.ChunkPosition.HasValue) return 1;
-                    if (!y.ChunkPosition.HasValue) return -1;
+                    if (!x.ChunkPosition.HasValue)
+                        return 1;
+                    if (!y.ChunkPosition.HasValue)
+                        return -1;
 
                     Index3 distX = comparationIndex.ShortestDistanceXYZ(x.ChunkPosition.Value, planet.Size);
                     Index3 distY = comparationIndex.ShortestDistanceXYZ(y.ChunkPosition.Value, planet.Size);
@@ -985,13 +992,17 @@ namespace OctoAwesome.Client.Controls
         {
             if (point.X > point.Y)
             {
-                if (1f - point.X > point.Y) return upper;
-                else return right;
+                if (1f - point.X > point.Y)
+                    return upper;
+                else
+                    return right;
             }
             else
             {
-                if (1f - point.X > point.Y) return left;
-                else return lower;
+                if (1f - point.X > point.Y)
+                    return left;
+                else
+                    return lower;
             }
         }
 
@@ -999,13 +1010,17 @@ namespace OctoAwesome.Client.Controls
         {
             if (point.X < 0.5f)
             {
-                if (point.Y < 0.5f) return upperLeftCorner;
-                else return lowerLeftCorner;
+                if (point.Y < 0.5f)
+                    return upperLeftCorner;
+                else
+                    return lowerLeftCorner;
             }
             else
             {
-                if (point.Y < 0.5f) return upperRightCorner;
-                else return lowerRightCorner;
+                if (point.Y < 0.5f)
+                    return upperRightCorner;
+                else
+                    return lowerRightCorner;
             }
         }
 

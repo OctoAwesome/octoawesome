@@ -6,14 +6,18 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
 
-using OctoAwesome.Rx;
+using NLog.Targets;
+
 using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Rx;
+using OctoAwesome.UI.Components;
+using OctoAwesome.UI.Controls;
+using OctoAwesome.UI.Screens;
+
 using System;
 using System.Collections.Generic;
-using NLog.Targets;
 using System.Diagnostics;
-using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -36,9 +40,8 @@ namespace OctoAwesome.Basics.UI.Screens
         private readonly Label volumeLabel;
         private IDisposable subscription;
         private TransferUIComponent transferComponent;
-        private TransferModel currentTransferModel;
 
-        enum TransferDirection
+        private enum TransferDirection
         {
             AToB,
             BToA
@@ -160,15 +163,14 @@ namespace OctoAwesome.Basics.UI.Screens
             base.RemoveUiComponent(uiComponent);
         }
 
-        private void InventoryChanged(TransferModel transferModel)
+        private void InventoryChanged(Unit unit)
         {
-            if (transferModel.Transferring && Manager.ActiveScreen != this)
+            if (transferComponent.Transferring && Manager.ActiveScreen != this)
             {
                 _ = Manager.NavigateToScreen(this);
             }
 
-            currentTransferModel = transferModel;
-            Rebuild(transferModel.InventoryA, transferModel.InventoryB);
+            Rebuild(transferComponent.InventoryA, transferComponent.InventoryB);
         }
 
         private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
@@ -177,9 +179,9 @@ namespace OctoAwesome.Basics.UI.Screens
             {
                 e.Handled = true;
                 if (transferDirection == TransferDirection.AToB)
-                    transferComponent.Transfer(currentTransferModel.InventoryA, currentTransferModel.InventoryB, slot);
+                    transferComponent.Transfer(transferComponent.InventoryA, transferComponent.InventoryB, slot);
                 else if (transferDirection == TransferDirection.BToA)
-                    transferComponent.Transfer(currentTransferModel.InventoryB, currentTransferModel.InventoryA, slot);
+                    transferComponent.Transfer(transferComponent.InventoryB, transferComponent.InventoryA, slot);
                 else
                     Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
                 //if (source.RemoveSlot(slot))
