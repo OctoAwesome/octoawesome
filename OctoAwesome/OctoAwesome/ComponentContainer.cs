@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Components;
+﻿using engenious;
+
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
@@ -64,6 +66,9 @@ namespace OctoAwesome
         {
         }
 
+        public void Interact(GameTime gameTime, Entity entity) => OnInteract(gameTime, entity);
+
+        protected abstract void OnInteract(GameTime gameTime, Entity entity);
         /// <inheritdoc />
         public virtual void Push(SerializableNotification notification)
         {

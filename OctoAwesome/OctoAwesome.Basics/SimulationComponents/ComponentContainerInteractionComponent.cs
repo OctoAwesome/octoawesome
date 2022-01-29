@@ -1,4 +1,16 @@
-﻿using OctoAwesome.EntityComponents;
+﻿using engenious;
+
+using OctoAwesome.Components;
+using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Services;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Components;
@@ -8,7 +20,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with block interactions with functional blocks.
     /// </summary>
-    public class FunctionalBlockInteractionComponent : SimulationComponent<
+    public class ComponentContainerInteractionComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
         ControllableComponent,
@@ -24,7 +36,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <param name="interactionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public FunctionalBlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
+        public ComponentContainerInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
@@ -40,12 +52,11 @@ namespace OctoAwesome.Basics.SimulationComponents
                 .Selection?
                 .Visit(
                     blockInfo => { },
-                    functionalBlock => InternalUpdate(controller, entity, functionalBlock),
-                    entity => { }
+                    componentContainer => InternalUpdate(controller, entity, componentContainer)
                 );
         }
 
-        private void InternalUpdate(ControllableComponent controller, Entity entity, FunctionalBlock functionalBlock)
+        private void InternalUpdate(ControllableComponent controller, Entity entity, ComponentContainer componentContainer)
         {
         }
     }

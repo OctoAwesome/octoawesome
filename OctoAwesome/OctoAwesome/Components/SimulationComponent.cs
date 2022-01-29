@@ -1,4 +1,7 @@
 ﻿using engenious;
+
+using OctoAwesome.EntityComponents;
+
 using System.Collections.Generic;
 
 namespace OctoAwesome.Components
