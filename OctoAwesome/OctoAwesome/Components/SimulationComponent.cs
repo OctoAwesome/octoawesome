@@ -1,5 +1,7 @@
 ﻿using engenious;
+
 using OctoAwesome.EntityComponents;
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -58,10 +60,7 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="value">Vergleichsentity</param>
         /// <returns>Ergebnis des Vergleiches</returns>
-        protected virtual bool Match(T value)
-        {
-            return true;
-        }
+        protected virtual bool Match(T value) => true;
 
         /// <summary>
         /// Internes Event, für das hinzufügen einer Entity
@@ -237,8 +236,8 @@ namespace OctoAwesome.Components
         /// <param name="gameTime">Spielzeit</param>
         public override void Update(GameTime gameTime)
         {
-            //TODO: Ändern (Collection was modified in Multiplayer)
-            foreach (var value in values)
+            //TODO: Ändern (Collection was modified in Multiplayer und auch Singleplayer)
+            foreach (var value in values.ToArray())
                 UpdateValue(gameTime, value);
         }
 

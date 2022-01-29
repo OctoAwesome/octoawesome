@@ -1,14 +1,16 @@
-﻿using OctoAwesome.EntityComponents;
+﻿using engenious;
+
+using OctoAwesome.Components;
+using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using engenious;
-using OctoAwesome.Services;
-using OctoAwesome.Definitions.Items;
-using OctoAwesome.Definitions;
-using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -41,24 +43,23 @@ namespace OctoAwesome.Basics.SimulationComponents
                 .Selection?
                 .Visit(
                     blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
-                    functionalBlock => functionalBlock?.Interact(gameTime, entity),
-                    entity => { }
+                    componentContainer => componentContainer?.Interact(gameTime, entity)
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
             {
                 if (toolbar.ActiveTool != null)
                 {
-                    Index3 add = new Index3();
-                    switch (controller.ApplySide)
+                    Index3 add = controller.ApplySide switch
                     {
-                        case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
-                        case OrientationFlags.SideEast: add = new Index3(1, 0, 0); break;
-                        case OrientationFlags.SideSouth: add = new Index3(0, -1, 0); break;
-                        case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
-                        case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
-                        case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
-                    }
+                        OrientationFlags.SideWest => new Index3(-1, 0, 0),
+                        OrientationFlags.SideEast => new Index3(1, 0, 0),
+                        OrientationFlags.SideSouth => new Index3(0, -1, 0),
+                        OrientationFlags.SideNorth => new Index3(0, 1, 0),
+                        OrientationFlags.SideBottom => new Index3(0, 0, -1),
+                        OrientationFlags.SideTop => new Index3(0, 0, 1),
+                        _ => new Index3(),
+                    };
 
                     if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {

@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Components;
+﻿using engenious;
+
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
@@ -50,6 +52,9 @@ namespace OctoAwesome
         {
         }
 
+        public void Interact(GameTime gameTime, Entity entity) => OnInteract(gameTime, entity);
+
+        protected abstract void OnInteract(GameTime gameTime, Entity entity);
         public virtual void Push(SerializableNotification notification)
         {
             foreach (var component in notificationComponents)
@@ -112,6 +117,7 @@ namespace OctoAwesome
                 notificationComponents.Add(nofiticationComponent);
         }
 
+
         protected virtual void ValidateAddComponent(TComponent component)
         {
             if (Simulation is not null)
@@ -124,10 +130,7 @@ namespace OctoAwesome
                 throw new NotSupportedException("Can't remove components during simulation");
         }
 
-        public void Initialize(IResourceManager mananger)
-        {
-            OnInitialize(mananger);
-        }
+        public void Initialize(IResourceManager mananger) => OnInitialize(mananger);
 
         protected virtual void OnInitialize(IResourceManager manager)
         {

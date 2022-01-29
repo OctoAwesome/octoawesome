@@ -2,7 +2,6 @@
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
-using engenious.UserDefined;
 
 using OctoAwesome.Client.Components;
 using OctoAwesome.Definitions;
@@ -12,9 +11,7 @@ using OctoAwesome.UI.Components;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -423,13 +420,13 @@ namespace OctoAwesome.Client.Controls
             return block;
         }
 
-        private FunctionalBlock GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
+        private ComponentContainer GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
         {
             selected = null;
             selectedAxis = null;
             selectionPoint = null;
             bestDistance = float.MaxValue;
-            FunctionalBlock functionalBlock = null;
+            ComponentContainer componentContainer = null;
 
             //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
@@ -438,6 +435,20 @@ namespace OctoAwesome.Client.Controls
                 if (!funcBlock.ContainsComponent<PositionComponent>() || !funcBlock.ContainsComponent<BoxCollisionComponent>())
                     continue;
 
+                CalcBestDistance(centerblock, renderOffset, ref selected, ref selectedAxis, ref selectionPoint, ref bestDistance, ref componentContainer, funcBlock);
+            }
+            foreach (var entity in Manager.Game.Simulation.Simulation.Entities)
+            {
+                if (!entity.ContainsComponent<PositionComponent>() || !entity.ContainsComponent<BoxCollisionComponent>())
+                    continue;
+
+                CalcBestDistance(centerblock, renderOffset, ref selected, ref selectedAxis, ref selectionPoint, ref bestDistance, ref componentContainer, entity);
+            }
+
+            return componentContainer;
+
+            void CalcBestDistance(Index3 centerblock, Index3 renderOffset, ref Index3? selected, ref Axis? selectedAxis, ref Vector3? selectionPoint, ref float bestDistance, ref ComponentContainer componentContainer, ComponentContainer funcBlock)
+            {
                 var posComponent = funcBlock.GetComponent<PositionComponent>();
                 var boxCollisionComponent = funcBlock.GetComponent<BoxCollisionComponent>();
                 Index3 shortestDistance = centerblock.ShortestDistanceXY(posComponent.Position.GlobalBlockIndex, planet.Size);
@@ -458,12 +469,10 @@ namespace OctoAwesome.Client.Controls
                         selectedAxis = collisionAxis;
                         bestDistance = distance.Value;
                         selectionPoint = (camera.PickRay.Position + (camera.PickRay.Direction * distance)) - (selected - renderOffset);
-                        functionalBlock = funcBlock;
+                        componentContainer = funcBlock;
                     }
                 }
             }
-            return functionalBlock;
-
         }
 
         private readonly AutoResetEvent fillResetEvent = new AutoResetEvent(false);
@@ -522,7 +531,9 @@ namespace OctoAwesome.Client.Controls
                 int range = 6;
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
+                {
                     renderer.Draw(viewProj, shift);
+                }
             }
 
             Manager.GraphicsDevice.SetRenderTarget(ControlTexture);

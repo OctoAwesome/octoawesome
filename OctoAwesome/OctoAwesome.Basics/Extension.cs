@@ -1,22 +1,24 @@
-﻿using OctoAwesome.Basics.Definitions.Blocks;
+﻿using engenious;
+using engenious.UI;
+
+using OctoAwesome.Basics.Definitions.Blocks;
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.Basics.SimulationComponents;
-using OctoAwesome.EntityComponents;
-using System.Reflection;
-using System.Linq;
-using System;
-using engenious;
-using OctoAwesome.Services;
-using OctoAwesome.Definitions;
-using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Basics.EntityComponents.UIComponents;
-using OctoAwesome.Extension;
-using OctoAwesome.Caching;
-using OctoAwesome.UI.Components;
+using OctoAwesome.Basics.FunctionBlocks;
+using OctoAwesome.Basics.SimulationComponents;
 using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
-using engenious.UI;
+using OctoAwesome.Caching;
+using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
+using OctoAwesome.Services;
+using OctoAwesome.UI.Components;
+
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace OctoAwesome.Basics
 {
@@ -27,10 +29,7 @@ namespace OctoAwesome.Basics
         public string Name => Languages.OctoBasics.ExtensionName;
 
 
-        public void Register(ITypeContainer typeContainer)
-        {
-            typeContainer.Register<IPlanet, ComplexPlanet>();
-        }
+        public void Register(ITypeContainer typeContainer) => typeContainer.Register<IPlanet, ComplexPlanet>();
 
         public void Register(ExtensionService extensionLoader)
         {
@@ -44,7 +43,7 @@ namespace OctoAwesome.Basics
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
             extensionLoader.Register<IMapPopulator>(new TreePopulator());
-            extensionLoader.Register<IMapPopulator>(new WauziPopulator());
+            extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
             extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
