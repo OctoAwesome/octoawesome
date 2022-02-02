@@ -1,15 +1,11 @@
 ﻿using engenious;
-using engenious.UI;
 
-using OctoAwesome.Basics.Definitions.Blocks;
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Basics.SimulationComponents;
 using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
-using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
@@ -17,7 +13,6 @@ using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
 
 using System;
-using System.Linq;
 using System.Reflection;
 
 namespace OctoAwesome.Basics
@@ -47,6 +42,7 @@ namespace OctoAwesome.Basics
 
             extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
             extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
+            extensionLoader.Register(typeof(Furnace), ChannelNames.Serialization);
 
             extensionLoader.Extend<WauziEntity>(wauziEntity => wauziEntity.RegisterDefault());
 
@@ -116,6 +112,60 @@ namespace OctoAwesome.Basics
 
             });
 
+            extensionLoader.Extend<Furnace>((furnace) =>
+            {
+                var f = furnace;
+
+                if (f is null)
+                    return;
+
+                if (!f.ContainsComponent<PositionComponent>())
+                {
+                    var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0));
+                    f.Components.AddComponent(new PositionComponent()
+                    {
+                        Position = pos
+                    });
+
+                }
+
+                if (!f.Components.TryGetComponent<AnimationComponent>(out var animationComponent))
+                {
+                    f.animationComponent = new AnimationComponent();
+                    f.Components.AddComponent(f.animationComponent);
+                }
+                else
+                    f.animationComponent = animationComponent;
+
+                if (!f.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
+                {
+                    inventoryComponent = new InventoryComponent();
+                    f.inventoryComponent = inventoryComponent;
+                    f.Components.AddComponent(inventoryComponent);
+                }
+                else
+                    f.inventoryComponent = inventoryComponent;
+
+                while (inventoryComponent.Inventory.Count < 2)
+                {
+                    inventoryComponent.Inventory.Add(new InventorySlot());
+                }
+
+                //if (!c.ContainsComponent<TransferUIComponent>())
+                //{
+                //    c.transferUiComponent = new TransferUIComponent(inventoryComponent);
+                //    c.transferUiComponent.Closed += c.TransferUiComponentClosed;
+                //    //TODO: Fix this
+                //    //c.Components.AddComponent(c.transferUiComponent, true);
+                //}
+
+
+
+                f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);
+                f.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
+                f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" }, true);
+
+            });
 
             extensionLoader.Extend<Simulation>((s) =>
             {
@@ -133,8 +183,11 @@ namespace OctoAwesome.Basics
             });
             extensionLoader.Extend<IScreenComponent>((s) =>
             {
-                s.Components.AddComponent(new TransferUIComponent());
-                s.Add(TypeContainer.GetUnregistered<TransferScreen>());
+                //s.Components.AddComponent(new TransferUIComponent());
+                //s.Add(TypeContainer.GetUnregistered<TransferScreen>());
+
+                s.Components.AddComponent(new FurnaceUIComponent());
+                s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
             });
 
         }

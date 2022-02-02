@@ -2,14 +2,12 @@
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -169,7 +167,7 @@ namespace OctoAwesome.EntityComponents
             return Inventory.Remove(inventorySlot);
         }
 
-        public void AddSlot(InventorySlot inventorySlot)
+        public void AddSlot(InventorySlot inventorySlot, int index = -1)
         {
             var slot = Inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
                s.Amount < s.Item.VolumePerUnit * s.Item.StackLimit);
@@ -182,7 +180,10 @@ namespace OctoAwesome.EntityComponents
                     Item = inventorySlot.Item,
                     Amount = inventorySlot.Amount,
                 };
-                Inventory.Add(slot);
+                if (index == -1)
+                    index = Inventory.Count;
+
+                Inventory.Insert(index, slot);
             }
             else
             {

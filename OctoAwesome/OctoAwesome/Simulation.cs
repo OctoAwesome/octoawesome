@@ -2,19 +2,15 @@
 
 using OctoAwesome.Common;
 using OctoAwesome.Components;
-using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
-using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Resources;
 
 namespace OctoAwesome
 {
@@ -343,7 +339,7 @@ namespace OctoAwesome
                 throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be removed from a foreign simulation");
             }
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
 
 

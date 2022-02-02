@@ -19,6 +19,7 @@
     <None Remove="Assets\Definitions\Items\axe_iron.png" />
     <None Remove="Assets\Definitions\Items\bucket.png" />
     <None Remove="Assets\Definitions\Items\chest.png" />
+    <None Remove="Assets\Definitions\Items\furnace.png" />
     <None Remove="Assets\Definitions\Items\hammer_iron.png" />
     <None Remove="Assets\Definitions\Items\hoe_iron.png" />
     <None Remove="Assets\Definitions\Items\shovel_iron.png" />
@@ -57,6 +58,7 @@
     <EmbeddedResource Include="Assets\Definitions\Items\axe_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\bucket.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\chest.png" />
+    <EmbeddedResource Include="Assets\Definitions\Items\furnace.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\hammer_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\hoe_iron.png" />
     <EmbeddedResource Include="Assets\Definitions\Items\pick_iron.png" />
