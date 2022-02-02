@@ -2,11 +2,7 @@
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.UI.Components;
 
@@ -20,7 +16,7 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
 
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        if (component2.Target is null
+        if (component2.Targets.Count == 0
             || (component2.Transfering == Transferring
                 && (InventoryA?.Version ?? -1) == VersionA
                 && (InventoryB?.Version ?? -1) == VersionB))
@@ -29,7 +25,7 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
         }
 
         InventoryA = component;
-        InventoryB = component2.Target;
+        InventoryB = component2.Targets.First();
         VersionA = InventoryA.Version;
         VersionB = InventoryB.Version;
         Transferring = component2.Transfering;

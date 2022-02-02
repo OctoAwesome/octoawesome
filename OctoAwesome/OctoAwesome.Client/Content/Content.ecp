@@ -130,5 +130,38 @@
         <Format>0</Format>
       </Settings>
     </ContentFile>
+    <ContentFile>
+			<Name>furnace.glb</Name>
+			<Processor>ModelProcessor</Processor>
+			<Importer>Model Importer</Importer>
+			<Settings>
+				<Scale>
+					<X>1</X>
+					<Y>1</Y>
+					<Z>1</Z>
+				</Scale>
+				<Translate>
+					<X>0</X>
+					<Y>0</Y>
+					<Z>0</Z>
+				</Translate>
+				<Rotation>
+					<X>0</X>
+					<Y>0</Y>
+					<Z>0</Z>
+				</Rotation>
+				<TransformMesh>True</TransformMesh>
+			</Settings>
+		</ContentFile>
+		<ContentFile>
+			<Name>furnacetext.png</Name>
+			<Processor>BitmapProcessor</Processor>
+			<Importer>Bitmap Importer</Importer>
+			<Settings>
+				<AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+				<MipMapCount>1</MipMapCount>
+				<Format>0</Format>
+			</Settings>
+		</ContentFile>
   </Contents>
 </Content>

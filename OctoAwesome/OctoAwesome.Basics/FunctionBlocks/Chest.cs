@@ -1,12 +1,9 @@
 ﻿using engenious;
 
 using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.Basics.EntityComponents.UIComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome.Basics.FunctionBlocks
@@ -61,7 +58,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
         {
             if (entity.TryGetComponent(out lastUsedTransferComponent))
             {
-                lastUsedTransferComponent.Target = inventoryComponent;
+                lastUsedTransferComponent.Targets.Clear();
+                lastUsedTransferComponent.Targets.Add(inventoryComponent);
                 lastUsedTransferComponent.Transfering = true;
                 lastUsedTransferComponent.TransferingChanged += TransferUiComponentClosed;
 
