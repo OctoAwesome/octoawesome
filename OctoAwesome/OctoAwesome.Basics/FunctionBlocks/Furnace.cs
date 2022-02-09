@@ -1,9 +1,8 @@
 ﻿using engenious;
-
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
-
+using OctoAwesome.UI.Components;
 using System.IO;
 
 namespace OctoAwesome.Basics.FunctionBlocks
@@ -13,7 +12,6 @@ namespace OctoAwesome.Basics.FunctionBlocks
     {
         internal InventoryComponent inventoryComponent;
         internal AnimationComponent animationComponent;
-        private TransferComponent lastUsedTransferComponent;
 
         public Furnace()
         {
@@ -30,16 +28,15 @@ namespace OctoAwesome.Basics.FunctionBlocks
             });
         }
 
-
-
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (entity.TryGetComponent(out lastUsedTransferComponent))
+            if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+               && entity.TryGetComponent<TransferComponent>(out var transferComponent)
+               && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
             {
-                lastUsedTransferComponent.Targets.Clear();
-
-                lastUsedTransferComponent.Targets.Add(inventoryComponent);
-                lastUsedTransferComponent.Transfering = true;
+                transferComponent.Targets.Clear();
+                transferComponent.Targets.Add(inventoryComponent);
+                uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;

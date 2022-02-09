@@ -1,9 +1,10 @@
 ﻿using engenious;
-
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
-
+using OctoAwesome.UI.Components;
+using System;
 using System.IO;
 
 namespace OctoAwesome.Basics.FunctionBlocks
@@ -15,7 +16,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
     public class Chest : FunctionalBlock
     {
         internal AnimationComponent animationComponent;
-        private TransferComponent lastUsedTransferComponent;
+        private IDisposable changedSub;
+
         //internal TransferUIComponent transferUiComponent;
 
         /// <summary>
@@ -46,22 +48,28 @@ namespace OctoAwesome.Basics.FunctionBlocks
             });
         }
 
-        internal void TransferUiComponentClosed(object? sender, engenious.UI.NavigationEventArgs e)
-        { 
+
+        private void UiComponentChanged((ComponentContainer, string, bool show) e)
+        {
+            if (e.show)
+                return;
             animationComponent.AnimationSpeed = -60f;
-            lastUsedTransferComponent.TransferingChanged -= TransferUiComponentClosed;
+            changedSub?.Dispose();
 
         }
 
         /// <inheritdoc />
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (entity.TryGetComponent(out lastUsedTransferComponent))
+            if (TryGetComponent<UiKeyComponent>(out  var ownUiKeyComponent) 
+                && entity.TryGetComponent<TransferComponent>(out var transferComponent) 
+                && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent))
             {
-                lastUsedTransferComponent.Targets.Clear();
-                lastUsedTransferComponent.Targets.Add(inventoryComponent);
-                lastUsedTransferComponent.Transfering = true;
-                lastUsedTransferComponent.TransferingChanged += TransferUiComponentClosed;
+                transferComponent.Targets.Clear();
+                transferComponent.Targets.Add(inventoryComponent);
+                lastUiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
+                changedSub?.Dispose();
+                changedSub = lastUiMappingComponent.Changed.Subscribe(UiComponentChanged);
 
                 animationComponent.CurrentTime = 0f;
                 animationComponent.AnimationSpeed = 60f;

@@ -228,6 +228,5 @@ namespace OctoAwesome
             => Components.GetComponent<T>();
         public bool TryGetComponent<T>(out T component) where T : TComponent
             => Components.TryGetComponent<T>(out component);
-
     }
 }
