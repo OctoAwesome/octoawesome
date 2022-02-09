@@ -14,17 +14,14 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     public int InputVersion { get; private set; }
     //public InventoryComponent OutputInventory { get; private set; }
     //public int OutputVersion { get; private set; }
-    public bool Transferring { get; private set; }
 
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        if (component2.Targets.Count == 0
-            || (component2.Transfering == Transferring
-                && (InventoryA?.Version ?? -1) == VersionA
+        if (!Show 
+            || component2.Targets.Count == 0
+            || ((InventoryA?.Version ?? -1) == VersionA
                 && (InputInventory?.Version ?? -1) == InputVersion))
-        {
             return false;
-        }
 
         InventoryA = component;
         VersionA = InventoryA.Version;
@@ -32,7 +29,6 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         InputVersion = InputInventory.Version;
         //OutputInventory = component2.Targets[1];
         //OutputVersion = OutputInventory.Version;
-        Transferring = component2.Transfering;
 
         return true;
     }
@@ -58,12 +54,11 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         }
     }
 
-    internal void OnClose()
+    internal void OnClose(string key)
     {
-        var interactingComponent = componentContainer.FirstOrDefault();
-        if (componentCache.TryGetValue(interactingComponent, out var components))
-        {
-            components.Component2.Transfering = false;
-        }
+        var interactingComponentContainer = componentContainers.FirstOrDefault();
+        var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
+        if (components is not null)
+            components.Changed.OnNext((interactingComponentContainer, key, false));
     }
 }

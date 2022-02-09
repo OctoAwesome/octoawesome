@@ -23,6 +23,7 @@ namespace OctoAwesome.Basics.UI.Screens
     {
         public event EventHandler<NavigationEventArgs> Closed;
 
+        private const string ScreenKey = "Transfer";
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inventoryA;
@@ -133,7 +134,10 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private void InventoryChanged(Unit unit)
         {
-            if (transferComponent.Transferring && Manager.ActiveScreen != this)
+            if (transferComponent.PrimaryUiKey != ScreenKey)
+                return;
+
+            if (transferComponent.Show && Manager.ActiveScreen != this)
             {
                 _ = Manager.NavigateToScreen(this);
             }
@@ -174,7 +178,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
-            transferComponent.OnClose();
+            transferComponent.OnClose(ScreenKey);
             base.OnNavigatedFrom(args);
             Closed?.Invoke(this, args);
         }

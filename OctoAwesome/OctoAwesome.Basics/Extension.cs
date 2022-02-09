@@ -1,5 +1,4 @@
 ﻿using engenious;
-
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.FunctionBlocks;
@@ -59,6 +58,7 @@ namespace OctoAwesome.Basics
                 player.Components.AddComponent(new EntityCollisionComponent());
                 player.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
                 player.Components.AddComponent(new TransferComponent());
+                player.Components.AddComponent(new UiMappingComponent() { });
 
             });
 
@@ -104,7 +104,7 @@ namespace OctoAwesome.Basics
                 //    //c.Components.AddComponent(c.transferUiComponent, true);
                 //}
 
-
+                c.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Transfer" });
 
                 c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
                 c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
@@ -161,6 +161,7 @@ namespace OctoAwesome.Basics
 
 
 
+                f.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Furnace" });
                 f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);
                 f.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
                 f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" }, true);
@@ -183,8 +184,8 @@ namespace OctoAwesome.Basics
             });
             extensionLoader.Extend<IScreenComponent>((s) =>
             {
-                //s.Components.AddComponent(new TransferUIComponent());
-                //s.Add(TypeContainer.GetUnregistered<TransferScreen>());
+                s.Components.AddComponent(new TransferUIComponent());
+                s.Add(TypeContainer.GetUnregistered<TransferScreen>());
 
                 s.Components.AddComponent(new FurnaceUIComponent());
                 s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());

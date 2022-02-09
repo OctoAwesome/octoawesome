@@ -21,6 +21,7 @@ namespace OctoAwesome.Basics.UI.Screens
     {
         public event EventHandler<NavigationEventArgs> Closed;
 
+        private const string ScreenKey = "Furnace";
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl entityInventory;
@@ -129,7 +130,10 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private void InventoryChanged(Unit unit)
         {
-            if (furnaceUIComponent.Transferring && Manager.ActiveScreen != this)
+            if (furnaceUIComponent.PrimaryUiKey != ScreenKey)
+                return;
+
+            if (furnaceUIComponent.Show && Manager.ActiveScreen != this)
             {
                 _ = Manager.NavigateToScreen(this);
             }
@@ -170,7 +174,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
-            furnaceUIComponent.OnClose();
+            furnaceUIComponent.OnClose(ScreenKey);
             base.OnNavigatedFrom(args);
             Closed?.Invoke(this, args);
         }

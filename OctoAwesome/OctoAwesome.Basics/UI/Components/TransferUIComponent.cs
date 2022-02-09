@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
@@ -12,13 +13,12 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     public int VersionA { get; private set; }
     public InventoryComponent InventoryB { get; private set; }
     public int VersionB { get; private set; }
-    public bool Transferring { get; private set; }
 
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        if (component2.Targets.Count == 0
-            || (component2.Transfering == Transferring
-                && (InventoryA?.Version ?? -1) == VersionA
+        if (!Show
+            || component2.Targets.Count == 0
+            || ((InventoryA?.Version ?? -1) == VersionA
                 && (InventoryB?.Version ?? -1) == VersionB))
         {
             return false;
@@ -28,7 +28,6 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
         InventoryB = component2.Targets.First();
         VersionA = InventoryA.Version;
         VersionB = InventoryB.Version;
-        Transferring = component2.Transfering;
 
         return true;
     }
@@ -39,12 +38,11 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
             target.AddSlot(slot);
     }
 
-    internal void OnClose()
+    internal void OnClose(string key)
     {
-        var interactingComponent = componentContainer.FirstOrDefault();
-        if (componentCache.TryGetValue(interactingComponent, out var components))
-        {
-            components.Component2.Transfering = false;
-        }
+        var interactingComponentContainer = componentContainers.FirstOrDefault();
+        var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
+        if (components is not null)
+            components.Changed.OnNext((interactingComponentContainer, key, false));
     }
 }

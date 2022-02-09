@@ -17,16 +17,17 @@ namespace OctoAwesome.UI.Components
     /// </summary>
     public abstract class UIComponent : Component, IHoldComponent<ComponentContainer>
     {
-        public bool Visible { get; set; }
-        public string ScreenKey { get; set; }
+        public bool Show { get; protected set; }
+        public string PrimaryUiKey { get; protected set; }
 
-        protected List<ComponentContainer> componentContainer = new();
+
+        protected HashSet<ComponentContainer> componentContainers = new();
+        protected Dictionary<ComponentContainer, IDisposable> componentContainerSubs = new Dictionary<ComponentContainer, IDisposable>();
         public Relay<Unit> Changes { get; protected set; }
 
 
         public UIComponent()
         {
-            ScreenKey = GetType().FullName;
             Changes = new Relay<Unit>();
         }
 
@@ -37,27 +38,41 @@ namespace OctoAwesome.UI.Components
 
         public void Add(ComponentContainer value)
         {
-            if (Match(value))
+
+            if (!componentContainers.Contains(value) && Match(value))
             {
                 OnAdd(value);
-                componentContainer.Add(value);
+                componentContainers.Add(value);
+
+                var uiMappingComponent =value.GetComponent<UiMappingComponent>();
+                componentContainerSubs[value] = uiMappingComponent.Changed.Subscribe(UiMappingChanged);
             }
         }
         protected virtual void OnAdd(ComponentContainer value) { }
 
         public void Remove(ComponentContainer value)
         {
-            if (componentContainer.Contains(value))
+            if (componentContainers.Contains(value))
             {
+                if(componentContainerSubs.TryGetValue(value, out var dispose))
+                {
+                    dispose.Dispose();
+                    componentContainerSubs.Remove(value);
+                }
                 OnRemove(value);
-                _ = componentContainer.Remove(value);
+                _ = componentContainers.Remove(value);
             }
         }
 
         protected virtual void OnRemove(ComponentContainer value) { }
 
-
         protected virtual bool Match(ComponentContainer value) => true;
+
+        protected virtual void UiMappingChanged((ComponentContainer container, string screenKey, bool show) e) 
+        {
+            PrimaryUiKey = e.screenKey;
+            Show = e.show;
+        }
     }
 
 
@@ -65,7 +80,7 @@ namespace OctoAwesome.UI.Components
         where TComponentRecord : UiComponentRecord<TComponent1>
         where TComponent1 : Component
     {
-        private readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1>> componentCache = new();
+        protected readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1>> componentCache = new();
 
         public sealed override void Update(GameTime gameTime)
         {
@@ -114,7 +129,10 @@ namespace OctoAwesome.UI.Components
         }
         protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component, TComponent2 component2);
 
-        protected sealed override void OnAdd(ComponentContainer value) => componentCache[value] = new UiComponentRecord<TComponent1, TComponent2>(value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
+        protected sealed override void OnAdd(ComponentContainer value)
+        {
+            componentCache[value] = new UiComponentRecord<TComponent1, TComponent2>(value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
+        }
 
         protected sealed override void OnRemove(ComponentContainer value)
         {
@@ -131,7 +149,7 @@ namespace OctoAwesome.UI.Components
         where TComponent2 : Component
         where TComponent3 : Component
     {
-        private readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1, TComponent2, TComponent3>> componentCache = new();
+        protected readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1, TComponent2, TComponent3>> componentCache = new();
 
         public sealed override void Update(GameTime gameTime)
         {

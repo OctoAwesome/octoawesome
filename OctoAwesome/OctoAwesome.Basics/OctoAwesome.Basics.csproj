@@ -75,5 +75,8 @@
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.UI.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
   
 </Project>
