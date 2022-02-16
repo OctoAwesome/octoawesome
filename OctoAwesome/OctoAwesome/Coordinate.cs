@@ -1,13 +1,14 @@
-﻿using System;
+﻿using engenious;
+
+using System;
 using System.Xml.Serialization;
-using engenious;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Datenstruktur zur genauen Position von Spiel-Elementen innerhalb der OctoAwesome Welt.
     /// </summary>
-    public struct Coordinate
+    public struct Coordinate : IEquatable<Coordinate>
     {
         /// <summary>
         /// Index des Planeten im Universum.
@@ -202,29 +203,22 @@ namespace OctoAwesome
         public static Coordinate operator +(Coordinate i1, Vector3 i2)
             => new Coordinate(i1.Planet, i1.block, i1.position + i2);
 
+        /// <inheritdoc/>
+        public static bool operator ==(Coordinate left, Coordinate right) => left.Equals(right);
+        /// <inheritdoc/>
+        public static bool operator !=(Coordinate left, Coordinate right) => !(left == right);
+
         /// <summary>
         /// Stellt die Coordinate-Instanz als string dar.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $@"({ Planet }/{(block.X + position.X).ToString("0.000000")}/{(block.Y + position.Y).ToString("0.000000")}/{(block.Z + position.Z).ToString("0.000000")})";
+        public override string ToString() => $@"({ Planet }/{block.X + position.X:0.000000}/{block.Y + position.Y:0.000000}/{block.Z + position.Z:0.000000})";
 
-        /// <summary>
-        /// Compare this object with an other object
-        /// </summary>
-        /// <param name="obj">a other object</param>
-        /// <returns>true if both objects are equal</returns>
-        public override bool Equals(object obj)
-        {
-            if(obj is Coordinate coordinate)
-                return base.Equals(obj) || 
-                   ( Planet == coordinate.Planet &&
-                     position == coordinate.position &&
-                     block == coordinate.block
-                   );
-
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode() => base.GetHashCode();
+        /// <inheritdoc/>
+        public override bool Equals(object obj) => obj is Coordinate coordinate && Equals(coordinate);
+        /// <inheritdoc/>
+        public bool Equals(Coordinate other) => Planet == other.Planet && block.Equals(other.block) && position.Equals(other.position);
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCode.Combine(Planet, block, position);
     }
 }

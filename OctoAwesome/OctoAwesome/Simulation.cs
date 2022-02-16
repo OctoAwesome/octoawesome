@@ -21,6 +21,9 @@ namespace OctoAwesome
     {
         public IResourceManager ResourceManager { get; private set; }
 
+        /// <summary>
+        /// Checks wether the Simulation is running on a server
+        /// </summary>
         public bool IsServerSide { get; set; }
 
         /// <summary>
@@ -47,10 +50,12 @@ namespace OctoAwesome
         /// List of all Entities.
         /// </summary>
         public IReadOnlyList<Entity> Entities => entities;
+        /// <summary>
+        /// List of all FunctionalBlocks.
+        /// </summary>
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly ExtensionService extensionService;
-        //private readonly IExtensionResolver extensionResolver;
 
         private readonly List<Entity> entities = new();
         private readonly List<FunctionalBlock> functionalBlocks = new();
@@ -201,7 +206,7 @@ namespace OctoAwesome
         /// </summary>
         public void ExitGame()
         {
-            if (State != SimulationState.Running && State != SimulationState.Paused)
+            if (State is not SimulationState.Running and not SimulationState.Paused)
                 throw new Exception("Simulation is not running");
 
             State = SimulationState.Paused;
@@ -227,17 +232,18 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void Add(Entity entity)
         {
-            if (entity == null)
+            if (entity is null)
                 throw new ArgumentNullException(nameof(entity));
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
-            if (entity.Simulation != null && entity.Simulation != this)
+            if (entity.Simulation is not null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
             if (entities.Contains(entity))
                 return;
+
 
             extensionService.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
@@ -260,14 +266,27 @@ namespace OctoAwesome
             if (block is null)
                 throw new ArgumentNullException(nameof(block));
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-            if (block.Simulation != null && block.Simulation != this)
+            if (block.Simulation is not null && block.Simulation != this)
                 throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be part of more than one simulation");
+
+
+            foreach (var fb in functionalBlocks)
+            {
+                if (fb == block
+                    || (fb.Components.TryGetComponent<PositionComponent>(out var existing)
+                        && (!block.Components.TryGetComponent<PositionComponent>(out PositionComponent newPosComponent)
+                            || existing.Position == newPosComponent.Position)))
+                {
+                    return;
+                }
+            }
 
             if (functionalBlocks.Contains(block))
                 return;
+
 
 
             extensionService.ExecuteExtender(block);
