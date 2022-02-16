@@ -6,8 +6,6 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
 
-using NLog.Targets;
-
 using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Rx;
@@ -16,7 +14,6 @@ using OctoAwesome.UI.Controls;
 using OctoAwesome.UI.Screens;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace OctoAwesome.Basics.UI.Screens
@@ -175,6 +172,12 @@ namespace OctoAwesome.Basics.UI.Screens
             }
 
             Rebuild(transferComponent.InventoryA, transferComponent.InventoryB);
+        }
+
+        protected override void OnUpdate(GameTime gameTime)
+        {
+
+            base.OnUpdate(gameTime);
         }
 
         private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)

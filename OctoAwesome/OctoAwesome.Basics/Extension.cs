@@ -1,4 +1,5 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.FunctionBlocks;
@@ -114,7 +115,7 @@ namespace OctoAwesome.Basics
                 //    //c.Components.AddComponent(c.transferUiComponent, true);
                 //}
 
-                c.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Transfer" });
+                c.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Transfer" }, true);
 
                 c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
                 c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }), true);
@@ -171,7 +172,7 @@ namespace OctoAwesome.Basics
 
 
 
-                f.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Furnace" });
+                f.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Furnace" }, true);
                 f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);
                 f.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
                 f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" }, true);

@@ -1,5 +1,4 @@
 ﻿using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
@@ -13,17 +12,19 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     public int VersionA { get; private set; }
     public InventoryComponent InventoryB { get; private set; }
     public int VersionB { get; private set; }
+    private bool show = false;
 
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        if (!Show
-            || component2.Targets.Count == 0
-            || ((InventoryA?.Version ?? -1) == VersionA
-                && (InventoryB?.Version ?? -1) == VersionB))
+        if (show == Show
+            && (component2.Targets.Count == 0
+                || ((InventoryA?.Version ?? -1) == VersionA
+                    && (InventoryB?.Version ?? -1) == VersionB)))
         {
             return false;
         }
 
+        show = Show;
         InventoryA = component;
         InventoryB = component2.Targets.First();
         VersionA = InventoryA.Version;
