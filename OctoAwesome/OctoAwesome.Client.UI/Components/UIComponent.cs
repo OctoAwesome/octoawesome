@@ -1,14 +1,10 @@
 ﻿using engenious;
 
 using OctoAwesome.Components;
-using OctoAwesome.Database;
 using OctoAwesome.Rx;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.UI.Components
 {
@@ -44,7 +40,7 @@ namespace OctoAwesome.UI.Components
                 OnAdd(value);
                 componentContainers.Add(value);
 
-                var uiMappingComponent =value.GetComponent<UiMappingComponent>();
+                var uiMappingComponent = value.GetComponent<UiMappingComponent>();
                 componentContainerSubs[value] = uiMappingComponent.Changed.Subscribe(UiMappingChanged);
             }
         }
@@ -54,7 +50,7 @@ namespace OctoAwesome.UI.Components
         {
             if (componentContainers.Contains(value))
             {
-                if(componentContainerSubs.TryGetValue(value, out var dispose))
+                if (componentContainerSubs.TryGetValue(value, out var dispose))
                 {
                     dispose.Dispose();
                     componentContainerSubs.Remove(value);
@@ -68,8 +64,11 @@ namespace OctoAwesome.UI.Components
 
         protected virtual bool Match(ComponentContainer value) => true;
 
-        protected virtual void UiMappingChanged((ComponentContainer container, string screenKey, bool show) e) 
+        protected virtual void UiMappingChanged((ComponentContainer container, string screenKey, bool show) e)
         {
+            bool isSame = PrimaryUiKey == e.screenKey && e.show == Show;
+            if (isSame)
+                return;
             PrimaryUiKey = e.screenKey;
             Show = e.show;
         }

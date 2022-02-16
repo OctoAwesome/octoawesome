@@ -14,15 +14,19 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     public int InputVersion { get; private set; }
     //public InventoryComponent OutputInventory { get; private set; }
     //public int OutputVersion { get; private set; }
+    private bool show = false;
 
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        if (!Show 
-            || component2.Targets.Count == 0
-            || ((InventoryA?.Version ?? -1) == VersionA
-                && (InputInventory?.Version ?? -1) == InputVersion))
+        if (show == Show
+            && (component2.Targets.Count == 0
+                || ((InventoryA?.Version ?? -1) == VersionA
+                    && (InputInventory?.Version ?? -1) == InputVersion)))
+        {
             return false;
+        }
 
+        show = Show;
         InventoryA = component;
         VersionA = InventoryA.Version;
         InputInventory = component2.Targets.First();
