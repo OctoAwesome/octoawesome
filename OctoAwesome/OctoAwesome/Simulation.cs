@@ -60,7 +60,6 @@ namespace OctoAwesome
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly ExtensionService extensionService;
-        //private readonly IExtensionResolver extensionResolver;
 
         private readonly List<Entity> entities = new();
         private readonly List<FunctionalBlock> functionalBlocks = new();
@@ -215,7 +214,7 @@ namespace OctoAwesome
         /// <remarks>This does not exit the application.</remarks>
         public void ExitGame()
         {
-            if (State != SimulationState.Running && State != SimulationState.Paused)
+            if (State is not SimulationState.Running and not SimulationState.Paused)
                 throw new Exception("Simulation is not running");
 
             State = SimulationState.Paused;
@@ -246,14 +245,15 @@ namespace OctoAwesome
         {
             Debug.Assert(entity is not null, nameof(entity) + " != null");
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
 
-            if (entity.Simulation != null && entity.Simulation != this)
+            if (entity.Simulation is not null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
             if (entities.Contains(entity))
                 return;
+
 
             extensionService.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
@@ -282,14 +282,27 @@ namespace OctoAwesome
         {
             Debug.Assert(block is not null, nameof(block) + " != null");
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-            if (block.Simulation != null && block.Simulation != this)
+            if (block.Simulation is not null && block.Simulation != this)
                 throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be part of more than one simulation");
+
+
+            foreach (var fb in functionalBlocks)
+            {
+                if (fb == block
+                    || (fb.Components.TryGetComponent<PositionComponent>(out var existing)
+                        && (!block.Components.TryGetComponent<PositionComponent>(out PositionComponent newPosComponent)
+                            || existing.Position == newPosComponent.Position)))
+                {
+                    return;
+                }
+            }
 
             if (functionalBlocks.Contains(block))
                 return;
+
 
 
             extensionService.ExecuteExtender(block);
