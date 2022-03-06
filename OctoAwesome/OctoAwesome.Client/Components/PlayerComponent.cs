@@ -227,6 +227,7 @@ namespace OctoAwesome.Client.Components
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
             var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Wood");
             var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Stone");
+            var foodMaterial = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {
                 var woodItem = itemDefinition.Create(wood);
@@ -236,7 +237,12 @@ namespace OctoAwesome.Client.Components
                 var stoneItem = itemDefinition.Create(stone);
                 if (stoneItem is not null)
                     inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+
+                var fooditem = itemDefinition.Create(foodMaterial);
+                if (fooditem is not null)
+                    inventory.AddUnit(fooditem.VolumePerUnit, fooditem);
             }
+
         }
     }
 }

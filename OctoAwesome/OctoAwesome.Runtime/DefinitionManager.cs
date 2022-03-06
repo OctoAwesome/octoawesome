@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,17 +20,17 @@ namespace OctoAwesome.Runtime
         /// <param name="extensionResolver">The extension resolver to get definitions from extensions with.</param>
         public DefinitionManager(ExtensionService extensionService)
         {
-            this.extensionService= extensionService;
+            this.extensionService = extensionService;
 
             var definitions = new List<IDefinition>();
 
             foreach (var item in extensionService.GetRegistrars(ChannelNames.Definitions))
             {
-                if(item is DefinitionRegistrar registrar)
-                definitions.AddRange(registrar.Get<IDefinition>());
+                if (item is DefinitionRegistrar registrar)
+                    definitions.AddRange(registrar.Get<IDefinition>());
             }
 
-            Definitions = definitions.ToArray(); 
+            Definitions = definitions.ToArray();
 
             // collect items
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
@@ -39,6 +40,9 @@ namespace OctoAwesome.Runtime
 
             // collect materials
             MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
+
+            //collect foods
+            FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
         }
 
         /// <inheritdoc />
@@ -52,6 +56,7 @@ namespace OctoAwesome.Runtime
 
         /// <inheritdoc />
         public IMaterialDefinition[] MaterialDefinitions { get; }
+        public IFoodMaterialDefinition[] FoodDefinitions { get; }
 
         /// <inheritdoc />
         public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)

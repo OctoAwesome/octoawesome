@@ -5,6 +5,7 @@ using engenious.UserDefined.Effects;
 
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -84,7 +85,8 @@ namespace OctoAwesome.Client.Components
         public SimulationComponent Simulation { get; private set; }
 
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
-
+        public List<Entity> Entities { get; set; }
+        public List<FunctionalBlock> FunctionalBlocks { get; set; }
         public List<Entity> Entities { get; set; }
         public List<FunctionalBlock> FunctionalBlocks { get; set; }
 
@@ -92,8 +94,7 @@ namespace OctoAwesome.Client.Components
         {
             Simulation = simulation;
 
-            Entities = new List<Entity>();
-            FunctionalBlocks = new List<FunctionalBlock>();
+            ComponentContainers = new List<ComponentContainer>();
             graphicsDevice = game.GraphicsDevice;
 
             effectInstantiator = game.Content.Load<EffectInstantiator>("Effects/entityEffect");
@@ -176,8 +177,6 @@ namespace OctoAwesome.Client.Components
 
                     SetShadowTransforms(chunkOffset, planetSize, entity, rendercomp, modelinfo);
                     modelinfo.model.Draw(effect);
-                }
-
                 foreach (var functionalBlock in FunctionalBlocks)
                 {
 
@@ -207,7 +206,7 @@ namespace OctoAwesome.Client.Components
             effect.Texture = modelinfo.texture;
             modelinfo.model.Transform = world;
         }
-
+                            };
         private void SetShadowTransforms<T>(Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) where T : IComponent
         {
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
@@ -222,11 +221,11 @@ namespace OctoAwesome.Client.Components
             Debug.Assert(positioncomp != null, nameof(positioncomp) + " != null");
             var position = positioncomp.Position;
             var body = componentContainer.Components.GetComponent<BodyComponent>();
+                        if (entity.Components.ContainsComponent<HeadComponent>())
+                            head = entity.Components.GetComponent<HeadComponent>();
 
             Index3 shift = chunkOffset.ShortestDistanceXY(
            position.ChunkIndex, planetSize);
-
-            var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
 
             Matrix world = Matrix.CreateTranslation(
                 shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
@@ -245,7 +244,7 @@ namespace OctoAwesome.Client.Components
             }
 
             rendercomp = componentContainer.Components.GetComponent<RenderComponent>();
-
+                            continue;
             Debug.Assert(rendercomp != null, nameof(rendercomp) + " != null");
             if (!models.TryGetValue(rendercomp.Name, out modelinfo))
             {
@@ -261,6 +260,38 @@ namespace OctoAwesome.Client.Components
                 return false;
 
             return true;
+                        if (!modelinfo.render)
+                            continue;
+
+                        var positioncomp = functionalBlock.Components.GetComponent<PositionComponent>();
+                        var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
+                        var position = positioncomp.Position;
+                        var body = functionalBlock.Components.GetComponent<BodyComponent>();
+
+                        Index3 shift = chunkOffset.ShortestDistanceXY(
+                       position.ChunkIndex, planetSize);
+
+                        var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+
+                        Matrix world = Matrix.CreateTranslation(
+                            shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
+                            shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
+                            shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z - 0.5f) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
+                        effect.World = world;
+                        effect.Texture = modelinfo.texture;
+                        modelinfo.model.Transform = world;
+                        modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
+                        if (animationcomp is not null)
+                        {
+                            animationcomp.MaxTime = modelinfo.model.CurrentAnimation?.MaxTime ?? 0f;
+                            animationcomp.Update(gameTime, modelinfo.model);
+                        }
+                        //modelinfo.model.CurrentAnimation.MaxTime
+                        //modelinfo.model.UpdateAnimation((float)(gameTime.TotalGameTime.TotalMilliseconds / 20));
+                        //modelinfo.model.CurrentAnimation?.Update(DateTime.Now.Second);
+                        modelinfo.model.Draw(effect);
+                    }
+                }
         }
 
         public override void Update(GameTime gameTime)
@@ -273,18 +304,7 @@ namespace OctoAwesome.Client.Components
             if (!(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
                 return;
 
-            Entities.Clear();
-            foreach (var item in simulation.Entities)
-            {
-                if (item.Components.ContainsComponent<PositionComponent>())
-                    Entities.Add(item);
-            }
-            FunctionalBlocks.Clear();
-            foreach (var item in simulation.FunctionalBlocks)
-            {
-                if (item.Components.ContainsComponent<PositionComponent>())
-                    FunctionalBlocks.Add(item);
-            }
+            ComponentContainers = simulation.GetByComponentType<PositionComponent>();
             //base.Update(gameTime);
         }
     }

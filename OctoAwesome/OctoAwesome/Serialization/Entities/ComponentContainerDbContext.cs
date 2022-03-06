@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Database;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace OctoAwesome.Serialization.Entities
         private readonly ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext entityDefinitionContext;
         private readonly ComponentContainerComponentDbContext<TComponent> componentsDbContext;
         private readonly MethodInfo getComponentMethod;
+        private readonly MethodInfo addOrUpdateComponentMethod;
         private readonly MethodInfo removeComponentMethod;
 
         /// <summary>
@@ -33,7 +35,11 @@ namespace OctoAwesome.Serialization.Entities
             var database = databaseProvider.GetDatabase<GuidTag<ComponentContainerDefinition<TComponent>>>(universe, false);
             entityDefinitionContext = new ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext(database);
             componentsDbContext = new ComponentContainerComponentDbContext<TComponent>(databaseProvider, universe);
+
             getComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
+
+            addOrUpdateComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.AddOrUpdate));
+
             removeComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
         }
 
@@ -42,8 +48,12 @@ namespace OctoAwesome.Serialization.Entities
         {
             entityDefinitionContext.AddOrUpdate(new ComponentContainerDefinition<TComponent>(value));
 
-            foreach (dynamic component in value.Components) //dynamic so typeof<T> in get database returns correct type 
-                componentsDbContext.AddOrUpdate(component, value);
+            foreach (var component in value.Components)
+            {
+                MethodInfo genericMethod = addOrUpdateComponentMethod.MakeGenericMethod(component.GetType());
+                genericMethod.Invoke(componentsDbContext, new object[] { component, value });
+
+            }
         }
 
         /// <inheritdoc />

@@ -26,6 +26,7 @@ namespace OctoAwesome.Definitions
         /// Gets an array of material definitions.
         /// </summary>
         IMaterialDefinition[] MaterialDefinitions { get; }
+        IFoodMaterialDefinition[] FoodDefinitions { get; }
 
         /// <summary>
         /// Gets the block definition by a block index.
