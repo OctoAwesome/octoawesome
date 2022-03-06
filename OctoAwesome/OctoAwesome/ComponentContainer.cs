@@ -8,9 +8,6 @@ using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
@@ -120,14 +117,14 @@ namespace OctoAwesome
 
         protected virtual void ValidateAddComponent(TComponent component)
         {
-            if (Simulation is not null)
-                throw new NotSupportedException("Can't add components during simulation");
+            //if (Simulation is not null)
+            //    throw new NotSupportedException("Can't add components during simulation");
         }
 
         protected virtual void ValidateRemoveComponent(TComponent component)
         {
-            if (Simulation is not null)
-                throw new NotSupportedException("Can't remove components during simulation");
+            //if (Simulation is not null)
+            //    throw new NotSupportedException("Can't remove components during simulation");
         }
 
         public void Initialize(IResourceManager mananger) => OnInitialize(mananger);

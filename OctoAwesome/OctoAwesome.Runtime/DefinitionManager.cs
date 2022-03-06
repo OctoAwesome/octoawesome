@@ -1,9 +1,9 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace OctoAwesome.Runtime
 {
@@ -16,26 +16,29 @@ namespace OctoAwesome.Runtime
 
         public DefinitionManager(ExtensionService extensionService)
         {
-            this.extensionService= extensionService;
+            this.extensionService = extensionService;
 
             var definitions = new List<IDefinition>();
 
             foreach (var item in extensionService.GetRegistrars(ChannelNames.Definitions))
             {
-                if(item is DefinitionRegistrar registrar)
-                definitions.AddRange(registrar.Get<IDefinition>());
+                if (item is DefinitionRegistrar registrar)
+                    definitions.AddRange(registrar.Get<IDefinition>());
             }
 
-            Definitions = definitions.ToArray(); 
+            Definitions = definitions.ToArray();
 
             // collect items
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
-            
+
             // collect blocks
             BlockDefinitions = Definitions.OfType<IBlockDefinition>().ToArray();
 
             // collect materials
             MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
+
+            //collect foods
+            FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
         }
 
         /// <summary>
@@ -57,6 +60,7 @@ namespace OctoAwesome.Runtime
         public IBlockDefinition[] BlockDefinitions { get; }
 
         public IMaterialDefinition[] MaterialDefinitions { get; }
+        public IFoodMaterialDefinition[] FoodDefinitions { get; }
 
         /// <summary>
         /// Liefert die BlockDefinition zum angegebenen Index.
@@ -90,7 +94,7 @@ namespace OctoAwesome.Runtime
         {
             int i = 0;
             IDefinition definition = default;
-            foreach (var  d in Definitions)
+            foreach (var d in Definitions)
             {
                 if (i > 0 && d.GetType() == typeof(T))
                 {
@@ -111,7 +115,7 @@ namespace OctoAwesome.Runtime
         /// <typeparam name="T">Typ der Definition</typeparam>
         /// <returns>Auflistung von Instanzen</returns>
         public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
-        {          
+        {
             return Definitions.OfType<T>();
         }
 

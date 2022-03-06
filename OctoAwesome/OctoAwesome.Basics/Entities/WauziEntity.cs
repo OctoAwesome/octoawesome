@@ -1,14 +1,9 @@
 ﻿using engenious;
 
+using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.Entities
 {
@@ -17,8 +12,9 @@ namespace OctoAwesome.Basics.Entities
     {
         public int JumpTime { get; set; }
 
-        private GameTime lastRotation;
         private Vector2 moveDir = new Vector2(0.5f, 0.5f);
+        private PositionComponent posComponent;
+        private Entity followEntity;
 
         public WauziEntity() : base()
         {
@@ -26,20 +22,80 @@ namespace OctoAwesome.Basics.Entities
 
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (gameTime.TotalGameTime - lastRotation.TotalGameTime < TimeSpan.FromMilliseconds(500))
+            if (!entity.Components.TryGetComponent<ToolBarComponent>(out var toolbar)
+                || !entity.Components.TryGetComponent<InventoryComponent>(out var inventory)
+                || !entity.Components.TryGetComponent<PositionComponent>(out var position)
+                || toolbar.ActiveTool?.Item is not MeatRaw)
                 return;
 
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.JumpInput = true;
-            lastRotation = gameTime;
-            moveDir = new Vector2(moveDir.Y, -moveDir.X);
+            if (!Components.ContainsComponent<RelatedEntityComponent>())
+            {
+                var relEntity = new RelatedEntityComponent();
+                relEntity.RelatedEntityId = entity.Id;
+                Components.AddComponent(relEntity);
+                followEntity = entity;
+            }
+
+            inventory.RemoveUnit(toolbar.ActiveTool);
+            if (toolbar.ActiveTool.Amount < 1)
+            {
+                inventory.RemoveSlot(toolbar.ActiveTool);
+                toolbar.RemoveSlot(toolbar.ActiveTool);
+            }
         }
+
 
         public override void Update(GameTime gameTime)
         {
+            PositionComponent position = null;
+
+            if (followEntity is null && Components.TryGetComponent<RelatedEntityComponent>(out var relEntity))
+            {
+                Simulation.TryGetById<Entity>(relEntity.RelatedEntityId, out followEntity);
+            }
+
+            if (followEntity is null)
+            {
+                foreach (var player in Simulation.GetEntitiesOfType<Player>())
+                {
+                    if (!player.Components.TryGetComponent<ToolBarComponent>(out var toolbar)
+                        || !player.Components.TryGetComponent<PositionComponent>(out var newPos))
+                        continue;
+                    if (toolbar.ActiveTool?.Item is not MeatRaw)
+                        continue;
+                    position = newPos;
+                }
+            }
+            else
+            {
+                position = followEntity.GetComponent<PositionComponent>();
+            }
+
+            if (position is not null)
+            {
+                var diff = posComponent.Position.GlobalBlockIndex.ShortestDistanceXY(position.Position.GlobalBlockIndex, posComponent.Planet.Size);
+                var length = diff.Length();
+                if (followEntity is not null || length < 50)
+                {
+                    if (length > 250 || length != length)
+                        posComponent.Position = position.Position;
+                    if (length < 5 || length != length)
+                        diff = Index3.Zero;
+
+                    moveDir = new Vector2(diff.X, diff.Y);
+                    if (diff != Index3.Zero)
+                    {
+                        moveDir.Normalize();
+                    }
+                }
+            }
+            else
+                moveDir = new Vector2(0.5f, 0.5f);
+
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.MoveInput = moveDir;
-
             if (JumpTime <= 0)
             {
                 controller.JumpInput = true;
@@ -58,7 +114,7 @@ namespace OctoAwesome.Basics.Entities
 
         public override void RegisterDefault()
         {
-            var posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
+            posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
             Components.AddComponent(posComponent);
             Components.AddComponent(new GravityComponent());

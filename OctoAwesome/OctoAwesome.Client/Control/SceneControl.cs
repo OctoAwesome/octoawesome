@@ -430,19 +430,12 @@ namespace OctoAwesome.Client.Controls
 
             //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
-            foreach (var funcBlock in Manager.Game.Simulation.Simulation.FunctionalBlocks)
+            foreach (var item in Manager.Game.Simulation.Simulation.GetByComponentTypes<PositionComponent, BoxCollisionComponent>())
             {
-                if (!funcBlock.ContainsComponent<PositionComponent>() || !funcBlock.ContainsComponent<BoxCollisionComponent>())
+                if (!item.ContainsComponent<PositionComponent>() || !item.ContainsComponent<BoxCollisionComponent>())
                     continue;
 
-                CalcBestDistance(centerblock, renderOffset, ref selected, ref selectedAxis, ref selectionPoint, ref bestDistance, ref componentContainer, funcBlock);
-            }
-            foreach (var entity in Manager.Game.Simulation.Simulation.Entities)
-            {
-                if (!entity.ContainsComponent<PositionComponent>() || !entity.ContainsComponent<BoxCollisionComponent>())
-                    continue;
-
-                CalcBestDistance(centerblock, renderOffset, ref selected, ref selectedAxis, ref selectionPoint, ref bestDistance, ref componentContainer, entity);
+                CalcBestDistance(centerblock, renderOffset, ref selected, ref selectedAxis, ref selectionPoint, ref bestDistance, ref componentContainer, item);
             }
 
             return componentContainer;

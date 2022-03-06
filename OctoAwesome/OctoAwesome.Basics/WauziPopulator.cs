@@ -1,16 +1,11 @@
 ﻿using engenious;
 
 using OctoAwesome.Basics.Entities;
-using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics
 {
@@ -22,7 +17,7 @@ namespace OctoAwesome.Basics
 
         public int Order => 11;
 
-        private int ispop = 10;
+        private int ispop = 3;
         private bool disposedValue;
 
         public WauziPopulator(IResourceManager resManager)

@@ -1,15 +1,14 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Database;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Serialization.Entities
 {
-    public sealed class ComponentContainerDbContext<TContainer, TComponent> 
+    public sealed class ComponentContainerDbContext<TContainer, TComponent>
         : IDatabaseContext<GuidTag<TContainer>, TContainer>
         where TContainer : ComponentContainer<TComponent>
         where TComponent : IComponent
@@ -17,6 +16,7 @@ namespace OctoAwesome.Serialization.Entities
         private readonly ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext<TComponent> entityDefinitionContext;
         private readonly ComponentContainerComponentDbContext<TComponent> componentsDbContext;
         private readonly MethodInfo getComponentMethod;
+        private readonly MethodInfo addOrUpdateComponentMethod;
         private readonly MethodInfo removeComponentMethod;
 
         public ComponentContainerDbContext(IDatabaseProvider databaseProvider, Guid universe)
@@ -24,7 +24,11 @@ namespace OctoAwesome.Serialization.Entities
             var database = databaseProvider.GetDatabase<GuidTag<ComponentContainerDefinition<TComponent>>>(universeGuid: universe, fixedValueSize: false);
             entityDefinitionContext = new ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext<TComponent>(database);
             componentsDbContext = new ComponentContainerComponentDbContext<TComponent>(databaseProvider, universe);
+
             getComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
+
+            addOrUpdateComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.AddOrUpdate));
+
             removeComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
         }
 
@@ -32,8 +36,12 @@ namespace OctoAwesome.Serialization.Entities
         {
             entityDefinitionContext.AddOrUpdate(new ComponentContainerDefinition<TComponent>(value));
 
-            foreach (dynamic component in value.Components) //dynamic so tyepof<T> in get database returns correct type 
-                componentsDbContext.AddOrUpdate(component, value);
+            foreach (var component in value.Components)
+            {
+                MethodInfo genericMethod = addOrUpdateComponentMethod.MakeGenericMethod(component.GetType());
+                genericMethod.Invoke(componentsDbContext, new object[] { component, value });
+
+            }
         }
 
         public TContainer Get(GuidTag<TContainer> key)
@@ -50,10 +58,10 @@ namespace OctoAwesome.Serialization.Entities
                 }
                 catch (Exception)
                 {
-//HACK: TransferUiComponent shouldn't be serialized and deserialized
+                    //HACK: TransferUiComponent shouldn't be serialized and deserialized
                 }
 
-             
+
             }
 
             return entity;

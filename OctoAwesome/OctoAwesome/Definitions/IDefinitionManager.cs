@@ -25,6 +25,7 @@ namespace OctoAwesome.Definitions
         /// <returns></returns>
         IBlockDefinition[] BlockDefinitions { get; }
         IMaterialDefinition[] MaterialDefinitions { get; }
+        IFoodMaterialDefinition[] FoodDefinitions { get; }
 
         /// <summary>
         /// Liefert die BlockDefinition zum angegebenen Index.
