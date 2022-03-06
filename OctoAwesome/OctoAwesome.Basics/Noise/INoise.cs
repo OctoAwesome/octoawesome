@@ -1,9 +1,10 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Noise
+namespace OctoAwesome.Basics.Noise
 {
     public interface INoise
     {

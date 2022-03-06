@@ -1,11 +1,10 @@
-﻿using OctoAwesome.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using engenious;
+﻿using engenious;
+
 using OctoAwesome.EntityComponents;
 using OctoAwesome.SumTypes;
+
+using System;
+using System.Linq;
 
 namespace OctoAwesome.Client.Components
 {
@@ -82,19 +81,19 @@ namespace OctoAwesome.Client.Components
                 CurrentController = entity.Components.GetComponent<ControllableComponent>();
 
                 CurrentEntityHead = entity.Components.GetComponent<HeadComponent>();
-                if (CurrentEntityHead is null) 
+                if (CurrentEntityHead is null)
                     CurrentEntityHead = new() { Offset = new(0, 0, 3.2f) };
 
                 Inventory = entity.Components.GetComponent<InventoryComponent>();
-                if (Inventory is null) 
+                if (Inventory is null)
                     Inventory = new();
 
                 Toolbar = entity.Components.GetComponent<ToolBarComponent>();
-                if (Toolbar is null) 
+                if (Toolbar is null)
                     Toolbar = new();
 
                 Position = entity.Components.GetComponent<PositionComponent>();
-                if (Position is null) 
+                if (Position is null)
                     Position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             }
             CurrentEntity = entity;
@@ -123,7 +122,7 @@ namespace OctoAwesome.Client.Components
                 CurrentController.Selection = Selection;
             else
                 CurrentController.Selection = null;
-                       
+
             if (InteractInput && SelectedBox.HasValue)
                 CurrentController.InteractBlock = SelectedBox.Value;
             else
@@ -185,9 +184,12 @@ namespace OctoAwesome.Client.Components
             foreach (var itemDefinition in itemDefinitions)
             {
                 var woodItem = itemDefinition.Create(wood);
-                inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+                if (woodItem is not null)
+                    inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+
                 var stoneItem = itemDefinition.Create(stone);
-                inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+                if (stoneItem is not null)
+                    inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
             }
         }
     }

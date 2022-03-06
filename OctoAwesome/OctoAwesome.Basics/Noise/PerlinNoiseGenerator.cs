@@ -1,9 +1,10 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OctoAwesome.Noise
+namespace OctoAwesome.Basics.Noise
 {
     public class PerlinNoiseGenerator : INoise
     {
@@ -53,14 +54,14 @@ namespace OctoAwesome.Noise
             unchecked
             {
                 int n = x * Seed;
-                n = (n << 13) ^ n;
+                n = n << 13 ^ n;
                 n *= n * 15731;
                 n += 789221;
                 n *= n;
                 n += 1376312589;
                 n = n & 0x7fffffff;
 
-                return (float)(1.0 - (n / 1073741824.0));
+                return (float)(1.0 - n / 1073741824.0);
             }
         }
 
@@ -68,15 +69,15 @@ namespace OctoAwesome.Noise
         {
             unchecked
             {
-                int n = x + (y * 57 * Seed);
-                n = (n << 13) ^ n;
+                int n = x + y * 57 * Seed;
+                n = n << 13 ^ n;
                 n *= n * 15731;
                 n += 789221;
                 n *= n;
                 n += 1376312589;
                 n = n & 0x7fffffff;
 
-                return (float)(1.0 - (n / 1073741824.0));
+                return (float)(1.0 - n / 1073741824.0);
             }
         }
 
@@ -84,15 +85,15 @@ namespace OctoAwesome.Noise
         {
             unchecked
             {
-                int n = x + (y * 29) + (z * 37 * Seed);
-                n = (n << 13) ^ n;
+                int n = x + y * 29 + z * 37 * Seed;
+                n = n << 13 ^ n;
                 n *= n * 15731;
                 n += 789221;
                 n *= n;
                 n += 1376312589;
                 n = n & 0x7fffffff;
 
-                return (float)(1.0 - (n / 1073741824.0));
+                return (float)(1.0 - n / 1073741824.0);
             }
         }
 
@@ -102,7 +103,7 @@ namespace OctoAwesome.Noise
 
         private float LinearInterpolation(float a, float b, float x)
         {
-            return (a * (1 - x)) + (b * x);
+            return a * (1 - x) + b * x;
         }
 
         private float LinearInterpolation2(float a, float b, float c, float d, float x, float y)
@@ -185,7 +186,8 @@ namespace OctoAwesome.Noise
 
         public float SmoothedNoise(int x)
         {
-            if (Smoothfactor == 0) return Noise(x);
+            if (Smoothfactor == 0)
+                return Noise(x);
 
             return Noise(x) * ((Noise(x + 1) - Noise(x - 1)) / Smoothfactor);
         }
@@ -193,7 +195,8 @@ namespace OctoAwesome.Noise
         public float SmoothedNoise2(int x, int y)
         {
 
-            if (Smoothfactor == 0) return Noise2(x, y);
+            if (Smoothfactor == 0)
+                return Noise2(x, y);
 
             float sides = (Noise2(x + 1, y) + Noise2(x - 1, y) + Noise2(x, y + 1) + Noise2(x, y - 1)) / (4 * Smoothfactor);
             float corners = (Noise2(x + 1, y + 1) + Noise2(x - 1, y - 1) + Noise2(x - 1, y + 1) + Noise2(x + 1, y - 1)) / (4 * (float)Math.Sqrt(2) * Smoothfactor);
@@ -206,7 +209,8 @@ namespace OctoAwesome.Noise
         public float SmoothedNoise3(int x, int y, int z)
         {
 
-            if (Smoothfactor == 0) return Noise3(x, y, z);
+            if (Smoothfactor == 0)
+                return Noise3(x, y, z);
 
             float directSides = (Noise3(x + 1, y, z) + Noise3(x - 1, y, z) + Noise3(x, y + 1, z) + Noise3(x, y - 1, z) + Noise3(x, y, z - 1) + Noise3(x, y, z + 1)) / (6 * Smoothfactor);
 
@@ -234,7 +238,8 @@ namespace OctoAwesome.Noise
         {
 
             int integer_X = (int)x;
-            if (x < 0) integer_X--;
+            if (x < 0)
+                integer_X--;
             float fractional_X = x - integer_X;
 
             float v1 = SmoothedNoise(integer_X);
@@ -248,12 +253,14 @@ namespace OctoAwesome.Noise
         {
 
             int integer_X = (int)x;
-            if (x < 0) integer_X--;
+            if (x < 0)
+                integer_X--;
             float fractional_X = x - integer_X;
 
 
             int integer_Y = (int)y;
-            if (y < 0) integer_Y--;
+            if (y < 0)
+                integer_Y--;
             float fractional_Y = y - integer_Y;
 
             float v1 = SmoothedNoise2(integer_X, integer_Y);
@@ -269,15 +276,18 @@ namespace OctoAwesome.Noise
         {
 
             int integer_X = (int)x;
-            if (x < 0) integer_X--;
+            if (x < 0)
+                integer_X--;
             float fractional_X = x - integer_X;
 
             int integer_Y = (int)y;
-            if (y < 0) integer_Y--;
+            if (y < 0)
+                integer_Y--;
             float fractional_Y = y - integer_Y;
 
             int integer_Z = (int)z;
-            if (z < 0) integer_Z--;
+            if (z < 0)
+                integer_Z--;
             float fractional_Z = z - integer_Z;
 
             float v1 = SmoothedNoise3(integer_X, integer_Y, integer_Z);
@@ -302,7 +312,8 @@ namespace OctoAwesome.Noise
 
             float[,] noiseLayers = new float[Octaves, width];
 
-            if (Sizefactor < 1) Sizefactor = 1;
+            if (Sizefactor < 1)
+                Sizefactor = 1;
 
 
             for (int i = 0; i < Octaves; i++)
@@ -335,7 +346,8 @@ namespace OctoAwesome.Noise
 
             float[,,] noiseLayers = new float[Octaves, width, heigth];
 
-            if (Sizefactor < 1) Sizefactor = 1;
+            if (Sizefactor < 1)
+                Sizefactor = 1;
 
 
             for (int i = 0; i < Octaves; i++)
@@ -374,7 +386,8 @@ namespace OctoAwesome.Noise
 
             float[,,,] noiseLayers = new float[Octaves, width, heigth, depth];
 
-            if (Sizefactor < 1) Sizefactor = 1;
+            if (Sizefactor < 1)
+                Sizefactor = 1;
 
 
             for (int i = 0; i < Octaves; i++)

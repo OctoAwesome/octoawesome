@@ -1,4 +1,4 @@
-﻿using OctoAwesome.Noise;
+﻿using OctoAwesome.Basics.Noise;
 
 using System;
 using System.Buffers;

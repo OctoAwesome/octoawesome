@@ -1,8 +1,4 @@
-﻿using OctoAwesome.Noise;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OctoAwesome.Basics.Noise;
 
 namespace OctoAwesome.Basics.Biomes
 {

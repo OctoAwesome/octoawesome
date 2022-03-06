@@ -69,7 +69,8 @@ namespace OctoAwesome.UI.Components
                     foreach (var packPath in packPathes)
                     {
                         ResourcePack resourcePack = loadedPacks.FirstOrDefault(p => p.Path.Equals(packPath));
-                        if (resourcePack != null) toLoad.Add(resourcePack);
+                        if (resourcePack != null)
+                            toLoad.Add(resourcePack);
                     }
                 }
             }

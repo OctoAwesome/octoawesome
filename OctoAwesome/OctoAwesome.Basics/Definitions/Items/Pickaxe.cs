@@ -1,10 +1,10 @@
-﻿using OctoAwesome.Basics.Definitions.Items;
-using OctoAwesome.Definitions;
+﻿using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.OctoMath;
+
 using System;
 
-namespace OctoAwesome.Basics
+namespace OctoAwesome.Basics.Definitions.Items
 {
     public class Pickaxe : Item
     {
@@ -29,8 +29,8 @@ namespace OctoAwesome.Basics
             if (material is ISolidMaterialDefinition solid && baseEfficiency > 0)
             {
                 var fractureEfficiency = polynomial.Evaluate(solid.FractureToughness);
-                
-                return (int)(baseEfficiency * (fractureEfficiency) / 100);
+
+                return (int)(baseEfficiency * fractureEfficiency / 100);
             }
 
             return baseEfficiency;
