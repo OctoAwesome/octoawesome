@@ -1,6 +1,8 @@
-﻿using System;
-using System.Buffers;
+﻿
 using OctoAwesome.Basics.Noise;
+
+using System;
+using System.Buffers;
 
 namespace OctoAwesome.Basics.Biomes
 {

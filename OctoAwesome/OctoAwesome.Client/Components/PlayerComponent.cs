@@ -2,8 +2,12 @@
 using System.Diagnostics;
 using System.Linq;
 using engenious;
+
 using OctoAwesome.EntityComponents;
 using OctoAwesome.SumTypes;
+
+using System;
+using System.Linq;
 
 namespace OctoAwesome.Client.Components
 {
@@ -226,9 +230,12 @@ namespace OctoAwesome.Client.Components
             foreach (var itemDefinition in itemDefinitions)
             {
                 var woodItem = itemDefinition.Create(wood);
-                inventory.Add(woodItem, woodItem.VolumePerUnit);
+                if (woodItem is not null)
+                    inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+
                 var stoneItem = itemDefinition.Create(stone);
-                inventory.Add(stoneItem, stoneItem.VolumePerUnit);
+                if (stoneItem is not null)
+                    inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
             }
         }
     }
