@@ -1,6 +1,4 @@
-﻿using OctoAwesome.Definitions;
-using OctoAwesome.Extension;
-using OctoAwesome.Serialization;
+﻿using OctoAwesome.Extension;
 
 using System;
 using System.Collections.Generic;
@@ -146,7 +144,7 @@ namespace OctoAwesome.Runtime
         private IEnumerable<Assembly> LoadAssemblies(DirectoryInfo directory)
         {
             List<Assembly> assemblies = new List<Assembly>();
-            foreach (var file in directory.GetFiles("*.dll"))
+            foreach (var file in directory.GetFiles("*.dll", SearchOption.AllDirectories))
             {
                 try
                 {

@@ -1,6 +1,7 @@
 ### Cooking Recipe Sample
 ``` json
 {
+    "Name": "OctoAwesome.Basics:CookMeat",
     "Type": "Furnace", //, Crafting, etc.pp. Freitext
     "Inputs":[
         {
