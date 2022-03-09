@@ -2,8 +2,9 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Definitions;
+
 using OctoAwesome.UI.Components;
+
 using System.Collections.Generic;
 
 namespace OctoAwesome.UI.Controls
@@ -32,7 +33,7 @@ namespace OctoAwesome.UI.Controls
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalScrollbarVisibility = ScrollbarVisibility.Never,
                 VerticalScrollbarEnabled = true
-                
+
             };
             scroll.VerticalScrollbar.Background = new SolidColorBrush(Color.Transparent);
 
@@ -60,7 +61,7 @@ namespace OctoAwesome.UI.Controls
 
             for (int i = 0; i < columns; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            
+
             int rows = (int)System.Math.Ceiling((float)inventorySlots.Count / columns);
             for (int i = 0; i < rows; i++)
                 grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
@@ -83,6 +84,7 @@ namespace OctoAwesome.UI.Controls
                 {
                     e.Handled = true;
                     e.Icon = texture;
+                    e.IconSize = new Point(42, 42);
                     e.Content = inventorySlot;
                     e.Sender = image;
                 };

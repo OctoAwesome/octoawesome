@@ -69,6 +69,7 @@ public sealed class FurnaceControl : Panel
             {
                 e.Handled = true;
                 e.Icon = texture;
+                e.IconSize = new Point(42, 42);
                 e.Content = inventorySlot;
                 e.Sender = image;
             };

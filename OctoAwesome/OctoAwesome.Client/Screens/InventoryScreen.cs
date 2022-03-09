@@ -1,14 +1,16 @@
-﻿using engenious.UI;
-using OctoAwesome.Client.Components;
+﻿using engenious;
 using engenious.Graphics;
 using engenious.Input;
-using System.Collections.Generic;
-using engenious;
-using OctoAwesome.EntityComponents;
+using engenious.UI;
 using engenious.UI.Controls;
+
+using OctoAwesome.Client.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Controls;
+
+using System.Collections.Generic;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -52,7 +54,7 @@ namespace OctoAwesome.Client.Screens
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
 
-            Texture2D panelBackground = assets.LoadTexture( "panel");
+            Texture2D panelBackground = assets.LoadTexture("panel");
 
             Grid grid = new Grid(manager)
             {
@@ -122,21 +124,22 @@ namespace OctoAwesome.Client.Screens
                     Padding = Border.All(2),
                 };
 
-                image.StartDrag += (c,e) =>
+                image.StartDrag += (c, e) =>
                 {
                     InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
                     if (slot != null)
                     {
                         e.Handled = true;
                         e.Icon = toolTextures[slot.Definition.GetType().FullName];
+                        e.IconSize = new Point(42, 42);
                         e.Content = slot;
                         e.Sender = toolbar;
                     }
                 };
 
-                image.DropEnter += (c,e) => { image.Background = hoverBrush; };
-                image.DropLeave += (c,e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (c,e) =>
+                image.DropEnter += (c, e) => { image.Background = hoverBrush; };
+                image.DropLeave += (c, e) => { image.Background = backgroundBrush; };
+                image.EndDrop += (c, e) =>
                 {
                     e.Handled = true;
 
