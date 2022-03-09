@@ -1,9 +1,11 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
+
 using System;
 using System.IO;
 
@@ -25,11 +27,12 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         public override void Deserialize(BinaryReader reader) => base.Deserialize(reader);//Doesnt get called
 
-        public Chest(Coordinate position)
+        public Chest(Coordinate position, float direction)
         {
             Components.AddComponent(new PositionComponent()
             {
-                Position = position
+                Position = position,
+                Direction = direction
             });
         }
 
@@ -45,8 +48,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (TryGetComponent<UiKeyComponent>(out  var ownUiKeyComponent) 
-                && entity.TryGetComponent<TransferComponent>(out var transferComponent) 
+            if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+                && entity.TryGetComponent<TransferComponent>(out var transferComponent)
                 && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent))
             {
                 transferComponent.Targets.Clear();

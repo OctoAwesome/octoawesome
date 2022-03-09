@@ -2,8 +2,6 @@
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.OctoMath;
 
-using System;
-
 namespace OctoAwesome.Basics.Definitions.Items
 {
     public class Pickaxe : Item
@@ -21,10 +19,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         }
 
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
             //⁅((−𝑥^2)/400)+150⁆
-            var baseEfficiency = base.Hit(material, blockInfo, volumeRemaining, volumePerHit);
+            var baseEfficiency = base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
 
             if (material is ISolidMaterialDefinition solid && baseEfficiency > 0)
             {

@@ -1,16 +1,8 @@
 ﻿using engenious;
 
 using OctoAwesome.Components;
-using OctoAwesome.Definitions;
-using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Services;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -37,7 +29,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                    blockInfo => { },
+                    hitInfo => { },
+                    applyInfo => { },
                     componentContainer => InternalUpdate(controller, entity, componentContainer)
                 );
         }

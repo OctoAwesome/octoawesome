@@ -2,15 +2,8 @@
 
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
-using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Services;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -42,7 +35,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                    blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                    hitInfo => InteractWith(hitInfo, inventory, toolbar, cache),
+                    applyInfo => ApplyWith(applyInfo, inventory, toolbar, cache),
                     componentContainer => componentContainer?.Interact(gameTime, entity)
                 );
 
@@ -111,8 +105,28 @@ namespace OctoAwesome.Basics.SimulationComponents
                 controller.ApplyBlock = null;
             }
         }
+        private void ApplyWith(ApplyInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool.Item is IItem item)
+                {
+                    activeItem = item;
+                }
+                else
+                {
+                    activeItem = toolbar.HandSlot.Item as IItem;
+                }
 
-        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+
+                _ = service.Apply(lastBlock, activeItem, cache);
+
+
+            }
+        }
+
+        private void InteractWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {

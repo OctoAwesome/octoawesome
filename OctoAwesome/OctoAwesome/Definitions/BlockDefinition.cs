@@ -1,8 +1,8 @@
-﻿using System.Drawing;
-using engenious;
-using System.Collections.Generic;
+﻿using engenious;
+
 using OctoAwesome.Information;
 using OctoAwesome.Services;
+
 using System;
 
 namespace OctoAwesome.Definitions
@@ -66,6 +66,17 @@ namespace OctoAwesome.Definitions
             //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
             var valueMined = item.Hit(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining, VolumePerHit);
             return new BlockHitInformation(valueMined != 0, valueMined, new[] { (VolumePerUnit, (IDefinition)this) });
+        }
+        /// <summary>
+        /// Methode, mit der der Block auf Interaktion von aussen reagieren kann.
+        /// </summary>
+        /// <param name="blockVolume">Der Block-Typ des interagierenden Elements</param>
+        /// <param name="item">Die physikalischen Parameter des interagierenden Elements</param>
+        public virtual BlockHitInformation Apply(BlockVolumeState blockVolume, IItem item)
+        {
+            //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
+            var applied = item.Apply(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining);
+            return new BlockHitInformation(applied != 0, applied, new[] { (VolumePerUnit, (IDefinition)this) });
         }
 
         /// <summary>

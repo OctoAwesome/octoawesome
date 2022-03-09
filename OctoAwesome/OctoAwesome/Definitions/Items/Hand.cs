@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OctoAwesome.Definitions.Items
+﻿namespace OctoAwesome.Definitions.Items
 {
     public class Hand : Item
     {
@@ -13,14 +7,14 @@ namespace OctoAwesome.Definitions.Items
 
         }
 
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
-            if(material is ISolidMaterialDefinition solidMaterial)
+            if (material is ISolidMaterialDefinition solidMaterial)
             {
                 if (solidMaterial.Granularity > 1)
                     return volumePerHit / 3;
             }
-            if(material is IGasMaterialDefinition || material is IFluidMaterialDefinition)
+            if (material is IGasMaterialDefinition || material is IFluidMaterialDefinition)
                 return 0;
 
             return volumePerHit - material.Hardness / 2;

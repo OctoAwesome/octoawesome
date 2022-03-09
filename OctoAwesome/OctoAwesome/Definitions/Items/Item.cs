@@ -1,7 +1,8 @@
 ﻿using engenious;
+
 using OctoAwesome.Serialization;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome.Definitions.Items
@@ -43,7 +44,7 @@ namespace OctoAwesome.Definitions.Items
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
 
-        public virtual int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public virtual int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
             //TODO Condition Berechnung
 
@@ -61,6 +62,10 @@ namespace OctoAwesome.Definitions.Items
 
             //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
+        }
+        public virtual int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
+        {
+            return 0;
         }
 
         public virtual void Serialize(BinaryWriter writer)
@@ -126,7 +131,7 @@ namespace OctoAwesome.Definitions.Items
             var definition = manager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
             var material = manager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
 
-            var item = Activator.CreateInstance(itemType, new object[] {definition, material } ) as Item;
+            var item = Activator.CreateInstance(itemType, new object[] { definition, material }) as Item;
 
             item.InternalDeserialize(reader);
             return item;

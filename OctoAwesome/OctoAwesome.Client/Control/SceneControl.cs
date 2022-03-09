@@ -291,10 +291,6 @@ namespace OctoAwesome.Client.Controls
                 selectedAxis = selectedFuncAxis;
                 player.Selection = funcBlock;
             }
-            else
-            {
-                player.Selection = selBlock;
-            }
 
             if (selected.HasValue && selectionPoint.HasValue)
             {
@@ -367,6 +363,9 @@ namespace OctoAwesome.Client.Controls
             {
                 fillResetEvent.Set();
             }
+
+            if (bestBlockDistance <= bestFunctionalBlockDistance)
+                player.Selection = new HitInfo(selBlock.Position, selBlock.Block, player.SelectedBox, player.SelectedPoint, player.SelectedSide, player.SelectedEdge, player.SelectedCorner, selBlock.Meta);
 
             base.OnUpdate(gameTime);
         }

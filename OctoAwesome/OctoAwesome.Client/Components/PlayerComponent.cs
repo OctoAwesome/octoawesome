@@ -128,6 +128,11 @@ namespace OctoAwesome.Client.Components
             else
                 CurrentController.InteractBlock = null;
 
+            if (ApplyInput && SelectedBox.HasValue && Selection.TryMatch(out HitInfo hi))
+            {
+                CurrentController.Selection = Selection.Create(new ApplyInfo(hi.Position, hi.Block, hi.SelectedBox, hi.SelectedPoint, hi.SelectedSide, hi.SelectedEdge, hi.SelectedCorner, hi.Meta));
+            }
+
             if (ApplyInput && SelectedBox.HasValue)
             {
                 CurrentController.ApplyBlock = SelectedBox.Value;
