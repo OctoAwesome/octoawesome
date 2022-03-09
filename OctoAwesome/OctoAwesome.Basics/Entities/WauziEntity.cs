@@ -10,11 +10,97 @@ namespace OctoAwesome.Basics.Entities
     [SerializationId(1, 2)]
     public class WauziEntity : UpdateableEntity
     {
+        class MoveLogic
+        {
+            private System.Random random = new();
+            private Index2 lastGoal = default;
+            private Coordinate lastPosition = default;
+            private int lastPositionCount = 0;
+
+            internal bool ShouldForceJump()
+            {
+                return lastPositionCount > 5;
+
+            }
+
+            internal Vector2 GetMoveDir(PositionComponent pointOfInterest, PositionComponent wauziPosition, Entity followEntity, Index2 size)
+            {
+                if (lastPosition == wauziPosition.Position)
+                    lastPositionCount++;
+                else
+                    lastPositionCount = 0;
+
+                lastPosition = wauziPosition.Position;
+
+                if (lastGoal == default)
+                    lastGoal = new Index2(wauziPosition.Position.GlobalBlockIndex);
+                Vector2 move = Vector2.Zero;
+
+                if (pointOfInterest is not null)
+                {
+                    var diff = wauziPosition.Position.GlobalBlockIndex.ShortestDistanceXY(pointOfInterest.Position.GlobalBlockIndex, size);
+                    var length = diff.Length();
+                    if (followEntity is not null)
+                    {
+                        if (length > 250 || length != length)
+                            wauziPosition.Position = pointOfInterest.Position;
+
+                        if (length is < 50 and > 5)
+                        {
+                            move = WanderAroundPosition(wauziPosition, lastGoal, size);
+                        }
+                    }
+                    else
+                    {
+
+                        if (length < 7 && length == length)
+                        {
+                            var poiPos = new Index2(pointOfInterest.Position.GlobalBlockIndex);
+                            if (lastGoal.ShortestDistanceXY(poiPos, size).Length() >= 7)
+                                lastGoal = new Index2(wauziPosition.Position.GlobalBlockIndex);
+
+                            move = WanderAroundPosition(wauziPosition, new Index2(pointOfInterest.Position.GlobalBlockIndex), size, -4, 5, -4, 5);
+
+                        }
+                        else if (length < 70)
+                            move = new Vector2(diff.X, diff.Y);
+                    }
+                }
+
+                if (move == Vector2.Zero)
+                    move = WanderAroundPosition(wauziPosition, lastGoal, size);
+
+                //if (pointOfInterest is not null)
+                //    wauziPosition.Position = pointOfInterest.Position;
+
+                if (move != Vector2.Zero)
+                {
+                    move.Normalize();
+                }
+                return move;
+            }
+
+            private Vector2 WanderAroundPosition(PositionComponent wauziPosition, Index2 wanderAround, Index2 size, int minX = -10, int maxX = 11, int minY = -10, int maxY = 11)
+            {
+                Vector2 move;
+                wanderAround.NormalizeXY(size);
+                if (lastGoal.X == wauziPosition.Position.GlobalBlockIndex.X && lastGoal.Y == wauziPosition.Position.GlobalBlockIndex.Y)
+                {
+                    lastGoal = new Index2(wanderAround.X + random.Next(minX, maxX), wanderAround.Y + random.Next(minY, maxY));
+                    lastGoal.NormalizeXY(size);
+                }
+                var shortestDist = new Index2(wauziPosition.Position.GlobalBlockIndex).ShortestDistanceXY(lastGoal, size);
+                move = new Vector2(shortestDist.X, shortestDist.Y);
+                return move;
+            }
+        }
+
         public int JumpTime { get; set; }
 
         private Vector2 moveDir = new Vector2(0.5f, 0.5f);
         private PositionComponent posComponent;
         private Entity followEntity;
+        private MoveLogic moveLogic = new();
 
         public WauziEntity() : base()
         {
@@ -73,30 +159,13 @@ namespace OctoAwesome.Basics.Entities
                 position = followEntity.GetComponent<PositionComponent>();
             }
 
-            if (position is not null)
-            {
-                var diff = posComponent.Position.GlobalBlockIndex.ShortestDistanceXY(position.Position.GlobalBlockIndex, posComponent.Planet.Size);
-                var length = diff.Length();
-                if (followEntity is not null || length < 50)
-                {
-                    if (length > 250 || length != length)
-                        posComponent.Position = position.Position;
-                    if (length < 5 || length != length)
-                        diff = Index3.Zero;
+            moveDir = moveLogic.GetMoveDir(position, posComponent, followEntity, new Index2(posComponent.Planet.Size.X * Chunk.CHUNKSIZE_X, posComponent.Planet.Size.Y * Chunk.CHUNKSIZE_Y));
 
-                    moveDir = new Vector2(diff.X, diff.Y);
-                    if (diff != Index3.Zero)
-                    {
-                        moveDir.Normalize();
-                    }
-                }
-            }
-            else
-                moveDir = new Vector2(0.5f, 0.5f);
+
 
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.MoveInput = moveDir;
-            if (JumpTime <= 0)
+            if (JumpTime <= 0 || moveLogic.ShouldForceJump())
             {
                 controller.JumpInput = true;
                 JumpTime = 10000;
@@ -118,8 +187,8 @@ namespace OctoAwesome.Basics.Entities
 
             Components.AddComponent(posComponent);
             Components.AddComponent(new GravityComponent());
-            Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+            Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f }, true);
+            Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 150 }, true);
             Components.AddComponent(new MoveableComponent());
             Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
             Components.AddComponent(new ControllableComponent());

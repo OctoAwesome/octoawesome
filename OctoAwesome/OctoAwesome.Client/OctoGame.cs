@@ -1,20 +1,20 @@
-﻿using OctoAwesome;
+﻿using engenious;
+using engenious.Input;
+using engenious.UI;
+
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
-using OctoAwesome.Runtime;
-using System;
-using System.Configuration;
-using System.Linq;
-using engenious.UI;
-using EventArgs = System.EventArgs;
-using engenious;
-using engenious.Input;
-using System.Collections.Generic;
-using OctoAwesome.Notifications;
 using OctoAwesome.Common;
 using OctoAwesome.Definitions;
-using OctoAwesome.UI.Components;
 using OctoAwesome.Extension;
+using OctoAwesome.Notifications;
+using OctoAwesome.Runtime;
+using OctoAwesome.UI.Components;
+
+using System;
+using System.Collections.Generic;
+
+using EventArgs = System.EventArgs;
 
 namespace OctoAwesome.Client
 {
@@ -58,7 +58,7 @@ namespace OctoAwesome.Client
             IsMouseVisible = true;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-  
+
 
             Register(typeContainer);
 
@@ -108,13 +108,13 @@ namespace OctoAwesome.Client
 
 
 
-           
+
             Components.Add(Assets);
             Components.Add(Screen);
 
 
             #region GameComponents
-            
+
 
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
@@ -193,6 +193,8 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:teleport", UI.Languages.OctoKeys.teleport);
             KeyMapper.RegisterBinding("octoawesome:toggleAmbientOcclusion", UI.Languages.OctoKeys.toggleAmbientOcclusion);
             KeyMapper.RegisterBinding("octoawesome:toggleWireFrame", UI.Languages.OctoKeys.toggleWireFrame);
+            KeyMapper.RegisterBinding("octoawesome:toggleCamera", "Toggle Camera");
+            KeyMapper.RegisterBinding("octoawesome:zoom", "Zoom");
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -219,7 +221,9 @@ namespace OctoAwesome.Client
                 { "octoawesome:slot8", Keys.D9 },
                 { "octoawesome:slot9", Keys.D0 },
                 { "octoawesome:debug.allblocks", Keys.L },
-                { "octoawesome:debug.control", Keys.F10 },
+                { "octoawesome:debug.control", Keys.F3 },
+                { "octoawesome:toggleCamera", Keys.F5 },
+                { "octoawesome:zoom", Keys.Z },
                 { "octoawesome:inventory", Keys.I },
                 { "octoawesome:hidecontrols", Keys.F9 },
                 { "octoawesome:exit", Keys.Escape },

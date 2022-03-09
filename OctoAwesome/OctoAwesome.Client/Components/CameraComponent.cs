@@ -1,19 +1,22 @@
-﻿using System;
-using engenious;
+﻿using engenious;
 using engenious.Helper;
+
 using OctoAwesome.EntityComponents;
+
+using System;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class CameraComponent : DrawableGameComponent
     {
         private PlayerComponent player;
-
+        private OctoGame game;
 
         public CameraComponent(OctoGame game)
             : base(game)
         {
             player = game.Player;
+            this.game = game;
         }
 
         public override void Initialize()
@@ -23,10 +26,16 @@ namespace OctoAwesome.Client.Components
             RecreateProjection();
         }
 
-        public void RecreateProjection()
+        public void RecreateProjection(int overrideFOV = 0)
         {
+
+            int fov;
+            if (overrideFOV > 0)
+                fov = overrideFOV;
+            else
+                fov = game.Settings.Get<int>("FOV");
             Projection = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
+                (float)(fov / 180f * Math.PI), GraphicsDevice.Viewport.AspectRatio, 0.1f, 10000f);
         }
 
         public override void Update(GameTime gameTime)
@@ -60,10 +69,12 @@ namespace OctoAwesome.Client.Components
             View = Matrix.CreateLookAt(
                 CameraPosition,
                 new Vector3(
-                    CameraPosition.X + lookX,
-                    CameraPosition.Y + lookY,
+                    (CameraPosition.X + lookX),
+                    (CameraPosition.Y + lookY),
                     CameraPosition.Z + height),
                 CameraUpVector);
+
+
 
             MinimapView = Matrix.CreateLookAt(
                 new Vector3(CameraPosition.X, CameraPosition.Y, 100),
@@ -72,18 +83,19 @@ namespace OctoAwesome.Client.Components
                     position.Position.LocalPosition.Y,
                     0f),
                 new Vector3(
-                    (float)Math.Cos(head.Angle), 
+                    (float)Math.Cos(head.Angle),
                     (float)Math.Sin(-head.Angle), 0f));
 
             float centerX = GraphicsDevice.Viewport.Width / 2;
             float centerY = GraphicsDevice.Viewport.Height / 2;
+
 
             Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
             Vector3 farPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 1f), Projection, View, Matrix.Identity);
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
             PickRay = new Ray(nearPoint, direction);
-            Frustum = new BoundingFrustum(Projection*View);
+            Frustum = new BoundingFrustum(Projection * View);
         }
 
         public Index3 CameraChunk { get; private set; }

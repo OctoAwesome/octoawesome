@@ -1,8 +1,10 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.Screens;
 using OctoAwesome.UI.Components;
+
 using System;
 
 namespace OctoAwesome.Client.Controls
@@ -29,6 +31,37 @@ namespace OctoAwesome.Client.Controls
                 Width = 650
             };
             Controls.Add(settingsStack);
+
+
+
+            //////////////////////FOV//////////////////////
+            int fov = settings.Get<int>("FOV");
+
+            var fovTitle = new Label(manager)
+            {
+                Text = "FOV: " + fov
+            };
+            settingsStack.Controls.Add(fovTitle);
+
+            Slider fovSlider = new Slider(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height = 20,
+                Range = 95,
+                Value = fov - 45
+            };
+            fovSlider.ValueChanged += (value) =>
+            {
+                fovTitle.Text = "FOV: " + (value + 45);
+
+                settings.Set("FOV", value + 45);
+                if (manager.Game is OctoGame og)
+                {
+                    og.Camera.RecreateProjection();
+                }
+            };
+
+            settingsStack.Controls.Add(fovSlider);
 
             //////////////////////Viewrange//////////////////////
             string viewrange = settings.Get<string>("Viewrange");

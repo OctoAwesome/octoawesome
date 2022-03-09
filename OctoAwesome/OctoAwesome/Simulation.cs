@@ -47,15 +47,6 @@ namespace OctoAwesome
         /// </summary>
         public IGameService Service { get; }
 
-        ///// <summary>
-        ///// List of all Entities.
-        ///// </summary>
-        //public IReadOnlyList<Entity> Entities => entities;
-        ///// <summary>
-        ///// List of all FunctionalBlocks.
-        ///// </summary>
-        //public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
-
         private readonly ExtensionService extensionService;
 
         private readonly List<Entity> entities = new();
@@ -186,6 +177,7 @@ namespace OctoAwesome
         {
             if (State != SimulationState.Running)
                 return;
+
 
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
