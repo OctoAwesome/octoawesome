@@ -38,7 +38,7 @@ namespace OctoAwesome
             typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehaviour.Singleton);
             typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehaviour.Singleton);
-            typeContainer.Register<BlockCollectionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<BlockInteractionService>(InstanceBehaviour.Singleton);
         }
 
         public static void ConfigureLogger(ClientType clientType)

@@ -49,9 +49,12 @@ namespace OctoAwesome
         {
         }
 
+        public void Hit(GameTime gameTime, Entity entity) => OnHit(gameTime, entity);
         public void Interact(GameTime gameTime, Entity entity) => OnInteract(gameTime, entity);
 
-        protected abstract void OnInteract(GameTime gameTime, Entity entity);
+        protected virtual void OnHit(GameTime gameTime, Entity entity) { }
+        protected virtual void OnInteract(GameTime gameTime, Entity entity) { }
+
         public virtual void Push(SerializableNotification notification)
         {
             foreach (var component in notificationComponents)

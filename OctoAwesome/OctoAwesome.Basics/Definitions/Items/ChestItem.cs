@@ -5,6 +5,7 @@ using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
+using OctoAwesome.Services;
 
 using System;
 
@@ -31,32 +32,9 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
-            var position = hitInfo.Position;
-            var index3 = hitInfo.SelectedSide switch
-            {
-                OrientationFlags.SideWest => new Index3(position.X - 1, position.Y, position.Z),
-                OrientationFlags.SideEast => new(position.X + 1, position.Y, position.Z),
-                OrientationFlags.SideSouth => new(position.X, position.Y - 1, position.Z),
-                OrientationFlags.SideNorth => new(position.X, position.Y + 1, position.Z),
-                OrientationFlags.SideBottom => new(position.X, position.Y, position.Z - 1),
-                OrientationFlags.SideTop => new(position.X, position.Y, position.Z + 1),
-                _ => new(position.X, position.Y, position.Z + 1),
-            };
+            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out var rot);
 
-            float rot;
-            var change = position - index3;
-            if (change.X > 0)
-                rot = 0f;
-            else if (change.X < 0)
-                rot = (float)Math.PI;
-            else if (change.Y < 0)
-                rot = (float)Math.PI / 2 * 3;
-            else if (change.Y > 0)
-                rot = (float)Math.PI / 2;
-            else
-                rot = 0f;
-
-            Chest chest = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0.5f)), rot);
+            Chest chest = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0.0f)), rot);
 
             var notification = new FunctionalBlockNotification
             {
@@ -67,6 +45,8 @@ namespace OctoAwesome.Basics.Definitions.Items
             simulationRelay.OnNext(notification);
             return 0;
         }
+
+
 
         public void Dispose()
         {

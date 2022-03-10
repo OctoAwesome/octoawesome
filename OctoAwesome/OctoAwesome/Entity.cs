@@ -15,7 +15,7 @@ namespace OctoAwesome
     /// </summary>
     public abstract class Entity : ComponentContainer<IEntityComponent>
     {
-        protected override void OnInteract(GameTime gameTime, Entity entity)
+        protected override void OnHit(GameTime gameTime, Entity entity)
         {
         }
     }

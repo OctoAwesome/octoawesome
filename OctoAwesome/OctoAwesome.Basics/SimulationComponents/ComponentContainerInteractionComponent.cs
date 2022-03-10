@@ -13,9 +13,9 @@ namespace OctoAwesome.Basics.SimulationComponents
         InventoryComponent>
     {
         private readonly Simulation simulation;
-        private readonly BlockCollectionService service;
+        private readonly BlockInteractionService service;
 
-        public ComponentContainerInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
+        public ComponentContainerInteractionComponent(Simulation simulation, BlockInteractionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;

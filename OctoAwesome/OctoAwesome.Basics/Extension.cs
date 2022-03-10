@@ -165,7 +165,7 @@ namespace OctoAwesome.Basics
                 f.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Furnace" }, true);
                 f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);
                 f.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
-                f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" }, true);
+                f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext", BaseZRotation = -90 }, true);
 
             });
 
@@ -178,7 +178,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new AccelerationComponent());
                 s.Components.AddComponent(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddComponent(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
+                s.Components.AddComponent(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>()));
 
                 //TODO: unschön
                 //TODO: TypeContainer?

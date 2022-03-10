@@ -46,7 +46,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         }
 
-        protected override void OnInteract(GameTime gameTime, Entity entity)
+        protected override void OnHit(GameTime gameTime, Entity entity)
         {
             if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
                 && entity.TryGetComponent<TransferComponent>(out var transferComponent)

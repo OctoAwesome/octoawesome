@@ -14,10 +14,10 @@ namespace OctoAwesome.Basics.SimulationComponents
         InventoryComponent>
     {
         private readonly Simulation simulation;
-        private readonly BlockCollectionService service;
+        private readonly BlockInteractionService service;
 
 
-        public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
@@ -37,7 +37,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 .Visit(
                     hitInfo => InteractWith(hitInfo, inventory, toolbar, cache),
                     applyInfo => ApplyWith(applyInfo, inventory, toolbar, cache),
-                    componentContainer => componentContainer?.Interact(gameTime, entity)
+                    componentContainer => componentContainer?.Hit(gameTime, entity)
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)

@@ -1,8 +1,10 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
+
 using System.IO;
 
 namespace OctoAwesome.Basics.FunctionBlocks
@@ -20,15 +22,16 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         public override void Deserialize(BinaryReader reader) => base.Deserialize(reader);//Doesnt get called
 
-        public Furnace(Coordinate position)
+        public Furnace(Coordinate position, float rot)
         {
             Components.AddComponent(new PositionComponent()
             {
-                Position = position
+                Position = position,
+                Direction = rot
             });
         }
 
-        protected override void OnInteract(GameTime gameTime, Entity entity)
+        protected override void OnHit(GameTime gameTime, Entity entity)
         {
             if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
                && entity.TryGetComponent<TransferComponent>(out var transferComponent)
