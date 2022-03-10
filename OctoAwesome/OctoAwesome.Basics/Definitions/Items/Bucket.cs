@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Services;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
@@ -12,7 +13,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public Bucket(BucketDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
-            MaxQuantity = 125;
+            MaxQuantity = 1250;
         }
 
         public void AddFluid(int quantity, IBlockDefinition fluidBlock)
@@ -20,7 +21,9 @@ namespace OctoAwesome.Basics.Definitions.Items
             if (!Definition.CanMineMaterial(fluidBlock.Material))
                 return;
 
-            Quantity += quantity;
+            if (Quantity < 125)
+                Quantity += quantity;
+
             FluidBlock = fluidBlock;
         }
 
@@ -42,6 +45,16 @@ namespace OctoAwesome.Basics.Definitions.Items
 
 
             return base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
+        }
+
+        public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
+        {
+            if (Quantity > 125 && FluidBlock is not null)
+            {
+                BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out _);
+            }
+
+            return base.Apply(material, hitInfo, volumeRemaining);
         }
     }
 }

@@ -10,6 +10,8 @@ using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Controls;
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.Loader;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -388,10 +390,29 @@ namespace OctoAwesome.Client.Screens
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
+
+            List<IViewCreator> viewCreators = new();
+            foreach (var item in AssemblyLoadContext.Default.Assemblies)
+            {
+                try
+                {
+                    foreach (var type in item.GetTypes())
+                    {
+                        if (type.IsAssignableTo(typeof(IViewCreator)))
+                            viewCreators.Add((IViewCreator)Activator.CreateInstance(type));
+                    }
+                }
+                catch
+                {
+                }
+            }
+
             Manager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
+
+                Manager.Camera.ViewCreator = viewCreators[(viewCreators.IndexOf(Manager.Camera.ViewCreator) + 1) % viewCreators.Count];
 
             });
 

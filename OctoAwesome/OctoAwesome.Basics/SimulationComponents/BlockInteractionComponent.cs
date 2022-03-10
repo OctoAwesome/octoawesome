@@ -55,44 +55,20 @@ namespace OctoAwesome.Basics.SimulationComponents
                         _ => new Index3(),
                     };
 
-                    if (toolbar.ActiveTool.Item is IBlockDefinition definition)
+                    IBlockDefinition definition = toolbar.ActiveTool.Item as IBlockDefinition;
+
+                    if (definition is null && toolbar.ActiveTool.Item is IFluidInventory fluidInventory)
                     {
-                        Index3 idx = controller.ApplyBlock.Value + add;
-                        var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
+                        definition = fluidInventory.FluidBlock;
+                    }
 
-                        bool intersects = false;
-                        var positioncomponent = entity.Components.GetComponent<PositionComponent>();
-                        var bodycomponent = entity.Components.GetComponent<BodyComponent>();
-
-                        if (positioncomponent != null && bodycomponent != null)
-                        {
-                            float gap = 0.01f;
-                            var playerBox = new BoundingBox(
-                                new Vector3(
-                                    positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X - bodycomponent.Radius + gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y - bodycomponent.Radius + gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + gap),
-                                new Vector3(
-                                    positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X + bodycomponent.Radius - gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y + bodycomponent.Radius - gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
-                                );
-
-                            // Nicht in sich selbst reinbauen
-                            for (var i = 0; i < boxes.Length; i++)
-                            {
-                                var box = boxes[i];
-                                var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
-                                if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
-                                    newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
-                                    newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
-                                    intersects = true;
-                            }
-                        }
+                    if (definition is not null)
+                    {
+                        bool intersects = !GetPosition(entity, controller, cache, add, definition, out var idx);
 
                         if (!intersects)
                         {
-                            if (inventory.RemoveUnit(toolbar.ActiveTool))
+                            if (toolbar.ActiveTool.Item is not IBlockDefinition || inventory.RemoveUnit(toolbar.ActiveTool))
                             {
                                 cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
                                 cache.SetBlockMeta(idx, (int)controller.ApplySide);
@@ -105,6 +81,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                 controller.ApplyBlock = null;
             }
         }
+
+
         private void ApplyWith(ApplyInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
@@ -119,10 +97,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                     activeItem = toolbar.HandSlot.Item as IItem;
                 }
 
-
                 _ = service.Apply(lastBlock, activeItem, cache);
-
-
             }
         }
 
@@ -159,6 +134,42 @@ namespace OctoAwesome.Basics.SimulationComponents
                     }
 
             }
+        }
+        private static bool GetPosition(Entity entity, ControllableComponent controller, ILocalChunkCache cache, Index3 add, IBlockDefinition definition, out Index3 idx)
+        {
+            idx = controller.ApplyBlock.Value + add;
+            var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
+
+
+            var positioncomponent = entity.Components.GetComponent<PositionComponent>();
+            var bodycomponent = entity.Components.GetComponent<BodyComponent>();
+
+            if (positioncomponent != null && bodycomponent != null)
+            {
+                float gap = 0.01f;
+                var playerBox = new BoundingBox(
+                    new Vector3(
+                        positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X - bodycomponent.Radius + gap,
+                        positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y - bodycomponent.Radius + gap,
+                        positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + gap),
+                    new Vector3(
+                        positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X + bodycomponent.Radius - gap,
+                        positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y + bodycomponent.Radius - gap,
+                        positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
+                    );
+
+                // Nicht in sich selbst reinbauen
+                for (var i = 0; i < boxes.Length; i++)
+                {
+                    var box = boxes[i];
+                    var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
+                    if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
+                        newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
+                        newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }
