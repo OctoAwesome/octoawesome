@@ -1,7 +1,10 @@
 ﻿using engenious;
+
 using OctoAwesome.Components;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+
 using System;
 using System.Collections.Generic;
 using System.IO;

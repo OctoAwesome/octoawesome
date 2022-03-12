@@ -2,6 +2,7 @@
 
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;

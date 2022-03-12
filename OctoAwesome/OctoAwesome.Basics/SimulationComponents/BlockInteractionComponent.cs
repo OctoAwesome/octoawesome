@@ -1,8 +1,10 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Services;
 
 namespace OctoAwesome.Basics.SimulationComponents

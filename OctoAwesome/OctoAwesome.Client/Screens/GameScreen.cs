@@ -6,6 +6,7 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Definitions;
+using OctoAwesome.Location;
 using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Controls;
 
@@ -390,6 +391,12 @@ namespace OctoAwesome.Client.Screens
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
+            //Manager.Game.KeyMapper.AddAction("octoawesome:toggleGravity", type =>
+            //{
+            //    if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+            //        return;
+
+            //});
 
             List<IViewCreator> viewCreators = new();
             foreach (var item in AssemblyLoadContext.Default.Assemblies)

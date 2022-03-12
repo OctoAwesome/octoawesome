@@ -1,10 +1,9 @@
 ﻿using OctoAwesome.Definitions;
-using OctoAwesome.Extension;
 
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     public class DefinitionRegistrar : BaseRegistrar<Type>
     {
@@ -35,9 +34,7 @@ namespace OctoAwesome
             foreach (var interfaceType in interfaceTypes)
             {
                 if (definitionsLookup.TryGetValue(interfaceType, out var typeList))
-                {
                     typeList.Add(type);
-                }
                 else
                 {
                     definitionsLookup.Add(interfaceType, new List<Type> { type });
@@ -51,7 +48,7 @@ namespace OctoAwesome
         /// Removes an existing Definition Type.
         /// </summary>
         /// <typeparam name="T">Definition Type</typeparam>
-        public override void Unregister(Type definition) 
+        public override void Unregister(Type definition)
         {
             throw new NotSupportedException("Currently not supported by TypeContainer");
         }

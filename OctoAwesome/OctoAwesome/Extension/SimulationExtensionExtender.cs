@@ -1,10 +1,9 @@
-﻿
-using OctoAwesome.Caching;
+﻿using OctoAwesome.Caching;
 
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     public class SimulationExtensionExtender : BaseExtensionExtender<Simulation>
     {

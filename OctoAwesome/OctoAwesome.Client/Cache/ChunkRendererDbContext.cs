@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Database;
+using OctoAwesome.Location;
 using OctoAwesome.Serialization;
 
 using System.Collections.Generic;

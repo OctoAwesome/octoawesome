@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using OctoAwesome.Definitions;
 using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Chunking;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {

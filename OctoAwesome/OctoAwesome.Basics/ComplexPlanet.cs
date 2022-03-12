@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Basics.Biomes;
+using OctoAwesome.Location;
+
 using System;
 using System.IO;
 

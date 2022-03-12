@@ -1,10 +1,9 @@
-﻿using OctoAwesome.Extension;
-using OctoAwesome.Serialization;
+﻿using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     public class SerializationRegistrar : BaseRegistrar<Type>
     {

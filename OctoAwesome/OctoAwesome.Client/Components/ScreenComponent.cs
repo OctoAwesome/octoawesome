@@ -3,6 +3,7 @@ using engenious.UI;
 using engenious.UI.Controls;
 
 using OctoAwesome.Client.Screens;
+using OctoAwesome.Components;
 using OctoAwesome.Database;
 using OctoAwesome.Extension;
 using OctoAwesome.Notifications;

@@ -1,7 +1,9 @@
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
-using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using OctoAwesome.Location;
+
+namespace OctoAwesome
 {
     public class FailEntityChunkArgs
     {

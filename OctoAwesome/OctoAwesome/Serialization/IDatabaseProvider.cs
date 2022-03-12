@@ -1,7 +1,8 @@
 ﻿using OctoAwesome.Database;
+
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Serialization
 {
     public interface IDatabaseProvider
     {

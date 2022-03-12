@@ -1,5 +1,4 @@
-﻿using OctoAwesome.Client.Controls;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using engenious.Graphics;
 using System.Linq;
 using engenious;
@@ -17,6 +16,9 @@ using System.Runtime.InteropServices;
 using OctoAwesome.Definitions;
 using engenious.Helper;
 using engenious.Utility;
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
+using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client.Components
 {

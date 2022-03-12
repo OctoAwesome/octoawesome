@@ -1,10 +1,9 @@
-﻿using OctoAwesome.EntityComponents;
-using System;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
+
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome
 {

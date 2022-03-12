@@ -1,4 +1,7 @@
-﻿namespace OctoAwesome.Basics.Biomes
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Location;
+
+namespace OctoAwesome.Basics.Biomes
 {
     public class OceanBiomeGenerator : LargeBiomeBase
     {

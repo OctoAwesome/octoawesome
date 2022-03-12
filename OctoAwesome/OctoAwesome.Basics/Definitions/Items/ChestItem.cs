@@ -3,6 +3,8 @@
 using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
 using OctoAwesome.Services;

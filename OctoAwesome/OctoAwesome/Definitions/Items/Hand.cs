@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome.Definitions.Items
+﻿using OctoAwesome.Information;
+
+namespace OctoAwesome.Definitions.Items
 {
     public class Hand : Item
     {

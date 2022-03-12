@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Client.Components;
+using OctoAwesome.Location;
 using OctoAwesome.Serialization;
 
 using System;

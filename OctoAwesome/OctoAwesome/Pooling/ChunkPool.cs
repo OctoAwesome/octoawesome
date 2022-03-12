@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Threading;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Location;
+using OctoAwesome.Threading;
 
 using System;
 using System.Collections.Generic;

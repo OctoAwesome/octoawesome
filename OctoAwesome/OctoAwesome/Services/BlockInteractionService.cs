@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Definitions;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Definitions;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Pooling;
 
 using System;

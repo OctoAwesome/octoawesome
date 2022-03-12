@@ -1,5 +1,4 @@
-﻿using OctoAwesome.Components;
-using OctoAwesome.Serialization;
+﻿using OctoAwesome.Serialization;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections;
@@ -8,7 +7,7 @@ using System.IO;
 using System.Linq;
 using OctoAwesome.Caching;
 
-namespace OctoAwesome
+namespace OctoAwesome.Components
 {
     /// <summary>
     /// Base Class for all Component based Entities.
@@ -67,9 +66,7 @@ namespace OctoAwesome
             if (components.ContainsKey(type))
             {
                 if (replace)
-                {
                     RemoveComponent<V>();
-                }
                 else
                 {
                     return;
@@ -95,9 +92,7 @@ namespace OctoAwesome
         {
             var type = typeof(V);
             if (type.IsAbstract || type.IsInterface)
-            {
                 return components.Any(x => type.IsAssignableFrom(x.Key));
-            }
             return components.ContainsKey(type);
         }
 

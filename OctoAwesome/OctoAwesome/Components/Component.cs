@@ -1,9 +1,9 @@
-﻿using OctoAwesome.Components;
-using OctoAwesome.Serialization;
+﻿using OctoAwesome.Serialization;
+
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace OctoAwesome
+namespace OctoAwesome.Components
 {
     /// <summary>
     /// Base Class for all Components.
@@ -25,7 +25,7 @@ namespace OctoAwesome
         /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
         public virtual void Serialize(BinaryWriter writer)
         {
-            writer.Write(Enabled); 
+            writer.Write(Enabled);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OctoAwesome
 
         }
 
-        protected void SetValue<T>(ref T field, T value, [CallerMemberName]string callerName = "")
+        protected void SetValue<T>(ref T field, T value, [CallerMemberName] string callerName = "")
         {
             if (field != null)
             {

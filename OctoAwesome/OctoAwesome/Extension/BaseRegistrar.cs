@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Linq;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     public abstract class BaseRegistrar<T> : IExtensionRegistrar<T>
     {

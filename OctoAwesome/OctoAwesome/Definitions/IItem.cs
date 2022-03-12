@@ -1,4 +1,7 @@
-﻿namespace OctoAwesome.Definitions
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
+
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Interface, das ein Item darstellt

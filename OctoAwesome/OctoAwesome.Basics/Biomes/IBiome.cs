@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Noise;
+using OctoAwesome.Location;
 
 using System;
 using System.Collections.Generic;

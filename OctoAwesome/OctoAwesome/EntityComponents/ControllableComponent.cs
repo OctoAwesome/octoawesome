@@ -1,6 +1,9 @@
 ﻿using engenious;
+
 using OctoAwesome.Components;
+using OctoAwesome.Location;
 using OctoAwesome.SumTypes;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

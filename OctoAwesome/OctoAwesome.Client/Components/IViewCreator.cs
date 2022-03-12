@@ -1,6 +1,7 @@
 ﻿using engenious;
 
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Client.Components;
 public interface IViewCreator

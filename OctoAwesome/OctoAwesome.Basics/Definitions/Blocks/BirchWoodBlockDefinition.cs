@@ -1,7 +1,9 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Basics.Properties;
+using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
 using OctoAwesome.Information;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -9,6 +9,7 @@ using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Location;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
 
@@ -54,6 +55,7 @@ namespace OctoAwesome.Basics
                 player.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
                 player.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
                 player.Components.AddComponent(new GravityComponent());
+                //player.Components.RemoveComponent<GravityComponent>();
                 player.Components.AddComponent(new MoveableComponent());
                 player.Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
                 player.Components.AddComponent(new EntityCollisionComponent());

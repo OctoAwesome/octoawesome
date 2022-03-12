@@ -1,6 +1,5 @@
 ﻿using engenious.UI;
 using OctoAwesome.Client.Components;
-using OctoAwesome.Client.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using engenious.Input;
 using engenious.UI.Controls;
 using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Screens;
+using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client.Screens
 {

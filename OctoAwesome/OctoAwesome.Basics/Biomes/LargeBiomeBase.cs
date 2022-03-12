@@ -1,4 +1,6 @@
 ﻿
+using OctoAwesome.Location;
+
 using System;
 using System.Linq;
 

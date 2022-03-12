@@ -1,31 +1,34 @@
 ﻿using System;
+
 using NUnit.Framework;
 
-namespace OctoAwesome.Model.Tests
+using OctoAwesome.Location;
+
+namespace OctoAwesome.Tests
 {
-    
+
     public class Index2Tests
     {
         [Test]
         public void Index2ConstructorTest()
         {
             // Parameterlos
-            Index2 i1 = new Index2();
+            var i1 = new Index2();
             Assert.Equals(0, i1.X);
             Assert.Equals(0, i1.Y);
 
             // Simpler Parameter
-            Index2 i2 = new Index2(21, 32);
+            var i2 = new Index2(21, 32);
             Assert.Equals(21, i2.X);
             Assert.Equals(32, i2.Y);
 
             // Index2-Parameter
-            Index2 i3 = new Index2(new Index2(-2, 80));
+            var i3 = new Index2(new Index2(-2, 80));
             Assert.Equals(-2, i3.X);
             Assert.Equals(80, i3.Y);
 
             // Index3 Parameter
-            Index2 i4 = new Index2(new Index3(int.MinValue, int.MaxValue, 0));
+            var i4 = new Index2(new Index3(int.MinValue, int.MaxValue, 0));
             Assert.Equals(int.MinValue, i4.X);
             Assert.Equals(int.MaxValue, i4.Y);
         }
@@ -122,10 +125,10 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2ComparerTest()
         {
-            Index2 i1 = new Index2(12, 13);
-            Index2 i2 = new Index2(12, 15);
-            Index2 i3 = new Index2(22, 13);
-            Index2 i4 = new Index2(12, 13);
+            var i1 = new Index2(12, 13);
+            var i2 = new Index2(12, 15);
+            var i3 = new Index2(22, 13);
+            var i4 = new Index2(12, 13);
 
             Assert.Equals(i1, i1);
             Assert.Equals(i1, i4);
@@ -141,12 +144,12 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2NormaizeMethodenTest()
         {
-            Index2 i1 = new Index2(20, 20); // Startwert
-            Index2 i2 = new Index2(12, 13); // 2D-Size
-            Index3 i2b = new Index3(12, 13, 14); // 3D-Size
-            Index2 i3 = new Index2(8, 20); // Ergebnis bei NormX
-            Index2 i4 = new Index2(20, 7); // Ergebnis bei NormY
-            Index2 i5 = new Index2(8, 7); // Ergebnis bei NormXY
+            var i1 = new Index2(20, 20); // Startwert
+            var i2 = new Index2(12, 13); // 2D-Size
+            var i2b = new Index3(12, 13, 14); // 3D-Size
+            var i3 = new Index2(8, 20); // Ergebnis bei NormX
+            var i4 = new Index2(20, 7); // Ergebnis bei NormY
+            var i5 = new Index2(8, 7); // Ergebnis bei NormXY
 
             // Norm X (int)
             Index2 t = i1;
@@ -197,10 +200,10 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2ShortestDistanceMethodenTest()
         {
-            Index2 size = new Index2(20, 20);
-            Index2 i1 = new Index2(5, 7); // Startwert
-            Index2 i2 = new Index2(12, 13); // Destinations
-            Index2 i3 = new Index2(7, 6); // Results
+            var size = new Index2(20, 20);
+            var i1 = new Index2(5, 7); // Startwert
+            var i2 = new Index2(12, 13); // Destinations
+            var i3 = new Index2(7, 6); // Results
 
             Assert.Equals(i3.X, i1.ShortestDistanceX(i2.X, size.X));
             Assert.Equals(i3.Y, i1.ShortestDistanceY(i2.Y, size.Y));
@@ -210,11 +213,11 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2AdditionTest()
         {
-            Index2 i1 = new Index2(20, 15);     // Startwert
-            Index2 i2 = new Index2(-100, -130); // Negativ Addition
-            Index2 i3 = new Index2(-80, -115);  // Ergebnis i1 + i2
-            Index2 i4 = new Index2(77, 44); // positive Addition
-            Index2 i5 = new Index2(97, 59);  // Ergebnis i1 + i4
+            var i1 = new Index2(20, 15);     // Startwert
+            var i2 = new Index2(-100, -130); // Negativ Addition
+            var i3 = new Index2(-80, -115);  // Ergebnis i1 + i2
+            var i4 = new Index2(77, 44); // positive Addition
+            var i5 = new Index2(97, 59);  // Ergebnis i1 + i4
 
             // Addition
             Assert.Equals(i3, i1 + i2);
@@ -224,11 +227,11 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2SubtraktionTest()
         {
-            Index2 i1 = new Index2(20, 15);     // Startwert
-            Index2 i2 = new Index2(-100, -130); // Negativ Addition
-            Index2 i3 = new Index2(120, 145);  // Ergebnis i1 - i2
-            Index2 i4 = new Index2(77, 44); // positive Addition
-            Index2 i5 = new Index2(-57, -29);  // Ergebnis i1 - i4
+            var i1 = new Index2(20, 15);     // Startwert
+            var i2 = new Index2(-100, -130); // Negativ Addition
+            var i3 = new Index2(120, 145);  // Ergebnis i1 - i2
+            var i4 = new Index2(77, 44); // positive Addition
+            var i5 = new Index2(-57, -29);  // Ergebnis i1 - i4
 
             // Addition
             Assert.Equals(i3, i1 - i2);
@@ -238,9 +241,9 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2MultiplikationTest()
         {
-            Index2 i1 = new Index2(20, 15); // Startwert
-            Index2 i2 = new Index2(60, 45); // Multiplikation mit 3
-            Index2 i3 = new Index2(-40, -30); // Multi mit -2
+            var i1 = new Index2(20, 15); // Startwert
+            var i2 = new Index2(60, 45); // Multiplikation mit 3
+            var i3 = new Index2(-40, -30); // Multi mit -2
 
             Assert.Equals(i2, i1 * 3);
             Assert.Equals(i3, i1 * -2);
@@ -249,9 +252,9 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2DivisionTest()
         {
-            Index2 i1 = new Index2(20, 15); // Startwert
-            Index2 i2 = new Index2(6, 5); // Multiplikation mit 3
-            Index2 i3 = new Index2(-10, -7); // Multi mit -2
+            var i1 = new Index2(20, 15); // Startwert
+            var i2 = new Index2(6, 5); // Multiplikation mit 3
+            var i3 = new Index2(-10, -7); // Multi mit -2
 
             Assert.Equals(i2, i1 / 3);
             Assert.Equals(i3, i1 / -2);
@@ -260,21 +263,21 @@ namespace OctoAwesome.Model.Tests
         public void Index2LengthTest()
         {
             int length = 2;
-            Index2 i1 = new Index2(length,0);
-            Index2 i2 = new Index2(0,length);
+            var i1 = new Index2(length, 0);
+            var i2 = new Index2(0, length);
 
-            Assert.Equals(i1.LengthSquared(),4.0);
-            Assert.Equals(i2.LengthSquared(),4.0);
+            Assert.Equals(i1.LengthSquared(), 4.0);
+            Assert.Equals(i2.LengthSquared(), 4.0);
 
-            Assert.Equals(i1.Length(),2.0);
-            Assert.Equals(i2.Length(),2.0);
+            Assert.Equals(i1.Length(), 2.0);
+            Assert.Equals(i2.Length(), 2.0);
 
-            Index2 i3 = new Index2(3,4);
-            Index2 i4 = new Index2(4,3);
-            Assert.Equals(i3.LengthSquared(),25.0);
-            Assert.Equals(i4.LengthSquared(),25.0);
-            Assert.Equals(i3.Length(),5.0);
-            Assert.Equals(i4.Length(),5.0);
+            var i3 = new Index2(3, 4);
+            var i4 = new Index2(4, 3);
+            Assert.Equals(i3.LengthSquared(), 25.0);
+            Assert.Equals(i4.LengthSquared(), 25.0);
+            Assert.Equals(i3.Length(), 5.0);
+            Assert.Equals(i4.Length(), 5.0);
         }
 
         /// <summary>

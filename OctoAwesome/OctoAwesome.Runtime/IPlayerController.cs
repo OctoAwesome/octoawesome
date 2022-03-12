@@ -1,5 +1,6 @@
 ﻿using engenious;
 
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Runtime
 {

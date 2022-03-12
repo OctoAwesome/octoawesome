@@ -1,5 +1,8 @@
 ﻿using OctoAwesome.Basics.Definitions.Blocks;
 using OctoAwesome.Definitions;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,10 +1,9 @@
-﻿
-using OctoAwesome.Caching;
+﻿using OctoAwesome.Caching;
 
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     public class ComponentExtensionExtender : BaseExtensionExtender<ComponentContainer>
     {
@@ -35,7 +34,7 @@ namespace OctoAwesome
             if (extenderDelegate is Action<ComponentContainer> ccAction)
                 list.Add(ccAction);
             else
-                list.Add((ComponentContainer cc) => { extenderDelegate(GenericCaster<T, ComponentContainer>.Cast(cc)); });
+                list.Add((cc) => { extenderDelegate(GenericCaster<T, ComponentContainer>.Cast(cc)); });
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace OctoAwesome
         /// <param name="instance">Entity</param>
         public override void Execute<T>(T instance)
         {
-            List<Type> stack = new List<Type>();
+            var stack = new List<Type>();
             Type t = instance.GetType();
             stack.Add(t);
             do

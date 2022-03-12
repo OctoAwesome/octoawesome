@@ -1,4 +1,8 @@
 ﻿using NLog.Targets.Wrappers;
+
+using OctoAwesome.Information;
+using OctoAwesome.Location;
+
 using System;
 using System.Collections.Generic;
 using System.IO;

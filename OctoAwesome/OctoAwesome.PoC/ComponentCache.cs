@@ -1,5 +1,9 @@
 ﻿using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+
+using OctoAwesome.Chunking;
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 
 using System;
 

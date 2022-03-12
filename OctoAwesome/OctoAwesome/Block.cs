@@ -1,5 +1,8 @@
-﻿using System;
-using engenious;
+﻿using engenious;
+
+using OctoAwesome.Location;
+
+using System;
 
 namespace OctoAwesome
 {

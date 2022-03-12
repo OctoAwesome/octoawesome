@@ -1,6 +1,6 @@
 ﻿using OctoAwesome.Definitions;
 
-namespace OctoAwesome.Basics.Definitions.Materials
+namespace OctoAwesome.Basics.Definitions.Materials.Food
 {
     public class WauziMeatMaterialDefinition : IFoodMaterialDefinition
     {

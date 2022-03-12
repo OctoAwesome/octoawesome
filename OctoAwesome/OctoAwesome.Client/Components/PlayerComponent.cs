@@ -1,6 +1,7 @@
 ﻿using engenious;
 
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.SumTypes;
 
 using System;

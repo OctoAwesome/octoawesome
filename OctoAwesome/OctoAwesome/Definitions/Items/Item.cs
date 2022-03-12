@@ -1,5 +1,7 @@
 ﻿using engenious;
 
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Serialization;
 
 using System;

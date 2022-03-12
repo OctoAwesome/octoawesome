@@ -2,7 +2,9 @@
 
 using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.Chunking;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.Entities
