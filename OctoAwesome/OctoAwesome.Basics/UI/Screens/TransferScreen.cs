@@ -58,6 +58,7 @@ namespace OctoAwesome.Basics.UI.Screens
             };
 
             inventoryA.EndDrop += (s, e) => OnInventoryDrop(inventoryB, componentB, inventoryA, componentA, e);
+            inventoryA.LeftMouseClick += (s, e) => OnMouseClick(inventoryA, componentA, inventoryB, componentB, e);
 
             inventoryB = new InventoryControl(manager, assetComponent, componentB.Inventory)
             {
@@ -68,6 +69,7 @@ namespace OctoAwesome.Basics.UI.Screens
             };
 
             inventoryB.EndDrop += (s, e) => OnInventoryDrop(inventoryA, componentA, inventoryB, componentB, e);
+            inventoryB.LeftMouseClick += (s, e) => OnMouseClick(inventoryB, componentB, inventoryA, componentA, e);
 
             grid.AddControl(inventoryA, 0, 0);
             grid.AddControl(inventoryB, 0, 2);
@@ -91,18 +93,39 @@ namespace OctoAwesome.Basics.UI.Screens
             grid.AddControl(infoPanel, 1, 0, 1, 3);
         }
 
-        private void OnInventoryDrop(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, DragEventArgs e)
+        private static void OnMouseClick(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, MouseEventArgs mouseEventArgs)
+        {
+            if (sourceControl.HoveredSlot is null)
+                return;
+
+            var keyboardState = Keyboard.GetState();
+            if (!keyboardState.IsKeyDown(Keys.ShiftLeft))
+                return;
+
+            var slot = sourceControl.HoveredSlot;
+
+            mouseEventArgs.Handled = true;
+
+            MoveSlot(slot, sourceControl, source, targetControl, target);
+        }
+
+        private static void OnInventoryDrop(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, DragEventArgs e)
         {
             if (e.Content is InventorySlot slot)
             {
                 e.Handled = true;
-                if (source.RemoveSlot(slot))
-                    target.AddSlot(slot);
-
-                sourceControl.Rebuild(source.Inventory);
-                targetControl.Rebuild(target.Inventory);
+                MoveSlot(slot, sourceControl, source, targetControl, target);
             }
+        }
 
+        private static void MoveSlot(InventorySlot slot, InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target)
+        {
+            if (!source.RemoveSlot(slot))
+                return;
+
+            target.AddSlot(slot);
+            sourceControl.Rebuild(source.Inventory);
+            targetControl.Rebuild(target.Inventory);
         }
 
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
