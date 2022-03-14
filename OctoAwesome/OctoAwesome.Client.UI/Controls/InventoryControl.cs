@@ -2,8 +2,10 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Definitions;
+
 using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Definitions;
+
 using System.Collections.Generic;
 
 namespace OctoAwesome.Client.UI.Controls
@@ -45,6 +47,7 @@ namespace OctoAwesome.Client.UI.Controls
 
         public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
         {
+
             grid = new Grid(ScreenManager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -54,13 +57,14 @@ namespace OctoAwesome.Client.UI.Controls
 
             for (int i = 0; i < columns; i++)
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            
+
             int rows = (int)System.Math.Ceiling((float)inventorySlots.Count / columns);
             for (int i = 0; i < rows; i++)
                 grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
 
             int column = 0;
             int row = 0;
+
             foreach (var inventorySlot in inventorySlots)
             {
                 Texture2D texture;
@@ -71,6 +75,7 @@ namespace OctoAwesome.Client.UI.Controls
 
 
                 var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+                
                 image.MouseEnter += (s, e) => { HoveredSlot = inventorySlot; };
                 image.MouseLeave += (s, e) => { HoveredSlot = null; };
                 image.StartDrag += (c, e) =>
@@ -80,6 +85,7 @@ namespace OctoAwesome.Client.UI.Controls
                     e.Content = inventorySlot;
                     e.Sender = image;
                 };
+                image.LeftMouseClick += (s, e) => HoveredSlot = inventorySlot;
                 var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
                 grid.AddControl(image, column, row);
                 grid.AddControl(label, column, row);
