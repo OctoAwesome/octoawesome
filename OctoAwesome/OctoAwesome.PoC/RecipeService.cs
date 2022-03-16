@@ -18,6 +18,7 @@ public class RecipeService
             foreach (var item in recipes)
             {
                 var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(item);
+                //TODO Check validity of recipe before adding and write exception otherwise
                 this.recipes.Add(recipe);
             }
         }
@@ -29,6 +30,29 @@ public class RecipeService
     }
 
     public IReadOnlyCollection<Recipe> GetByCategory(string categorie)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal Recipe? GetByInput(RecipeItem input, IReadOnlyCollection<Recipe> recipes)
+    {
+        foreach (var recipe in recipes)
+        {
+            foreach (var inputItem in recipe.Inputs)
+            {
+                if (inputItem == input)
+                    return recipe;
+            }
+        }
+
+        return null;
+    }
+
+    public Recipe? GetByInputs(List<RecipeItem> inputs, IReadOnlyCollection<Recipe> recipes)
+    {
+        throw new NotImplementedException();
+    }
+    public IReadOnlyCollection<Recipe> GetMultipleByInputs(List<RecipeItem> inputs, IReadOnlyCollection<Recipe> recipes)
     {
         throw new NotImplementedException();
     }

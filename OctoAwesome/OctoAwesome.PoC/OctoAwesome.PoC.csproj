@@ -5,6 +5,7 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
+	  <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

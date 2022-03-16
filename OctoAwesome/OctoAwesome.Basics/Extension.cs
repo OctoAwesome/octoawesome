@@ -159,7 +159,7 @@ namespace OctoAwesome.Basics
 
                 while (inventoryComponent.Inventory.Count < 2)
                 {
-                    inventoryComponent.Inventory.Add(new InventorySlot());
+                    inventoryComponent.AddSlot(new InventorySlot());
                 }
 
                 //if (!c.ContainsComponent<TransferUIComponent>())
