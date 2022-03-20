@@ -431,7 +431,7 @@ namespace OctoAwesome.Client.Controls
 
             //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
-            foreach (var item in simulation.GetByComponentTypes<PositionComponent, BoxCollisionComponent>())
+            foreach (var item in simulation)
             {
                 if (!item.ContainsComponent<PositionComponent>() || !item.ContainsComponent<BoxCollisionComponent>())
                     continue;

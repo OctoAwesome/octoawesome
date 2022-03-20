@@ -146,14 +146,15 @@ namespace OctoAwesome.Basics.Entities
 
             if (followEntity is null)
             {
-                foreach (var player in Simulation.GetEntitiesOfType<Player>())
+                foreach (var item in Simulation)
                 {
-                    if (!player.Components.TryGetComponent<ToolBarComponent>(out var toolbar)
-                        || !player.Components.TryGetComponent<PositionComponent>(out var newPos))
-                        continue;
-                    if (toolbar.ActiveTool?.Item is not MeatRaw)
-                        continue;
-                    position = newPos;
+                    if (item is Player player
+                        && player.Components.TryGetComponent<ToolBarComponent>(out var toolbar)
+                        && player.Components.TryGetComponent<PositionComponent>(out var newPos)
+                        && toolbar.ActiveTool?.Item is MeatRaw)
+                    {
+                        position = newPos;
+                    }
                 }
             }
             else
@@ -162,8 +163,6 @@ namespace OctoAwesome.Basics.Entities
             }
 
             moveDir = moveLogic.GetMoveDir(position, posComponent, followEntity, new Index2(posComponent.Planet.Size.X * Chunk.CHUNKSIZE_X, posComponent.Planet.Size.Y * Chunk.CHUNKSIZE_Y));
-
-
 
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.MoveInput = moveDir;

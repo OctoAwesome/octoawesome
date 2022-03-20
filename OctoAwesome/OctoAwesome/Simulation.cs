@@ -1,5 +1,6 @@
 ﻿using engenious;
 
+using OctoAwesome.Collections;
 using OctoAwesome.Common;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
@@ -50,12 +51,8 @@ namespace OctoAwesome
 
         private readonly ExtensionService extensionService;
 
-        private readonly List<Entity> entities = new();
-        private readonly CountedScopeSemaphore entitiesSemaphore = new();
-
-
-        private readonly List<FunctionalBlock> functionalBlocks = new();
-        private readonly CountedScopeSemaphore functionalBlocksSemaphore = new();
+        private readonly EnumerationmodifiableConcurrentList<Entity> entities = new();
+        private readonly EnumerationmodifiableConcurrentList<FunctionalBlock> functionalBlocks = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly Relay<Notification> networkRelay;
@@ -87,6 +84,7 @@ namespace OctoAwesome
 
             extensionService.ExecuteExtender(this);
         }
+
 
         private void ValidateAddComponent(SimulationComponent component)
         {
@@ -183,10 +181,9 @@ namespace OctoAwesome
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
-            //Update all Entities
-            for (var i = 0; i < entities.Count; i++)
+            //Update all Entitiesxsq
+            foreach (var entity in entities)
             {
-                var entity = entities[i];
                 if (entity is UpdateableEntity updateableEntity)
                     updateableEntity.Update(gameTime);
             }
@@ -212,15 +209,11 @@ namespace OctoAwesome
 
             //TODO: unschön, Dispose Entity's, Reset Extensions
 
-            for (int i = entities.Count - 1; i >= 0; i--)
-            {
-                Remove(entities[i]);
-            }
+            foreach (var item in entities)
+                Remove(item);
 
-            for (int i = functionalBlocks.Count - 1; i >= 0; i--)
-            {
-                Remove(functionalBlocks[i]);
-            }
+            foreach (var item in functionalBlocks)
+                Remove(item);
 
             //while (entites.Count > 0)
             //    RemoveEntity(Entities.First());
@@ -249,10 +242,8 @@ namespace OctoAwesome
             if (entity.Simulation is not null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                if (entities.Contains(entity))
-                    return;
-
+            if (entities.Contains(entity))
+                return;
 
             extensionService.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
@@ -261,8 +252,7 @@ namespace OctoAwesome
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
-            using (var _ = entitiesSemaphore.EnterExclusivScope())
-                entities.Add(entity);
+            entities.Add(entity);
 
             foreach (var component in Components)
             {
@@ -282,24 +272,19 @@ namespace OctoAwesome
             if (block.Simulation is not null && block.Simulation != this)
                 throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be part of more than one simulation");
 
-
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var fb in functionalBlocks)
+            foreach (var fb in functionalBlocks)
+            {
+                if (fb == block
+                    || (fb.Components.TryGetComponent<PositionComponent>(out var existing)
+                        && (!block.Components.TryGetComponent<PositionComponent>(out PositionComponent newPosComponent)
+                            || existing.Position == newPosComponent.Position)))
                 {
-                    if (fb == block
-                        || (fb.Components.TryGetComponent<PositionComponent>(out var existing)
-                            && (!block.Components.TryGetComponent<PositionComponent>(out PositionComponent newPosComponent)
-                                || existing.Position == newPosComponent.Position)))
-                    {
-                        return;
-                    }
-                }
-
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                if (functionalBlocks.Contains(block))
                     return;
+                }
+            }
 
-
+            if (functionalBlocks.Contains(block))
+                return;
 
             extensionService.ExecuteExtender(block);
             block.Initialize(ResourceManager);
@@ -308,8 +293,7 @@ namespace OctoAwesome
             if (block.Id == Guid.Empty)
                 block.Id = Guid.NewGuid();
 
-            using (var _ = functionalBlocksSemaphore.EnterExclusivScope())
-                functionalBlocks.Add(block);
+            functionalBlocks.Add(block);
 
             foreach (var component in Components)
             {
@@ -338,7 +322,7 @@ namespace OctoAwesome
                 throw new NotSupportedException("Entity can't be removed from a foreign simulation");
             }
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException("Removing Entities only allowed in running or paused state");
 
             ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
@@ -349,8 +333,7 @@ namespace OctoAwesome
                     holdComponent.Remove(entity);
             }
 
-            using (var _ = entitiesSemaphore.EnterExclusivScope())
-                entities.Remove(entity);
+            entities.Remove(entity);
             entity.Id = Guid.Empty;
             entity.Simulation = null;
 
@@ -375,7 +358,6 @@ namespace OctoAwesome
             if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-
             ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
 
             foreach (var component in Components)
@@ -384,107 +366,45 @@ namespace OctoAwesome
                     holdComponent.Remove(block);
             }
 
-            using (var _ = functionalBlocksSemaphore.EnterExclusivScope())
-                functionalBlocks.Remove(block);
+            functionalBlocks.Remove(block);
             block.Id = Guid.Empty;
             block.Simulation = null;
 
         }
 
-        public IReadOnlyCollection<T> GetEntitiesOfType<T>()
-        {
-            var ret = new List<T>();
-            using var _ = entitiesSemaphore.EnterCountScope();
-            foreach (var item in entities)
-            {
-                if (item is T t)
-                    ret.Add(t);
-            }
-            return ret;
-        }
-
-        public IReadOnlyCollection<ComponentContainer> GetByComponentType<T>()
-        {
-            var ret = new List<ComponentContainer>();
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item.Components.ContainsComponent<T>())
-                        ret.Add(item);
-                }
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (item.Components.ContainsComponent<T>())
-                        ret.Add(item);
-                }
-            return ret;
-        }
-        public IReadOnlyCollection<ComponentContainer> GetByComponentTypes<T1, T2>()
-        {
-            var ret = new List<ComponentContainer>();
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item.Components.ContainsComponent<T1>() && item.Components.ContainsComponent<T2>())
-                        ret.Add(item);
-                }
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (item.Components.ContainsComponent<T1>() && item.Components.ContainsComponent<T2>())
-                        ret.Add(item);
-                }
-            return ret;
-        }
-
         public T GetById<T>(Guid id) where T : ComponentContainer
         {
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item is T t && t.Id == id)
-                        return t;
-                }
-
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (item is T t && t.Id == id)
-                        return t;
-                }
+            foreach (var item in this)
+            {
+                if (item is T t && t.Id == id)
+                    return t;
+            }
 
             return default;
         }
+
         public bool TryGetById<T>(Guid id, out T componentContainer) where T : ComponentContainer
         {
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (!(item is T t) || t.Id != id)
-                        continue;
-                    componentContainer = t;
-                    return true;
-                }
+            foreach (var item in this)
+            {
+                if (!(item is T t) || t.Id != id)
+                    continue;
+                componentContainer = t;
+                return true;
+            }
 
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (!(item is T t) || t.Id != id)
-                        continue;
-                    componentContainer = t;
-                    return true;
-                }
             componentContainer = default;
             return false;
         }
 
         public void RemoveEntity(Guid entityId)
         {
-
-            var _ = entitiesSemaphore.EnterExclusivScope();
             Remove(entities.First(e => e.Id == entityId));
         }
+
+        /// <inheritdoc cref="IEnumerable{ComponentContainer}.GetEnumerator"/>
+        public CombineEnumerator<ComponentContainer, EnumerationmodifiableConcurrentList<Entity>.Enumerator, EnumerationmodifiableConcurrentList<FunctionalBlock>.Enumerator> GetEnumerator()
+            => new CombineEnumerator<ComponentContainer, EnumerationmodifiableConcurrentList<Entity>.Enumerator, EnumerationmodifiableConcurrentList<FunctionalBlock>.Enumerator>(entities.GetEnumerator(), functionalBlocks.GetEnumerator());
 
         public void OnNext(Notification value)
         {
@@ -526,8 +446,7 @@ namespace OctoAwesome
         private void EntityUpdate(EntityNotification notification)
         {
             Entity? entity;
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
+            entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
             if (entity == null)
             {
                 var entityNotification = entityNotificationPool.Get();
@@ -548,12 +467,10 @@ namespace OctoAwesome
                 return;
 
             Entity? entity;
-            using (var _ = entitiesSemaphore.EnterCountScope())
-            {
-                entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
-                if (entity == null)
-                    return;
-            }
+
+            entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
+            if (entity == null)
+                return;
 
             var remoteEntity = new RemoteEntity(entity);
             remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });

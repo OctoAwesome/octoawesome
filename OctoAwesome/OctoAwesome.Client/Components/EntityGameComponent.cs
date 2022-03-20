@@ -118,8 +118,13 @@ namespace OctoAwesome.Client.Components
             if (!(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
                 return;
 
-            ComponentContainers = simulation.GetByComponentType<PositionComponent>();
-            //base.Update(gameTime);
+            var list = new List<ComponentContainer>();
+            foreach (var item in simulation)
+            {
+                if (item.ContainsComponent<PositionComponent>())
+                    list.Add(item);
+            }
+            ComponentContainers = list;
         }
     }
 }
