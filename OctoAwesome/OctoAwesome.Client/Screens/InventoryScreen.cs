@@ -205,10 +205,10 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnUpdate(gameTime);
 
-            var name = inventory.HoveredSlot?.Definition?.Name;
+            var name = inventory.HoveredSlot?.Definition?.DisplayName;
 
             if (inventory.HoveredSlot?.Item is IItem item)
-                name += " (" + item.Material.Name + ")";
+                name += " (" + item.Material.DisplayName + ")";
 
             nameLabel.Text = name ?? "";
             massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";

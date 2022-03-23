@@ -6,12 +6,12 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
     public class MeatCookedDefinition : IItemDefinition
     {
 
-        public string Name { get; }
+        public string DisplayName { get; }
         public string Icon { get; }
 
         public MeatCookedDefinition()
         {
-            Name = "MeatCookedDefinition";
+            DisplayName = "MeatCookedDefinition";
             Icon = "meat_cooked";
         }
         public bool CanMineMaterial(IMaterialDefinition material) => false;

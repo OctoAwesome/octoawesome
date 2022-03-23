@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Definitions.Items;
+﻿using engenious;
+
+using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
 
 using System;
@@ -41,7 +43,10 @@ public static class Program
         private readonly RecipeService recipeService;
         private IReadOnlyCollection<Recipe> recipes;
         private Recipe? currentRecipe;
-        private int requiredForRecipe;
+        private int requiredMillisecondsForRecipe;
+        private int whEnergyUsage = 2000;
+
+        private GameTime recipeEnd;
 
         public InventoryComponent Input { get; set; } = new();
         public InventoryComponent Outputs { get; } = new();
@@ -59,33 +64,57 @@ public static class Program
         public void OnInputSlotUpdate()
         {
             if (Input is null)
-                return;
+                return; //Reset recipe, time etc. pp.
             var inputSlot = Input.Inventory.FirstOrDefault();
             if (inputSlot is null)
-                return;
-            var recipe = recipeService.GetByInput(new RecipeItem(inputSlot.Definition.Name, inputSlot.Amount), recipes);
+                return; //Reset recipe, time etc. pp.
+            var recipe = recipeService.GetByInput(new RecipeItem(inputSlot.Definition.DisplayName, inputSlot.Amount, inputSlot.Item.Material.DisplayName/*TODO Name not Displayname*/), recipes);
             if (recipe is null)
-                return;
+                return; //Reset recipe, time etc. pp.
             currentRecipe = recipe;
 
-            requiredForRecipe = currentRecipe.Energy ?? currentRecipe.Time!.Value;
-            if (requiredForRecipe < 0)
+            requiredMillisecondsForRecipe = currentRecipe.Time ?? currentRecipe.Energy!.Value * 40;
+
+            if(currentRecipe.MinTime is not null && requiredMillisecondsForRecipe < currentRecipe.MinTime)
+                requiredMillisecondsForRecipe = currentRecipe.MinTime!.Value;
+
+            if (requiredMillisecondsForRecipe < 0)
                 return;
         }
 
-        public void Update()
+        public void Update(GameTime currentGameTime)
         {
+            //Idle to idle
+            if (requiredMillisecondsForRecipe == 0)
+                return;
+            
+            if(recipeEnd.TotalGameTime < currentGameTime.TotalGameTime 
+                && recipeEnd.TotalGameTime.Add(currentGameTime.ElapsedGameTime) > currentGameTime.TotalGameTime)
+            {
+                //Has just finished, Input => Output
+                //Check if next recipe can start => OnInputSlotUpdating, after Input => Output
+                //or go to idle
+                return;
+            }
 
-            if (requiredForRecipe <= 0)
+            //Idle to running
+            //or Running to running Fuel Consumption
+
+            if (requiredMillisecondsForRecipe <= 0)
             {
                 //TODO Fragen die sich Maxi stellen tut:
                 /*
-                    - Wie also klar Zeitberechnung im Update?
-                    - Auch die Energieberchnung? Theoretisch
+                    - Wie also klar Zeitberechnung im Update? => GameTime when finished, etc.
+                    - Auch die Energieberchnung? Theoretisch => Done
                     - Output vom Input aus Berechnen / generieren / ...?
                     - Betriebsmittel (Kleber, Rohöl, Feuer, ...)?
                     - Für den Rezeptservice:
-                        - Wie wird das relevanteste Rezept selektiert? (Kriterien, Demokratie?)
+                        - Wie wird das relevanteste Rezept selektiert? (Kriterien, Demokratie? Ja!)
+                 */
+
+                /*
+                 Notes:
+                    - Output Material = Input Material, when no explicit material is supplied
                  */
 
                 Input = null;

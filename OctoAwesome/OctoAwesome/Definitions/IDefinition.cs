@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets the name of the definition.
         /// </summary>
-        string Name { get; }
+        string DisplayName { get; }
 
         /// <summary>
         /// Gets the name of the icon resource.

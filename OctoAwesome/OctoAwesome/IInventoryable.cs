@@ -27,5 +27,6 @@ namespace OctoAwesome
         /// Gets a value indicating how much a unit weighs in g.
         /// </summary>
         int Weight => VolumePerUnit * Density;
+        IMaterialDefinition Material { get; }
     }
 }

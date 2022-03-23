@@ -6,12 +6,12 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
     public class MeatRawDefinition : IItemDefinition
     {
 
-        public string Name { get; }
+        public string DisplayName { get; }
         public string Icon { get; }
 
         public MeatRawDefinition()
         {
-            Name = "MeatRawDefinition";
+            DisplayName = "MeatRawDefinition";
             Icon = "meat_raw";
         }
 

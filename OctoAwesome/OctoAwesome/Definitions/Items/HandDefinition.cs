@@ -18,6 +18,10 @@
         /// </summary>
         public HandDefinition()
         {
+            VolumePerUnit = 0;
+            StackLimit = 0;
+            DisplayName = nameof(Hand);
+            Icon = "";
             hand = new Hand(this);
         }
 

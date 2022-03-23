@@ -5,12 +5,12 @@ namespace OctoAwesome.Basics.Definitions.Items
 {
     public class FurnaceItemDefinition : IItemDefinition
     {
-        public string Name { get; }
+        public string DisplayName { get; }
         public string Icon { get; }
 
         public FurnaceItemDefinition()
         {
-            Name = "Furnace";
+            DisplayName = "Furnace";
             Icon = "furnace";
         }
 

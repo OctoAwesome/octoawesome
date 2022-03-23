@@ -4,7 +4,7 @@ namespace OctoAwesome.Basics.Definitions.Materials
 {
     public class WauziMeatMaterialDefinition : IFoodMaterialDefinition
     {
-        public string Name => "Wauzi Meat";
+        public string DisplayName => "Wauzi Meat";
 
         public string Icon => string.Empty;
 
