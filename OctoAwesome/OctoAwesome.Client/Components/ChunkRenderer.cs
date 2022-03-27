@@ -18,12 +18,14 @@ using OctoAwesome.Definitions;
 using engenious.Helper;
 using engenious.Utility;
 using engenious.UserDefined.Effects;
+using System.Runtime.CompilerServices;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class ChunkRenderer : IDisposable
     {
         public VertexBuffer VertexBuffer { get; private set; }
+        public VertexBuffer TransparencyVertexBuffer { get; private set; }
         public static IndexBuffer IndexBuffer { get; private set; }
         public static float OverrideLightLevel { get; set; }
         public static bool WireFrame { get; set; }
@@ -49,10 +51,13 @@ namespace OctoAwesome.Client.Components
         private IPlanet planet;
         public bool Loaded { get; set; } = false;
 
-        public bool CanRender => VertexBuffer != null && VertexCount > 0;
+        public bool CanRender => (VertexBuffer != null && VertexCount > 0
+            || TransparencyVertexBuffer is not null && TransparentVertexCount > 0);
 
         public int VertexCount => (int)VertexBuffer.VertexCount;
         private int indexCount => VertexCount / 4 * 6;
+        public int TransparentVertexCount => (int)TransparencyVertexBuffer.VertexCount;
+        private int transparentIndexCount => TransparentVertexCount / 4 * 6;
         private ILocalChunkCache _manager;
         private Index3 _shift;
         private Index3 _cameraPos;
@@ -64,6 +69,7 @@ namespace OctoAwesome.Client.Components
         private readonly object ibLock = new();
         private readonly Dictionary<IBlockDefinition, int> textureOffsets;
         private readonly PoolingList<VertexPositionNormalTextureLight> vertices;
+        private readonly PoolingList<VertexPositionNormalTextureLight> transparencyVertices;
         /// <summary>
         /// Adresse des aktuellen Chunks
         /// </summary>
@@ -105,6 +111,8 @@ namespace OctoAwesome.Client.Components
             GenerateIndexBuffer();
 
             vertices = new PoolingList<VertexPositionNormalTextureLight>();
+            transparencyVertices = new PoolingList<VertexPositionNormalTextureLight>();
+
             // BlockTypes sammlen
             var localBlockDefinitions = definitionManager.BlockDefinitions;
             textureOffsets = new Dictionary<IBlockDefinition, int>(localBlockDefinitions.Length);
@@ -155,6 +163,7 @@ namespace OctoAwesome.Client.Components
 
             _manager = manager;
             VertexBuffer?.Clear();
+            TransparencyVertexBuffer?.Clear();
             ChunkPosition = newPosition;
 
             if (centerChunk != null)
@@ -177,6 +186,45 @@ namespace OctoAwesome.Client.Components
         {
             NeedsUpdate = true;
             _sceneControl.Enqueue(this);
+        }
+
+        public void DrawTransparent(GameTime gt, Matrix viewProj, Matrix cropMatrix, Index3 shift)
+        {
+            if (!Loaded)
+                return;
+            var shiftMatrix = Matrix.CreateTranslation(
+                shift.X * Chunk.CHUNKSIZE_X,
+                shift.Y * Chunk.CHUNKSIZE_Y,
+                shift.Z * Chunk.CHUNKSIZE_Z);
+
+            var biasMatrix = new Matrix(
+                0.5f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.5f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f
+                );
+
+            var depthBiasWorldViewProj = biasMatrix * cropMatrix * shiftMatrix;
+
+            simple.Transparent.MainPass.Apply();
+            simple.Transparent.DepthBiasWorldViewProj = depthBiasWorldViewProj;
+            simple.Transparent.OverrideLightLevel = OverrideLightLevel;
+            simple.Transparent.World = shiftMatrix;
+            simple.Transparent.ViewProj = viewProj;
+            simple.Transparent.Time = (float)(gt.TotalGameTime.TotalSeconds);
+            simple.Transparent.BlockTextures = textures;
+            simple.Transparent.AmbientIntensity = 0.4f;
+            simple.Transparent.AmbientColor = Color.White.ToVector4();
+
+            lock (this)
+            {
+                if (TransparencyVertexBuffer == null)
+                    return;
+
+                graphicsDevice.RasterizerState = WireFrame ? wireFrameState : RasterizerState.CullCounterClockwise;
+                graphicsDevice.VertexBuffer = TransparencyVertexBuffer;
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, TransparentVertexCount, 0, transparentIndexCount / 3);
+            }
         }
 
         public void Draw(Matrix viewProj, Matrix cropMatrix, Index3 shift)
@@ -291,6 +339,7 @@ namespace OctoAwesome.Client.Components
 
                 }
                 vertices.Clear();
+                transparencyVertices.Clear();
 
                 var chunkPos = ChunkPosition.Value;
                 for (int x = -1; x < 2; x++)
@@ -305,7 +354,9 @@ namespace OctoAwesome.Client.Components
                             Index3 chunkOffset = new Index3(x + chunkPos.X, y + chunkPos.Y, chunkPos.Z + z);
                             chunks[GetIndex(z, y, x)] = _manager.GetChunk(chunkOffset);
                         }
-
+                //15, 0
+                //0, 16
+                //0, 16
                 for (int z = Chunk.CHUNKSIZE_Z - 1; z >= 0; z -= Chunk.CHUNKSIZE.Z - 1)
                 {
                     for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
@@ -317,21 +368,20 @@ namespace OctoAwesome.Client.Components
                     }
                 }
 
-                for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
+                for (int z = 1; z < Chunk.CHUNKSIZE_Z - 1; z++)
                 {
                     for (int y = Chunk.CHUNKSIZE_Y - 1; y >= 0; y -= Chunk.CHUNKSIZE.Y - 1)
                     {
                         for (int x = 0; x < Chunk.CHUNKSIZE_X; x++)
                         {
                             GenerateVertices(chunk, chunks, uvOffsets, x, y, z, chunkPos, blockDefinitions, true);
-
                         }
                     }
                 }
 
-                for (int z = 0; z < Chunk.CHUNKSIZE_Z; z++)
+                for (int z = 1; z < Chunk.CHUNKSIZE_Z - 1; z++)
                 {
-                    for (int y = 0; y < Chunk.CHUNKSIZE_Y; y++)
+                    for (int y = 1; y < Chunk.CHUNKSIZE_Y - 1; y++)
                     {
                         for (int x = Chunk.CHUNKSIZE_X - 1; x >= 0; x -= Chunk.CHUNKSIZE.X - 1)
                         {
@@ -368,7 +418,19 @@ namespace OctoAwesome.Client.Components
             }
             that.vertices.ReturnBuffer(stolenVertices);
         }
-
+        private static void SendTransparencyVerticesToGpu(ChunkRenderer that, VertexPositionNormalTextureLight[] stolenVertices, int vertexCount)
+        {
+            if (that.TransparencyVertexBuffer == null || IndexBuffer == null)
+            {
+                that.TransparencyVertexBuffer = new VertexBuffer(that.graphicsDevice, VertexPositionNormalTextureLight.VertexDeclaration, vertexCount, BufferUsageHint.StreamDraw);
+                that.TransparencyVertexBuffer.SetData<VertexPositionNormalTextureLight>(stolenVertices.AsSpan(0, vertexCount));
+            }
+            else
+            {
+                that.TransparencyVertexBuffer.ExchangeData<VertexPositionNormalTextureLight>(stolenVertices.AsSpan(0, vertexCount));
+            }
+            that.transparencyVertices.ReturnBuffer(stolenVertices);
+        }
         private unsafe bool RegisterNewVertices(IChunk chunk)
         {
             int vertexCount = vertices.Count;
@@ -377,6 +439,13 @@ namespace OctoAwesome.Client.Components
             {
                 var verticesStolen = vertices.StealAndClearBuffer();
                 graphicsDevice.UiThread.QueueWork(CapturingDelegate.Create(&SendVerticesToGpu, this, verticesStolen, vertexCount));
+            }
+            vertexCount = transparencyVertices.Count;
+
+            if (vertexCount > 0)
+            {
+                var verticesStolen = transparencyVertices.StealAndClearBuffer();
+                graphicsDevice.UiThread.QueueWork(CapturingDelegate.Create(&SendTransparencyVerticesToGpu, this, verticesStolen, vertexCount));
             }
             lock (this)
             {
@@ -401,7 +470,7 @@ namespace OctoAwesome.Client.Components
                 return;
 
 
-            IBlockDefinition blockDefinition = (IBlockDefinition)definitionManager.GetBlockDefinitionByIndex(block);
+            IBlockDefinition blockDefinition = definitionManager.GetBlockDefinitionByIndex(block);
 
             if (blockDefinition is null)
                 return;
@@ -410,8 +479,8 @@ namespace OctoAwesome.Client.Components
             if (!textureOffsets.TryGetValue(blockDefinition, out textureIndex))
                 return;
 
-            if (vertices.Count == 0)
-                vertices.Capacity = 4096;
+            if (this.vertices.Count == 0)
+                this.vertices.Capacity = 4096;
 
 
             Span<ushort> blocks = stackalloc ushort[27];
@@ -464,16 +533,20 @@ namespace OctoAwesome.Client.Components
             var globalY = y + centerChunk.Index.Y * Chunk.CHUNKSIZE_Y;
             var globalZ = z + centerChunk.Index.Z * Chunk.CHUNKSIZE_Z;
 
+            bool isOpaque = blockDefinition.SolidWall == 0x3f;
+
+            var vertices = isOpaque ? this.vertices : transparencyVertices;
+
             // Top
             if (topBlock == 0 || (!topBlockDefintion.IsSolidWall(Wall.Bottom) && topBlock != block))
             {
                 var top = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Top, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Top, _manager, globalX, globalY, globalZ);
 
-                var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(1, 1, 0), Wall.Front);
-                var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(1, 1, 0), Wall.Front);
-                var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(1, -1, 0), Wall.Front);
-                var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(1, -1, 0), Wall.Front);
+                var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(1, 1, 0), Wall.Front, isOpaque);
+                var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(1, 1, 0), Wall.Front, isOpaque);
+                var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(1, -1, 0), Wall.Front, isOpaque);
+                var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(1, -1, 0), Wall.Front, isOpaque);
 
                 var vertYZ = new VertexPositionNormalTextureLight(
                         new Vector3(x + 0, y + 1, z + 1),
@@ -500,6 +573,8 @@ namespace OctoAwesome.Client.Components
                         top,
                         AmbientToBrightness(valueXZ));
 
+
+
                 if (valueXYZ + valueZ <= valueYZ + valueXZ)
                 {
                     vertices.Add(vertYZ);
@@ -521,10 +596,10 @@ namespace OctoAwesome.Client.Components
             if (bottomBlock == 0 || (!bottomBlockDefintion.IsSolidWall(Wall.Top) && bottomBlock != block))
             {
                 var bottom = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Bottom, _manager, globalX, globalY, globalZ));
-                var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
-                var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(-1, 0, 1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
-                var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front);
-                var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(-1, 0, 1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front);
+                var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front, isOpaque);
+                var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(-1, 0, 1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front, isOpaque);
+                var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front, isOpaque);
+                var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(-1, 0, 1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front, isOpaque);
 
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Bottom, _manager, globalX, globalY, globalZ);
 
@@ -536,6 +611,7 @@ namespace OctoAwesome.Client.Components
                         new Vector3(x + 1, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(5 + rotation) % 4], bottom, AmbientToBrightness(valueX));
                 var vert = new VertexPositionNormalTextureLight(
                         new Vector3(x + 0, y + 0, z + 0), new Vector3(0, 0, -1), uvOffsets[(4 + rotation) % 4], bottom, AmbientToBrightness(value));
+
 
                 if (value + valueXY <= valueY + valueX)
                 {
@@ -560,10 +636,10 @@ namespace OctoAwesome.Client.Components
                 var front = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Front, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Front, _manager, globalX, globalY, globalZ);
 
-                var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(0, 1, -1), Wall.Right, GetIndex(-1, 1, 0), Wall.Front);
-                var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
-                var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(0, 1, -1), Wall.Right, GetIndex(1, 1, 0), Wall.Back);
-                var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 1, 0), Wall.Left, GetIndex(0, 1, 1), Wall.Back);
+                var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(0, 1, -1), Wall.Right, GetIndex(-1, 1, 0), Wall.Front, isOpaque);
+                var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front, isOpaque);
+                var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(0, 1, -1), Wall.Right, GetIndex(1, 1, 0), Wall.Back, isOpaque);
+                var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 1, 0), Wall.Left, GetIndex(0, 1, 1), Wall.Back, isOpaque);
 
                 var vertY = new VertexPositionNormalTextureLight(
              new Vector3(x + 0, y + 1, z + 0), new Vector3(0, 1, 0), uvOffsets[(6 + rotation) % 4], front, AmbientToBrightness(valueY));
@@ -573,7 +649,6 @@ namespace OctoAwesome.Client.Components
                         new Vector3(x + 0, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(5 + rotation) % 4], front, AmbientToBrightness(valueYZ));
                 var vertXYZ = new VertexPositionNormalTextureLight(
                         new Vector3(x + 1, y + 1, z + 1), new Vector3(0, 1, 0), uvOffsets[(4 + rotation) % 4], front, AmbientToBrightness(valueXYZ));
-
 
                 if (valueY + valueXYZ >= valueYZ + valueXY)
                 {
@@ -598,10 +673,10 @@ namespace OctoAwesome.Client.Components
             {
                 var back = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Back, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Back, _manager, globalX, globalY, globalZ);
-                var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(-1, -1, 0), Wall.Front);
-                var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(0, -1, 1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front);
-                var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(1, -1, 0), Wall.Back);
-                var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(1, -1, 0), Wall.Left, GetIndex(0, -1, 1), Wall.Back);
+                var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(-1, -1, 0), Wall.Front, isOpaque);
+                var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(0, -1, 1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front, isOpaque);
+                var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(1, -1, 0), Wall.Back, isOpaque);
+                var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(1, -1, 0), Wall.Left, GetIndex(0, -1, 1), Wall.Back, isOpaque);
 
                 var vertZ = new VertexPositionNormalTextureLight(
             new Vector3(x + 0, y + 0, z + 1), new Vector3(0, -1, 0), uvOffsets[(4 + rotation) % 4], back, AmbientToBrightness(valueZ));
@@ -611,6 +686,7 @@ namespace OctoAwesome.Client.Components
                         new Vector3(x + 0, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(7 + rotation) % 4], back, AmbientToBrightness(value));
                 var vertX = new VertexPositionNormalTextureLight(
                         new Vector3(x + 1, y + 0, z + 0), new Vector3(0, -1, 0), uvOffsets[(6 + rotation) % 4], back, AmbientToBrightness(valueX));
+
 
                 if (value + valueXZ <= valueZ + valueX)
                 {
@@ -635,10 +711,10 @@ namespace OctoAwesome.Client.Components
                 var left = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Left, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Left, _manager, globalX, globalY, globalZ);
 
-                var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(0, 1, -1), Wall.Left, GetIndex(-1, 0, -1), Wall.Front);
-                var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(0, 1, -1), Wall.Back);
-                var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(-1, 0, -1), Wall.Front);
-                var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(1, 0, -1), Wall.Back);
+                var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(0, 1, -1), Wall.Left, GetIndex(-1, 0, -1), Wall.Front, isOpaque);
+                var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(0, 1, -1), Wall.Back, isOpaque);
+                var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(-1, 0, -1), Wall.Front, isOpaque);
+                var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(1, 0, -1), Wall.Back, isOpaque);
 
                 var vertY = new VertexPositionNormalTextureLight(
            new Vector3(x + 0, y + 1, z + 0), new Vector3(-1, 0, 0), uvOffsets[(7 + rotation) % 4], left, AmbientToBrightness(valueY));
@@ -670,10 +746,10 @@ namespace OctoAwesome.Client.Components
             if (eastBlock == 0 || (!eastBlockDefintion.IsSolidWall(Wall.Left) && eastBlock != block))
             {
                 var right = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Right, _manager, globalX, globalY, globalZ));
-                var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 0, 1), Wall.Front);
-                var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(0, 1, 1), Wall.Back);
-                var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(0, -1, 1), Wall.Right, GetIndex(-1, 0, 1), Wall.Front);
-                var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(0, -1, 1), Wall.Right, GetIndex(1, 0, 1), Wall.Back);
+                var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 0, 1), Wall.Front, isOpaque);
+                var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(0, 1, 1), Wall.Back, isOpaque);
+                var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(0, -1, 1), Wall.Right, GetIndex(-1, 0, 1), Wall.Front, isOpaque);
+                var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(0, -1, 1), Wall.Right, GetIndex(1, 0, 1), Wall.Back, isOpaque);
 
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Right, _manager, globalX, globalY, globalZ);
 
@@ -685,6 +761,7 @@ namespace OctoAwesome.Client.Components
                         new Vector3(x + 1, y + 0, z + 1), new Vector3(1, 0, 0), uvOffsets[(4 + rotation) % 4], right, AmbientToBrightness(valueXZ));
                 var vertX = new VertexPositionNormalTextureLight(
                        new Vector3(x + 1, y + 0, z + 0), new Vector3(1, 0, 0), uvOffsets[(7 + rotation) % 4], right, AmbientToBrightness(valueX));
+
 
                 if (valueX + valueXYZ >= valueXZ + valueXY)
                 {
@@ -708,8 +785,12 @@ namespace OctoAwesome.Client.Components
         private uint AmbientToBrightness(uint ambient)
             => (0xFFFFFF / 2) + (0xFFFFFF / 6 * ambient);
 
-        private static /*unsafe */uint VertexAO(IBlockDefinition[] blockDefinitions, int cornerIndex, int side1Index, Wall side1Wall, int side2Index, Wall side2Wall)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static /*unsafe */uint VertexAO(IBlockDefinition[] blockDefinitions, int cornerIndex, int side1Index, Wall side1Wall, int side2Index, Wall side2Wall, bool isOpaque)
         {
+            if (!isOpaque)
+                return 15;
+
             var cornerBlock = blockDefinitions[cornerIndex]?.SolidWall ?? 0;
             var side1Def = blockDefinitions[side1Index];
             var side2Def = blockDefinitions[side2Index];
@@ -754,6 +835,11 @@ namespace OctoAwesome.Client.Components
             {
                 VertexBuffer.Dispose();
                 VertexBuffer = null;
+            }
+            if (TransparencyVertexBuffer != null)
+            {
+                TransparencyVertexBuffer.Dispose();
+                TransparencyVertexBuffer = null;
             }
 
             if (centerChunk != null)

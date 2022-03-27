@@ -513,7 +513,7 @@ namespace OctoAwesome.Client.Controls
             var casters = GetCasters();
             var cropMatrix = CreateCropMatrix(player.Position.Position.LocalPosition, sunDirection, casters, casters);
 
-            DrawMiniMap(chunkOffset, cropMatrix, background);
+            DrawMiniMap(gameTime, chunkOffset, cropMatrix, background);
             DrawShadowMap(gameTime, sunDirection, chunkOffset, cropMatrix);
             DrawWorld(gameTime, sunDirection, chunkOffset, background, cropMatrix);
         }
@@ -650,7 +650,7 @@ namespace OctoAwesome.Client.Controls
 
             Manager.GraphicsDevice.IndexBuffer = ChunkRenderer.IndexBuffer;
             var viewProjC = camera.Projection * camera.View;
-            DrawChunks(chunkOffset, viewProjC, cropMatrix);
+            DrawChunks(gameTime, chunkOffset, viewProjC, cropMatrix);
 
             entities.Draw(gameTime, ShadowMap, camera.View, camera.Projection, cropMatrix, chunkOffset, new Index2(planet.Size.X, planet.Size.Z), sunDirection);
 
@@ -693,7 +693,7 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void DrawMiniMap(Index3 chunkOffset, Matrix cropMatrix, Color background)
+        private void DrawMiniMap(GameTime gameTime, Index3 chunkOffset, Matrix cropMatrix, Color background)
         {
             Manager.GraphicsDevice.SetRenderTarget(MiniMapTexture);
             Manager.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -712,6 +712,18 @@ namespace OctoAwesome.Client.Controls
                 if (shift.X >= -range && shift.X <= range &&
                     shift.Y >= -range && shift.Y <= range)
                     renderer.Draw(viewProj, cropMatrix, shift);
+            }
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || !renderer.CanRender)
+                    continue;
+
+                Index3 shift = renderer.GetShift(chunkOffset, planet);
+
+                int range = 6;
+                if (shift.X >= -range && shift.X <= range &&
+                    shift.Y >= -range && shift.Y <= range)
+                    renderer.DrawTransparent(gameTime,viewProj, cropMatrix, shift);
             }
         }
 
@@ -732,10 +744,10 @@ namespace OctoAwesome.Client.Controls
             Manager.GraphicsDevice.DrawPrimitives(PrimitiveType.Triangles, 0, 6);
         }
 
-        private void DrawChunks(Index3 chunkOffset, Matrix viewProj, Matrix cropMatrix)
+        private void DrawChunks(GameTime gameTime, Index3 chunkOffset, Matrix viewProj, Matrix cropMatrix)
         {
             var spherePos = camera.PickRay.Position + (camera.PickRay.Direction * sphereRadius);
-
+            Manager.GraphicsDevice.BlendState = BlendState.Opaque;
             foreach (var renderer in chunkRenderer)
             {
                 if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || !renderer.CanRender)
@@ -751,6 +763,25 @@ namespace OctoAwesome.Client.Controls
                 var frustumDist = spherePos - chunkPos;
                 if (frustumDist.LengthSquared < sphereRadiusSquared)
                     renderer.Draw(viewProj, cropMatrix, shift);
+            }
+
+            Manager.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
+            foreach (var renderer in chunkRenderer)
+            {
+                if (!renderer.ChunkPosition.HasValue || !renderer.Loaded || !renderer.CanRender)
+                    continue;
+
+                Index3 shift = renderer.GetShift(chunkOffset, planet);
+
+                var chunkPos = new Vector3(
+                    (shift.X * Chunk.CHUNKSIZE_X) + (Chunk.CHUNKSIZE_X / 2),
+                    (shift.Y * Chunk.CHUNKSIZE_Y) + (Chunk.CHUNKSIZE_Y / 2),
+                    (shift.Z * Chunk.CHUNKSIZE_Z) + (Chunk.CHUNKSIZE_Z / 2));
+
+                var frustumDist = spherePos - chunkPos;
+                if (frustumDist.LengthSquared < sphereRadiusSquared)
+                    renderer.DrawTransparent(gameTime, viewProj, cropMatrix, shift);
             }
         }
         private void DrawChunksShadow(Index3 chunkOffset, Matrix viewProj)
