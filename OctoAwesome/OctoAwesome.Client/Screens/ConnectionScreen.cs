@@ -52,7 +52,7 @@ namespace OctoAwesome.Client.Screens
 
             var playerNameInput = new Textbox(manager)
             {
-                Text = game.Settings.Get("player", "USERNAME"),
+                Text = game.Settings.Get("player", "USERNAME")!,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black)
 
@@ -74,8 +74,8 @@ namespace OctoAwesome.Client.Screens
                 PlayMultiplayer(manager, playerNameInput.Text);
             };
 
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto,  });
-            grid.AddControl(createButton, 1, grid.Rows.Count -1);
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, });
+            grid.AddControl(createButton, 1, grid.Rows.Count - 1);
 
         }
 

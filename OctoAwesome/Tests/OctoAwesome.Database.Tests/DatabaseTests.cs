@@ -20,7 +20,7 @@ namespace OctoAwesome.Database.Tests
             var valueFile = new FileInfo(Path.Combine(temp, valuePath));
 
             var database = new Database<IdTag<int>>(keyFile, valueFile);
-            
+
 
             try
             {

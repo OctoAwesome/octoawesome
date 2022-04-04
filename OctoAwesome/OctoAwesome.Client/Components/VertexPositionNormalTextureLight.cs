@@ -1,22 +1,20 @@
 ﻿using engenious;
 using engenious.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 namespace OctoAwesome.Client.Components
 {
-    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential,Pack=1)]
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 1)]
     struct VertexPositionNormalTextureLight : IVertexType
     {
         public static readonly VertexDeclaration VertexDeclaration;
         static VertexPositionNormalTextureLight()
         {
-            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2, 
-                new VertexElement(0, VertexElementFormat.Single, VertexElementUsage.Position, 0), 
+            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2,
+                new VertexElement(0, VertexElementFormat.Single, VertexElementUsage.Position, 0),
                 new VertexElement(sizeof(uint), VertexElementFormat.Single, VertexElementUsage.Normal, 0));
         }
-        public VertexPositionNormalTextureLight(Vector3 position, Vector3 normal, Vector2 uv,byte layer,uint light)
+        public VertexPositionNormalTextureLight(Vector3 position, Vector3 normal, Vector2 uv, byte layer, uint light)
         {
             uint posX = (uint)position.X;
             uint posY = (uint)position.Y;

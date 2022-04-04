@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using OctoAwesome.EntityComponents;
+﻿using OctoAwesome.EntityComponents;
 
 using System;
 
@@ -13,18 +12,18 @@ namespace OctoAwesome.PoC
             throw new NotImplementedException();
         }
 
-      //  public Component[] TryFind<T>(T key)
-      //=> key switch
-      //{
-      //    int i => Array.Empty<Component>(),
-      //    _ => false
-      //};
+        //  public Component[] TryFind<T>(T key)
+        //=> key switch
+        //{
+        //    int i => Array.Empty<Component>(),
+        //    _ => false
+        //};
     }
 
     public class EntityCache : Cache<int, Entity>//, IKeyFinder<Index3>
     {
 
-        //All Position Components  of Entites
+        //All Position Components of Entities
 
         protected Entity Load(Index3 key)
         {
@@ -35,8 +34,6 @@ namespace OctoAwesome.PoC
         {
             throw new NotImplementedException();
         }
-
-
     }
 
     public class PositionComponentCache : ComponentCache//, IKeyFinder<Index3, PositionComponent>
@@ -57,7 +54,7 @@ namespace OctoAwesome.PoC
             Index2 i2 => null,
             _ => null
         };
-            
+
         //public PositionComponent[] TryFind<T>(T key)
         //=> key switch
         //{
@@ -66,8 +63,6 @@ namespace OctoAwesome.PoC
         //    _ => false
         //};
     }
-
-
     public class Index3PositionConverter //IKeyConverter<Index3, PositionComponent>, IKeyConverter<Index2, PositionComponent>
     {
         protected PositionComponent Convert(Index3 key)
@@ -81,8 +76,6 @@ namespace OctoAwesome.PoC
 
         }
     }
-
-
     public class ChunkColumnCache : Cache<Index3, ChunkColumn>
     {
         protected override ChunkColumn Load(Index3 key)

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Database
 {
@@ -11,13 +8,11 @@ namespace OctoAwesome.Database
     {
         private readonly FileInfo keyStoreFile;
         private readonly FileInfo valueStoreFile;
-
         public Defragmentation(FileInfo keyStoreFile, FileInfo valueStoreFile)
         {
             this.keyStoreFile = keyStoreFile;
             this.valueStoreFile = valueStoreFile;
         }
-
         public void StartDefragmentation()
         {
             var newValueStoreFile = new FileInfo(Path.GetTempFileName());
@@ -31,7 +26,6 @@ namespace OctoAwesome.Database
             valueStoreFile.Delete();
             newValueStoreFile.MoveTo(valueStoreFile.FullName);
         }
-
         public void RecreateKeyFile()
         {
             var keyBuffer = new byte[Key<TTag>.KEY_SIZE];

@@ -31,11 +31,12 @@ namespace OctoAwesome
         /// <param name="definition">Definition Instance</param>
         void RegisterDefinition(Type definition);
 
+
         /// <summary>
         /// Removes an existing Definition Type.
         /// </summary>
         /// <typeparam name="T">Definition Type</typeparam>
-        void RemoveDefinition<T>() where T : IDefinition;
+        void RemoveDefinition<T>() where T : IDefinition; // TODO: naming Unregister?
 
         /// <summary>
         /// Registers a Type with the required SerializationId attribute.
@@ -80,7 +81,6 @@ namespace OctoAwesome
         void RemoveMapGenerator<T>(T item) where T : IMapGenerator;
 
         void RegisterMapPopulator(IMapPopulator populator);
-
         void RemoveMapPopulator<T>(T item) where T : IMapPopulator;
     }
 }

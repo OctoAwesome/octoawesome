@@ -2,11 +2,9 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
-
 using OctoAwesome.Client.UI.Components;
-using OctoAwesome.Definitions;
-
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OctoAwesome.Client.UI.Controls
 {
@@ -47,7 +45,6 @@ namespace OctoAwesome.Client.UI.Controls
 
         public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
         {
-
             grid = new Grid(ScreenManager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -73,12 +70,10 @@ namespace OctoAwesome.Client.UI.Controls
                 else
                     texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
 
-
                 var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-                
-                image.MouseEnter += (s, e) => { HoveredSlot = inventorySlot; };
-                image.MouseLeave += (s, e) => { HoveredSlot = null; };
-                image.StartDrag += (c, e) =>
+                image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
+                image.MouseLeave += (_, _) => { HoveredSlot = null; };
+                image.StartDrag += (_, e) =>
                 {
                     e.Handled = true;
                     e.Icon = texture;
@@ -86,7 +81,7 @@ namespace OctoAwesome.Client.UI.Controls
                     e.Sender = image;
                 };
                 image.LeftMouseClick += (s, e) => HoveredSlot = inventorySlot;
-                var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
+                var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(CultureInfo.InvariantCulture), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
                 grid.AddControl(image, column, row);
                 grid.AddControl(label, column, row);
 

@@ -17,8 +17,6 @@ namespace OctoAwesome.PoC
         {
             return null;
         }
-
-
         public static bool TryCreateTree(IList<DependencyItem> dependencies, out DependencyTree tree)
         {
             if (dependencies is null)
@@ -34,8 +32,6 @@ namespace OctoAwesome.PoC
             tree = TopologicalSort(graph);
             return true;
         }
-
-
         private static bool HasCycle(IList<DependencyLeaf> dependencies)
         {
             HashSet<DependencyLeaf> visitedChildren = new();
@@ -64,8 +60,6 @@ namespace OctoAwesome.PoC
             {
                 return true;
             }
-
-
             foreach (var child in children.Children)
             {
                 if (visitedChildren.Contains(child))

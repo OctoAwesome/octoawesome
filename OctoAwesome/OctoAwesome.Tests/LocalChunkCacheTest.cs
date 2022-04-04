@@ -9,7 +9,7 @@ namespace OctoAwesome.Tests
     /// <summary>
     /// Summary description for LocalChunkCacheTest
     /// </summary>
-    
+
     public class LocalChunkCacheTest
     {
         TestGlobalCache globalCache;
@@ -131,6 +131,4 @@ namespace OctoAwesome.Tests
         //    Assert.Equals(chunk.Index, new Index3(15, 15, 0));
         //}
     }
-
-
 }

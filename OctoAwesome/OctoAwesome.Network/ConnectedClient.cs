@@ -1,23 +1,16 @@
 ﻿using OctoAwesome.Network.Pooling;
-using OctoAwesome.Network.ServerNotifications;
 using OctoAwesome.Notifications;
-using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using System;
-using System.Buffers;
-using System.IO;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
-    public sealed class ConnectedClient : BaseClient, IDisposable
+    public sealed class ConnectedClient : BaseClient
     {
         private readonly IDisposable networkSubscription;
-        public IDisposable ServerSubscription { get; set; }
+        public IDisposable? ServerSubscription { get; set; }
 
         private readonly PackagePool packagePool;
 
@@ -27,8 +20,6 @@ namespace OctoAwesome.Network
             var updateHub = TypeContainer.Get<IUpdateHub>();
             networkSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe(OnNext, OnError);
         }
-
-
         private void OnError(Exception error)
         {
             Socket.Close();
@@ -52,7 +43,7 @@ namespace OctoAwesome.Network
                 case BlocksChangedNotification _:
                 case BlockChangedNotification _:
                     command = OfficialCommand.ChunkNotification;
-                    payload = Serializer.Serialize(value as SerializableNotification);
+                    payload = Serializer.Serialize((SerializableNotification)value);
                     break;
                 default:
                     return;
@@ -63,14 +54,15 @@ namespace OctoAwesome.Network
 
         private void BuildAndSendPackage(byte[] data, OfficialCommand officialCommand)
         {
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Payload = data;
             package.Command = (ushort)officialCommand;
-            SendPackageAndRelase(package);
+            SendPackageAndRelease(package);
         }
-
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
+            ServerSubscription?.Dispose();
             networkSubscription.Dispose();
         }
     }

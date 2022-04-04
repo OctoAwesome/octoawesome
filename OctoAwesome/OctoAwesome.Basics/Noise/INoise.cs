@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace OctoAwesome.Noise
+﻿namespace OctoAwesome.Basics.Noise
 {
+
     public interface INoise
     {
         /// <summary>
@@ -39,7 +35,9 @@ namespace OctoAwesome.Noise
         /// <param name="tileSizeY">Höhe der Kachel</param>
         /// <param name="noiseArray">Array in der größé sizeX * sizeY</param>
         /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
-        float[] GetTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY, float[] noiseArray);
+        void FillTileableNoiseMap2D(int startX, int startY, int width, int height, int tileSizeX, int tileSizeY,
+            float[] noiseArray);
+
 
         /// <summary>
         /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome
 {
@@ -64,11 +61,11 @@ namespace OctoAwesome
         /// <param name="stream"></param>
         public void Serialize(BinaryWriter writer)
         {
-             writer.Write(Id.ToString());
-             writer.Write(Name);
-             writer.Write(Seed);
+            writer.Write(Id.ToString());
+            writer.Write(Name);
+            writer.Write(Seed);
         }
 
- 
+
     }
 }

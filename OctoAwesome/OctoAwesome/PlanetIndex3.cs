@@ -1,9 +1,11 @@
-﻿namespace OctoAwesome
+﻿using System;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Datenstruktur zur genauen bestimmung eines Chunks und seinen Planeten
     /// </summary>
-    public struct PlanetIndex3
+    public struct PlanetIndex3 : IEquatable<PlanetIndex3>
     {
         /// <summary>
         /// Die Planeten-ID
@@ -58,25 +60,22 @@
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (obj is PlanetIndex3 other)
-                return other.Planet == Planet &&
-                    other.ChunkIndex.X == ChunkIndex.X &&
-                    other.ChunkIndex.Y == ChunkIndex.Y && 
-                    other.ChunkIndex.Z == ChunkIndex.Z;
-
-            return false;
+            return obj is PlanetIndex3 other && Equals(other);
+        }
+        public bool Equals(PlanetIndex3 other)
+        {
+            return Planet == other.Planet && ChunkIndex.Equals(other.ChunkIndex);
         }
 
         /// <summary>
         /// Erzeugt einen möglichst eindeutigen Hashcode des PlanetIndex3s
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() 
-            => (Planet << 24) +
-               (ChunkIndex.X << 16) +
-               (ChunkIndex.Y << 8) +
-               ChunkIndex.Z;
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Planet, ChunkIndex);
+        }
     }
 }

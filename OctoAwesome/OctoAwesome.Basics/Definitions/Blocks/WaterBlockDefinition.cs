@@ -1,10 +1,9 @@
-﻿using System;
-using System.Drawing;
-using OctoAwesome.Basics.Definitions.Materials;
+﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
+
     public sealed class WaterBlockDefinition : BlockDefinition
     {
         public override string Name => Languages.OctoBasics.Water;
@@ -13,15 +12,13 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public override string Icon => "water";
 
-        public override IMaterialDefinition Material { get; }
+        public override string[] Textures { get; } = { "water" };
 
+        public override IMaterialDefinition Material { get; }
 
         public WaterBlockDefinition(WaterMaterialDefinition material)
         {
             Material = material;
         }
-
-
-        public override string[] Textures { get; } = new[] { "water" };
     }
 }

@@ -3,8 +3,10 @@ using System.Linq.Expressions;
 
 namespace OctoAwesome.Caching
 {
-    public static class GenericCaster<TTo, TFrom>
+
+    public static class GenericCaster<TFrom, TTo>
     {
+
         public static Func<TFrom, TTo> Cast { get; }
         static GenericCaster()
         {

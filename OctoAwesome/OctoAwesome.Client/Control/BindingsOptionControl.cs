@@ -66,10 +66,9 @@ namespace OctoAwesome.Client.Controls
 
         private void BindingKeyLabel_LeftMouseClick(Control sender, MouseEventArgs args)
         {
-            object[] data = (object[])sender.Tag;
-
-            if (data is null)
+            if (sender.Tag is null)
                 return;
+            object[] data = (object[])sender.Tag;
 
             string id = (string)data[0];
             Keys oldKey = (Keys)data[1];

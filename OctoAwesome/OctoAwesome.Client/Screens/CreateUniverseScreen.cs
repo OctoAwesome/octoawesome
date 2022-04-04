@@ -1,17 +1,12 @@
 ﻿using engenious;
-using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace OctoAwesome.Client.Screens
 {
-    class CreateUniverseScreen : BaseScreen
+    internal class CreateUniverseScreen : BaseScreen
     {
         new readonly ScreenComponent Manager;
         private readonly Textbox nameInput;
@@ -55,10 +50,6 @@ namespace OctoAwesome.Client.Screens
             grid.Columns.Add(new ColumnDefinition() { Width = 1, ResizeMode = ResizeMode.Parts });
 
             nameInput = GetTextbox();
-            nameInput.TextChanged += (s, e) =>
-            {
-                createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
-            };
             nameInput.TabOrder = 1;
             AddLabeledControl(grid, string.Format("{0}: ", UI.Languages.OctoClient.Name), nameInput);
 
@@ -92,6 +83,11 @@ namespace OctoAwesome.Client.Screens
 
                 manager.NavigateToScreen(new LoadingScreen(manager));
             };
+
+            nameInput.TextChanged += (s, e) =>
+                                     {
+                                         createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
+                                     };
             panel.Controls.Add(createButton);
 
         }

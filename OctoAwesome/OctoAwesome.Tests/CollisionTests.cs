@@ -52,8 +52,6 @@ namespace OctoAwesome.Tests
             blocks.Add(new Index3(10, 11, 9));
             blocks.Add(new Index3(11, 11, 9));
 
-
-
             Player.Velocity = new Vector3(-1, 0, -0.1f);
             Move();
             AssertEx.Equal(Vector3.Zero, Player.Velocity);
@@ -107,8 +105,6 @@ namespace OctoAwesome.Tests
             blocks.Add(new Index3(max + 9, max + 11, max + 9));
             blocks.Add(new Index3(max + 10, max + 11, max + 9));
             blocks.Add(new Index3(max + 11, max + 11, max + 9));
-
-
 
             Player.Velocity = new Vector3(-1, 0, -0.1f);
             Move();
@@ -221,8 +217,6 @@ namespace OctoAwesome.Tests
                         Index3 blockPos = pos + Player.Position.GlobalBlockIndex;
                         if (!blocks.Contains(blockPos))
                             continue;
-
-
 
                         var blockplane = CollisionPlane.GetBlockCollisionPlanes(pos, Player.Velocity).ToList();
 

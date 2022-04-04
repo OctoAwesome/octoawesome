@@ -2,9 +2,6 @@
 using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Network.Pooling
 {
@@ -12,14 +9,13 @@ namespace OctoAwesome.Network.Pooling
     {
         private readonly Stack<Package> internalStack;
         private readonly LockSemaphore semaphoreExtended;
-
         public PackagePool()
         {
             internalStack = new Stack<Package>();
             semaphoreExtended = new LockSemaphore(1, 1);
         }
 
-        public Package Get()
+        public Package Rent()
         {
             Package obj;
 
@@ -50,23 +46,21 @@ namespace OctoAwesome.Network.Pooling
             obj.Init(this);
             return obj;
         }
-
-        public void Push(Package obj)
+        public void Return(Package obj)
         {
             using (semaphoreExtended.Wait())
                 internalStack.Push(obj);
         }
-
-        public void Push(IPoolElement obj)
+        public void Return(IPoolElement obj)
         {
             if (obj is Package package)
             {
-                Push(package);
+                Return(package);
             }
             else
             {
                 throw new InvalidCastException("Can not push object from type: " + obj.GetType());
             }
-        }       
+        }
     }
 }

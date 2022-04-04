@@ -1,16 +1,13 @@
-﻿using OctoAwesome.Pooling;
-using OctoAwesome.Serialization;
+﻿using OctoAwesome.Serialization;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications
 {
+
     public sealed class FunctionalBlockNotification : SerializableNotification
     {
+
         public ActionType Type { get; set; }
         public Guid BlockId { get; set; }
         public FunctionalBlock Block
@@ -23,7 +20,6 @@ namespace OctoAwesome.Notifications
         }
 
         private FunctionalBlock block;
-
         public FunctionalBlockNotification()
         {
         }
@@ -32,19 +28,15 @@ namespace OctoAwesome.Notifications
         {
             BlockId = id;
         }
-
         public override void Deserialize(BinaryReader reader)
         {
             Type = (ActionType)reader.ReadInt32();
-
-
             if (Type == ActionType.Add) { }
             //Block = Serializer.Deserialize()
             else
                 BlockId = new Guid(reader.ReadBytes(16));
 
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((int)Type);
@@ -59,9 +51,8 @@ namespace OctoAwesome.Notifications
             {
                 writer.Write(BlockId.ToByteArray());
             }
-           
-        }
 
+        }
         protected override void OnRelease()
         {
             Type = default;
@@ -69,13 +60,15 @@ namespace OctoAwesome.Notifications
 
             base.OnRelease();
         }
-
         public enum ActionType
         {
+
             None,
             Add,
             Remove,
             Update,
+
+
             Request
         }
     }

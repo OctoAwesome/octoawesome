@@ -1,17 +1,13 @@
 ﻿using OctoAwesome.EntityComponents;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using engenious;
 using OctoAwesome.Services;
-using OctoAwesome.Definitions.Items;
 using OctoAwesome.Definitions;
 using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
+
     public class BlockInteractionComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
@@ -21,13 +17,11 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
 
-
         public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
         }
-
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
         {
             var entity = value.Value;
@@ -115,35 +109,34 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
-                IItem activeItem;
+                IItem activeItem = null!;
                 if (toolbar.ActiveTool.Item is IItem item)
                 {
                     activeItem = item;
                 }
-                else
+                else if (toolbar.HandSlot.Item is IItem handItem)
                 {
-                    activeItem = toolbar.HandSlot.Item as IItem;
+                    activeItem = handItem;
                 }
+
+                Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
                 var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
 
-                if (blockHitInformation.Valid)
-                    foreach (var (Quantity, Definition) in blockHitInformation.List)
+                if (blockHitInformation.Valid && blockHitInformation.List != null)
+                    foreach (var (quantity, definition) in blockHitInformation.List)
                     {
                         if (activeItem is IFluidInventory fluidInventory
-                            && Definition is IBlockDefinition fluidBlock
-                            && fluidBlock.Material is IFluidMaterialDefinition)
+                            && definition is IBlockDefinition { Material: IFluidMaterialDefinition } fluidBlock)
                         {
-                            fluidInventory.AddFluid(Quantity, fluidBlock);
+                            fluidInventory.AddFluid(quantity, fluidBlock);
                         }
-                        else if (Definition is IInventoryable invDef)
+                        else if (definition is IInventoryable invDef)
                         {
-                            inventory.AddUnit(Quantity, invDef);
+                            inventory.AddUnit(quantity, invDef);
                         }
 
                     }
-
-
             }
         }
     }

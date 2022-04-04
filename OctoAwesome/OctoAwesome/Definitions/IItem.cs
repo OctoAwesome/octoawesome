@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OctoAwesome.Definitions
+﻿namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Interface, das ein Item darstellt
@@ -18,7 +16,7 @@ namespace OctoAwesome.Definitions
         /// </summary>
         int Condition { get; set; }
         IItemDefinition Definition { get; }
-        IMaterialDefinition Material { get;  }
+        IMaterialDefinition Material { get; }
 
         int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit);
     }

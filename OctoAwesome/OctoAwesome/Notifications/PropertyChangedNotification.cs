@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace OctoAwesome.Notifications
 {
+
     public class PropertyChangedNotification : SerializableNotification
     {
+
         public string Issuer { get; set; }
         public string Property { get; set; }
-
         public byte[] Value { get; set; }
-
         public override void Deserialize(BinaryReader reader)
         {
             Issuer = reader.ReadString();
@@ -21,7 +16,6 @@ namespace OctoAwesome.Notifications
             var count = reader.ReadInt32();
             Value = reader.ReadBytes(count);
         }
-
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write(Issuer);
@@ -29,7 +23,6 @@ namespace OctoAwesome.Notifications
             writer.Write(Value.Length);
             writer.Write(Value);
         }
-
         protected override void OnRelease()
         {
             Issuer = default;

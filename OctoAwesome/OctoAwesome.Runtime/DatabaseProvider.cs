@@ -5,11 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Runtime
 {
+
     public sealed class DatabaseProvider : IDisposable, IDatabaseProvider
     {
         private readonly string rootPath;
@@ -20,7 +19,6 @@ namespace OctoAwesome.Runtime
         private readonly Dictionary<(Type Type, Guid Universe, int PlanetId), Database.Database> planetDatabaseRegister;
         private readonly Dictionary<(Type Type, Guid Universe), Database.Database> universeDatabaseRegister;
         private readonly Dictionary<Type, Database.Database> globalDatabaseRegister;
-
         public DatabaseProvider(string rootPath, ILogger logger)
         {
             this.rootPath = rootPath;
@@ -32,13 +30,12 @@ namespace OctoAwesome.Runtime
             universeDatabaseRegister = new Dictionary<(Type Type, Guid Universe), Database.Database>();
             globalDatabaseRegister = new Dictionary<Type, Database.Database>();
         }
-
         public Database<T> GetDatabase<T>(bool fixedValueSize) where T : ITag, new()
         {
             Type key = typeof(T);
             using (globalSemaphore.Wait())
             {
-                if (globalDatabaseRegister.TryGetValue(key, out Database.Database database))
+                if (globalDatabaseRegister.TryGetValue(key, out var database))
                 {
                     return database as Database<T>;
                 }
@@ -61,13 +58,12 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
-
         public Database<T> GetDatabase<T>(Guid universeGuid, bool fixedValueSize) where T : ITag, new()
         {
             (Type, Guid universeGuid) key = (typeof(T), universeGuid);
             using (universeSemaphore.Wait())
             {
-                if (universeDatabaseRegister.TryGetValue(key, out Database.Database database))
+                if (universeDatabaseRegister.TryGetValue(key, out var database))
                 {
                     return database as Database<T>;
                 }
@@ -90,13 +86,12 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
-
         public Database<T> GetDatabase<T>(Guid universeGuid, int planetId, bool fixedValueSize) where T : ITag, new()
         {
             (Type, Guid universeGuid, int planetId) key = (typeof(T), universeGuid, planetId);
             using (planetSemaphore.Wait())
             {
-                if (planetDatabaseRegister.TryGetValue(key, out Database.Database database))
+                if (planetDatabaseRegister.TryGetValue(key, out var database))
                 {
                     return database as Database<T>;
                 }
@@ -118,7 +113,6 @@ namespace OctoAwesome.Runtime
                 }
             }
         }
-
         public void Dispose()
         {
             foreach (KeyValuePair<(Type Type, Guid Universe, int PlanetId), Database.Database> database in planetDatabaseRegister)
@@ -139,7 +133,7 @@ namespace OctoAwesome.Runtime
             globalSemaphore.Dispose();
         }
 
-        private Database<T> CreateDatabase<T>(string path, bool fixedValueSize, string typeName = null) where T : ITag, new()
+        private Database<T> CreateDatabase<T>(string path, bool fixedValueSize, string? typeName = null) where T : ITag, new()
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);

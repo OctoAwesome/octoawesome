@@ -6,7 +6,7 @@ namespace OctoAwesome.Tests
     /// <summary>
     /// Test für GlobalChunkCache
     /// </summary>
-    
+
     public class GlobalChunkCacheTest
     {
         public GlobalChunkCacheTest()
@@ -135,8 +135,6 @@ namespace OctoAwesome.Tests
 
         //    //Change Chunk so that they get saved
         //    result1.Chunks[0].SetBlock(Index3.Zero,0,0);
-
-
         //    // Unload 1
         //    cache.Release(planet1, index1,false);
         //    System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
@@ -151,7 +149,7 @@ namespace OctoAwesome.Tests
         //    Assert.Equals(0, cache.LoadedChunkColumns);
         //    Assert.Equals(2, loadCallCounter);
         //    Assert.Equals(2, saveCallCounter);
-            
+
         //}
 
         //[Test]
@@ -203,8 +201,6 @@ namespace OctoAwesome.Tests
         //    Assert.Equals(1, loadCallCounter);
         //    Assert.Equals(0, saveCallCounter);
 
-
-
         //    // Unload 1
         //    cache.Release(planet, index,false);
         //    System.Threading.Thread.Sleep(150);//TODO: dirty fix wait till completly cleaned up
@@ -233,5 +229,5 @@ namespace OctoAwesome.Tests
         //}
     }
 
-    
+
 }

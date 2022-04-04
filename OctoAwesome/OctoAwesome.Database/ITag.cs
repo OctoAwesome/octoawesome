@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OctoAwesome.Database
 {
@@ -8,9 +6,9 @@ namespace OctoAwesome.Database
     {
         int Length { get; }
 
-        byte[] GetBytes();
+        byte[] GetBytes(); // TODO: code deduplication: Use WriteBytes to create array
+        void FromBytes(byte[] array, int startIndex); // TODO: use span
 
-        void FromBytes(byte[] array, int startIndex);
         void WriteBytes(Span<byte> span);
     }
 }

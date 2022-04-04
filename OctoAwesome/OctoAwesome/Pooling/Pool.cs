@@ -1,10 +1,7 @@
 ﻿using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Pooling
 {
@@ -20,14 +17,12 @@ namespace OctoAwesome.Pooling
 
         private readonly Stack<T> internalStack;
         private readonly LockSemaphore semaphoreExtended;
-
         public Pool()
         {
             internalStack = new Stack<T>();
             semaphoreExtended = new LockSemaphore(1, 1);
         }
-
-        public T Get()
+        public T Rent()
         {
             T obj;
 
@@ -42,18 +37,16 @@ namespace OctoAwesome.Pooling
             obj.Init(this);
             return obj;
         }
-
-        public void Push(T obj)
+        public void Return(T obj)
         {
             using (semaphoreExtended.Wait())
                 internalStack.Push(obj);
         }
-
-        public void Push(IPoolElement obj)
+        public void Return(IPoolElement obj)
         {
             if (obj is T t)
             {
-                Push(t);
+                Return(t);
             }
             else
             {

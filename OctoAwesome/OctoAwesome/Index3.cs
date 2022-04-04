@@ -49,12 +49,6 @@ namespace OctoAwesome
         public Index3(Index2 index, int z) : this(index.X, index.Y, z) { }
 
         /// <summary>
-        /// Initialisierung
-        /// </summary>
-        /// <param name="index">3D-Basis</param>
-        public Index3(Index3 index) : this(index.X, index.Y, index.Z) { }
-
-        /// <summary>
         /// Normalisiert die X-Achse auf die angegebene Größe.
         /// </summary>
         /// <param name="size">Maximalwert für X</param>
@@ -115,10 +109,10 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="x">X-Anteil</param>
         /// <param name="y">Y-Anteil</param>
-        public void NormalizeXY(int x, int y)
+        public void NormalizeXY(int sizeX, int sizeY)
         {
-            NormalizeX(x);
-            NormalizeY(y);
+            NormalizeX(sizeX);
+            NormalizeY(sizeY);
         }
 
         /// <summary>
@@ -141,11 +135,11 @@ namespace OctoAwesome
         /// <param name="x">X-Anteil</param>
         /// <param name="y">Y-Anteil</param>
         /// <param name="z">Z-Anteil</param>
-        public void NormalizeXYZ(int x, int y, int z)
+        public void NormalizeXYZ(int sizeX, int sizeY, int sizeZ)
         {
-            NormalizeX(x);
-            NormalizeY(y);
-            NormalizeZ(z);
+            NormalizeX(sizeX);
+            NormalizeY(sizeY);
+            NormalizeZ(sizeZ);
         }
 
         /// <summary>
@@ -153,8 +147,8 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="size">2D-Size</param>
         /// <param name="z">Z-Anteil</param>
-        public void NormalizeXYZ(Index2 size, int z)
-            => NormalizeXYZ(size.X, size.Y, z);
+        public void NormalizeXYZ(Index2 size, int sizeZ)
+            => NormalizeXYZ(size.X, size.Y, sizeZ);
 
         /// <summary>
         /// Normalisiert die X-, Y- und Z-Achse auf die angegebene Größe.
@@ -350,12 +344,11 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj) 
+        public override bool Equals(object? obj)
             => obj is Index3 other && Equals(other);
-
         public bool Equals(Index3 other)
             => other.X == X && other.Y == Y && other.Z == Z;
-        
+
         /// <summary>
         /// Gibt einen möglichst eindeutigen Hashwert für den aktuellen Index3 zurück.
         /// </summary>

@@ -8,9 +8,9 @@ using OctoAwesome.Components;
 namespace OctoAwesome.Basics.SimulationComponents
 {
     public class WattMoverComponent : SimulationComponent<
-        Entity, 
+        Entity,
         SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>,
-        ControllableComponent, 
+        ControllableComponent,
         BodyPowerComponent>
     {
         protected override SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent> OnAdd(Entity entity)
@@ -45,11 +45,11 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
             else
             {
-                powercomp.Direction = new Vector3(controller.MoveInput.X,controller.MoveInput.Y);
+                powercomp.Direction = new Vector3(controller.MoveInput.X, controller.MoveInput.Y);
             }
 
             //Jump
-            if (controller.JumpInput &&!controller.JumpActive)
+            if (controller.JumpInput && !controller.JumpActive)
             {
                 controller.JumpTime = powercomp.JumpTime;
                 controller.JumpActive = true;
@@ -57,13 +57,13 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             if (controller.JumpActive)
             {
-                powercomp.Direction += new Vector3(0,0,1);
+                powercomp.Direction += new Vector3(0, 0, 1);
                 controller.JumpTime -= gameTime.ElapsedGameTime.Milliseconds;
 
                 if (controller.JumpTime <= 0)
                     controller.JumpActive = false;
             }
-            
+
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using OctoAwesome.Notifications;
-using System;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Basisinterface für einen Globalen Chunkcache
     /// </summary>
-    public interface IGlobalChunkCache 
+    public interface IGlobalChunkCache
     {
         //event EventHandler<IChunkColumn> ChunkColumnChanged;
 
@@ -27,7 +26,6 @@ namespace OctoAwesome
         /// <param name="position">Position des Chunks</param>
         /// <returns>Den neu abonnierten Chunk</returns>
         IChunkColumn Subscribe(Index2 position);
-        
 
         /// <summary>
         /// Liefert den Chunk, sofern geladen.
@@ -35,8 +33,8 @@ namespace OctoAwesome
         /// <param name="planet">Die Id des Planeten</param>
         /// <param name="position">Die Position des zurückzugebenden Chunks</param>
         /// <returns>Chunk Instanz oder null, falls nicht geladen</returns>
-        IChunkColumn Peek(Index2 position);
-        
+        IChunkColumn? Peek(Index2 position);
+
         /// <summary>
         /// Gibt einen abonnierten Chunk wieder frei.
         /// </summary>
@@ -44,9 +42,11 @@ namespace OctoAwesome
         void Release(Index2 position);
 
         void BeforeSimulationUpdate(Simulation simulation);
+
         void AfterSimulationUpdate(Simulation simulation);
 
         void OnUpdate(SerializableNotification notification);
+
         void Update(SerializableNotification notification);
     }
 }

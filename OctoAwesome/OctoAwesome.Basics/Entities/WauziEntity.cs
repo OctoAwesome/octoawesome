@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
@@ -10,21 +6,18 @@ using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.Entities
 {
+
     [SerializationId(1, 2)]
     public class WauziEntity : UpdateableEntity
     {
+
         public int JumpTime { get; set; }
-
-        public WauziEntity() : base()
-        {
-        }
-
         public override void Update(GameTime gameTime)
         {
-            BodyPowerComponent body = Components.GetComponent<BodyPowerComponent>();
+            _ = Components.GetComponent<BodyPowerComponent>();
             ControllableComponent controller = Components.GetComponent<ControllableComponent>();
-            controller.MoveInput = new Vector2(0.5f, 0.5f) ;
-            
+            controller.MoveInput = new Vector2(0.5f, 0.5f);
+
             if (JumpTime <= 0)
             {
                 controller.JumpInput = true;
@@ -40,10 +33,9 @@ namespace OctoAwesome.Basics.Entities
                 controller.JumpInput = false;
             }
         }
-
         public override void RegisterDefault()
         {
-            var posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
+            var posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0)) };
 
             Components.AddComponent(posComponent);
             Components.AddComponent(new GravityComponent());

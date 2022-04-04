@@ -18,18 +18,18 @@ namespace OctoAwesome.Tests
             var typecontainer = new StandaloneTypeContainer();
             typecontainer.Register<StandaloneTypeContainer>();
             typecontainer.Register<TestClass>();
-            typecontainer.Register(typeof(ITestInterface), typeof(TestClass), InstanceBehaviour.Instance);
+            typecontainer.Register(typeof(ITestInterface), typeof(TestClass), InstanceBehavior.Instance);
 
-            var result = typecontainer.TryResolve(typeof(TestClass), out var instanceA);
+            var result = typecontainer.TryGet(typeof(TestClass), out var instanceA);
             Assert.True(result);
 
-            result = typecontainer.TryResolve(typeof(TestClass), out var instanceB);
+            result = typecontainer.TryGet(typeof(TestClass), out var instanceB);
             Assert.True(result);
 
-            result = typecontainer.TryResolve(typeof(ITestInterface), out var instanceC);
+            result = typecontainer.TryGet(typeof(ITestInterface), out var instanceC);
             Assert.True(result);
 
-            result = typecontainer.TryResolve(typeof(ITestInterface), out var instanceD);
+            result = typecontainer.TryGet(typeof(ITestInterface), out var instanceD);
             Assert.True(result);
 
             Assert.True(instanceA is TestClass);
@@ -42,7 +42,7 @@ namespace OctoAwesome.Tests
             Assert.AreNotSame(instanceA, instanceB);
             Assert.AreNotSame(instanceA, instanceD);
 
-            Assert.False(typecontainer.TryResolve(typeof(SecondTestClass), out instanceA));
+            Assert.False(typecontainer.TryGet(typeof(SecondTestClass), out instanceA));
             Assert.Null(instanceA);
         }
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using engenious.UI;
 using engenious;
 using engenious.Graphics;
@@ -9,13 +6,13 @@ using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.UI.Controls
 {
+
     public class CrosshairControl : Control
     {
-        public Texture2D Texture;
-        public float Transparency;
-        public Color Color;
+        private readonly Texture2D texture;
+        private readonly float transparency;
 
-        AssetComponent assets;
+        private readonly AssetComponent assets;
 
         private static int crosshairSize = 8;
 
@@ -38,26 +35,23 @@ namespace OctoAwesome.Client.UI.Controls
         /// Maximum Größe des Crosshair
         /// </summary>
         public const int MaxSize = 100;
-
-
         public CrosshairControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
         {
             assets = asset;
 
-            Transparency = 0.5f;
+            transparency = 0.5f;
 
-            Texture = assets.LoadTexture(GetType(), "octocross");
+            texture = assets.LoadTexture(GetType(), "octocross");
         }
-
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             if (!assets.Ready)
                 return;
 
-            Color = CrosshairColor;
+            var color = CrosshairColor;
             Width = Height = CrosshairSize;
 
-            batch.Draw(Texture, contentArea, Color * Transparency);
+            batch.Draw(texture, contentArea, color * transparency);
         }
     }
 }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace OctoAwesome.Database
 {
     internal class ValueStore : IDisposable
     {
-        public bool FixedValueLength { get;  }
+        public bool FixedValueLength { get; }
 
         private readonly Writer writer;
         private readonly Reader reader;
@@ -16,14 +12,14 @@ namespace OctoAwesome.Database
         public ValueStore(Writer writer, Reader reader, bool fixedValueLength)
         {
             this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
-            this.reader = reader ?? throw new ArgumentNullException(nameof(reader)); 
+            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
             FixedValueLength = fixedValueLength;
         }
         public ValueStore(Writer writer, Reader reader) : this(writer, reader, false)
         {
 
         }
-        
+
         public Value GetValue<TTag>(Key<TTag> key) where TTag : ITag, new()
         {
             var byteArray = reader.Read(key.Index + Key<TTag>.KEY_SIZE, key.ValueLength);
@@ -32,8 +28,7 @@ namespace OctoAwesome.Database
 
         internal Key<TTag> AddValue<TTag>(TTag tag, Value value) where TTag : ITag, new()
         {
-            
-            var key = new Key<TTag>(tag, writer.ToEnd(), value.Content.Length);
+            var key = new Key<TTag>(tag, writer.ToEnd(), value.Content.Length, -1);
             //TODO: Hash, Sync
             key.WriteBytes(writer);
             writer.WriteAndFlush(value.Content, 0, value.Content.Length);
@@ -75,6 +70,6 @@ namespace OctoAwesome.Database
         {
             writer.Dispose(); //TODO: Move to owner
         }
-        
+
     }
 }

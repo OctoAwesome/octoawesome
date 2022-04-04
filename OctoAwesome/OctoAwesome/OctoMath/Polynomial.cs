@@ -1,24 +1,25 @@
 ﻿namespace OctoAwesome.OctoMath
 {
+
     public class Polynomial
     {
-        private readonly float[] coeffecients;
+        private readonly float[] coefficients;
 
-        public Polynomial(params float[] coeffecients)
-            => this.coeffecients = coeffecients;
-
+        public Polynomial(params float[] coefficients)
+            => this.coefficients = coefficients;
         public float Evaluate(float px)
         {
-            if (coeffecients.Length == 0)
+            if (coefficients.Length == 0)
             {
                 return 0;
             }
 
-            var result = coeffecients[0];
+            // c0 + c1 * x + c2 * x^2
+            var result = coefficients[0];
             float x = px;
-            for (var i = 1; i < coeffecients.Length; ++i)
+            for (var i = 1; i < coefficients.Length; ++i)
             {
-                result += x * coeffecients[i];
+                result += x * coefficients[i];
                 x *= px;
             }
 

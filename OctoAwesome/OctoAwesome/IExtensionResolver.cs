@@ -31,12 +31,12 @@ namespace OctoAwesome
         /// Return a List of MapGenerators
         /// </summary>
         /// <returns>List of Generators</returns>
-        IEnumerable<IMapGenerator> GetMapGenerator();
+        IEnumerable<IMapGenerator> GetMapGenerators();
 
         /// <summary>
         /// Return a List of Populators
         /// </summary>
         /// <returns>List of Populators</returns>
-        IEnumerable<IMapPopulator> GetMapPopulator();
+        IEnumerable<IMapPopulator> GetMapPopulators();
     }
 }

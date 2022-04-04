@@ -14,6 +14,6 @@
         /// Density in kg/m^3, How much needed (volume calculation) for crafting or hit result etc...
         /// </summary>
         int Density { get; }
-        
+
     }
 }

@@ -56,7 +56,7 @@ namespace OctoAwesome.Network.Tests
 
                 wait.Set();
             };
-            
+
             Task.Run(() =>
             {
                 var testClient = new Client();

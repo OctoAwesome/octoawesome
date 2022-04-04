@@ -73,7 +73,7 @@ namespace OctoAwesome.Client.Screens
         {
             if (Manager.CanGoBack && args.Key == Keys.Escape)
             {
-                args.Handled = true;                
+                args.Handled = true;
                 Manager.NavigateBack();
             }
 

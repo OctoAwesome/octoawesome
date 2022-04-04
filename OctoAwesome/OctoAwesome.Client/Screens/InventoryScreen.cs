@@ -3,6 +3,7 @@ using OctoAwesome.Client.Components;
 using engenious.Graphics;
 using engenious.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 using engenious;
 using OctoAwesome.EntityComponents;
 using engenious.UI.Controls;
@@ -122,9 +123,10 @@ namespace OctoAwesome.Client.Screens
                     Padding = Border.All(2),
                 };
 
-                image.StartDrag += (c,e) =>
+                image.StartDrag += (c, e) =>
                 {
-                    InventorySlot slot = player.Toolbar.Tools[(int)image.Tag];
+                    Debug.Assert(image.Tag != null, nameof(image.Tag) + " != null");
+                    var slot = player.Toolbar.Tools[(int)image.Tag];
                     if (slot != null)
                     {
                         e.Handled = true;
@@ -134,28 +136,31 @@ namespace OctoAwesome.Client.Screens
                     }
                 };
 
-                image.DropEnter += (c,e) => { image.Background = hoverBrush; };
-                image.DropLeave += (c,e) => { image.Background = backgroundBrush; };
-                image.EndDrop += (c,e) =>
+                image.DropEnter += (c, e) => { image.Background = hoverBrush; };
+                image.DropLeave += (c, e) => { image.Background = backgroundBrush; };
+                image.EndDrop += (c, e) =>
                 {
                     e.Handled = true;
 
-                    if (e.Sender is Grid) // && ShiftPressed
+                    Debug.Assert(image.Tag != null, nameof(image.Tag) + " != null");
+
+                    if (e.Sender is Grid && e.Content is InventorySlot sourceSlot) // && ShiftPressed
                     {
                         // Swap
                         int targetIndex = (int)image.Tag;
-                        InventorySlot targetSlot = player.Toolbar.Tools[targetIndex];
+                        var targetSlot = player.Toolbar.Tools[targetIndex];
 
-                        InventorySlot sourceSlot = e.Content as InventorySlot;
-                        int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
+                        if (targetSlot != null)
+                        {
+                            int sourceIndex = player.Toolbar.GetSlotIndex(sourceSlot);
 
-                        player.Toolbar.SetTool(sourceSlot, targetIndex);
-                        player.Toolbar.SetTool(targetSlot, sourceIndex);
+                            player.Toolbar.SetTool(sourceSlot, targetIndex);
+                            player.Toolbar.SetTool(targetSlot, sourceIndex);
+                        }
                     }
-                    else
+                    else if (e.Content is InventorySlot slot)
                     {
                         // Inventory Drop
-                        InventorySlot slot = e.Content as InventorySlot;
                         player.Toolbar.SetTool(slot, (int)image.Tag);
                     }
                 };
@@ -171,9 +176,8 @@ namespace OctoAwesome.Client.Screens
         {
             base.OnEndDrop(args);
 
-            if (args.Sender is Grid)
+            if (args.Sender is Grid && args.Content is InventorySlot slot)
             {
-                InventorySlot slot = args.Content as InventorySlot;
                 player.Toolbar.RemoveSlot(slot);
             }
         }
@@ -212,12 +216,14 @@ namespace OctoAwesome.Client.Screens
             // Aktualisierung des aktiven Buttons
             for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
-                if (player.Toolbar.Tools != null &&
-                    player.Toolbar.Tools.Length > i &&
-                    player.Toolbar.Tools[i] != null &&
-                    player.Toolbar.Tools[i].Item != null)
+                var tool = player.Toolbar.Tools != null && player.Toolbar.Tools.Length > i ? player.Toolbar.Tools[i] : null;
+                if (tool != null)
                 {
-                    images[i].Texture = toolTextures[player.Toolbar.Tools[i].Definition.GetType().FullName];
+                    Debug.Assert(tool.Definition != null, nameof(tool.Definition) + " != null");
+                    var toolName = tool.Definition.GetType().FullName;
+
+                    Debug.Assert(toolName != null, nameof(toolName) + " != null");
+                    images[i].Texture = toolTextures[toolName];
                 }
                 else
                 {

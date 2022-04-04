@@ -7,13 +7,12 @@ using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.EntityComponents;
 using System;
-using System.Collections.Generic;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
     public class TransferScreen : Screen
     {
-        public event EventHandler<NavigationEventArgs> Closed;
+        public event EventHandler<NavigationEventArgs>? Closed;
 
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
@@ -25,7 +24,6 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private InventoryComponent componentA;
         private InventoryComponent componentB;
-
         public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent, InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB) : base(manager)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
@@ -136,7 +134,6 @@ namespace OctoAwesome.Basics.UI.Screens
             inventoryA.Rebuild(componentA.Inventory);
             inventoryB.Rebuild(componentB.Inventory);
         }
-
         protected override void OnKeyDown(KeyEventArgs args)
         {
 
@@ -148,7 +145,6 @@ namespace OctoAwesome.Basics.UI.Screens
 
             base.OnKeyDown(args);
         }
-
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
             base.OnNavigatedFrom(args);

@@ -5,17 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using OctoAwesome.Components;
-using OctoAwesome.Database;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Pooling;
-using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
-using OctoAwesome.Serialization.Entities;
 
 namespace OctoAwesome.Network
 {
+
     public class NetworkPersistenceManager : IPersistenceManager, IDisposable
     {
         private readonly Client client;
@@ -26,11 +24,10 @@ namespace OctoAwesome.Network
         private readonly IPool<Awaiter> awaiterPool;
         private readonly PackagePool packagePool;
         private readonly ITypeContainer typeContainer;
-
         public NetworkPersistenceManager(ITypeContainer typeContainer, Client client)
         {
             this.client = client;
-            subscription = client.Packages.Subscribe(package => OnNext(package), ex => OnError(ex));
+            subscription = client.Packages.Subscribe(OnNext, OnError);
             this.typeContainer = typeContainer;
 
             packages = new ConcurrentDictionary<uint, Awaiter>();
@@ -38,17 +35,14 @@ namespace OctoAwesome.Network
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             packagePool = TypeContainer.Get<PackagePool>();
         }
-
         public void DeleteUniverse(Guid universeGuid)
         {
             //throw new NotImplementedException();
         }
-
         public Awaiter Load(out SerializableCollection<IUniverse> universes) => throw new NotImplementedException();
-
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Command = (ushort)OfficialCommand.LoadColumn;
 
             using (var memoryStream = new MemoryStream())
@@ -64,87 +58,74 @@ namespace OctoAwesome.Network
             column = new ChunkColumn(planet);
             var awaiter = GetAwaiter(column, package.UId);
 
-            client.SendPackageAndRelase(package);
+            client.SendPackageAndRelease(package);
 
             return awaiter;
         }
-
         public Awaiter Load(out IPlanet planet, Guid universeGuid, int planetId)
         {
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Command = (ushort)OfficialCommand.GetPlanet;
             planet = typeContainer.Get<IPlanet>();
             var awaiter = GetAwaiter(planet, package.UId);
-            client.SendPackageAndRelase(package);
+            client.SendPackageAndRelease(package);
 
             return awaiter;
         }
-
-        public Awaiter Load(out Player player, Guid universeGuid, string playername)
+        public Awaiter? Load(out Player player, Guid universeGuid, string playerName)
         {
-            var playernameBytes = Encoding.UTF8.GetBytes(playername);
+            var playerNameBytes = Encoding.UTF8.GetBytes(playerName);
 
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Command = (ushort)OfficialCommand.Whoami;
-            package.Payload = playernameBytes;
+            package.Payload = playerNameBytes;
 
             player = new Player();
             var awaiter = GetAwaiter(player, package.UId);
-            client.SendPackageAndRelase(package);
+            client.SendPackageAndRelease(package);
 
             return awaiter;
         }
-
         public Awaiter Load(out IUniverse universe, Guid universeGuid)
         {
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Command = (ushort)OfficialCommand.GetUniverse;
 
             universe = new Universe();
             var awaiter = GetAwaiter(universe, package.UId);
-            client.SendPackageAndRelase(package);
+            client.SendPackageAndRelease(package);
 
             return awaiter;
         }
-
         public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
         {
             entity = null;
             return null;
         }
-
         public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent
         {
-            var package = packagePool.Get();
+            var package = packagePool.Rent();
             package.Command = (ushort)OfficialCommand.GetUniverse;
 
             componentContainer = null;
             //var awaiter = GetAwaiter(universe, package.UId);
-            client.SendPackageAndRelase(package);
+            client.SendPackageAndRelease(package);
 
             return null;
         }
-
-        public IEnumerable<Entity> LoadEntitiesWithComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => Enumerable.Empty<Entity>();
-
-        public IEnumerable<Guid> GetEntityIdsFromComponent<T>(Guid universeGuid) where T : IEntityComponent
-            => Enumerable.Empty<Guid>();
         public IEnumerable<Guid> GetEntityIds(Guid universeGuid)
             => Enumerable.Empty<Guid>();
-
         public IEnumerable<(Guid Id, T Component)> GetEntityComponents<T>(Guid universeGuid, Guid[] entityIds) where T : IEntityComponent, new()
             => Enumerable.Empty<(Guid Id, T Component)>();
-
         public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
             => Enumerable.Empty<(Guid Id, T Component)>();
 
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
-            var awaiter = awaiterPool.Get();
-            awaiter.Serializable = serializable;
+            var awaiter = awaiterPool.Rent();
+            awaiter.Result = serializable;
 
             if (!packages.TryAdd(packageUId, awaiter))
             {
@@ -153,27 +134,22 @@ namespace OctoAwesome.Network
 
             return awaiter;
         }
-
         public void SaveColumn(Guid universeGuid, IPlanet planet, IChunkColumn column)
         {
             //throw new NotImplementedException();
         }
-
         public void SavePlanet(Guid universeGuid, IPlanet planet)
         {
             //throw new NotImplementedException();
         }
-
         public void SavePlayer(Guid universeGuid, Player player)
         {
             //throw new NotImplementedException();
         }
-
         public void SaveUniverse(IUniverse universe)
         {
             //throw new NotImplementedException();
         }
-
         public void Save<TContainer, TComponent>(TContainer container, Guid universe)
              where TContainer : ComponentContainer<TComponent>
              where TComponent : IComponent
@@ -190,8 +166,6 @@ namespace OctoAwesome.Network
             //    chunkColumn.Serialize(bw, definitionManager);
             //    package.Payload = ms.ToArray();
             //}
-
-
             //client.SendPackage(package);
         }
 
@@ -226,12 +200,10 @@ namespace OctoAwesome.Network
         {
             logger.Error(error.Message, error);
         }
-
         public void Dispose()
         {
             subscription?.Dispose();
         }
-
         public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
         {
             //TODO

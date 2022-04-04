@@ -1,7 +1,5 @@
-﻿using OctoAwesome.Notifications;
-using OctoAwesome.Serialization;
+﻿using OctoAwesome.Serialization;
 using System;
-using System.IO;
 
 namespace OctoAwesome
 {
@@ -44,7 +42,6 @@ namespace OctoAwesome
         /// Der Generator des Planeten
         /// </summary>
         IMapGenerator Generator { get; set; }
-
         IGlobalChunkCache GlobalChunkCache { get; }
     }
 }

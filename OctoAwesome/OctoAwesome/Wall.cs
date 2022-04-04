@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace OctoAwesome
+﻿namespace OctoAwesome
 {
+
     public enum Wall
     {
         /// <summary>
@@ -27,6 +26,6 @@ namespace OctoAwesome
         /// <summary>
         /// South -Y
         /// </summary>
-        Front 
+        Front
     }
 }

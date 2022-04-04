@@ -53,7 +53,7 @@ namespace OctoAwesome.PoC.Tests
             }
         }
 
-      
+
 
         public static class DependencyTestSources
         {

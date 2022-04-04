@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace OctoAwesome.Database.Threading
 {
+
     public sealed class DatabaseLockMonitor : IDisposable
     {
         private int readLocks;
@@ -18,7 +17,6 @@ namespace OctoAwesome.Database.Threading
         private readonly ManualResetEvent writeEvent;
         private readonly ManualResetEvent exclusiveEvent;
         private readonly SemaphoreSlim semaphoreSlim;
-
         public DatabaseLockMonitor()
         {
             readEvent = new ManualResetEvent(true);
@@ -32,7 +30,6 @@ namespace OctoAwesome.Database.Threading
             writeOperations = 0;
             exclusiveLocks = false;
         }
-
         public bool CheckLock(Operation operation)
         {
             semaphoreSlim.Wait();
@@ -111,7 +108,7 @@ namespace OctoAwesome.Database.Threading
             }
         }
 
-        public void SetLock(Operation operation)
+        public void AcquireLock(Operation operation)
         {
             semaphoreSlim.Wait();
             try
@@ -168,7 +165,6 @@ namespace OctoAwesome.Database.Threading
                 semaphoreSlim.Release();
             }
         }
-
         public void Dispose()
         {
             readEvent.Dispose();

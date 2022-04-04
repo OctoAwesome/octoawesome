@@ -5,6 +5,7 @@ using OctoAwesome.Client.Screens;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
 using System;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -76,17 +77,22 @@ namespace OctoAwesome.Client.Controls
             };
             crosshairGroupBox.Children.Add(crosshairColor);
             crosshairColor.TemplateGenerator = item =>
-            {
-                return new Panel(manager)
-                {
-                    Background = new SolidColorBrush(item),
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch,
-                    Height = 20,
-                };
-            };
+                                               {
+                                                   Debug.Assert(item != null, nameof(item) + " != null");
+                                                   return new Panel(manager)
+                                                   {
+                                                       Background = new SolidColorBrush(item),
+                                                       HorizontalAlignment = HorizontalAlignment.Stretch,
+                                                       VerticalAlignment = VerticalAlignment.Stretch,
+                                                       Height = 20,
+                                                   };
+                                               };
 
-            crosshairColor.SelectedItemChanged += (s, e) => CrosshairControl.CrosshairColor = e.NewItem;
+            crosshairColor.SelectedItemChanged += (s, e) =>
+                                                  {
+                                                      if (e.NewItem != null)
+                                                          CrosshairControl.CrosshairColor = e.NewItem;
+                                                  };
 
             crosshairColor.Items.Add(Color.White);
             crosshairColor.Items.Add(Color.Black);

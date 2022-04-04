@@ -5,13 +5,10 @@ using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.GameServer.Commands
 {
+
     public static class NotificationCommands
     {
         private static readonly IPool<EntityNotification> entityNotificationPool;
@@ -40,7 +37,6 @@ namespace OctoAwesome.GameServer.Commands
             networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
             chunkChannelSub = updateHub.AddSource(chunkChannel, DefaultChannels.Chunk);
         }
-
         [Command((ushort)OfficialCommand.EntityNotification)]
         public static byte[] EntityNotification(CommandParameter parameter)
         {
@@ -53,7 +49,6 @@ namespace OctoAwesome.GameServer.Commands
             entityNotification.Release();
             return null;
         }
-
         [Command((ushort)OfficialCommand.ChunkNotification)]
         public static byte[] ChunkNotification(CommandParameter parameter)
         {

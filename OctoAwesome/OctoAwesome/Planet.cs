@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Text;
 using OctoAwesome.Notifications;
 
 namespace OctoAwesome
@@ -11,6 +10,7 @@ namespace OctoAwesome
     /// </summary>
     public class Planet : IPlanet
     {
+        protected IClimateMap? climateMap;
 
         /// <summary>
         /// ID des Planeten.
@@ -25,7 +25,14 @@ namespace OctoAwesome
         /// <summary>
         /// Die Klimakarte des Planeten
         /// </summary>
-        public IClimateMap ClimateMap { get; protected set; }
+        public IClimateMap ClimateMap
+        {
+            get
+            {
+                Debug.Assert(climateMap != null, nameof(climateMap) + " != null");
+                return climateMap;
+            }
+        }
 
         /// <summary>
         /// Seed des Zufallsgenerators dieses Planeten.
@@ -46,7 +53,6 @@ namespace OctoAwesome
         /// Der Generator des Planeten.
         /// </summary>
         public IMapGenerator Generator { get; set; }
-
         public IGlobalChunkCache GlobalChunkCache { get; }
 
         private bool disposed;
@@ -110,7 +116,6 @@ namespace OctoAwesome
             Universe = new Guid(reader.ReadBytes(16));
             //var name = reader.ReadString();
         }
-
         public void Dispose()
         {
             if (disposed)

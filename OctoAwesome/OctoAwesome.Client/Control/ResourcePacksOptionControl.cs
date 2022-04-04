@@ -1,4 +1,6 @@
-﻿using engenious;
+﻿using System;
+using System.Diagnostics;
+using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.UI;
@@ -142,7 +144,10 @@ namespace OctoAwesome.Client.Controls
 
             addButton.LeftMouseClick += (s, e) =>
             {
-                ResourcePack pack = loadedPacksList.SelectedItem;
+                var pack = loadedPacksList.SelectedItem;
+                if (pack == null)
+                    throw new NullReferenceException("Add button should not be clickable when no item is selected.");
+
                 loadedPacksList.Items.Remove(pack);
                 activePacksList.Items.Add(pack);
                 activePacksList.SelectedItem = pack;
@@ -150,7 +155,10 @@ namespace OctoAwesome.Client.Controls
 
             removeButton.LeftMouseClick += (s, e) =>
             {
-                ResourcePack pack = activePacksList.SelectedItem;
+                var pack = activePacksList.SelectedItem;
+                if (pack == null)
+                    throw new NullReferenceException("Remove button should not be clickable when no item is selected.");
+
                 activePacksList.Items.Remove(pack);
                 loadedPacksList.Items.Add(pack);
                 loadedPacksList.SelectedItem = pack;
@@ -158,7 +166,7 @@ namespace OctoAwesome.Client.Controls
 
             moveUpButton.LeftMouseClick += (s, e) =>
             {
-                ResourcePack pack = activePacksList.SelectedItem;
+                var pack = activePacksList.SelectedItem;
                 if (pack == null)
                     return;
 
@@ -173,8 +181,9 @@ namespace OctoAwesome.Client.Controls
 
             moveDownButton.LeftMouseClick += (s, e) =>
             {
-                ResourcePack pack = activePacksList.SelectedItem;
-                if (pack == null) return;
+                var pack = activePacksList.SelectedItem;
+                if (pack == null)
+                    return;
 
                 int index = activePacksList.Items.IndexOf(pack);
                 if (index < activePacksList.Items.Count - 1)
@@ -191,7 +200,7 @@ namespace OctoAwesome.Client.Controls
                 Program.Restart();
             };
 
-            // Daten laden
+            // List loaded resource packs
 
             AssetComponent assets = asset;
             foreach (var item in assets.LoadedResourcePacks)
@@ -205,8 +214,9 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private Control ListTemplateGenerator(ResourcePack pack)
+        private Control ListTemplateGenerator(ResourcePack? pack)
         {
+            Debug.Assert(pack != null, nameof(pack) + " != null");
             return new Label(ScreenManager)
             {
                 Text = pack.Name,
@@ -251,10 +261,10 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void SetPackInfo(ResourcePack pack)
+        private void SetPackInfo(ResourcePack? pack)
         {
             if (pack != null)
-                infoLabel.Text = string.Format("{0} ({1})\r\n{2}\r\n{3}", pack.Name, pack.Version, pack.Author, pack.Description);
+                infoLabel.Text = $"{pack.Name} ({pack.Version})\r\n{pack.Author}\r\n{pack.Description}";
             else
                 infoLabel.Text = string.Empty;
         }

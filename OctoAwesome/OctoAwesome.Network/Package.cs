@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Pooling;
 using System;
+using System.Threading;
 
 namespace OctoAwesome.Network
 {
@@ -10,33 +11,28 @@ namespace OctoAwesome.Network
         /// </summary>
         public const int HEAD_LENGTH = sizeof(ushort) + sizeof(int) + sizeof(uint);
 
-        public static uint NextUId => nextUid++;
-        private volatile static uint nextUid;
+        private static uint nextUid;
 
+        public static uint NextUId => Interlocked.Increment(ref nextUid) - 1;
         public BaseClient BaseClient { get; set; }
 
         public OfficialCommand OfficialCommand => (OfficialCommand)Command;
         public ushort Command { get; set; }
-
         public byte[] Payload { get; set; }
-
         public uint UId { get; set; }
-
         public bool IsComplete => internalOffset == Payload.Length;
-
         public int PayloadRest => Payload.Length - internalOffset;
 
         private int internalOffset;
         private IPool pool;
-
         public Package(ushort command, int size) : this()
         {
             Command = command;
             Payload = new byte[size];
         }
-
         public Package() : this(true)
         { }
+
         public Package(bool setUid)
         {
             if (setUid)
@@ -45,11 +41,12 @@ namespace OctoAwesome.Network
 
         public Package(byte[] data) : this(0, data.Length)
         {
+            // TODO: actually use data
         }
 
         public bool TryDeserializeHeader(byte[] buffer, int offset)
         {
-            if (buffer.Length < HEAD_LENGTH)
+            if (buffer.Length - offset < HEAD_LENGTH)
                 return false;
 
             Command = (ushort)((buffer[offset] << 8) | buffer[offset + 1]);
@@ -58,7 +55,6 @@ namespace OctoAwesome.Network
             internalOffset = 0;
             return true;
         }
-
         public int DeserializePayload(byte[] buffer, int offset, int count)
         {
             if (internalOffset + count > Payload.Length)
@@ -68,12 +64,6 @@ namespace OctoAwesome.Network
             internalOffset += count;
 
             return count;
-        }
-        public void DeserializePackage(byte[] buffer, int offset)
-        {
-            TryDeserializeHeader(buffer, offset);
-            Buffer.BlockCopy(buffer, offset + HEAD_LENGTH, Payload, 0, Payload.Length);
-            internalOffset = Payload.Length;
         }
 
         public int SerializePackage(byte[] buffer, int offset)
@@ -87,13 +77,11 @@ namespace OctoAwesome.Network
             Buffer.BlockCopy(Payload, 0, buffer, offset + HEAD_LENGTH, Payload.Length);
             return Payload.Length + HEAD_LENGTH;
         }
-
         public void Init(IPool pool)
-        {      
+        {
             Payload = Array.Empty<byte>();
             this.pool = pool;
         }
-
         public void Release()
         {
             BaseClient = default;
@@ -102,7 +90,7 @@ namespace OctoAwesome.Network
             UId = default;
             internalOffset = default;
 
-            pool.Push(this);
+            pool.Return(this);
         }
     }
 }

@@ -1,10 +1,5 @@
-﻿using OctoAwesome.Database;
-using OctoAwesome.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.PoC.Rx
 {
@@ -62,8 +57,6 @@ namespace OctoAwesome.PoC.Rx
         {
             subscriptions.Remove(subscription);
         }
-
-
         private class RelaySubscription : IDisposable
         {
             public IObserver<T> Observer { get; }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace OctoAwesome.Database.Threading
 {
@@ -24,7 +23,7 @@ namespace OctoAwesome.Database.Threading
             lockMonitor.StopOperation(currentOperation);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is DatabaseOperation @lock && Equals(@lock);
         public bool Equals(DatabaseOperation other)
             => EqualityComparer<DatabaseLockMonitor>.Default.Equals(lockMonitor, other.lockMonitor)

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
+
     public abstract class BaseClient : IDisposable
     {
         private static uint NextId => ++nextId;
@@ -18,10 +19,9 @@ namespace OctoAwesome.Network
         {
             nextId = 0;
         }
+
         public uint Id { get; }
-
         public IObservable<Package> Packages => packages;
-
         protected Socket Socket;
         protected readonly SocketAsyncEventArgs ReceiveArgs;
 
@@ -37,7 +37,6 @@ namespace OctoAwesome.Network
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentRelay<Package> packages;
-
         protected BaseClient()
         {
             packages = new ConcurrentRelay<Package>();
@@ -56,6 +55,7 @@ namespace OctoAwesome.Network
 
             Id = NextId;
         }
+
         protected BaseClient(Socket socket) : this()
         {
             Socket = socket;
@@ -72,7 +72,6 @@ namespace OctoAwesome.Network
                 Receive(ReceiveArgs);
             }, cancellationTokenSource.Token);
         }
-
         public void Stop()
         {
             cancellationTokenSource.Cancel();
@@ -101,13 +100,13 @@ namespace OctoAwesome.Network
             await SendAsync(bytes, bytes.Length);
         }
 
-        public async Task SendPackageAndRelaseAsync(Package package)
+        public async Task SendPackageAndReleaseAsync(Package package)
         {
             await SendPackageAsync(package);
             package.Release();
         }
 
-        public void SendPackageAndRelase(Package package)
+        public void SendPackageAndRelease(Package package)
         {
             var task = Task.Run(async () => await SendPackageAsync(package));
             task.Wait();
@@ -164,7 +163,7 @@ namespace OctoAwesome.Network
             SendInternal(data, len);
         }
 
-        private void OnReceived(object sender, SocketAsyncEventArgs e)
+        private void OnReceived(object? sender, SocketAsyncEventArgs e)
         {
             Receive(e);
         }
@@ -229,8 +228,7 @@ namespace OctoAwesome.Network
 
             return offset;
         }
-
-        public void Dispose()
+        public virtual void Dispose()
         {
             packages?.Dispose();
             ReceiveArgs?.Dispose();

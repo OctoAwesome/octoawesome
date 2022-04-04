@@ -1,10 +1,8 @@
 ﻿using engenious.UI;
 using OctoAwesome.Client.Components;
-using OctoAwesome.Runtime;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
@@ -58,25 +56,12 @@ namespace OctoAwesome.Client.Screens
             {
                 var li = new Label(manager)
                 {
-                    Text = string.Format("{0} ({1})", x.Name, x.Seed),
+                    Text = $"{x!.Name} ({x.Seed})",
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     Padding = Border.All(10),
                 };
                 li.LeftMouseDoubleClick += (s, e) => Play();
                 return li;
-            };
-            levelList.SelectedItemChanged += (s, e) =>
-            {
-                seedLabel.Text = "";
-                if (levelList.SelectedItem != null)
-                {
-                    seedLabel.Text = "Seed: " + levelList.SelectedItem.Seed;
-                    deleteButton.Enabled = true;
-                }
-                else
-                {
-                    deleteButton.Enabled = false;
-                }
             };
             mainStack.AddControl(levelList, 0, 0);
 
@@ -111,6 +96,7 @@ namespace OctoAwesome.Client.Screens
             deleteButton.LeftMouseClick += (s, e) =>
             {
                 // Sicherstellen, dass universe nicht geladen ist
+                Debug.Assert(levelList.SelectedItem != null, "levelList.SelectedItem != null");
                 if (Manager.Game.ResourceManager.CurrentUniverse != null &&
                     Manager.Game.ResourceManager.CurrentUniverse.Id == levelList.SelectedItem.Id)
                     return;
@@ -120,6 +106,21 @@ namespace OctoAwesome.Client.Screens
                 levelList.SelectedItem = null;
                 levelList.InvalidateDimensions();
                 settings.Set("LastUniverse", "");
+            };
+
+
+            levelList.SelectedItemChanged += (s, e) =>
+            {
+                seedLabel.Text = "";
+                if (levelList.SelectedItem != null)
+                {
+                    seedLabel.Text = "Seed: " + levelList.SelectedItem.Seed;
+                    deleteButton.Enabled = true;
+                }
+                else
+                {
+                    deleteButton.Enabled = false;
+                }
             };
 
             createButton = GetButton(UI.Languages.OctoClient.Create);
@@ -157,8 +158,6 @@ namespace OctoAwesome.Client.Screens
 
             }
         }
-
-
         protected override void OnKeyDown(KeyEventArgs args)
         {
             if (args.Key == Keys.Enter)
@@ -174,6 +173,7 @@ namespace OctoAwesome.Client.Screens
 
         private void Play()
         {
+            Debug.Assert(levelList.SelectedItem != null, "levelList.SelectedItem != null");
             Manager.Player.SetEntity(null);
 
             Manager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);

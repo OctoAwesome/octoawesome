@@ -12,12 +12,13 @@ namespace OctoAwesome
         /// </summary>
         public IInventoryable Item
         {
-            get => item; set
+            get => item;
+            private init
             {
                 if (value is IDefinition definition)
                     Definition = definition;
-                else if (value is IItem item)
-                    Definition = item.Definition;
+                else if (value is IItem i)
+                    Definition = i.Definition;
                 else
                     Definition = null;
 
@@ -25,13 +26,17 @@ namespace OctoAwesome
             }
         }
 
-        private IInventoryable item;
+        private readonly IInventoryable item;
 
         /// <summary>
         /// Volumen des Elementes <see cref="Item"/> in diesem Slot in dm³.
         /// </summary>
         public decimal Amount { get; set; }
+        public IDefinition? Definition { get; init; }
 
-        public IDefinition Definition { get; set; }
+        public InventorySlot(IInventoryable item)
+        {
+            Item = item;
+        }
     }
 }

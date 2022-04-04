@@ -15,8 +15,6 @@ namespace OctoAwesome.Runtime
     public sealed class ExtensionLoader : IExtensionLoader, IExtensionResolver
     {
         private const string SETTINGSKEY = "DisabledExtensions";
-
-
         private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
 
         private readonly List<Action<Simulation>> simulationExtender;
@@ -73,10 +71,10 @@ namespace OctoAwesome.Runtime
             if (tempAssembly == null)
                 tempAssembly = Assembly.GetAssembly(GetType());
 
-            DirectoryInfo dir = new (Path.GetDirectoryName(tempAssembly!.Location!)!);
+            DirectoryInfo dir = new(Path.GetDirectoryName(tempAssembly!.Location!)!);
             assemblies.AddRange(LoadAssemblies(dir));
 
-            DirectoryInfo plugins = new (Path.Combine(dir.FullName, "plugins"));
+            DirectoryInfo plugins = new(Path.Combine(dir.FullName, "plugins"));
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
@@ -103,7 +101,7 @@ namespace OctoAwesome.Runtime
                             else
                                 ActiveExtensions.Add(extension);
                         }
-                        catch 
+                        catch
                         {
                             // TODO: Logging
                         }
@@ -165,7 +163,7 @@ namespace OctoAwesome.Runtime
                 }
             }
 
-            definitionTypeContainer.Register(definition, definition, InstanceBehaviour.Singleton);
+            definitionTypeContainer.Register(definition, definition, InstanceBehavior.Singleton);
         }
 
         /// <summary>
@@ -200,15 +198,13 @@ namespace OctoAwesome.Runtime
         public void RegisterEntityExtender<T>(Action<ComponentContainer> extenderDelegate) where T : ComponentContainer
         {
             Type type = typeof(T);
-            List<Action<ComponentContainer>> list;
-            if (!componentContainerExtender.TryGetValue(type, out list))
+            if (!componentContainerExtender.TryGetValue(type, out var list))
             {
                 list = new List<Action<ComponentContainer>>();
                 componentContainerExtender.Add(type, list);
             }
             list.Add(extenderDelegate);
         }
-
         public void RegisterDefaultEntityExtender<T>() where T : ComponentContainer
             => RegisterEntityExtender<T>((e) => e.RegisterDefault());
 
@@ -229,7 +225,6 @@ namespace OctoAwesome.Runtime
             // TODO: Checks
             mapGenerators.Add(generator);
         }
-
         public void RegisterMapPopulator(IMapPopulator populator)
         {
             mapPopulators.Add(populator);
@@ -254,7 +249,6 @@ namespace OctoAwesome.Runtime
         {
             mapGenerators.Remove(item);
         }
-
         public void RemoveMapPopulator<T>(T item) where T : IMapPopulator
         {
             mapPopulators.Remove(item);
@@ -293,8 +287,7 @@ namespace OctoAwesome.Runtime
 
             foreach (var type in stack)
             {
-                List<Action<ComponentContainer>> list;
-                if (!componentContainerExtender.TryGetValue(type, out list))
+                if (!componentContainerExtender.TryGetValue(type, out var list))
                     continue;
 
                 foreach (var item in list)
@@ -316,20 +309,12 @@ namespace OctoAwesome.Runtime
             }
         }
 
-        /// <summary>
-        /// Return a List of MapGenerators
-        /// </summary>
-        /// <returns>List of Generators</returns>
-        public IEnumerable<IMapGenerator> GetMapGenerator()
+        public IEnumerable<IMapGenerator> GetMapGenerators()
         {
             return mapGenerators;
         }
 
-        /// <summary>
-        /// Return a List of Populators
-        /// </summary>
-        /// <returns>List of Populators</returns>
-        public IEnumerable<IMapPopulator> GetMapPopulator()
+        public IEnumerable<IMapPopulator> GetMapPopulators()
         {
             return mapPopulators;
         }

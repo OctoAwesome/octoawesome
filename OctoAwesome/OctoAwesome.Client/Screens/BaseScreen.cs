@@ -10,31 +10,28 @@ namespace OctoAwesome.Client.Screens
     {
         private readonly AssetComponent assets;
 
-        protected Button BackButton;
+        protected readonly Button BackButton;
 
         public BaseScreen(ScreenComponent manager) : base(manager)
         {
             assets = manager.Game.Assets;
+            BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back)
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                TabStop = false,
+            };
+            BackButton.LeftMouseClick += (s, e) =>
+                                         {
+                                             Manager.NavigateBack();
+                                         };
+            BackButton.Margin = new Border(10, 10, 10, 10);
+            Controls.Add(BackButton);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs args)
         {
-            if (Manager.CanGoBack)
-            {
-                BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back)
-                {
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    TabStop = false,
-                };
-                BackButton.LeftMouseClick += (s, e) =>
-                {
-                    Manager.NavigateBack();
-                };
-                BackButton.Margin = new Border(10, 10, 10, 10);
-                Controls.Add(BackButton);
-            }
-
+            BackButton.Visible = Manager.CanGoBack;
         }
 
         protected void SetDefaultBackground()

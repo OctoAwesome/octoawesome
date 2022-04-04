@@ -6,12 +6,8 @@ using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Runtime;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -114,24 +110,20 @@ namespace OctoAwesome.Client.Controls
             var newText = "";
 
             // Aktualisierung des ActiveTool Labels
-            if (Player.Toolbar.ActiveTool != null)
-            {
-                newText = Player.Toolbar.ActiveTool.Definition.Name;
+            newText = Player.Toolbar.ActiveTool.Definition?.Name ?? string.Empty;
 
-                if (Player.Toolbar.ActiveTool.Amount > 1)
-                    newText += $" ({Player.Toolbar.ActiveTool.Amount})";
-            }
+            if (Player.Toolbar.ActiveTool.Amount > 1)
+                newText += $" ({Player.Toolbar.ActiveTool.Amount})";
 
             activeToolLabel.Text = newText;
-
-            activeToolLabel.Visible = !(activeToolLabel.Text == string.Empty);
+            activeToolLabel.Visible = activeToolLabel.Text != string.Empty;
 
             base.OnUpdate(gameTime);
         }
 
-        private void SetTexture(InventorySlot inventorySlot, int index)
+        private void SetTexture(InventorySlot? inventorySlot, int index)
         {
-            if (inventorySlot is null)
+            if (inventorySlot?.Definition is null)
             {
                 images[index].Texture = null;
                 return;
@@ -139,10 +131,8 @@ namespace OctoAwesome.Client.Controls
 
             var definitionName = inventorySlot.Definition.GetType().FullName;
 
-            if (toolTextures.TryGetValue(definitionName, out Texture2D texture))
-                images[index].Texture = texture;
-            else
-                images[index].Texture = null;
+            Debug.Assert(definitionName != null, nameof(definitionName) + " != null");
+            images[index].Texture = toolTextures.TryGetValue(definitionName, out var texture) ? texture : null;
         }
     }
 }

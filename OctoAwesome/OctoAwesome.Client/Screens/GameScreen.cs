@@ -50,7 +50,7 @@ namespace OctoAwesome.Client.Screens
             scene.VerticalAlignment = VerticalAlignment.Stretch;
             Controls.Add(scene);
 
-            debug = new DebugControl(manager, assets,playerComponent, manager.Game.ResourceManager, definitionManager);
+            debug = new DebugControl(manager, assets, playerComponent, manager.Game.ResourceManager, definitionManager);
             debug.HorizontalAlignment = HorizontalAlignment.Stretch;
             debug.VerticalAlignment = VerticalAlignment.Stretch;
             debug.Visible = false;
@@ -135,7 +135,7 @@ namespace OctoAwesome.Client.Screens
 
             Manager.Player.ApplyInput = true;
             args.Handled = true;
-           
+
         }
 
         protected override void OnLeftMouseUp(MouseEventArgs args)
@@ -181,8 +181,6 @@ namespace OctoAwesome.Client.Screens
             Manager.Player.InteractInput = false;
             base.OnNavigateFrom(args);
         }
-
-
         #endregion
 
         #region Keyboard Input
@@ -315,24 +313,25 @@ namespace OctoAwesome.Client.Screens
             Manager.Game.KeyMapper.AddAction("octoawesome:teleport", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;
-                Manager.NavigateToScreen(new TargetScreen(Manager, (coordinate) => {
+                Manager.NavigateToScreen(new TargetScreen(Manager, (coordinate) =>
+                {
                     Manager.Game.Player.Position.Position = coordinate;
                     Manager.NavigateBack();
                 }, Manager.Game.Player.Position.Position));
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) 
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
-                
+
                 ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
             });
             Manager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up) 
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
-                
-                ChunkRenderer.OverrideLightLevel= ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
+
+                ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
         }
 
@@ -395,7 +394,7 @@ namespace OctoAwesome.Client.Screens
                 pressedGamepadInventory = gamePadState.Buttons.Back == ButtonState.Pressed;
             }
         }
-              
+
         #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Serialization;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome.Definitions.Items
@@ -20,13 +19,9 @@ namespace OctoAwesome.Definitions.Items
         /// Die Koordinate, an der das Item in der Welt herumliegt, falls es nicht im Inventar ist
         /// </summary>
         public Coordinate? Position { get; set; }
-
-        public IItemDefinition Definition { get; protected set; }
-
-        public IMaterialDefinition Material { get; protected set; }
-
+        public IItemDefinition Definition { get; private set; }
+        public IMaterialDefinition Material { get; private set; }
         public virtual int VolumePerUnit => 1;
-
         public virtual int StackLimit => 1;
 
         private readonly IDefinitionManager definitionManager;
@@ -42,7 +37,6 @@ namespace OctoAwesome.Definitions.Items
 
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
-
         public virtual int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             //TODO Condition Berechnung
@@ -62,7 +56,6 @@ namespace OctoAwesome.Definitions.Items
             //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
         }
-
         public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(Definition.GetType().FullName!);
@@ -126,7 +119,8 @@ namespace OctoAwesome.Definitions.Items
             var definition = manager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
             var material = manager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
 
-            var item = Activator.CreateInstance(itemType, new object[] {definition, material } ) as Item;
+            if (Activator.CreateInstance(itemType, definition, material) is not Item item)
+                throw new ArgumentException($"Type of {itemType.Name} is not of type Item.");
 
             item.InternalDeserialize(reader);
             return item;

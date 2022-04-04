@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using OctoAwesome.Client.Components;
 using engenious.UI;
-using engenious;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
-    class CreditsScreen : BaseScreen
+    internal class CreditsScreen : BaseScreen
     {
         public CreditsScreen(ScreenComponent manager) : base(manager)
         {
@@ -20,7 +16,7 @@ namespace OctoAwesome.Client.Screens
 
             SetDefaultBackground();
 
-            List<CrewMember> crew = CrewMember.getCrew(manager);
+            List<CrewMember> crew = CrewMember.GetCrew(manager);
 
             ScrollContainer crewScroll = new ScrollContainer(manager)
             {
@@ -29,7 +25,8 @@ namespace OctoAwesome.Client.Screens
                 CanFocus = false
             };
 
-            StackPanel crewList = new StackPanel(manager) {
+            StackPanel crewList = new StackPanel(manager)
+            {
                 MinWidth = 700,
                 Padding = new Border(10, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -37,7 +34,7 @@ namespace OctoAwesome.Client.Screens
             };
             crewScroll.Content = crewList;
 
-            foreach(CrewMember member in crew)
+            foreach (CrewMember member in crew)
             {
                 Button memberButton = new TextButton(manager, member.Username);
                 memberButton.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -50,7 +47,7 @@ namespace OctoAwesome.Client.Screens
 
                 crewList.Controls.Add(memberButton);
             }
-            
+
 
             Controls.Add(crewScroll);
         }

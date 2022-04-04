@@ -2,8 +2,8 @@
 using OctoAwesome.Common;
 using OctoAwesome.Definitions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+
 namespace OctoAwesome.Runtime
 {
     // sealed -> prevent abuse of third party´s
@@ -39,7 +39,7 @@ namespace OctoAwesome.Runtime
         public ILocalChunkCache GetLocalCache(bool passive, int dimensions, int range)
         {
             //new LocalChunkCache(manager.GlobalChunkCache, false, 2, 1);
-            return null;
+            throw new NotImplementedException();
         }
         /// <summary>
         /// Berechnet die Geschwindigkeit einer <see cref="Entity"/> nach der Kollision mit der Welt. (Original Lassi)
@@ -53,31 +53,30 @@ namespace OctoAwesome.Runtime
         /// <param name="velocity">Berechnete Geschwindigkeit</param>
         /// <exception cref="ArgumentNullException">Cache</exception>
         /// <returns>Geschwindigkeit der <see cref="Entity"/> nach der Killisionsprüfung</returns>
-        public Vector3 WorldCollision(GameTime gameTime, Coordinate position, ILocalChunkCache cache, float radius, float height, 
+        public Vector3 WorldCollision(GameTime gameTime, Coordinate position, ILocalChunkCache cache, float radius, float height,
             Vector3 deltaPosition, Vector3 velocity)
         {
-            if (cache == null)
-                throw new ArgumentNullException(nameof(cache));
+            Debug.Assert(cache != null, nameof(cache) + " != null");
 
             Vector3 move = deltaPosition;
 
             //Blocks finden die eine Kollision verursachen könnten
-            int minx = (int) Math.Floor(Math.Min(
+            int minx = (int)Math.Floor(Math.Min(
                 position.BlockPosition.X - radius,
                 position.BlockPosition.X - radius + deltaPosition.X));
-            int maxx = (int) Math.Ceiling(Math.Max(
+            int maxx = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.X + radius,
                 position.BlockPosition.X + radius + deltaPosition.X));
-            int miny = (int) Math.Floor(Math.Min(
+            int miny = (int)Math.Floor(Math.Min(
                 position.BlockPosition.Y - radius,
                 position.BlockPosition.Y - radius + deltaPosition.Y));
-            int maxy = (int) Math.Ceiling(Math.Max(
+            int maxy = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.Y + radius,
                 position.BlockPosition.Y + radius + deltaPosition.Y));
-            int minz = (int) Math.Floor(Math.Min(
+            int minz = (int)Math.Floor(Math.Min(
                 position.BlockPosition.Z,
                 position.BlockPosition.Z + deltaPosition.Z));
-            int maxz = (int) Math.Ceiling(Math.Max(
+            int maxz = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.Z + height,
                 position.BlockPosition.Z + height + deltaPosition.Z));
 
@@ -100,7 +99,7 @@ namespace OctoAwesome.Runtime
                             continue;
 
                         var blockplanes = CollisionPlane.GetBlockCollisionPlanes(pos, velocity);
-                        
+
                         foreach (var playerPlane in playerplanes)
                         {
                             foreach (var blockPlane in blockplanes)

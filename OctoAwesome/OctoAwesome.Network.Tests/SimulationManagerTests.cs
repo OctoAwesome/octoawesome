@@ -39,15 +39,13 @@ namespace OctoAwesome.Network.Tests
             };
 
             timer.Elapsed += (s, e) => reset.Set();
-
-
             simulationManager.Start();
             timer.Start();
 
             reset.WaitOne();
 
             simulationManager.Stop();
-            
+
         }
     }
 }

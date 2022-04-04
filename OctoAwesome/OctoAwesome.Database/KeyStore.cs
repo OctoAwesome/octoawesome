@@ -1,11 +1,7 @@
 ﻿using OctoAwesome.Database.Checks;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Database
 {
@@ -39,7 +35,7 @@ namespace OctoAwesome.Database
                 var key = Key<TTag>.FromBytes(buffer, i);
 
                 if (!key.Validate())
-                    throw new KeyInvalidException("Key is not valid", i);
+                    throw new InvalidKeyException("Key is not valid", i);
 
                 if (key.IsEmpty)
                 {

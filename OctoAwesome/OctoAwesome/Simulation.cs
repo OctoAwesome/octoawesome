@@ -2,9 +2,7 @@
 
 using OctoAwesome.Common;
 using OctoAwesome.Components;
-using OctoAwesome.Database;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
@@ -12,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Resources;
 
 namespace OctoAwesome
 {
@@ -21,14 +18,14 @@ namespace OctoAwesome
     /// </summary>
     public sealed class Simulation : IDisposable
     {
-        public IResourceManager ResourceManager { get; private set; }
+        public IResourceManager ResourceManager { get; }
 
         public bool IsServerSide { get; set; }
 
         /// <summary>
         /// List of all Simulation Components.
         /// </summary>
-        public ComponentList<SimulationComponent> Components { get; private set; }
+        public ComponentList<SimulationComponent> Components { get; }
 
         /// <summary>
         /// Der aktuelle Status der Simulation.
@@ -38,7 +35,7 @@ namespace OctoAwesome
         /// <summary>
         /// Die Guid des aktuell geladenen Universums.
         /// </summary>
-        public Guid UniverseId { get; private set; }
+        public Guid UniverseId { get; }
 
         /// <summary>
         /// Dienste des Spiels.
@@ -49,6 +46,8 @@ namespace OctoAwesome
         /// List of all Entities.
         /// </summary>
         public IReadOnlyList<Entity> Entities => entities;
+
+
         public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly IExtensionResolver extensionResolver;
@@ -70,8 +69,6 @@ namespace OctoAwesome
             networkRelay = new Relay<Notification>();
 
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
-
-
             this.extensionResolver = extensionResolver;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
@@ -119,8 +116,6 @@ namespace OctoAwesome
             {
                 numericSeed = rawSeed.GetHashCode();
             }
-
-
             Guid guid = ResourceManager.NewUniverse(name, numericSeed);
 
             Start();
@@ -156,8 +151,6 @@ namespace OctoAwesome
                 = ResourceManager
                 .UpdateHub
                 .AddSource(networkRelay, DefaultChannels.Network);
-
-
             State = SimulationState.Running;
         }
 
@@ -203,7 +196,7 @@ namespace OctoAwesome
             //TODO: unschön, Dispose Entity's, Reset Extensions
             entities.ToList().ForEach(entity => Remove(entity));
             functionalBlocks.ToList().ForEach(functionalBlock => Remove(functionalBlock));
-            //while (entites.Count > 0)
+            //while (entities.Count > 0)
             //    RemoveEntity(Entities.First());
 
             State = SimulationState.Finished;
@@ -220,8 +213,7 @@ namespace OctoAwesome
         /// <param name="entity">Neue Entity</param>
         public void Add(Entity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+            Debug.Assert(entity is not null, nameof(entity) + " != null");
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException("Adding Entities only allowed in running or paused state");
@@ -247,11 +239,9 @@ namespace OctoAwesome
                     holdComponent.Add(entity);
             }
         }
-
         public void Add(FunctionalBlock block)
         {
-            if (block is null)
-                throw new ArgumentNullException(nameof(block));
+            Debug.Assert(block is not null, nameof(block) + " != null");
 
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
@@ -261,8 +251,6 @@ namespace OctoAwesome
 
             if (functionalBlocks.Contains(block))
                 return;
-
-
             extensionResolver.ExtendEntity(block);
             block.Initialize(ResourceManager);
             block.Simulation = this;
@@ -285,8 +273,7 @@ namespace OctoAwesome
         /// <param name="entity">Entity die entfert werden soll</param>
         public void Remove(Entity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+            Debug.Assert(entity is not null, nameof(entity) + " != null");
 
             if (entity.Id == Guid.Empty)
                 return;
@@ -318,8 +305,7 @@ namespace OctoAwesome
 
         public void Remove(FunctionalBlock block)
         {
-            if (block == null)
-                throw new ArgumentNullException(nameof(block));
+            Debug.Assert(block is not null, nameof(block) + " != null");
 
             if (block.Id == Guid.Empty)
                 return;
@@ -335,7 +321,7 @@ namespace OctoAwesome
             if (!(State == SimulationState.Running || State == SimulationState.Paused))
                 throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
 
-            
+
             ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
 
             foreach (var component in Components)
@@ -378,8 +364,6 @@ namespace OctoAwesome
                     break;
             }
         }
-
-
         public void OnUpdate(SerializableNotification notification)
         {
             if (!IsServerSide)
@@ -391,7 +375,7 @@ namespace OctoAwesome
             var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
             if (entity == null)
             {
-                var entityNotification = entityNotificationPool.Get();
+                var entityNotification = entityNotificationPool.Rent();
                 entityNotification.EntityId = notification.EntityId;
                 entityNotification.Type = EntityNotification.ActionType.Request;
                 networkRelay.OnNext(entityNotification);
@@ -418,14 +402,13 @@ namespace OctoAwesome
             remoteEntity.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
             remoteEntity.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
 
-            var newEntityNotification = entityNotificationPool.Get();
+            var newEntityNotification = entityNotificationPool.Rent();
             newEntityNotification.Entity = remoteEntity;
             newEntityNotification.Type = EntityNotification.ActionType.Add;
 
             networkRelay.OnNext(newEntityNotification);
             newEntityNotification.Release();
         }
-
         public void Dispose()
         {
             networkRelay.Dispose();

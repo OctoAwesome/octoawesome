@@ -1,5 +1,4 @@
 ﻿using engenious;
-using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome
@@ -32,13 +31,13 @@ namespace OctoAwesome
         /// <param name="pos1">Ecke 1</param>
         /// <param name="pos2">Ecke 2</param>
         /// <param name="normal">Normalenvektor</param>
-        public CollisionPlane(Vector3 pos1,Vector3 pos2, Vector3 normal)
+        public CollisionPlane(Vector3 pos1, Vector3 pos2, Vector3 normal)
         {
             this.normal = normal;
             this.edgepos1 = pos1;
             this.edgepos2 = pos2;
 
-            pos = (pos2 - pos1 ) /2f + pos1;
+            pos = (pos2 - pos1) / 2f + pos1;
         }
 
         /// <summary>
@@ -47,57 +46,55 @@ namespace OctoAwesome
         /// <param name="pos">Position des Blockes</param>
         /// <param name="movevector">Bewegungsvector</param>
         /// <returns>Liste aller beteiligten Flächen</returns>
-        public static IEnumerable<CollisionPlane> GetBlockCollisionPlanes(Index3 pos, Vector3 movevector)
+        public static IEnumerable<CollisionPlane> GetBlockCollisionPlanes(Index3 pos, Vector3 moveVector)
         {
             //Ebene X
-            if (movevector.X > 0)
+            if (moveVector.X > 0)
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X, pos.Y, pos.Z),
-                    new Vector3(pos.X, pos.Y + 1f, pos.Z + 1f), 
-                    new Vector3(-1, 0, 0));
+                    new Vector3(pos.X, pos.Y + 1f, pos.Z + 1f),
+                    new Vector3(-1, 0));
             }
-            else if (movevector.X < 0)
+            else if (moveVector.X < 0)
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X + 1f, pos.Y, pos.Z),
                     new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z + 1f),
-                    new Vector3(1, 0, 0));
+                    new Vector3(1, 0));
             }
 
             //Ebene Y
-            if (movevector.Y > 0)
+            if (moveVector.Y > 0)
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X, pos.Y, pos.Z),
                     new Vector3(pos.X + 1f, pos.Y, pos.Z + 1f),
-                    new Vector3(0, -1, 0));
+                    new Vector3(0, -1));
             }
-            else if (movevector.Y < 0)
+            else if (moveVector.Y < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X , pos.Y + 1f, pos.Z),
+                    new Vector3(pos.X, pos.Y + 1f, pos.Z),
                     new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z + 1f),
-                    new Vector3(0, 1, 0));
+                    new Vector3(0, 1));
             }
 
             //Ebene Z
-            if (movevector.Z > 0)
+            if (moveVector.Z > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X, pos.Y , pos.Z ),
-                    new Vector3(pos.X + 1f, pos.Y + 1f , pos.Z ),
-                    new Vector3(0,0, -1));
+                    new Vector3(pos.X, pos.Y, pos.Z),
+                    new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z),
+                    new Vector3(0, 0, -1));
             }
-            else if (movevector.Z < 0)
+            else if (moveVector.Z < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X , pos.Y  , pos.Z + 1f),
-                    new Vector3(pos.X + 1f, pos.Y +1f, pos.Z + 1f),
+                    new Vector3(pos.X, pos.Y, pos.Z + 1f),
+                    new Vector3(pos.X + 1f, pos.Y + 1f, pos.Z + 1f),
                     new Vector3(0, 0, 1));
             }
-
-
         }
 
         /// <summary>
@@ -109,42 +106,42 @@ namespace OctoAwesome
         /// <param name="coordinate"><see cref="Coordinate"/> ot the <see cref="Entity"/></param>
         /// <param name="invertvelocity">Gibt an ob die geschwindigkeit invertiert werden soll</param>
         /// <returns></returns>
-        public static IEnumerable<CollisionPlane> GetEntityCollisionPlanes(float radius, float height, Vector3 velocity, 
-            Coordinate coordinate, bool invertvelocity = true)
+        public static IEnumerable<CollisionPlane> GetEntityCollisionPlanes(float radius, float height, Vector3 velocity,
+            Coordinate coordinate, bool invertVelocity = true)
         {
             var pos = coordinate.BlockPosition;
-            Vector3 vel =  invertvelocity ? new Vector3(-velocity.X, -velocity.Y, - velocity.Z) : velocity;
+            Vector3 vel = invertVelocity ? new Vector3(-velocity.X, -velocity.Y, -velocity.Z) : velocity;
 
             //Ebene X
-                if (vel.X > 0)
+            if (vel.X > 0)
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X - radius, pos.Y - radius, pos.Z),
                     new Vector3(pos.X - radius, pos.Y + radius, pos.Z + height),
-                    new Vector3(-1, 0, 0));
+                    new Vector3(-1, 0));
             }
             else if (vel.X < 0)
             {
                 yield return new CollisionPlane(
                     new Vector3(pos.X + radius, pos.Y - radius, pos.Z),
                     new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
-                    new Vector3(1, 0, 0));
+                    new Vector3(1, 0));
             }
 
             //Ebene Y
             if (vel.Y > 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z ),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z),
                     new Vector3(pos.X + radius, pos.Y - radius, pos.Z + height),
-                    new Vector3(0, -1, 0));
+                    new Vector3(0, -1));
             }
             else if (vel.Y < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - radius, pos.Y + radius, pos.Z ),
+                    new Vector3(pos.X - radius, pos.Y + radius, pos.Z),
                     new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
-                    new Vector3(0, 1, 0));
+                    new Vector3(0, 1));
             }
 
             //Ebene Z
@@ -158,7 +155,7 @@ namespace OctoAwesome
             else if (vel.Z < 0)
             {
                 yield return new CollisionPlane(
-                    new Vector3(pos.X - radius, pos.Y - radius , pos.Z + height),
+                    new Vector3(pos.X - radius, pos.Y - radius, pos.Z + height),
                     new Vector3(pos.X + radius, pos.Y + radius, pos.Z + height),
                     new Vector3(0, 0, 1));
             }
@@ -202,8 +199,6 @@ namespace OctoAwesome
                          (p2.edgepos2.Z < p1.edgepos2.Z && p2.edgepos2.Z > p1.edgepos1.Z) ||
                          (p1.edgepos1.Z > p2.edgepos1.Z && p1.edgepos1.Z < p2.edgepos2.Z) ||
                          (p1.edgepos2.Z < p2.edgepos2.Z && p1.edgepos2.Z > p2.edgepos1.Z);
-
-
                 result = rx && rz;
             }
             else if (vec.Z < 0)
@@ -233,14 +228,12 @@ namespace OctoAwesome
         public static Vector3 GetDistance(CollisionPlane p1, CollisionPlane p2)
         {
             var alpha = p1.normal * p2.normal;
+            var dVector = new Vector3();
+            dVector.X = alpha.X != 0 ? 1 : 0;
+            dVector.Y = alpha.Y != 0 ? 1 : 0;
+            dVector.Z = alpha.Z != 0 ? 1 : 0;
 
-
-            var dvector = new Vector3();
-            dvector.X = alpha.X != 0 ? 1 : 0;
-            dvector.Y = alpha.Y != 0 ? 1 : 0;
-            dvector.Z = alpha.Z != 0 ? 1 : 0;
-
-            var distance = (p1.pos - p2.pos) * dvector;
+            var distance = (p1.pos - p2.pos) * dVector;
 
             return distance;
         }
@@ -253,20 +246,18 @@ namespace OctoAwesome
         /// <returns>Ergebnis</returns>
         public static bool CheckDistance(Vector3 d1, Vector3 d2)
         {
-            
+
             if (d1.X == 0 || d1.Y == 0 || d1.Z == 0)
                 return true;
 
-            var diff = d1 - d2; 
+            var diff = d1 - d2;
 
             var rx = d1.X > 0 ? diff.X < 0 : diff.X > 0;
             var ry = d1.Y > 0 ? diff.Y < 0 : diff.Y > 0;
             var rz = d1.Z > 0 ? diff.Z < 0 : diff.Z > 0;
-
-
             return rx || ry || rz;
         }
 
-       
+
     }
 }

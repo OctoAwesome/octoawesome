@@ -13,8 +13,8 @@ namespace OctoAwesome
         /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
         /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
         /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
-        bool SetCenter(Index2 index, Action<bool> successCallback = null);
-        
+        bool SetCenter(Index2 index, Action<bool>? successCallback = null);
+
         /// <summary>
         /// Aktueller Planet auf dem sich der Cache bezieht.
         /// </summary>
@@ -25,7 +25,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="index">Chunk Index</param>
         /// <returns>Instanz des Chunks</returns>
-        IChunk GetChunk(Index3 index);
+        IChunk? GetChunk(Index3 index);
 
         /// <summary>
         /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
@@ -34,8 +34,8 @@ namespace OctoAwesome
         /// <param name="y">Y Koordinate</param>
         /// <param name="z">Z Koordinate</param>
         /// <returns>Instanz des Chunks</returns>
-        IChunk GetChunk(int x, int y, int z);
-        
+        IChunk? GetChunk(int x, int y, int z);
+
         /// <summary>
         /// Leert den Cache und gibt sie beim GlobalChunkCache wieder frei
         /// </summary>

@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
     public class Server //TODO: Should use a base class or interface
     {
-        public event EventHandler<ConnectedClient> OnClientConnected;
+        public event EventHandler<ConnectedClient>? OnClientConnected;
 
         private readonly Socket ipv4Socket;
         private readonly Socket ipv6Socket;
         private readonly List<ConnectedClient> connectedClients;
         private readonly object lockObj;
-
         public Server()
         {
             ipv4Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -49,6 +46,7 @@ namespace OctoAwesome.Network
                 ipv6Socket.BeginAccept(OnClientAccepted, ipv6Socket);
             }
         }
+
         public void Start(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).Where(
@@ -59,6 +57,7 @@ namespace OctoAwesome.Network
 
         private void OnClientAccepted(IAsyncResult ar)
         {
+            Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");
             var socket = (Socket)ar.AsyncState;
 
             var tmpSocket = socket!.EndAccept(ar);

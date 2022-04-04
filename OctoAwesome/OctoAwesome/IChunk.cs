@@ -1,6 +1,6 @@
 ﻿using OctoAwesome.Pooling;
-
 using System;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -30,7 +30,6 @@ namespace OctoAwesome
         /// Der Index ist derselbe wie bei <see cref="Blocks"/>.
         /// </summary>
         int[] MetaData { get; }
-
         int Version { get; set; }
 
         /// <summary>
@@ -66,7 +65,6 @@ namespace OctoAwesome
         /// <param name="meta">(Optional) Die Metadaten des Blocks</param>
         /// <param name="block">Die neue Block-ID</param>
         void SetBlock(int x, int y, int z, ushort block, int meta = 0);
-
         void SetBlock(int flatIndex, BlockInfo blockInfo);
 
         /// <summary>
@@ -106,11 +104,11 @@ namespace OctoAwesome
         void SetBlockResources(int x, int y, int z, ushort[] resources);
 
         void SetColumn(IChunkColumn chunkColumn);
-        void Update(Notifications.SerializableNotification notification);
-        void OnUpdate(Notifications.SerializableNotification notification);
+        void Update(SerializableNotification notification);
+        void OnUpdate(SerializableNotification notification);
         void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos);
 
-        event Action<IChunk> Changed;
+        event Action<IChunk>? Changed;
         void FlagDirty();
     }
 }

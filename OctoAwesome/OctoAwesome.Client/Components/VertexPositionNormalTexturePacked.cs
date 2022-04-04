@@ -1,9 +1,6 @@
 ﻿using engenious;
 using engenious.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OctoAwesome.Client.Components
 {
@@ -17,9 +14,9 @@ namespace OctoAwesome.Client.Components
         public static readonly VertexDeclaration VertexDeclaration;
         static VertexPositionNormalTexturePacked()
         {
-            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint)*2, new VertexElement(0, VertexElementFormat.Rgba32, VertexElementUsage.Position, 0), new VertexElement(sizeof(uint), VertexElementFormat.Rgba32, VertexElementUsage.Normal, 0));
+            VertexDeclaration = new engenious.Graphics.VertexDeclaration(sizeof(uint) * 2, new VertexElement(0, VertexElementFormat.Rgba32, VertexElementUsage.Position, 0), new VertexElement(sizeof(uint), VertexElementFormat.Rgba32, VertexElementUsage.Normal, 0));
         }
-        public VertexPositionNormalTexturePacked(Vector3 position,Vector3 normal,Vector2 uv)
+        public VertexPositionNormalTexturePacked(Vector3 position, Vector3 normal, Vector2 uv)
         {
             uint posX = (uint)position.X;
             uint posY = (uint)position.Y;
@@ -51,11 +48,11 @@ namespace OctoAwesome.Client.Components
         }
         public UInt32 PackedValue
         {
-            get;private set;
+            get; private set;
         }
         public UInt32 PackedValue2
         {
-            get;private set;
+            get; private set;
         }
 
         VertexDeclaration IVertexType.VertexDeclaration

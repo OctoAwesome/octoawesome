@@ -1,11 +1,7 @@
 ﻿using OctoAwesome.Caching;
 using OctoAwesome.Notifications;
 using OctoAwesome.PoC.Rx;
-using OctoAwesome.Runtime;
-using OpenTK.Graphics.ES11;
 using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.PoC
@@ -17,8 +13,8 @@ namespace OctoAwesome.PoC
 
             object a = 12;
 
-            var i 
-                = GenericCaster<int, object>
+            var i
+                = GenericCaster<object, int>
                 .Cast(a);
 
             using var network = new Relay<Notification>();

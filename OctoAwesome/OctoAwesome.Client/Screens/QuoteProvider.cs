@@ -1,13 +1,10 @@
 ﻿using OctoAwesome.Threading;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.Screens
 {
+
     public sealed class QuoteProvider
     {
         private readonly FileInfo fileInfo;
@@ -22,6 +19,7 @@ namespace OctoAwesome.Client.Screens
             this.fileInfo = fileInfo;
             random = new Random();
             semaphoreExtended = new LockSemaphore(1, 1);
+            quotes = Array.Empty<string>();
         }
 
         public string GetRandomQuote()

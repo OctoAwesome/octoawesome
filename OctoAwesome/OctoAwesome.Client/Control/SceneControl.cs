@@ -8,11 +8,8 @@ using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
-using engenious.UserDefined;
-using OctoAwesome.Definitions;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Linq;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Database;
 using engenious.UserDefined.Effects;
@@ -62,32 +59,32 @@ namespace OctoAwesome.Client.Controls
         private readonly Task[] _additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
-        public RenderTarget2D ControlTexture { get; set; }
+        public RenderTarget2D? ControlTexture { get; set; }
         public RenderTarget2D ShadowMap { get; set; }
 
         private float sunPosition = 0f;
 
-        public event EventHandler OnCenterChanged;
+        public event EventHandler? OnCenterChanged;
 
         private readonly VertexPositionColor[] selectionVertices =
         {
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, +1.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, +1.001f, -0.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, +1.001f, -0.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(-0.001f, -0.001f, -0.001f), Color.Black * 0.5f),
-                new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
+                new(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
+                new(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
+                new(new Vector3(-0.001f, -0.001f, +1.001f), Color.Black * 0.5f),
+                new(new Vector3(+1.001f, -0.001f, +1.001f), Color.Black * 0.5f),
+                new(new Vector3(-0.001f, +1.001f, -0.001f), Color.Black * 0.5f),
+                new(new Vector3(+1.001f, +1.001f, -0.001f), Color.Black * 0.5f),
+                new(new Vector3(-0.001f, -0.001f, -0.001f), Color.Black * 0.5f),
+                new(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
         };
         private readonly VertexPositionTexture[] billboardVertices =
         {
-                new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
-                new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
-                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
-                new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
-                new VertexPositionTexture(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
-                new VertexPositionTexture(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                new(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
+                new(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
+                new(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
+                new(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
+                new(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
+                new(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
         };
 
         private readonly float sphereRadius;
@@ -118,7 +115,9 @@ namespace OctoAwesome.Client.Controls
             sphereRadius = tmpSphereRadius - (chunkDiag / 2);
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
-            simpleShader = manager.Game.Content.Load<chunkEffect>("Effects/chunkEffect");
+            var loadedShader = manager.Game.Content.Load<chunkEffect>("Effects/chunkEffect");
+            Debug.Assert(loadedShader != null, nameof(loadedShader) + " != null");
+            simpleShader = loadedShader;
             sunTexture = assets.LoadTexture("sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
@@ -149,7 +148,7 @@ namespace OctoAwesome.Client.Controls
 
             planet = Manager.Game.ResourceManager.GetPlanet(player.Position.Position.Planet);
 
-            // TODO: evtl. Cache-Size (Dimensions) VIEWRANGE + 1
+            // TODO: perhaps Cache-Size (Dimensions) VIEWRANGE + 1
 
             int range = ((int)Math.Pow(2, VIEWRANGE) - 2) / 2;
             localChunkCache = new LocalChunkCache(planet.GlobalChunkCache, VIEWRANGE, range);
@@ -199,9 +198,7 @@ namespace OctoAwesome.Client.Controls
 
             }
 
-
-
-            var selectionVertices = new[]
+            ReadOnlySpan<VertexPositionColor> selectionVertices = stackalloc[]
             {
                 new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
                 new VertexPositionColor(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
@@ -213,7 +210,7 @@ namespace OctoAwesome.Client.Controls
                 new VertexPositionColor(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
             };
 
-            var billboardVertices = new[]
+            ReadOnlySpan<VertexPositionTexture> billboardVertices = stackalloc[]
             {
                 new VertexPositionTexture(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
                 new VertexPositionTexture(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
@@ -238,8 +235,6 @@ namespace OctoAwesome.Client.Controls
 
             billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice, VertexPositionTexture.VertexDeclaration, billboardVertices.Length);
             billboardVertexbuffer.SetData(billboardVertices);
-
-
             sunEffect = new BasicEffect(manager.GraphicsDevice)
             {
                 TextureEnabled = true
@@ -293,14 +288,13 @@ namespace OctoAwesome.Client.Controls
             var selBlock = GetSelectedBlock(centerblock, renderOffset, out selected, out selectedAxis, out selectionPoint);
             var funcBlock = GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint);
 
-
-
             //TODO Distance check, so entity doesnt always get selected if a block is in front of it
             if (selectedFunc.HasValue && selectionFuncPoint.HasValue)
             {
                 selected = selectedFunc;
                 selectionPoint = selectionFuncPoint;
                 selectedAxis = selectedFuncAxis;
+                Debug.Assert(funcBlock != null, nameof(funcBlock) + " != null while selectedFunc has value");
                 player.Selection = funcBlock;
             }
             else
@@ -368,7 +362,7 @@ namespace OctoAwesome.Client.Controls
 
             Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);
 
-            // Nur ausführen wenn der Spieler den Chunk gewechselt hat
+            // Only execute when player changed the current chunk
             if (destinationChunk != currentChunk)
             {
                 fillResetEvent.Set();
@@ -397,8 +391,9 @@ namespace OctoAwesome.Client.Controls
                         var localBlock = localChunkCache.GetBlockInfo(pos);
                         if (localBlock.Block == 0)
                             continue;
-                        IBlockDefinition blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(localBlock.Block);
+                        var blockDefinition = Manager.Game.DefinitionManager.GetBlockDefinitionByIndex(localBlock.Block);
 
+                        Debug.Assert(blockDefinition != null, nameof(blockDefinition) + " != null");
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, camera.PickRay, out Axis? collisionAxis);
 
                         if (distance.HasValue && distance.Value < bestDistance)
@@ -426,13 +421,13 @@ namespace OctoAwesome.Client.Controls
             return block;
         }
 
-        private FunctionalBlock GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
+        private FunctionalBlock? GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint)
         {
             selected = null;
             selectedAxis = null;
             selectionPoint = null;
             float bestDistance = 9999;
-            FunctionalBlock functionalBlock = null;
+            FunctionalBlock? functionalBlock = null;
 
             //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
@@ -481,8 +476,6 @@ namespace OctoAwesome.Client.Controls
 
             if (ControlTexture == null)
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
-
-
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
@@ -684,11 +677,11 @@ namespace OctoAwesome.Client.Controls
                 selectionEffect.Projection = camera.Projection;
                 Manager.GraphicsDevice.VertexBuffer = selectionLines;
                 Manager.GraphicsDevice.IndexBuffer = selectionIndexBuffer;
-                foreach (var pass in selectionEffect.CurrentTechnique.Passes)
+                foreach (var pass in selectionEffect.CurrentTechnique!.Passes)
                 {
                     pass.Apply();
                     Manager.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.Lines, 0, 0, 8, 0, 12);
-                    //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndeces, 0, 12);
+                    //Manager.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.Lines, selectionLines, 0, 8, selectionIndices, 0, 12);
                 }
             }
         }
@@ -774,7 +767,7 @@ namespace OctoAwesome.Client.Controls
 
             Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);
 
-            // Nur ausführen wenn der Spieler den Chunk gewechselt hat
+            // Only execute when player changed the current chunk
             if (destinationChunk != currentChunk)
             {
                 localChunkCache.SetCenter(
@@ -840,7 +833,7 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void BackgroundLoop(object state)
+        private void BackgroundLoop(object? state)
         {
             var token = state is CancellationToken stateToken ? stateToken : CancellationToken.None;
 
@@ -852,8 +845,9 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void AdditionalFillerBackgroundLoop(object state)
+        private void AdditionalFillerBackgroundLoop(object? state)
         {
+            Debug.Assert(state != null, nameof(state) + " != null");
             var (@event, n, token) = ((AutoResetEvent Event, int N, CancellationToken Token))state;
 
             while (true)
@@ -864,7 +858,7 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void ForceUpdateBackgroundLoop(object state)
+        private void ForceUpdateBackgroundLoop(object? state)
         {
             var token = state is CancellationToken stateToken ? stateToken : CancellationToken.None;
 
@@ -875,7 +869,7 @@ namespace OctoAwesome.Client.Controls
 
                 while (!forcedRenders.IsEmpty)
                 {
-                    while (forcedRenders.TryDequeue(out ChunkRenderer r))
+                    while (forcedRenders.TryDequeue(out var r))
                     {
                         r.RegenerateVertexBuffer();
                     }
