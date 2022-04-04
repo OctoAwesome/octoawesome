@@ -64,9 +64,9 @@ namespace OctoAwesome.Client.Crew
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(List<CrewMember>));
                     var res = serializer.Deserialize(stream);
-                    if (res != null)
+                    if (res is List<CrewMember> crewMembers)
                     {
-                        return (List<CrewMember>)res;
+                        return crewMembers;
                     }
                 }
                 catch (Exception)
