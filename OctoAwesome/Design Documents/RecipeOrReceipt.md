@@ -2,7 +2,6 @@
 ``` json
 {
     "Name": "OctoAwesome.Basics:CookMeat",
-    "Type": "Furnace", //, Crafting, etc.pp. Freitext
     "Inputs":[
         {
             "ItemName":"RawMeat",
@@ -15,10 +14,11 @@
             "Count":1
         }
     ],
-    "Time":"900",
-    "MinTime":"180",
-    "Category":"Cooking", //Isn't that type, but different?
-    "SubCategory": "Food",
+    "Time": 900,
+    "MinTime": 180,
+    "Categories": [ 
+        {"Name": "Cooking", "SubCategory": "Food"},
+    ], 
     "Enabled":true, //Selfexplenatory
     "Description":"Cooks raw meat into cooked meat", //INTL Text for user
     "Keywords":"Cooking,CookedMeat,RawMeat" //Search, Filter
@@ -28,7 +28,6 @@
 ### Iron Smelting Recipe Sample
 ``` json
 {
-    "Type": "Blast Furnace", //, Crafting, etc.pp. Freitext
     "Inputs":[
         {
             "ItemName":"IronOre",
@@ -45,9 +44,10 @@
             "Count":3,
         }
     ],
-    "Energy":"70",
-    "Category":"Smelting", //Isn't that type, but different?
-    "SubCategory": "Metal",
+    "Energy":70,
+    "Categories": [ 
+        {"Name": "Smelting", "SubCategory": "Metal"},
+    ], 
     "Enabled":true, //Selfexplenatory
     "Description":"Smelts Iron Ore into Iron", //INTL Text for user
     "Keywords":"Smelting,IronOre,Iron" //Search, Filter

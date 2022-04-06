@@ -107,9 +107,20 @@ public static class Program
                     - Wie also klar Zeitberechnung im Update? => GameTime when finished, etc.
                     - Auch die Energieberchnung? Theoretisch => Done
                     - Output vom Input aus Berechnen / generieren / ...?
-                    - Betriebsmittel (Kleber, Rohöl, Feuer, ...)?
+                    - Betriebsmittel (Kleber, Rohöl, Schrauben, andere Öle, Brennmittel ...), was braucht die Maschine um ihre Arbeit zu verrichten?
+                        - Seperate(r) Slot für Input
+                        - Teil vom Block
+                        - 
                     - Für den Rezeptservice:
                         - Wie wird das relevanteste Rezept selektiert? (Kriterien, Demokratie? Ja!)
+                        - Priorisierung von kollidierenden Rezepten => Aktuell ungelöst, für den Anfang FirstOrDefault (Future: UI für Priorisierung / Sortierung, etc)
+                        - Pay to Prioritize (Betterplace donations oder sowas), Abomodell
+                
+                    - Inventory überarbeiten, weil Slot hinzufügen / entfernen doof, wenn es fixe Slots geben sollte
+
+                    - Placeholder für InputMaterial = Output Material
+                    - Rezept als optionalen Input für Item => Dann können Rezepte von außen überschrieben werden vor der Verarbeitung des Inputs
+
                  */
 
                 /*
