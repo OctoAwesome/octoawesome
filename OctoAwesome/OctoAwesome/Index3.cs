@@ -289,7 +289,7 @@ namespace OctoAwesome
             => new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z + i2.Z);
 
         /// <summary>
-        /// Calculates the sum of a <see cref="Index2"/> and a <see cref="Index3"/> componentwise(only adds x and y component).
+        /// Calculates the sum of an <see cref="Index2"/> and an <see cref="Index3"/> componentwise(only adds x and y component).
         /// </summary>
         /// <param name="i1">The first operand.</param>
         /// <param name="i2">The second operand.</param>
@@ -298,7 +298,7 @@ namespace OctoAwesome
             => new Index3(i1.X + i2.X, i1.Y + i2.Y, i1.Z);
 
         /// <summary>
-        /// Calculates the subtracted some of two <see cref="Index3"/> componentwise.
+        /// Calculates the subtracted sum of two <see cref="Index3"/> componentwise.
         /// </summary>
         /// <param name="i1">The first operand.</param>
         /// <param name="i2">The second operand.</param>
@@ -307,7 +307,7 @@ namespace OctoAwesome
             => new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z - i2.Z);
 
         /// <summary>
-        /// Calculates the subtracted some of a <see cref="Index2"/> from a <see cref="Index3"/> componentwise(only subtracts x and y component).
+        /// Calculates the subtracted sum of an <see cref="Index2"/> from an <see cref="Index3"/> componentwise(only subtracts x and y component).
         /// </summary>
         /// <param name="i1">The first operand.</param>
         /// <param name="i2">The second operand.</param>
@@ -316,7 +316,7 @@ namespace OctoAwesome
             => new Index3(i1.X - i2.X, i1.Y - i2.Y, i1.Z);
 
         /// <summary>
-        /// Calculates the componentwise scaling of a <see cref="Index3"/> by a scaling factor.
+        /// Calculates the componentwise scaling of an <see cref="Index3"/> by a scaling factor.
         /// </summary>
         /// <param name="i1">The <see cref="Index3"/> to scale.</param>
         /// <param name="scale">The amount to scale by.</param>
@@ -334,7 +334,7 @@ namespace OctoAwesome
             => new Index3(i1.X * i2.X, i1.Y * i2.Y, i1.Z * i2.Z);
 
         /// <summary>
-        /// Calculates the componentwise inverse scale of a <see cref="Index3"/> using a dividend.
+        /// Calculates the componentwise inverse scale of an <see cref="Index3"/> using a dividend.
         /// </summary>
         /// <param name="i1">The <see cref="Index3"/> to divide.</param>
         /// <param name="scale">The amount to divide by.</param>
@@ -361,7 +361,7 @@ namespace OctoAwesome
         public static bool operator !=(Index3 i1, Index3 i2) => !i1.Equals(i2);
 
         /// <summary>
-        /// Implicitly converts a <see cref="Index3"/> to a <see cref="Vector3"/>.
+        /// Implicitly converts an <see cref="Index3"/> to a <see cref="Vector3"/>.
         /// </summary>
         /// <param name="index">The <see cref="Index3"/> to convert.</param>
         public static implicit operator Vector3(Index3 index) => new Vector3(index.X, index.Y, index.Z);

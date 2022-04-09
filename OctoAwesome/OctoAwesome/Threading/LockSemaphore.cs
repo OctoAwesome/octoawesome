@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace OctoAwesome.Threading
 {
     /// <summary>
-    /// Semaphore wrapping <see cref="SemaphoreSlim"/> with convenient dispose release anti pattern.
+    /// Semaphore wrapping <see cref="SemaphoreSlim"/> with convenient dispose release pattern.
     /// </summary>
     public sealed class LockSemaphore : IDisposable
     {
@@ -75,7 +75,7 @@ namespace OctoAwesome.Threading
             private readonly LockSemaphore internalSemaphore;
 
             /// <summary>
-            /// Initializes a ne instance of the <see cref="SemaphoreLock"/> struct.
+            /// Initializes a new instance of the <see cref="SemaphoreLock"/> struct.
             /// </summary>
             /// <param name="semaphoreExtended">The locked semaphore to be released on dispose.</param>
             public SemaphoreLock(LockSemaphore semaphoreExtended)

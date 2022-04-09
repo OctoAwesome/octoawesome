@@ -8,49 +8,46 @@ namespace OctoAwesome.Rx
     public static class IObservableExtension
     {
         /// <summary>
-        /// Notifies the provider that an observer action is to receive notifications.
+        /// Subscribes an element handler to an observable sequence.
         /// </summary>
         /// <param name="observable">The observable to subscribe to.</param>
-        /// <param name="onNext">Action that provides the observer with new data.</param>
-        /// <typeparam name="T">The object that provides notification information.</typeparam>
+        /// <param name="onNext">Action to invoke for each element in the observable sequence.</param>
+        /// <typeparam name="T">The object type that provides notification information.</typeparam>
         /// <returns>
-        /// A reference to an interface that allows observers to stop receiving notifications
-        /// before the provider has finished sending them.
+        /// <see cref="IDisposable"/> object used to unsubscribe from the observable sequence.
         /// </returns>
         public static IDisposable Subscribe<T>(this IObservable<T> observable, Action<T> onNext)
             => observable.Subscribe(new Observer<T>(onNext));
 
         /// <summary>
-        /// Notifies the provider that observer actions is to receive notifications.
+        /// Subscribes an element handler and an exception handler handler to an observable sequence.
         /// </summary>
         /// <param name="observable">The observable to subscribe to.</param>
-        /// <param name="onNext">Action that provides the observer with new data.</param>
+        /// <param name="onNext">Action to invoke for each element in the observable sequence.</param>
         /// <param name="onException">
-        /// Action to notify the observer that the provider has experienced an error condition.
+        /// Action to invoke upon exceptional termination of the observable sequence.
         /// </param>
-        /// <typeparam name="T">The object that provides notification information.</typeparam>
+        /// <typeparam name="T">The object type that provides notification information.</typeparam>
         /// <returns>
-        /// A reference to an interface that allows observers to stop receiving notifications
-        /// before the provider has finished sending them.
+        /// <see cref="IDisposable"/> object used to unsubscribe from the observable sequence.
         /// </returns>
         public static IDisposable Subscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onException)
             => observable.Subscribe(new Observer<T>(onNext, onException));
 
         /// <summary>
-        /// Notifies the provider that observer actions is to receive notifications.
+        /// Subscribes an element handler, an exception handler, and a completion handler to an observable sequence.
         /// </summary>
         /// <param name="observable">The observable to subscribe to.</param>
-        /// <param name="onNext">Action that provides the observer with new data.</param>
+        /// <param name="onNext">Action to invoke for each element in the observable sequence.</param>
         /// <param name="onException">
-        /// Action to notify the observer that the provider has experienced an error condition.
+        /// Action to invoke upon exceptional termination of the observable sequence.
         /// </param>
         /// <param name="onComplete">
-        /// Action to notify the observer that the provider has finished sending push-based notifications.
+        /// Action to invoke upon graceful termination of the observable sequence.
         /// </param>
-        /// <typeparam name="T">The object that provides notification information.</typeparam>
+        /// <typeparam name="T">The object type that provides notification information.</typeparam>
         /// <returns>
-        /// A reference to an interface that allows observers to stop receiving notifications
-        /// before the provider has finished sending them.
+        /// <see cref="IDisposable"/> object used to unsubscribe from the observable sequence.
         /// </returns>
         public static IDisposable Subscribe<T>(this IObservable<T> observable, Action<T> onNext, Action<Exception> onException, Action onComplete)
             => observable.Subscribe(new Observer<T>(onNext, onException, onComplete));

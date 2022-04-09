@@ -82,7 +82,7 @@ namespace OctoAwesome.Client.UI.Controls
         private readonly Label headlineLabel;
 
         /// <summary>
-        /// Initializes a ne instance of the <see cref="GroupBox"/> control.
+        /// Initializes a new instance of the <see cref="GroupBox"/> control.
         /// </summary>
         /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="style">The style to use for this control.</param>

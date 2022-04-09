@@ -62,8 +62,8 @@ namespace OctoAwesome.Client.UI.Components
         /// <summary>
         /// Initializes a new instance of the <see cref="AssetComponent"/> class.
         /// </summary>
-        /// <param name="screenComponent"></param>
-        /// <param name="settings"></param>
+        /// <param name="screenComponent">The screen component used for asset loading.</param>
+        /// <param name="settings">The settings i.a. used for asset handling.</param>
         public AssetComponent(BaseScreenComponent screenComponent, ISettings settings) : base(screenComponent.Game)
         {
             this.screenComponent = screenComponent;

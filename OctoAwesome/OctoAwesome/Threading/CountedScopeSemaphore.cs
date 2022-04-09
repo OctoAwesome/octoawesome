@@ -5,8 +5,15 @@ using System.Threading;
 namespace OctoAwesome.Threading
 {
     /// <summary>
-    /// Semaphore for recursive scoped locking.
+    /// Semaphore for shared recursive scoped locking.
     /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    ///   <item>Can be exclusively locked.</item>
+    ///   <item>Non exclusive locks can be locked recursively.</item>
+    ///   <item>Multiple non exclusive locks are allowed on different threads.</item>
+    /// </list>
+    /// </remarks>
     public class CountedScopeSemaphore : IDisposable
     {
         private readonly ManualResetEventSlim exclusiveLock;
@@ -149,7 +156,7 @@ namespace OctoAwesome.Threading
             private readonly CountedScopeSemaphore internalSemaphore;
 
             /// <summary>
-            /// Initializes a ne instance of the <see cref="ExclusiveScope"/> struct.
+            /// Initializes a new instance of the <see cref="ExclusiveScope"/> struct.
             /// </summary>
             /// <param name="semaphore">The locked semaphore to leave exclusive scope on dispose.</param>
             public ExclusiveScope(CountedScopeSemaphore semaphore)

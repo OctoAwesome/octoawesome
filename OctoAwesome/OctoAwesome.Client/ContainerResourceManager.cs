@@ -63,7 +63,7 @@ namespace OctoAwesome.Client
         private NetworkUpdateManager? networkUpdateManager;
 
         /// <summary>
-        /// Initializes a ne instance of the <see cref="ContainerResourceManager"/> class.
+        /// Initializes a new instance of the <see cref="ContainerResourceManager"/> class.
         /// </summary>
         /// <param name="typeContainer">The type container to manage types.</param>
         /// <param name="updateHub">The update hub to use for update notifications.</param>

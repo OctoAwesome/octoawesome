@@ -60,7 +60,7 @@ namespace OctoAwesome
         #region Sides
 
         /// <summary>
-        /// Describes the complete side on von -X
+        /// Describes the complete side at -X
         /// </summary>
         SideWest =
             OrientationFlags.Corner000 |
@@ -69,7 +69,7 @@ namespace OctoAwesome
             OrientationFlags.Corner011,
 
         /// <summary>
-        /// Describes the complete side on von +X
+        /// Describes the complete side at +X
         /// </summary>
         SideEast =
             OrientationFlags.Corner100 |
@@ -78,7 +78,7 @@ namespace OctoAwesome
             OrientationFlags.Corner111,
 
         /// <summary>
-        /// Describes the complete side on von -Y
+        /// Describes the complete side at -Y
         /// </summary>
         SideSouth =
             OrientationFlags.Corner000 |
@@ -87,7 +87,7 @@ namespace OctoAwesome
             OrientationFlags.Corner101,
 
         /// <summary>
-        /// Describes the complete side on von +Y
+        /// Describes the complete side at +Y
         /// </summary>
         SideNorth =
             OrientationFlags.Corner010 |
@@ -96,7 +96,7 @@ namespace OctoAwesome
             OrientationFlags.Corner111,
 
         /// <summary>
-        /// Describes the complete side on von -Z
+        /// Describes the complete side at -Z
         /// </summary>
         SideBottom =
             OrientationFlags.Corner010 |
@@ -105,7 +105,7 @@ namespace OctoAwesome
             OrientationFlags.Corner100,
 
         /// <summary>
-        /// Describes the complete side on von +Z
+        /// Describes the complete side at +Z
         /// </summary>
         SideTop =
             OrientationFlags.Corner011 |
@@ -118,42 +118,42 @@ namespace OctoAwesome
         #region Edges
 
         /// <summary>
-        /// Describes the top edge on the west-side [-X,-Y,+Z] -> [-X,+Y,+Z]
+        /// Describes the top edge at the west-side [-X,-Y,+Z] -> [-X,+Y,+Z]
         /// </summary>
         EdgeWestTop = Corner001 | Corner011,
 
         /// <summary>
-        /// Describes the bottom edge on the west-side [-X,-Y,-Z] -> [-X,+Y,-Z]
+        /// Describes the bottom edge at the west-side [-X,-Y,-Z] -> [-X,+Y,-Z]
         /// </summary>
         EdgeWestBottom = Corner000 | Corner010,
 
         /// <summary>
-        /// Describes the top edge on the east-side [+X,-Y,+Z] -> [+X,+Y,+Z]
+        /// Describes the top edge at the east-side [+X,-Y,+Z] -> [+X,+Y,+Z]
         /// </summary>
         EdgeEastTop = Corner101 | Corner111,
 
         /// <summary>
-        /// Describes the bottom edge on the east-side [+X,-Y,-Z] -> [+X,+Y,-Z]
+        /// Describes the bottom edge at the east-side [+X,-Y,-Z] -> [+X,+Y,-Z]
         /// </summary>
         EdgeEastBottom = Corner100 | Corner110,
 
         /// <summary>
-        /// Describes the top edge on the north-side [-X,+Y,+Z] -> [+X,+Y,+Z]
+        /// Describes the top edge at the north-side [-X,+Y,+Z] -> [+X,+Y,+Z]
         /// </summary>
         EdgeNorthTop = Corner011 | Corner111,
 
         /// <summary>
-        /// Describes the bottom edge on the north-side [-X,+Y,-Z] -> [+X,+Y,-Z]
+        /// Describes the bottom edge at the north-side [-X,+Y,-Z] -> [+X,+Y,-Z]
         /// </summary>
         EdgeNorthBottom = Corner010 | Corner110,
 
         /// <summary>
-        /// Describes the top edge on the south-side [-X,-Y,+Z] -> [+X,-Y,+Z]
+        /// Describes the top edge at the south-side [-X,-Y,+Z] -> [+X,-Y,+Z]
         /// </summary>
         EdgeSouthTop = Corner001 | Corner101,
 
         /// <summary>
-        /// Describes the bottom edge on the south-side [-X,-Y,-Z] -> [+X,-Y,-Z]
+        /// Describes the bottom edge at the south-side [-X,-Y,-Z] -> [+X,-Y,-Z]
         /// </summary>
         EdgeSouthBottom = Corner000 | Corner100,
 
@@ -168,12 +168,12 @@ namespace OctoAwesome
         EdgeNorthEast = Corner110 | Corner111,
 
         /// <summary>
-        /// Describes the upright edge between Süd and west [-X,-Y,-Z] -> [-X,-Y,+Z]
+        /// Describes the upright edge between south and west [-X,-Y,-Z] -> [-X,-Y,+Z]
         /// </summary>
         EdgeSouthWest = Corner000 | Corner001,
 
         /// <summary>
-        /// Describes the upright edge between Süd and east [+X,-Y,-Z] -> [+X,-Y,+Z]
+        /// Describes the upright edge between south and east [+X,-Y,-Z] -> [+X,-Y,+Z]
         /// </summary>
         EdgeSouthEast = Corner100 | Corner101,
 

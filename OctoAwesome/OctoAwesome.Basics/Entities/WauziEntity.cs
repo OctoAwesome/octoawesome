@@ -7,7 +7,7 @@ using OctoAwesome.Serialization;
 namespace OctoAwesome.Basics.Entities
 {
     /// <summary>
-    /// Wauzi entity.
+    /// An entity used for dogs in the game.
     /// </summary>
     [SerializationId(1, 2)]
     public class WauziEntity : UpdateableEntity

@@ -76,7 +76,7 @@ namespace OctoAwesome.Database
 
         /// <summary>
         /// This Threshold handles the auto defragmentation.
-        /// If the Database have more Empty Values than this Threshold the <see cref="Defragment"/> is executed.
+        /// If the Database has more empty values than this threshold the <see cref="Defragment"/> is executed.
         /// Use -1 to deactivate the defragmentation for this Database.
         /// Default Value is 1000.
         /// </summary>

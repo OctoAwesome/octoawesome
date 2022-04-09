@@ -30,7 +30,7 @@ namespace OctoAwesome.Client.Components
         /// Registers a new Binding
         /// </summary>
         /// <param name="id">The ID - guideline: ModName:Action</param>
-        /// <param name="displayName">The Display name</param>
+        /// <param name="displayName">The name to display.</param>
         public void RegisterBinding(string id, string displayName)
         {
             if (bindings.ContainsKey(id))

@@ -9,7 +9,7 @@ namespace OctoAwesome.Client.UI.Controls
     public class HealthBarControl : ProgressBar
     {
         /// <summary>
-        /// Initializes a ne instance of the <see cref="HealthBarControl"/> control.
+        /// Initializes a new instance of the <see cref="HealthBarControl"/> control.
         /// </summary>
         /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="style">The style to use for this control.</param>

@@ -140,7 +140,7 @@ namespace OctoAwesome
         void Remove(Entity entity);
 
         /// <summary>
-        /// Ad an entity to this chunk column.
+        /// Add an entity to this chunk column.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
         void Add(Entity entity);

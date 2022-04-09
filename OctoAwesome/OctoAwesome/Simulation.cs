@@ -211,7 +211,7 @@ namespace OctoAwesome
 
             State = SimulationState.Paused;
 
-            //TODO: ugly, Dispose Entity's, Reset Extensions
+            //TODO: ugly, Dispose Entities, Reset Extensions
             entities.ToList().ForEach(entity => Remove(entity));
             functionalBlocks.ToList().ForEach(functionalBlock => Remove(functionalBlock));
             //while (entities.Count > 0)

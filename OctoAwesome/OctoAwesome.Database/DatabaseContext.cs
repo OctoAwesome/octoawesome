@@ -1,7 +1,9 @@
 ﻿namespace OctoAwesome.Database
 {
     /// <summary>
-    /// Database context.
+    /// A DbContext instance represents a session with the database and can be used to query
+    /// and save instances of type <typeparamref name="TObject"/> identified
+    /// by an instance of <typeparamref name="TTag"/> type.
     /// </summary>
     /// <typeparam name="TTag">The identifying tag type for the database context.</typeparam>
     /// <typeparam name="TObject">The object value type for the database context.</typeparam>

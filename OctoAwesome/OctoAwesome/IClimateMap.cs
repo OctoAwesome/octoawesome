@@ -11,7 +11,7 @@
         IPlanet Planet { get; }
 
         /// <summary>
-        /// ets the temperature for a specific block position.
+        /// Gets the temperature for a specific block position.
         /// </summary>
         /// <param name="blockIndex">The block index position to get the temperature at.</param>
         /// <returns>The temperature at the block position.</returns>

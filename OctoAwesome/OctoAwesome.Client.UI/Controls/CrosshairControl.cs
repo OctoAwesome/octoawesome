@@ -39,7 +39,7 @@ namespace OctoAwesome.Client.UI.Controls
         public const int MaxSize = 100;
 
         /// <summary>
-        /// Initializes a ne instance of the <see cref="CrosshairControl"/> control.
+        /// Initializes a new instance of the <see cref="CrosshairControl"/> control.
         /// </summary>
         /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="asset">The asset component to load resources from.</param>
