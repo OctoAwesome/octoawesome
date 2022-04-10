@@ -3,14 +3,14 @@
 namespace OctoAwesome
 {
     /// <summary>
-    /// Entity die regelmäßig eine Updateevent bekommt
+    /// Base class for entities that are updated.
     /// </summary>
     public abstract class UpdateableEntity : Entity
     {
         /// <summary>
-        /// Updatemethode der Entity
+        /// Gets called to update the entity.
         /// </summary>
-        /// <param name="gameTime">Spielzeit</param>
+        /// <param name="gameTime">The <see cref="GameTime"/>.</param>
         public abstract void Update(GameTime gameTime);
 
     }

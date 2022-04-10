@@ -4,44 +4,48 @@ using System;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Basis Schnittstelle für alle Implementierungen von Planeten.
+    /// Interface for all planet implementations.
     /// </summary>
     public interface IPlanet : ISerializable, IDisposable
     {
         /// <summary>
-        /// ID des Planeten.
+        /// Gets the id of the planet.
         /// </summary>
         int Id { get; }
 
         /// <summary>
-        /// Id des Parent Universe
+        /// Gets the <see cref="Guid"/> for the universe the planet resides in.
         /// </summary>
         Guid Universe { get; }
 
         /// <summary>
-        /// Seed des Zufallsgenerators dieses Planeten.
+        /// Gets the random seed for this planet.
         /// </summary>
         int Seed { get; }
 
         /// <summary>
-        /// Die Größe des Planeten in Chunks.
+        /// Gets the planet size in chunks.
         /// </summary>
         Index3 Size { get; }
 
         /// <summary>
-        /// Gravitation des Planeten.
+        /// Gets the gravity on the planet.
         /// </summary>
         float Gravity { get; }
 
         /// <summary>
-        /// Die Klimakarte des Planeten
+        /// Gets the climate map for the planet.
         /// </summary>
         IClimateMap ClimateMap { get; }
 
         /// <summary>
-        /// Der Generator des Planeten
+        /// Gets the map generator for the planet.
         /// </summary>
         IMapGenerator Generator { get; set; }
+
+        /// <summary>
+        /// Gets the global chunk cache for the planet.
+        /// </summary>
         IGlobalChunkCache GlobalChunkCache { get; }
     }
 }

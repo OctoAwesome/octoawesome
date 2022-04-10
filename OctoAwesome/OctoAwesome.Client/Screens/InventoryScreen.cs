@@ -184,7 +184,7 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            // Tool neu zuweisen
+            // Reassign tool
             if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
             {
                 int offset = (int)args.Key - (int)Keys.D0;
@@ -213,7 +213,7 @@ namespace OctoAwesome.Client.Screens
             nameLabel.Text = name ?? "";
             massLabel.Text = volumeLabel.Text = inventory.HoveredSlot?.Amount.ToString() ?? "";
 
-            // Aktualisierung des aktiven Buttons
+            // Refresh the active button
             for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
                 var tool = player.Toolbar.Tools != null && player.Toolbar.Tools.Length > i ? player.Toolbar.Tools[i] : null;

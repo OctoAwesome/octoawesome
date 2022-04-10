@@ -191,7 +191,7 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-            // Determine index of the active tool   
+            // Determine index of the active tool
             if (SlotLeftInput)
             {
                 Toolbar.ActiveIndex--;
@@ -203,10 +203,12 @@ namespace OctoAwesome.Client.Components
                 Toolbar.ActiveIndex++;
             }
             SlotRightInput = false;
+
+
         }
 
         /// <summary>
-        /// DEBUG METHODE: NICHT FÜR VERWENDUNG IM SPIEL!
+        /// DEBUG METHOD: NOT FOR USAGE IN GAME!
         /// </summary>
         internal void AllBlocksDebug()
         {

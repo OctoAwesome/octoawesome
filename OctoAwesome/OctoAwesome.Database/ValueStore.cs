@@ -36,7 +36,7 @@ namespace OctoAwesome.Database
         }
 
         /// <summary>
-        /// Update a value on the exact <paramref name="key"/> index <see cref="Key{TTag}.Index"/> 
+        /// Update a value on the exact <paramref name="key"/> index <see cref="Key{TTag}.Index"/>.
         /// </summary>
         /// <typeparam name="TTag"></typeparam>
         /// <param name="key"></param>

@@ -6,12 +6,18 @@ using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.Entities
 {
-
+    /// <summary>
+    /// An entity used for dogs in the game.
+    /// </summary>
     [SerializationId(1, 2)]
     public class WauziEntity : UpdateableEntity
     {
-
+        /// <summary>
+        /// Gets or sets a value indicating the time left to the next jump.
+        /// </summary>
         public int JumpTime { get; set; }
+
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
             _ = Components.GetComponent<BodyPowerComponent>();
@@ -33,6 +39,8 @@ namespace OctoAwesome.Basics.Entities
                 controller.JumpInput = false;
             }
         }
+
+        /// <inheritdoc />
         public override void RegisterDefault()
         {
             var posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0)) };

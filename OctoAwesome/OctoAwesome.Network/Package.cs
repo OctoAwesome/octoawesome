@@ -4,46 +4,103 @@ using System.Threading;
 
 namespace OctoAwesome.Network
 {
+    /// <summary>
+    /// OctoAwesome network package.
+    /// </summary>
     public sealed class Package : IPoolElement
     {
         /// <summary>
-        /// Bytesize of Header
+        /// Byte size of Header.
         /// </summary>
         public const int HEAD_LENGTH = sizeof(ushort) + sizeof(int) + sizeof(uint);
 
         private static uint nextUid;
-
+        /// <summary>
+        /// Gets the next available package UID.
+        /// </summary>
         public static uint NextUId => Interlocked.Increment(ref nextUid) - 1;
+
+        /// <summary>
+        /// Gets or sets the client his package was received from.
+        /// </summary>
         public BaseClient BaseClient { get; set; }
 
+        /// <summary>
+        /// Gets the official command id for this package.
+        /// </summary>
+        /// <seealso cref="Command"/>
         public OfficialCommand OfficialCommand => (OfficialCommand)Command;
+
+        /// <summary>
+        /// Gets or sets the command id for this package.
+        /// </summary>
         public ushort Command { get; set; }
+
+        /// <summary>
+        /// Gets or sets the raw payload for the package.
+        /// </summary>
         public byte[] Payload { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UId of the package.
+        /// </summary>
         public uint UId { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the package payload is complete.
+        /// </summary>
         public bool IsComplete => internalOffset == Payload.Length;
+
+        /// <summary>
+        /// Gets a value indicating the number of bytes missing for the package to be completed.
+        /// </summary>
         public int PayloadRest => Payload.Length - internalOffset;
 
         private int internalOffset;
         private IPool pool;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Package"/> class.
+        /// </summary>
+        /// <param name="command">The command id for this package.</param>
+        /// <param name="size">The number of bytes for the raw <see cref="Payload"/>.</param>
         public Package(ushort command, int size) : this()
         {
             Command = command;
             Payload = new byte[size];
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Package"/> class.
+        /// </summary>
         public Package() : this(true)
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Package"/> class.
+        /// </summary>
+        /// <param name="setUid">A value indicating whether a new UID should be automatically set.</param>
         public Package(bool setUid)
         {
             if (setUid)
                 UId = NextUId;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Package"/> class.
+        /// </summary>
+        /// <param name="data">The package payload.</param>
         public Package(byte[] data) : this(0, data.Length)
         {
             // TODO: actually use data
         }
 
+        /// <summary>
+        /// Tries to deserialize the package header from the
+        /// </summary>
+        /// <param name="buffer">The buffer to deserialize data from.</param>
+        /// <param name="offset">The offset to start deserialization from.</param>
+        /// <returns>Whether the header deserialization was successful.</returns>
         public bool TryDeserializeHeader(byte[] buffer, int offset)
         {
             if (buffer.Length - offset < HEAD_LENGTH)
@@ -55,6 +112,14 @@ namespace OctoAwesome.Network
             internalOffset = 0;
             return true;
         }
+
+        /// <summary>
+        /// Deserializes the package payload.
+        /// </summary>
+        /// <param name="buffer">The buffer to deserialize data from.</param>
+        /// <param name="offset">The offset to start deserialization from.</param>
+        /// <param name="count">The number of bytes that are allowed to be taken from the buffer.</param>
+        /// <returns>The number of bytes that was deserialized.</returns>
         public int DeserializePayload(byte[] buffer, int offset, int count)
         {
             if (internalOffset + count > Payload.Length)
@@ -66,6 +131,12 @@ namespace OctoAwesome.Network
             return count;
         }
 
+        /// <summary>
+        /// Serializes a package to a raw byte buffer.
+        /// </summary>
+        /// <param name="buffer">The buffer to serialize the package to.</param>
+        /// <param name="offset">The buffer offset to start writing into the buffer at.</param>
+        /// <returns>The number of bytes that where serialized into the buffer.</returns>
         public int SerializePackage(byte[] buffer, int offset)
         {
             buffer[offset] = (byte)(Command >> 8);
@@ -77,11 +148,15 @@ namespace OctoAwesome.Network
             Buffer.BlockCopy(Payload, 0, buffer, offset + HEAD_LENGTH, Payload.Length);
             return Payload.Length + HEAD_LENGTH;
         }
+
+        /// <inheritdoc />
         public void Init(IPool pool)
         {
             Payload = Array.Empty<byte>();
             this.pool = pool;
         }
+
+        /// <inheritdoc />
         public void Release()
         {
             BaseClient = default;

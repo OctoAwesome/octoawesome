@@ -6,16 +6,20 @@ using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Basics
 {
-
+    /// <summary>
+    /// Debug map generator for testing the map generation process.
+    /// </summary>
     public class DebugMapGenerator : IMapGenerator
     {
-
+        /// <inheritdoc />
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
             Planet planet = new Planet(id, universe, new Index3(5, 5, 4), seed);
             planet.Generator = this;
             return planet;
         }
+
+        /// <inheritdoc />
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
             IDefinition[] definitions = definitionManager.Definitions.ToArray();
@@ -26,6 +30,8 @@ namespace OctoAwesome.Basics
             IChunk[] result = new IChunk[planet.Size.Z];
 
             ChunkColumn column = new ChunkColumn(result, planet, index);
+
+
             for (int layer = 0; layer < planet.Size.Z; layer++)
                 result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet);
 
@@ -54,6 +60,8 @@ namespace OctoAwesome.Basics
             column.CalculateHeights();
             return column;
         }
+
+        /// <inheritdoc />
         public IPlanet GeneratePlanet(Stream stream)
         {
             IPlanet planet = new Planet();
@@ -61,6 +69,8 @@ namespace OctoAwesome.Basics
                 planet.Deserialize(reader);
             return planet;
         }
+
+        /// <inheritdoc />
         public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
             IChunkColumn column = new ChunkColumn(planet);

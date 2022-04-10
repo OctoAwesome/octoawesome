@@ -5,18 +5,28 @@ using System.Collections.Generic;
 
 namespace OctoAwesome.Notifications
 {
-
+    /// <summary>
+    /// Update hub implementation for managing observers and observables in a thread safe manner.
+    /// </summary>
     public class UpdateHub : IDisposable, IUpdateHub
     {
         private readonly Dictionary<string, ConcurrentRelay<Notification>> channels;
         private readonly LockSemaphore lockSemaphore;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UpdateHub"/> class.
+        /// </summary>
         public UpdateHub()
         {
             channels = new();
             lockSemaphore = new LockSemaphore(1, 1);
         }
+
+        /// <inheritdoc />
         public IObservable<Notification> ListenOn(string channel)
             => GetChannelRelay(channel);
+
+        /// <inheritdoc />
         public IDisposable AddSource(IObservable<Notification> notification, string channel)
             => notification.Subscribe(GetChannelRelay(channel));
 
@@ -32,6 +42,8 @@ namespace OctoAwesome.Notifications
 
             return channelRelay;
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             foreach (var channel in channels)

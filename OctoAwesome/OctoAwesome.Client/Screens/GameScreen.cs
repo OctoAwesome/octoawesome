@@ -181,6 +181,8 @@ namespace OctoAwesome.Client.Screens
             Manager.Player.InteractInput = false;
             base.OnNavigateFrom(args);
         }
+
+
         #endregion
 
         #region Keyboard Input
@@ -266,7 +268,7 @@ namespace OctoAwesome.Client.Screens
             });
             for (int i = 0; i < 10; i++)
             {
-                int tmp = i; // Nicht löschen. Benötigt, um aktuellen Wert zu fangen.
+                int tmp = i; // NEEDED for capturing current value
                 Manager.Game.KeyMapper.AddAction("octoawesome:slot" + tmp, type =>
                 {
                     if (!IsActiveScreen || type != KeyMapper.KeyType.Down) return;

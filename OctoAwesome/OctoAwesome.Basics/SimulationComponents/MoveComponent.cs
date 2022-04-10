@@ -7,14 +7,16 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-
+    /// <summary>
+    /// Component for simulation with moveable entities.
+    /// </summary>
     public sealed class MoveComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
         MoveableComponent,
         PositionComponent>
     {
-
+        /// <inheritdoc />
         protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
@@ -26,6 +28,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
             return new SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>(entity, movecomp, poscomp);
         }
+
+        /// <inheritdoc />
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> value)
         {
             var entity = value.Value;
@@ -38,7 +42,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             if (entity.Id == Guid.Empty)
                 return;
 
-            //TODO:Sehr unschön
+            //TODO: very ugly
 
             if (entity.Components.ContainsComponent<BoxCollisionComponent>())
             {
@@ -85,11 +89,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                 return;
 
             BodyComponent bc = entity.Components.GetComponent<BodyComponent>();
+
+
             Coordinate position = poscomp.Position;
 
             Vector3 move = movecomp.PositionMove;
 
-            //Blocks finden die eine Kollision verursachen könnten
+            // Find blocks which could cause a collision
             int minx = (int)Math.Floor(Math.Min(
                 position.BlockPosition.X - bc.Radius,
                 position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));
@@ -109,7 +115,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 position.BlockPosition.Z + bc.Height,
                 position.BlockPosition.Z + bc.Height + movecomp.PositionMove.Z));
 
-            //Beteiligte Flächen des Spielers
+            // The relevant collision planes of the player
             var playerplanes = CollisionPlane.GetEntityCollisionPlanes(bc.Radius, bc.Height, movecomp.Velocity, poscomp.Position);
 
             bool abort = false;
@@ -190,7 +196,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 }
             }
 
-            // TODO: Was ist für den Fall Gravitation = 0 oder im Scheitelpunkt des Sprungs?
+            // TODO: What should happen if gravity == 0 or we are at the apex of a jump?
             //movecomp.OnGround = Player.Velocity.Z == 0f;
 
             movecomp.PositionMove = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;

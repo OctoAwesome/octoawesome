@@ -12,24 +12,36 @@ using System.Linq;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Welt-Modell einer Säule aus <see cref="IChunk"/>s.
+    /// Chunk column implementation containing <see cref="IChunk"/> in a column.
     /// </summary>
     public class ChunkColumn : IChunkColumn
     {
         private readonly IGlobalChunkCache globalChunkCache;
+
+        /// <summary>
+        /// List of all entities contained in the column.
+        /// </summary>
         private readonly IEntityList entities;
         private readonly LockSemaphore entitySemaphore;
         private static ChunkPool chunkPool;
+
+        /// <summary>
+        /// Gets the definition manager.
+        /// </summary>
         public IDefinitionManager DefinitionManager { get; }
 
+        /// <summary>
+        /// Gets or sets the change counter indicating the number of changes the chunk column went through.
+        /// </summary>
+        /// <remarks>Used for identifying changes between frames.</remarks>
         public int ChangeCounter { get; set; }
 
         /// <summary>
-        /// Erzeugt eine neue Instanz einer ChunkColumn.
+        /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
         /// </summary>
-        /// <param name="chunks">Die Chunks für die Säule</param>
-        /// <param name="planet">Der Index des Planeten</param>
-        /// <param name="columnIndex">Die Position der Säule</param>
+        /// <param name="chunks">The chunks for the column.</param>
+        /// <param name="planet">The planet to generate the column for.</param>
+        /// <param name="columnIndex">The column position on the planet.</param>
         public ChunkColumn(IChunk[] chunks, IPlanet planet, Index2 columnIndex) : this(planet)
         {
             Chunks = chunks;
@@ -42,8 +54,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Erzeugt eine neue Instanz einer ChunkColumn.
+        /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
         /// </summary>
+        /// <param name="planet">The planet to generate the chunk column for.</param>
         public ChunkColumn(IPlanet planet)
         {
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
@@ -62,7 +75,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Errechnet die obersten Blöcke der Säule.
+        /// Calculates the highest blocks inside the column and caches them in <see cref="Heights"/>.
         /// </summary>
         public void CalculateHeights()
         {
@@ -88,61 +101,42 @@ namespace OctoAwesome
             return -1;
         }
 
-        /// <summary>
-        /// Höhen innerhalb der Chunk-Säule (oberste Blöcke)
-        /// </summary>
+        /// <inheritdoc />
         public int[,] Heights { get; }
 
-        /// <summary>
-        /// Die Chunks der Säule.
-        /// </summary>
+        /// <inheritdoc />
         public IChunk[] Chunks
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Gibt an, ob die ChunkColumn schon von einem <see cref="IMapPopulator"/> bearbeitet wurde.
-        /// </summary>
+        /// <inheritdoc />
         public bool Populated
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// Der Index des Planeten.
-        /// </summary>
+        /// <inheritdoc />
         public IPlanet Planet
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Die Position der Säule.
-        /// </summary>
+
+        /// <inheritdoc />
         public Index2 Index
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Liefet den Block an der angegebenen Koordinate zurück.
-        /// </summary>
-        /// <param name="index">Koordinate des Blocks innerhalb des Chunkgs</param>
-        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        /// <inheritdoc />
         public ushort GetBlock(Index3 index) => GetBlock(index.X, index.Y, index.Z);
 
-        /// <summary>
-        /// Liefet den Block an der angegebenen Koordinate zurück.
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks</param>
-        /// <returns>Block-ID der angegebenen Koordinate</returns>
+        /// <inheritdoc />
         public ushort GetBlock(int x, int y, int z)
         {
             var index = z / Chunk.CHUNKSIZE_Z;
@@ -150,13 +144,7 @@ namespace OctoAwesome
             return Chunks[index].GetBlock(x, y, z);
         }
 
-        /// <summary>
-        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <returns>Die Metadaten des angegebenen Blocks</returns>
+        /// <inheritdoc />
         public int GetBlockMeta(int x, int y, int z)
         {
             var index = z / Chunk.CHUNKSIZE_Z;
@@ -164,13 +152,7 @@ namespace OctoAwesome
             return Chunks[index].GetBlockMeta(x, y, z);
         }
 
-        /// <summary>
-        /// Liefert alle Ressourcen im Block an der angegebenen Koordinate zurück.
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <returns>Ein Array aller Ressourcen des Blocks</returns>
+        /// <inheritdoc />
         public ushort[] GetBlockResources(int x, int y, int z)
         {
             var index = z / Chunk.CHUNKSIZE_Z;
@@ -178,28 +160,18 @@ namespace OctoAwesome
             return Chunks[index].GetBlockResources(x, y, z);
         }
 
-        /// <summary>
-        /// Überschreibt den Block an der angegebenen Position.
-        /// </summary>
-        /// <param name="index">Koordinate des Zielblocks innerhalb des Chunks.</param>
-        /// <param name="block">Neuer Block oder null, falls der vorhandene Block gelöscht werden soll</param>
-        /// <param name="meta">(Optional) Metainformationen für den Block</param>
+        /// <inheritdoc />
         public void SetBlock(Index3 index, ushort block, int meta = 0) => SetBlock(index.X, index.Y, index.Z, block, meta);
 
-        /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="meta">(Optional) Metainformationen für den Block</param>
-        /// <param name="block">Die neue Block-ID</param>
+        /// <inheritdoc />
         public void SetBlock(int x, int y, int z, ushort block, int meta = 0)
         {
             var index = z / Chunk.CHUNKSIZE_Z;
             z %= Chunk.CHUNKSIZE_Z;
             Chunks[index].SetBlock(x, y, z, block, meta);
         }
+
+        /// <inheritdoc />
         public void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos)
         {
             foreach (var item in blockInfos.GroupBy(x => x.Position.Z / Chunk.CHUNKSIZE_Z))
@@ -208,13 +180,7 @@ namespace OctoAwesome
             }
         }
 
-        /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="meta">(Optional) Metainformationen für den Block</param>
+        /// <inheritdoc />
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
             var index = z / Chunk.CHUNKSIZE_Z;
@@ -222,13 +188,7 @@ namespace OctoAwesome
             Chunks[index].SetBlockMeta(x, y, z, meta);
         }
 
-        /// <summary>
-        /// Ändert die Ressourcen des Blocks an der angegebenen Koordinate
-        /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="resources">Ein <see cref="ushort"/>-Array, das alle Ressourcen enthält</param>
+        /// <inheritdoc />
         public void SetBlockResources(int x, int y, int z, ushort[] resources)
         {
             var index = z / Chunk.CHUNKSIZE_Z;
@@ -236,14 +196,10 @@ namespace OctoAwesome
             Chunks[index].SetBlockResources(x, y, z, resources);
         }
 
-        /// <summary>
-        /// Serialisiert die Chunksäule in den angegebenen Stream.
-        /// </summary>
-        /// <param name="writer">Zielschreiber</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
+        /// <inheritdoc />
         public void Serialize(BinaryWriter writer)
         {
-            // Definitionen sammeln
+            // Collect definitions
             var definitions = new List<IBlockDefinition>();
             for (var c = 0; c < Chunks.Length; c++)
             {
@@ -263,7 +219,7 @@ namespace OctoAwesome
             var longIndex = definitions.Count > 254;
             writer.Write((byte)((longIndex) ? 1 : 0));
 
-            // Schreibe Phase 1 (Column Meta: Heightmap, populated, chunkcount)
+            // Serialization Phase 1 (Column Meta: Heightmap, populated, chunk count)
             writer.Write((byte)Chunks.Length); // Chunk Count
             writer.Write(Populated); // Populated
             writer.Write(Index.X);
@@ -283,7 +239,7 @@ namespace OctoAwesome
             foreach (IBlockDefinition definition in definitions)
                 writer.Write(definition.GetType().FullName!);
 
-            // Schreibe Phase 3 (Chunk Infos)
+            // Serialization Phase 3 (Chunk info)
             for (var c = 0; c < Chunks.Length; c++)
             {
                 IChunk chunk = Chunks[c];
@@ -292,7 +248,7 @@ namespace OctoAwesome
                 {
                     if (chunk.Blocks[i] == 0)
                     {
-                        // Definition Index (Air)
+                        // Definition index (Air)
                         if (longIndex)
                             writer.Write((ushort)0);
                         else
@@ -300,7 +256,7 @@ namespace OctoAwesome
                     }
                     else
                     {
-                        // Definition Index
+                        // Definition index
                         var definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
 
                         Debug.Assert(definition != null, nameof(definition) + " != null");
@@ -323,13 +279,7 @@ namespace OctoAwesome
             }
         }
 
-        /// <summary>
-        /// Deserialisiert die Chunksäule aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Quellstream</param>
-        /// <param name="definitionManager">Der verwendete DefinitionManager</param>
-        /// <param name="columnIndex">Die Position der Säule</param>
-        /// <param name="planetId">Der Index des Planeten</param>
+        /// <inheritdoc />
         public void Deserialize(BinaryReader reader)
         {
             var longIndex = reader.ReadByte() > 0;
@@ -349,10 +299,12 @@ namespace OctoAwesome
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
                     Heights[x, y] = reader.ReadUInt16();
 
-            // Phase 2 (Block Definitionen)
+            // Phase 2 (Block definitions)
             int typecount = longIndex ? reader.ReadUInt16() : reader.ReadByte();
             var types = new List<IDefinition>();
             Span<ushort> map = stackalloc ushort[typecount];
+
+
             for (var i = 0; i < typecount; i++)
             {
                 var typeName = reader.ReadString();
@@ -389,10 +341,14 @@ namespace OctoAwesome
                 }
             }
         }
+
+        /// <inheritdoc />
         public void OnUpdate(SerializableNotification notification)
         {
             globalChunkCache.OnUpdate(notification);
         }
+
+        /// <inheritdoc />
         public void Update(SerializableNotification notification)
         {
             if (notification is IChunkNotification chunkNotification)
@@ -402,6 +358,8 @@ namespace OctoAwesome
                     .Update(notification);
             }
         }
+
+        /// <inheritdoc />
         public void ForEachEntity(Action<Entity> action)
         {
             using (entitySemaphore.Wait())
@@ -412,21 +370,29 @@ namespace OctoAwesome
                 }
             }
         }
+
+        /// <inheritdoc />
         public void Add(Entity entity)
         {
             using (entitySemaphore.Wait())
                 entities.Add(entity);
         }
+
+        /// <inheritdoc />
         public void Remove(Entity entity)
         {
             using (entitySemaphore.Wait())
                 entities.Remove(entity);
         }
+
+        /// <inheritdoc />
         public IEnumerable<FailEntityChunkArgs> FailChunkEntity()
         {
             using (entitySemaphore.Wait())
                 return entities.FailChunkEntity().ToList();
         }
+
+        /// <inheritdoc />
         public void FlagDirty()
         {
             if (Chunks is null)

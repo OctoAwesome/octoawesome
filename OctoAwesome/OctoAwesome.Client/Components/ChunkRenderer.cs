@@ -28,7 +28,7 @@ namespace OctoAwesome.Client.Components
         private static readonly Vector2[] uvOffsets;
 
         /// <summary>
-        /// Referenz auf den aktuellen Chunk (falls vorhanden)
+        /// Reference to the current chunk, or <c>null</c> if no chunk is to be rendered.
         /// </summary>
         private IChunk? centerChunk;
         private readonly IChunk[] chunks;
@@ -54,7 +54,7 @@ namespace OctoAwesome.Client.Components
         private readonly Dictionary<IBlockDefinition, int> textureOffsets;
         private readonly PoolingList<VertexPositionNormalTextureLight> vertices;
         /// <summary>
-        /// Adresse des aktuellen Chunks
+        /// Gets the position of the chunk to currently render.
         /// </summary>
         public Index3? ChunkPosition
         {
@@ -68,6 +68,8 @@ namespace OctoAwesome.Client.Components
                 NeedsUpdate = value != null;
             }
         }
+
+
         static ChunkRenderer()
         {
             wireFrameState = new RasterizerState() { FillMode = PolygonMode.Line, CullMode = CullMode.CounterClockwise };
@@ -92,7 +94,7 @@ namespace OctoAwesome.Client.Components
             GenerateIndexBuffer();
 
             vertices = new PoolingList<VertexPositionNormalTextureLight>();
-            // BlockTypes sammlen
+            // Collect block types
             var localBlockDefinitions = definitionManager.BlockDefinitions;
             textureOffsets = new Dictionary<IBlockDefinition, int>(localBlockDefinitions.Length);
             // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
@@ -261,7 +263,7 @@ namespace OctoAwesome.Client.Components
             {
                 Debug.Assert(_manager != null, nameof(_manager) + " != null");
                 IChunk? chunk = centerChunk;
-                // Chunk nachladen
+                // Load chunk if it isn't loaded yet
                 if (chunk == null)
                 {
                     chunk = _manager.GetChunk(ChunkPosition.Value);
@@ -495,7 +497,7 @@ namespace OctoAwesome.Client.Components
             }
 
 
-            // Unten
+            // Bottom
             if (bottomBlock == 0 || (!bottomBlockDefintion.IsSolidWall(Wall.Top) && bottomBlock != block))
             {
                 var bottom = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Bottom, _manager, globalX, globalY, globalZ));
@@ -636,7 +638,7 @@ namespace OctoAwesome.Client.Components
             }
 
 
-            // Ost
+            // East
             if (eastBlock == 0 || (!eastBlockDefintion.IsSolidWall(Wall.Left) && eastBlock != block))
             {
                 var right = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Right, _manager, globalX, globalY, globalZ));
@@ -696,7 +698,7 @@ namespace OctoAwesome.Client.Components
             => ((int)solidWall >> (int)wall) & 1;
 
         /// <summary>
-        /// 
+        /// Gets a value indicating the border positions and directions of a coordinate.
         /// </summary>
         /// <param name="z"></param>
         /// <returns>0 when not border, 0 becomes -1 and 15 becomes 1</returns>
@@ -707,7 +709,7 @@ namespace OctoAwesome.Client.Components
         }
 
         /// <summary>
-        /// Determines wether the position is inside the chunk borders or outsite and if its in the neagtiv or positiv direction outside the chunk
+        /// Determines whether the position is inside the chunk borders or outside and if its in the negative or positive direction outside the chunk
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="offset"></param>

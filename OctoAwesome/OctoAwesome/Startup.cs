@@ -8,9 +8,15 @@ using System;
 
 namespace OctoAwesome
 {
-
+    /// <summary>
+    /// Helper class for startup initialization.
+    /// </summary>
     public static class Startup
     {
+        /// <summary>
+        /// Register all basic types needed for startup.
+        /// </summary>
+        /// <param name="typeContainer">The type container to register the types in.</param>
         public static void Register(ITypeContainer typeContainer)
         {
             typeContainer.Register<GlobalChunkCache, GlobalChunkCache>();
@@ -37,6 +43,10 @@ namespace OctoAwesome
             typeContainer.Register<BlockCollectionService>(InstanceBehavior.Singleton);
         }
 
+        /// <summary>
+        /// Configures the logger for logging to the correct locations and log levels.
+        /// </summary>
+        /// <param name="clientType">The application client type.</param>
         public static void ConfigureLogger(ClientType clientType)
         {
             var config = new LoggingConfiguration();

@@ -3,20 +3,28 @@ using OctoAwesome.Basics.Noise;
 
 namespace OctoAwesome.Basics.Climate
 {
-
+    /// <summary>
+    /// Climate map for <see cref="ComplexPlanet"/> implementation.
+    /// </summary>
     public class ComplexClimateMap : IClimateMap
     {
-
+        /// <inheritdoc />
         public IPlanet Planet => planet;
 
         private readonly ComplexPlanet planet;
         private readonly INoise tempFluctuationGenerator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComplexClimateMap"/> class.
+        /// </summary>
+        /// <param name="planet">The planet the complex climate map is for.</param>
         public ComplexClimateMap(ComplexPlanet planet)
         {
             this.planet = planet;
             tempFluctuationGenerator = new SimplexNoiseGenerator(planet.Seed - 1, 1f / 64, 1f / 64) { Octaves = 3 };
         }
+
+        /// <inheritdoc />
         public float GetTemperature(Index3 blockIndex)
         {
             int equator = (Planet.Size.Y * Chunk.CHUNKSIZE_Y) / 2;
@@ -32,6 +40,8 @@ namespace OctoAwesome.Basics.Climate
             height = height * height;
             return temperature - height * temperatureDecreasePerBlock;
         }
+
+        /// <inheritdoc />
         public int GetPrecipitation(Index3 blockIndex)
         {
             int maxPrecipitation = 100;

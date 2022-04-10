@@ -3,11 +3,21 @@ using engenious;
 
 namespace OctoAwesome
 {
-
+    /// <summary>
+    /// Helper class for collision detection with blocks.
+    /// </summary>
     public static class Block
     {
-
-
+        /// <summary>
+        /// Intersection check between collision boxes of a block and a ray.
+        /// </summary>
+        /// <param name="collisionBoxes">The collision boxes of the block, local to the block.</param>
+        /// <param name="boxPosition">The position of the block.</param>
+        /// <param name="ray">The selection ray to check intersections with.</param>
+        /// <param name="collisionAxis">The axis direction of the AABB the intersection happened on.</param>
+        /// <returns>
+        /// The distance of the ray-box-collision from the ray start; or <c>null</c> if no intersection occured.
+        /// </returns>
         public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
@@ -74,7 +84,17 @@ namespace OctoAwesome
 
             return null;
         }
-
+        /// <summary>
+        /// Intersection check between collision boxes of a block and entity collision box.
+        /// </summary>
+        /// <param name="collisionBoxes">The collision boxes of the block, local to the block.</param>
+        /// <param name="boxPosition">The position of the block.</param>
+        /// <param name="player">The collision box of the entity.</param>
+        /// <param name="move">The movement vector of the entity.</param>
+        /// <param name="collisionAxis">The axis direction of the AABB the intersection happened on.</param>
+        /// <returns>
+        /// The distance of the entity-block-collision; or <c>null</c> if no intersection occured.
+        /// </returns>
         public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, BoundingBox player, Vector3 move, out Axis? collisionAxis)
         {
             Vector3 playerCorner = new Vector3(

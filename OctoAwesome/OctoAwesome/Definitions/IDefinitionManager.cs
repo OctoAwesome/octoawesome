@@ -3,57 +3,64 @@
 namespace OctoAwesome.Definitions
 {
     /// <summary>
-    /// Basisinterface für einen DefinitionManager, der z.B. Erweiterungen behandelt
+    /// Interface for definition managers for managing definitions.
     /// </summary>
     public interface IDefinitionManager
     {
         /// <summary>
-        /// Liefert eine Liste von Definitions.
+        /// Gets an array of definitions.
         /// </summary>
-        /// <returns></returns>
         IDefinition[] Definitions { get; }
 
         /// <summary>
-        /// Liefert eine Liste aller bekannten Item Definitions (inkl. Blocks, Resources, Tools)
+        /// Gets an array of item definitions (includes Blocks, Resources, Tools)
         /// </summary>
-        /// <returns></returns>
         IItemDefinition[] ItemDefinitions { get; }
 
         /// <summary>
-        /// Liefert eine Liste der bekannten Blocktypen.
+        /// Gets an array of block definitions.
         /// </summary>
-        /// <returns></returns>
         IBlockDefinition[] BlockDefinitions { get; }
+
+        /// <summary>
+        /// Gets an array of material definitions.
+        /// </summary>
         IMaterialDefinition[] MaterialDefinitions { get; }
 
         /// <summary>
-        /// Liefert die BlockDefinition zum angegebenen Index.
+        /// Gets the block definition by a block index.
         /// </summary>
-        /// <param name="index">Index der BlockDefinition</param>
-        /// <returns>BlockDefinition</returns>
+        /// <param name="index">The index of the block definition.</param>
+        /// <returns>The <see cref="BlockDefinition"/>.</returns>
         IBlockDefinition? GetBlockDefinitionByIndex(ushort index);
 
+        /// <summary>
+        /// Gets a block definition using the block definition's type name
+        /// </summary>
+        /// <param name="typeName">The type name of the block definition to retrieve.</param>
+        /// <typeparam name="T">The generic type of the block definition.</typeparam>
+        /// <returns>The retrieved block definition if a matching one was found; otherwise <c>null</c>.</returns>
         T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition;
 
         /// <summary>
-        /// Liefert den Index der angegebenen BlockDefinition.
+        /// Gets the index of a block definition.
         /// </summary>
-        /// <param name="definition">BlockDefinition</param>
-        /// <returns>Index der Block Definition</returns>
+        /// <param name="definition">The block definition to get the index of.</param>
+        /// <returns>Index of the block definition.</returns>
         ushort GetDefinitionIndex(IDefinition definition);
 
         /// <summary>
-        /// Liefert den Index der angegebenen BlockDefinition.
+        /// Gets the block definition index by a generic type.
         /// </summary>
-        /// <typeparam name="T">BlockDefinition Type</typeparam>
-        /// <returns>Index der Block Definition</returns>
+        /// <typeparam name="T">The block definition type.</typeparam>
+        /// <returns>The index of the block definition.</returns>
         ushort GetDefinitionIndex<T>() where T : IDefinition;
 
         /// <summary>
-        /// Gibt die Liste von Instanzen des angegebenen Definition Interfaces zurück.
+        /// Gets an enumeration of block definitions matching a given generic type.
         /// </summary>
-        /// <typeparam name="T">Typ der Definition</typeparam>
-        /// <returns>Auflistung von Instanzen</returns>
+        /// <typeparam name="T">Type of the block definitions to enumerate.</typeparam>
+        /// <returns>The enumeration of the block definitions.</returns>
         IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition;
     }
 }

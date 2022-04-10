@@ -3,12 +3,12 @@
 namespace OctoAwesome
 {
     /// <summary>
-    /// Ein Slot in einem Inventar
+    /// A slot in an inventory.
     /// </summary>
     public class InventorySlot
     {
         /// <summary>
-        /// Das Item das in dem Slot ist.
+        /// The item in the inventory slot.
         /// </summary>
         public IInventoryable Item
         {
@@ -29,11 +29,19 @@ namespace OctoAwesome
         private readonly IInventoryable item;
 
         /// <summary>
-        /// Volumen des Elementes <see cref="Item"/> in diesem Slot in dm³.
+        /// The volume amount of <see cref="Item"/> in this slot[dm³].
         /// </summary>
         public decimal Amount { get; set; }
+
+        /// <summary>
+        /// Gets the definition for the <see cref="Item"/>.
+        /// </summary>
         public IDefinition? Definition { get; init; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InventorySlot"/> class.
+        /// </summary>
+        /// <param name="item">The inventory item for this slot.</param>
         public InventorySlot(IInventoryable item)
         {
             Item = item;

@@ -57,6 +57,8 @@ namespace OctoAwesome.PoC.Rx
         {
             subscriptions.Remove(subscription);
         }
+
+
         private class RelaySubscription : IDisposable
         {
             public IObserver<T> Observer { get; }

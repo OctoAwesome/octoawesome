@@ -8,7 +8,9 @@ using System;
 
 namespace OctoAwesome.GameServer.Commands
 {
-
+    /// <summary>
+    /// Contains remote notification commands.
+    /// </summary>
     public static class NotificationCommands
     {
         private static readonly IPool<EntityNotification> entityNotificationPool;
@@ -37,6 +39,12 @@ namespace OctoAwesome.GameServer.Commands
             networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
             chunkChannelSub = updateHub.AddSource(chunkChannel, DefaultChannels.Chunk);
         }
+
+        /// <summary>
+        /// Manifests entity changes received from <see cref="CommandParameter"/>.
+        /// </summary>
+        /// <param name="parameter">The <see cref="CommandParameter"/> containing the entity notification data.</param>
+        /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.EntityNotification)]
         public static byte[] EntityNotification(CommandParameter parameter)
         {
@@ -49,6 +57,12 @@ namespace OctoAwesome.GameServer.Commands
             entityNotification.Release();
             return null;
         }
+
+        /// <summary>
+        /// Manifests block changes received from <see cref="CommandParameter"/>.
+        /// </summary>
+        /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk notification data.</param>
+        /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.ChunkNotification)]
         public static byte[] ChunkNotification(CommandParameter parameter)
         {

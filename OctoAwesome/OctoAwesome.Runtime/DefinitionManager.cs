@@ -6,12 +6,16 @@ using System.Linq;
 namespace OctoAwesome.Runtime
 {
     /// <summary>
-    /// Definition Manager, der Typen aus Erweiterungen nachlädt.
+    /// Definition Manager which loads extensions.
     /// </summary>
     public class DefinitionManager : IDefinitionManager
     {
         private readonly IExtensionResolver extensionResolver;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
+        /// </summary>
+        /// <param name="extensionResolver">The extension resolver to get definitions from extensions with.</param>
         public DefinitionManager(IExtensionResolver extensionResolver)
         {
             this.extensionResolver = extensionResolver;
@@ -28,30 +32,19 @@ namespace OctoAwesome.Runtime
             MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
         }
 
-        /// <summary>
-        /// Liefert eine Liste von Defintions.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public IDefinition[] Definitions { get; }
 
-        /// <summary>
-        /// Liefert eine Liste aller bekannten Item Definitions (inkl. Blocks, Resources, Tools)
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public IItemDefinition[] ItemDefinitions { get; }
 
-        /// <summary>
-        /// Liefert eine Liste der bekannten Blocktypen.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public IBlockDefinition[] BlockDefinitions { get; }
+
+        /// <inheritdoc />
         public IMaterialDefinition[] MaterialDefinitions { get; }
 
-        /// <summary>
-        /// Liefert die BlockDefinition zum angegebenen Index.
-        /// </summary>
-        /// <param name="index">Index der BlockDefinition</param>
-        /// <returns>BlockDefinition</returns>
+        /// <inheritdoc />
         public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)
         {
             if (index == 0)
@@ -60,21 +53,13 @@ namespace OctoAwesome.Runtime
             return (IBlockDefinition)Definitions[(index & Blocks.TypeMask) - 1];
         }
 
-        /// <summary>
-        /// Liefert den Index der angegebenen BlockDefinition.
-        /// </summary>
-        /// <param name="definition">BlockDefinition</param>
-        /// <returns>Index der Block Definition</returns>
+        /// <inheritdoc />
         public ushort GetDefinitionIndex(IDefinition definition)
         {
             return (ushort)(Array.IndexOf(Definitions, definition) + 1);
         }
 
-        /// <summary>
-        /// Liefert den Index der angegebenen BlockDefinition.
-        /// </summary>
-        /// <typeparam name="T">BlockDefinition Type</typeparam>
-        /// <returns>Index der Block Definition</returns>
+        /// <inheritdoc />
         public ushort GetDefinitionIndex<T>() where T : IDefinition
         {
             int i = 0;
@@ -95,16 +80,14 @@ namespace OctoAwesome.Runtime
             return definition == null ? (ushort)0 : GetDefinitionIndex(definition);
         }
 
-        /// <summary>
-        /// Gibt die Liste von Instanzen des angegebenen Definition Interfaces zurück.
-        /// </summary>
-        /// <typeparam name="T">Typ der Definition</typeparam>
-        /// <returns>Auflistung von Instanzen</returns>
+        /// <inheritdoc />
         public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
         {
-            // TODO: Caching (Generalisiertes IDefinition-Interface für Dictionary (+1 von Maxi am 07.04.2021))
+            // TODO: Caching (Generalized IDefinition-Interface for Dictionary (+1 from Maxi on 07.04.2021))
             return extensionResolver.GetDefinitions<T>();
         }
+
+        /// <inheritdoc />
         public T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition
         {
             var searchedType = typeof(T);

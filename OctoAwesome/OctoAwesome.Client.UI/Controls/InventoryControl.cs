@@ -8,12 +8,15 @@ using System.Globalization;
 
 namespace OctoAwesome.Client.UI.Controls
 {
+    /// <summary>
+    /// Control for displaying inventories.
+    /// </summary>
     public sealed class InventoryControl : Panel
     {
         private const int COLUMNS = 8;
 
         /// <summary>
-        /// Gibt den aktuell selektierten Slot an.
+        /// Gets the slot that is currently hovered over by the cursor.
         /// </summary>
         public InventorySlot HoveredSlot { get; private set; }
 
@@ -21,6 +24,13 @@ namespace OctoAwesome.Client.UI.Controls
         private readonly ScrollContainer scroll;
         private readonly AssetComponent assets;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InventoryControl"/> class.
+        /// </summary>
+        /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
+        /// <param name="assets">The asset component used to load resource assets.</param>
+        /// <param name="inventorySlots">The inventory slots of the inventory to show.</param>
+        /// <param name="columns">The number of columns for the inventory.</param>
         public InventoryControl(BaseScreenComponent manager, AssetComponent assets, List<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
         {
             scroll = new ScrollContainer(manager)
@@ -43,6 +53,11 @@ namespace OctoAwesome.Client.UI.Controls
             Rebuild(inventorySlots, columns);
         }
 
+        /// <summary>
+        /// Rebuild the controls for showing the inventory.
+        /// </summary>
+        /// <param name="inventorySlots">The inventory slots to create controls for.</param>
+        /// <param name="columns">The number of columns to split the inventory into.</param>
         public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
         {
             grid = new Grid(ScreenManager)

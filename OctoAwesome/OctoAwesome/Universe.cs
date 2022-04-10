@@ -4,38 +4,32 @@ using System.IO;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Ein Universum von OctoAwesome. Ein Universum beinhaltet verschiedene Planeten und entspricht einem Speicherstand.
+    /// A universe of OctoAwesome. A universe contains multiple planets and is a save state.
     /// </summary>
     public class Universe : IUniverse
     {
-        /// <summary>
-        /// ID des Universums
-        /// </summary>
+        /// <inheritdoc />
         public Guid Id { get; set; }
 
-        /// <summary>
-        /// Der Name des Universums
-        /// </summary>
+        /// <inheritdoc />
         public string Name { get; set; }
 
-        /// <summary>
-        /// Universe Seed
-        /// </summary>
+        /// <inheritdoc />
         public int Seed { get; set; }
 
         /// <summary>
-        /// Erzeugt eine neue Instanz eines Universums
+        /// Initializes a new instance of the <see cref="Universe"/> class.
         /// </summary>
         public Universe()
         {
         }
 
         /// <summary>
-        /// Erzeugt eine neue Instanz eines Universums
+        /// Initializes a new instance of the <see cref="Universe"/> class.
         /// </summary>
-        /// <param name="id">Die GUID des Universums</param>
-        /// <param name="name">Der Name des Universums</param>
-        /// <param name="seed">Der Generierungsseed des Universums</param>
+        /// <param name="id">The <see cref="Guid"/> of the universe.</param>
+        /// <param name="name">The name of the universe.</param>
+        /// <param name="seed">The seed for generating the universe.</param>
         public Universe(Guid id, string name, int seed)
         {
             Id = id;
@@ -43,10 +37,7 @@ namespace OctoAwesome
             Seed = seed;
         }
 
-        /// <summary>
-        /// Deserialisiert ein Universum aus dem angegebenen Stream
-        /// </summary>
-        /// <param name="stream"></param>
+        /// <inheritdoc />
         public void Deserialize(BinaryReader reader)
         {
             var tmpGuid = reader.ReadString();
@@ -55,10 +46,7 @@ namespace OctoAwesome
             Seed = reader.ReadInt32();
         }
 
-        /// <summary>
-        /// Serialisiert das Universum in den angegebenen Stream
-        /// </summary>
-        /// <param name="stream"></param>
+        /// <inheritdoc />
         public void Serialize(BinaryWriter writer)
         {
             writer.Write(Id.ToString());

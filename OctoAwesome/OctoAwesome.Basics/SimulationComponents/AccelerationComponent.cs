@@ -10,14 +10,16 @@ using SimulationComponentRecord = OctoAwesome.Components.SimulationComponentReco
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-
+    /// <summary>
+    /// Component for simulation with accelerations.
+    /// </summary>
     public sealed class AccelerationComponent : SimulationComponent<
         Entity,
         AccelerationComponent.AcceleratedEntity,
         MoveableComponent,
         BodyComponent>
     {
-
+        /// <inheritdoc />
         protected override void UpdateValue(GameTime gameTime, AcceleratedEntity entity)
         {
             // Convert external Forces to Powers
@@ -58,11 +60,20 @@ namespace OctoAwesome.Basics.SimulationComponents
             // Calculate Move Vector for the upcoming frame
             entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
+
+        /// <inheritdoc />
         protected override AcceleratedEntity OnAdd(Entity entity)
             => new AcceleratedEntity(
                 entity,
                 entity.Components.GetComponent<MoveableComponent>(),
                 entity.Components.GetComponent<BodyComponent>());
+
+        /// <summary>
+        /// Wrapper for accelerated entities, to cache components.
+        /// </summary>
+        /// <param name="Entity">The entity to be accelerated.</param>
+        /// <param name="Move">The moveable component to move the entity.</param>
+        /// <param name="Body">The body component to manipulate the entity body.</param>
         public record AcceleratedEntity(Entity Entity, MoveableComponent Move, BodyComponent Body)
             : SimulationComponentRecord(Entity, Move, Body);
     }

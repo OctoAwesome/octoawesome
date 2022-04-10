@@ -30,7 +30,7 @@ namespace OctoAwesome.Client.Components
         /// Registers a new Binding
         /// </summary>
         /// <param name="id">The ID - guideline: ModName:Action</param>
-        /// <param name="displayName">The Displayname</param>
+        /// <param name="displayName">The name to display.</param>
         public void RegisterBinding(string id, string displayName)
         {
             if (bindings.ContainsKey(id))
@@ -113,7 +113,7 @@ namespace OctoAwesome.Client.Components
         }
 
         /// <summary>
-        /// Lädt KeyBindings aus der App.config-Datei und greift, wenn kein Wert vorhanden ist, auf die angegebenen Standardwerte aus.
+        /// Loads KeyBindings from the App.config file or fallbacks to default values.
         /// </summary>
         /// <param name="standardKeys"></param>
         public void LoadFromConfig(Dictionary<string, Keys> standardKeys)
@@ -145,6 +145,8 @@ namespace OctoAwesome.Client.Components
                 bindings.Add(binding.Value);
             return bindings;
         }
+
+
         #region KeyEvents
 
         protected void KeyPressed(KeyEventArgs args)

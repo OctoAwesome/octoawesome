@@ -9,20 +9,30 @@ using System.Linq;
 
 namespace OctoAwesome.Basics
 {
-
+    /// <summary>
+    /// Map generator used for generating a <see cref="ComplexPlanet"/>.
+    /// </summary>
     public class ComplexPlanetGenerator : IMapGenerator
     {
         private readonly ChunkPool chunkPool;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComplexPlanetGenerator"/> class.
+        /// </summary>
         public ComplexPlanetGenerator()
         {
             chunkPool = TypeContainer.Get<ChunkPool>();
         }
+
+        /// <inheritdoc />
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
             => new ComplexPlanet(id, universe, new Index3(13, 13, 4), this, seed);
+
+        /// <inheritdoc />
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
             IDefinition[] definitions = definitionManager.Definitions;
-            //TODO More Generic, überdenken der Planetgeneration im allgemeinen (Heapmap + Highmap + Biome + Modding)
+            //TODO More Generic, reconsider complete planet generation (Heatmap + Heightmap + Biome + Modding)
             IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().FirstOrDefault();
             ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
@@ -146,6 +156,8 @@ namespace OctoAwesome.Basics
             column.CalculateHeights();
             return column;
         }
+
+        /// <inheritdoc />
         public IPlanet GeneratePlanet(Stream stream)
         {
             IPlanet planet = new ComplexPlanet();
@@ -154,6 +166,8 @@ namespace OctoAwesome.Basics
             planet.Generator = this;
             return planet;
         }
+
+        /// <inheritdoc />
         public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
             IChunkColumn column = new ChunkColumn(planet);

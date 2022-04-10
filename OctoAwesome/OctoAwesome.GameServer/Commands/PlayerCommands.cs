@@ -11,7 +11,9 @@ using System.Text;
 
 namespace OctoAwesome.GameServer.Commands
 {
-
+    /// <summary>
+    /// Contains remote player commands.
+    /// </summary>
     public static class PlayerCommands
     {
         private static readonly ConcurrentRelay<Notification> simulationChannel;
@@ -29,6 +31,12 @@ namespace OctoAwesome.GameServer.Commands
             simulationChannelSub = updateHub.AddSource(simulationChannel, DefaultChannels.Simulation);
             networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
         }
+
+        /// <summary>
+        /// Manifests player received from <see cref="CommandParameter"/>.
+        /// </summary>
+        /// <param name="parameter">The <see cref="CommandParameter"/> containing the player data.</param>
+        /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.Whoami)]
         public static byte[] Whoami(CommandParameter parameter)
         {
@@ -42,6 +50,8 @@ namespace OctoAwesome.GameServer.Commands
 
             simulationChannel.OnNext(entityNotification);
             entityNotification.Release();
+
+
             var remotePlayer = new RemoteEntity(player);
             remotePlayer.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
             remotePlayer.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);

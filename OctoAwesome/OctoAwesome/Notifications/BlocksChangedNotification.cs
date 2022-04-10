@@ -4,13 +4,23 @@ using System.IO;
 
 namespace OctoAwesome.Notifications
 {
-
+    /// <summary>
+    /// Notification for changed blocks.
+    /// </summary>
     public sealed class BlocksChangedNotification : SerializableNotification, IChunkNotification
     {
-
+        /// <summary>
+        /// Gets or sets the collection of block info of the changed blocks.
+        /// </summary>
         public ICollection<BlockInfo> BlockInfos { get; set; }
+
+        /// <inheritdoc />
         public Index3 ChunkPos { get; internal set; }
+
+        /// <inheritdoc />
         public int Planet { get; internal set; }
+
+        /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
             if (reader.ReadByte() != (byte)BlockNotificationType.BlocksChanged)//Read type of the notification
@@ -38,6 +48,8 @@ namespace OctoAwesome.Notifications
 
             BlockInfos = list;
         }
+
+        /// <inheritdoc />
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((byte)BlockNotificationType.BlocksChanged); //indicate that this is a multi Block Notification
@@ -56,6 +68,8 @@ namespace OctoAwesome.Notifications
                 writer.Write(block.Meta);
             }
         }
+
+        /// <inheritdoc />
         protected override void OnRelease()
         {
             BlockInfos = default;

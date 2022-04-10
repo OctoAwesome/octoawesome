@@ -45,6 +45,8 @@ namespace OctoAwesome.Client.Screens
                 Orientation = Orientation.Horizontal
             };
             panel.Controls.Add(horizontalStack);
+
+
             //The Profile Image
             Image profileImage = new Image(manager)
             {

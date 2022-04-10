@@ -5,16 +5,32 @@ using OctoAwesome.Notifications;
 using System;
 using System.Net;
 using OctoAwesome.Rx;
+
+
 namespace OctoAwesome.GameServer
 {
+    /// <summary>
+    /// Handler for server connection and simulation.
+    /// </summary>
     public class ServerHandler
     {
+        /// <summary>
+        /// Gets the simulation manager.
+        /// </summary>
         public SimulationManager SimulationManager { get; }
+
+        /// <summary>
+        /// Gets the update hub.
+        /// </summary>
         public IUpdateHub UpdateHub { get; }
 
         private readonly ILogger logger;
         private readonly Server server;
         private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerHandler"/> class.
+        /// </summary>
         public ServerHandler()
         {
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
@@ -30,6 +46,10 @@ namespace OctoAwesome.GameServer
 
             defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
         }
+
+        /// <summary>
+        /// Start the game server simulation and connection.
+        /// </summary>
         public void Start()
         {
             SimulationManager.Start(); //Temp
@@ -43,6 +63,10 @@ namespace OctoAwesome.GameServer
             e.ServerSubscription = e.Packages.Subscribe(OnNext, ex => logger.Error(ex.Message, ex));
         }
 
+        /// <summary>
+        /// Gets called when a new package is received.
+        /// </summary>
+        /// <param name="value">The received package.</param>
         public void OnNext(Package value)
         {
             if (value.Command == 0 && value.Payload.Length == 0)

@@ -8,6 +8,8 @@ namespace OctoAwesome.Client.Components
     internal sealed class CameraComponent : DrawableGameComponent
     {
         private PlayerComponent player;
+
+
         public CameraComponent(OctoGame game)
             : base(game)
         {

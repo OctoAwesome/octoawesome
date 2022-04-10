@@ -4,12 +4,19 @@ using System.Linq;
 
 namespace OctoAwesome.Database
 {
+    /// <summary>
+    /// Manager for management of free ids.
+    /// </summary>
     public sealed class IdManager
     {
         private readonly Queue<int> freeIds;
         private readonly HashSet<int> reservedIds;
         private int nextId;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IdManager"/> class.
+        /// </summary>
+        /// <param name="alreadyUsedIds">Pre reserved ids; <c>null</c> to not pre reserve any ids.</param>
         public IdManager(IEnumerable<int>? alreadyUsedIds = null)
         {
             alreadyUsedIds ??= Array.Empty<int>();
@@ -38,6 +45,10 @@ namespace OctoAwesome.Database
             }
         }
 
+        /// <summary>
+        /// Gets the next free id.
+        /// </summary>
+        /// <returns>A new id to use.</returns>
         public int GetId()
         {
             int id;
@@ -50,12 +61,20 @@ namespace OctoAwesome.Database
             return id;
         }
 
+        /// <summary>
+        /// Release an id to be free to be used again.
+        /// </summary>
+        /// <param name="id">The id to release.</param>
         public void ReleaseId(int id)
         {
             freeIds.Enqueue(id);
             reservedIds.Remove(id);
         }
 
+        /// <summary>
+        /// Reserves a specific id.
+        /// </summary>
+        /// <param name="id">The id to reserve.</param>
         public void ReserveId(int id)
             => reservedIds.Add(id);
     }

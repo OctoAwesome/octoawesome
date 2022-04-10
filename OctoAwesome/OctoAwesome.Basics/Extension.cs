@@ -12,17 +12,25 @@ using OctoAwesome.Basics.EntityComponents.UIComponents;
 
 namespace OctoAwesome.Basics
 {
-
+    /// <summary>
+    /// Extension implementation for this library(<see cref="OctoAwesome.Basics"/>).
+    /// </summary>
     public sealed class Extension : IExtension
     {
-
+        /// <inheritdoc />
         public string Description => Languages.OctoBasics.ExtensionDescription;
+
+        /// <inheritdoc />
         public string Name => Languages.OctoBasics.ExtensionName;
 
+
+        /// <inheritdoc />
         public void Register(ITypeContainer typeContainer)
         {
 
         }
+
+        /// <inheritdoc />
         public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
         {
             typeContainer.Register<IPlanet, ComplexPlanet>();
@@ -96,11 +104,15 @@ namespace OctoAwesome.Basics
                     c.transferUiComponent.Closed += c.TransferUiComponentClosed;
                     c.Components.AddComponent(c.transferUiComponent, true);
                 }
+
+
                 c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
                 c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }), true);
                 c.Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 }, true);
 
             });
+
+
             extensionLoader.RegisterSimulationExtender((s) =>
             {
                 s.Components.AddComponent(new WattMoverComponent());
@@ -111,7 +123,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddComponent(new MoveComponent());
                 s.Components.AddComponent(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
 
-                //TODO: unschön
+                //TODO: ugly
                 //TODO: TypeContainer?
             });
         }

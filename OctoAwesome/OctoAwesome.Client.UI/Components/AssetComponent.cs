@@ -11,13 +11,27 @@ using System.Xml.Serialization;
 
 namespace OctoAwesome.Client.UI.Components
 {
-
+    /// <summary>
+    /// Game component for managing asset resources.
+    /// </summary>
     public sealed class AssetComponent : DrawableGameComponent
     {
         private readonly BaseScreenComponent screenComponent;
         private readonly ISettings settings;
+
+        /// <summary>
+        /// File name for resource pack info.
+        /// </summary>
         public const string INFOFILENAME = "packinfo.xml";
+
+        /// <summary>
+        /// Settings key name for saving the currently active resource packs.
+        /// </summary>
         public const string SETTINGSKEY = "ActiveResourcePacks";
+
+        /// <summary>
+        /// The path to search through for resource packs.
+        /// </summary>
         public const string RESOURCEPATH = "Resources";
         readonly Dictionary<string, Texture2D> textures;
         readonly Dictionary<string, Bitmap> bitmaps;
@@ -26,24 +40,30 @@ namespace OctoAwesome.Client.UI.Components
         readonly List<ResourcePack> activePacks = new();
 
         /// <summary>
-        /// Gibt an, ob der Asset Manager bereit zum Laden von Resourcen ist.
+        /// Gets a value indicating whether the asset manager is ready to load resources.
         /// </summary>
         public bool Ready { get; private set; }
 
         /// <summary>
-        /// Gibt die Anzahl geladener Texturen zurück.
+        /// Gets the number of loaded textures.
         /// </summary>
         public int LoadedTextures => textures.Count + bitmaps.Count;
 
         /// <summary>
-        /// Auflistung aller bekannten Resource Packs.
+        /// Gets an enumeration of all available resource packs.
         /// </summary>
         public IEnumerable<ResourcePack> LoadedResourcePacks => loadedPacks.AsEnumerable();
 
         /// <summary>
-        /// Auflistung aller aktuell aktiven Resource Packs.
+        /// Gets an enumeration of all active resource packs.
         /// </summary>
         public IEnumerable<ResourcePack> ActiveResourcePacks => activePacks.AsEnumerable();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssetComponent"/> class.
+        /// </summary>
+        /// <param name="screenComponent">The screen component used for asset loading.</param>
+        /// <param name="settings">The settings i.a. used for asset handling.</param>
         public AssetComponent(BaseScreenComponent screenComponent, ISettings settings) : base(screenComponent.Game)
         {
             this.screenComponent = screenComponent;
@@ -72,6 +92,10 @@ namespace OctoAwesome.Client.UI.Components
 
             ApplyResourcePacks(toLoad);
         }
+
+        /// <summary>
+        /// Scan for resource packs in <see cref="RESOURCEPATH"/> directory.
+        /// </summary>
         public void ScanForResourcePacks()
         {
             loadedPacks.Clear();
@@ -101,15 +125,19 @@ namespace OctoAwesome.Client.UI.Components
                 }
         }
 
+        /// <summary>
+        /// Applies a given enumeration of resource packs to be activated.
+        /// </summary>
+        /// <param name="packs">The resource packs to apply.</param>
         public void ApplyResourcePacks(IEnumerable<ResourcePack> packs)
         {
             Ready = false;
 
-            // Reset vorhandener Assets
+            // Reset already loaded assets
             foreach (var component in Game.Components.OfType<IAssetRelatedComponent>())
                 component.UnloadAssets();
 
-            // Dispose Bitmaps
+            // Dispose bitmaps
             lock (bitmaps)
             {
                 foreach (var value in bitmaps.Values)
@@ -125,21 +153,27 @@ namespace OctoAwesome.Client.UI.Components
                 textures.Clear();
             }
 
-            // Set new Active Resource Packs
+            // Set new active resource packs
             activePacks.Clear();
             foreach (var pack in packs)
-                if (loadedPacks.Contains(pack)) // Warum eigentlich keine eigenen Packs?
+                if (loadedPacks.Contains(pack))
                     activePacks.Add(pack);
 
-            // Signal zum Reload senden
+            // Reload all resource pack dependant components.
             foreach (var component in Game.Components.OfType<IAssetRelatedComponent>())
                 component.ReloadAssets();
 
-            // Speichern der Settings
+            // Save active resource pack to the settings.
             settings.Set(SETTINGSKEY, string.Join(";", activePacks.Select(p => p.Path)));
 
             Ready = true;
         }
+
+        /// <summary>
+        /// Load a texture from the resource pack by a given key.
+        /// </summary>
+        /// <param name="key">The key name to load the texture for.</param>
+        /// <returns>The loaded texture from the resource pack.</returns>
         public Texture2D LoadTexture(string key)
         {
             Texture2D texture2D = default;
@@ -155,6 +189,12 @@ namespace OctoAwesome.Client.UI.Components
             return texture2D;
         }
 
+        /// <summary>
+        /// Load a texture from the resource pack by a given key using a specific base type.
+        /// </summary>
+        /// <param name="baseType">The base type for the assembly to load the resource from.</param>
+        /// <param name="key">The key name to load the texture for.</param>
+        /// <returns>The loaded texture from the resource pack.</returns>
         public Texture2D LoadTexture(Type baseType, string key)
         {
             Texture2D texture2D = default;
@@ -171,6 +211,12 @@ namespace OctoAwesome.Client.UI.Components
 
         }
 
+        /// <summary>
+        /// Load a texture as a bitmap from the resource pack by a given key using a specific base type.
+        /// </summary>
+        /// <param name="baseType">The base type for the assembly to load the resource from.</param>
+        /// <param name="key">The key name to load the texture for.</param>
+        /// <returns>The loaded bitmap from the resource pack.</returns>
         public Bitmap LoadBitmap(Type baseType, string key)
         {
             Bitmap bitmap = default;
@@ -185,6 +231,14 @@ namespace OctoAwesome.Client.UI.Components
 
             return bitmap;
         }
+
+        /// <summary>
+        /// Load a stream from the resource pack by a given key using a specific base type.
+        /// </summary>
+        /// <param name="baseType">The base type for the assembly to load the resource from.</param>
+        /// <param name="key">The key name to load the texture for.</param>
+        /// <param name="fileTypes">The valid file types to load from disk as a fallback option.</param>
+        /// <returns>The loaded bitmap from the resource pack.</returns>
         public Stream LoadStream(Type baseType, string key, params string[] fileTypes)
         {
             return Load(baseType, key, fileTypes, null, (stream) =>
@@ -214,14 +268,14 @@ namespace OctoAwesome.Client.UI.Components
 
             var basefolder = baseType.Namespace!.Replace('.', Path.DirectorySeparatorChar);
 
-            // Cache fragen
+            // Cache request
             var result = default(T);
 
             lock (textures)
                 if (cache != null && cache.TryGetValue(fullkey, out result))
                     return result;
 
-            // Versuche Datei zu laden
+            // Try to load files for resource packs
             foreach (var resourcePack in activePacks)
             {
                 var localFolder = Path.Combine(resourcePack.Path, basefolder);
@@ -241,7 +295,7 @@ namespace OctoAwesome.Client.UI.Components
                     break;
             }
 
-            // Resource Fallback
+            // Resource fallback
             if (result is null)
             {
                 result = LoadFrom(baseType, key, fileTypes, callback, assemblyName =>
@@ -254,17 +308,17 @@ namespace OctoAwesome.Client.UI.Components
                 });
             }
 
-            // Aus OctoAwesome.Client.UI laden
+            // Load from OctoAwesome.Client.UI
             if (result is null)
                 result = LoadFrom(typeof(ResourcePack), key, fileTypes, callback);
 
             if (result == null)
-                // Im worstcase CheckerTex laden
+                // In worst case scenario: load the fallback checker-board texture
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("OctoAwesome.Client.Assets.FallbackTexture.png"))
                     result = callback(stream);
             lock (textures)
 
-                // In Cache speichern
+                // Save to cache
                 if (result != null && cache != null)
                     cache[fullkey] = result;
 

@@ -1,17 +1,17 @@
 ﻿namespace OctoAwesome.Definitions
 {
     /// <summary>
-    /// Base Interface for all Definitions
+    /// Base Interface for all definitions.
     /// </summary>
     public interface IDefinition
     {
         /// <summary>
-        /// Gets the name of the Definition.
+        /// Gets the name of the definition.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Gets the name of the Icon Resource.
+        /// Gets the name of the icon resource.
         /// </summary>
         string Icon { get; }
     }

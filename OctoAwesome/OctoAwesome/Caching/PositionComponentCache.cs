@@ -5,13 +5,19 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OctoAwesome.Caching
 {
-
+    /// <summary>
+    /// Cache for <see cref="PositionComponent"/> class.
+    /// </summary>
     public class PositionComponentCache : Cache<Guid, PositionComponent>
     {
         private readonly IResourceManager resourceManager;
 
         private readonly Dictionary<Coordinate, CacheItem> positionComponentByCoor;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PositionComponentCache"/> class.
+        /// </summary>
+        /// <param name="resourceManager">The resource manager for managing resource assets.</param>
         public PositionComponentCache(IResourceManager resourceManager)
         {
             positionComponentByCoor = new();
@@ -52,8 +58,16 @@ namespace OctoAwesome.Caching
                 return returnValue;
             }
         }
+
+        /// <inheritdoc />
         protected override PositionComponent Load(Guid key)
             => resourceManager.GetComponent<PositionComponent>(key);
+
+        /// <summary>
+        /// Gets the <see cref="PositionComponent"/> with an exact coordinate.
+        /// </summary>
+        /// <param name="position">The exact position to get the <see cref="PositionComponent"/> for.</param>
+        /// <returns>The <see cref="PositionComponent"/> with the exact coordinate.</returns>
         protected PositionComponent GetBy(Coordinate position)
         {
             using var @lock = lockSemaphore.EnterExclusiveScope();
@@ -62,6 +76,12 @@ namespace OctoAwesome.Caching
             cacheItem.LastAccessTime = DateTime.Now;
             return cacheItem.Value;
         }
+
+        /// <summary>
+        /// Gets a list of <see cref="PositionComponent"/> instances which are withing a specific chunk.
+        /// </summary>
+        /// <param name="chunkIndex">The chunk index to query the <see cref="PositionComponent"/> instances for.</param>
+        /// <returns>A list of <see cref="PositionComponent"/> instances which are withing a specific chunk..</returns>
         protected List<PositionComponent> GetBy(Index3 chunkIndex)
         {
             using var @lock = lockSemaphore.EnterExclusiveScope();
@@ -73,6 +93,8 @@ namespace OctoAwesome.Caching
                 var key = component.Key;
                 var normalizedChunkIndex = key.ChunkIndex;
                 normalizedChunkIndex.NormalizeXY(component.Value.Value.Planet.Size);
+
+
                 if (key.Planet == chunkIndex.Z
                     && normalizedChunkIndex.X == chunkIndex.X
                     && normalizedChunkIndex.Y == chunkIndex.Y)
@@ -85,11 +107,7 @@ namespace OctoAwesome.Caching
             return list;
         }
 
-        /// <summary>
-        /// Tries to return the Component of the given Type or null
-        /// </summary>
-        /// <typeparam name="V">Component Type</typeparam>
-        /// <returns>True if the component was found, false otherwise</returns>
+        /// <inheritdoc />
         public override TValue Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
             => key switch
             {

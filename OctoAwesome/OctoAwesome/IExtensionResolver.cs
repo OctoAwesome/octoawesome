@@ -4,39 +4,39 @@ using System.Collections.Generic;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Interface for a ExtensionResolver
+    /// Interface for extension resolvers.
     /// </summary>
     public interface IExtensionResolver
     {
         /// <summary>
-        /// Extend a Simulation
+        /// Extends a simulation.
         /// </summary>
-        /// <param name="simulation">Simulation</param>
+        /// <param name="simulation">The simulation to extend.</param>
         void ExtendSimulation(Simulation simulation);
 
         /// <summary>
-        /// Extend a Entity
+        /// Extends an entity.
         /// </summary>
-        /// <param name="entity">Entity</param>
+        /// <param name="entity">The entity to extend.</param>
         void ExtendEntity(ComponentContainer entity);
 
         /// <summary>
-        /// Return a List of Definitions
+        /// Gets an enumeration of definitions of a specific type.
         /// </summary>
-        /// <typeparam name="T">Definitiontype</typeparam>
-        /// <returns>List</returns>
+        /// <typeparam name="T">The type of the definitions to get.</typeparam>
+        /// <returns>Enumeration of the definitions of the specified type.</returns>
         IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition;
 
         /// <summary>
-        /// Return a List of MapGenerators
+        /// Gets an enumeration of map generators.
         /// </summary>
-        /// <returns>List of Generators</returns>
+        /// <returns>Enumeration of the available map generators.</returns>
         IEnumerable<IMapGenerator> GetMapGenerators();
 
         /// <summary>
-        /// Return a List of Populators
+        /// Gets an enumeration of map populators.
         /// </summary>
-        /// <returns>List of Populators</returns>
+        /// <returns>Enumeration of the available map populator.</returns>
         IEnumerable<IMapPopulator> GetMapPopulators();
     }
 }

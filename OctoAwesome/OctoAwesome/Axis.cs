@@ -3,28 +3,28 @@
 namespace OctoAwesome
 {
     /// <summary>
-    /// Flag Liste für die verfügbaren Achsen.
+    /// Bit flag enumeration of axes.
     /// </summary>
     [Flags]
     public enum Axis
     {
         /// <summary>
-        /// Keine Achse
+        /// No axis.
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// X Achse (Ost-West-Achse)
+        /// X axis (East-west axis)
         /// </summary>
         X = 1,
 
         /// <summary>
-        /// Y Achse (Nord-Süd-Achse)
+        /// Y axis (North-south axis)
         /// </summary>
         Y = 2,
 
         /// <summary>
-        /// Z Achse (Höhen-Achse)
+        /// Z axis (Vertical axis)
         /// </summary>
         Z = 4
     }

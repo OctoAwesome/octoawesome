@@ -19,7 +19,7 @@ namespace OctoAwesome.Client.Controls
 {
     internal sealed class SceneControl : Control, IDisposable
     {
-        public static int VIEWRANGE = 4; // Anzahl Chunks als Potenz (Volle Sichtweite)
+        public static int VIEWRANGE = 4; // Range of visible chunks in 2^VIEWRANGE (complete view range)
         public const int TEXTURESIZE = 64;
         public static int Mask;
         public static int Span;
@@ -198,6 +198,8 @@ namespace OctoAwesome.Client.Controls
 
             }
 
+
+
             ReadOnlySpan<VertexPositionColor> selectionVertices = stackalloc[]
             {
                 new VertexPositionColor(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
@@ -235,6 +237,8 @@ namespace OctoAwesome.Client.Controls
 
             billboardVertexbuffer = new VertexBuffer(manager.GraphicsDevice, VertexPositionTexture.VertexDeclaration, billboardVertices.Length);
             billboardVertexbuffer.SetData(billboardVertices);
+
+
             sunEffect = new BasicEffect(manager.GraphicsDevice)
             {
                 TextureEnabled = true
@@ -287,6 +291,8 @@ namespace OctoAwesome.Client.Controls
 
             var selBlock = GetSelectedBlock(centerblock, renderOffset, out selected, out selectedAxis, out selectionPoint);
             var funcBlock = GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint);
+
+
 
             //TODO Distance check, so entity doesnt always get selected if a block is in front of it
             if (selectedFunc.HasValue && selectionFuncPoint.HasValue)
@@ -476,6 +482,8 @@ namespace OctoAwesome.Client.Controls
 
             if (ControlTexture == null)
                 ControlTexture = new RenderTarget2D(Manager.GraphicsDevice, ActualClientArea.Width, ActualClientArea.Height, PixelInternalFormat.Rgb8);
+
+
             float octoDaysPerEarthDay = 360f;
             float inclinationVariance = MathHelper.Pi / 3f;
 
@@ -489,7 +497,7 @@ namespace OctoAwesome.Client.Controls
 
             Matrix sunMovement =
                 Matrix.CreateRotationX(inclination) *
-                //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1); 
+                //Matrix.CreateRotationY((((float)gameTime.TotalGameTime.TotalMinutes * MathHelper.TwoPi) + playerPosX) * -1);
                 Matrix.CreateRotationY((float)(MathHelper.TwoPi - ((diff.TotalDays * octoDaysPerEarthDay * MathHelper.TwoPi) % MathHelper.TwoPi)));
 
             Vector3 sunDirection = Vector3.Transform(sunMovement, new Vector3(0, 0, 1));
@@ -1061,14 +1069,15 @@ namespace OctoAwesome.Client.Controls
         }
 
         /// <summary>
-        /// 
+        /// 3D implementation of the line bresenham algorithm for collision detection.
         /// </summary>
-        /// <param name="x0">StartPosition X</param>
-        /// <param name="y0">StartPosition Y</param>
-        /// <param name="z0">StartPosition Z</param>
-        /// <param name="x1">EndPosition X</param>
-        /// <param name="y1">EndPosition Y</param>
-        /// <param name="z1">EndPosition Z</param>
+        /// <param name="x0">The x component of the start position.</param>
+        /// <param name="y0">The y component of the start position.</param>
+        /// <param name="z0">The z component of the start position.</param>
+        /// <param name="x1">The x component of the end position.</param>
+        /// <param name="y1">The y component of the end position.</param>
+        /// <param name="z1">The z component of the end position.</param>
+        /// <returns>The block that the line collided with;or <c>null</c> when no collision took place.</returns>
         private Index3? SimpleBresenham(int x0, int y0, int z0, int x1, int y1, int z1)
         {
             int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;

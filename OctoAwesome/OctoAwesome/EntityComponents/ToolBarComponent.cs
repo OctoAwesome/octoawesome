@@ -5,36 +5,51 @@ using System;
 namespace OctoAwesome.EntityComponents
 {
     /// <summary>
-    /// EntityComponent, die eine Werkzeug-Toolbar für den Apieler bereitstellt.
+    /// Component for the toolbar of a player.
     /// </summary>
     public class ToolBarComponent : Component, IEntityComponent
     {
         /// <summary>
-        /// Gibt die Anzahl Tools in der Toolbar an.
+        /// The number of possible tools in the toolbar.
         /// </summary>
         public const int TOOLCOUNT = 10;
 
         /// <summary>
-        /// Auflistung der Werkzeuge die der Spieler in seiner Toolbar hat.
+        /// Gets a list of inventory slots of the toolbar.
         /// </summary>
         public InventorySlot?[] Tools { get; }
 
         /// <summary>
-        /// Derzeit aktives Werkzeug des Spielers
+        /// Gets the currently active tool.
         /// </summary>
+        /// <remarks>Defaults to <see cref="HandSlot"/> if no tool is currently active.</remarks>
         public InventorySlot ActiveTool => Tools[activeIndex] ?? HandSlot;
+
+        /// <summary>
+        /// The inventory slot that describes the hand as a tool.
+        /// </summary>
         public InventorySlot HandSlot { get; }
+
+        /// <summary>
+        /// Gets or sets the currently active tool slot.
+        /// </summary>
         public int ActiveIndex
         {
             get => activeIndex;
             set => activeIndex = (value + TOOLCOUNT) % TOOLCOUNT;
         }
+
+        /// <summary>
+        /// Called when a tool slot was changed.
+        /// </summary>
         public event Action<InventorySlot, int>? OnChanged;
+
+
         private int activeIndex;
 
 
         /// <summary>
-        /// Erzeugte eine neue ToolBarComponent
+        /// Initializes a new instance of the <see cref="ToolBarComponent"/> class.
         /// </summary>
         public ToolBarComponent()
         {
@@ -44,9 +59,9 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Entfernt einen InventorySlot aus der Toolbar
+        /// Removes an inventory slot from the toolbar.
         /// </summary>
-        /// <param name="slot"></param>
+        /// <param name="slot">The slot to remove.</param>
         public void RemoveSlot(InventorySlot slot)
         {
             for (int i = 0; i < Tools.Length; i++)
@@ -61,10 +76,10 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Setzt einen InventorySlot an eine Stelle in der Toolbar und löscht ggf. vorher den Slot aus alten Positionen.
+        /// Overrides the current slot at a specific toolbar slot index with a new slot value.
         /// </summary>
-        /// <param name="slot"></param>
-        /// <param name="index"></param>
+        /// <param name="slot">The new inventory slot to set the toolbar slot to.</param>
+        /// <param name="index">The index of the slot to set.</param>
         public void SetTool(InventorySlot slot, int index)
         {
             RemoveSlot(slot);
@@ -74,10 +89,10 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Gibt den Index eines InventorySlots in der Toolbar zurück.
+        /// Gets the index for a specific inventory slot in the toolbar.
         /// </summary>
-        /// <param name="slot"></param>
-        /// <returns>Den Index des Slots, falls nicht gefunden -1.</returns>
+        /// <param name="slot">The slot to get the index to.</param>
+        /// <returns>The index of the slot if it was found; otherwise -1.</returns>
         public int GetSlotIndex(InventorySlot slot)
         {
             for (int j = 0; j < Tools.Length; j++)
@@ -88,9 +103,9 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Fügt einen neuen InventorySlot an der ersten freien Stelle hinzu.
+        /// Adds a new slot at the first empty toolbar slot.
         /// </summary>
-        /// <param name="slot"></param>
+        /// <param name="slot">The inventory slot to add.</param>
         public void AddNewSlot(InventorySlot slot)
         {
             for (int i = 0; i < Tools.Length; i++)

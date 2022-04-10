@@ -9,26 +9,28 @@ using System.IO;
 
 namespace OctoAwesome
 {
-
+    /// <summary>
+    /// Base class for classes containing components.
+    /// </summary>
     public abstract class ComponentContainer : ISerializable, IIdentification, IComponentContainer, INotificationSubject<SerializableNotification>
     {
         /// <summary>
-        /// Id
+        /// Gets the Id of the container.
         /// </summary>
         public Guid Id { get; internal set; }
 
         /// <summary>
-        /// Reference to the active Simulation.
+        /// Gets the reference to the active simulation; or <c>null</c> when no simulation is active.
         /// </summary>
         public Simulation? Simulation { get; internal set; }
 
         /// <summary>
-        /// Contains only Components with notification interface implementation.
+        /// List of components with notification interface implementation.
         /// </summary>
         protected readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
 
         /// <summary>
-        /// Entity die regelmäßig eine Updateevent bekommt
+        /// Initializes a new instance of the <see cref="ComponentContainer"/> class.
         /// </summary>
         protected ComponentContainer()
         {
@@ -36,12 +38,19 @@ namespace OctoAwesome
             Id = Guid.Empty;
         }
 
+        /// <summary>
+        /// Method used to register the default components of this <see cref="ComponentContainer"/>.
+        /// </summary>
         public virtual void RegisterDefault()
         {
 
         }
+
+        /// <inheritdoc />
         public override int GetHashCode()
             => Id.GetHashCode();
+
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             if (obj is Entity entity)
@@ -49,39 +58,63 @@ namespace OctoAwesome
 
             return ReferenceEquals(this, obj);
         }
+
+        /// <inheritdoc />
         public virtual void OnNotification(SerializableNotification notification)
         {
         }
+
+        /// <inheritdoc />
         public virtual void Push(SerializableNotification notification)
         {
             foreach (var component in notificationComponents)
                 component?.OnNotification(notification);
         }
+
+        /// <inheritdoc />
         public abstract void Serialize(BinaryWriter writer);
+
+        /// <inheritdoc />
         public abstract void Deserialize(BinaryReader reader);
+
+        /// <inheritdoc />
         public abstract bool ContainsComponent<T>();
+
+        /// <inheritdoc />
         public abstract T? GetComponent<T>();
     }
+    /// <summary>
+    /// Base class for classes containing components of a specific type.
+    /// </summary>
+    /// <typeparam name="TComponent">The type of the components to contain.</typeparam>
     public abstract class ComponentContainer<TComponent> : ComponentContainer where TComponent : IComponent
     {
         /// <summary>
-        /// Contains all Components.
+        /// Gets a list of all components this container holds.
         /// </summary>
         public ComponentList<TComponent> Components { get; }
 
         /// <summary>
-        /// Entity die regelmäßig eine Updateevent bekommt
+        /// Initializes a new instance of the <see cref="ComponentContainer{TComponent}"/> class.
         /// </summary>
         protected ComponentContainer()
         {
             Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
         }
 
+        /// <summary>
+        /// Gets called when a component was removed from this container.
+        /// </summary>
+        /// <param name="component">The component that was removed.</param>
         protected void OnRemoveComponent(TComponent component)
         {
 
         }
 
+        /// <summary>
+        /// Gets called when a component was added to this container.
+        /// </summary>
+        /// <param name="component">The component that was added.</param>
         protected virtual void OnAddComponent(TComponent component)
         {
             if (component is InstanceComponent<ComponentContainer> instanceComponent)
@@ -104,22 +137,46 @@ namespace OctoAwesome
             if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
                 notificationComponents.Add(nofiticationComponent);
         }
+
+        /// <summary>
+        /// Validates whether a component can be added.
+        /// </summary>
+        /// <param name="component">The component to validate the add for.</param>
+        /// <exception cref="NotSupportedException">
+        /// Thrown when the component can not be added in the current state. E.g. during simulation.
+        /// </exception>
         protected virtual void ValidateAddComponent(TComponent component)
         {
             if (Simulation is not null)
                 throw new NotSupportedException("Can't add components during simulation");
         }
+
+        /// <summary>
+        /// Validates whether a component can be removed.
+        /// </summary>
+        /// <param name="component">The component to validate the remove for.</param>
+        /// <exception cref="NotSupportedException">
+        /// Thrown when the component can not be removed in the current state. E.g. during simulation.
+        /// </exception>
         protected virtual void ValidateRemoveComponent(TComponent component)
         {
             if (Simulation is not null)
                 throw new NotSupportedException("Can't remove components during simulation");
         }
 
+        /// <summary>
+        /// Initializes the component container.
+        /// </summary>
+        /// <param name="manager">The resource manager for loading resource assets.</param>
         public void Initialize(IResourceManager manager)
         {
             OnInitialize(manager);
         }
 
+        /// <summary>
+        /// Gets called when the component container is initializes.
+        /// </summary>
+        /// <param name="manager">The resource manager for loading resource assets.</param>
         protected virtual void OnInitialize(IResourceManager manager)
         {
             foreach (var component in Components)
@@ -140,10 +197,7 @@ namespace OctoAwesome
             }
         }
 
-        /// <summary>
-        /// Serialisiert die Entität mit dem angegebenen BinaryWriter.
-        /// </summary>
-        /// <param name="writer">Der BinaryWriter, mit dem geschrieben wird.</param>
+        /// <inheritdoc />
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write(Id.ToByteArray());
@@ -151,17 +205,18 @@ namespace OctoAwesome
             Components.Serialize(writer);
         }
 
-        /// <summary>
-        /// Deserialisiert die Entität aus dem angegebenen BinaryReader.
-        /// </summary>
-        /// <param name="reader">Der BinaryWriter, mit dem gelesen wird.</param>
+        /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
             Id = new Guid(reader.ReadBytes(16));
             Components.Deserialize(reader);
         }
+
+        /// <inheritdoc />
         public override bool ContainsComponent<T>()
             => Components.ContainsComponent<T>();
+
+        /// <inheritdoc />
         public override T? GetComponent<T>() where T : default
             => Components.GetComponent<T>();
     }

@@ -7,12 +7,16 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
+    /// <summary>
+    /// Component for simulation with watt energy system.
+    /// </summary>
     public class WattMoverComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>,
         ControllableComponent,
         BodyPowerComponent>
     {
+        /// <inheritdoc />
         protected override SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent> OnAdd(Entity entity)
         {
             var controllable = entity.GetComponent<ControllableComponent>();
@@ -20,6 +24,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             return new SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>(entity, controllable, bodyPower);
         }
 
+        /// <inheritdoc />
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent> value)
         {
             //Move

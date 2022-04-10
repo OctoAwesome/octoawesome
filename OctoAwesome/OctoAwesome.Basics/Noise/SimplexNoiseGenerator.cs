@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.Noise
 {
-
+    /// <summary>
+    /// Noise generator implementation using simplex noise.
+    /// </summary>
     public class SimplexNoiseGenerator : INoise
     {
 
@@ -14,13 +16,39 @@ namespace OctoAwesome.Basics.Noise
         private static readonly byte[] range = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255 };
         private int octaves;
         private float persistence;
+
+        /// <inheritdoc />
         public int Seed { get; }
+
+        /// <summary>
+        /// Gets or sets the frequency to apply on the x axis.
+        /// </summary>
         public float FrequencyX { get; set; }
+
+        /// <summary>
+        /// Gets or sets the frequency to apply on the y axis.
+        /// </summary>
         public float FrequencyY { get; set; }
+
+        /// <summary>
+        /// Gets or sets the frequency to apply on the z axis.
+        /// </summary>
         public float FrequencyZ { get; set; }
+
+        /// <summary>
+        /// Gets or sets the frequency to apply on the w axis.
+        /// </summary>
         public float FrequencyW { get; set; }
 
+        /// <summary>
+        /// Gets or sets the factor to multiply the noise output by.
+        /// </summary>
+        /// <remarks>Normalizes noise output to be between [-<see cref="Factor"/>..<see cref="Factor"/>].</remarks>
         public float Factor { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of octaves to overlay.
+        /// </summary>
         public int Octaves
         {
             get => octaves;
@@ -30,6 +58,14 @@ namespace OctoAwesome.Basics.Noise
                 RecalcMax();
             }
         }
+
+        /// <summary>
+        /// Gets or sets the persistence for the octave, by which factor each successive octave amplitude is multiplied.
+        /// </summary>
+        /// <remarks>
+        /// Meaning first max amplitude is 1.0f, for the second octave it is <see cref="Persistence"/>,
+        /// for the third one it is <see cref="Persistence"/>^2 etc.
+        /// </remarks>
         public float Persistence
         {
             get => persistence;
@@ -57,8 +93,18 @@ namespace OctoAwesome.Basics.Noise
                 MaxValue += (float)Math.Pow(Persistence, i);
             }
         }
+
+
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimplexNoiseGenerator"/> class.
+        /// </summary>
+        /// <param name="seed">The random seed for the noise generator.</param>
+        /// <param name="frequencyX">The frequency to apply on the x axis.</param>
+        /// <param name="frequencyY">The frequency to apply on the y axis.</param>
+        /// <param name="frequencyZ">The frequency to apply on the z axis.</param>
+        /// <param name="frequencyW">The frequency to apply on the w axis.</param>
         public SimplexNoiseGenerator(int seed, float frequencyX = 1f, float frequencyY = 1f, float frequencyZ = 1f, float frequencyW = 1f)
         {
             Seed = seed;
@@ -73,6 +119,8 @@ namespace OctoAwesome.Basics.Noise
         }
 
         #region NoiseMaps
+
+        /// <inheritdoc />
         public float[] GetNoiseMap(int startX, int width)
         {
             float[] noise = new float[width];
@@ -91,14 +139,7 @@ namespace OctoAwesome.Basics.Noise
             return noise;
         }
 
-        /// <summary>
-        /// Gibt ein 2D-float-Array einer 2D-Noise im angegebem Bereich zurück
-        /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück</returns>
+        /// <inheritdoc />
         public float[,] GetNoiseMap2D(int startX, int startY, int width, int height)
         {
             float[,] noise = new float[width, height];
@@ -123,16 +164,7 @@ namespace OctoAwesome.Basics.Noise
             return noise;
         }
 
-        /// <summary>
-        /// Gibt ein 2D-float-Array einer 2D-Noise im angegebem Bereich zurück, welche kachelbar ist
-        /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="sizeX">Breite der Noise-Map</param>
-        /// <param name="sizeY">Höhe der Noise-Map</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein 2D-float-Array einer 2D-Noise zurück, welche kachelbar ist</returns>
+        /// <inheritdoc />
         public void FillTileableNoiseMap2D(int startX, int startY, int sizeX, int sizeY, int tileSizeX, int tileSizeY,
             float[] array)
         {
@@ -165,19 +197,12 @@ namespace OctoAwesome.Basics.Noise
             });
         }
 
-        /// <summary>
-        /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück
-        /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startZ">Startposition auf der Z-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <returns>Gibt ein 3D-float-Array einer 3D-Noise zurück</returns>
+        /// <inheritdoc />
         public float[,,] GetNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth)
         {
             float[,,] noise = new float[width, height, depth];
+
+
             Parallel.For(0, width, x =>
             //for (int x = 0; x < width; x++)
             {
@@ -206,18 +231,7 @@ namespace OctoAwesome.Basics.Noise
             return noise;
         }
 
-        /// <summary>
-        /// Gibt ein 3D-float-Array einer 3D-Noise im angegebem Bereich zurück, welche in X und Y Richtung kachelbar ist
-        /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startZ">Startposition auf der Z-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein 3D-float-Array einer 3D-Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
+        /// <inheritdoc />
         public float[,,] GetTileableNoiseMap3D(int startX, int startY, int startZ, int width, int height, int depth, int tileSizeX, int tileSizeY)
         {
             float[,,] noise = new float[width, height, depth];
@@ -261,18 +275,7 @@ namespace OctoAwesome.Basics.Noise
             return noise;
         }
 
-        /// <summary>
-        /// Gibt ein 4D-float-Array einer 4D-Noise im angegebem Bereich zurück
-        /// </summary>
-        /// <param name="startX">Startposition auf der X-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startY">Startposition auf der Y-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startZ">Startposition auf der Z-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="startW">Startposition auf der W-Achse,ab welcher die Noise Werte ausgegeben werden</param>
-        /// <param name="width">Breite der Noise-Map</param>
-        /// <param name="height">Höhe der Noise-Map</param>
-        /// <param name="depth">Tiefe der Noise-Map</param>
-        /// <param name="wDepth">Dicke(Tiefe 2.Grades) der Noise-Map</param>
-        /// <returns>Gibt ein 4D-float-Array einer 4D-Noise zurück</returns>
+        /// <inheritdoc />
         public float[,,,] GetNoiseMap4D(int startX, int startY, int startZ, int startW, int width, int height, int depth, int wDepth)
         {
             float[,,,] noise = new float[width, height, depth, wDepth];
@@ -312,11 +315,7 @@ namespace OctoAwesome.Basics.Noise
 
         #region SingleNoise
 
-        /// <summary>
-        /// Gibt ein float-Wert einer 1D-Noise an gegebener Position zurück
-        /// </summary>
-        /// <param name="x">Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 1D Noise zurück</returns>
+        /// <inheritdoc />
         public float GetNoise(int x)
         {
             float noise = 0;
@@ -332,12 +331,7 @@ namespace OctoAwesome.Basics.Noise
             return noise * Factor / MaxValue;
         }
 
-        /// <summary>
-        /// Gibt ein float-Wert einer 2D-Noise an gegebener Position zurück
-        /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 2D Noise zurück</returns>
+        /// <inheritdoc />
         public float GetNoise2D(int x, int y)
         {
             float noise = 0;
@@ -354,14 +348,8 @@ namespace OctoAwesome.Basics.Noise
             }
             return noise * Factor / MaxValue;
         }
-        /// <summary>
-        /// Gibt ein float-Wert einer 2D-Noise an gegebener Position zurück, welche kachelbar ist
-        /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein float-Wert einer 2D Noise zurück, welche kachelbar ist</returns>
+
+        /// <inheritdoc />
         public float GetTileableNoise2D(int x, int y, int tileSizeX, int tileSizeY)
         {
             float noise = 0;
@@ -389,13 +377,7 @@ namespace OctoAwesome.Basics.Noise
             return noise * Factor / MaxValue;
         }
 
-        /// <summary>
-        /// Gibt ein float-Wert einer 3D-Noise an gegebener Position zurück
-        /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 3D Noise zurück</returns>
+        /// <inheritdoc />
         public float GetNoise3D(int x, int y, int z)
         {
             float noise = 0;
@@ -415,15 +397,8 @@ namespace OctoAwesome.Basics.Noise
             }
             return noise * Factor / MaxValue;
         }
-        /// <summary>
-        /// Gibt ein float-Wert einer 3D-Noise an gegebener Position zurück, welche in X und Y Richtung kachelbar ist
-        /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="tileSizeX">Breite der Kachel</param>
-        /// <param name="tileSizeY">Höhe der Kachel</param>
-        /// <returns>Gibt ein float-Wert einer 3D Noise zurück, welche in X und Y Richtung kachelbar ist</returns>
+
+        /// <inheritdoc />
         public float GetTileableNoise3D(int x, int y, int z, int tileSizeX, int tileSizeY)
         {
             float noise = 0;
@@ -453,14 +428,7 @@ namespace OctoAwesome.Basics.Noise
             return noise * Factor / MaxValue;
         }
 
-        /// <summary>
-        /// Gibt ein float-Wert einer 4D-Noise an gegebener Position zurück
-        /// </summary>
-        /// <param name="x">X-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="y">Y-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="z">Z-Position, für welche die Noise ausgegeben wird</param>
-        /// <param name="w">W-Position, für welche die Noise ausgegeben wird</param>
-        /// <returns>Gibt ein float-Wert einer 4D Noise zurück</returns>
+        /// <inheritdoc />
         public float GetNoise4D(int x, int y, int z, int w)
         {
             float noise = 0;
@@ -548,6 +516,8 @@ namespace OctoAwesome.Basics.Noise
 
             float v1 = NoiseFunction(integer_X);
             float v2 = NoiseFunction(integer_X + 1);
+
+
             return LinearInterpolation(v1, v2, fractional_X);
         }
 

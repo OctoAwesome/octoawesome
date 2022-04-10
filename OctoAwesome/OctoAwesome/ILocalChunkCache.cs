@@ -3,122 +3,132 @@
 namespace OctoAwesome
 {
     /// <summary>
-    /// Basisinterface für einen lokalen Chunkcache
+    /// Interface for a chunk cache that manages a local region.
     /// </summary>
     public interface ILocalChunkCache
     {
         /// <summary>
-        /// Setzt den Zentrums-Chunk für diesen lokalen Cache.
+        /// Sets the center of this chunk.
         /// </summary>
-        /// <param name="planet">Der Planet, auf dem sich der Chunk befindet</param>
-        /// <param name="index">Die Koordinaten an der sich der Chunk befindet</param>
-        /// <param name="successCallback">Routine die Aufgerufen werden soll, falls das setzen erfolgreich war oder nicht</param>
+        /// <param name="index">The new center for the cache.</param>
+        /// <param name="successCallback">The action to be called</param>
         bool SetCenter(Index2 index, Action<bool>? successCallback = null);
 
         /// <summary>
-        /// Aktueller Planet auf dem sich der Cache bezieht.
+        /// Gets the planet the local chunk cache uses.
         /// </summary>
         IPlanet Planet { get; }
 
         /// <summary>
-        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
+        /// Gets the chunk at the given chunk index coordinates.
         /// </summary>
-        /// <param name="index">Chunk Index</param>
-        /// <returns>Instanz des Chunks</returns>
+        /// <param name="index">The chunk index to retrieve the chunk for.</param>
+        /// <returns>The retrieved chunk;<c>null</c> if chunk is out of cache range.</returns>
+        /// <seealso cref="GetChunk(int,int,int)"/>
         IChunk? GetChunk(Index3 index);
 
         /// <summary>
-        /// Liefert den Chunk an der angegebenen Chunk-Koordinate zurück.
+        /// Gets the chunk at the given chunk index coordinates.
         /// </summary>
-        /// <param name="x">X Koordinate</param>
-        /// <param name="y">Y Koordinate</param>
-        /// <param name="z">Z Koordinate</param>
-        /// <returns>Instanz des Chunks</returns>
+        /// <param name="x">The chunk index x-component to retrieve the chunk for.</param>
+        /// <param name="y">The chunk index y-component to retrieve the chunk for.</param>
+        /// <param name="z">The chunk index z-component to retrieve the chunk for.</param>
+        /// <returns>The retrieved chunk;<c>null</c> if chunk is out of cache range.</returns>
+        /// <seealso cref="GetChunk(OctoAwesome.Index3)"/>
         IChunk? GetChunk(int x, int y, int z);
 
         /// <summary>
-        /// Leert den Cache und gibt sie beim GlobalChunkCache wieder frei
+        /// Clears the cache and releases the chunk columns in the <see cref="IGlobalChunkCache"/>.
         /// </summary>
         void Flush();
 
         /// <summary>
-        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// Gets the block id for a given block index coordinate.
         /// </summary>
-        /// <param name="index">Block Index</param>
-        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        /// <param name="index">The block index to retrieve the block id for.</param>
+        /// <returns>The block id at the given block coordinates; defaults to <c>0</c> if out of cache range.</returns>
         ushort GetBlock(Index3 index);
 
         /// <summary>
-        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// Gets the block info for a given block index coordinate.
         /// </summary>
-        /// <param name="index">Block Index</param>
-        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        /// <param name="index">The block index to retrieve the block id for.</param>
+        /// <returns>The block info at the given block coordinates; <c>default(BlockInfo)</c> if out of cache range.</returns>
         BlockInfo GetBlockInfo(Index3 index);
 
         /// <summary>
-        /// Liefert den Block an der angegebenen Block-Koodinate zurück.
+        /// Gets the block id for a given block index coordinate.
         /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <returns>Die Block-ID an der angegebenen Koordinate</returns>
+        /// <param name="x">The block index x-component to retrieve the block id for.</param>
+        /// <param name="y">The block index y-component to retrieve the block id for.</param>
+        /// <param name="z">The block index z-component to retrieve the block id for.</param>
+        /// <returns>The block id at the given block coordinates; defaults to <c>0</c> if out of cache range.</returns>
         ushort GetBlock(int x, int y, int z);
 
-
         /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// Sets the block id for a given block index coordinate.
         /// </summary>
-        /// <param name="index">Block-Koordinate</param>
-        /// <param name="block">Die neue Block-ID.</param>
+        /// <param name="index">The block index to set the new block id for.</param>
+        /// <param name="block">The new block id to set the block to.</param>
+        /// <remarks>Does nothing if <paramref name="index"/> is out of cache range.</remarks>
         void SetBlock(Index3 index, ushort block);
 
         /// <summary>
-        /// Überschreibt den Block an der angegebenen Koordinate.
+        /// Sets the block id for a given block index coordinate.
         /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="block">Die neue Block-ID.</param>
+        /// <param name="x">The block index x-component to set the new block id for.</param>
+        /// <param name="y">The block index y-component to set the new block id for.</param>
+        /// <param name="z">The block index z-component to set the new block id for.</param>
+        /// <param name="block">The new block id to set the block to.</param>
+        /// <remarks>Does nothing if block index is out of cache range.</remarks>
         void SetBlock(int x, int y, int z, ushort block);
 
         /// <summary>
-        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
+        /// Gets the block meta info for a given block index coordinate.
         /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <returns>Die Metadaten des angegebenen Blocks</returns>
+        /// <param name="x">The block index x-component to retrieve the block meta info for.</param>
+        /// <param name="y">The block index y-component to retrieve the block meta info for.</param>
+        /// <param name="z">The block index z-component to retrieve the block meta info for.</param>
+        /// <returns>
+        /// The block meta info at the given block coordinates; defaults to <c>0</c> if out of cache range.
+        /// </returns>
         int GetBlockMeta(int x, int y, int z);
 
         /// <summary>
-        /// Gibt die Metadaten des Blocks an der angegebenen Koordinate zurück.
+        /// Gets the block meta info for a given block index coordinate.
         /// </summary>
-        /// <param name="index">Block-Koordinate</param>
-        /// <returns>Die Metadaten des angegebenen Blocks</returns>
+        /// <param name="index">The block index to retrieve the block meta info for.</param>
+        /// <returns>
+        /// The block meta info at the given block coordinates; defaults to <c>0</c> if out of cache range.
+        /// </returns>
         int GetBlockMeta(Index3 index);
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
+        /// Sets the block meta info for a given block index coordinate.
         /// </summary>
-        /// <param name="x">X-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="y">Y-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="z">Z-Anteil der Koordinate des Blocks innerhalb des Chunks</param>
-        /// <param name="meta">Die neuen Metadaten</param>
+        /// <param name="x">The block index x-component to set the new block meta info for.</param>
+        /// <param name="y">The block index y-component to set the new block meta info for.</param>
+        /// <param name="z">The block index z-component to set the new block meta info for.</param>
+        /// <param name="meta">The new block meta info to set the block to.</param>
+        /// <remarks>Does nothing if block index is out of cache range.</remarks>
         void SetBlockMeta(int x, int y, int z, int meta);
 
         /// <summary>
-        /// Ändert die Metadaten des Blockes an der angegebenen Koordinate.
+        /// Sets the block meta info for a given block index coordinate.
         /// </summary>
-        /// <param name="index">Block-Koordinate</param>
-        /// <param name="meta">Die neuen Metadaten</param>
+        /// <param name="index">The block index to set the new block meta info for.</param>
+        /// <param name="meta">The new block meta info to set the block to.</param>
+        /// <remarks>Does nothing if <paramref name="index"/> is out of cache range.</remarks>
         void SetBlockMeta(Index3 index, int meta);
 
         /// <summary>
-        /// Gibt das Höhenniveua der angegebenen Position zurück.
+        /// Gets the block ground level at the given block index coordinate.
         /// </summary>
-        /// <param name="x">Globale X-Koordinate in Blöcken.</param>
-        /// <param name="y">Globale Y-Koordinate in Blöcken.</param>
-        /// <returns>Git die Höhe in Blöcken zurück, oder -1 falls der zugehörige Chunk nicht geladen ist.</returns>
+        /// <param name="x">The block index x-component to set the new block meta info for.</param>
+        /// <param name="y">The block index y-component to set the new block meta info for.</param>
+        /// <returns>
+        /// The block ground level at the given block index coordinate; or <c>-1</c> if the corresponding chunk is not loaded.
+        /// </returns>
         int GroundLevel(int x, int y);
     }
 }

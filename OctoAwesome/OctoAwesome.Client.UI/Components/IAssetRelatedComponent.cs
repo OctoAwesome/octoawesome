@@ -1,18 +1,17 @@
 ﻿namespace OctoAwesome.Client.UI.Components
 {
     /// <summary>
-    /// Interface für alle Componenten, die mit Assets aus dem Asset 
-    /// Manager (AssetComponent) arbeiten.
+    /// Interface for all components, which work with assets from the asset manager(<see cref="AssetComponent"/>).
     /// </summary>
     public interface IAssetRelatedComponent
     {
         /// <summary>
-        /// Signalisiert das forcierte entladen aller Assets.
+        /// Unloads all assets.
         /// </summary>
         void UnloadAssets();
 
         /// <summary>
-        /// Signalisiert das neu laden aller Assets.
+        /// Reloads all assets.
         /// </summary>
         void ReloadAssets();
     }

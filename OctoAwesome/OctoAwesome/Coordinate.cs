@@ -5,31 +5,31 @@ using engenious;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Datenstruktur zur genauen Position von Spiel-Elementen innerhalb der OctoAwesome Welt.
+    /// Struct for exact position in the OctoAwesome universe.
     /// </summary>
     public struct Coordinate
     {
         /// <summary>
-        /// Index des Planeten im Universum.
+        /// Planet Id the coordinate points to.
         /// </summary>
         public int Planet;
 
         /// <summary>
-        /// Index des betroffenen Blocks.
+        /// Index position of the block the coordinate points to.
         /// </summary>
         private Index3 block;
 
         /// <summary>
-        /// Position innerhalb des Blocks (0...1).
+        /// Sub-block position [0..1].
         /// </summary>
         private Vector3 position;
 
         /// <summary>
-        /// Erzeugt eine neue Instanz der Coordinate-Struktur.
+        /// Initializes a new instance of the <see cref="Coordinate"/> struct.
         /// </summary>
-        /// <param name="planet">Index des Planeten</param>
-        /// <param name="block">Blockindex innerhalb des Planeten</param>
-        /// <param name="position">Position innerhalb des Blockes</param>
+        /// <param name="planet">Planet Id the coordinate points to.</param>
+        /// <param name="block">Index position of the block the coordinate points to.</param>
+        /// <param name="position">Sub-block position [0..1].</param>
         public Coordinate(int planet, Index3 block, Vector3 position)
         {
             Planet = planet;
@@ -39,7 +39,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt den Index des Chunks zurück oder legt diesen fest.
+        /// Gets or sets the chunk index this coordinate points to.
         /// </summary>
         [XmlIgnore]
         public Index3 ChunkIndex
@@ -58,7 +58,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt den globalen Index (Planet-Koordinaten) des Blockes zurück oder legt diesen fest.
+        /// Gets or sets the global block index (Global coordinates of the block, with block precision).
         /// </summary>
         public Index3 GlobalBlockIndex
         {
@@ -67,7 +67,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt den lokalen Index des Blocks (Chunk-Koordinaten) zurück oder legt diesen fest.
+        /// Gets or sets the local block index relative to the chunk given by <see cref="ChunkIndex"/>.
         /// </summary>
         [XmlIgnore]
         public Index3 LocalBlockIndex
@@ -92,7 +92,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt die globale Position (Planet-Koordinaten) als Vektor zurück oder legt diesen fest.
+        /// Gets or sets the global position(exact position on the planet).
         /// </summary>
         [XmlIgnore]
         public Vector3 GlobalPosition
@@ -111,7 +111,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt die lokale Position (Chunk-Koordinaten) als Vektor zurück oder legt diese fest.
+        /// Gets or sets the position local to the chunk given by <see cref="ChunkIndex"/>.
         /// </summary>
         [XmlIgnore]
         public Vector3 LocalPosition
@@ -137,7 +137,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gibt die Position innerhalb des aktuellen Blockes zurück oder legt diese fest.
+        /// Gets or sets the sub-block position [0..1].
         /// </summary>
         public Vector3 BlockPosition
         {
@@ -150,7 +150,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Normalisiert die vorhandenen Parameter auf den Position-Wertebereich von [0...1] und die damit verbundene Verschiebung im Block.
+        /// Normalizes the <see cref="BlockPosition"/> to be in range [0..1] and applies the movement to the <see cref="LocalBlockIndex"/> when necessary.
         /// </summary>
         private void Normalize()
         {
@@ -164,9 +164,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Normalisiert den ChunkIndex auf die gegebenen Limits.
+        /// Normalizes the x and y components of <see cref="ChunkIndex"/> to the given maximum values and prevents negative values.
         /// </summary>
-        /// <param name="limit"></param>
+        /// <param name="limit">The maximum values for the <see cref="ChunkIndex"/>.</param>
         public void NormalizeChunkIndexXY(Index3 limit)
         {
             Index3 index = ChunkIndex;
@@ -175,12 +175,14 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Addiert die zwei gegebenen <see cref="Coordinate"/>s.
+        /// Calculates the sum of two <see cref="Coordinate"/> structs.
         /// </summary>
-        /// <param name="i1"></param>
-        /// <param name="i2"></param>
-        /// <exception cref="NotSupportedException">Wenn die beiden Coordinates nicht auf den selben Planeten verweisen</exception>
-        /// <returns>Das Ergebnis der Addition</returns>
+        /// <param name="i1">The first operand.</param>
+        /// <param name="i2">The second operand.</param>
+        /// <returns>The added result.</returns>
+        /// <exception cref="NotSupportedException">
+        /// Thrown when the coordinates do not reference the same <see cref="Planet"/>.
+        /// </exception>
         public static Coordinate operator +(Coordinate i1, Coordinate i2)
         {
             if (i1.Planet != i2.Planet)
@@ -190,25 +192,19 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Addiert den gegebenen Vector3 auf die <see cref="BlockPosition"/> der Coordinate.
+        /// Calculates the <see cref="Coordinate"/> displacement by a <see cref="Vector3"/>.
         /// </summary>
-        /// <param name="i1"></param>
-        /// <param name="i2"></param>
-        /// <returns>Das Ergebnis der Addition</returns>
+        /// <param name="i1">The coordinate to add on to.</param>
+        /// <param name="i2">The value to add onto the coordinate.</param>
+        /// <returns>The added result.</returns>
+        /// <remarks>Equivalent to adding <paramref name="i2"/> to <see cref="BlockPosition"/>.</remarks>
         public static Coordinate operator +(Coordinate i1, Vector3 i2)
             => new Coordinate(i1.Planet, i1.block, i1.position + i2);
 
-        /// <summary>
-        /// Stellt die Coordinate-Instanz als string dar.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override string ToString() => $@"({ Planet }/{(block.X + position.X):0.000000}/{(block.Y + position.Y):0.000000}/{(block.Z + position.Z):0.000000})";
 
-        /// <summary>
-        /// Compare this object with an other object
-        /// </summary>
-        /// <param name="obj">a other object</param>
-        /// <returns>true if both objects are equal</returns>
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             if (obj is Coordinate coordinate)
@@ -219,6 +215,8 @@ namespace OctoAwesome
 
             return base.Equals(obj);
         }
+
+        /// <inheritdoc />
         public override int GetHashCode() => base.GetHashCode();
     }
 }

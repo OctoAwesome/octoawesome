@@ -7,13 +7,23 @@ using System;
 
 namespace OctoAwesome.Basics.EntityComponents.UIComponents
 {
+    /// <summary>
+    /// UI component for transferring items between inventories.
+    /// </summary>
     public class TransferUIComponent : UIComponent
     {
+        /// <summary>
+        /// Called when the transfer ui screen got closed.
+        /// </summary>
         public event EventHandler<NavigationEventArgs>? Closed;
 
         private TransferScreen? transferScreen;
         private readonly InventoryComponent chestInventory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransferUIComponent"/> class.
+        /// </summary>
+        /// <param name="chestInventory">The inventory to show in the ui screen.</param>
         public TransferUIComponent(InventoryComponent chestInventory)
         {
             this.chestInventory = chestInventory;
@@ -25,6 +35,10 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
             Closed?.Invoke(sender, e);
         }
 
+        /// <summary>
+        /// Shows the transfer ui screen to a player.
+        /// </summary>
+        /// <param name="p">The player to show the ui screen to.</param>
         public void Show(Player p)
         {
             if (transferScreen is null)

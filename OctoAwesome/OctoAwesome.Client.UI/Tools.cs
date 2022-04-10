@@ -2,13 +2,15 @@
 
 namespace OctoAwesome.Client.UI
 {
-
+    /// <summary>
+    /// Helper tools for external UI interaction.
+    /// </summary>
     public static class Tools
     {
         /// <summary>
-        /// Öffnet die gegebene Url im Betriebsystem Browser
+        /// Opens a given Url in the default browser.
         /// </summary>
-        /// <param name="url">Die Url zum öffnen</param>
+        /// <param name="url">The url to open.</param>
         public static void OpenUrl(string url)
         {
             Process.Start(new ProcessStartInfo(url)

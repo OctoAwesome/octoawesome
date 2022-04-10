@@ -5,9 +5,16 @@ using System.IO;
 
 namespace OctoAwesome.GameServer.Commands
 {
+    /// <summary>
+    /// Contains commands for chunk loading and saving remotely.
+    /// </summary>
     public static class ChunkCommands
     {
-
+        /// <summary>
+        /// Loads column data from <see cref="CommandParameter"/> given location.
+        /// </summary>
+        /// <param name="parameter">The <see cref="CommandParameter"/> given location to load the column at.</param>
+        /// <returns>The loaded chunk column data.</returns>
         [Command((ushort)OfficialCommand.LoadColumn)]
         public static byte[] LoadColumn(CommandParameter parameter)
         {
@@ -32,6 +39,12 @@ namespace OctoAwesome.GameServer.Commands
                 return memoryStream.ToArray();
             }
         }
+
+        /// <summary>
+        /// Saves chunk column data received from <see cref="CommandParameter"/>.
+        /// </summary>
+        /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk column data.</param>
+        /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.SaveColumn)]
         public static byte[] SaveColumn(CommandParameter parameter)
         {

@@ -5,25 +5,27 @@ using OctoAwesome.Serialization;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Entität, die der menschliche Spieler mittels Eingabegeräte steuern kann.
+    /// Entity, that the user can control using input devices.
     /// </summary>
     [SerializationId(1, 1)]
     public sealed class Player : Entity
     {
         /// <summary>
-        /// Die Reichweite des Spielers, in der er mit Spielelementen wie <see cref="Block"/> und <see cref="Entity"/> interagieren kann
+        /// The range the user can interact with in game elements e.g. <see cref="Block"/> and <see cref="Entity"/>.
         /// </summary>
         public const int SELECTIONRANGE = 8;
 
         private readonly IPool<EntityNotification> entityNotificationPool;
 
         /// <summary>
-        /// Erzeugt eine neue Player-Instanz an der Default-Position.
+        /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
         public Player()
         {
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
         }
+
+        /// <inheritdoc />
         public override void OnNotification(SerializableNotification notification)
         {
             base.OnNotification(notification);

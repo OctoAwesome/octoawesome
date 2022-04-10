@@ -6,25 +6,21 @@ using OctoAwesome.Notifications;
 namespace OctoAwesome
 {
     /// <summary>
-    /// Standard-Implementierung des Planeten.
+    /// The default implementation for planets.
     /// </summary>
     public class Planet : IPlanet
     {
-        protected IClimateMap? climateMap;
-
         /// <summary>
-        /// ID des Planeten.
+        /// Backing field for <see cref="ClimateMap"/>.
         /// </summary>
+        protected IClimateMap? climateMap;
+        /// <inheritdoc />
         public int Id { get; private set; }
 
-        /// <summary>
-        /// Referenz auf das Parent Universe
-        /// </summary>
+        /// <inheritdoc />
         public Guid Universe { get; private set; }
 
-        /// <summary>
-        /// Die Klimakarte des Planeten
-        /// </summary>
+        /// <inheritdoc />
         public IClimateMap ClimateMap
         {
             get
@@ -34,25 +30,19 @@ namespace OctoAwesome
             }
         }
 
-        /// <summary>
-        /// Seed des Zufallsgenerators dieses Planeten.
-        /// </summary>
+        /// <inheritdoc />
         public int Seed { get; private set; }
 
-        /// <summary>
-        /// Die Größe des Planeten in Chunks.
-        /// </summary>
+        /// <inheritdoc />
         public Index3 Size { get; private set; }
 
-        /// <summary>
-        /// Gravitation des Planeten.
-        /// </summary>
+        /// <inheritdoc />
         public float Gravity { get; protected set; }
 
-        /// <summary>
-        /// Der Generator des Planeten.
-        /// </summary>
+        /// <inheritdoc />
         public IMapGenerator Generator { get; set; }
+
+        /// <inheritdoc />
         public IGlobalChunkCache GlobalChunkCache { get; }
 
         private bool disposed;
@@ -63,12 +53,12 @@ namespace OctoAwesome
         private int secretId = NextId;
 
         /// <summary>
-        /// Initialisierung des Planeten.
+        /// Initializes a new instance of the <see cref="Planet"/> class.
         /// </summary>
-        /// <param name="id">ID des Planeten.</param>
-        /// <param name="universe">ID des Universums.</param>
-        /// <param name="size">Größe des Planeten in Zweierpotenzen Chunks.</param>
-        /// <param name="seed">Seed des Zufallsgenerators.</param>
+        /// <param name="id">The id of the planet.</param>
+        /// <param name="universe">The <see cref="Guid"/> of the universe.</param>
+        /// <param name="size">Size number of chunks in dualistic logarithmic scale.</param>
+        /// <param name="seed">The seed to generate data with.</param>
         public Planet(int id, Guid universe, Index3 size, int seed) : this()
         {
             Id = id;
@@ -81,17 +71,14 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Erzeugt eine neue Instanz eines Planeten.
+        /// Initializes a new instance of the <see cref="Planet"/> class.
         /// </summary>
         public Planet()
         {
             GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>(), TypeContainer.Get<SerializationIdTypeProvider>());
         }
 
-        /// <summary>
-        /// Serialisiert den Planeten in den angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Zielstream</param>
+        /// <inheritdoc />
         public virtual void Serialize(BinaryWriter writer)
         {
             writer.Write(Id);
@@ -103,10 +90,7 @@ namespace OctoAwesome
             writer.Write(Universe.ToByteArray());
         }
 
-        /// <summary>
-        /// Deserialisiert den Planeten aus dem angegebenen Stream.
-        /// </summary>
-        /// <param name="stream">Quellstream</param>
+        /// <inheritdoc />
         public virtual void Deserialize(BinaryReader reader)
         {
             Id = reader.ReadInt32();
@@ -116,6 +100,8 @@ namespace OctoAwesome
             Universe = new Guid(reader.ReadBytes(16));
             //var name = reader.ReadString();
         }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             if (disposed)

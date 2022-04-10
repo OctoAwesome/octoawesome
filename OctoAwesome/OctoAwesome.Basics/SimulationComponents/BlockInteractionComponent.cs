@@ -7,7 +7,9 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
-
+    /// <summary>
+    /// Component for simulation with block interactions.
+    /// </summary>
     public class BlockInteractionComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
@@ -17,11 +19,21 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlockInteractionComponent"/> class.
+        /// </summary>
+        /// <param name="simulation">The simulation the block interactions should happen in.</param>
+        /// <param name="interactionService">
+        /// The interaction service to actually interact with blocks in the simulation.
+        /// </param>
         public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
         }
+
+        /// <inheritdoc />
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
         {
             var entity = value.Value;
@@ -77,7 +89,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                                     positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
                                 );
 
-                            // Nicht in sich selbst reinbauen
+                            // Do not build in oneself
                             for (var i = 0; i < boxes.Length; i++)
                             {
                                 var box = boxes[i];
@@ -137,6 +149,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                         }
 
                     }
+
+
             }
         }
     }

@@ -4,13 +4,24 @@ using OctoAwesome.Basics.Noise;
 
 namespace OctoAwesome.Basics.Biomes
 {
-
+    /// <summary>
+    /// Biome generator root that generates the whole planet.
+    /// </summary>
     public class SurfaceBiomeGenerator : LargeBiomeBase
     {
+        /// <summary>
+        /// Gets the sea level the land mass starts generating at (in blocks).
+        /// </summary>
         public int SeaLevel
         {
             get;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SurfaceBiomeGenerator"/> class.
+        /// </summary>
+        /// <param name="planet">The planet the biome should be generated on.</param>
+        /// <param name="seaLevel">The height level the landmass should start generating at (in blocks).</param>
         public SurfaceBiomeGenerator(IPlanet planet, int seaLevel)
             : base(planet, 0f, 1f, 0f, 1f,
                 new SimplexNoiseGenerator(planet.Seed) { FrequencyX = 1f / 10000, FrequencyY = 1f / 10000, Factor = 1f })
@@ -25,6 +36,8 @@ namespace OctoAwesome.Basics.Biomes
 
             SortSubBiomes();
         }
+
+        /// <inheritdoc />
         protected override float CurveFunction(float inputValue)
         {
             return CurveFunction(inputValue, -0.08f, 200);
@@ -37,6 +50,8 @@ namespace OctoAwesome.Basics.Biomes
             inputValue = (factor * (inputValue - 0.5f)) + 0.5f;
             return Math.Min(Math.Max(inputValue, 0f), 1f);
         }
+
+        /// <inheritdoc />
         public override void FillHeightmap(Index2 chunkIndex, float[] heightmap)
         {
             Index2 blockIndex = new Index2(chunkIndex.X * Chunk.CHUNKSIZE_X, chunkIndex.Y * Chunk.CHUNKSIZE_Y);

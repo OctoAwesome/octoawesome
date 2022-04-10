@@ -2,6 +2,9 @@
 
 namespace OctoAwesome.Database
 {
+    /// <summary>
+    /// Enumeration of operation access types.
+    /// </summary>
     [Flags]
     public enum Operation
     {

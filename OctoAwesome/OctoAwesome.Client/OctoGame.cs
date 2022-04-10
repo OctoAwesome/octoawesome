@@ -103,12 +103,16 @@ namespace OctoAwesome.Client
 
             Components.Add(Assets);
             Components.Add(Screen);
+
+
             #region GameComponents
             DefinitionManager = typeContainer.Get<DefinitionManager>();
 
             //var persistenceManager = new DiskPersistenceManager(ExtensionLoader, DefinitionManager, Settings);
             //ResourceManager = new ResourceManager(ExtensionLoader, DefinitionManager, Settings, persistenceManager);
             ResourceManager = typeContainer.Get<ContainerResourceManager>();
+
+
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
             Components.Add(Player);

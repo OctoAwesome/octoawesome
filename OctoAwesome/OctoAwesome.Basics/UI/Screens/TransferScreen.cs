@@ -10,8 +10,14 @@ using System;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
+    /// <summary>
+    /// Transfer screen to be able to transfer items between inventories.
+    /// </summary>
     public class TransferScreen : Screen
     {
+        /// <summary>
+        /// Called when the transfer screen was closed.
+        /// </summary>
         public event EventHandler<NavigationEventArgs>? Closed;
 
         private readonly AssetComponent assetComponent;
@@ -24,6 +30,14 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private InventoryComponent componentA;
         private InventoryComponent componentB;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TransferScreen"/> class.
+        /// </summary>
+        /// <param name="manager">The <see cref="T:engenious.UI.BaseScreenComponent" />.</param>
+        /// <param name="assetComponent">The asset component to load resource assets.</param>
+        /// <param name="inventoryComponentA">The inventory to show on the top.</param>
+        /// <param name="inventoryComponentB">The inventory to show on the bottom.</param>
         public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent, InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB) : base(manager)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
@@ -134,6 +148,8 @@ namespace OctoAwesome.Basics.UI.Screens
             inventoryA.Rebuild(componentA.Inventory);
             inventoryB.Rebuild(componentB.Inventory);
         }
+
+        /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs args)
         {
 
@@ -145,6 +161,8 @@ namespace OctoAwesome.Basics.UI.Screens
 
             base.OnKeyDown(args);
         }
+
+        /// <inheritdoc />
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
             base.OnNavigatedFrom(args);
