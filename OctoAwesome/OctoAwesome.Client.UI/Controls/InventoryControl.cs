@@ -18,7 +18,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// <summary>
         /// Gets the slot that is currently hovered over by the cursor.
         /// </summary>
-        public InventorySlot HoveredSlot { get; private set; }
+        public IInventorySlot HoveredSlot { get; private set; }
 
         private Grid grid;
         private readonly ScrollContainer scroll;
@@ -31,7 +31,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// <param name="assets">The asset component used to load resource assets.</param>
         /// <param name="inventorySlots">The inventory slots of the inventory to show.</param>
         /// <param name="columns">The number of columns for the inventory.</param>
-        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, List<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
         {
             scroll = new ScrollContainer(manager)
             {
@@ -58,7 +58,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// </summary>
         /// <param name="inventorySlots">The inventory slots to create controls for.</param>
         /// <param name="columns">The number of columns to split the inventory into.</param>
-        public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
+        public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS)
         {
             grid = new Grid(ScreenManager)
             {

@@ -130,7 +130,7 @@ namespace OctoAwesome.Basics.UI.Screens
             }
         }
 
-        private static void MoveSlot(InventorySlot slot, InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target)
+        private static void MoveSlot(IInventorySlot slot, InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target)
         {
             if (!source.RemoveSlot(slot))
                 return;

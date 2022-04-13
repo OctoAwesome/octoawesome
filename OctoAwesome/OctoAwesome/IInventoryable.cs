@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using System;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Interface for all inventory manageable definitions.
@@ -15,5 +17,10 @@
         /// </summary>
         /// <remarks>Measured in block count not un multiples of <see cref="VolumePerUnit"/>!</remarks>
         int StackLimit { get; }
+
+        /// <summary>
+        /// Gets a value indicating how dense a unit of the inventoryable is
+        /// </summary>
+        int DensityPerUnit { get; }
     }
 }

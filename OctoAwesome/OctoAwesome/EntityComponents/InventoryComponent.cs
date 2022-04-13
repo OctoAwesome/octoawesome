@@ -2,6 +2,7 @@
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,16 +18,22 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets a list of inventory slots this inventory consists of.
         /// </summary>
-        public List<InventorySlot> Inventory { get; }
+        public IReadOnlyCollection<IInventorySlot> Inventory => inventory;
+
+        private readonly List<InventorySlot> inventory;
 
         private readonly IDefinitionManager definitionManager;
+
+        private int maxSlots;
+        private int maxWeight;
+        private int maxVolume;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InventoryComponent"/> class.
         /// </summary>
         public InventoryComponent()
         {
-            Inventory = new List<InventorySlot>();
+            inventory = new List<InventorySlot>();
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
 
@@ -85,7 +92,7 @@ namespace OctoAwesome.EntityComponents
                     Amount = amount,
                 };
 
-                Inventory.Add(slot);
+                inventory.Add(slot);
             }
         }
 
@@ -93,8 +100,8 @@ namespace OctoAwesome.EntityComponents
         public override void Serialize(BinaryWriter writer)
         {
             base.Serialize(writer);
-            writer.Write(Inventory.Count);
-            foreach (var slot in Inventory)
+            writer.Write(inventory.Count);
+            foreach (var slot in inventory)
             {
                 if (slot.Item is Item item)
                 {
@@ -115,6 +122,24 @@ namespace OctoAwesome.EntityComponents
             }
         }
 
+        /*
+         1. Remove X from Inventory
+         2. Remove X with Amount Y from Inventory
+         3. Add X with Amount Y to Inventory
+         4. Does Inventory contain X
+         5. Does Inventory contain X with Amount Y
+         6. Can X be added to Inventory
+         7. Can X with Amount Y be added to Inventory
+         8. Remove X from Inventory in Slot Y
+         9. Get Slot X
+         10. Get Slot X with Definition / item Y
+         11. Does inventory contains Slot X
+         12. Add / Remove empty slot
+         13. Get Inventory Fullness
+
+         Add some of these methods as a wrapper on the IInventorySlot itself
+         */
+
         /// <summary>
         /// Adds a specific amount of an item into the inventory..
         /// </summary>
@@ -122,7 +147,7 @@ namespace OctoAwesome.EntityComponents
         /// <param name="item">The item that can be put into the inventory.</param>
         public void AddUnit(int quantity, IInventoryable item)
         {
-            var slot = Inventory.FirstOrDefault(s => s.Item == item &&
+            var slot = inventory.FirstOrDefault(s => s.Item == item &&
                 s.Amount < item.VolumePerUnit * item.StackLimit);
 
             // If there is no slot available, or the available one is full, then add a new slot.
@@ -132,7 +157,7 @@ namespace OctoAwesome.EntityComponents
                 {
                     Amount = quantity,
                 };
-                Inventory.Add(slot);
+                inventory.Add(slot);
             }
             else
             {
@@ -146,17 +171,17 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         /// <param name="slot">The inventory slot to remove from.</param>
         /// <returns>A value indicating whether removing a unit from the inventory slot was successful;
-        /// (e.g. <c>false</c> if not enough volume is available - less than <see cref="IInventoryable.VolumePerUnit"/>).</returns>
-        public bool RemoveUnit(InventorySlot slot)
+        /// (e.g. <see langword="false"/> if not enough volume is available - less than <see cref="IInventoryable.VolumePerUnit"/>).</returns>
+        public bool RemoveUnit(IInventorySlot slot)
         {
-            if (slot.Item is not IInventoryable definition)
+            if (slot.Item is not IInventoryable definition || slot.Item is not InventorySlot invSlot)
                 return false;
 
             if (slot.Amount >= definition.VolumePerUnit) // We are able to place one block
             {
-                slot.Amount -= definition.VolumePerUnit;
+                invSlot.Amount -= definition.VolumePerUnit;
                 if (slot.Amount <= 0)
-                    return Inventory.Remove(slot);
+                    return inventory.Remove(invSlot);
                 return true;
             }
             return false;
@@ -167,18 +192,21 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         /// <param name="inventorySlot">The inventory slot to remove.</param>
         /// <returns>A value indicating whether removing was successful.</returns>
-        public bool RemoveSlot(InventorySlot inventorySlot)
+        public bool RemoveSlot(IInventorySlot inventorySlot)
         {
-            return Inventory.Remove(inventorySlot);
+            if (inventorySlot is not InventorySlot invSlot)
+                return false;
+
+            return inventory.Remove(invSlot);
         }
 
         /// <summary>
         /// Adds a new inventory slot.
         /// </summary>
         /// <param name="inventorySlot">The inventory slot to add.</param>
-        public void AddSlot(InventorySlot inventorySlot)
+        public void AddSlot(IInventorySlot inventorySlot)
         {
-            var slot = Inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
+            var slot = inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
                s.Amount < s.Item.VolumePerUnit * s.Item.StackLimit);
 
             // If there is no slot available, or the available one is full, then add a new slot.
@@ -188,7 +216,7 @@ namespace OctoAwesome.EntityComponents
                 {
                     Amount = inventorySlot.Amount,
                 };
-                Inventory.Add(slot);
+                inventory.Add(slot);
             }
             else
             {

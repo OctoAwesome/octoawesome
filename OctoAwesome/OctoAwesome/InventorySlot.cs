@@ -2,20 +2,16 @@
 
 namespace OctoAwesome
 {
-    /// <summary>
-    /// A slot in an inventory.
-    /// </summary>
-    public class InventorySlot
+    /// <inheritdoc/>
+    public class InventorySlot : IInventorySlot
     {
-        /// <summary>
-        /// The item in the inventory slot.
-        /// </summary>
+        /// <inheritdoc/>
         public IInventoryable Item
         {
             get => item;
             private init
             {
-                if (value is IDefinition definition)
+                if (value is IBlockDefinition definition)
                     Definition = definition;
                 else if (value is IItem i)
                     Definition = i.Definition;
@@ -26,17 +22,14 @@ namespace OctoAwesome
             }
         }
 
-        private readonly IInventoryable item;
 
-        /// <summary>
-        /// The volume amount of <see cref="Item"/> in this slot[dm³].
-        /// </summary>
+        /// <inheritdoc/>
         public decimal Amount { get; set; }
 
-        /// <summary>
-        /// Gets the definition for the <see cref="Item"/>.
-        /// </summary>
+        /// <inheritdoc/>
         public IDefinition? Definition { get; init; }
+
+        private readonly IInventoryable item;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InventorySlot"/> class.
