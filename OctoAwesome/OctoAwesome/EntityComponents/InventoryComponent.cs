@@ -28,6 +28,7 @@ namespace OctoAwesome.EntityComponents
         private int maxWeight;
         private int maxVolume;
 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InventoryComponent"/> class.
         /// </summary>
@@ -125,20 +126,122 @@ namespace OctoAwesome.EntityComponents
         /*
          1. Remove X from Inventory
          2. Remove X with Amount Y from Inventory
+         8. Remove X from Inventory in Slot Y
+
          3. Add X with Amount Y to Inventory
+         12. Add / Remove empty slot
+
          4. Does Inventory contain X
          5. Does Inventory contain X with Amount Y
+         11. Does inventory contains Slot X
+
          6. Can X be added to Inventory
          7. Can X with Amount Y be added to Inventory
-         8. Remove X from Inventory in Slot Y
+
          9. Get Slot X
          10. Get Slot X with Definition / item Y
-         11. Does inventory contains Slot X
-         12. Add / Remove empty slot
          13. Get Inventory Fullness
 
+        14. How much of X can be added to Inventory
+
          Add some of these methods as a wrapper on the IInventorySlot itself
+
+        TODO Remove from multiple slots with same item
+        TODO Check for dynamic or static inventory before removing slot
          */
+
+        public bool Remove(IInventoryable item)
+        {
+            var slot = inventory.FirstOrDefault(x => x.Item == item);
+            if (slot is null)
+                return false;
+            return Remove(item, slot);
+        }
+        public bool Remove(IInventoryable item, int quantity)
+        {
+            var slot = inventory.FirstOrDefault(x => x.Item == item && x.Amount >= quantity);
+            if (slot is null)
+                return false;
+            return Remove(quantity, slot);
+        }
+        public bool Remove(IInventoryable item, InventorySlot slot)
+        {
+            if (slot is null || item is null || slot.Item != item)
+                return false;
+            slot.Item = null;
+            return true;
+        }
+        public bool Remove(int quantity, InventorySlot slot)
+        {
+            if (slot is null)
+                return false;
+            if (slot.Amount < quantity)
+                return false;
+            if (slot.Amount == quantity)
+                return inventory.Remove(slot);
+            slot.Amount -= quantity;
+            return true;
+        }
+        public bool Remove(InventorySlot slot)
+        {
+            return inventory.Remove(slot);
+        }
+
+        public bool Add(IInventoryable item, int quantity)
+        {
+            var slot = inventory.FirstOrDefault(x => x.Item == item);
+            if(maxSlots <= inventory.Count)
+                return false;
+            if (slot is null)
+                slot = new InventorySlot(item);
+            return Add(quantity, slot);
+        }
+        public bool Add(int quantity, InventorySlot slot)
+        {
+            //TODO Check size of inventory
+            slot.Amount += quantity;
+            return true;
+        }
+
+        public InventorySlot? AddEmptySlot()
+        {
+            var slot = new InventorySlot();
+            if (Add(slot))
+                return slot;
+            return null;
+        }
+        public bool Add(InventorySlot slot)
+        {
+            if (maxSlots <= inventory.Count)
+                return false;
+
+            inventory.Add(slot);
+            return true;
+        }
+
+        public bool Contains(InventorySlot slot) => inventory.Contains(slot);
+        public bool Contains(IInventoryable item) => inventory.Any(x => x.Item == item);
+        public bool Contains(IInventoryable item, int quanity) => inventory.Any(x => x.Item == item && x.Amount >= quanity);
+        public bool ContainsExactly(IInventoryable item, int quanity) => inventory.Count(x => x.Item == item && x.Amount == quanity) == 1;
+
+        public InventorySlot? GetSlotAtIndex(int index)
+        {
+            if (index >= inventory.Count)
+                return null;
+            return inventory[index];
+        }
+        public InventorySlot? GetSlot(IInventoryable item)
+        {
+            if (item is null)
+                return null;
+            return inventory.FirstOrDefault(x => x.Item == item);
+        }
+        public InventorySlot? GetSlot(IDefinition definition)
+        {
+            if (definition is null)
+                return null;
+            return inventory.FirstOrDefault(x => x.Definition == definition);
+        }
 
         /// <summary>
         /// Adds a specific amount of an item into the inventory..

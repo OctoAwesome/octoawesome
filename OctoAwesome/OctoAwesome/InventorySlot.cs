@@ -6,10 +6,10 @@ namespace OctoAwesome
     public class InventorySlot : IInventorySlot
     {
         /// <inheritdoc/>
-        public IInventoryable Item
+        public IInventoryable? Item
         {
             get => item;
-            private init
+            internal set
             {
                 if (value is IBlockDefinition definition)
                     Definition = definition;
@@ -27,9 +27,10 @@ namespace OctoAwesome
         public decimal Amount { get; set; }
 
         /// <inheritdoc/>
-        public IDefinition? Definition { get; init; }
+        public IDefinition? Definition { get; internal set; }
 
-        private readonly IInventoryable item;
+
+        private IInventoryable? item;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InventorySlot"/> class.
@@ -38,6 +39,12 @@ namespace OctoAwesome
         public InventorySlot(IInventoryable item)
         {
             Item = item;
+        }
+        /// <summary>
+        /// Initializes a new empty instance of the <see cref="InventorySlot"/> class.
+        /// </summary>
+        public InventorySlot()
+        {
         }
     }
 }
