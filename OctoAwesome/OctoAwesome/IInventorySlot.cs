@@ -14,7 +14,7 @@ namespace OctoAwesome
         /// <summary>
         /// The volume amount of <see cref="Item"/> in this slot[dm³].
         /// </summary>
-        decimal Amount { get; }
+        int Amount { get; }
         /// <summary>
         /// Gets the definition for the <see cref="Item"/>.
         /// </summary>

@@ -123,7 +123,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private static void OnInventoryDrop(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, DragEventArgs e)
         {
-            if (e.Content is InventorySlot slot)
+            if (e.Content is IInventorySlot slot)
             {
                 e.Handled = true;
                 MoveSlot(slot, sourceControl, source, targetControl, target);

@@ -5,6 +5,7 @@ using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -24,9 +25,17 @@ namespace OctoAwesome.EntityComponents
 
         private readonly IDefinitionManager definitionManager;
 
-        private int maxSlots;
-        private int maxWeight;
-        private int maxVolume;
+        private bool HasLimitedWeight => maxWeight != int.MaxValue;
+        private bool HasLimitedVolume => maxVolume != int.MaxValue;
+
+        private bool IsFixedSlotSize = false;
+
+        private int maxSlots = int.MaxValue;
+        private int maxWeight = int.MaxValue;
+        private int maxVolume = int.MaxValue;
+
+        private int currentWeight = 0;
+        private int currentVolume = 0;
 
 
         /// <summary>
@@ -50,11 +59,11 @@ namespace OctoAwesome.EntityComponents
 
                 var definition = definitionManager.Definitions.FirstOrDefault(d => d.GetType().FullName == name);
 
-                decimal amount = 1;
+                int amount = 1;
                 IInventoryable inventoryItem = default;
                 if (definition is not null && definition is IInventoryable inventoryable)
                 {
-                    amount = reader.ReadDecimal();
+                    amount = reader.ReadInt32();
                     inventoryItem = inventoryable;
                 }
                 else
@@ -146,8 +155,11 @@ namespace OctoAwesome.EntityComponents
 
          Add some of these methods as a wrapper on the IInventorySlot itself
 
-        TODO Remove from multiple slots with same item
-        TODO Check for dynamic or static inventory before removing slot
+        TODO Can a slot be in multiple inventories at the same time? Complicated limits, threadsafe and and and
+        TODO Remove all occurences of item? <see Line 162>
+        TODO Add all slots on initialize for fixed size inventory
+        TODO Where and How to Initialize Limits
+        TODO Threadsafety?
          */
 
         public bool Remove(IInventoryable item)
@@ -157,12 +169,21 @@ namespace OctoAwesome.EntityComponents
                 return false;
             return Remove(item, slot);
         }
-        public bool Remove(IInventoryable item, int quantity)
+
+        public int Remove(IInventoryable item, int quantity)
         {
-            var slot = inventory.FirstOrDefault(x => x.Item == item && x.Amount >= quantity);
-            if (slot is null)
-                return false;
-            return Remove(quantity, slot);
+            if (!Contains(item, quantity))
+                return 0;
+
+            int left = quantity;
+            foreach (var slot in inventory.Where(x => x.Item == item))
+            {
+                left -= Remove(left, slot);
+                Debug.Assert(left < 0, "The quantity amount after removing should never be negative!");
+                if (left <= 0)
+                    break;
+            }
+            return quantity - left;
         }
         public bool Remove(IInventoryable item, InventorySlot slot)
         {
@@ -171,48 +192,132 @@ namespace OctoAwesome.EntityComponents
             slot.Item = null;
             return true;
         }
-        public bool Remove(int quantity, InventorySlot slot)
+        public int Remove(int quantity, InventorySlot slot)
         {
             if (slot is null)
-                return false;
+                return 0;
             if (slot.Amount < quantity)
-                return false;
-            if (slot.Amount == quantity)
-                return inventory.Remove(slot);
-            slot.Amount -= quantity;
-            return true;
+            {
+                quantity = slot.Amount;
+                slot.Amount = 0;
+            }
+
+            switch (slot.Amount)
+            {
+                case 0 when IsFixedSlotSize:
+                    return quantity;
+                case 0:
+                    inventory.Remove(slot);
+                    break;
+                default:
+                    slot.Amount -= quantity;
+                    break;
+            }
+
+            return quantity;
         }
         public bool Remove(InventorySlot slot)
         {
+            if (IsFixedSlotSize)
+                return false;
             return inventory.Remove(slot);
         }
 
-        public bool Add(IInventoryable item, int quantity)
+        public int Add(IInventoryable item, int quantity)
         {
-            var slot = inventory.FirstOrDefault(x => x.Item == item);
-            if(maxSlots <= inventory.Count)
-                return false;
-            if (slot is null)
-                slot = new InventorySlot(item);
-            return Add(quantity, slot);
+            var slots = inventory.Where(x => x.Item == item);
+            if (!slots.Any()
+                && (maxSlots <= inventory.Count
+                    || IsFixedSlotSize))
+            {
+                return 0;
+            }
+
+            var alreadyAdded = 0;
+            foreach (var slot in slots)
+            {
+                alreadyAdded += Add(Math.Min(quantity, quantity - alreadyAdded), slot);
+                if (alreadyAdded >= quantity)
+                    return alreadyAdded;
+            }
+
+            if (IsFixedSlotSize)
+                return alreadyAdded;
+
+            for (int i = inventory.Count; i < maxSlots; i++)
+            {
+                var slot = new InventorySlot(item);
+                var newlyAdded = Add(Math.Min(quantity, quantity - alreadyAdded), slot);
+                if (newlyAdded == 0)
+                    return alreadyAdded;
+                alreadyAdded += newlyAdded;
+                inventory.Add(slot);
+                if (alreadyAdded >= quantity)
+                    return alreadyAdded;
+            }
+
+            return alreadyAdded;
         }
-        public bool Add(int quantity, InventorySlot slot)
+        public int Add(int quantity, InventorySlot slot)
         {
-            //TODO Check size of inventory
-            slot.Amount += quantity;
-            return true;
+            if (slot.Item is null)
+                return 0;
+
+            int quan = quantity;
+            if (HasLimitedVolume || HasLimitedWeight)
+            {
+                var limitedVolumeQuantity = int.MaxValue;
+
+                currentVolume = currentWeight = 0;
+                foreach (var item in inventory)
+                {
+                    if (item.Item is null)
+                        continue;
+                    currentVolume += item.Item.VolumePerUnit * item.Amount;
+                    currentWeight += item.Item.Weight * item.Amount;
+                }
+
+                if (HasLimitedVolume)
+                {
+                    var volumeToBeAdded = slot.Item.VolumePerUnit * quantity;
+                    if (currentVolume + volumeToBeAdded > maxVolume)
+                    {
+                        volumeToBeAdded = maxVolume - currentVolume;
+                        limitedVolumeQuantity = volumeToBeAdded / slot.Item.VolumePerUnit;
+                    }
+                }
+
+                var limitedWeightQuantity = int.MaxValue;
+                if (HasLimitedWeight)
+                {
+                    var weightToBeAdded = slot.Item.Weight * quantity;
+
+                    if (currentWeight + weightToBeAdded > maxWeight)
+                    {
+                        weightToBeAdded = maxWeight - currentWeight;
+                        limitedWeightQuantity = slot.Item.Weight / weightToBeAdded;
+                    }
+                }
+
+                quan = Math.Min(limitedWeightQuantity, Math.Min(limitedVolumeQuantity, quantity));
+            }
+
+            quan = Math.Min(quan, slot.Item.StackLimit);
+            slot.Amount += quan;
+            return quan;
         }
 
         public InventorySlot? AddEmptySlot()
         {
             var slot = new InventorySlot();
-            if (Add(slot))
+            if (Add(slot)) //No IsFixedSlotSize check required
                 return slot;
             return null;
         }
+
         public bool Add(InventorySlot slot)
         {
-            if (maxSlots <= inventory.Count)
+            if (maxSlots <= inventory.Count || IsFixedSlotSize)
                 return false;
 
             inventory.Add(slot);
@@ -221,8 +326,8 @@ namespace OctoAwesome.EntityComponents
 
         public bool Contains(InventorySlot slot) => inventory.Contains(slot);
         public bool Contains(IInventoryable item) => inventory.Any(x => x.Item == item);
-        public bool Contains(IInventoryable item, int quanity) => inventory.Any(x => x.Item == item && x.Amount >= quanity);
-        public bool ContainsExactly(IInventoryable item, int quanity) => inventory.Count(x => x.Item == item && x.Amount == quanity) == 1;
+        public bool Contains(IInventoryable item, int quanity) => inventory.Where(x => x.Item == item).Sum(x => x.Amount) >= quanity;
+        public bool ContainsExactly(IInventoryable item, int quanity) => inventory.Where(x => x.Item == item).Sum(x => x.Amount) == quanity;
 
         public InventorySlot? GetSlotAtIndex(int index)
         {

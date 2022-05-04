@@ -8,10 +8,10 @@ namespace OctoAwesome
     public interface IInventoryable
     {
         /// <summary>
-        /// Gets the volume per unit.
+        /// Gets the dm^3 per unit.
         /// </summary>
         int VolumePerUnit { get; }
-
+        
         /// <summary>
         /// Gets a value indicating how many item units can be stacked in one inventory slot.
         /// </summary>
@@ -19,8 +19,13 @@ namespace OctoAwesome
         int StackLimit { get; }
 
         /// <summary>
-        /// Gets a value indicating how dense a unit of the inventoryable is
+        /// Gets a value indicating how dense the inventoryable is in g/dm^3
         /// </summary>
-        int DensityPerUnit { get; }
+        int Density { get; }
+
+        /// <summary>
+        /// Gets a value indicating how much a unit weighs in g.
+        /// </summary>
+        int Weight => VolumePerUnit * Density;
     }
 }

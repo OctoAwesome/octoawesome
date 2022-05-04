@@ -5,6 +5,8 @@ namespace OctoAwesome
     /// <inheritdoc/>
     public class InventorySlot : IInventorySlot
     {
+        //TODO Add Size Limit could be needed for stack limited inventories, to not store billions of items
+
         /// <inheritdoc/>
         public IInventoryable? Item
         {
@@ -24,7 +26,7 @@ namespace OctoAwesome
 
 
         /// <inheritdoc/>
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
 
         /// <inheritdoc/>
         public IDefinition? Definition { get; internal set; }

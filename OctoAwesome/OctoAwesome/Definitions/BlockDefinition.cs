@@ -40,7 +40,7 @@ namespace OctoAwesome.Definitions
         /// <inheritdoc />
         public abstract IMaterialDefinition Material { get; }
         /// <inheritdoc />
-        public int DensityPerUnit => Material.Density;
+        public int Density => Material.Density;
 
         private readonly BoundingBox[] defaultCollisionBoxes = new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
 

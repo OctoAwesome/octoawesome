@@ -29,7 +29,7 @@ namespace OctoAwesome.Definitions.Items
         public virtual int StackLimit => 1;
 
         /// <inheritdoc />
-        public int DensityPerUnit => Material.Density;
+        public int Density => Material.Density;
 
         private readonly IDefinitionManager definitionManager;
 
