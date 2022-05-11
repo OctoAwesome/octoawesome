@@ -130,6 +130,12 @@ namespace OctoAwesome
                         next = true;
                         break;
                     }
+                    else if (parameter.IsOptional) //Currently no support for optional parameters :)
+                    {
+                        tmpList.Clear();
+                        next = true;
+                        break;
+                    }
                 }
 
                 if (next)

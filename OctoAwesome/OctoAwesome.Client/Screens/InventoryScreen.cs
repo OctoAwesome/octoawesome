@@ -188,7 +188,7 @@ namespace OctoAwesome.Client.Screens
             if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
             {
                 int offset = (int)args.Key - (int)Keys.D0;
-                player.Toolbar.SetTool(inventory.HoveredSlot, offset);
+                player.Toolbar.SetTool((InventorySlot)inventory.HoveredSlot, offset);
                 args.Handled = true;
             }
 
