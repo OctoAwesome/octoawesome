@@ -23,12 +23,9 @@ namespace OctoAwesome.EntityComponents
         /// Gets the currently active tool.
         /// </summary>
         /// <remarks>Defaults to <see cref="HandSlot"/> if no tool is currently active.</remarks>
-        public InventorySlot ActiveTool => Tools[activeIndex] ?? HandSlot;
+        public InventorySlot? ActiveTool => Tools[activeIndex];
 
-        /// <summary>
-        /// The inventory slot that describes the hand as a tool.
-        /// </summary>
-        public InventorySlot HandSlot { get; }
+
 
         /// <summary>
         /// Gets or sets the currently active tool slot.
@@ -42,7 +39,7 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Called when a tool slot was changed.
         /// </summary>
-        public event Action<InventorySlot, int>? OnChanged;
+        public event Action<InventorySlot?, int>? OnChanged;
 
 
         private int activeIndex;
@@ -53,7 +50,6 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public ToolBarComponent()
         {
-            HandSlot = new InventorySlot(new Hand(new HandDefinition()));
             Tools = new InventorySlot[TOOLCOUNT];
             ActiveIndex = 0;
         }
@@ -69,7 +65,7 @@ namespace OctoAwesome.EntityComponents
                 if (Tools[i] == slot)
                 {
                     Tools[i] = null;
-                    OnChanged?.Invoke(HandSlot, i);
+                    OnChanged?.Invoke(null, i);
                     break;
                 }
             }

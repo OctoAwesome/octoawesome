@@ -4,6 +4,7 @@ using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions;
 using OctoAwesome.Components;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -58,12 +59,24 @@ namespace OctoAwesome.Basics.SimulationComponents
                     Index3 add = new Index3();
                     switch (controller.ApplySide)
                     {
-                        case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
-                        case OrientationFlags.SideEast: add = new Index3(1, 0, 0); break;
-                        case OrientationFlags.SideSouth: add = new Index3(0, -1, 0); break;
-                        case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
-                        case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
-                        case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
+                        case OrientationFlags.SideWest:
+                            add = new Index3(-1, 0, 0);
+                            break;
+                        case OrientationFlags.SideEast:
+                            add = new Index3(1, 0, 0);
+                            break;
+                        case OrientationFlags.SideSouth:
+                            add = new Index3(0, -1, 0);
+                            break;
+                        case OrientationFlags.SideNorth:
+                            add = new Index3(0, 1, 0);
+                            break;
+                        case OrientationFlags.SideBottom:
+                            add = new Index3(0, 0, -1);
+                            break;
+                        case OrientationFlags.SideTop:
+                            add = new Index3(0, 0, 1);
+                            break;
                     }
 
                     if (toolbar.ActiveTool.Item is IBlockDefinition definition)
@@ -103,7 +116,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         if (!intersects)
                         {
-                            if (inventory.RemoveUnit(toolbar.ActiveTool))
+                            if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
                             {
                                 cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
                                 cache.SetBlockMeta(idx, (int)controller.ApplySide);
@@ -122,14 +135,10 @@ namespace OctoAwesome.Basics.SimulationComponents
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
                 IItem activeItem = null!;
-                if (toolbar.ActiveTool.Item is IItem item)
-                {
+                if (toolbar.ActiveTool?.Item is IItem item)
                     activeItem = item;
-                }
-                else if (toolbar.HandSlot.Item is IItem handItem)
-                {
-                    activeItem = handItem;
-                }
+                else
+                    activeItem = Hand.Instance;
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
@@ -145,7 +154,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         }
                         else if (definition is IInventoryable invDef)
                         {
-                            inventory.AddUnit(quantity, invDef);
+                            inventory.Add(invDef, quantity);
                         }
 
                     }

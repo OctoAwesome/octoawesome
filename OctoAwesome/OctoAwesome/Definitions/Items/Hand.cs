@@ -5,6 +5,8 @@
     /// </summary>
     public class Hand : Item
     {
+        public static readonly Hand Instance = new Hand(new HandDefinition());
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Hand"/> class.
         /// </summary>

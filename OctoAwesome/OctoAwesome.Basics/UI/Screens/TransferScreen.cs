@@ -7,6 +7,7 @@ using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.EntityComponents;
 using System;
+using System.Diagnostics;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -132,10 +133,14 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private static void MoveSlot(IInventorySlot slot, InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target)
         {
-            if (!source.RemoveSlot(slot))
+            var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
+            if (toAddAndRemove == 0)
                 return;
+            var item = slot.Item;
+            var amount = source.Remove(slot, toAddAndRemove);
 
-            target.AddSlot(slot);
+            var addedAddedAmount= target.Add(item, toAddAndRemove);
+            Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
             sourceControl.Rebuild(source.Inventory);
             targetControl.Rebuild(target.Inventory);
         }

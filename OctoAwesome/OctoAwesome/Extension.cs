@@ -24,7 +24,7 @@ namespace OctoAwesome
                 var p = (Player)player;
                 p.Components.AddComponent(new ControllableComponent());
                 p.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
-                p.Components.AddComponent(new InventoryComponent(true, 5));
+                p.Components.AddComponent(new InventoryComponent(true, 40));
                 p.Components.AddComponent(new ToolBarComponent());
             });
         }

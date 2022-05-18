@@ -218,7 +218,7 @@ namespace OctoAwesome.Client.Components
 
             var blockDefinitions = resourceManager.DefinitionManager.BlockDefinitions;
             foreach (var blockDefinition in blockDefinitions)
-                inventory.AddUnit(blockDefinition.VolumePerUnit, blockDefinition);
+                inventory.Add(blockDefinition, blockDefinition.VolumePerUnit);
 
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
             var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Wood");
@@ -226,9 +226,9 @@ namespace OctoAwesome.Client.Components
             foreach (var itemDefinition in itemDefinitions)
             {
                 var woodItem = itemDefinition.Create(wood);
-                inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+                inventory.Add(woodItem, woodItem.VolumePerUnit);
                 var stoneItem = itemDefinition.Create(stone);
-                inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+                inventory.Add(stoneItem, stoneItem.VolumePerUnit);
             }
         }
     }

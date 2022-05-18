@@ -110,9 +110,9 @@ namespace OctoAwesome.Client.Controls
             var newText = "";
 
             // Refresh the active tool label
-            newText = Player.Toolbar.ActiveTool.Definition?.Name ?? string.Empty;
+            newText = Player.Toolbar.ActiveTool?.Definition?.Name ?? string.Empty;
 
-            if (Player.Toolbar.ActiveTool.Amount > 1)
+            if (Player.Toolbar.ActiveTool?.Amount > 1)
                 newText += $" ({Player.Toolbar.ActiveTool.Amount})";
 
             activeToolLabel.Text = newText;

@@ -111,7 +111,7 @@ namespace OctoAwesome
         /// <inheritdoc />
         public object? CreateObject(Type type)
         {
-            var tmpList = new List<object>();
+            var tmpList = new List<object?>();
 
             var constructors = type.GetConstructors().OrderByDescending(c => c.GetParameters().Length);
 
@@ -124,17 +124,15 @@ namespace OctoAwesome
                     {
                         tmpList.Add(instance);
                     }
-                    else if (!parameter.IsOptional)
+                    else if (parameter.IsOptional && parameter.HasDefaultValue)
                     {
-                        tmpList.Clear();
-                        next = true;
-                        break;
+                        tmpList.Add(parameter.DefaultValue);
                     }
-                    else if (parameter.IsOptional) //Currently no support for optional parameters :)
+                    else // Unknown parameter type without default value
                     {
                         tmpList.Clear();
                         next = true;
-                        break;
+                        break; 
                     }
                 }
 
