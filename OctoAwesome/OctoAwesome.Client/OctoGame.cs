@@ -148,19 +148,19 @@ namespace OctoAwesome.Client
 
         private static void Register(ITypeContainer typeContainer)
         {
-            typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ContainerResourceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<GameService>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IGameService, GameService>(InstanceBehaviour.Singleton);
-            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Settings>(InstanceBehavior.Singleton);
+            typeContainer.Register<ISettings, Settings>(InstanceBehavior.Singleton);
+            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<ContainerResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
+            typeContainer.Register<IGameService, GameService>(InstanceBehavior.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
         }
 
         private void SetKeyBindings()

@@ -47,7 +47,7 @@ namespace OctoAwesome.Client
             }
         }
 
-        private readonly ExtensionService extensionService;
+        private readonly OctoAwesome.Extension.ExtensionService extensionService;
         private ResourceManager ResourceManager
         {
             get
@@ -57,7 +57,6 @@ namespace OctoAwesome.Client
             }
         }
 
-        private readonly IExtensionResolver extensionResolver;
         private readonly IDefinitionManager definitionManager;
         private readonly ISettings settings;
         private readonly ITypeContainer typeContainer;
@@ -73,7 +72,7 @@ namespace OctoAwesome.Client
         /// <param name="extensionResolver">The extension resolver.</param>
         /// <param name="definitionManager">The manager for definitions.</param>
         /// <param name="settings">The application settings.</param>
-        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings)
+        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, OctoAwesome.Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings)
         {
             UpdateHub = updateHub;
             this.typeContainer = typeContainer;

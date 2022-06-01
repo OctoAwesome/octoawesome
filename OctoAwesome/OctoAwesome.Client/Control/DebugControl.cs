@@ -177,11 +177,10 @@ namespace OctoAwesome.UI.Controls
             Player.Selection?.Visit(
             blockInfo =>
             {
-                targetedBlockName.Text = definitionManager.GetBlockDefinitionByIndex(blockInfo.Block)?.Name ?? "";
+                targetedBlockName.Text = definitionManager.GetBlockDefinitionByIndex(blockInfo.Block)?.DisplayName ?? "";
                 targetedBlockPosition.Text = blockInfo.Position == default ? "" : blockInfo.Position.ToString();
             },
-            functionalBlock => SetTargetedBlockInfo(functionalBlock),
-            entity => SetTargetedBlockInfo(entity));
+            componentContainer => SetTargetedBlockInfo(componentContainer));
 
             void SetTargetedBlockInfo(ComponentContainer container)
             {
@@ -221,7 +220,7 @@ namespace OctoAwesome.UI.Controls
 
             //Active Tool
             if (Player.Toolbar.ActiveTool != null)
-                activeTool.Text = Client.UI.Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.Name + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
+                activeTool.Text = Client.UI.Languages.OctoClient.ActiveItemTool + ": " + Player.Toolbar.ActiveTool.Definition.DisplayName + " | " + Player.Toolbar.GetSlotIndex(Player.Toolbar.ActiveTool);
 
             toolCount.Text = Client.UI.Languages.OctoClient.ToolCount + ": " + Player.Toolbar.Tools.Count(slot => slot != null);
 

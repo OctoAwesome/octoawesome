@@ -2,6 +2,7 @@
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
+using System.Diagnostics;
 using System.Linq;
 
 namespace OctoAwesome.Basics.UI.Components;
@@ -20,6 +21,7 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
             && (component2.Targets.Count == 0
                 || ((InventoryA?.Version ?? -1) == VersionA
                     && (InventoryB?.Version ?? -1) == VersionB)))
+                
         {
             return false;
         }
@@ -35,8 +37,18 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
 
     public virtual void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
     {
-        if (source.RemoveSlot(slot))
-            target.AddSlot(slot);
+
+        var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
+        if (toAddAndRemove == 0)
+            return;
+        var item = slot.Item;
+        var amount = source.Remove(slot, toAddAndRemove);
+
+        var addedAddedAmount = target.Add(item, toAddAndRemove);
+        Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
+        //sourceControl.Rebuild(source.Inventory);
+        //targetControl.Rebuild(target.Inventory);
+
     }
 
     internal void OnClose(string key)

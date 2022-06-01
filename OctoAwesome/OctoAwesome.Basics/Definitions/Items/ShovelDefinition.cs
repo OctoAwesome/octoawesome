@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class ShovelDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Shovel";
+        public string DisplayName => "Shovel";
 
         /// <inheritdoc />
         public string Icon => "shovel_iron";

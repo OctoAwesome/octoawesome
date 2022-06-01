@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class PlankBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Plank;
+        public override string DisplayName => Languages.OctoBasics.Plank;
 
         /// <inheritdoc />
         public override string Icon => "planks";

@@ -3,6 +3,7 @@ using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
 
+using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ public sealed class FurnaceControl : Panel
     private Grid grid;
     private readonly AssetComponent assets;
 
-    public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, ICollection<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+    public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
     {
         Background = new SolidColorBrush(Color.Transparent);
 
@@ -49,7 +50,7 @@ public sealed class FurnaceControl : Panel
         Rebuild(inventorySlots, columns);
     }
 
-    public void Rebuild(ICollection<InventorySlot> inventorySlots, int columns = COLUMNS)
+    public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS)
     {
 
         int column = 0;
@@ -63,7 +64,7 @@ public sealed class FurnaceControl : Panel
 
 
             var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-            image.MouseEnter += (s, e) => { HoveredSlot = inventorySlot; };
+            image.MouseEnter += (s, e) => { HoveredSlot = (InventorySlot)inventorySlot; };
             image.MouseLeave += (s, e) => { HoveredSlot = null; };
             image.StartDrag += (c, e) =>
             {

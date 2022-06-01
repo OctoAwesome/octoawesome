@@ -2,6 +2,7 @@
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
+using System.Diagnostics;
 using System.Linq;
 
 namespace OctoAwesome.Basics.UI.Components;
@@ -20,17 +21,18 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     {
         if (show == Show
             && (component2.Targets.Count == 0
-                || ((InventoryA?.Version ?? -1) == VersionA
-                    && (InputInventory?.Version ?? -1) == InputVersion)))
+                //|| ((InventoryA?.Version ?? -1) == VersionA
+                //    && (InputInventory?.Version ?? -1) == InputVersion)))
+                ))
         {
             return false;
         }
 
         show = Show;
         InventoryA = component;
-        VersionA = InventoryA.Version;
+        //VersionA = InventoryA.Version;
         InputInventory = component2.Targets.First();
-        InputVersion = InputInventory.Version;
+        //InputVersion = InputInventory.Version;
         //OutputInventory = component2.Targets[1];
         //OutputVersion = OutputInventory.Version;
 
@@ -42,20 +44,31 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         if (source == target)
             return;
 
-        if (source == InventoryA)
-        {
-            var firstSlot = target.Inventory.First();
-            target.RemoveSlot(firstSlot);
-            target.AddSlot(slot, 0);
-            source.AddSlot(firstSlot);
-        }
-        else
-        {
-            var inputOrOutput = source.Inventory.IndexOf(slot);
-            source.RemoveSlot(slot);
-            target.AddSlot(slot);
-            source.AddSlot(new InventorySlot(), inputOrOutput);
-        }
+        //if (source == InventoryA)
+        //{
+
+            var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
+            if (toAddAndRemove == 0)
+                return;
+            var item = slot.Item;
+            var amount = source.Remove(slot, toAddAndRemove);
+
+            var addedAddedAmount = target.Add(item, toAddAndRemove);
+            Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
+
+            //var firstSlot = target.Inventory.First();
+
+            //target.RemoveSlot(firstSlot);
+            //target.AddSlot(slot, 0);
+            //source.AddSlot(firstSlot);
+        //}
+        //else
+        //{
+        //    var inputOrOutput = source.Inventory.IndexOf(slot);
+        //    source.RemoveSlot(slot);
+        //    target.AddSlot(slot);
+        //    source.AddSlot(new InventorySlot(), inputOrOutput);
+        //}
     }
 
     internal void OnClose(string key)

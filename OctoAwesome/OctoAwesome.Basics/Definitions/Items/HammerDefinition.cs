@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class HammerDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Hammer";
+        public string DisplayName => "Hammer";
 
         /// <inheritdoc />
         public string Icon => "hammer_iron";

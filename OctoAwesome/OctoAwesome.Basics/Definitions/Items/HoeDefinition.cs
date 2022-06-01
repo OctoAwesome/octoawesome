@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class HoeDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Hoe";
+        public string DisplayName => "Hoe";
 
         /// <inheritdoc />
         public string Icon => "hoe_iron";

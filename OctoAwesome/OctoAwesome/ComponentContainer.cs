@@ -1,5 +1,6 @@
 ﻿using engenious;
 
+using OctoAwesome;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
@@ -84,11 +85,9 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public abstract bool ContainsComponent<T>();
-        public abstract T GetComponent<T>();
-    }
-
         /// <inheritdoc />
-        public abstract T? GetComponent<T>();
+        public abstract T GetComponent<T>();
+
     }
     /// <summary>
     /// Base class for classes containing components of a specific type.

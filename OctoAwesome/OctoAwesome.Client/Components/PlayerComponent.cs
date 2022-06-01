@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.Linq;
 using engenious;
 
-using OctoAwesome.EntityComponents;
-using OctoAwesome.SumTypes;
 
 using System;
 using System.Linq;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.SumTypes;
 
 namespace OctoAwesome.Client.Components
 {
@@ -164,7 +164,7 @@ namespace OctoAwesome.Client.Components
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
 
-            if (InteractInput && SelectedBox.HasValue)
+            if (InteractInput && SelectedBox.HasValue )
                 CurrentController.Selection = Selection;
             else
                 CurrentController.Selection = null;
@@ -232,15 +232,15 @@ namespace OctoAwesome.Client.Components
             {
                 var woodItem = itemDefinition.Create(wood);
                 if (woodItem is not null)
-                    inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
+                    inventory.Add(woodItem, woodItem.VolumePerUnit);
 
                 var stoneItem = itemDefinition.Create(stone);
                 if (stoneItem is not null)
-                    inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+                    inventory.Add(stoneItem, stoneItem.VolumePerUnit);
 
                 var fooditem = itemDefinition.Create(foodMaterial);
                 if (fooditem is not null)
-                    inventory.AddUnit(fooditem.VolumePerUnit, fooditem);
+                    inventory.Add(fooditem, fooditem.VolumePerUnit);
             }
 
         }

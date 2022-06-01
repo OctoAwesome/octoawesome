@@ -12,9 +12,6 @@
     <Compile Remove="Properties\**" />
     <EmbeddedResource Remove="Properties\**" />
     <None Remove="Properties\**" />
-    <Compile Remove="Components\Comparer.cs" />
-    <Compile Remove="Components\IContainsComponents.cs" />
-    <Compile Remove="InstanceBehaviour.cs" />
   </ItemGroup>
 
   <ItemGroup>

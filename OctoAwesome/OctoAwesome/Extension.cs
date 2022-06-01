@@ -12,11 +12,10 @@ namespace OctoAwesome
 {
     //TODO: Perhaps outsource
 
-    internal sealed class CoreExtension : IExtension
     /// <summary>
     /// The base extension implementation.
     /// </summary>
-    public sealed class Extension : IExtension
+    internal sealed class CoreExtension : IExtension
     {
         /// <inheritdoc />
         public string Description => "OctoAwesome";
@@ -25,7 +24,7 @@ namespace OctoAwesome
         public string Name => "OctoAwesome";
 
         /// <inheritdoc />
-        public void Register(ExtensionService extensionLoader)
+        public void Register(OctoAwesome.Extension.ExtensionService extensionLoader)
         {
             extensionLoader.Extend<Player>((player) =>
             {

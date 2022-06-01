@@ -14,7 +14,7 @@ namespace OctoAwesome.Definitions
         public virtual uint SolidWall => 0x3f;
 
         /// <inheritdoc />
-        public abstract string Name { get; }
+        public abstract string DisplayName { get; }
 
         /// <inheritdoc />
         public abstract string Icon { get; }

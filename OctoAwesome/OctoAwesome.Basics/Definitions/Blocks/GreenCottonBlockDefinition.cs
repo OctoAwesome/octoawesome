@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class GreenCottonBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.GreenCotton;
+        public override string DisplayName => Languages.OctoBasics.GreenCotton;
 
         /// <inheritdoc />
         public override string Icon => "cotton_green";

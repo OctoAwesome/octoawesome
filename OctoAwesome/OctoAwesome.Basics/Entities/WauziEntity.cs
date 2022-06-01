@@ -57,7 +57,7 @@ namespace OctoAwesome.Basics.Entities
             inventory.RemoveUnit(toolbar.ActiveTool);
             if (toolbar.ActiveTool.Amount < 1)
             {
-                inventory.RemoveSlot(toolbar.ActiveTool);
+                inventory.Remove(toolbar.ActiveTool);
                 toolbar.RemoveSlot(toolbar.ActiveTool);
             }
         }

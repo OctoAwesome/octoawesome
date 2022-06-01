@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public class SnowBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Snow;
+        public override string DisplayName => Languages.OctoBasics.Snow;
 
         /// <inheritdoc />
         public override string Icon => "snow";

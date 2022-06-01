@@ -44,7 +44,7 @@ namespace OctoAwesome
                 }
             }
 
-            definitionTypeContainer.Register(type, type, InstanceBehaviour.Singleton);
+            definitionTypeContainer.Register(type, type, InstanceBehavior.Singleton);
         }
 
         /// <summary>

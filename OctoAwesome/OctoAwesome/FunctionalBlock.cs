@@ -31,11 +31,5 @@ namespace OctoAwesome
             OnInteract(gameTime, entity);
         }
 
-        /// <summary>
-        /// Called when an interaction on this functional block occurs.
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        /// <param name="entity">The entity that interacted with this block.</param>
-        protected abstract void OnInteract(GameTime gameTime, Entity entity);
     }
 }

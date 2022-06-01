@@ -63,7 +63,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
         {
             if (TryGetComponent<UiKeyComponent>(out  var ownUiKeyComponent) 
                 && entity.TryGetComponent<TransferComponent>(out var transferComponent) 
-                && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent))
+                && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent)
+                && this.TryGetComponent<InventoryComponent>(out var inventoryComponent))
             {
                 transferComponent.Targets.Clear();
                 transferComponent.Targets.Add(inventoryComponent);

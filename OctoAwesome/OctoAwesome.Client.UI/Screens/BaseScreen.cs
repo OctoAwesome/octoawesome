@@ -1,7 +1,6 @@
 ﻿using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using System;
@@ -17,7 +16,9 @@ namespace OctoAwesome.UI.Screens
         public BaseScreen(BaseScreenComponent manager, AssetComponent assets) : base(manager)
         {
             this.assets = assets;
-            BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back)
+            BackButton = new TextButton(Manager, "Back"
+                //UI.Languages.OctoClient.Back
+                )
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -39,26 +40,6 @@ namespace OctoAwesome.UI.Screens
         {
         }
 
-
-        protected override void OnNavigatedTo(NavigationEventArgs args)
-        {
-            if (Manager.CanGoBack)
-            {
-                BackButton = new TextButton(Manager, UI.Languages.OctoClient.Back);
-                BackButton.VerticalAlignment = VerticalAlignment.Top;
-                BackButton.HorizontalAlignment = HorizontalAlignment.Left;
-                BackButton.LeftMouseClick += (s, e) =>
-                {
-                    Manager.NavigateBack();
-                };
-                BackButton.Margin = new Border(10, 10, 10, 10);
-                Controls.Add(BackButton);
-            }
-
-        protected override void OnNavigatedTo(NavigationEventArgs args)
-        {
-            BackButton.Visible = Manager.CanGoBack;
-        }
 
         protected void SetDefaultBackground()
         {

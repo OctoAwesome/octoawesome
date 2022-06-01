@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -33,6 +34,10 @@ namespace OctoAwesome.EntityComponents
 
         protected bool HasLimitedWeight => maxWeight != int.MaxValue;
         protected bool HasLimitedVolume => maxVolume != int.MaxValue;
+
+        public int Version  => version;
+
+        private int version;
 
         protected bool isFixedSlotSize = false;
 
@@ -292,7 +297,7 @@ namespace OctoAwesome.EntityComponents
                     invSlot.Amount -= quantity;
                     break;
             }
-
+            Interlocked.Increment(ref version);
             return quantity;
         }
         public int Remove(IInventorySlot slot)
@@ -359,6 +364,7 @@ namespace OctoAwesome.EntityComponents
             quantity = GetQuantityLimitFor(slot, quantity);
             slot.Amount += quantity;
 
+            Interlocked.Increment(ref version);
 
             return quantity;
         }
@@ -438,6 +444,7 @@ namespace OctoAwesome.EntityComponents
             if (maxSlots <= inventory.Count || isFixedSlotSize)
                 return false;
 
+            Interlocked.Increment(ref version);
             inventory.Add(slot);
             return true;
         }

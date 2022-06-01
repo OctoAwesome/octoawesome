@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class GravelBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Gravel;
+        public override string DisplayName => Languages.OctoBasics.Gravel;
 
         /// <inheritdoc />
         public override string Icon => "gravel";

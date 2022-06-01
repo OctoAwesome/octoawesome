@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class BrickBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Brick;
+        public override string DisplayName => Languages.OctoBasics.Brick;
 
         /// <inheritdoc />
         public override string Icon => "brick_red";

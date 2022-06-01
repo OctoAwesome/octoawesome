@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class SwordDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Sword";
+        public string DisplayName => "Sword";
 
         /// <inheritdoc />
         public string Icon => "sword_iron";

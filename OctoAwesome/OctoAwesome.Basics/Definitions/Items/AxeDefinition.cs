@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class AxeDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Axe";
+        public string DisplayName => "Axe";
 
         /// <inheritdoc />
         public string Icon => "axe_iron";

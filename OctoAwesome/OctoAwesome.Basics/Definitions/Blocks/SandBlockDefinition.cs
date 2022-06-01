@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class SandBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Sand;
+        public override string DisplayName => Languages.OctoBasics.Sand;
 
         /// <inheritdoc />
         public override string Icon => "sand";

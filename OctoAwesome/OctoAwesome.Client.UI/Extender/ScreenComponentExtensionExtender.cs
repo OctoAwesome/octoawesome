@@ -21,7 +21,7 @@ namespace OctoAwesome.UI.Extender
         /// <param name="extenderDelegate"></param>
         public override void RegisterExtender<T>(Action<T> extenderDelegate)
         {
-            simulationExtender.Add(GenericCaster<Action<IScreenComponent>, Action<T>>.Cast(extenderDelegate));
+            simulationExtender.Add(GenericCaster< Action<T>, Action<IScreenComponent>>.Cast(extenderDelegate));
         }
 
         /// <summary>

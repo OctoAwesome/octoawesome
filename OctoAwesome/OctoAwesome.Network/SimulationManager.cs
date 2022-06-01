@@ -62,14 +62,14 @@ namespace OctoAwesome.Network
 
             var typeContainer = TypeContainer.Get<ITypeContainer>();
 
-            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
-            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<DiskPersistenceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<ResourceManager>(InstanceBehaviour.Singleton);
-            typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehavior.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<DiskPersistenceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<ResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehavior.Singleton);
 
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();

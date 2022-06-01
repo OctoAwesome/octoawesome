@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class ChestItemDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Chest";
+        public string DisplayName => "Chest";
 
         /// <inheritdoc />
         public string Icon => "chest";

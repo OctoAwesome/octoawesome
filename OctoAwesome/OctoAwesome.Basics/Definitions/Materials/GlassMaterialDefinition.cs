@@ -20,7 +20,7 @@ namespace OctoAwesome.Basics.Definitions.Materials
         public int FractureToughness => 50;
 
         /// <inheritdoc />
-        public string Name => "Glass";
+        public string DisplayName => "Glass";
 
         /// <inheritdoc />
         public string Icon => string.Empty;

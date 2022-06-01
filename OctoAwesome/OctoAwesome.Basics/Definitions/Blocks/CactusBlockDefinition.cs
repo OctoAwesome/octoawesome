@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "cactus_inside";
 
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Cactus;
+        public override string DisplayName => Languages.OctoBasics.Cactus;
 
         /// <inheritdoc />
         public override string[] Textures { get; } = { "cactus_inside", "cactus_side", "cactus_top" };

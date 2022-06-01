@@ -10,7 +10,6 @@ using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Rx;
 using OctoAwesome.UI.Components;
-using OctoAwesome.UI.Controls;
 using OctoAwesome.UI.Screens;
 
 using System;
@@ -84,7 +83,7 @@ namespace OctoAwesome.Basics.UI.Screens
             };
 
             inventoryA.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
-            inventoryA.LeftMouseClick += (s, e) => OnMouseClick(inventoryA, componentA, inventoryB, componentB, e);
+            inventoryA.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.BToA, e);
 
             inventoryB = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
@@ -95,7 +94,7 @@ namespace OctoAwesome.Basics.UI.Screens
             };
 
             inventoryB.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.AToB, e);
-            inventoryB.LeftMouseClick += (s, e) => OnMouseClick(inventoryB, componentB, inventoryA, componentA, e);
+            inventoryB.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.AToB, e);
 
             grid.AddControl(inventoryA, 0, 0);
             grid.AddControl(inventoryB, 0, 2);
@@ -133,8 +132,10 @@ namespace OctoAwesome.Basics.UI.Screens
         }
         /// <inheritdoc/>
 
-        private static void OnMouseClick(InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target, MouseEventArgs mouseEventArgs)
+        private void OnMouseClick(TransferDirection transferDirection, MouseEventArgs mouseEventArgs)
         {
+            var sourceControl = transferDirection == TransferDirection.AToB ? inventoryA : inventoryB;
+
             if (sourceControl.HoveredSlot is null)
                 return;
 
@@ -142,11 +143,17 @@ namespace OctoAwesome.Basics.UI.Screens
             if (!keyboardState.IsKeyDown(Keys.ShiftLeft))
                 return;
 
-            var slot = sourceControl.HoveredSlot;
+            var slot = sourceControl.HoveredSlot as InventorySlot;
 
             mouseEventArgs.Handled = true;
+            if (transferDirection == TransferDirection.AToB)
+                transferComponent.Transfer(transferComponent.InventoryA, transferComponent.InventoryB, slot);
+            else if (transferDirection == TransferDirection.BToA)
+                transferComponent.Transfer(transferComponent.InventoryB, transferComponent.InventoryA, slot);
+            else
+                Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
 
-            MoveSlot(slot, sourceControl, source, targetControl, target);
+
         }
 
         public override void RemoveUiComponent(UIComponent uiComponent)
@@ -193,11 +200,10 @@ namespace OctoAwesome.Basics.UI.Screens
                     Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
                 //if (source.RemoveSlot(slot))
                 //    target.AddSlot(slot);
-                MoveSlot(slot, sourceControl, source, targetControl, target);
             }
         }
 
-        private static void MoveSlot(IInventorySlot slot, InventoryControl sourceControl, InventoryComponent source, InventoryControl targetControl, InventoryComponent target)
+        private static void MoveSlot(IInventorySlot slot, InventoryComponent source, InventoryComponent target)
         {
             var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
             if (toAddAndRemove == 0)

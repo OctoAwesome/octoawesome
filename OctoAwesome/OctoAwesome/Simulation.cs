@@ -11,6 +11,7 @@ using OctoAwesome.Threading;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace OctoAwesome
@@ -278,7 +279,7 @@ namespace OctoAwesome
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
-            using (var _ = entitiesSemaphore.EnterExclusivScope())
+            using (var _ = entitiesSemaphore.EnterExclusiveScope())
                 entities.Add(entity);
 
             foreach (var component in Components)
@@ -331,7 +332,7 @@ namespace OctoAwesome
             if (block.Id == Guid.Empty)
                 block.Id = Guid.NewGuid();
 
-            using (var _ = functionalBlocksSemaphore.EnterExclusivScope())
+            using (var _ = functionalBlocksSemaphore.EnterExclusiveScope())
                 functionalBlocks.Add(block);
 
             foreach (var component in Components)
@@ -371,7 +372,7 @@ namespace OctoAwesome
                     holdComponent.Remove(entity);
             }
 
-            using (var _ = entitiesSemaphore.EnterExclusivScope())
+            using (var _ = entitiesSemaphore.EnterExclusiveScope())
                 entities.Remove(entity);
             entity.Id = Guid.Empty;
             entity.Simulation = null;
@@ -409,7 +410,7 @@ namespace OctoAwesome
                     holdComponent.Remove(block);
             }
 
-            using (var _ = functionalBlocksSemaphore.EnterExclusivScope())
+            using (var _ = functionalBlocksSemaphore.EnterExclusiveScope())
                 functionalBlocks.Remove(block);
             block.Id = Guid.Empty;
             block.Simulation = null;
@@ -511,7 +512,7 @@ namespace OctoAwesome
         public void RemoveEntity(Guid entityId)
         {
 
-            var _ = entitiesSemaphore.EnterExclusivScope();
+            var _ = entitiesSemaphore.EnterExclusiveScope();
             Remove(entities.First(e => e.Id == entityId));
         }
 

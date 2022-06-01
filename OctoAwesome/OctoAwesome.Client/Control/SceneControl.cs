@@ -714,14 +714,14 @@ namespace OctoAwesome.Client.Controls
                 }
             }
 
-            foreach (var e in entities.Entities)
+            foreach(var e in entities.ComponentContainers)
             {
-                var p = e.Components.GetComponent<PositionComponent>();
+                var p = e.GetComponent<PositionComponent>();
                 var offset = p.Position.ChunkIndex.ShortestDistanceXY(chunkOffset, new Index2(planet.Size));
                 var viewDist = 1 << VIEWRANGE;
                 if (offset.X > viewDist || offset.X < -viewDist || offset.Y > viewDist || offset.Y < -viewDist)
                     continue;
-                var pB = e.Components.GetComponent<BodyComponent>();
+                var pB = e.GetComponent<BodyComponent>();
                 var size = pB == null ? new Vector3(1) : new Vector3(pB.Radius, pB.Radius, pB.Height);
                 //var offsetBlocks = new Vector3(offset.X * Chunk.CHUNKSIZE_X, offset.Y * Chunk.CHUNKSIZE_Y, offset.Z * Chunk.CHUNKSIZE_Z);
                 var blockOffset = offset * chunkSize;

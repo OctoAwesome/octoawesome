@@ -209,7 +209,6 @@ namespace OctoAwesome
         /// <inheritdoc/>
         public static bool operator !=(Coordinate left, Coordinate right) => !(left == right);
 
-        /
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => obj is Coordinate coordinate && Equals(coordinate);

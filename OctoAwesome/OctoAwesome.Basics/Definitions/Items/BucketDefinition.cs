@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class BucketDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Bucket";
+        public string DisplayName => "Bucket";
 
         /// <inheritdoc />
         public string Icon => "bucket";

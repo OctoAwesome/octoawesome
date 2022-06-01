@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Definitions;
+
+using System;
 
 namespace OctoAwesome
 {
