@@ -1,3 +1,3 @@
 ﻿namespace OctoAwesome.PoC;
 
-public readonly record struct RecipeItem(string ItemName, decimal Count, string? MaterialName = null);
+public readonly record struct RecipeItem(string ItemName, int Count, string? MaterialName = null);

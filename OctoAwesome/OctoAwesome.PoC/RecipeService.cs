@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace OctoAwesome.PoC;
 
@@ -10,14 +11,14 @@ public class RecipeService
 
     List<Recipe> recipes = new(); //rässipie
 
-    public void Load(string[] paths)
+    public void Load(params string[] paths)
     {
         foreach (string path in paths)
         {
             var recipes = Directory.GetFiles(path, "*.json");
             foreach (var item in recipes)
             {
-                var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(item);
+                var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
                 //TODO Check validity of recipe before adding and write exception otherwise
                 this.recipes.Add(recipe);
             }
@@ -26,7 +27,8 @@ public class RecipeService
 
     public IReadOnlyCollection<Recipe> GetByType(string type)
     {
-        throw new NotImplementedException();
+        return recipes.Where(x => string.IsNullOrWhiteSpace(x.Type) || x.Type.Equals(type, StringComparison.OrdinalIgnoreCase)).ToArray();
+        
     }
 
     public IReadOnlyCollection<Recipe> GetByCategory(string categorie)

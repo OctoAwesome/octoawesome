@@ -1,0 +1,32 @@
+{
+    "Inputs": [
+        {
+            "ItemName": "IronOre",
+            "Count": 5
+        }
+    ],
+    "Outputs": [
+        {
+            "ItemName": "Iron",
+            "Count": 2
+        },
+        {
+            "ItemName": "Slag",
+            "Count": 3
+        }
+    ],
+    "Energy": 70,
+    "Categories": [
+        {
+            "Name": "Smelting",
+            "SubCategory": "Metal"
+        }
+    ],
+    "Enabled": true,
+    "Description": "Smelts Iron Ore into Iron",
+    "Keywords": [
+        "Smelting",
+        "IronOre",
+        "Iron"
+    ]
+}
