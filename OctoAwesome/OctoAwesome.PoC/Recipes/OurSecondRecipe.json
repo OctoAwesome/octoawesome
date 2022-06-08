@@ -1,0 +1,41 @@
+{
+  "Inputs": [
+    {
+      "ItemName": "MeatRawDefinition",
+      "Count": 2,
+      "MaterialId": "Raw"
+    },
+    {
+      "ItemName": "MeatCookedDefinition",
+      "Count": 1,
+      "MaterialId": "Cooked"
+    }
+  ],
+  "Outputs": [
+    {
+      "ItemName": "MeatCookedDefinition",
+      "Count": 2,
+      "MaterialId": "Raw"
+    },
+    {
+      "ItemName": "MeatCookedDefinition",
+      "Count": 1,
+      "MaterialId": "Cooked"
+    }
+  ],
+  "Energy": 70,
+  "Categories": [
+    {
+      "Name": "Cooking",
+      "SubCategory": "Food"
+    }
+  ],
+  "Enabled": true,
+  "Description": "Cooks raw meat into cooked meat",
+  "Keywords": [
+    "Cooking",
+    "Meat",
+    "NonVeggie",
+    "Food"
+  ]
+}

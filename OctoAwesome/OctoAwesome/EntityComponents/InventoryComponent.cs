@@ -35,7 +35,7 @@ namespace OctoAwesome.EntityComponents
         protected bool HasLimitedWeight => maxWeight != int.MaxValue;
         protected bool HasLimitedVolume => maxVolume != int.MaxValue;
 
-        public int Version  => version;
+        public int Version => version;
 
         private int version;
 
@@ -281,10 +281,9 @@ namespace OctoAwesome.EntityComponents
             if (slot is not InventorySlot invSlot)
                 return 0;
             if (invSlot.Amount < quantity)
-            {
                 quantity = invSlot.Amount;
-                invSlot.Amount = 0;
-            }
+
+            invSlot.Amount -= quantity;
 
             switch (invSlot.Amount)
             {
@@ -292,9 +291,6 @@ namespace OctoAwesome.EntityComponents
                     return quantity;
                 case 0:
                     inventory.Remove(invSlot);
-                    break;
-                default:
-                    invSlot.Amount -= quantity;
                     break;
             }
             Interlocked.Increment(ref version);

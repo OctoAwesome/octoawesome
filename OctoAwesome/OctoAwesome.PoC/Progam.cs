@@ -1,5 +1,7 @@
 ﻿using engenious;
 
+using OctoAwesome.Basics;
+using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
@@ -11,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 using static OctoAwesome.PoC.StateMachine;
 
@@ -49,7 +52,7 @@ public static class Program
     class Furnace
     {
         private readonly RecipeService recipeService;
-        private readonly DefinitionManager manager;
+        private readonly IDefinitionManager manager;
         private IReadOnlyCollection<Recipe> recipes;
         private Recipe? currentRecipe;
         private int requiredMillisecondsForRecipe;
@@ -61,7 +64,7 @@ public static class Program
         public InventoryComponent Input { get; set; } = new();
         public InventoryComponent Outputs { get; } = new();
 
-        public Furnace(RecipeService recipeService, DefinitionManager manager)
+        public Furnace(RecipeService recipeService, IDefinitionManager manager)
         {
             this.recipeService = recipeService;
             this.manager = manager;
@@ -73,7 +76,7 @@ public static class Program
 
             //Idle => Recipe => Running => Output => Recipe / Idle
 
-            var idleState = new GenericNode("idle", (elapsed, total) => true);
+            var idleState = new GenericNode("idle", (elapsed, total) => OnInputSlotUpdate());
             var running = new GenericNode("running", HasRecipeFinished);
             var recipe = new GenericNode("recipe", (elapsed, total) => true);
             var output = new GenericNode("output", GenerateOutput);
@@ -81,41 +84,108 @@ public static class Program
             stateMachine = new StateMachine(idleState);
             stateMachine.AddNodes(running, recipe, output);
 
-            stateMachine.AddTransition(idleState, recipe, () => GetRecipe() is not null);
+            stateMachine.AddTransition(idleState, recipe, () => currentRecipe is not null);
             stateMachine.AddTransition(recipe, running, () => true);
             stateMachine.AddTransition(running, output, () => true);
-            stateMachine.AddTransition(output, recipe, () => GetRecipe() is not null);
-            stateMachine.AddTransition(output, idleState, () => GetRecipe() is null);
+            stateMachine.AddTransition(output, recipe, () => currentRecipe is not null);
+            stateMachine.AddTransition(output, idleState, () => currentRecipe is null);
         }
 
         private bool GenerateOutput(TimeSpan elapsed, TimeSpan total)
         {
-            var firstInputSlot = Input.GetSlotAtIndex(0);
-
-            foreach (var item in currentRecipe!.Outputs)
+            if (currentRecipe.Inputs.Length == 1) 
             {
-                var def = manager.Definitions.FirstOrDefault(x => x.DisplayName == item.ItemName);/*TODO Name not Displayname*/
+                var inputItem = currentRecipe.Inputs[0];
+                var inputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == inputItem.ItemName);
 
-                if (def is IItemDefinition itemDef)
+                var inputSlot = Input.GetSlot(inputDef);
+
+                foreach (var outputItem in currentRecipe.Outputs)
                 {
-                    IMaterialDefinition? mat;
+                    var outputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
+                    if (outputDef is IItemDefinition itemDef)
+                    {
+                        IMaterialDefinition? mat;
 
-                    if (string.IsNullOrWhiteSpace(item.MaterialName))
-                        mat = firstInputSlot.Item.Material;
-                    else
-                        mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == item.MaterialName);
+                        if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
+                            mat = inputSlot.Item.Material;
+                        else
+                            mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
 
-                    if (mat is null)
-                        continue;
-                    Outputs.Add(itemDef.Create(mat), item.Count);
+                        if (mat is null)
+                            return false;
+                        Outputs.Add(itemDef.Create(mat), outputItem.Count);
+                    }
+                    else if (outputDef is IBlockDefinition blockDefinition)
+                    {
+                        Outputs.Add(blockDefinition, outputItem.Count);
+                    }
                 }
-                else if (def is IBlockDefinition blockDefinition)
-                {
-                    Outputs.Add(blockDefinition, item.Count);
-                }
-
+                inputSlot.Remove(currentRecipe.Inputs[0].Count);
             }
-            firstInputSlot.Remove(currentRecipe.Inputs[0].Count);
+            else if (currentRecipe.Inputs.Length > 1)
+            {
+                foreach (var inputItem in currentRecipe.Inputs)
+                {
+                    var inputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == inputItem.ItemName);
+
+                    var inputSlot = Input.GetSlot(inputDef);
+
+                    foreach (var outputItem in currentRecipe.Outputs)
+                    {
+
+                        var outputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
+                        if (outputDef is IItemDefinition itemDef)
+                        {
+                            IMaterialDefinition? mat;
+
+                            if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
+                            {
+                                if (outputItem.MaterialId != inputItem.MaterialId)
+                                    continue;
+                                mat = inputSlot.Item.Material;
+                            }
+                            else
+                                mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+
+                            if (mat is null)
+                                return false;
+                            Outputs.Add(itemDef.Create(mat), outputItem.Count);
+                        }
+                        else if (outputDef is IBlockDefinition blockDefinition)
+                        {
+                            Outputs.Add(blockDefinition, outputItem.Count);
+                        }
+                    }
+                    inputSlot.Remove(currentRecipe.Inputs[0].Count);
+                }
+            }
+            else
+            {
+                foreach (var outputItem in currentRecipe.Outputs)
+                {
+                    if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
+                        continue;
+                    var outputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
+                    if (outputDef is IItemDefinition itemDef)
+                    {
+                        IMaterialDefinition? mat;
+
+                        mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+
+                        if (mat is null)
+                            return false;
+                        Outputs.Add(itemDef.Create(mat), outputItem.Count);
+                    }
+                    else if (outputDef is IBlockDefinition blockDefinition)
+                    {
+                        Outputs.Add(blockDefinition, outputItem.Count);
+                    }
+                }
+            }
+
+            OnInputSlotUpdate();
+
             return true; //We should never be two updates in this state! That would be mist
         }
 
@@ -123,21 +193,21 @@ public static class Program
         {
             if (Input is null)
                 return null; //Reset recipe, time etc. pp.
-            var inputSlot = Input.Inventory.FirstOrDefault();
-            if (inputSlot is null)
+            //var inputSlot = Input.Inventory.FirstOrDefault();
+            var inputs = Input.Inventory.GroupBy(x => x.Definition.DisplayName).Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item.Material.DisplayName /*TODO Name not Displayname*/)).ToArray();
+            if (inputs.Length == 0)
                 return null; //Reset recipe, time etc. pp.
-            var recipe = recipeService.GetByInput(new RecipeItem(inputSlot.Definition.DisplayName, inputSlot.Amount, inputSlot.Item.Material.DisplayName/*TODO Name not Displayname*/), recipes);
+            var recipe = recipeService.GetByInputs(inputs, recipes);
             if (recipe is null)
                 return null; //Reset recipe, time etc. pp.
             return recipe;
         }
 
-        public void OnInputSlotUpdate()
+        public bool OnInputSlotUpdate()
         {
-            var recipe = GetRecipe();
-            if (recipe is null)
-                return; //Reset recipe, time etc. pp.
-            currentRecipe = recipe;
+            currentRecipe = GetRecipe();
+            if (currentRecipe is null)
+                return false; //Reset recipe, time etc. pp.
 
             requiredMillisecondsForRecipe = currentRecipe.Time ?? currentRecipe.Energy!.Value * 40;
 
@@ -145,12 +215,14 @@ public static class Program
                 requiredMillisecondsForRecipe = currentRecipe.MinTime!.Value;
 
             if (requiredMillisecondsForRecipe < 0)
-                return;
+                return false;
+
+            return true;
         }
 
         public bool HasRecipeFinished(TimeSpan elapsed, TimeSpan total)
         {
-            return requiredMillisecondsForRecipe <= total.Milliseconds;
+            return requiredMillisecondsForRecipe <= total.TotalMilliseconds;
             //recipeEnd.TotalGameTime < currentGameTime.TotalGameTime
             //&& recipeEnd.TotalGameTime.Add(currentGameTime.ElapsedGameTime) > currentGameTime.TotalGameTime
 
@@ -201,26 +273,45 @@ public static class Program
         }
     }
 
-    static void Main()
+    public static void Main()
     {
         var rs = new RecipeService();
-        rs.Load(@"../../../Recipes");
-        var dfm = new DefinitionManager(new Extension.ExtensionService());
-        TypeContainer.Register<IDefinitionManager, DefinitionManager>(dfm);
-        TypeContainer.Register<DefinitionManager, DefinitionManager>(dfm);
-
-
+        rs.Load(@"C:\Users\susch\source\repos\OctoAwesome\octoawesome\OctoAwesome\OctoAwesome.PoC\Recipes");
+        //var dfm = new DefinitionManager(new Extension.ExtensionService());
+        //TypeContainer.Register<IDefinitionManager, DefinitionManager>(dfm);
+        //TypeContainer.Register<DefinitionManager, DefinitionManager>(dfm);
+        var dfm = TypeContainer.Get<IDefinitionManager>();
         var furnace = new Furnace(rs, dfm);
         furnace.Initialize();
         GameTime gameTime;
         var swTotal = new Stopwatch();
         swTotal.Start();
         var swLast = new Stopwatch();
+        int i = 0;
         while (true)
         {
             gameTime = new GameTime(swTotal.Elapsed, swLast.Elapsed);
             furnace.Update(gameTime);
             swLast.Restart();
+            Thread.Sleep(10);
+            i++;
+            if (i % 50 == 0)
+            {
+                var meatDefinition = dfm.ItemDefinitions.First(x => x.DisplayName == "MeatRawDefinition");
+                var foodMaterial = dfm.FoodDefinitions.FirstOrDefault(x => x.DisplayName == "Wauzi Meat");
+                var fooditem = meatDefinition.Create(foodMaterial);
+                if (fooditem is not null)
+                    furnace.Input.Add(fooditem, fooditem.VolumePerUnit);
+
+            }
+            if (i % 100 == 0)
+            {
+                var meatDefinition = dfm.ItemDefinitions.First(x => x.DisplayName == "MeatCookedDefinition");
+                var foodMaterial = dfm.FoodDefinitions.FirstOrDefault(x=>x.DisplayName == "Player Meat");
+                var fooditem = meatDefinition.Create(foodMaterial);
+                if (fooditem is not null)
+                    furnace.Input.Add(fooditem, fooditem.VolumePerUnit);
+            }
         }
         Console.ReadLine();
     }

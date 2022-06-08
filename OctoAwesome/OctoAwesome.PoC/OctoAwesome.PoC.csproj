@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Client\OctoAwesome.Client.csproj"  />
+    <!--<ProjectReference Include="..\OctoAwesome.Client\OctoAwesome.Client.csproj"  />-->
+	  <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
+	  <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
+	  <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
+	  <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
   </ItemGroup>
 </Project>

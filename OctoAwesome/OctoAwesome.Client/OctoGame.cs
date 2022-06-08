@@ -142,6 +142,7 @@ namespace OctoAwesome.Client
                 //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
                 //graphics.ApplyChanges();
             };*/
+            OctoAwesome.PoC.Program.Main();
             SetKeyBindings();
 
         }

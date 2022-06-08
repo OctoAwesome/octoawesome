@@ -28,7 +28,7 @@ public class RecipeService
     public IReadOnlyCollection<Recipe> GetByType(string type)
     {
         return recipes.Where(x => string.IsNullOrWhiteSpace(x.Type) || x.Type.Equals(type, StringComparison.OrdinalIgnoreCase)).ToArray();
-        
+
     }
 
     public IReadOnlyCollection<Recipe> GetByCategory(string categorie)
@@ -42,7 +42,9 @@ public class RecipeService
         {
             foreach (var inputItem in recipe.Inputs)
             {
-                if (inputItem == input)
+                if (inputItem.Count <= input.Count
+                    && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
+                    && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
                     return recipe;
             }
         }
@@ -50,9 +52,30 @@ public class RecipeService
         return null;
     }
 
-    public Recipe? GetByInputs(List<RecipeItem> inputs, IReadOnlyCollection<Recipe> recipes)
+    public Recipe? GetByInputs(IReadOnlyCollection<RecipeItem> inputs, IReadOnlyCollection<Recipe> recipes)
     {
-        throw new NotImplementedException();
+        foreach (var recipe in recipes) //Order by most limited
+        {
+            int counter = 0;
+            foreach (var inputItem in recipe.Inputs)
+            {
+                foreach (var input in inputs)
+                {
+                    if (inputItem.Count <= input.Count
+                        && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
+                        && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+                    {
+                        counter++;
+                        break;
+                    }
+
+                }
+            }
+            if (counter >= recipe.Inputs.Length)
+                return recipe;
+        }
+
+        return null;
     }
     public IReadOnlyCollection<Recipe> GetMultipleByInputs(List<RecipeItem> inputs, IReadOnlyCollection<Recipe> recipes)
     {
