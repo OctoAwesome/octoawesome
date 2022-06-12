@@ -80,6 +80,7 @@ namespace OctoAwesome.Client.Components
         }
         private GraphicsDevice graphicsDevice;
         private EntityModelEffect effect;
+        private readonly EffectInstantiator effectInstantiator;
         public SimulationComponent Simulation { get; private set; }
 
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
@@ -95,7 +96,14 @@ namespace OctoAwesome.Client.Components
             FunctionalBlocks = new List<FunctionalBlock>();
             graphicsDevice = game.GraphicsDevice;
 
-            effect = game.Content.Load<EntityModelEffect>("Effects/entityEffect");
+            effectInstantiator = game.Content.Load<EffectInstantiator>("Effects/entityEffect");
+            
+        }
+
+        public void LoadShader(entityEffect.entityEffectSettings? settings)
+        {
+            effect?.Dispose();
+            effect = effectInstantiator.CreateInstance<EntityModelEffect, entityEffect.entityEffectSettings>(settings);
         }
 
         public void Draw(GameTime gameTime, Texture2DArray shadowMaps, Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize, Vector3 sunDirection)

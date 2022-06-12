@@ -19,7 +19,7 @@ namespace OctoAwesome.Client.Components
         public static float OverrideLightLevel { get; set; }
         public static bool WireFrame { get; set; }
 
-        private readonly chunkEffect simple;
+        private chunkEffect simple;
         private readonly GraphicsDevice graphicsDevice;
 
         private readonly Texture2DArray textures;
@@ -84,13 +84,18 @@ namespace OctoAwesome.Client.Components
                 };
         }
 
-        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, chunkEffect simpleShader, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
+        public void ReloadShader(chunkEffect simpleShader)
+        {
+            simple = simpleShader;
+        }
+
+        public ChunkRenderer(SceneControl sceneControl, IDefinitionManager definitionManager, GraphicsDevice graphicsDevice, Matrix projection, Texture2DArray textures)
         {
             _sceneControl = sceneControl;
             this.definitionManager = definitionManager;
             this.graphicsDevice = graphicsDevice;
             this.textures = textures;
-            simple = simpleShader;
+            simple = null!;
             GenerateIndexBuffer();
 
             vertices = new PoolingList<VertexPositionNormalTextureLight>();

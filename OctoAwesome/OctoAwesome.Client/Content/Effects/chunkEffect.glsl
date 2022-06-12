@@ -14,6 +14,9 @@
         </Pass>
     </Technique>
     <Technique name="Shadow">
+        <Settings>
+            <Define name="CASCADES" type="UInt">2</Define>
+        </Settings>
         <Pass name="MainPass">
             <Shader type="PixelShader" filename="chunk/chunkEffect_shadow.ps">
 

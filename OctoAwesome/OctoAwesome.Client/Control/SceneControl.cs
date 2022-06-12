@@ -54,14 +54,15 @@ namespace OctoAwesome.Client.Controls
         private readonly Task backgroundTask;
         private readonly Task backgroundThread2;
         private ILocalChunkCache localChunkCache;
-        private readonly chunkEffect chunkShader;
-        private readonly RenderTargetBinding _shadowMapsRenderTarget;
+        private readonly EffectInstantiator chunkEffectInstantiator;
+        private chunkEffect chunkShader;
+        private RenderTargetBinding _shadowMapsRenderTarget;
 
         private readonly Task[] _additionalRegenerationThreads;
 
         public RenderTarget2D MiniMapTexture { get; set; }
         public RenderTarget2D? ControlTexture { get; set; }
-        public Texture2DArray ShadowMaps { get; }
+        public Texture2DArray ShadowMaps { get; private set; }
 
         private float sunPosition = 0f;
 
@@ -95,7 +96,25 @@ namespace OctoAwesome.Client.Controls
 
         private readonly int _fillIncrement;
         private readonly CancellationTokenSource cancellationTokenSource;
+        
+        public void LoadShader(uint cascades = 2)
+        {
+            chunkShader?.Dispose();
+            chunkShader = chunkEffectInstantiator.CreateInstance<chunkEffect, chunkEffect.chunkEffectSettings>(new chunkEffect.chunkEffectSettings() { CASCADES = cascades});
+            foreach(var c in chunkRenderer)
+                c.ReloadShader(chunkShader);
+            const int multiply = 1;
 
+            ShadowMaps?.Dispose();
+            ShadowMaps = new Texture2DArray(Manager.GraphicsDevice,1,  8192 * multiply, 8192 * multiply, (int)cascades, PixelInternalFormat.DepthComponent32f);
+            ShadowMaps.SamplerState = new SamplerState() { AddressU = TextureWrapMode.ClampToEdge, AddressV = TextureWrapMode.ClampToEdge, TextureCompareMode = TextureCompareMode.CompareRefToTexture, TextureCompareFunction = TextureCompareFunc.LessOrEequal };
+
+            _shadowMapsRenderTarget?.Dispose();
+            _shadowMapsRenderTarget = new RenderTargetBinding(Array.Empty<RenderTargetBinding.RenderTargetSlice>(), ShadowMaps);
+            
+            entities.LoadShader(new entityEffect.entityEffectSettings() { CASCADES = cascades});
+            
+        }
         public SceneControl(ScreenComponent manager, string style = "") :
             base(manager, style)
         {
@@ -116,9 +135,10 @@ namespace OctoAwesome.Client.Controls
             sphereRadius = tmpSphereRadius - (chunkDiag / 2);
             sphereRadiusSquared = tmpSphereRadius * tmpSphereRadius;
 
-            var loadedShader = manager.Game.Content.Load<chunkEffect>("Effects/chunkEffect");
+            var loadedShader = manager.Game.Content.Load<EffectInstantiator>("Effects/chunkEffect");
             Debug.Assert(loadedShader != null, nameof(loadedShader) + " != null");
-            chunkShader = loadedShader;
+            chunkEffectInstantiator = loadedShader;
+            chunkShader = null!;
             sunTexture = assets.LoadTexture("sun");
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
@@ -164,7 +184,7 @@ namespace OctoAwesome.Client.Controls
             {
                 for (int j = 0; j < chunkRenderer.GetLength(1); j++)
                 {
-                    ChunkRenderer renderer = new ChunkRenderer(this, Manager.Game.DefinitionManager, chunkShader, manager.GraphicsDevice, camera.Projection, blockTextures);
+                    ChunkRenderer renderer = new ChunkRenderer(this, Manager.Game.DefinitionManager, manager.GraphicsDevice, camera.Projection, blockTextures);
                     chunkRenderer[i, j] = renderer;
                     orderedChunkRenderer.Add(renderer);
                 }
@@ -251,14 +271,12 @@ namespace OctoAwesome.Client.Controls
             };
 
             MiniMapTexture = new RenderTarget2D(manager.GraphicsDevice, 128, 128, PixelInternalFormat.Rgb8); // , false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.PreserveContents);
-            const int multiply = 1;
-            ShadowMaps = new Texture2DArray(manager.GraphicsDevice,1,  8192 * multiply, 8192 * multiply, 2, PixelInternalFormat.DepthComponent32f);
-            ShadowMaps.SamplerState = new SamplerState() { AddressU = TextureWrapMode.ClampToEdge, AddressV = TextureWrapMode.ClampToEdge, TextureCompareMode = TextureCompareMode.CompareRefToTexture, TextureCompareFunction = TextureCompareFunc.LessOrEequal };
 
-
-            _shadowMapsRenderTarget = new RenderTargetBinding(Array.Empty<RenderTargetBinding.RenderTargetSlice>(), ShadowMaps);
-            
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
+
+            _shadowMapsRenderTarget = null!;
+            ShadowMaps = null!;
+            LoadShader((uint)((VIEWRANGE + 1) / 2));
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -595,7 +613,7 @@ namespace OctoAwesome.Client.Controls
 
             float correction = 0.9f;
 
-            const int cropMatrixCount = 2;
+            int cropMatrixCount = ShadowMaps.LayerCount;
 
             float invCascades = 1.0f / cropMatrixCount;
             float previousCascadeDepth = nearPlane;
@@ -622,7 +640,7 @@ namespace OctoAwesome.Client.Controls
                 cropBB.Min.Z = Math.Min(casterBB.Min.Z, splitBB.Min.Z);
                 cropBB.Max.Z = Math.Max(receiverBB.Max.Z, splitBB.Max.Z);
 
-                Matrix cropMatrix =  BoundingBoxToProjection(cropBB) * lightViewProjMatrix;
+                Matrix cropMatrix = BoundingBoxToProjection(cropBB) * lightViewProjMatrix;
 
                 chunkShader.Ambient.CropMatrices[i] = cropMatrix;
                 chunkShader.Ambient.CascadeDepth[i] = cascadeDepth;

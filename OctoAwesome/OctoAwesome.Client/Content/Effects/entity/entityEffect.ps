@@ -43,7 +43,9 @@ float sampleShadow(vec4 psShadowCoord, float cosTheta, int layer)
     if (dir < 0)
         return 0.0;
 	
-	float bias = clamp(0.0005*tan(acos(cosTheta)), 0, 0.000005);
+	//float bias = clamp(0.0005*tan(acos(cosTheta)), 0, 0.000005);
+	float bias = max(0.05 * (1.0 - dir), 0.005);
+    bias = 0.00;
 	float visibility = texture(ShadowMaps, vec4(psShadowCoord.xy / psShadowCoord.w, layer, (psShadowCoord.z - bias) / psShadowCoord.w));
 	return visibility;
 }
