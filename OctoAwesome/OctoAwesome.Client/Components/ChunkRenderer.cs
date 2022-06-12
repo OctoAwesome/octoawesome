@@ -164,7 +164,7 @@ namespace OctoAwesome.Client.Components
             _sceneControl.Enqueue(this);
         }
 
-        public void Draw(Matrix viewProj, Matrix cropMatrix, Index3 shift)
+        public void Draw(Matrix projection, Matrix view, Index3 shift)
         {
             if (!Loaded)
                 return;
@@ -173,21 +173,11 @@ namespace OctoAwesome.Client.Components
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
 
-            Matrix worldViewProj = viewProj * shiftMatrix;
-
-            var biasMatrix = new Matrix(
-                0.5f, 0.0f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.5f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f
-                );
-
-            var depthBiasWorldViewProj = biasMatrix * cropMatrix * shiftMatrix;
-
             simple.Ambient.MainPass.Apply();
-            simple.Ambient.DepthBiasWorldViewProj = depthBiasWorldViewProj;
             simple.Ambient.OverrideLightLevel = OverrideLightLevel;
-            simple.Ambient.WorldViewProj = worldViewProj;
+            simple.Ambient.World = shiftMatrix;
+            simple.Ambient.View = view;
+            simple.Ambient.Proj = projection;
             simple.Ambient.BlockTextures = textures;
             simple.Ambient.AmbientIntensity = 0.4f;
             simple.Ambient.AmbientColor = Color.White.ToVector4();
@@ -202,19 +192,18 @@ namespace OctoAwesome.Client.Components
                 graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, VertexCount, 0, indexCount / 3);
             }
         }
-        public void DrawShadow(Matrix viewProj, Index3 shift)
+        public void DrawShadow(Index3 shift)
         {
             if (!Loaded)
                 return;
 
-            Matrix worldViewProj = viewProj * Matrix.CreateTranslation(
+            var world = Matrix.CreateTranslation(
                 shift.X * Chunk.CHUNKSIZE_X,
                 shift.Y * Chunk.CHUNKSIZE_Y,
                 shift.Z * Chunk.CHUNKSIZE_Z);
 
             simple.Shadow.MainPass.Apply();
-
-            simple.Shadow.WorldViewProj = worldViewProj;
+            simple.Shadow.World = world;
 
             lock (this)
             {

@@ -18,6 +18,9 @@
             <Shader type="PixelShader" filename="chunk/chunkEffect_shadow.ps">
 
             </Shader>
+            <Shader type="GeometryShader" filename="chunk/chunkEffect_shadow.gs">
+
+            </Shader>
             <Shader type="VertexShader" filename="chunk/chunkEffect_shadow.vs">
 
             </Shader>

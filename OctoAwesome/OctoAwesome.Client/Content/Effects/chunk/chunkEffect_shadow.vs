@@ -1,5 +1,5 @@
 #version 400
-uniform mat4 WorldViewProj;
+uniform mat4 World;
 
 in uint inputData1;
 in uint inputData2;
@@ -8,5 +8,5 @@ void main()
 {
 	vec4 position = vec4((inputData1 & 0xFF),((inputData1 >> 8) & 0xFF),((inputData1 >> 16) & 0xFF),1.0);
 
-	gl_Position = WorldViewProj*position;
+	gl_Position = World*position;
 }
