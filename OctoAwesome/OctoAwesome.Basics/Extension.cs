@@ -157,6 +157,15 @@ namespace OctoAwesome.Basics
                 else
                     f.inventoryComponent = inventoryComponent;
 
+                if (!f.Components.TryGetComponent<OutputInventoryComponent>(out var outputComponent))
+                {
+                    outputComponent = new OutputInventoryComponent();
+                    f.outputComponent = outputComponent;
+                    f.Components.AddComponent(outputComponent);
+                }
+                else
+                    f.outputComponent = outputComponent;
+
                 while (inventoryComponent.Inventory.Count < 2)
                 {
                     inventoryComponent.Add(new InventorySlot(inventoryComponent));

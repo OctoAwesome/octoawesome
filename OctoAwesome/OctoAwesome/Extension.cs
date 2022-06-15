@@ -30,7 +30,7 @@ namespace OctoAwesome
             {
                 player.Components.AddComponent(new ControllableComponent());
                 player.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
-                player.Components.AddComponent(new InventoryComponent(true, 40));
+                player.Components.AddComponent(new InventoryComponent(true, 120));
                 player.Components.AddComponent(new ToolBarComponent());
             });
         }

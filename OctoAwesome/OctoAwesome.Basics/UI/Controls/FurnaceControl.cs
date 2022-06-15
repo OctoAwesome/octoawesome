@@ -4,6 +4,7 @@ using engenious.UI;
 using engenious.UI.Controls;
 
 using OctoAwesome.Client.UI.Components;
+using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ public sealed class FurnaceControl : Panel
     private Grid grid;
     private readonly AssetComponent assets;
 
-    public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+    public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputSlots, int columns = COLUMNS) : base(manager)
     {
         Background = new SolidColorBrush(Color.Transparent);
 
@@ -47,13 +48,15 @@ public sealed class FurnaceControl : Panel
         Controls.Add(grid);
 
         this.assets = assets;
-        Rebuild(inventorySlots, columns);
+        Rebuild(inventorySlots, outputSlots, columns);
     }
 
-    public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS)
+    public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, int columns = COLUMNS)
     {
+        //TODO Draw in a grid formation
 
-        int column = 0;
+        var inputPanel = inputSlotPanel;
+        inputPanel.Controls.Clear();
         foreach (var inventorySlot in inventorySlots)
         {
             Texture2D texture;
@@ -74,16 +77,45 @@ public sealed class FurnaceControl : Panel
                 e.Sender = image;
             };
             var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
-            var panel = column == 0 ? inputSlotPanel : outputSlotPanel;
+            
             var grid = new Grid(ScreenManager);
             grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
             grid.AddControl(image, 0, 0);
             grid.AddControl(label, 0, 0);
 
-            panel.Controls.Clear();
-            panel.Controls.Add(grid);
-            column += 2;
+            inputPanel.Controls.Add(grid);
+        }
+        var outputPanel = outputSlotPanel;
+        outputPanel.Controls.Clear();
+        foreach (var inventorySlot in outputInventory)
+        {
+            Texture2D texture;
+            if (inventorySlot.Definition is null)
+                continue;
+            else
+                texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
+
+
+            var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+            image.MouseEnter += (s, e) => { HoveredSlot = (InventorySlot)inventorySlot; };
+            image.MouseLeave += (s, e) => { HoveredSlot = null; };
+            image.StartDrag += (c, e) =>
+            {
+                e.Handled = true;
+                e.Icon = texture;
+                e.Content = inventorySlot;
+                e.Sender = image;
+            };
+            var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
+            
+            var grid = new Grid(ScreenManager);
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
+            grid.AddControl(image, 0, 0);
+            grid.AddControl(label, 0, 0);
+
+            outputPanel.Controls.Add(grid);
         }
     }
 }

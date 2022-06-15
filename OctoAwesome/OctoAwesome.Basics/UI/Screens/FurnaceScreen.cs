@@ -25,7 +25,8 @@ namespace OctoAwesome.Basics.UI.Screens
         private const string ScreenKey = "Furnace";
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
-        private readonly InventoryControl entityInventory;
+        private readonly InventoryControl inputInventory;
+        private readonly OutputInventoryComponent outputInventory;
         private readonly FurnaceControl furnace;
         private readonly Label nameLabel;
         private readonly Label massLabel;
@@ -61,7 +62,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             Controls.Add(grid);
 
-            entityInventory = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
+            inputInventory = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -69,9 +70,9 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            entityInventory.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
+            inputInventory.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
 
-            furnace = new FurnaceControl(manager, assetComponent, Array.Empty<InventorySlot>())
+            furnace = new FurnaceControl(manager, assetComponent, Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -81,7 +82,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             furnace.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.AToB, e);
 
-            grid.AddControl(entityInventory, 0, 0);
+            grid.AddControl(inputInventory, 0, 0);
             grid.AddControl(furnace, 0, 2);
 
             var infoPanel = new StackPanel(manager)
@@ -139,7 +140,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 _ = Manager.NavigateToScreen(this);
             }
 
-            Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory);
+            Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, furnaceUIComponent.OutputInventory);
         }
 
         private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
@@ -156,10 +157,16 @@ namespace OctoAwesome.Basics.UI.Screens
             }
         }
 
-        internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inventoryComponentA">Most of times player</param>
+        /// <param name="inventoryComponentB">Mostly input to furnace</param>
+        /// <param name="inventoryComponentC">Mostly output of furnace</param>
+        internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB, InventoryComponent inventoryComponentC)
         {
-            entityInventory.Rebuild(inventoryComponentA.Inventory);
-            furnace.Rebuild(inventoryComponentB.Inventory);
+            inputInventory.Rebuild(inventoryComponentA.Inventory);
+            furnace.Rebuild(inventoryComponentB.Inventory, inventoryComponentC.Inventory);
         }
 
         protected override void OnKeyDown(KeyEventArgs args)

@@ -14,6 +14,14 @@ using System.Threading;
 namespace OctoAwesome.EntityComponents
 {
     /// <summary>
+    /// HACK Ihh bäbä  Unschön Mutli Components vom same Type erlauben!!!
+    /// </summary>
+    public class OutputInventoryComponent : InventoryComponent
+    {
+
+    }
+
+    /// <summary>
     /// Component for inventories of entities/functional blocks.
     /// </summary>
     public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
@@ -264,10 +272,13 @@ namespace OctoAwesome.EntityComponents
             foreach (var slot in inventory.Where(x => x.Item == item))
             {
                 left -= Remove(slot, left);
-                Debug.Assert(left < 0, "The quantity amount after removing should never be negative!");
                 if (left <= 0)
+                {
+                    //Debug.Assert(left < 0, "The quantity amount after removing should never be negative!");
                     break;
+                }
             }
+            Interlocked.Increment(ref version);
             return quantity - left;
         }
         public int Remove(IInventoryable item, InventorySlot slot)
@@ -288,6 +299,7 @@ namespace OctoAwesome.EntityComponents
             switch (invSlot.Amount)
             {
                 case 0 when isFixedSlotSize:
+                    Interlocked.Increment(ref version);
                     return quantity;
                 case 0:
                     inventory.Remove(invSlot);
@@ -400,7 +412,7 @@ namespace OctoAwesome.EntityComponents
                 var canAdd = 0;
                 foreach (var slot in inventory)
                 {
-                    if (slot.Item is not null && slot.Item != inventoryable)
+                    if (slot.Item is null || slot.Item != inventoryable)
                         continue;
 
                     canAdd += (inventoryable.StackLimit * inventoryable.VolumePerUnit) - slot.Amount;
@@ -431,7 +443,10 @@ namespace OctoAwesome.EntityComponents
         {
             var slot = new InventorySlot(this);
             if (Add(slot)) //No IsFixedSlotSize check required
+            {
+                Interlocked.Increment(ref version);
                 return slot;
+            }
             return null;
         }
 

@@ -13,6 +13,7 @@ using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Extension;
+using OctoAwesome.Crafting;
 
 namespace OctoAwesome.Client
 {
@@ -83,7 +84,7 @@ namespace OctoAwesome.Client
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
 
-
+            typeContainer.Get<RecipeService>().Load("Recipes");
 
             Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
@@ -142,7 +143,7 @@ namespace OctoAwesome.Client
                 //graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
                 //graphics.ApplyChanges();
             };*/
-            OctoAwesome.PoC.Program.Main();
+            //OctoAwesome.PoC.Program.Main();
             SetKeyBindings();
 
         }
@@ -162,6 +163,7 @@ namespace OctoAwesome.Client
             typeContainer.Register<IGameService, GameService>(InstanceBehavior.Singleton);
             typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
             typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
+            typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
         }
 
         private void SetKeyBindings()

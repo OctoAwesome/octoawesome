@@ -206,6 +206,11 @@ namespace OctoAwesome
                     updateableEntity.Update(gameTime);
             }
 
+            foreach (var functionalBlock in functionalBlocks)
+            {
+                functionalBlock.Update(gameTime);
+            }
+
             // Update all Components
             foreach (var component in Components)
                 if (component.Enabled)

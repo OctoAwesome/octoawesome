@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace OctoAwesome.PoC;
+namespace OctoAwesome.Crafting;
 
 public class RecipeService
 {
     public IReadOnlyCollection<Recipe> Recipes { get; }
 
-    List<Recipe> recipes = new(); //rässipie
+    List<Recipe> recipes = new();
 
     public void Load(params string[] paths)
     {

@@ -58,7 +58,6 @@ public static class Program
         private int requiredMillisecondsForRecipe;
         private int whEnergyUsage = 2000;
 
-        private GameTime recipeEnd;
         private StateMachine stateMachine;
 
         public InventoryComponent Input { get; set; } = new();

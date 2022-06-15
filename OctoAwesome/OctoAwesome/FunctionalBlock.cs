@@ -31,5 +31,9 @@ namespace OctoAwesome
             OnInteract(gameTime, entity);
         }
 
+        public virtual void Update(GameTime gameTime)
+        {
+
+        }
     }
 }
