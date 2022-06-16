@@ -82,7 +82,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryA.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
+            inventoryA.EndDrop += (s, e) => OnInventoryDrop(e, transferComponent.InventoryA);
             inventoryA.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.BToA, e);
 
             inventoryB = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
@@ -93,7 +93,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryB.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.AToB, e);
+            inventoryB.EndDrop += (s, e) => OnInventoryDrop(e, transferComponent.InventoryB);
             inventoryB.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.AToB, e);
 
             grid.AddControl(inventoryA, 0, 0);
@@ -187,17 +187,13 @@ namespace OctoAwesome.Basics.UI.Screens
             base.OnUpdate(gameTime);
         }
 
-        private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
+        private void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
         {
             if (transferComponent is not null && e.Content is InventorySlot slot)
             {
+                var source = slot.GetParentInventory();
                 e.Handled = true;
-                if (transferDirection == TransferDirection.AToB)
-                    transferComponent.Transfer(transferComponent.InventoryA, transferComponent.InventoryB, slot);
-                else if (transferDirection == TransferDirection.BToA)
-                    transferComponent.Transfer(transferComponent.InventoryB, transferComponent.InventoryA, slot);
-                else
-                    Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
+                transferComponent.Transfer(source, target, slot);
                 //if (source.RemoveSlot(slot))
                 //    target.AddSlot(slot);
             }
@@ -211,7 +207,7 @@ namespace OctoAwesome.Basics.UI.Screens
             var item = slot.Item;
             var amount = source.Remove(slot, toAddAndRemove);
 
-            var addedAddedAmount= target.Add(item, toAddAndRemove);
+            var addedAddedAmount = target.Add(item, toAddAndRemove);
             Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
             //sourceControl.Rebuild(source.Inventory);
             //targetControl.Rebuild(target.Inventory);

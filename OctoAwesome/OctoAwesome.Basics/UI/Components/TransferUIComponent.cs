@@ -20,7 +20,8 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
         if (show == Show
             && (component2.Targets.Count == 0
                 || ((InventoryA?.Version ?? -1) == VersionA
-                    && (InventoryB?.Version ?? -1) == VersionB)))
+                    && (InventoryB?.Version ?? -1) == VersionB))
+            || PrimaryUiKey != "Transfer")
                 
         {
             return false;

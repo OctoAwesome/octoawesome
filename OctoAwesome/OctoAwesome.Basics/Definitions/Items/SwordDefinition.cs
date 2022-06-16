@@ -22,6 +22,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Sword(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Sword(this, material);
+        }
     }
 }

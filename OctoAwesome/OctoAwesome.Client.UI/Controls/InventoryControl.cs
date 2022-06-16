@@ -2,9 +2,12 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.UI.Components;
+
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace OctoAwesome.Client.UI.Controls
 {
@@ -42,7 +45,7 @@ namespace OctoAwesome.Client.UI.Controls
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalScrollbarVisibility = ScrollbarVisibility.Never,
                 VerticalScrollbarEnabled = true
-                
+
             };
             scroll.VerticalScrollbar.Background = new SolidColorBrush(Color.Transparent);
 
@@ -83,29 +86,35 @@ namespace OctoAwesome.Client.UI.Controls
             int column = 0;
             int row = 0;
 
-            foreach (var inventorySlot in inventorySlots)
+            foreach (var inventorySlot in inventorySlots.OrderByDescending(x=>x.Item?.GetType().Name ?? ""))
             {
                 Texture2D texture;
-                if (inventorySlot.Definition is null)
-                    continue;
-                else
-                    texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
 
-                var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-                image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
-                image.MouseLeave += (_, _) => { HoveredSlot = null; };
-                image.StartDrag += (_, e) =>
+                var panel = new Panel(ScreenManager) {Width = 44, Height = 44 };
+                panel.Background = new BorderBrush(LineType.Solid, Color.Black);
+                var label = new Label(ScreenManager) { Text = "", HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.Transparent) };
+                if (inventorySlot.Definition is not null)
                 {
-                    e.Handled = true;
-                    e.Icon = texture;
-                    e.Content = inventorySlot;
-                    e.Sender = image;
-                };
-                image.LeftMouseClick += (s, e) => HoveredSlot = inventorySlot;
-                var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(CultureInfo.InvariantCulture), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
-                grid.AddControl(image, column, row);
-                grid.AddControl(label, column, row);
 
+                    texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
+                    var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+                    panel.Controls.Add(image);
+                    image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
+                    image.MouseLeave += (_, _) => { HoveredSlot = null; };
+                    image.StartDrag += (_, e) =>
+                    {
+                        e.Handled = true;
+                        e.Icon = texture;
+                        e.Content = inventorySlot;
+                        e.Sender = image;
+                    };
+                    image.LeftMouseClick += (s, e) => HoveredSlot = inventorySlot;
+                    label.Background = new BorderBrush(Color.White);
+                    label.Text = inventorySlot.Amount.ToString(CultureInfo.InvariantCulture);
+
+                }
+                grid.AddControl(panel, column, row);
+                grid.AddControl(label, column, row);
                 column++;
                 if (column >= columns)
                 {

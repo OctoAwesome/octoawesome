@@ -18,6 +18,10 @@ namespace OctoAwesome.Basics.Definitions.Items
             => false;
 
         public Item Create(IMaterialDefinition material)
-            => new FurnaceItem(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new FurnaceItem(this, material);
+        }
     }
 }

@@ -4,6 +4,7 @@ using engenious.UI;
 using engenious.UI.Controls;
 
 using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
@@ -15,7 +16,7 @@ public sealed class FurnaceControl : Panel
 {
     private const int COLUMNS = 8;
 
-    private Panel inputSlotPanel, outputSlotPanel;
+    private InventoryControl inputSlotPanel, outputSlotPanel;
 
     /// <summary>
     /// Gibt den aktuell selektierten Slot an.
@@ -34,14 +35,14 @@ public sealed class FurnaceControl : Panel
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
 
+        grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-        grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-        grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+        grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
 
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
         grid.AddControl(new Label(manager) { Text = "==>" }, 1, 0);
-        inputSlotPanel = new Panel(manager);
-        outputSlotPanel = new Panel(manager);
+        inputSlotPanel = new InventoryControl(manager, assets, inventorySlots);
+        outputSlotPanel = new InventoryControl(manager, assets, outputSlots);
         grid.AddControl(inputSlotPanel, 0, 0);
         grid.AddControl(outputSlotPanel, 2, 0);
 
@@ -53,69 +54,71 @@ public sealed class FurnaceControl : Panel
 
     public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, int columns = COLUMNS)
     {
+        inputSlotPanel.Rebuild(inventorySlots, columns / 2);
+        outputSlotPanel.Rebuild(outputInventory, columns / 2);
         //TODO Draw in a grid formation
 
-        var inputPanel = inputSlotPanel;
-        inputPanel.Controls.Clear();
-        foreach (var inventorySlot in inventorySlots)
-        {
-            Texture2D texture;
-            if (inventorySlot.Definition is null)
-                continue;
-            else
-                texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
+        //var inputPanel = inputSlotPanel;
+        //inputPanel.Controls.Clear();
+        //foreach (var inventorySlot in inventorySlots)
+        //{
+        //    Texture2D texture;
+        //    if (inventorySlot.Definition is null)
+        //        continue;
+        //    else
+        //        texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
 
 
-            var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-            image.MouseEnter += (s, e) => { HoveredSlot = (InventorySlot)inventorySlot; };
-            image.MouseLeave += (s, e) => { HoveredSlot = null; };
-            image.StartDrag += (c, e) =>
-            {
-                e.Handled = true;
-                e.Icon = texture;
-                e.Content = inventorySlot;
-                e.Sender = image;
-            };
-            var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
-            
-            var grid = new Grid(ScreenManager);
-            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
-            grid.AddControl(image, 0, 0);
-            grid.AddControl(label, 0, 0);
+        //    var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+        //    image.MouseEnter += (s, e) => { HoveredSlot = (InventorySlot)inventorySlot; };
+        //    image.MouseLeave += (s, e) => { HoveredSlot = null; };
+        //    image.StartDrag += (c, e) =>
+        //    {
+        //        e.Handled = true;
+        //        e.Icon = texture;
+        //        e.Content = inventorySlot;
+        //        e.Sender = image;
+        //    };
+        //    var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
 
-            inputPanel.Controls.Add(grid);
-        }
-        var outputPanel = outputSlotPanel;
-        outputPanel.Controls.Clear();
-        foreach (var inventorySlot in outputInventory)
-        {
-            Texture2D texture;
-            if (inventorySlot.Definition is null)
-                continue;
-            else
-                texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
+        //    var grid = new Grid(ScreenManager);
+        //    grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+        //    grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
+        //    grid.AddControl(image, 0, 0);
+        //    grid.AddControl(label, 0, 0);
+
+        //    inputPanel.Controls.Add(grid);
+        //}
+        //var outputPanel = outputSlotPanel;
+        //outputPanel.Controls.Clear();
+        //foreach (var inventorySlot in outputInventory)
+        //{
+        //    Texture2D texture;
+        //    if (inventorySlot.Definition is null)
+        //        continue;
+        //    else
+        //        texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
 
 
-            var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-            image.MouseEnter += (s, e) => { HoveredSlot = (InventorySlot)inventorySlot; };
-            image.MouseLeave += (s, e) => { HoveredSlot = null; };
-            image.StartDrag += (c, e) =>
-            {
-                e.Handled = true;
-                e.Icon = texture;
-                e.Content = inventorySlot;
-                e.Sender = image;
-            };
-            var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
-            
-            var grid = new Grid(ScreenManager);
-            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
-            grid.AddControl(image, 0, 0);
-            grid.AddControl(label, 0, 0);
+        //    var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+        //    image.MouseEnter += (s, e) => { HoveredSlot = (InventorySlot)inventorySlot; };
+        //    image.MouseLeave += (s, e) => { HoveredSlot = null; };
+        //    image.StartDrag += (c, e) =>
+        //    {
+        //        e.Handled = true;
+        //        e.Icon = texture;
+        //        e.Content = inventorySlot;
+        //        e.Sender = image;
+        //    };
+        //    var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
 
-            outputPanel.Controls.Add(grid);
-        }
+        //    var grid = new Grid(ScreenManager);
+        //    grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+        //    grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 50 });
+        //    grid.AddControl(image, 0, 0);
+        //    grid.AddControl(label, 0, 0);
+
+        //    outputPanel.Controls.Add(grid);
+        //}
     }
 }

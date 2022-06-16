@@ -21,6 +21,8 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
         {
+            if (material is IFoodMaterialDefinition)
+                return null;
             return new Pickaxe(this, material);
         }
     }

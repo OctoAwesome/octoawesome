@@ -109,5 +109,6 @@ namespace OctoAwesome
         /// <returns>A value indicating how much was removed</returns>
         public int RemoveUnit() => inventoryComponent.RemoveUnit(this);
 
+        public InventoryComponent GetParentInventory() => inventoryComponent;
     }
 }

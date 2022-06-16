@@ -70,7 +70,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inputInventory.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.BToA, e);
+            inputInventory.EndDrop += (s, e) => OnInventoryDrop(e, furnaceUIComponent.InventoryA);
 
             furnace = new FurnaceControl(manager, assetComponent, Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
             {
@@ -80,7 +80,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            furnace.EndDrop += (s, e) => OnInventoryDrop(TransferDirection.AToB, e);
+            furnace.EndDrop += (s, e) => OnInventoryDrop(e, furnaceUIComponent.InputInventory);
 
             grid.AddControl(inputInventory, 0, 0);
             grid.AddControl(furnace, 0, 2);
@@ -143,17 +143,23 @@ namespace OctoAwesome.Basics.UI.Screens
             Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, furnaceUIComponent.OutputInventory);
         }
 
-        private void OnInventoryDrop(TransferDirection transferDirection, DragEventArgs e)
+        private void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
         {
-            if (furnaceUIComponent is not null && e.Content is InventorySlot slot)
+            if (e.Content is not InventorySlot slot)
+                return;
+
+
+            if (furnaceUIComponent is not null)
             {
                 e.Handled = true;
-                if (transferDirection == TransferDirection.AToB)
-                    furnaceUIComponent.Transfer(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, slot);
-                else if (transferDirection == TransferDirection.BToA)
-                    furnaceUIComponent.Transfer(furnaceUIComponent.InputInventory, furnaceUIComponent.InventoryA, slot);
-                else
-                    Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
+                var source = slot.GetParentInventory();
+                furnaceUIComponent.Transfer(source, target, slot);
+
+                //if (transferDirection == TransferDirection.AToB)
+                //else if (transferDirection == TransferDirection.BToA)
+                //    furnaceUIComponent.Transfer(furnaceUIComponent.InputInventory, furnaceUIComponent.InventoryA, slot);
+                //else
+                //    Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
             }
         }
 
@@ -168,6 +174,8 @@ namespace OctoAwesome.Basics.UI.Screens
             inputInventory.Rebuild(inventoryComponentA.Inventory);
             furnace.Rebuild(inventoryComponentB.Inventory, inventoryComponentC.Inventory);
         }
+
+
 
         protected override void OnKeyDown(KeyEventArgs args)
         {

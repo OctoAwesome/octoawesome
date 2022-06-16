@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new ChestItem(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new ChestItem(this, material);
+        }
     }
 }

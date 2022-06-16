@@ -224,11 +224,36 @@ namespace OctoAwesome.Client.Components
             foreach (var blockDefinition in blockDefinitions)
                 inventory.Add(blockDefinition, blockDefinition.VolumePerUnit);
 
+        }
+
+        internal void AllFoodsDebug()
+        {
+            var inventory = CurrentEntity?.Components.GetComponent<InventoryComponent>();
+            if (inventory == null)
+                return;
+
+            var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
+           var foodMaterial = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
+            foreach (var itemDefinition in itemDefinitions)
+            {
+
+                var fooditem = itemDefinition.Create(foodMaterial);
+                if (fooditem is not null)
+                    inventory.Add(fooditem, fooditem.VolumePerUnit);
+            }
+
+        }
+
+        internal void AllItemsDebug()
+        {
+            var inventory = CurrentEntity?.Components.GetComponent<InventoryComponent>();
+            if (inventory == null)
+                return;
+
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
             var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Wood");
             var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Stone");
-            var foodMaterial = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
-            foreach (var itemDefinition in itemDefinitions)
+           foreach (var itemDefinition in itemDefinitions)
             {
                 var woodItem = itemDefinition.Create(wood);
                 if (woodItem is not null)
@@ -238,11 +263,9 @@ namespace OctoAwesome.Client.Components
                 if (stoneItem is not null)
                     inventory.Add(stoneItem, stoneItem.VolumePerUnit);
 
-                var fooditem = itemDefinition.Create(foodMaterial);
-                if (fooditem is not null)
-                    inventory.Add(fooditem, fooditem.VolumePerUnit);
             }
 
         }
+
     }
 }

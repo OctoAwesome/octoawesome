@@ -183,6 +183,8 @@ namespace OctoAwesome.Client
             for (int i = 0; i < 10; i++)
                 KeyMapper.RegisterBinding("octoawesome:slot" + i, UI.Languages.OctoKeys.ResourceManager.GetString("slot" + i));
             KeyMapper.RegisterBinding("octoawesome:debug.allblocks", UI.Languages.OctoKeys.debug_allblocks);
+            KeyMapper.RegisterBinding("octoawesome:debug.allfoods", UI.Languages.OctoKeys.debug_allfoods);
+            KeyMapper.RegisterBinding("octoawesome:debug.allitems", UI.Languages.OctoKeys.debug_allitems);
             KeyMapper.RegisterBinding("octoawesome:debug.control", UI.Languages.OctoKeys.debug_control);
             KeyMapper.RegisterBinding("octoawesome:inventory", UI.Languages.OctoKeys.inventory);
             KeyMapper.RegisterBinding("octoawesome:hidecontrols", UI.Languages.OctoKeys.hidecontrols);
@@ -217,7 +219,9 @@ namespace OctoAwesome.Client
                 { "octoawesome:slot7", Keys.D8 },
                 { "octoawesome:slot8", Keys.D9 },
                 { "octoawesome:slot9", Keys.D0 },
-                { "octoawesome:debug.allblocks", Keys.L },
+                { "octoawesome:debug.allblocks", Keys.Keypad1 },
+                { "octoawesome:debug.allitems", Keys.Keypad2 },
+                { "octoawesome:debug.allfoods", Keys.Keypad3 },
                 { "octoawesome:debug.control", Keys.F10 },
                 { "octoawesome:inventory", Keys.I },
                 { "octoawesome:hidecontrols", Keys.F9 },

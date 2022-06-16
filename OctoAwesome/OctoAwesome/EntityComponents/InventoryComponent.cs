@@ -412,7 +412,7 @@ namespace OctoAwesome.EntityComponents
                 var canAdd = 0;
                 foreach (var slot in inventory)
                 {
-                    if (slot.Item is null || slot.Item != inventoryable)
+                    if (slot.Item is not null || slot.Definition is not null)
                         continue;
 
                     canAdd += (inventoryable.StackLimit * inventoryable.VolumePerUnit) - slot.Amount;

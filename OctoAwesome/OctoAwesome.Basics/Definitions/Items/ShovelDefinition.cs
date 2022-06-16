@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Shovel(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Shovel(this, material);
+        }
     }
 }

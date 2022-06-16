@@ -23,8 +23,9 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
             && (component2.Targets.Count == 0
                 || ((InventoryA?.Version ?? -1) == VersionA
                     && (InputInventory?.Version ?? -1) == InputVersion
-                    && (OutputInventory?.Version ?? -1) == OutputVersion)))
-                
+                    && (OutputInventory?.Version ?? -1) == OutputVersion))
+            || PrimaryUiKey != "Furnace")
+
         {
             return false;
         }
@@ -48,20 +49,20 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         //if (source == InventoryA)
         //{
 
-            var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
-            if (toAddAndRemove == 0)
-                return;
-            var item = slot.Item;
-            var amount = source.Remove(slot, toAddAndRemove);
+        var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
+        if (toAddAndRemove == 0)
+            return;
+        var item = slot.Item;
+        var amount = source.Remove(slot, toAddAndRemove);
 
-            var addedAddedAmount = target.Add(item, toAddAndRemove);
-            Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
+        var addedAddedAmount = target.Add(item, toAddAndRemove);
+        Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
 
-            //var firstSlot = target.Inventory.First();
+        //var firstSlot = target.Inventory.First();
 
-            //target.RemoveSlot(firstSlot);
-            //target.AddSlot(slot, 0);
-            //source.AddSlot(firstSlot);
+        //target.RemoveSlot(firstSlot);
+        //target.AddSlot(slot, 0);
+        //source.AddSlot(firstSlot);
         //}
         //else
         //{
