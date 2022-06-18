@@ -96,24 +96,23 @@ namespace OctoAwesome.Client.Controls
 
         private readonly int _fillIncrement;
         private readonly CancellationTokenSource cancellationTokenSource;
-        
+
         public void LoadShader(uint cascades = 2)
         {
             chunkShader?.Dispose();
-            chunkShader = chunkEffectInstantiator.CreateInstance<chunkEffect, chunkEffect.chunkEffectSettings>(new chunkEffect.chunkEffectSettings() { CASCADES = cascades});
-            foreach(var c in chunkRenderer)
+            chunkShader = chunkEffectInstantiator.CreateInstance<chunkEffect, chunkEffect.chunkEffectSettings>(new chunkEffect.chunkEffectSettings() { CASCADES = cascades });
+            foreach (var c in chunkRenderer)
                 c.ReloadShader(chunkShader);
             const int multiply = 1;
 
             ShadowMaps?.Dispose();
-            ShadowMaps = new Texture2DArray(Manager.GraphicsDevice,1,  8192 * multiply, 8192 * multiply, (int)cascades, PixelInternalFormat.DepthComponent32f);
+            ShadowMaps = new Texture2DArray(Manager.GraphicsDevice, 1, 8192 * multiply, 8192 * multiply, (int)cascades, PixelInternalFormat.DepthComponent32f);
             ShadowMaps.SamplerState = new SamplerState() { AddressU = TextureWrapMode.ClampToEdge, AddressV = TextureWrapMode.ClampToEdge, TextureCompareMode = TextureCompareMode.CompareRefToTexture, TextureCompareFunction = TextureCompareFunc.LessOrEequal };
 
             _shadowMapsRenderTarget?.Dispose();
             _shadowMapsRenderTarget = new RenderTargetBinding(Array.Empty<RenderTargetBinding.RenderTargetSlice>(), ShadowMaps);
-            
-            entities.LoadShader(new entityEffect.entityEffectSettings() { CASCADES = cascades});
-            
+
+            entities.LoadShader(new entityEffect.entityEffectSettings() { CASCADES = cascades });
         }
         public SceneControl(ScreenComponent manager, string style = "") :
             base(manager, style)
@@ -276,7 +275,7 @@ namespace OctoAwesome.Client.Controls
 
             _shadowMapsRenderTarget = null!;
             ShadowMaps = null!;
-            LoadShader((uint)((VIEWRANGE + 1) / 2));
+            LoadShader((uint)Math.Max((VIEWRANGE + 1) / 2, 2));
         }
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
@@ -558,18 +557,18 @@ namespace OctoAwesome.Client.Controls
         private BoundingBox CreateTransformedAABB(BoundingBox boundingBox, ref Matrix transformation)
         {
             Span<Vector4> corners = stackalloc Vector4[8];
-            corners[0] = new (boundingBox.Min.X, boundingBox.Min.Y, boundingBox.Min.Z, 1.0f);
-            corners[1] = new (boundingBox.Max.X, boundingBox.Min.Y, boundingBox.Min.Z, 1.0f);
-            corners[2] = new (boundingBox.Min.X, boundingBox.Max.Y, boundingBox.Min.Z, 1.0f);
-            corners[3] = new (boundingBox.Max.X, boundingBox.Max.Y, boundingBox.Min.Z, 1.0f);
-            corners[4] = new (boundingBox.Min.X, boundingBox.Min.Y, boundingBox.Max.Z, 1.0f);
-            corners[5] = new (boundingBox.Max.X, boundingBox.Min.Y, boundingBox.Max.Z, 1.0f);
-            corners[6] = new (boundingBox.Min.X, boundingBox.Max.Y, boundingBox.Max.Z, 1.0f);
-            corners[7] = new (boundingBox.Max.X, boundingBox.Max.Y, boundingBox.Max.Z, 1.0f);
+            corners[0] = new(boundingBox.Min.X, boundingBox.Min.Y, boundingBox.Min.Z, 1.0f);
+            corners[1] = new(boundingBox.Max.X, boundingBox.Min.Y, boundingBox.Min.Z, 1.0f);
+            corners[2] = new(boundingBox.Min.X, boundingBox.Max.Y, boundingBox.Min.Z, 1.0f);
+            corners[3] = new(boundingBox.Max.X, boundingBox.Max.Y, boundingBox.Min.Z, 1.0f);
+            corners[4] = new(boundingBox.Min.X, boundingBox.Min.Y, boundingBox.Max.Z, 1.0f);
+            corners[5] = new(boundingBox.Max.X, boundingBox.Min.Y, boundingBox.Max.Z, 1.0f);
+            corners[6] = new(boundingBox.Min.X, boundingBox.Max.Y, boundingBox.Max.Z, 1.0f);
+            corners[7] = new(boundingBox.Max.X, boundingBox.Max.Y, boundingBox.Max.Z, 1.0f);
 
             Vector3 min = new(float.MaxValue, float.MaxValue, float.MaxValue),
                 max = new(float.MinValue, float.MinValue, float.MinValue);
-            for (int i=0;i<8;i++)
+            for (int i = 0; i < 8; i++)
             {
                 var transformed = Vector4.Transform(transformation, corners[i]);
                 var perspective = new Vector3(transformed.X / transformed.W, transformed.Y / transformed.W, transformed.Z / transformed.W);
@@ -604,24 +603,30 @@ namespace OctoAwesome.Client.Controls
         {
             var lightViewProjMatrix = LightViewProjMatrix(light, lightDir, casters, receivers, out var receiverBB, out var casterBB);
 
-            
             int dirRange = (1 << VIEWRANGE) * Chunk.CHUNKSIZE_X / 2;
             float farPlane = MathF.Sqrt(dirRange * dirRange * 2) + player.Position.Position.GlobalPosition.Z;
             float nearPlane = camera.NearPlaneDistance;
-            
-            float dist = (farPlane - nearPlane);
 
-            float correction = 0.9f;
+            float dist = (farPlane - nearPlane);
 
             int cropMatrixCount = ShadowMaps.LayerCount;
 
-            float invCascades = 1.0f / cropMatrixCount;
+            float invCascades = 1.0f / (cropMatrixCount - 1);
             float previousCascadeDepth = nearPlane;
-            
+
+            static float CalcCascade(int i, float nearPlane, float farPlane, float invCascades)
+            {
+                float dist = (farPlane - nearPlane);
+
+                float correction = 0.9f;
+                return correction * nearPlane * MathF.Pow((farPlane / nearPlane), (i + 1) * invCascades)
+                                     + (1 - correction) * (nearPlane + ((i + 1) * invCascades) * dist);
+            }
+
+            float cascadeDepth = 17;
+
             for (int i = 0; i < cropMatrixCount; i++)
             {
-                float cascadeDepth = correction * nearPlane * MathF.Pow((farPlane / nearPlane), (i + 1) * invCascades)
-                                     + (1 - correction) * (nearPlane + ((i + 1) * invCascades) * dist);
                 //float cascadeDepth = nearPlane + (i + 1) * dist;
                 var splitProjection = Matrix.CreatePerspectiveFieldOfView(
                     MathHelper.PiOver4, Manager.GraphicsDevice.Viewport.AspectRatio, previousCascadeDepth, cascadeDepth);
@@ -636,7 +641,7 @@ namespace OctoAwesome.Client.Controls
 
                 cropBB.Min.Y = Math.Max(Math.Max(casterBB.Min.Y, receiverBB.Min.Y), splitBB.Min.Y);
                 cropBB.Max.Y = Math.Min(Math.Min(casterBB.Max.Y, receiverBB.Max.Y), splitBB.Max.Y);
-            
+
                 cropBB.Min.Z = Math.Min(casterBB.Min.Z, splitBB.Min.Z);
                 cropBB.Max.Z = Math.Max(receiverBB.Max.Z, splitBB.Max.Z);
 
@@ -645,8 +650,10 @@ namespace OctoAwesome.Client.Controls
                 chunkShader.Ambient.CropMatrices[i] = cropMatrix;
                 chunkShader.Ambient.CascadeDepth[i] = cascadeDepth;
                 chunkShader.Shadow.CropMatrices[i] = cropMatrix;
-                
+
                 entities.ApplyCropMatrix(i, cascadeDepth, cropMatrix);
+
+                cascadeDepth = CalcCascade(i, 17, farPlane, invCascades);
             }
         }
 
@@ -681,7 +688,7 @@ namespace OctoAwesome.Client.Controls
             casters.Clear();
             int viewDistChunks = (1 << VIEWRANGE) / 2 - 1;
             var chunkSize = new Vector3(Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y, Chunk.CHUNKSIZE_Z);
-            
+
             for (int z = 0; z < planet.Size.Z; z++)
             {
                 for (int y = -viewDistChunks; y <= viewDistChunks; y++)
@@ -700,7 +707,7 @@ namespace OctoAwesome.Client.Controls
                 }
             }
 
-            foreach(var e in entities.Entities)
+            foreach (var e in entities.Entities)
             {
                 var p = e.Components.GetComponent<PositionComponent>();
                 var offset = p.Position.ChunkIndex.ShortestDistanceXY(chunkOffset, new Index2(planet.Size));
@@ -742,7 +749,6 @@ namespace OctoAwesome.Client.Controls
             DrawSelectionBox(chunkOffset);
 
 #if DEBUG
-            
             var world = Matrix.Identity;
             foreach (var bb in _casters)
             {
@@ -807,7 +813,6 @@ namespace OctoAwesome.Client.Controls
 
         private void DrawSun(GameTime gameTime, Index3 chunkOffset, Vector3 sunDirection)
         {
-
             Manager.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
             sunEffect.CurrentTechnique.Passes[0].Apply();
