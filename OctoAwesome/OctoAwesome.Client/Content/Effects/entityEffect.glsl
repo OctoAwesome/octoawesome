@@ -11,8 +11,12 @@
         </Pass>
     </Technique>
     <Technique name="Shadow">
+        <Settings>
+            <Define name="CASCADES" type="UInt">2</Define>
+        </Settings>
         <Pass name="MainPass">
             <Shader type="PixelShader" filename="entity/entityEffect_shadow.ps"></Shader>
+            <Shader type="GeometryShader" filename="entity/entityEffect_shadow.gs"></Shader>
             <Shader type="VertexShader" filename="entity/entityEffect_shadow.vs"></Shader>
             <Attributes>
                 <attribute name="position">Position</attribute>

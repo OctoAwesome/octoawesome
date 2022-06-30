@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using NLog.LayoutRenderers;
 
 namespace OctoAwesome.Client.Components
 {
@@ -34,7 +35,7 @@ namespace OctoAwesome.Client.Components
                     if (projection == value)
                         return;
                     projection = value;
-                    UpdateViewProjection();
+                    Ambient.Proj = value;
                 }
             }
             public Matrix View
@@ -45,7 +46,7 @@ namespace OctoAwesome.Client.Components
                     if (view == value)
                         return;
                     view = value;
-                    UpdateViewProjection();
+                    Ambient.View = value;
                 }
             }
             public Matrix World
@@ -70,13 +71,6 @@ namespace OctoAwesome.Client.Components
                     Ambient.Texture = (Texture2D)value;
                 }
             }
-
-            private void UpdateViewProjection()
-            {
-                var viewProj = projection * view;
-                Ambient.ViewProjection = viewProj;
-                Shadow.ViewProjection = viewProj;
-            }
         }
         private struct ModelInfo
         {
@@ -86,6 +80,7 @@ namespace OctoAwesome.Client.Components
         }
         private GraphicsDevice graphicsDevice;
         private EntityModelEffect effect;
+        private readonly EffectInstantiator effectInstantiator;
         public SimulationComponent Simulation { get; private set; }
 
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
@@ -101,33 +96,31 @@ namespace OctoAwesome.Client.Components
             FunctionalBlocks = new List<FunctionalBlock>();
             graphicsDevice = game.GraphicsDevice;
 
-            effect = game.Content.Load<EntityModelEffect>("Effects/entityEffect");
+            effectInstantiator = game.Content.Load<EffectInstantiator>("Effects/entityEffect");
+            
         }
 
-        public void Draw(GameTime gameTime, RenderTarget2D shadowMap, Matrix view, Matrix projection, Matrix cropMatrix, Index3 chunkOffset, Index2 planetSize, Vector3 sunDirection)
+        public void LoadShader(entityEffect.entityEffectSettings? settings)
         {
-            var viewProj = projection * view;
-            var biasMatrix = new Matrix(
-              0.5f, 0.0f, 0.0f, 0.0f,
-              0.0f, 0.5f, 0.0f, 0.0f,
-              0.0f, 0.0f, 0.5f, 0.0f,
-              0.5f, 0.5f, 0.5f, 1.0f
-              );
-            var depthBiasWorldViewProj = biasMatrix * cropMatrix;
+            effect?.Dispose();
+            effect = effectInstantiator.CreateInstance<EntityModelEffect, entityEffect.entityEffectSettings>(settings);
+        }
 
-            effect.Ambient.DepthBiasViewProj = depthBiasWorldViewProj;
+        public void Draw(GameTime gameTime, Texture2DArray shadowMaps, Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize, Vector3 sunDirection)
+        {
             effect.CurrentTechnique = effect.Ambient;
             effect.Ambient.AmbientIntensity = 0.4f;
             effect.Ambient.AmbientColor = Color.White.ToVector4();
-            effect.Ambient.ViewProjection = viewProj;
-            effect.Ambient.ShadowMap = shadowMap;
+            effect.Ambient.View = view;
+            effect.Ambient.Proj = projection;
+            effect.Ambient.ShadowMaps = shadowMaps;
             effect.Ambient.DiffuseColor = new Color(190, 190, 190);
             effect.Ambient.DiffuseIntensity = 0.6f;
             effect.Ambient.DiffuseDirection = sunDirection;
 
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
             //using var writer = File.AppendText(Path.Combine(".", "render.log"));
-            foreach (var pass in effect.CurrentTechnique.Passes)
+            foreach (var pass in effect.Ambient.Passes)
             {
                 pass.Apply();
                 foreach (var entity in Entities)
@@ -160,10 +153,16 @@ namespace OctoAwesome.Client.Components
             }
         }
 
-        public void DrawShadow(GameTime gameTime, Matrix cropMatrix, Index3 chunkOffset, Index2 planetSize)
+        public void ApplyCropMatrix(int index, float cascadeDepth, Matrix cropMatrix)
+        {
+            effect.Ambient.CropMatrices[index] = cropMatrix;
+            effect.Ambient.CascadeDepth[index] = cascadeDepth;
+            effect.Shadow.CropMatrices[index] = cropMatrix;
+        }
+
+        public void DrawShadow(GameTime gameTime, Index3 chunkOffset, Index2 planetSize)
         {
             effect.CurrentTechnique = effect.Shadow;
-            effect.Shadow.ViewProjection = cropMatrix;
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
             foreach (var pass in effect.CurrentTechnique.Passes)

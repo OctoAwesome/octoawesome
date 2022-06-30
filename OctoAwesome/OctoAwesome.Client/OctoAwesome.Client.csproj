@@ -9,6 +9,8 @@
     <ApplicationIcon>octoawesome.ico</ApplicationIcon>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(MSBuildThisFileDirectory)\Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,9 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.6.0.7-alpha" />
-    <PackageReference Include="engenious.ContentTool" Version="0.6.1.4-alpha" PrivateAssets="all" />
-    <PackageReference Include="engenious.ContentTool.SourceGen" Version="0.6.1.4-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    <PackageReference Include="engenious" Version="0.6.1.10-alpha" />
+    <PackageReference Include="engenious.ContentTool" Version="0.6.1.11-alpha" PrivateAssets="all" />
+    <PackageReference Include="engenious.ContentTool.SourceGen" Version="0.6.1.11-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     <PackageReference Include="engenious.UI" Version="0.6.0.1-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="OpenAL.Soft" Version="1.19.1" Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Windows')))" />
@@ -58,6 +60,8 @@
 
   <ItemGroup>
     <EngeniousContentReference Include="Content\Content.ecp" />
+    <Compile Remove="Generated\**" />
+    <None Include="Generated\**" />
   </ItemGroup>
 
 </Project>
