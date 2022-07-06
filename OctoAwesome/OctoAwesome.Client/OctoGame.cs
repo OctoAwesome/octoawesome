@@ -14,6 +14,7 @@ using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Extension;
 using OctoAwesome.Crafting;
+using engenious.Graphics;
 
 namespace OctoAwesome.Client
 {
@@ -57,7 +58,6 @@ namespace OctoAwesome.Client
             IsMouseVisible = true;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-  
 
             Register(typeContainer);
 
@@ -75,6 +75,8 @@ namespace OctoAwesome.Client
             Screen = new ScreenComponent(this, ExtensionService);
             KeyMapper = new KeyMapper(Screen, Settings);
             Assets = new AssetComponent(Screen, Settings);
+
+
 
             typeContainer.Register<BaseScreenComponent>(Screen);
             typeContainer.Register<ScreenComponent>(Screen);
@@ -146,6 +148,15 @@ namespace OctoAwesome.Client
             //OctoAwesome.PoC.Program.Main();
             SetKeyBindings();
 
+        }
+
+        public override void LoadContent()
+        {
+            base.LoadContent();
+
+            Skin.Current.BoldFont = Screen.Content.Load<SpriteFont>("Fonts/BoldFont");
+            Skin.Current.TextFont = Screen.Content.Load<SpriteFont>("Fonts/GameFont");
+            Skin.Current.HeadlineFont = Screen.Content.Load<SpriteFont>("Fonts/HeadlineFont");
         }
 
         private static void Register(ITypeContainer typeContainer)

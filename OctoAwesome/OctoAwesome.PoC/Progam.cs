@@ -242,22 +242,24 @@ public static class Program
             {
                 //TODO Fragen die sich Maxi stellen tut:
                 /*
-                    - Wie also klar Zeitberechnung im Update? => GameTime when finished, etc.
+                    - ✓ Wie also klar Zeitberechnung im Update? => GameTime when finished, etc. => State Machine from jvbsl + Energyrequirement xor Zeitrequirement
                     - ✓ Auch die Energieberchnung? Theoretisch => Done
-                    - Output vom Input aus Berechnen / generieren / ...?
+                    - ✓ Output vom Input aus Berechnen / generieren / ...? => Teil vom Rezeptdefinition
                     - Betriebsmittel (Kleber, Rohöl, Schrauben, andere Öle, Brennmittel ...), was braucht die Maschine um ihre Arbeit zu verrichten?
                         - Seperate(r) Slot für Input
                         - Teil vom Block
                         - 
+                        -> Definition von Betriebsmittelmenge (ZB energie in Holz)
+                        -> Betriebsmitteldefinition auf Rezept und Maschine
                     - Für den Rezeptservice:
                         - Wie wird das relevanteste Rezept selektiert? (Kriterien, Demokratie? Ja!)
-                        - Priorisierung von kollidierenden Rezepten => Aktuell ungelöst, für den Anfang FirstOrDefault (Future: UI für Priorisierung / Sortierung, etc)
+                        - Priorisierung von kollidierenden Rezepten => Aktuell ungelöst, für den Anfang FirstOrDefault (Future: UI für Priorisierung / Sortierung, etc) => Erstmal Only Match => Start, ansonsten Auswahl für Player geben bzw. Informieren was noch fehlt, damit das Rezept erfüllt ist
                         - Pay to Prioritize (Betterplace donations oder sowas), Abomodell
                 
                     - ✓ Inventory überarbeiten, weil Slot hinzufügen / entfernen doof, wenn es fixe Slots geben sollte
 
-                    - Placeholder für InputMaterial = Output Material
-                    - Rezept als optionalen Input für Item => Dann können Rezepte von außen überschrieben werden vor der Verarbeitung des Inputs
+                    - ✓ Placeholder für InputMaterial = Output Material
+                    - Rezept als optionalen Input für Item (Autocrafting) => Dann können Rezepte von außen überschrieben werden vor der Verarbeitung des Inputs
 
                  */
 

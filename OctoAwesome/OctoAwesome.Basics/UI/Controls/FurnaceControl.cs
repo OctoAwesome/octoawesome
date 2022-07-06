@@ -9,6 +9,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.UI.Components;
 
 using System.Collections.Generic;
+using System.Text;
 
 namespace OctoAwesome.Basics.UI.Controls;
 
@@ -38,9 +39,9 @@ public sealed class FurnaceControl : Panel
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
-
+        
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
-        grid.AddControl(new Label(manager) { Text = "==>" }, 1, 0);
+        grid.AddControl(new Label(manager) { Text = "\u2668",  TextColor = Color.Red, Font= ScreenManager.Content.Load<SpriteFont>("Fonts/Emoji")}, 1, 0);
         inputSlotPanel = new InventoryControl(manager, assets, inventorySlots);
         outputSlotPanel = new InventoryControl(manager, assets, outputSlots);
         grid.AddControl(inputSlotPanel, 0, 0);

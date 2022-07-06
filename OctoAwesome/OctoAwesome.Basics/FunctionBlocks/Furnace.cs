@@ -101,6 +101,10 @@ public class Furnace : FunctionalBlock
 
     private bool GenerateOutput(TimeSpan elapsed, TimeSpan total)
     {
+        var recipe = GetRecipe();
+        if (recipe is null || currentRecipe is null || currentRecipe != recipe)
+            return true;
+
         if (currentRecipe.Inputs.Length == 1)
         {
             var inputItem = currentRecipe.Inputs[0];

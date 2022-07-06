@@ -86,7 +86,7 @@ namespace OctoAwesome.Client.UI.Controls
             int column = 0;
             int row = 0;
 
-            foreach (var inventorySlot in inventorySlots.OrderByDescending(x=>x.Item?.GetType().Name ?? ""))
+            foreach (var inventorySlot in inventorySlots.OrderBy(x => x.Item is null).ThenBy(x => x.Item?.GetType().Name))
             {
                 Texture2D texture;
 
