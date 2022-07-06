@@ -248,7 +248,6 @@ public static class Program
                     - Betriebsmittel (Kleber, Rohöl, Schrauben, andere Öle, Brennmittel ...), was braucht die Maschine um ihre Arbeit zu verrichten?
                         - Seperate(r) Slot für Input
                         - Teil vom Block
-                        - 
                         -> Definition von Betriebsmittelmenge (ZB energie in Holz)
                         -> Betriebsmitteldefinition auf Rezept und Maschine
                     - Für den Rezeptservice:

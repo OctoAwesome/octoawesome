@@ -72,7 +72,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             inputInventory.EndDrop += (s, e) => OnInventoryDrop(e, furnaceUIComponent.InventoryA);
 
-            furnace = new FurnaceControl(manager, assetComponent, Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
+            furnace = new FurnaceControl(manager, assetComponent, Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -80,7 +80,14 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            furnace.EndDrop += (s, e) => OnInventoryDrop(e, furnaceUIComponent.InputInventory);
+            furnace.EndDrop += (s, e) =>
+            {
+                if (furnace.resourceSlotPanel.ActualClientArea.Contains(e.GlobalPosition - furnace.resourceSlotPanel.AbsolutePosition))
+                    OnInventoryDrop(e, furnaceUIComponent.ProductionResourceInventory);
+                else
+                    OnInventoryDrop(e, furnaceUIComponent.InputInventory);
+            };
+
 
             grid.AddControl(inputInventory, 0, 0);
             grid.AddControl(furnace, 0, 2);
@@ -140,7 +147,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 _ = Manager.NavigateToScreen(this);
             }
 
-            Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, furnaceUIComponent.OutputInventory);
+            Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, furnaceUIComponent.OutputInventory, furnaceUIComponent.ProductionResourceInventory);
         }
 
         private void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
@@ -169,10 +176,10 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <param name="inventoryComponentA">Most of times player</param>
         /// <param name="inventoryComponentB">Mostly input to furnace</param>
         /// <param name="inventoryComponentC">Mostly output of furnace</param>
-        internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB, InventoryComponent inventoryComponentC)
+        internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB, InventoryComponent inventoryComponentC, InventoryComponent productionResourceInventory)
         {
             inputInventory.Rebuild(inventoryComponentA.Inventory);
-            furnace.Rebuild(inventoryComponentB.Inventory, inventoryComponentC.Inventory);
+            furnace.Rebuild(inventoryComponentB.Inventory, inventoryComponentC.Inventory, productionResourceInventory.Inventory);
         }
 
 

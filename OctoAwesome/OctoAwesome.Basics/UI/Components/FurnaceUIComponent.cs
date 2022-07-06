@@ -15,6 +15,8 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     public int InputVersion { get; private set; }
     public InventoryComponent OutputInventory { get; private set; }
     public int OutputVersion { get; private set; }
+    public InventoryComponent ProductionResourceInventory { get; private set; }
+    public int ProductionResourceVersion { get; private set; }
     private bool show = false;
 
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
@@ -23,7 +25,9 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
             && (component2.Targets.Count == 0
                 || ((InventoryA?.Version ?? -1) == VersionA
                     && (InputInventory?.Version ?? -1) == InputVersion
-                    && (OutputInventory?.Version ?? -1) == OutputVersion))
+                    && (ProductionResourceInventory?.Version ?? -1) == ProductionResourceVersion
+                    && (OutputInventory?.Version ?? -1) == OutputVersion)
+                    )
             || PrimaryUiKey != "Furnace")
 
         {
@@ -37,6 +41,8 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         InputVersion = InputInventory.Version;
         OutputInventory = component2.Targets[1];
         OutputVersion = OutputInventory.Version;
+        ProductionResourceInventory = component2.Targets[2];
+        ProductionResourceVersion = ProductionResourceInventory.Version;
 
         return true;
     }

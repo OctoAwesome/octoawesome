@@ -30,5 +30,7 @@ namespace OctoAwesome
         /// </summary>
         int Weight => VolumePerUnit * Density;
         IMaterialDefinition Material { get; }
+
+        IDefinition GetDefinition();
     }
 }

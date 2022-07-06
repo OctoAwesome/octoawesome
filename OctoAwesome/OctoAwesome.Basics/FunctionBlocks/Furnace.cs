@@ -1,4 +1,6 @@
 ﻿using engenious;
+
+using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
@@ -23,7 +25,7 @@ public class Furnace : FunctionalBlock
     internal InventoryComponent inventoryComponent;
     internal AnimationComponent animationComponent;
 
-#region PutIntoComponent
+    #region PutIntoComponent
     private readonly RecipeService recipeService;
     private readonly IDefinitionManager definitionManager;
     private IReadOnlyCollection<Recipe> recipes;
@@ -31,7 +33,9 @@ public class Furnace : FunctionalBlock
     private StateMachine stateMachine;
     private int requiredMillisecondsForRecipe;
     internal OutputInventoryComponent outputComponent;
-#endregion
+    internal ProductionResourcesInventoryComponent productionResourcesInventoryComponent;
+    private int energieLeft = 0;
+    #endregion
 
     public Furnace()
     {
@@ -64,7 +68,38 @@ public class Furnace : FunctionalBlock
 
     public bool HasRecipeFinished(TimeSpan elapsed, TimeSpan total)
     {
-        return requiredMillisecondsForRecipe <= total.TotalMilliseconds;
+        var energySinceLastUpdate = (int)(elapsed.TotalMilliseconds * 2.5);
+
+        if (energieLeft > 0)
+            energieLeft -= energySinceLastUpdate;
+        System.Diagnostics.Debug.WriteLine(energieLeft);
+        if (energieLeft <= 0)
+        {
+            var firstProductionRessource = productionResourcesInventoryComponent.Inventory.First();
+
+            if (firstProductionRessource is null
+                || firstProductionRessource.Definition is not BlockDefinition bd
+                || (bd.Material is not WoodMaterialDefinition
+                    && bd.Material is not CottonMaterialDefinition
+                    && bd.Material is not LeaveMaterialDefinition))
+            {
+                currentRecipe = null;
+                return false;
+            }
+            else if (firstProductionRessource.Definition is BlockDefinition bd2
+                && bd2.Material is ISolidMaterialDefinition smd)
+            {
+                energieLeft = smd.Density; //TODO real energy stuff calculations
+                productionResourcesInventoryComponent.Remove(firstProductionRessource, 1);
+            }
+        }
+
+        if (energieLeft <= 0)
+            return false;
+
+        requiredMillisecondsForRecipe -= (int)elapsed.TotalMilliseconds;
+
+        return requiredMillisecondsForRecipe <= 0;
     }
 
 
@@ -87,6 +122,7 @@ public class Furnace : FunctionalBlock
             transferComponent.Targets.Clear();
             transferComponent.Targets.Add(inventoryComponent);
             transferComponent.Targets.Add(outputComponent);
+            transferComponent.Targets.Add(productionResourcesInventoryComponent);
             uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
             animationComponent.CurrentTime = 0f;
@@ -215,6 +251,27 @@ public class Furnace : FunctionalBlock
         if (requiredMillisecondsForRecipe < 0)
             return false;
 
+        if (energieLeft > 0)
+            return true;
+
+        var firstProductionRessource = productionResourcesInventoryComponent.Inventory.First();
+
+        if (firstProductionRessource is null
+            || firstProductionRessource.Definition is not BlockDefinition bd
+            || (bd.Material is not WoodMaterialDefinition
+                && bd.Material is not CottonMaterialDefinition
+                && bd.Material is not LeaveMaterialDefinition))
+        {
+            currentRecipe = null;
+            return false;
+        }
+        else if (firstProductionRessource.Definition is BlockDefinition bd2
+            && bd2.Material is ISolidMaterialDefinition smd)
+        {
+            energieLeft = smd.Density; //TODO real energy stuff calculations
+            productionResourcesInventoryComponent.Remove(firstProductionRessource, 1);
+        }
+
         return true;
     }
 
@@ -224,7 +281,7 @@ public class Furnace : FunctionalBlock
             return null; //Reset recipe, time etc. pp.
                          //var inputSlot = Input.Inventory.FirstOrDefault();
         var inputs = inventoryComponent.Inventory
-            .Where(x=>!string.IsNullOrWhiteSpace(x.Definition?.DisplayName))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Definition?.DisplayName))
             .GroupBy(x => x.Definition.DisplayName)
             .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item.Material.DisplayName /*TODO Name not Displayname*/))
             .ToArray();

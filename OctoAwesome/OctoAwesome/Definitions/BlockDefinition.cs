@@ -64,6 +64,7 @@ namespace OctoAwesome.Definitions
 
         /// <inheritdoc />
         public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
+        public IDefinition GetDefinition() => this;
 
     }
 }

@@ -17,7 +17,7 @@ public sealed class FurnaceControl : Panel
 {
     private const int COLUMNS = 8;
 
-    private InventoryControl inputSlotPanel, outputSlotPanel;
+    internal InventoryControl inputSlotPanel, outputSlotPanel, resourceSlotPanel;
 
     /// <summary>
     /// Gibt den aktuell selektierten Slot an.
@@ -27,7 +27,7 @@ public sealed class FurnaceControl : Panel
     private Grid grid;
     private readonly AssetComponent assets;
 
-    public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputSlots, int columns = COLUMNS) : base(manager)
+    public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputSlots, IReadOnlyCollection<IInventorySlot> ressourceSlots, int columns = COLUMNS) : base(manager)
     {
         Background = new SolidColorBrush(Color.Transparent);
 
@@ -37,26 +37,31 @@ public sealed class FurnaceControl : Panel
         };
 
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
-        grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+        grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 2 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
         
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
+        grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
+
         grid.AddControl(new Label(manager) { Text = "\u2668",  TextColor = Color.Red, Font= ScreenManager.Content.Load<SpriteFont>("Fonts/Emoji")}, 1, 0);
         inputSlotPanel = new InventoryControl(manager, assets, inventorySlots);
         outputSlotPanel = new InventoryControl(manager, assets, outputSlots);
+        resourceSlotPanel = new InventoryControl(manager, assets, ressourceSlots);
         grid.AddControl(inputSlotPanel, 0, 0);
         grid.AddControl(outputSlotPanel, 2, 0);
+        grid.AddControl(resourceSlotPanel, 0,1);
 
         Controls.Add(grid);
 
         this.assets = assets;
-        Rebuild(inventorySlots, outputSlots, columns);
+        Rebuild(inventorySlots, outputSlots, ressourceSlots, columns);
     }
 
-    public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, int columns = COLUMNS)
+    public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, IReadOnlyCollection<IInventorySlot> ressourceInventory, int columns = COLUMNS)
     {
         inputSlotPanel.Rebuild(inventorySlots, columns / 2);
         outputSlotPanel.Rebuild(outputInventory, columns / 2);
+        resourceSlotPanel.Rebuild(ressourceInventory, columns / 2);
         //TODO Draw in a grid formation
 
         //var inputPanel = inputSlotPanel;

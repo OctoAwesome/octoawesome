@@ -151,5 +151,7 @@ namespace OctoAwesome.Definitions.Items
             item.InternalDeserialize(reader);
             return item;
         }
+
+        public IDefinition GetDefinition() => Definition;
     }
 }

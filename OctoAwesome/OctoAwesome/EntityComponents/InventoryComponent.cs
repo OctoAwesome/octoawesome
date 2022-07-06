@@ -16,8 +16,40 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// HACK Ihh bäbä  Unschön Mutli Components vom same Type erlauben!!!
     /// </summary>
+    public class ProductionResourcesInventoryComponent : InventoryComponent
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductionResourcesInventoryComponent"/> class.
+        /// </summary>
+        public ProductionResourcesInventoryComponent() : base()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductionResourcesInventoryComponent"/> class with limits.
+        /// </summary>
+        public ProductionResourcesInventoryComponent(bool isFixedSlotSize = false, int maxSlots = int.MaxValue, int maxWeight = int.MaxValue, int maxVolume = int.MaxValue) : base(isFixedSlotSize, maxSlots, maxWeight, maxVolume)
+        {
+        }
+    }
+    /// <summary>
+    /// HACK Ihh bäbä  Unschön Mutli Components vom same Type erlauben!!!
+    /// </summary>
     public class OutputInventoryComponent : InventoryComponent
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OutputInventoryComponent"/> class.
+        /// </summary>
+        public OutputInventoryComponent() : base()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OutputInventoryComponent"/> class with limits.
+        /// </summary>
+        public OutputInventoryComponent(bool isFixedSlotSize = false, int maxSlots = int.MaxValue, int maxWeight = int.MaxValue, int maxVolume = int.MaxValue) : base(isFixedSlotSize, maxSlots, maxWeight, maxVolume)
+        {
+        }
 
     }
 
@@ -412,8 +444,10 @@ namespace OctoAwesome.EntityComponents
                 var canAdd = 0;
                 foreach (var slot in inventory)
                 {
-                    if (slot.Item is not null || slot.Definition is not null)
+                    if (slot.Definition is not null && slot.Definition != inventoryable.GetDefinition())
+                    {
                         continue;
+                    }
 
                     canAdd += (inventoryable.StackLimit * inventoryable.VolumePerUnit) - slot.Amount;
                 }
