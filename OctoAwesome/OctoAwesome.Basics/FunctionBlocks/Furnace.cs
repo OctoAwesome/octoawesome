@@ -287,7 +287,7 @@ public class Furnace : FunctionalBlock
             .ToArray();
         if (inputs.Length == 0)
             return null; //Reset recipe, time etc. pp.
-        var recipe = recipeService.GetByInputs(inputs, recipes);
+        var recipe = recipeService.GetByInputs(recipes, inputs);
         if (recipe is null)
             return null; //Reset recipe, time etc. pp.
         return recipe;

@@ -1,4 +1,7 @@
-﻿namespace OctoAwesome.Crafting;
+﻿using System.Collections.Generic;
+using System.Text.Json.Nodes;
+
+namespace OctoAwesome.Crafting;
 
 public class Recipe
 {
@@ -6,15 +9,15 @@ public class Recipe
     public string Type { get; set; }
     public RecipeItem[] Inputs { get; set; }
     public RecipeItem[] Outputs { get; set; }
-    
+
     // 10 x Wood Amount
     public int? Energy { get; set; }
     //XOR Realtime Milliseconds, 400 per Wood
     public int? Time { get; set; }
-    
+
     // Optional
     public int? MinTime { get; set; }
-    
+
     public string Category { get; set; }
     public string SubCategory { get; set; }
     public bool Enabled { get; set; }
@@ -22,4 +25,6 @@ public class Recipe
     public string[] Keywords { get; set; }
 
     public string[] Overwrites { get; set; }
+
+    public Dictionary<string, JsonNode> MetaData { get; set; }
 }
