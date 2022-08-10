@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OctoAwesome.Crafting;
+
 
 public class Recipe
 {
@@ -18,13 +21,14 @@ public class Recipe
     // Optional
     public int? MinTime { get; set; }
 
-    public string Category { get; set; }
-    public string SubCategory { get; set; }
+    public RecipeCategory[] Category { get; set; }
     public bool Enabled { get; set; }
     public string Description { get; set; }
     public string[] Keywords { get; set; }
 
     public string[] Overwrites { get; set; }
 
-    public Dictionary<string, JsonNode> MetaData { get; set; }
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtensionData { get; set; }
 }
+

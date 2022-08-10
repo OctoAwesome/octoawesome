@@ -31,9 +31,9 @@ public class RecipeService
 
     }
 
-    public IReadOnlyCollection<Recipe> GetByCategory(string category)
+    public IReadOnlyCollection<Recipe> GetByCategory(RecipeCategory category)
     {
-        return recipes.Where(x => string.IsNullOrWhiteSpace(x.Category) || x.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToArray();
+        return recipes.Where(x => x.Category.Any(x=>x == category)).ToArray();
     }
 
     internal Recipe? GetByInput(IReadOnlyCollection<Recipe> recipes, RecipeItem input)
@@ -163,38 +163,40 @@ public class RecipeService
         return retRecipes;
     }
 
-    public Recipe? Match(IReadOnlyCollection<Recipe> recipes, IReadOnlyCollection<RecipeItem> inputs, IReadOnlyCollection<RecipeItem> outputs, string category = "", string type = "")
-    {
-        foreach (var recipe in recipes.OrderBy(x => x.Inputs.Length))
-        {
-            if (!string.IsNullOrWhiteSpace(category) && recipe.Category != category)
-                continue;
-            if (!string.IsNullOrWhiteSpace(type) && recipe.Type != type)
-                continue;
+    //TODO Implement on a later point when needed or all discrepancies are solved
+    //public Recipe? Match(IReadOnlyCollection<Recipe> recipes, IReadOnlyCollection<RecipeItem> inputs, IReadOnlyCollection<RecipeItem> outputs, string category = "", string type = "")
+    //{
+    //    foreach (var recipe in recipes.OrderBy(x => x.Inputs.Length))
+    //    {
+    //        if (!string.IsNullOrWhiteSpace(category) && recipe.Category != category)
+    //            continue;
+    //        if (!string.IsNullOrWhiteSpace(type) && recipe.Type != type)
+    //            continue;
 
-            int counter = 0;
-            foreach (var inputItem in recipe.Inputs)
-            {
-                foreach (var input in inputs)
-                {
-                    if (inputItem.Count <= input.Count
-                        && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
-                        && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
-                    {
-                        counter++;
-                        break;
-                    }
-                }
-            }
-            if (counter >= recipe.Inputs.Length)
-                return recipe;
-        }
+    //        int counter = 0;
+    //        foreach (var inputItem in recipe.Inputs)
+    //        {
+    //            foreach (var input in inputs)
+    //            {
+    //                if (inputItem.Count <= input.Count
+    //                    && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
+    //                    && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+    //                {
+    //                    counter++;
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        if (counter >= recipe.Inputs.Length)
+    //            return recipe;
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
-    public IReadOnlyCollection<Recipe> Search(string query)
-    {
-        throw new NotImplementedException();
-    }
+    //TODO Is this needed, when match is finally implemented
+    //public IReadOnlyCollection<Recipe> Search(string query)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
