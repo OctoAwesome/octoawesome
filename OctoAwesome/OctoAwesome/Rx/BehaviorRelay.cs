@@ -3,18 +3,28 @@ using System.Collections.Generic;
 
 namespace OctoAwesome.Rx
 {
+    /// <summary>
+    /// Represents a value that changes over time.
+    /// Observers can subscribe to the subject to receive the last (or initial) value and all subsequent notifications.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements processed by the subject.</typeparam>
+    /// <seealso cref="Relay{T}"/>
     public class BehaviorRelay<T> : IObservable<T>, IObserver<T>, IDisposable
     {
         private readonly List<BehaviorRelaySubscription> subscriptions;
 
         private T lastValue;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BehaviorRelay{T}"/> class.
+        /// </summary>
         public BehaviorRelay(T initialValue)
         {
             subscriptions = new();
             lastValue = initialValue;
         }
 
+        /// <inheritdoc/>
         public void OnCompleted()
         {
             for (int i = 0; i < subscriptions.Count; i++)
@@ -23,6 +33,7 @@ namespace OctoAwesome.Rx
             }
         }
 
+        /// <inheritdoc/>
         public void OnError(Exception error)
         {
             for (int i = 0; i < subscriptions.Count; i++)
@@ -31,6 +42,7 @@ namespace OctoAwesome.Rx
             }
         }
 
+        /// <inheritdoc/>
         public void OnNext(T value)
         {
             lastValue = value;
@@ -40,6 +52,7 @@ namespace OctoAwesome.Rx
             }
         }
 
+        /// <inheritdoc/>
         public IDisposable Subscribe(IObserver<T> observer)
         {
             var sub = new BehaviorRelaySubscription(this, observer);
@@ -48,6 +61,7 @@ namespace OctoAwesome.Rx
             return sub;
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             foreach (var subscription in subscriptions)
@@ -77,6 +91,7 @@ namespace OctoAwesome.Rx
                 Observer = observer;
             }
 
+            /// <inheritdoc/>
             public void Dispose()
             {
                 relay.Unsubscribe(this);

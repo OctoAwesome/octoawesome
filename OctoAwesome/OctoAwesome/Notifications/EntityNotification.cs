@@ -58,6 +58,9 @@ namespace OctoAwesome.Notifications
             EntityId = id;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntityNotification"/> class.
+        /// </summary>
         public EntityNotification(ActionType type, Entity entity) : this(entity.Id)
         {
             Type = type;

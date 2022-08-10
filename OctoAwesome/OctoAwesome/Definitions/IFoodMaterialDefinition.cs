@@ -1,5 +1,8 @@
 ﻿namespace OctoAwesome.Definitions
 {
+    /// <summary>
+    /// Declares an item as eadible with according properties
+    /// </summary>
     public interface IFoodMaterialDefinition : IMaterialDefinition
     {
         /// <summary>

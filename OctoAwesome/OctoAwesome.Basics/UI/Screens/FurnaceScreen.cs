@@ -18,8 +18,14 @@ using System.Diagnostics;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
+    /// <summary>
+    /// Screen container control page for Furnace screen.
+    /// </summary>
     public class FurnaceScreen : BaseScreen
     {
+        /// <summary>
+        /// Eventhandler that gets called when this screen was closed
+        /// </summary>
         public event EventHandler<NavigationEventArgs> Closed;
 
         private const string ScreenKey = "Furnace";
@@ -40,6 +46,9 @@ namespace OctoAwesome.Basics.UI.Screens
             BToA
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FurnaceScreen"/> class.
+        /// </summary>
         public FurnaceScreen(BaseScreenComponent manager, AssetComponent assetComponent) : base(manager, assetComponent)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
@@ -123,8 +132,8 @@ namespace OctoAwesome.Basics.UI.Screens
             this.furnaceUIComponent = transferComponent;
             subscription = transferComponent.Changes.Subscribe(InventoryChanged);
         }
-        /// <inheritdoc/>
 
+        /// <inheritdoc/>
         public override void RemoveUiComponent(UIComponent uiComponent)
         {
             if (uiComponent != furnaceUIComponent)
@@ -184,6 +193,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
 
 
+        ///<inheritdoc/>
         protected override void OnKeyDown(KeyEventArgs args)
         {
             if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
@@ -195,6 +205,7 @@ namespace OctoAwesome.Basics.UI.Screens
             base.OnKeyDown(args);
         }
 
+        ///<inheritdoc/>
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
             furnaceUIComponent.OnClose(ScreenKey);

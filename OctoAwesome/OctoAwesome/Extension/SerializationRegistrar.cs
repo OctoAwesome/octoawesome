@@ -31,8 +31,16 @@ namespace OctoAwesome
             serializationIdTypeProvider.Register(serId, type);
         }
 
+        /// <summary>
+        /// Not supported
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         public override void Unregister(Type value) => throw new NotSupportedException();
 
+        /// <summary>
+        /// Not supported, use <see cref="SerializationIdTypeProvider"/> instead
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         public override IReadOnlyCollection<Type> Get() => throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
     }
 }

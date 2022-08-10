@@ -82,7 +82,7 @@ namespace OctoAwesome
         /// Initializes a new instance of the <see cref="Simulation"/> class.
         /// </summary>
         /// <param name="resourceManager">The resource manager for managing resources.</param>
-        /// <param name="extensionResolver">The extension resolver for extending this simulation.</param>
+        /// <param name="extensionService">The extension service for extending this simulation.</param>
         /// <param name="service">The game service.</param>
         public Simulation(IResourceManager resourceManager, ExtensionService extensionService, IGameService service)
         {
@@ -422,6 +422,11 @@ namespace OctoAwesome
 
         }
 
+        /// <summary>
+        /// Search and get entites by a specified type from this simulation
+        /// </summary>
+        /// <typeparam name="T">The type to search for</typeparam>
+        /// <returns>A collection of <typeparamref name="T"/> of the entites that are part of this simulation</returns>
         public IReadOnlyCollection<T> GetEntitiesOfType<T>()
         {
             var ret = new List<T>();
@@ -434,6 +439,11 @@ namespace OctoAwesome
             return ret;
         }
 
+        /// <summary>
+        /// Search and get <see cref="ComponentContainer"/> by a specified <see cref="Component"/> type from this simulation
+        /// </summary>
+        /// <typeparam name="T">The component type to search for</typeparam>
+        /// <returns>A collection of <see cref="ComponentContainer"/> that are part of this simulation</returns>
         public IReadOnlyCollection<ComponentContainer> GetByComponentType<T>()
         {
             var ret = new List<ComponentContainer>();
@@ -451,6 +461,14 @@ namespace OctoAwesome
                 }
             return ret;
         }
+
+
+        /// <summary>
+        /// Search and get <see cref="ComponentContainer"/> by both specified <see cref="Component"/> type from this simulation
+        /// </summary>
+        /// <typeparam name="T1">The component type to search for</typeparam>
+        /// <typeparam name="T2">The component type to search for</typeparam>
+        /// <returns>A collection of <see cref="ComponentContainer"/> that are part of this simulation and matches the component types</returns>
         public IReadOnlyCollection<ComponentContainer> GetByComponentTypes<T1, T2>()
         {
             var ret = new List<ComponentContainer>();
@@ -469,6 +487,11 @@ namespace OctoAwesome
             return ret;
         }
 
+        /// <summary>
+        /// Search and get <see cref="ComponentContainer"/> by a specified id
+        /// </summary>
+        /// <typeparam name="T">The <see cref="ComponentContainer"/> to search for</typeparam>
+        /// <returns><see cref="ComponentContainer"/> that has been found or <see langword="default"/></returns>
         public T GetById<T>(Guid id) where T : ComponentContainer
         {
             using (var _ = entitiesSemaphore.EnterCountScope())
@@ -487,6 +510,13 @@ namespace OctoAwesome
 
             return default;
         }
+
+        /// <summary>
+        /// Try search and get <see cref="ComponentContainer"/> by a specified id
+        /// </summary>
+        /// <typeparam name="T">The <see cref="ComponentContainer"/> to search for</typeparam>
+        /// <param name="componentContainer"><see cref="ComponentContainer"/> that has been found or <see langword="default"/></param>
+        /// <returns><see langword="true"/> if a container was found, otherwise <see langword="false"/></returns>
         public bool TryGetById<T>(Guid id, out T componentContainer) where T : ComponentContainer
         {
             using (var _ = entitiesSemaphore.EnterCountScope())

@@ -64,6 +64,11 @@ namespace OctoAwesome.Definitions
 
         /// <inheritdoc />
         public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
+
+        /// <summary>
+        /// Get the current definiton for this definition
+        /// </summary>
+        /// <returns>Current <see cref="BlockDefinition"/></returns>
         public IDefinition GetDefinition() => this;
 
     }

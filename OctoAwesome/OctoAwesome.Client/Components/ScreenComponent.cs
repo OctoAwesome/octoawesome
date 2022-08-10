@@ -4,7 +4,6 @@ using engenious.UI.Controls;
 
 using OctoAwesome.Client.Screens;
 using System;
-using engenious;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Database;
@@ -12,10 +11,8 @@ using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
-using OctoAwesome.UI.Components;
 using OctoAwesome.UI.Screens;
 
-using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Client.Components
@@ -54,6 +51,7 @@ namespace OctoAwesome.Client.Components
         }
 
 
+        /// <inheritdoc/>
         protected override void LoadContent()
         {
             base.LoadContent();
@@ -71,6 +69,7 @@ namespace OctoAwesome.Client.Components
 
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             foreach (var component in Components)
@@ -80,18 +79,20 @@ namespace OctoAwesome.Client.Components
 
             base.Update(gameTime);
         }
-
+        /// <inheritdoc/>
         public void Exit() => Game.Exit();
 
+        /// <inheritdoc/>
         public void UnloadAssets()
         {
-            Skin.Current.ButtonBrush = null;
-            Skin.Current.ButtonHoverBrush = null;
-            Skin.Current.ButtonPressedBrush = null;
-            Skin.Current.ProgressBarBrush = null;
-            Skin.Current.HorizontalScrollBackgroundBrush = null;
+            Skin.Current.ButtonBrush = default!;
+            Skin.Current.ButtonHoverBrush = default!;
+            Skin.Current.ButtonPressedBrush = default!;
+            Skin.Current.ProgressBarBrush = default!;
+            Skin.Current.HorizontalScrollBackgroundBrush = default!;
         }
 
+        /// <inheritdoc/>
         public void ReloadAssets()
         {
             Skin.Current.ButtonBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("buttonLong_brown"), 15, 15);
@@ -122,6 +123,7 @@ namespace OctoAwesome.Client.Components
             }
         }
 
+        /// <inheritdoc/>
         public void Add(BaseScreen screen)
         {
             foreach (var component in Components)
@@ -136,8 +138,13 @@ namespace OctoAwesome.Client.Components
             extensionService.ExecuteExtender(screen);
         }
 
+        /// <inheritdoc/>
         public void Remove(BaseScreen screen) => screens.Remove(screen);
 
+        /// <summary>
+        /// Adds the ui component the all screen that can accept it and calls the execute extender on it
+        /// </summary>
+        /// <param name="uiComponent">The component to add to screens and extend</param>
         public void Add(UIComponent uiComponent)
         {
             foreach (var screen in screens)
@@ -148,6 +155,10 @@ namespace OctoAwesome.Client.Components
             extensionService.ExecuteExtender(uiComponent);
         }
 
+        /// <summary>
+        /// Removes the ui component from all the screens that accepted this component before
+        /// </summary>
+        /// <param name="uiComponent">The componen to remove from the component</param>
         public void Remove(UIComponent uiComponent)
         {
             foreach (var screen in screens)

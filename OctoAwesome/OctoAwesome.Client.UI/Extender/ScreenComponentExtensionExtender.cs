@@ -6,10 +6,16 @@ using System.Collections.Generic;
 
 namespace OctoAwesome.UI.Extender
 {
+    /// <summary>
+    /// Class for managing screen component extensions
+    /// </summary>
     public class ScreenComponentExtensionExtender : BaseExtensionExtender<IScreenComponent>
     {
-        private readonly List<Action<IScreenComponent>> simulationExtender;
+        private readonly List<Action<IScreenComponent>> simulationExtender;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="ScreenComponentExtensionExtender" /> class
+        /// </summary>
         public ScreenComponentExtensionExtender()
         {
             simulationExtender = new();

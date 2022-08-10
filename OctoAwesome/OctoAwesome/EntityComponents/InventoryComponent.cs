@@ -62,27 +62,71 @@ namespace OctoAwesome.EntityComponents
         /// Gets a list of inventory slots this inventory consists of.
         /// </summary>
         public IReadOnlyCollection<IInventorySlot> Inventory => inventory;
+        /// <summary>
+        /// Gets the maximum allowed slots
+        /// </summary>
         public int MaxSlots => maxSlots;
+        /// <summary>
+        /// Gets the maximum allowed weight
+        /// </summary>
         public int MaxWeight => maxWeight;
+        /// <summary>
+        /// Gets the maximum allowed volume
+        /// </summary>
         public int MaxVolume => maxVolume;
 
+        /// <summary>
+        /// Gets the currently occupied slots
+        /// </summary>
         public int CurrentSlots => inventory.Count;
+        /// <summary>
+        /// Gets the currently occupied weight
+        /// </summary>
         public int CurrentWeight => currentVolume;
+        /// <summary>
+        /// Gets the currently occupied volume
+        /// </summary>
         public int CurrentVolume => currentWeight;
 
+        /// <summary>
+        /// Get's the value which determines if this inventory can be resized dynamically
+        /// </summary>
         public bool IsFixedSlotSize => isFixedSlotSize;
 
+        /// <summary>
+        /// Gets the information if the inventory has a weight limit
+        /// </summary>
         protected bool HasLimitedWeight => maxWeight != int.MaxValue;
+
+        /// <summary>
+        /// Gets the information if the inventory has a volume limit
+        /// </summary>
+
         protected bool HasLimitedVolume => maxVolume != int.MaxValue;
 
+        /// <summary>
+        /// Get the current version of the inventory, which increases with every update of any slot
+        /// </summary>
         public int Version => version;
 
         private int version;
 
+        /// <summary>
+        /// Gets or sets if the inventory should be allowed to resize dynamically
+        /// </summary>
         protected bool isFixedSlotSize = false;
 
+        /// <summary>
+        /// The maximum allowed slots
+        /// </summary>
         protected int maxSlots = int.MaxValue;
+        /// <summary>
+        /// The maximum allowed weight
+        /// </summary>
         protected int maxWeight = int.MaxValue;
+        /// <summary>
+        /// The maximum allowed volume
+        /// </summary>
         protected int maxVolume = int.MaxValue;
 
         private readonly List<InventorySlot> inventory;
@@ -148,7 +192,7 @@ namespace OctoAwesome.EntityComponents
                 var definition = definitionManager.Definitions.FirstOrDefault(d => d.GetType().FullName == name);
 
                 int amount = 1;
-                IInventoryable inventoryItem = default;
+                IInventoryable inventoryItem = default!;
                 if (definition is not null && definition is IInventoryable inventoryable)
                 {
                     amount = reader.ReadInt32();
@@ -273,7 +317,11 @@ namespace OctoAwesome.EntityComponents
 
         //    }
         //}
-
+        /// <summary>
+        /// Removes all occurences of the item
+        /// </summary>
+        /// <param name="item">The item that should be removed</param>
+        /// <returns>How much of the item was removed</returns>
         public int RemoveAll(IInventoryable item)
         {
             var slots = inventory.Where(x => x.Item == item);
@@ -287,6 +335,11 @@ namespace OctoAwesome.EntityComponents
             return ret;
         }
 
+        /// <summary>
+        /// Removes the first occurence of this item completely from the slot
+        /// </summary>
+        /// <param name="item">The item shat should be removed</param>
+        /// <returns>The amount of items removed, 0 if no items where found</returns>
         public int RemoveFirst(IInventoryable item)
         {
             var slot = inventory.FirstOrDefault(x => x.Item == item);
@@ -295,6 +348,12 @@ namespace OctoAwesome.EntityComponents
             return Remove(item, slot);
         }
 
+        /// <summary>
+        /// Removes the item as long as the quantity wasn't reached
+        /// </summary>
+        /// <param name="item">The item shat should be removed</param>
+        /// <param name="quantity">The maximum amount to be removed</param>
+        /// <returns>The amount of items removed, 0 if no items where found</returns>
         public int Remove(IInventoryable item, int quantity)
         {
             if (!Contains(item, quantity))
@@ -313,12 +372,26 @@ namespace OctoAwesome.EntityComponents
             Interlocked.Increment(ref version);
             return quantity - left;
         }
+
+        /// <summary>
+        /// Removes the item in the slot completely
+        /// </summary>
+        /// <param name="item">The item shat should be removed</param>
+        /// <param name="slot">The slot shat should be used to remove the containing item</param>
+        /// <returns>The amount of items removed, 0 if no item was present or didn't match the item in the slot</returns>
         public int Remove(IInventoryable item, InventorySlot slot)
         {
             if (slot is null || item is null || slot.Item != item)
                 return 0;
             return Remove(slot, slot.Amount);
         }
+
+        /// <summary>
+        /// Removes the item in the slot as long as the quantity wasn't reached and removes the slot if inventory is not <see cref="IsFixedSlotSize"/>
+        /// </summary>
+        /// <param name="slot">The slot shat should be used to remove the containing item</param>
+        /// <param name="quantity">The maximum amount to be removed</param>
+        /// <returns>The amount of items removed, 0 if no items where found</returns>
         public int Remove(IInventorySlot slot, int quantity)
         {
             if (slot is not InventorySlot invSlot)
@@ -340,6 +413,12 @@ namespace OctoAwesome.EntityComponents
             Interlocked.Increment(ref version);
             return quantity;
         }
+
+        /// <summary>
+        /// Removes the slot from the inventory
+        /// </summary>
+        /// <param name="slot">The slot to be removed including the item that it contians</param>
+        /// <returns>How much of the item was removed</returns>
         public int Remove(IInventorySlot slot)
         {
             if (slot.Item is null || slot is not InventorySlot invSlot)
@@ -347,6 +426,13 @@ namespace OctoAwesome.EntityComponents
             return Remove(invSlot, invSlot.Amount);
         }
 
+
+        /// <summary>
+        /// Adds the item as long as the quantity wasn't reached
+        /// </summary>
+        /// <param name="item">The item shat should be added</param>
+        /// <param name="quantity">The maximum amount to be added</param>
+        /// <returns>The amount of item added, 0 if no items could be added</returns>
         public int Add(IInventoryable item, int quantity)
         {
             var slots = inventory.Where(x => x.Item == item || x.Item is null);
@@ -394,6 +480,13 @@ namespace OctoAwesome.EntityComponents
 
             return alreadyAdded;
         }
+
+        /// <summary>
+        /// Adds the item to the slot as long as the quantity wasn't reached
+        /// </summary>
+        /// <param name="slot">The slot shat should be used to add the item</param>
+        /// <param name="quantity">The maximum amount to be added</param>
+        /// <returns>The amount of items added, 0 if no items could be added</returns>
         public int Add(InventorySlot slot, int quantity)
         {
             if (slot.Item is null)
@@ -408,6 +501,13 @@ namespace OctoAwesome.EntityComponents
 
             return quantity;
         }
+
+        /// <summary>
+        /// Checks for the limit for a specific inventoryable based on a maxmium quantity
+        /// </summary>
+        /// <param name="inventoryable">The inventoryable that should be checked</param>
+        /// <param name="quantity">The maxmium quantity, if not set <see cref="int.MaxValue"/> will be used</param>
+        /// <returns>The quantity that can be added</returns>
         public int GetQuantityLimitFor(IInventoryable inventoryable, int quantity = int.MaxValue)
         {
             if (HasLimitedVolume || HasLimitedWeight)
@@ -458,6 +558,12 @@ namespace OctoAwesome.EntityComponents
         }
 
 
+        /// <summary>
+        /// Checks for the limit for a slot in the inventory based on a maxmium quantity
+        /// </summary>
+        /// <param name="slot">The slot that should be checked</param>
+        /// <param name="quantity">The maxmium quantity, if not set <see cref="int.MaxValue"/> will be used</param>
+        /// <returns>The quantity that can be added</returns>
         public int GetQuantityLimitFor(IInventorySlot slot, int quantity = int.MaxValue)
             => Math.Min(GetQuantityLimitFor(slot.Item, quantity), (slot.Item.StackLimit * slot.Item.VolumePerUnit) - slot.Amount);
 
@@ -473,10 +579,14 @@ namespace OctoAwesome.EntityComponents
             }
         }
 
+        /// <summary>
+        /// Adds an empty slot that can be used for the future
+        /// </summary>
+        /// <returns>An empty inventory slot that is attached to this inventory or <see langword="null"/> when <see cref="IsFixedSlotSize"/> is <see langword="true"/></returns>
         public InventorySlot? AddEmptySlot()
         {
             var slot = new InventorySlot(this);
-            if (Add(slot)) //No IsFixedSlotSize check required
+            if (Add(slot))
             {
                 Interlocked.Increment(ref version);
                 return slot;
@@ -484,6 +594,11 @@ namespace OctoAwesome.EntityComponents
             return null;
         }
 
+        /// <summary>
+        /// Adds the inventory slot to the current inventory
+        /// </summary>
+        /// <param name="slot">the slot to check</param>
+        /// <returns>When the slot was succesfully added returns <see langword="true"/> otherwise <see langword="false"/></returns>
         public bool Add(InventorySlot slot)
         {
             if (maxSlots <= inventory.Count || isFixedSlotSize)
@@ -494,23 +609,65 @@ namespace OctoAwesome.EntityComponents
             return true;
         }
 
+
+        /// <summary>
+        /// Checks if the slot is part of this inventory
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <returns>When the slot was succesfully found returns <see langword="true"/> otherwise <see langword="false"/></returns>
         public bool Contains(InventorySlot slot) => inventory.Contains(slot);
+        /// <summary>
+        /// Checks if the item is part of this inventory
+        /// </summary>
+        /// <param name="item">the item to check</param>
+        /// <returns>When the item was succesfully found returns <see langword="true"/> otherwise <see langword="false"/></returns>
         public bool Contains(IInventoryable item) => inventory.Any(x => x.Item == item);
+        /// <summary>
+        /// Checks if the item is part of this inventory in the required quantity
+        /// </summary>
+        /// <param name="item">the item to check</param>
+        /// <param name="quanity">the quantity that needs to be present</param>
+        /// <returns>When the item was succesfully found int the requried quantity returns <see langword="true"/> otherwise <see langword="false"/></returns>
         public bool Contains(IInventoryable item, int quanity) => inventory.Where(x => x.Item == item).Sum(x => x.Amount) >= quanity;
+
+        /// <summary>
+        /// Checks if the item is part of this inventory in the required quantity, not more or less
+        /// </summary>
+        /// <param name="item">the item to check</param>
+        /// <param name="quanity">the quantity that needs to be present</param>
+        /// <returns>When the item was succesfully found int the requried quantity returns <see langword="true"/> otherwise <see langword="false"/></returns>
         public bool ContainsExactly(IInventoryable item, int quanity) => inventory.Where(x => x.Item == item).Sum(x => x.Amount) == quanity;
 
+        /// <summary>
+        /// Retrieves a slot at a specific index 
+        /// </summary>
+        /// <param name="index">The index of the inventory slot</param>
+        /// <returns>The slot or null if the index was outside of the range</returns>
         public InventorySlot? GetSlotAtIndex(int index)
         {
             if (index >= inventory.Count)
                 return null;
             return inventory[index];
         }
+
+        /// <summary>
+        /// Retrieves a slot which contains a specific item
+        /// </summary>
+        /// <param name="item">The inventoryable to search for</param>
+        /// <returns>The slot or null if the inventoryable was not part of this inventory</returns>
         public InventorySlot? GetSlot(IInventoryable item)
         {
             if (item is null)
                 return null;
             return inventory.FirstOrDefault(x => x.Item == item);
         }
+
+
+        /// <summary>
+        /// Retrieves a slot which contains an item with a specific definition
+        /// </summary>
+        /// <param name="definition">The definition to search for</param>
+        /// <returns>The slot or null if no item of the inventory had this definition</returns>
         public InventorySlot? GetSlot(IDefinition definition)
         {
             if (definition is null)

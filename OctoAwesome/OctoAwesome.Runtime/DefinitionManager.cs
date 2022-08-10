@@ -17,7 +17,7 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
         /// </summary>
-        /// <param name="extensionResolver">The extension resolver to get definitions from extensions with.</param>
+        /// <param name="extensionService">The extension servuce to get definitions from extensions with.</param>
         public DefinitionManager(ExtensionService extensionService)
         {
             this.extensionService = extensionService;
@@ -56,6 +56,7 @@ namespace OctoAwesome.Runtime
 
         /// <inheritdoc />
         public IMaterialDefinition[] MaterialDefinitions { get; }
+        /// <inheritdoc />
         public IFoodMaterialDefinition[] FoodDefinitions { get; }
 
         /// <inheritdoc />

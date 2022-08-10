@@ -2,20 +2,29 @@
 
 namespace OctoAwesome
 {
+
+    /// <summary>
+    /// Registrar for map populator extension loading
+    /// </summary>
     public class MapPopulatorRegistrar : BaseRegistrar<IMapPopulator>
     {
-        private List<IMapPopulator> mapPopulators;
+        private List<IMapPopulator> mapPopulators;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="MapPopulatorRegistrar" /> class
+        /// </summary>
         public MapPopulatorRegistrar()
         {
             mapPopulators = new List<IMapPopulator>();
         }
 
+        /// <inheritdoc/>
         public override void Register(IMapPopulator populator)
         {
             mapPopulators.Add(populator);
         }
 
+        /// <inheritdoc/>
         public override void Unregister(IMapPopulator item)
         {
             mapPopulators.Remove(item);

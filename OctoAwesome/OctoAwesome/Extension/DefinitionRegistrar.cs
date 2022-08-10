@@ -6,23 +6,27 @@ using System.Collections.Generic;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// The registrat to extend definitions
+    /// </summary>
     public class DefinitionRegistrar : BaseRegistrar<Type>
     {
+        /// <inheritdoc/>
         public override string ChannelName => ChannelNames.Definitions;
 
         private readonly StandaloneTypeContainer definitionTypeContainer;
-        private readonly Dictionary<Type, List<Type>> definitionsLookup;
+        private readonly Dictionary<Type, List<Type>> definitionsLookup;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="DefinitionRegistrar" /> class
+        /// </summary>
         public DefinitionRegistrar()
         {
             definitionTypeContainer = new StandaloneTypeContainer();
             definitionsLookup = new Dictionary<Type, List<Type>>();
         }
 
-        /// <summary>
-        /// Registers a new Definition.
-        /// </summary>
-        /// <param name="type">Type of the Definition</param>
+        /// <inheritdoc/>
         public override void Register(Type type)
         {
             if (type == null)
@@ -48,13 +52,17 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Removes an existing Definition Type.
+        /// Not supported
         /// </summary>
-        /// <typeparam name="T">Definition Type</typeparam>
+        /// <exception cref="NotSupportedException"></exception>
         public override void Unregister(Type definition) 
         {
             throw new NotSupportedException("Currently not supported by TypeContainer");
         }
+        /// <summary>
+        /// Not supported, use <see cref="Get{T}"/> instead
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         public override IReadOnlyCollection<Type> Get() => throw new NotSupportedException();
 
 

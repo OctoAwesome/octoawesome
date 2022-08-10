@@ -30,12 +30,16 @@ namespace OctoAwesome.Basics.Entities
 
         private Vector2 moveDir = new Vector2(0.5f, 0.5f);
         private PositionComponent posComponent;
-        private Entity followEntity;
+        private Entity followEntity;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="WauziEntity" /> class
+        /// </summary>
         public WauziEntity() : base()
         {
         }
 
+        ///<inheritdoc/>
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
             if (!entity.Components.TryGetComponent<ToolBarComponent>(out var toolbar)

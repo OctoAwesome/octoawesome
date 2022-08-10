@@ -70,6 +70,11 @@ namespace OctoAwesome
             this.inventoryComponent = inventoryComponent;
         }
 
+        /// <summary>
+        /// Removes the item from this slot completely
+        /// </summary>
+        /// <param name="item">The item shat should be removed</param>
+        /// <returns>The amount of items removed, 0 if no item was present or didn't match the item in the slot</returns>
         public int Remove(IInventoryable item)
         {
             if (item is null || Item != item)
@@ -77,11 +82,27 @@ namespace OctoAwesome
             return inventoryComponent.Remove(item, this);
         }
 
+        /// <summary>
+        /// Removes the item as long as the quantity wasn't reached
+        /// </summary>
+        /// <param name="quantity">The maximum amount to be removed</param>
+        /// <returns>The amount of items removed, 0 if no items where found</returns>
         public int Remove(int quantity)
             => inventoryComponent.Remove(this, quantity);
 
+        /// <summary>
+        /// Removes the slot from the inventory
+        /// </summary>
+        /// <returns>How much of the item was removed</returns>
         public int Remove() => inventoryComponent.Remove(this);
 
+
+        /// <summary>
+        /// Adds the item as long as the quantity wasn't reached and doesnt contain another item
+        /// </summary>
+        /// <param name="item">The item shat should be added</param>
+        /// <param name="quantity">The maximum amount to be added</param>
+        /// <returns>The amount of item added, 0 if no items could be added</returns>
         public int Add(IInventoryable item, int quantity)
         {
             if (Item is not null && item != Item)
@@ -91,6 +112,13 @@ namespace OctoAwesome
 
             return inventoryComponent.Add(this, quantity);
         }
+
+
+        /// <summary>
+        /// Adds current item to the slot as long as the quantity wasn't reached
+        /// </summary>
+        /// <param name="quantity">The maximum amount to be added</param>
+        /// <returns>The amount of items added, 0 if no items could be added</returns>
         public int Add(int quantity)
         {
             if (Item is null)
@@ -98,17 +126,24 @@ namespace OctoAwesome
             return inventoryComponent.Add(this, quantity);
         }
 
+        /// <summary>
+        /// Checks for the limit for this slot in the inventory based on a maxmium quantity
+        /// </summary>
+        /// <param name="quantity">The maxmium quantity, if not set <see cref="int.MaxValue"/> will be used</param>
+        /// <returns>The quantity that can be added</returns>
         public int GetQuantityLimitFor(int quantity = int.MaxValue)
             => inventoryComponent.GetQuantityLimitFor(this, quantity);
-
 
         /// <summary>
         /// Removes a single unit amount from the inventory slot.
         /// </summary>
-        /// <param name="slot">The inventory slot to remove from.</param>
         /// <returns>A value indicating how much was removed</returns>
         public int RemoveUnit() => inventoryComponent.RemoveUnit(this);
 
+        /// <summary>
+        /// Get the inventory which contains this slot
+        /// </summary>
+        /// <returns>The related <see cref="InventoryComponent"/></returns>
         public InventoryComponent GetParentInventory() => inventoryComponent;
     }
 }

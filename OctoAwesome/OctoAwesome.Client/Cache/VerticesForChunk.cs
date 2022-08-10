@@ -11,12 +11,20 @@ namespace OctoAwesome.Client.Cache
     {
         public int Version { get; set; }
         public Index3 ChunkPosition { get; set; }
-        public VertexPositionNormalTextureLight[]? Vertices { get; set; }
+        public VertexPositionNormalTextureLight[]? Vertices { get; set; }        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="VerticesForChunk" /> class
+        /// </summary>
         public VerticesForChunk()
         {
 
         }
+
+
+        /// <summary>
+        /// Initializes a new instance of the<see cref="VerticesForChunk" /> class
+        /// </summary>
         public VerticesForChunk(int version, Index3 chunkPosition, VertexPositionNormalTextureLight[] vertices)
         {
             Version = version;

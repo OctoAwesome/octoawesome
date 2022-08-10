@@ -7,14 +7,17 @@ using System.Linq;
 
 namespace OctoAwesome.Basics.UI.Components;
 
+/// <inheritdoc/>
 public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
     public InventoryComponent InventoryA { get; private set; }
     public int VersionA { get; private set; }
     public InventoryComponent InventoryB { get; private set; }
     public int VersionB { get; private set; }
+
     private bool show = false;
 
+    /// <inheritdoc/>
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
         if (show == Show

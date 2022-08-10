@@ -6,10 +6,16 @@ using System.Collections.Generic;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// The class for simulation instance extender
+    /// </summary>
     public class SimulationExtensionExtender : BaseExtensionExtender<Simulation>
     {
-        private readonly List<Action<Simulation>> simulationExtender;
+        private readonly List<Action<Simulation>> simulationExtender;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="SimulationExtensionExtender" /> class
+        /// </summary>
         public SimulationExtensionExtender()
         {
             simulationExtender = new();

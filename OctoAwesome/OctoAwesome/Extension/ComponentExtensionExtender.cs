@@ -6,10 +6,16 @@ using System.Collections.Generic;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Extender for component containers
+    /// </summary>
     public class ComponentExtensionExtender : BaseExtensionExtender<ComponentContainer>
     {
-        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
+        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="ComponentExtensionExtender" /> class
+        /// </summary>
         public ComponentExtensionExtender()
         {
             componentContainerExtender = new Dictionary<Type, List<Action<ComponentContainer>>>();

@@ -152,6 +152,10 @@ namespace OctoAwesome.Definitions.Items
             return item;
         }
 
+        /// <summary>
+        /// Get Definition with which the item was constructed
+        /// </summary>
+        /// <returns>The current <see cref="IItemDefinition"/></returns>
         public IDefinition GetDefinition() => Definition;
     }
 }

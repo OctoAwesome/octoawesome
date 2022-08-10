@@ -45,6 +45,7 @@ namespace OctoAwesome
             base.Deserialize(reader);
         }
 
+        /// <inheritdoc />
         protected override void OnInteract(GameTime gameTime, Entity entity) => throw new System.NotImplementedException();
     }
 }

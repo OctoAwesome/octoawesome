@@ -156,6 +156,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
         }
 
+        /// <inheritdoc/>
         public override void RemoveUiComponent(UIComponent uiComponent)
         {
             if (uiComponent != transferComponent)
@@ -181,6 +182,7 @@ namespace OctoAwesome.Basics.UI.Screens
             Rebuild(transferComponent.InventoryA, transferComponent.InventoryB);
         }
 
+        /// <inheritdoc/>
         protected override void OnUpdate(GameTime gameTime)
         {
 

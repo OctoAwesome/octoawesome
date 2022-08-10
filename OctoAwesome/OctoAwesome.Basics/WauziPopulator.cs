@@ -10,9 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using engenious;
-using OctoAwesome.Basics.Entities;
-using OctoAwesome.EntityComponents;
 
 namespace OctoAwesome.Basics
 {
@@ -30,7 +27,9 @@ namespace OctoAwesome.Basics
 
         private int ispop = 3;
         private bool disposedValue;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WauziPopulator"/> class.
+        /// </summary>
         public WauziPopulator(IResourceManager resManager)
         {
 
@@ -62,6 +61,11 @@ namespace OctoAwesome.Basics
             simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, wauzi));
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting
+        /// unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">If currently in <see cref="Dispose()"/> call</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -76,6 +80,7 @@ namespace OctoAwesome.Basics
         }
 
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Dispose(disposing: true);

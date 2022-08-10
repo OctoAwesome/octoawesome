@@ -19,6 +19,7 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     public int ProductionResourceVersion { get; private set; }
     private bool show = false;
 
+    /// <inheritdoc/>
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
         if (show == Show

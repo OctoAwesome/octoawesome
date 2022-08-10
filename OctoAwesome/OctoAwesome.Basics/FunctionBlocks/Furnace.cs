@@ -18,7 +18,9 @@ using static OctoAwesome.jvbslContribution.StateMachine;
 
 namespace OctoAwesome.Basics.FunctionBlocks;
 
-
+/// <summary>
+/// Represents the furnace object in the world
+/// </summary>
 [SerializationId(1, 4)]
 public class Furnace : FunctionalBlock
 {
@@ -35,14 +37,28 @@ public class Furnace : FunctionalBlock
     internal OutputInventoryComponent outputComponent;
     internal ProductionResourcesInventoryComponent productionResourcesInventoryComponent;
     private int energieLeft = 0;
-    #endregion
+    #endregion    
 
+    /// <summary>
+    /// Initializes a new instance of the<see cref="Furnace" /> class
+    /// </summary>
     public Furnace()
     {
 
         recipeService = TypeContainer.Get<RecipeService>();
         definitionManager = TypeContainer.Get<IDefinitionManager>();
         Initialize();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the<see cref="Furnace" /> class
+    /// </summary>
+    public Furnace(Coordinate position) : this()
+    {
+        Components.AddComponent(new PositionComponent()
+        {
+            Position = position
+        });
     }
 
     private void Initialize()
@@ -66,7 +82,7 @@ public class Furnace : FunctionalBlock
         stateMachine.AddTransition(output, idleState, () => currentRecipe is null);
     }
 
-    public bool HasRecipeFinished(TimeSpan elapsed, TimeSpan total)
+    private bool HasRecipeFinished(TimeSpan elapsed, TimeSpan total)
     {
         var energySinceLastUpdate = (int)(elapsed.TotalMilliseconds * 2.5);
 
@@ -103,16 +119,10 @@ public class Furnace : FunctionalBlock
     }
 
 
+    /// <inheritdoc/>
     public override void Deserialize(BinaryReader reader) => base.Deserialize(reader);//Doesnt get called
 
-    public Furnace(Coordinate position) : this()
-    {
-        Components.AddComponent(new PositionComponent()
-        {
-            Position = position
-        });
-    }
-
+    /// <inheritdoc/>
     protected override void OnInteract(GameTime gameTime, Entity entity)
     {
         if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
@@ -129,7 +139,7 @@ public class Furnace : FunctionalBlock
             animationComponent.AnimationSpeed = 60f;
         }
     }
-
+    /// <inheritdoc/>
     public override void Update(GameTime gameTime)
     {
         stateMachine.Update(gameTime.ElapsedGameTime);
@@ -237,7 +247,7 @@ public class Furnace : FunctionalBlock
         return true; //We should never be two updates in this state! That would be mist
     }
 
-    public bool OnInputSlotUpdate()
+    private bool OnInputSlotUpdate()
     {
         currentRecipe = GetRecipe();
         if (currentRecipe is null)

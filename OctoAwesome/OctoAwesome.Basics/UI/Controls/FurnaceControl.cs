@@ -13,6 +13,9 @@ using System.Text;
 
 namespace OctoAwesome.Basics.UI.Controls;
 
+/// <summary>
+/// The class for the ui furnace control
+/// </summary>
 public sealed class FurnaceControl : Panel
 {
     private const int COLUMNS = 8;
@@ -27,6 +30,9 @@ public sealed class FurnaceControl : Panel
     private Grid grid;
     private readonly AssetComponent assets;
 
+    /// <summary>
+    /// Initializes a new instance of the engenious.UI.Controls.Panel class.
+    /// </summary>
     public FurnaceControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputSlots, IReadOnlyCollection<IInventorySlot> ressourceSlots, int columns = COLUMNS) : base(manager)
     {
         Background = new SolidColorBrush(Color.Transparent);
@@ -57,6 +63,13 @@ public sealed class FurnaceControl : Panel
         Rebuild(inventorySlots, outputSlots, ressourceSlots, columns);
     }
 
+    /// <summary>
+    /// Rebuild the grids for input, output and ressource inventory after a change is needed
+    /// </summary>
+    /// <param name="inventorySlots">The input inventory slots on the left</param>
+    /// <param name="outputInventory">The output slots on the right</param>
+    /// <param name="ressourceInventory">The ressource slots in the middle</param>
+    /// <param name="columns">The amount of columns for inventory and output slot</param>
     public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, IReadOnlyCollection<IInventorySlot> ressourceInventory, int columns = COLUMNS)
     {
         inputSlotPanel.Rebuild(inventorySlots, columns / 2);

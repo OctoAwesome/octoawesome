@@ -50,8 +50,11 @@ namespace OctoAwesome.Client
         public ExtensionService ExtensionService { get; private set; }
 
         public EntityGameComponent Entity { get; private set; }
-        public ExtensionLoader ExtensionLoader { get; }
+        public ExtensionLoader ExtensionLoader { get; }        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="OctoGame" /> class
+        /// </summary>
         public OctoGame() : base()
         {
             Title = "OctoAwesome";

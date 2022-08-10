@@ -5,6 +5,9 @@
     /// </summary>
     public class Hand : Item
     {
+        /// <summary>
+        /// Get's the singleton hand instance
+        /// </summary>
         public static readonly Hand Instance = new Hand(new HandDefinition());
 
         /// <summary>

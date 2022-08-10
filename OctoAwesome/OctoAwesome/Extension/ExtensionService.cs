@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Extension;
 
+/// <summary>
+/// The Service to manage extension registrars and extender
+/// </summary>
 public class ExtensionService
 {
 
@@ -22,6 +25,10 @@ public class ExtensionService
 
     private readonly Dictionary<Type, ExtenderInformation> extender = new();
 
+    /// <summary>
+    /// Adds the extensions, registrars or extender to this service
+    /// </summary>
+    /// <param name="extensionInformation">The Information to be added</param>
     public void AddExtensionLoader(ExtensionInformation extensionInformation)
     {
         extensionInformation
@@ -77,6 +84,11 @@ public class ExtensionService
 
     //TODO Add Methods for string type name and Type without generic
     //TODO Return False or True based on success
+    /// <summary>
+    /// The action that should be called on the instance to be extended
+    /// </summary>
+    /// <typeparam name="T">The type of the object to be extended</typeparam>
+    /// <param name="extend">The action that will be called with the instance of the <typeparamref name="T"/></param>
     public void Extend<T>(Action<T> extend)
     {
         foreach (var key in GetAllBaseTypesAndInterfaces(typeof(T)))
@@ -115,6 +127,11 @@ public class ExtensionService
         }
     }
 
+    /// <summary>
+    /// Executed all extender on the instance, so it's fully initialized afterwards
+    /// </summary>
+    /// <typeparam name="T">The type of the instance to be extended</typeparam>
+    /// <param name="toExtend">The instance to extend</param>
     public void ExecuteExtender<T>(T toExtend)
     {
         foreach (var key in GetAllBaseTypesAndInterfaces(typeof(T)))
@@ -135,9 +152,14 @@ public class ExtensionService
                 }
             }
         }
-
     }
 
+    /// <summary>
+    /// Register a registrar for this service
+    /// </summary>
+    /// <typeparam name="TRegister">The type of the registrar to be registered</typeparam>
+    /// <param name="value">The instance of the registrar to be registered</param>
+    /// <param name="channelName">The specific channel for the registrar, can be empty to have all channels matched</param>
     public void Register<TRegister>(TRegister value, string channelName = "")
     {
         var key = typeof(TRegister);
@@ -159,6 +181,12 @@ public class ExtensionService
         }
     }
 
+    /// <summary>
+    /// Unregister a registrar for this service
+    /// </summary>
+    /// <typeparam name="TUnregister">The type of the registrar to be unregistered</typeparam>
+    /// <param name="value">The instance of the registrar to be unregistered</param>
+    /// <param name="channelName">The specific channel for the registrar, can be empty to have all channels matched</param>
     public void Unregister<TUnregister>(TUnregister value, string channelName = "")
     {
         var key = typeof(TUnregister);
@@ -180,6 +208,11 @@ public class ExtensionService
         }
     }
 
+    /// <summary>
+    /// Gets all registrar that are registered in this service with optionally search param for the channel name
+    /// </summary>
+    /// <param name="channelName">The channel name to filter, or empty if all channel names should be matched</param>
+    /// <returns>All registered registrars that match the channel name or all registrars if the channel name is empty</returns>
     public IEnumerable<IExtensionRegistrar> GetRegistrars(string channelName = "")
     {
         foreach (var item in extender)
@@ -197,6 +230,12 @@ public class ExtensionService
         }
     }
 
+
+    /// <summary>
+    /// Gets all instances added in the specific registrar with optionally search param for the channel name
+    /// </summary>
+    /// <param name="channelName">The channel name to filter, or empty if all channel names should be matched</param>
+    /// <returns>Enumerable of instances that are in the registrars</returns>
     public IEnumerable<T> GetFromRegistrar<T>(string channelName = "")
     {
         if (!extender.TryGetValue(typeof(T), out var extenderInformation))

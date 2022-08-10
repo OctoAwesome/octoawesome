@@ -15,8 +15,11 @@ namespace OctoAwesome.Network.Tests
     [TestOf(typeof(SimulationManager))]
     public class SimulationManagerTests
     {
-        private readonly SimulationManager simulationManager;
+        private readonly SimulationManager simulationManager;        
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="SimulationManagerTests" /> class
+        /// </summary>
         public SimulationManagerTests()
         {
             simulationManager = new SimulationManager(new Settings(), new UpdateHub());
