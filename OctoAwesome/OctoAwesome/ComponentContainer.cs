@@ -103,13 +103,15 @@ namespace OctoAwesome
     /// Base class for classes containing components of a specific type.
     /// </summary>
     /// <typeparam name="TComponent">The type of the components to contain.</typeparam>
-    public abstract class ComponentContainer<TComponent> : ComponentContainer where TComponent : IComponent
+    public abstract class ComponentContainer<TComponent> : ComponentContainer, IUpdateable where TComponent : IComponent
     {
         /// <summary>
         /// Gets a list of all components this container holds.
         /// </summary>
         public ComponentList<TComponent> Components { get; }
 
+
+        private List<IUpdateable> updateables = new();
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContainer{TComponent}"/> class.
         /// </summary>
@@ -152,6 +154,8 @@ namespace OctoAwesome
 
             if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
                 notificationComponents.Add(nofiticationComponent);
+            if (component is IUpdateable updateable)
+                updateables.Add(updateable);
         }
 
         /// <summary>
@@ -244,5 +248,13 @@ namespace OctoAwesome
         /// <returns>True if the component was found, otherwise false</returns>
         public bool TryGetComponent<T>(out T component) where T : TComponent
             => Components.TryGetComponent<T>(out component);
+
+
+        public virtual void Update(GameTime gameTime)
+        {
+            foreach (var item in updateables)
+                item.Update(gameTime);
+            
+        }
     }
 }

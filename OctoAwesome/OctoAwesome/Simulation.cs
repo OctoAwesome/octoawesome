@@ -202,13 +202,14 @@ namespace OctoAwesome
             for (var i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
-                if (entity is UpdateableEntity updateableEntity)
-                    updateableEntity.Update(gameTime);
+                if (entity is IUpdateable updateable)
+                    updateable.Update(gameTime);
             }
 
             foreach (var functionalBlock in functionalBlocks)
             {
-                functionalBlock.Update(gameTime);
+                if(functionalBlock is IUpdateable updateable)
+                    updateable.Update(gameTime);
             }
 
             // Update all Components

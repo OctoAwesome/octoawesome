@@ -21,7 +21,7 @@ namespace OctoAwesome.Basics.Entities
     /// An entity used for dogs in the game.
     /// </summary>
     [SerializationId(1, 2)]
-    public class WauziEntity : UpdateableEntity
+    public class WauziEntity : Entity, IUpdateable
     {
         /// <summary>
         /// Gets or sets a value indicating the time left to the next jump.

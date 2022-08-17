@@ -188,7 +188,7 @@ namespace OctoAwesome.Basics
                 //    //c.Components.AddComponent(c.transferUiComponent, true);
                 //}
 
-
+                f.Components.AddComponent(new BurningComponent());
 
                 f.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Furnace" }, true);
                 f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);

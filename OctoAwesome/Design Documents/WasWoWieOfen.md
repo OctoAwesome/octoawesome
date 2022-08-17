@@ -8,7 +8,7 @@
 * Wann muss der Ofen geladen werden? (PositionComponent?)
 * Wann entladen? (Postponed)
 * Hat der Ofen einen Prozess State der serialisiert werden muss?
-* Wie machen wir das mit den brennbaren Materialien?
+* Wie machen wir das mit den brennbaren Materialien? (Postponed bis in Json/YAML etc ausgelagert)
     - IBurnableMaterialDefinition
         - UpperHeatingValue (kJ/kg, MJ/m3, kWh/kg, kWh/m3) [Heizwert](https://www.energie-lexikon.info/heizwert.html)
         - BurnTemperature
@@ -31,6 +31,8 @@
     - Pfanne
     - Tiegel
     - etc.pp.
+    - Input => Output (Muss Rezept, klingt eher wie Workaround)
+    - Neuer Slot für sowas (Block geregelt)
 * Wie definieren wir die Input Output Verhältnisse?
     - Benötigte Temperatur
     - Ofentyp?
@@ -61,5 +63,15 @@ TODOS:
     - Ofen Model
     - Ofen Item
 4. Rezepte
-5. Datenbank
+~~ 5. Datenbank ~~
 
+
+Könnten wir tun:
+* Temperaturgeregelte Outputmaterialien oder gleicher Input führt zu gleichen Output (Dictionary<string, string>, Dictionary<string, object>?)
+    - Temperaturgeregelt klingt lustiger
+* Brennmaterial mit Output?
+    - Holz => Asche
+    - Alkohol => Nüschts
+    - Kohle => Asche
+    - Benzin => Ruß
+* Furnace aufräumen

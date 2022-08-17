@@ -31,13 +31,5 @@ namespace OctoAwesome
             OnInteract(gameTime, entity);
         }
 
-        /// <summary>
-        /// Updated this functional block
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        public virtual void Update(GameTime gameTime)
-        {
-
-        }
     }
 }

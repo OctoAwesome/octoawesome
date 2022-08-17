@@ -3,12 +3,12 @@
 namespace OctoAwesome
 {
     /// <summary>
-    /// Base class for entities that are updated.
+    /// Base interface for types that needs updating.
     /// </summary>
-    public abstract class UpdateableEntity : Entity
+    public interface IUpdateable
     {
         /// <summary>
-        /// Gets called to update the entity.
+        /// Gets called to update the updateable.
         /// </summary>
         /// <param name="gameTime">The <see cref="GameTime"/>.</param>
         public abstract void Update(GameTime gameTime);
