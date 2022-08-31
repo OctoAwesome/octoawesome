@@ -80,8 +80,8 @@ namespace OctoAwesome.Client.Components
             Player player = resourceManager.LoadPlayer(playerName);
 
             player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            
-            simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add,  player));
+
+            simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, player) { OverwriteExisting = true });
 
             return player;
         }

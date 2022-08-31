@@ -1,4 +1,6 @@
 ﻿using engenious;
+
+using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
@@ -22,7 +24,7 @@ namespace OctoAwesome.Network
         /// <summary>
         /// Gets the simulation.
         /// </summary>
-        public Simulation Simulation { get; }
+        public Simulation Simulation => simulation;
 
         /// <summary>
         /// Gets the current game time.
@@ -71,6 +73,10 @@ namespace OctoAwesome.Network
             typeContainer.Register<ResourceManager>(InstanceBehavior.Singleton);
             typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehavior.Singleton);
 
+            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
+            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
+            typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
+
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
 
@@ -78,7 +84,7 @@ namespace OctoAwesome.Network
 
             ResourceManager = typeContainer.Get<ResourceManager>();
 
-            Service = new GameService(ResourceManager);
+            Service = typeContainer.Get<GameService>();
             simulation = new Simulation(ResourceManager, extensionService, Service)
             {
                 IsServerSide = true

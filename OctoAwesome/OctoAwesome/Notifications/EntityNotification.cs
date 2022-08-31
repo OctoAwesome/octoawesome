@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
+
 using System;
 using System.IO;
 
@@ -34,6 +35,11 @@ namespace OctoAwesome.Notifications
         }
 
         /// <summary>
+        /// Gets or sets the value indicating if the simulation should overwrite an existing entity with the same id on add
+        /// </summary>
+        public bool OverwriteExisting { get; set; }
+
+        /// <summary>
         /// Gets or sets the underlying property changed notification.
         /// </summary>
         public PropertyChangedNotification? Notification { get; set; }
@@ -47,6 +53,7 @@ namespace OctoAwesome.Notifications
         public EntityNotification()
         {
             propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
+            OverwriteExisting = false;
         }
 
         /// <summary>

@@ -81,7 +81,7 @@ namespace OctoAwesome.GameServer
             }
             catch (Exception ex)
             {
-                logger.Error("Dispatch failed in Command " + value.OfficialCommand, ex);
+                logger.Error($"Dispatch failed in Command {value.OfficialCommand}\r\n{ex}", ex);
                 return;
             }
 

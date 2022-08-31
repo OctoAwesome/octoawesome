@@ -208,7 +208,7 @@ namespace OctoAwesome
 
             foreach (var functionalBlock in functionalBlocks)
             {
-                if(functionalBlock is IUpdateable updateable)
+                if (functionalBlock is IUpdateable updateable)
                     updateable.Update(gameTime);
             }
 
@@ -260,10 +260,11 @@ namespace OctoAwesome
         /// Adds an entity to the simulation.
         /// </summary>
         /// <param name="entity">The <see cref="Entity"/> to add.</param>
+        /// <param name="overwriteExisting">Indicates if an existing entity should be overwritten by the new one</param>
         /// <exception cref="NotSupportedException">
         /// Thrown if simulation is not running or paused. Or if entity is already part of another simulation.
         /// </exception>
-        public void Add(Entity entity)
+        public void Add(Entity entity, bool overwriteExisting)
         {
             Debug.Assert(entity is not null, nameof(entity) + " != null");
 
@@ -272,11 +273,16 @@ namespace OctoAwesome
 
             if (entity.Simulation is not null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
-
+            Entity? existing;
             using (var _ = entitiesSemaphore.EnterCountScope())
-                if (entities.Contains(entity))
+            {
+                existing = entities.FirstOrDefault(x => x.Id == entity.Id);
+                if (existing != default && !overwriteExisting)
                     return;
+            }
 
+            if (existing != default)
+                Remove(existing);
 
             extensionService.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
@@ -567,7 +573,7 @@ namespace OctoAwesome
                     if (entityNotification.Type == EntityNotification.ActionType.Remove)
                         RemoveEntity(entityNotification.EntityId);
                     else if (entityNotification.Type == EntityNotification.ActionType.Add)
-                        Add(entityNotification.Entity);
+                        Add(entityNotification.Entity, entityNotification.OverwriteExisting);
                     else if (entityNotification.Type == EntityNotification.ActionType.Update)
                         EntityUpdate(entityNotification);
                     else if (entityNotification.Type == EntityNotification.ActionType.Request)
