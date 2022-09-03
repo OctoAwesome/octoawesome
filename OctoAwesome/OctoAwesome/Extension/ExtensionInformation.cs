@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Extension
 {
+    /// <summary>
+    /// Union type of <see cref="IExtension"/>, <see cref="IExtensionRegistrar"/> and <see cref="IExtensionExtender"/>
+    /// </summary>
     [Variant]
     public partial class ExtensionInformation
     {

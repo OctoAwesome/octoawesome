@@ -250,6 +250,7 @@ namespace OctoAwesome
             => Components.TryGetComponent<T>(out component);
 
 
+        /// <inheritdoc />
         public virtual void Update(GameTime gameTime)
         {
             foreach (var item in updateables)

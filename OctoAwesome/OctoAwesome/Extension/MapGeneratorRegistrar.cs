@@ -32,7 +32,6 @@ namespace OctoAwesome
         /// <summary>
         /// Removes an existing Map Generator.
         /// </summary>
-        /// <typeparam name="T">Map Generator Type</typeparam>
         public override void Unregister(IMapGenerator value)
         {
             mapGenerators.Remove(value);

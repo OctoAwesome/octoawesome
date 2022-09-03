@@ -22,7 +22,7 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets the currently active tool.
         /// </summary>
-        /// <remarks>Defaults to <see cref="HandSlot"/> if no tool is currently active.</remarks>
+        /// <remarks>Defaults to <c>null</c> if no tool is currently active.</remarks>
         public InventorySlot? ActiveTool => Tools[activeIndex];
 
 

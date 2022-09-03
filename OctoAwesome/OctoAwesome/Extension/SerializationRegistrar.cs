@@ -6,12 +6,21 @@ using System.Collections.Generic;
 
 namespace OctoAwesome
 {
+    /// <summary>
+    /// Registrar class for handling types annotated with the <see cref="SerializationIdAttribute"/>.
+    /// </summary>
     public class SerializationRegistrar : BaseRegistrar<Type>
     {
+        /// <inheritdoc />
         public override string ChannelName => ChannelNames.Serialization;
 
         private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SerializationRegistrar"/> class.
+        /// </summary>
+        /// <param name="serializationIdTypeProvider">
+        /// The <see cref="SerializationIdTypeProvider"/> used for registering serialization types.</param>
         public SerializationRegistrar(SerializationIdTypeProvider serializationIdTypeProvider)
         {
             this.serializationIdTypeProvider = serializationIdTypeProvider;
@@ -20,7 +29,7 @@ namespace OctoAwesome
         /// <summary>
         /// Registers a Type with the required SerializationId attribute.
         /// </summary>
-        /// <typeparam name="type">Type with serialization id attribute</typeparam>
+        /// <param name="type">Type with serialization id attribute</param>
         public override void Register(Type type)
         {
             var serId = type.SerializationId();

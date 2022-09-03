@@ -69,7 +69,7 @@ namespace OctoAwesome.Client
         /// </summary>
         /// <param name="typeContainer">The type container to manage types.</param>
         /// <param name="updateHub">The update hub to use for update notifications.</param>
-        /// <param name="extensionResolver">The extension resolver.</param>
+        /// <param name="extensionService">The extension service.</param>
         /// <param name="definitionManager">The manager for definitions.</param>
         /// <param name="settings">The application settings.</param>
         public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, OctoAwesome.Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings)

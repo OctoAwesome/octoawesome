@@ -7,12 +7,31 @@ using System.Linq;
 
 namespace OctoAwesome.Basics.UI.Components;
 
-/// <inheritdoc/>
+/// <summary>
+/// Component to provide an UI for transferring items from one inventory to another.
+/// </summary>
 public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
+    /// <summary>
+    /// Gets the first inventory to transfer to and from.
+    /// </summary>
     public InventoryComponent InventoryA { get; private set; }
+    
+    /// <summary>
+    /// Gets a value indicating the version of the <see cref="InventoryA"/> value,
+    /// which is changed when <see cref="InventoryA"/> has changed.
+    /// </summary>
     public int VersionA { get; private set; }
+    
+    /// <summary>
+    /// Gets the second inventory to transfer to and from.
+    /// </summary>
     public InventoryComponent InventoryB { get; private set; }
+
+    /// <summary>
+    /// Gets a value indicating the version of the <see cref="InventoryB"/> value,
+    /// which is changed when <see cref="InventoryB"/> has changed.
+    /// </summary>
     public int VersionB { get; private set; }
 
     private bool show = false;
@@ -39,6 +58,13 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
         return true;
     }
 
+    /// <summary>
+    /// Transfer an <see cref="InventorySlot"/> from a <paramref name="source"/> inventory
+    /// to a <paramref name="target"/> inventory.
+    /// </summary>
+    /// <param name="source">The source inventory to transfer the inventory slot content from.</param>
+    /// <param name="target">The target inventory to transfer the inventory slot content to.</param>
+    /// <param name="slot">The slot to transfer.</param>
     public virtual void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
     {
 

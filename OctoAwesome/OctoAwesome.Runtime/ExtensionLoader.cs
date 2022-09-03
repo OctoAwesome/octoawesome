@@ -34,7 +34,9 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtensionLoader"/> class.
         /// </summary>
-        /// <param name="settings">Current Gamesettings</param>
+        /// <param name="extensionService">The extension service..</param>
+        /// <param name="typeContainer">The type container to manage types.</param>
+        /// <param name="settings">Current Game settings.</param>
         public ExtensionLoader(ExtensionService extensionService, ITypeContainer typeContainer, ISettings settings)
         {
             this.typeContainer = typeContainer;

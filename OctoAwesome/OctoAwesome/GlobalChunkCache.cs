@@ -65,6 +65,7 @@ namespace OctoAwesome
         /// <param name="planet">The planet the global chunk cache manages chunks for.</param>
         /// <param name="resourceManager">The current <see cref="IResourceManager"/> to load resources.</param>
         /// <param name="updateHub">The update hub to propagate updates.</param>
+        /// <param name="typeProvider">The type provider used to manage serialization types..</param>
         public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub, SerializationIdTypeProvider typeProvider)
         {
             cacheService = new CacheService(planet, resourceManager, updateHub);

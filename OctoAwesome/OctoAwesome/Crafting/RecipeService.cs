@@ -5,12 +5,22 @@ using System.Linq;
 
 namespace OctoAwesome.Crafting;
 
+/// <summary>
+/// Service for handling recipes.
+/// </summary>
 public class RecipeService
 {
+    /// <summary>
+    /// Gets a collection of recipes managed by this service.
+    /// </summary>
     public IReadOnlyCollection<Recipe> Recipes { get; }
 
     readonly List<Recipe> recipes = new();
 
+    /// <summary>
+    /// Load recipes from the given paths.
+    /// </summary>
+    /// <param name="paths">A parameter array of paths to load recipes from in .json files.</param>
     public void Load(params string[] paths)
     {
         foreach (string path in paths)
@@ -25,12 +35,22 @@ public class RecipeService
         }
     }
 
+    /// <summary>
+    /// Gets a collection of recipes matching the recipe type.
+    /// </summary>
+    /// <param name="type">The type name categorizing machines that can process the recipes.</param>
+    /// <returns>A collection of recipes matching the recipe type.</returns>
     public IReadOnlyCollection<Recipe> GetByType(string type)
     {
         return recipes.Where(x => string.IsNullOrWhiteSpace(x.Type) || x.Type.Equals(type, StringComparison.OrdinalIgnoreCase)).ToArray();
 
     }
 
+    /// <summary>
+    /// Gets a collection of recipes in the given category.
+    /// </summary>
+    /// <param name="category">The category to get the recipes in.</param>
+    /// <returns>A collection of recipes in the given category.</returns>
     public IReadOnlyCollection<Recipe> GetByCategory(RecipeCategory category)
     {
         return recipes.Where(x => x.Category.Any(x=>x == category)).ToArray();
@@ -52,7 +72,16 @@ public class RecipeService
         return null;
     }
 
-    public Recipe? GetByInputs(IReadOnlyCollection<Recipe> recipes, IReadOnlyCollection<RecipeItem> inputs)
+    /// <summary>
+    /// Gets a <see cref="Recipe"/> from a given recipe collection which can be processed using the given input items.
+    /// </summary>
+    /// <param name="recipes">The <see cref="Recipe"/> collection to match a <see cref="Recipe"/> from.</param>
+    /// <param name="inputs">The input items to filter by.</param>
+    /// <returns>
+    /// The recipe that can be processed using the given input,
+    ///  or <c>null</c> if no matching <see cref="Recipe"/> is found.
+    /// </returns>
+    public static Recipe? GetByInputs(IReadOnlyCollection<Recipe> recipes, IReadOnlyCollection<RecipeItem> inputs)
     {
         Recipe? ret = null;
         int currScore = 0, currMatches = 0;
@@ -96,7 +125,16 @@ public class RecipeService
 
         return ret;
     }
-    public IReadOnlyCollection<Recipe> GetMultipleByInputs(IReadOnlyCollection<Recipe> recipes, List<RecipeItem> inputs)
+    
+    /// <summary>
+    /// Gets a collection of recipes from a given recipe collection which can be processed using the given input items.
+    /// </summary>
+    /// <param name="recipes">The <see cref="Recipe"/> collection to match a collection of recipes from.</param>
+    /// <param name="inputs">The input items to filter by.</param>
+    /// <returns>
+    /// The recipes that can be processed using the given input,
+    /// </returns>
+    public static IReadOnlyCollection<Recipe> GetMultipleByInputs(IReadOnlyCollection<Recipe> recipes, List<RecipeItem> inputs)
     {
         List<Recipe> retRecipes = new();
         foreach (var recipe in recipes)
@@ -122,7 +160,14 @@ public class RecipeService
 
         return retRecipes;
     }
-
+    
+    /// <summary>
+    /// Gets a collection of recipes which can be processed using the given input item.
+    /// </summary>
+    /// <param name="input">The input item to filter by.</param>
+    /// <returns>
+    /// The recipes that can be processed using the given input item,
+    /// </returns>
     public IReadOnlyCollection<Recipe> GetByInput(RecipeItem input)
     {
         List<Recipe> retRecipes = new();
@@ -142,7 +187,14 @@ public class RecipeService
 
         return retRecipes;
     }
-
+    
+    /// <summary>
+    /// Gets a collection of recipes which can create the given output item.
+    /// </summary>
+    /// <param name="output">The output item to filter by.</param>
+    /// <returns>
+    /// The recipes that can create the given output item,
+    /// </returns>
     public IReadOnlyCollection<Recipe> GetByOutput(RecipeItem output)
     {
         List<Recipe> retRecipes = new();

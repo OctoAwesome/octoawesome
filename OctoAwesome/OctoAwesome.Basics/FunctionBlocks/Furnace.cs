@@ -38,6 +38,7 @@ public class Furnace : FunctionalBlock
     {
     }
 
+    /// <inheritdoc />
     protected override void OnInitialize(IResourceManager manager)
     {
         base.OnInitialize(manager);

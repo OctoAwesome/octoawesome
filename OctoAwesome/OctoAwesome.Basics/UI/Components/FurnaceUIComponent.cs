@@ -7,15 +7,46 @@ using System.Linq;
 
 namespace OctoAwesome.Basics.UI.Components;
 
+/// <summary>
+/// Component to provide an UI for transferring items from and to a furnace from a different inventory.
+/// </summary>
 public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
+    /// <summary>
+    /// Gets the inventory not belonging to the furnace(e.g. player inventory).
+    /// </summary>
     public InventoryComponent InventoryA { get; private set; }
+    /// <summary>
+    /// Gets a value indicating the version of the <see cref="InventoryA"/> value,
+    /// which is changed when <see cref="InventoryA"/> has changed.
+    /// </summary>
     public int VersionA { get; private set; }
+    /// <summary>
+    /// Gets the input inventory of the furnace.
+    /// </summary>
     public InventoryComponent InputInventory { get; private set; }
+    /// <summary>
+    /// Gets a value indicating the version of the <see cref="InputInventory"/> value,
+    /// which is changed when <see cref="InputInventory"/> has changed.
+    /// </summary>
     public int InputVersion { get; private set; }
+    /// <summary>
+    /// Gets the output inventory of the furnace.
+    /// </summary>
     public InventoryComponent OutputInventory { get; private set; }
+    /// <summary>
+    /// Gets a value indicating the version of the <see cref="OutputInventory"/> value,
+    /// which is changed when <see cref="OutputInventory"/> has changed.
+    /// </summary>
     public int OutputVersion { get; private set; }
+    /// <summary>
+    /// Gets the production inventory of the furnace(e.g. fuel).
+    /// </summary>
     public InventoryComponent ProductionResourceInventory { get; private set; }
+    /// <summary>
+    /// Gets a value indicating the version of the <see cref="ProductionResourceInventory"/> value,
+    /// which is changed when <see cref="ProductionResourceInventory"/> has changed.
+    /// </summary>
     public int ProductionResourceVersion { get; private set; }
     private bool show = false;
 
@@ -48,6 +79,14 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         return true;
     }
 
+    /// <summary>
+    /// Transfer an <see cref="InventorySlot"/> from a <paramref name="source"/> inventory
+    /// to a <paramref name="target"/> inventory.
+    /// </summary>
+    /// <param name="source">The source inventory to transfer the inventory slot content from.</param>
+    /// <param name="target">The target inventory to transfer the inventory slot content to.</param>
+    /// <param name="slot">The slot to transfer.</param>
+    /// <seealso cref="TransferUIComponent.Transfer"/>
     public virtual void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
     {
         if (source == target || target == OutputInventory)

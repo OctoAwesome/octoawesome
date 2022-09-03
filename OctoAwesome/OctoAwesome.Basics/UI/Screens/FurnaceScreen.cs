@@ -180,11 +180,12 @@ namespace OctoAwesome.Basics.UI.Screens
         }
 
         /// <summary>
-        /// 
+        /// Rebuild and refresh the furnace UI screen with new inventory information.
         /// </summary>
-        /// <param name="inventoryComponentA">Most of times player</param>
+        /// <param name="inventoryComponentA">Mostly player</param>
         /// <param name="inventoryComponentB">Mostly input to furnace</param>
         /// <param name="inventoryComponentC">Mostly output of furnace</param>
+        /// <param name="productionResourceInventory">Mostly fuel of furnace</param>
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB, InventoryComponent inventoryComponentC, InventoryComponent productionResourceInventory)
         {
             inputInventory.Rebuild(inventoryComponentA.Inventory);

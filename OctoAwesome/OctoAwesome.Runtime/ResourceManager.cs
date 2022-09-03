@@ -52,9 +52,11 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceManager"/> class.
         /// </summary>
-        /// <param name="extensionService">ExetnsionResolver</param>
-        /// <param name="definitionManager">DefinitionManager</param>
-        /// <param name="settings">Einstellungen</param>
+        /// <param name="extensionService">The extension service.</param>
+        /// <param name="definitionManager">The definition manager.</param>
+        /// <param name="persistenceManager">The persistence manager.</param>
+        /// <param name="updateHub">The update hub to use for update notifications.</param>
+        /// <param name="settings">The game settings.</param>
         public ResourceManager(Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager, IUpdateHub updateHub)
         {
             semaphoreSlim = new LockSemaphore(1, 1);

@@ -122,6 +122,9 @@ namespace OctoAwesome.UI.Components
         where TComponentRecord : UiComponentRecord<TComponent1>
         where TComponent1 : Component
     {
+        /// <summary>
+        /// The cached components.
+        /// </summary>
         protected readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1>> componentCache = new();
 
         /// <inheritdoc/>
@@ -173,6 +176,9 @@ namespace OctoAwesome.UI.Components
         where TComponent1 : Component
         where TComponent2 : Component
     {
+        /// <summary>
+        /// The cached components.
+        /// </summary>
         protected readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1, TComponent2>> componentCache = new();
 
         /// <inheritdoc/>
@@ -230,6 +236,9 @@ namespace OctoAwesome.UI.Components
         where TComponent2 : Component
         where TComponent3 : Component
     {
+        /// <summary>
+        /// The cached components.
+        /// </summary>
         protected readonly Dictionary<ComponentContainer, UiComponentRecord<TComponent1, TComponent2, TComponent3>> componentCache = new();
 
         /// <inheritdoc/>
@@ -283,8 +292,31 @@ namespace OctoAwesome.UI.Components
             => value.ContainsComponent<TComponent1>() && value.ContainsComponent<TComponent2>() && value.ContainsComponent<TComponent3>();
     }
 
+    /// <summary>
+    /// Record wrapper to hold a single cached component.
+    /// </summary>
+    /// <param name="Component1">The cached component.</param>
+    /// <typeparam name="TComponent1">The type of the component to cache.</typeparam>
     public record UiComponentRecord<TComponent1>(TComponent1 Component1);
+
+    /// <summary>
+    /// Record wrapper to hold two cached components.
+    /// </summary>
+    /// <param name="Component1">The first cached component.</param>
+    /// <typeparam name="TComponent1">The type of the first component to cache.</typeparam>
+    /// <param name="Component2">The second cached component.</param>
+    /// <typeparam name="TComponent2">The type of the second component to cache.</typeparam>
     public record UiComponentRecord<TComponent1, TComponent2>(TComponent1 Component1, TComponent2 Component2);
+
+    /// <summary>
+    /// Record wrapper to hold three cached components.
+    /// </summary>
+    /// <param name="Component1">The first cached component.</param>
+    /// <typeparam name="TComponent1">The type of the first component to cache.</typeparam>
+    /// <param name="Component2">The second cached component.</param>
+    /// <typeparam name="TComponent2">The type of the second component to cache.</typeparam>
+    /// <param name="Component3">The third cached component.</param>
+    /// <typeparam name="TComponent3">The type of the third component to cache.</typeparam>
     public record UiComponentRecord<TComponent1, TComponent2, TComponent3>(TComponent1 Component1, TComponent2 Component2, TComponent3 Component3);
 
 

@@ -50,8 +50,6 @@ namespace OctoAwesome.Basics.UI.Screens
         /// </summary>
         /// <param name="manager">The <see cref="T:engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="assetComponent">The asset component to load resource assets.</param>
-        /// <param name="inventoryComponentA">The inventory to show on the top.</param>
-        /// <param name="inventoryComponentB">The inventory to show on the bottom.</param>
         public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent) : base(manager, assetComponent)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
@@ -130,7 +128,6 @@ namespace OctoAwesome.Basics.UI.Screens
             this.transferComponent = transferComponent;
             subscription = transferComponent.Changes.Subscribe(InventoryChanged);
         }
-        /// <inheritdoc/>
 
         private void OnMouseClick(TransferDirection transferDirection, MouseEventArgs mouseEventArgs)
         {

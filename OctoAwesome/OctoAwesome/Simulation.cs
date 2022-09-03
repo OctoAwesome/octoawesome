@@ -522,6 +522,7 @@ namespace OctoAwesome
         /// Try search and get <see cref="ComponentContainer"/> by a specified id
         /// </summary>
         /// <typeparam name="T">The <see cref="ComponentContainer"/> to search for</typeparam>
+        /// <param name="id">The id to search by.</param>
         /// <param name="componentContainer"><see cref="ComponentContainer"/> that has been found or <see langword="default"/></param>
         /// <returns><see langword="true"/> if a container was found, otherwise <see langword="false"/></returns>
         public bool TryGetById<T>(Guid id, out T componentContainer) where T : ComponentContainer

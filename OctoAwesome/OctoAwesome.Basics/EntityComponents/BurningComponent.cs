@@ -9,6 +9,7 @@ using OctoAwesome.jvbslContribution;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,7 +151,7 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IFuncti
 
                         if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
                         {
-                            if (outputItem.MaterialId != inputItem.MaterialId)
+                            if (outputItem.InputOutputMappingId != inputItem.InputOutputMappingId)
                                 continue;
                             mat = inputSlot.Item.Material;
                         }
@@ -204,6 +205,8 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IFuncti
         if (currentRecipe is null)
             return false; //Reset recipe, time etc. pp.
 
+        Debug.Assert(currentRecipe.Time is not null || currentRecipe.Energy is not null,
+            $"Either {nameof(Recipe.Energy)} or {nameof(Recipe.Time)} needs to be set.");
         requiredMillisecondsForRecipe = currentRecipe.Time ?? currentRecipe.Energy!.Value * 40;
 
         if (currentRecipe.MinTime is not null && requiredMillisecondsForRecipe < currentRecipe.MinTime)
@@ -248,7 +251,7 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IFuncti
             .ToArray();
         if (inputs.Length == 0)
             return null; //Reset recipe, time etc. pp.
-        var recipe = recipeService.GetByInputs(recipes, inputs);
+        var recipe = RecipeService.GetByInputs(recipes, inputs);
         if (recipe is null)
             return null; //Reset recipe, time etc. pp.
         return recipe;

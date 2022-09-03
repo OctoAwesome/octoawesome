@@ -30,7 +30,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly BlockCollectionService service;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionalBlockInteractionComponent"/> class.
+        /// Initializes a new instance of the <see cref="ComponentContainerInteractionComponent"/> class.
         /// </summary>
         /// <param name="simulation">The simulation the block interactions should happen in.</param>
         /// <param name="interactionService">

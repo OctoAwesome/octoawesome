@@ -39,13 +39,13 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Initializes a new instance of the <see cref="DiskPersistenceManager"/> class.
         /// </summary>
-        /// <param name="extensionResolver">The extension resolver.</param>
+        /// <param name="extensionService">The extension service.</param>
         /// <param name="settings">The game settings.</param>
         /// <param name="updateHub">The update hub.</param>
-        public DiskPersistenceManager(Extension.ExtensionService extensionService, ISettings Settings, IUpdateHub updateHub)
+        public DiskPersistenceManager(Extension.ExtensionService extensionService, ISettings settings, IUpdateHub updateHub)
         {
             this.extensionService = extensionService;
-            settings = Settings;
+            this.settings = settings;
             databaseProvider = new DatabaseProvider(GetRoot(), TypeContainer.Get<ILogger>());
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
             blockChangedNotificationPool = TypeContainer.Get<IPool<BlockChangedNotification>>();
