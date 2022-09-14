@@ -14,6 +14,7 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public bool Sendable { get; set; }
+        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Component"/> class.

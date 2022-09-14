@@ -629,7 +629,7 @@ namespace OctoAwesome
 
             var remoteEntity = new RemoteEntity(entity);
             remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            remoteEntity.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
+            remoteEntity.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
             remoteEntity.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
 
             var newEntityNotification = entityNotificationPool.Rent();

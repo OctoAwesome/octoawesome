@@ -101,11 +101,11 @@ namespace OctoAwesome.Basics
                 }
 
 
-                c.Components.AddComponent(new UiKeyComponent("Transfer"), true);
+                c.Components.AddComponentNoneOfTypePresent(new UiKeyComponent() { PrimaryKey = "Transfer" });
 
-                c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
-                c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }), true);
-                c.Components.AddComponent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 }, true);
+                c.Components.AddComponentNoneOfTypePresent(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
+                c.Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
+                c.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
 
             });
 
@@ -131,44 +131,27 @@ namespace OctoAwesome.Basics
                 else
                     f.AnimationComponent = animationComponent;
 
-                if (!f.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
+                if (!f.Components.TryGetComponent<ProductionInventoriesComponent>(out var inventoryComponent))
                 {
-                    inventoryComponent = new InventoryComponent();
-                    f.InventoryComponent = inventoryComponent;
+                    inventoryComponent = new ProductionInventoriesComponent(true, 1);
+                    f.productionInventoriesComponent = inventoryComponent;
                     f.Components.AddComponent(inventoryComponent);
                 }
                 else
-                    f.InventoryComponent = inventoryComponent;
+                    f.productionInventoriesComponent = inventoryComponent;
 
-                if (!f.Components.TryGetComponent<OutputInventoryComponent>(out var outputComponent))
-                {
-                    outputComponent = new OutputInventoryComponent();
-                    f.OutputComponent = outputComponent;
-                    f.Components.AddComponent(outputComponent);
-                }
-                else
-                    f.OutputComponent = outputComponent;
 
-                if (!f.Components.TryGetComponent<ProductionResourcesInventoryComponent>(out var productionResourcesInventoryComponent))
+                while (inventoryComponent.InputInventory.Inventory.Count < 2)
                 {
-                    productionResourcesInventoryComponent = new ProductionResourcesInventoryComponent(true, 1);
-                    f.ProductionResourcesInventoryComponent = productionResourcesInventoryComponent;
-                    f.Components.AddComponent(productionResourcesInventoryComponent);
-                }
-                else
-                    f.ProductionResourcesInventoryComponent = productionResourcesInventoryComponent;
-
-                while (inventoryComponent.Inventory.Count < 2)
-                {
-                    inventoryComponent.Add(new InventorySlot(inventoryComponent));
+                    inventoryComponent.InputInventory.Add(new InventorySlot(inventoryComponent.InputInventory));
                 }
 
                 f.Components.AddComponent(new BurningComponent());
 
-                f.Components.AddComponent(new UiKeyComponent("Furnace"), true);
-                f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);
-                f.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
-                f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" }, true);
+                f.Components.AddComponentNoneOfTypePresent(new UiKeyComponent() { PrimaryKey = "Furnace" });
+                f.Components.AddComponentNoneOfTypePresent(new BodyComponent() { Height = 2f, Radius = 1f });
+                f.Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
+                f.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
 
             });
 

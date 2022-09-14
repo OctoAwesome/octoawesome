@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
 
 </Project>

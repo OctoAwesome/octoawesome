@@ -33,6 +33,7 @@ namespace OctoAwesome.Basics.UI.Screens
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inputInventory;
+        private readonly InventoryComponent outputInventory;
         private readonly FurnaceControl furnace;
         private readonly Label nameLabel;
         private readonly Label massLabel;

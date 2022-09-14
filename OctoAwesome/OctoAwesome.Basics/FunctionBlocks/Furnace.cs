@@ -24,35 +24,10 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 [SerializationId(1, 4)]
 public class Furnace : FunctionalBlock
 {
-    private InventoryComponent? inventoryComponent;
-    private AnimationComponent? animationComponent;
-    private OutputInventoryComponent? outputComponent;
-    private ProductionResourcesInventoryComponent? productionResourcesInventoryComponent;
+    internal ProductionInventoriesComponent productionInventoriesComponent;
+    internal AnimationComponent animationComponent;
 
-    internal InventoryComponent InventoryComponent
-    {
-        get => NullabilityHelper.NotNullAssert(inventoryComponent, $"{nameof(InventoryComponent)} was not initialized!");
-        set => inventoryComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryComponent)} cannot be initialized with null!");
-    }
-
-    internal AnimationComponent AnimationComponent
-    {
-        get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
-        set => animationComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(AnimationComponent)} cannot be initialized with null!");
-    }
-
-    internal OutputInventoryComponent OutputComponent
-    {
-        get => NullabilityHelper.NotNullAssert(outputComponent, $"{nameof(OutputComponent)} was not initialized!");
-        set => outputComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(OutputComponent)} cannot be initialized with null!");
-    }
-
-    internal ProductionResourcesInventoryComponent ProductionResourcesInventoryComponent
-    {
-        get => NullabilityHelper.NotNullAssert(productionResourcesInventoryComponent, $"{nameof(ProductionResourcesInventoryComponent)} was not initialized!");
-        set => productionResourcesInventoryComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(ProductionResourcesInventoryComponent)} cannot be initialized with null!");
-    }
-    // internal BurningComponent BurningComponent;
+    internal BurningComponent burningComponent;
 
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
@@ -91,9 +66,9 @@ public class Furnace : FunctionalBlock
            && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
         {
             transferComponent.Targets.Clear();
-            transferComponent.Targets.Add(InventoryComponent);
-            transferComponent.Targets.Add(OutputComponent);
-            transferComponent.Targets.Add(ProductionResourcesInventoryComponent);
+            transferComponent.Targets.Add(productionInventoriesComponent.InputInventory);
+            transferComponent.Targets.Add(productionInventoriesComponent.OutputInventory);
+            transferComponent.Targets.Add(productionInventoriesComponent.ProductionInventory);
             uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
             AnimationComponent.CurrentTime = 0f;

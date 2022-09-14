@@ -146,10 +146,10 @@ namespace OctoAwesome.Basics.Entities
             Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
             Components.AddComponent(new MoveableComponent());
-            Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
+            Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
             Components.AddComponent(new ControllableComponent());
-            Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            Components.AddComponent(new LocalChunkCacheComponent(PositionComponent.Planet.GlobalChunkCache, 2, 1));
+            Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
+            Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 2, 1));
         }
     }
 }
