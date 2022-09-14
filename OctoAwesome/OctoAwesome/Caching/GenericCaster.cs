@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace OctoAwesome.Caching
@@ -18,6 +19,17 @@ namespace OctoAwesome.Caching
         {
             var param = Expression.Parameter(typeof(TFrom), "tFrom");
             Cast = Expression.Lambda<Func<TFrom?, TTo?>>(Expression.Convert(param, typeof(TTo)), param).Compile();
+        }
+
+        public static TListTo CastList<TListFrom, TListTo>(TListFrom list) 
+            where TListFrom : IEnumerable<TFrom>
+            where TListTo : ICollection<TTo>, new()
+        {
+            var to = new TListTo();
+            foreach (var item in list)
+                to.Add(Cast(item));
+            
+            return to;
         }
     }
 }

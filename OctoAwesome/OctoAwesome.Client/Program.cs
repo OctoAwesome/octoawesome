@@ -1,5 +1,6 @@
 ﻿#region Using Statements
 
+using OctoAwesome.Caching;
 using OctoAwesome.Logging;
 
 using System;
