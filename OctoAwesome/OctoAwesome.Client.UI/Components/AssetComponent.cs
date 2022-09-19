@@ -3,11 +3,11 @@ using engenious.Graphics;
 using engenious.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using SixLabors.ImageSharp;
 
 namespace OctoAwesome.Client.UI.Components
 {
@@ -34,7 +34,7 @@ namespace OctoAwesome.Client.UI.Components
         /// </summary>
         public const string RESOURCEPATH = "Resources";
         readonly Dictionary<string, Texture2D> textures;
-        readonly Dictionary<string, Bitmap> bitmaps;
+        readonly Dictionary<string, Image> bitmaps;
         readonly string[] textureTypes = new string[] { "png", "jpg", "jpeg", "bmp" };
         readonly List<ResourcePack> loadedPacks = new();
         readonly List<ResourcePack> activePacks = new();
@@ -71,7 +71,7 @@ namespace OctoAwesome.Client.UI.Components
 
             Ready = false;
             textures = new Dictionary<string, Texture2D>();
-            bitmaps = new Dictionary<string, Bitmap>();
+            bitmaps = new Dictionary<string, Image>();
             ScanForResourcePacks();
 
             // Load list of active Resource Packs
@@ -218,16 +218,16 @@ namespace OctoAwesome.Client.UI.Components
         /// <param name="baseType">The base type for the assembly to load the resource from.</param>
         /// <param name="key">The key name to load the texture for.</param>
         /// <returns>The loaded bitmap from the resource pack.</returns>
-        public Bitmap LoadBitmap(Type baseType, string key)
+        public Image LoadBitmap(Type baseType, string key)
         {
-            Bitmap bitmap = default;
+            Image bitmap = default;
 
             if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
-                return Load(baseType, key, textureTypes, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
+                return Load<Image>(baseType, key, textureTypes, bitmaps, (stream) => Image.Load(stream));
 
             screenComponent.Invoke(() =>
             {
-                bitmap = Load(baseType, key, textureTypes, bitmaps, (stream) => (Bitmap)Image.FromStream(stream));
+                bitmap = Load(baseType, key, textureTypes, bitmaps, (stream) => Image.Load(stream));
             });
 
             return bitmap;

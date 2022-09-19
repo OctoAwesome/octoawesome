@@ -8,8 +8,8 @@ namespace OctoAwesome.Client.Controls
     {
         public SceneControl Scene { get; set; }
 
-        public MinimapControl(BaseScreenComponent screenManager, SceneControl scene)
-            : base(screenManager) => Scene = scene;
+        public MinimapControl(SceneControl scene)
+            => Scene = scene;
 
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {

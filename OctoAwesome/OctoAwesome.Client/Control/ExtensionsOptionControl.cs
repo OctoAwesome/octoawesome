@@ -16,9 +16,9 @@ namespace OctoAwesome.Client.Controls
         private readonly Listbox<IExtension> activeExtensionsList;
         private readonly Label infoLabel;
 
-        public ExtensionsOptionControl(BaseScreenComponent manager, ExtensionLoader extensionLoader) : base(manager)
+        public ExtensionsOptionControl(ExtensionLoader extensionLoader)
         {
-            Grid grid = new Grid(manager)
+            Grid grid = new Grid()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -33,7 +33,7 @@ namespace OctoAwesome.Client.Controls
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
 
-            StackPanel buttons = new StackPanel(manager)
+            StackPanel buttons = new StackPanel()
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
@@ -41,24 +41,24 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            enableButton = new TextButton(manager, UI.Languages.OctoClient.Enable);
+            enableButton = new TextButton(UI.Languages.OctoClient.Enable);
             enableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             enableButton.Visible = false;
             buttons.Controls.Add(enableButton);
 
-            disableButton = new TextButton(manager, UI.Languages.OctoClient.Disable);
+            disableButton = new TextButton(UI.Languages.OctoClient.Disable);
             disableButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             disableButton.Visible = false;
             buttons.Controls.Add(disableButton);
 
             #endregion
 
-            applyButton = new TextButton(manager, UI.Languages.OctoClient.Apply);
+            applyButton = new TextButton(UI.Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);
 
-            infoLabel = new Label(ScreenManager)
+            infoLabel = new Label()
             {
                 HorizontalTextAlignment = HorizontalAlignment.Left,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -69,7 +69,7 @@ namespace OctoAwesome.Client.Controls
 
             #region Listen
 
-            loadedExtensionsList = new Listbox<IExtension>(manager)
+            loadedExtensionsList = new Listbox<IExtension>()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -79,7 +79,7 @@ namespace OctoAwesome.Client.Controls
 
             grid.AddControl(loadedExtensionsList, 0, 0);
 
-            activeExtensionsList = new Listbox<IExtension>(manager)
+            activeExtensionsList = new Listbox<IExtension>()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -138,7 +138,7 @@ namespace OctoAwesome.Client.Controls
         private Control ListTemplateGenerator(IExtension? ext)
         {
             Debug.Assert(ext != null, nameof(ext) + " != null");
-            return new Label(ScreenManager)
+            return new Label(Style, ScreenManager)
             {
                 Text = ext.Name,
                 HorizontalAlignment = HorizontalAlignment.Stretch,

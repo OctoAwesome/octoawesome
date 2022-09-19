@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using System.IO;
 using OctoAwesome.Client.Components;
 using System;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Crew
 {
@@ -112,9 +113,9 @@ namespace OctoAwesome.Client.Crew
             AchievementList = Array.Empty<Achievements>();
         }
 
-        internal static List<CrewMember> GetCrew(ScreenComponent manager)
+        internal static List<CrewMember> GetCrew(AssetComponent assets)
         {
-            using (Stream stream = manager.Game.Assets.LoadStream(typeof(CrewMember), "Crew.crew", "xml"))
+            using (Stream stream = assets.LoadStream(typeof(CrewMember), "Crew.crew", "xml"))
             {
                 try
                 {

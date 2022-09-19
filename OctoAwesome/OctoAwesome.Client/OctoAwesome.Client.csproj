@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
@@ -11,9 +11,12 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(MSBuildThisFileDirectory)\Generated</CompilerGeneratedFilesOutputPath>
+
+
   </PropertyGroup>
 
   <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
     <Content Include="Content\**" />
     <Content Include="Copyright.txt" />
 
@@ -42,10 +45,10 @@
     </ItemGroup>
     
   <ItemGroup>
-    <PackageReference Include="engenious" Version="0.6.1.10-alpha" />
-    <PackageReference Include="engenious.ContentTool" Version="0.6.1.11-alpha" PrivateAssets="all" />
-    <PackageReference Include="engenious.ContentTool.SourceGen" Version="0.6.1.11-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-    <PackageReference Include="engenious.UI" Version="0.6.0.1-alpha" />
+    <PackageReference Include="engenious" Version="0.7.1-alpha" />
+    <PackageReference Include="engenious.ContentTool" Version="0.7.1.4-alpha" PrivateAssets="all" />
+    <PackageReference Include="engenious.ContentTool.SourceGen" Version="0.7.1.4-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    <PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="OpenAL.Soft" Version="1.19.1" Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Windows')))" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

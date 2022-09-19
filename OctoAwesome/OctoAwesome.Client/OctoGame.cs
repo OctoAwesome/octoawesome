@@ -79,7 +79,7 @@ namespace OctoAwesome.Client
             KeyMapper = new KeyMapper(Screen, Settings);
             Assets = new AssetComponent(Screen, Settings);
 
-
+            engenious.UI.Control.SetScreenManager(Screen);
 
             typeContainer.Register<BaseScreenComponent>(Screen);
             typeContainer.Register<ScreenComponent>(Screen);

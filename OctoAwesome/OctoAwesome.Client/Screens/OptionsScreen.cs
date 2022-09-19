@@ -9,16 +9,15 @@ using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class OptionsScreen : BaseScreen
+    internal sealed class OptionsScreen : OctoDecoratedScreen
     {
-        private readonly AssetComponent assets;
         private readonly ISettings settings;
         private readonly Button exitButton;
 
-        public OptionsScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
+        public OptionsScreen(AssetComponent assets)
+            : base(assets)
         {
-            assets = manager.Game.Assets;
-            settings = manager.Game.Settings;
+            settings = ScreenManager.Game.Settings;
             Padding = new Border(0, 0, 0, 0);
 
             Title = UI.Languages.OctoClient.Options;
@@ -27,7 +26,7 @@ namespace OctoAwesome.Client.Screens
 
             SetDefaultBackground();
 
-            TabControl tabs = new TabControl(manager)
+            TabControl tabs = new TabControl()
             {
                 Padding = new Border(20, 20, 20, 20),
                 Width = 700,
@@ -39,10 +38,10 @@ namespace OctoAwesome.Client.Screens
 
             #region OptionsPage
 
-            TabPage optionsPage = new TabPage(manager, UI.Languages.OctoClient.Options);
+            TabPage optionsPage = new TabPage(UI.Languages.OctoClient.Options);
             tabs.Pages.Add(optionsPage);
 
-            OptionsOptionControl optionsOptions = new OptionsOptionControl(manager, this, settings, assets)
+            OptionsOptionControl optionsOptions = new OptionsOptionControl(this, settings, assets)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -53,11 +52,11 @@ namespace OctoAwesome.Client.Screens
 
             #region BindingsPage
 
-            TabPage bindingsPage = new TabPage(manager, UI.Languages.OctoClient.KeyBindings);
+            TabPage bindingsPage = new TabPage(UI.Languages.OctoClient.KeyBindings);
             bindingsPage.Padding = Border.All(10);
             tabs.Pages.Add(bindingsPage);
 
-            BindingsOptionControl bindingsOptions = new BindingsOptionControl(manager, assets, manager.Game.KeyMapper, settings)
+            BindingsOptionControl bindingsOptions = new BindingsOptionControl(assets, ScreenManager.Game.KeyMapper, settings)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -68,10 +67,10 @@ namespace OctoAwesome.Client.Screens
 
             #region TexturePackPage
 
-            TabPage resourcePackPage = new TabPage(manager, "Resource Packs");
+            TabPage resourcePackPage = new TabPage("Resource Packs");
             tabs.Pages.Add(resourcePackPage);
 
-            ResourcePacksOptionControl resourcePacksOptions = new ResourcePacksOptionControl(manager, assets)
+            ResourcePacksOptionControl resourcePacksOptions = new ResourcePacksOptionControl(assets)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -82,10 +81,10 @@ namespace OctoAwesome.Client.Screens
 
             #region ExtensionPage
 
-            TabPage extensionPage = new TabPage(manager, UI.Languages.OctoClient.Extensions);
+            TabPage extensionPage = new TabPage(UI.Languages.OctoClient.Extensions);
             tabs.Pages.Add(extensionPage);
 
-            ExtensionsOptionControl extensionOptions = new ExtensionsOptionControl(manager, manager.Game.ExtensionLoader)
+            ExtensionsOptionControl extensionOptions = new ExtensionsOptionControl(ScreenManager.Game.ExtensionLoader)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -95,7 +94,7 @@ namespace OctoAwesome.Client.Screens
             #endregion
 
             ////////////////////////////////////////////Restart Button////////////////////////////////////////////
-            exitButton = new TextButton(manager, UI.Languages.OctoClient.RestartGameToApplyChanges);
+            exitButton = new TextButton(UI.Languages.OctoClient.RestartGameToApplyChanges);
             exitButton.VerticalAlignment = VerticalAlignment.Top;
             exitButton.HorizontalAlignment = HorizontalAlignment.Right;
             exitButton.Enabled = false;

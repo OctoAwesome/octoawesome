@@ -86,40 +86,41 @@ namespace OctoAwesome.Client.UI.Controls
         /// </summary>
         /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="style">The style to use for this control.</param>
-        public GroupBox(BaseScreenComponent manager, string style = "") : base(manager, style)
+        public GroupBox(string style = "", BaseScreenComponent manager = null)
+            : base(style, manager)
         {
-            outerPanel = new(manager)
+            outerPanel = new()
             {
                 Padding = Border,
                 Background = BorderColor
             };
 
-            StackPanel innerPanel = new(manager)
+            StackPanel innerPanel = new()
             {
                 Orientation = Orientation.Vertical,
                 Background = SolidColorBrush.White,
             };
 
-            StackPanel headlinePanel = new(manager)
+            StackPanel headlinePanel = new()
             {
                 Orientation = Orientation.Vertical,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
 
-            headlineLabel = new Label(manager)
+            headlineLabel = new Label()
             {
                 Text = Headline,
                 Height = 0,
             };
 
             headlinePanel.Controls.Add(headlineLabel);
-            headlinePanel.Controls.Add(new Line(manager)
+            headlinePanel.Controls.Add(new Line()
             {
                 Color = SolidColorBrush.Black,
             });
             innerPanel.Controls.Add(headlinePanel);
 
-            contentPanel = new StackPanel(manager)
+            contentPanel = new StackPanel()
             {
                 Orientation = Orientation,
                 Background = SolidColorBrush.White,

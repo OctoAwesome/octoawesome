@@ -4,12 +4,12 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.UI.Screens;
 using System;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal class CreateUniverseScreen : BaseScreen
+    internal class CreateUniverseScreen : OctoDecoratedScreen
     {
-        new readonly ScreenComponent Manager;
         private readonly Textbox nameInput;
         private readonly Textbox seedInput;
         readonly Button createButton;
@@ -18,17 +18,17 @@ namespace OctoAwesome.Client.Screens
 
         private bool firstTimeFocusNameBox = true;
 
-        public CreateUniverseScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
+        public CreateUniverseScreen(AssetComponent assets)
+            : base(assets)
         {
-            Manager = manager;
-            settings = manager.Game.Settings;
+            settings = ScreenManager.Game.Settings;
 
             Padding = new Border(0, 0, 0, 0);
             Title = UI.Languages.OctoClient.CreateUniverse;
             TabStop = false;
             SetDefaultBackground();
 
-            var panel = new Panel(manager)
+            var panel = new Panel()
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -39,7 +39,7 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(panel);
 
-            var grid = new Grid(manager)
+            var grid = new Grid()
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -62,7 +62,7 @@ namespace OctoAwesome.Client.Screens
             nameInput.LostFocus += (s, e) => seedInput.Focus();
             seedInput.LostFocus += (s, e) => nameInput.Focus();
 
-            createButton = new TextButton(manager, UI.Languages.OctoClient.Create)
+            createButton = new TextButton(UI.Languages.OctoClient.Create)
             {
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
@@ -74,15 +74,15 @@ namespace OctoAwesome.Client.Screens
                 if (string.IsNullOrEmpty(nameInput.Text))
                     return;
 
-                manager.Player.SetEntity(null);
+                ScreenManager.Player.SetEntity(null);
 
-                Guid guid = Manager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
+                Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
                 settings.Set("LastUniverse", guid.ToString());
 
-                Player player = manager.Game.Simulation.LoginPlayer("");
-                manager.Game.Player.SetEntity(player);
+                Player player = ScreenManager.Game.Simulation.LoginPlayer("");
+                ScreenManager.Game.Player.SetEntity(player);
 
-                manager.NavigateToScreen(new LoadingScreen(manager));
+                ScreenManager.NavigateToScreen(new LoadingScreen(assets));
             };
 
             nameInput.TextChanged += (s, e) =>
@@ -106,7 +106,7 @@ namespace OctoAwesome.Client.Screens
 
         private Textbox GetTextbox()
         {
-            var t = new Textbox(Manager)
+            var t = new Textbox()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,

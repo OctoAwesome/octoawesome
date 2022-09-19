@@ -8,10 +8,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class LoadingScreen : BaseScreen
+    internal sealed class LoadingScreen : OctoScreen
     {
         private static readonly QuoteProvider loadingQuoteProvider;
         static LoadingScreen()
@@ -24,17 +25,18 @@ namespace OctoAwesome.Client.Screens
         private readonly CancellationTokenSource tokenSource;
         private readonly Task quoteUpdate;
     
-        public LoadingScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
+        public LoadingScreen(AssetComponent assets)
+            : base(assets)
         {
             Padding = new Border(0, 0, 0, 0);
             tokenSource = new CancellationTokenSource();
 
             Title = "Loading";
 
-            SetDefaultBackground();
+            Background = new TextureBrush(assets.LoadTexture("background_new"), TextureBrushMode.Stretch);
 
             //Main Panel
-            var mainStack = new Grid(manager);
+            var mainStack = new Grid();
             mainStack.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 4 });
             mainStack.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
             mainStack.Margin = Border.All(50);
@@ -43,7 +45,7 @@ namespace OctoAwesome.Client.Screens
 
             Controls.Add(mainStack);
 
-            var backgroundStack = new Panel(manager)
+            var backgroundStack = new Panel()
             {
                 Background = new BorderBrush(Color.White * 0.5f),
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -52,7 +54,7 @@ namespace OctoAwesome.Client.Screens
             };
             mainStack.AddControl(backgroundStack, 0, 0, 1, 1);
 
-            var mainGrid = new Grid(manager)
+            var mainGrid = new Grid()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
@@ -68,7 +70,7 @@ namespace OctoAwesome.Client.Screens
 
             backgroundStack.Controls.Add(mainGrid);
 
-            var text = new Label(manager)
+            var text = new Label()
             {
                 Text = "Konfuzius sagt: Das hier lädt...",
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -81,7 +83,7 @@ namespace OctoAwesome.Client.Screens
 
 
             //Buttons
-            var buttonStack = new StackPanel(manager)
+            var buttonStack = new StackPanel()
             {
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -89,11 +91,14 @@ namespace OctoAwesome.Client.Screens
             };
             mainGrid.AddControl(buttonStack, 1, 2);
 
-            Button cancelButton = GetButton(UI.Languages.OctoClient.Cancel);
+            var cancelButton = new TextButton(UI.Languages.OctoClient.Cancel, Style, ScreenManager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
             buttonStack.Controls.Add(cancelButton);
 
             Debug.WriteLine("Create GameScreen");
-            gameScreen = new GameScreen(manager);
+            gameScreen = new GameScreen(assets);
             gameScreen.Update(new GameTime());
             gameScreen.OnCenterChanged += SwitchToGame;
 
@@ -101,10 +106,10 @@ namespace OctoAwesome.Client.Screens
             {
                 tokenSource.Cancel();
                 tokenSource.Dispose();
-                manager.Player.SetEntity(null);
-                manager.Game.Simulation.ExitGame();
+                ScreenManager.Player.SetEntity(null);
+                ScreenManager.Game.Simulation.ExitGame();
                 gameScreen.Unload();
-                manager.NavigateBack();
+                ScreenManager.NavigateBack();
             };
 
 
@@ -112,11 +117,11 @@ namespace OctoAwesome.Client.Screens
 
         private void SwitchToGame(object? sender, System.EventArgs args)
         {
-            Manager.Invoke(() =>
+            ScreenManager.Invoke(() =>
             {
                 tokenSource.Cancel();
                 tokenSource.Dispose();
-                Manager.NavigateToScreen(gameScreen);
+                ScreenManager.NavigateToScreen(gameScreen);
                 gameScreen.OnCenterChanged -= SwitchToGame;
             });
         }

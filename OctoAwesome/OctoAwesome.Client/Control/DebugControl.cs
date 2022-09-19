@@ -30,9 +30,8 @@ namespace OctoAwesome.UI.Controls
         private readonly StackPanel leftView, rightView;
         private readonly Label devText, position, rotation, fps, box, controlInfo, targetedBlockName, targetedBlockPosition, loadedChunks, loadedTextures, activeTool, toolCount, loadedInfo, flyInfo, temperatureInfo, precipitationInfo, gravityInfo;
 
-        public DebugControl(BaseScreenComponent screenManager, AssetComponent assets, PlayerComponent playerComponent,
-            IResourceManager resourceManager, IDefinitionManager definitionManager)
-            : base(screenManager)
+        public DebugControl(AssetComponent assets, PlayerComponent playerComponent, IResourceManager resourceManager,
+            IDefinitionManager definitionManager)
         {
             framebuffer = new float[buffersize];
             Player = playerComponent ?? throw new ArgumentNullException(nameof(playerComponent));
@@ -44,7 +43,7 @@ namespace OctoAwesome.UI.Controls
             //Brush for Debug Background
             var bg = new BorderBrush(Color.Black * 0.2f);
             //The left side of the Screen
-            leftView = new StackPanel(ScreenManager)
+            leftView = new StackPanel()
             {
                 Background = bg,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -52,7 +51,7 @@ namespace OctoAwesome.UI.Controls
             };
 
             //The right Side of the Screen
-            rightView = new StackPanel(ScreenManager)
+            rightView = new StackPanel()
             {
                 Background = bg,
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -60,64 +59,64 @@ namespace OctoAwesome.UI.Controls
             };
 
             //Creating all Labels
-            devText = new Label(ScreenManager)
+            devText = new Label()
             {
                 Text = Client.UI.Languages.OctoClient.DevelopmentVersion
             };
             leftView.Controls.Add(devText);
 
-            loadedChunks = new Label(ScreenManager);
+            loadedChunks = new Label();
             leftView.Controls.Add(loadedChunks);
 
-            loadedTextures = new Label(ScreenManager);
+            loadedTextures = new Label();
             leftView.Controls.Add(loadedTextures);
 
-            loadedInfo = new Label(ScreenManager);
+            loadedInfo = new Label();
             leftView.Controls.Add(loadedInfo);
 
-            position = new Label(ScreenManager);
+            position = new Label();
             rightView.Controls.Add(position);
 
-            rotation = new Label(ScreenManager);
+            rotation = new Label();
             rightView.Controls.Add(rotation);
 
-            fps = new Label(ScreenManager);
+            fps = new Label();
             rightView.Controls.Add(fps);
 
-            controlInfo = new Label(ScreenManager);
+            controlInfo = new Label();
             leftView.Controls.Add(controlInfo);
 
-            leftView.Controls.Add(new Label(ScreenManager)
+            leftView.Controls.Add(new Label()
             {
                 Text = Client.UI.Languages.OctoClient.TargetedBlock + ": " + Environment.NewLine
             });
 
-            targetedBlockName = new Label(ScreenManager);
+            targetedBlockName = new Label();
             leftView.Controls.Add(targetedBlockName);
 
-            targetedBlockPosition = new Label(ScreenManager);
+            targetedBlockPosition = new Label();
             leftView.Controls.Add(targetedBlockPosition);
 
-            temperatureInfo = new Label(ScreenManager);
+            temperatureInfo = new Label();
             rightView.Controls.Add(temperatureInfo);
 
-            precipitationInfo = new Label(ScreenManager);
+            precipitationInfo = new Label();
             rightView.Controls.Add(precipitationInfo);
 
-            gravityInfo = new Label(ScreenManager);
+            gravityInfo = new Label();
             rightView.Controls.Add(gravityInfo);
 
-            activeTool = new Label(ScreenManager);
+            activeTool = new Label();
             rightView.Controls.Add(activeTool);
 
-            toolCount = new Label(ScreenManager);
+            toolCount = new Label();
             rightView.Controls.Add(toolCount);
 
-            flyInfo = new Label(ScreenManager);
+            flyInfo = new Label();
             rightView.Controls.Add(flyInfo);
 
             //This Label gets added to the root and is set to Bottom Left
-            box = new Label(ScreenManager)
+            box = new Label()
             {
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Left,

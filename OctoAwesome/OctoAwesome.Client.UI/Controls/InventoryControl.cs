@@ -30,14 +30,13 @@ namespace OctoAwesome.Client.UI.Controls
         /// <summary>
         /// Initializes a new instance of the <see cref="InventoryControl"/> class.
         /// </summary>
-        /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="assets">The asset component used to load resource assets.</param>
         /// <param name="inventorySlots">The inventory slots of the inventory to show.</param>
         /// <param name="columns">The number of columns for the inventory.</param>
-        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+        public InventoryControl(AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS)
         {
             Background = new SolidColorBrush(Color.Transparent);
-            scroll = new ScrollContainer(manager)
+            scroll = new ScrollContainer()
             {
                 Background = new SolidColorBrush(Color.Transparent),
                 Margin = new Border(0, 0, 0, 0),
@@ -49,7 +48,7 @@ namespace OctoAwesome.Client.UI.Controls
             };
             scroll.VerticalScrollbar.Background = new SolidColorBrush(Color.Transparent);
 
-            grid = new Grid(manager)
+            grid = new Grid()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
@@ -69,7 +68,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// <param name="columns">The number of columns to split the inventory into.</param>
         public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS)
         {
-            grid = new Grid(ScreenManager)
+            grid = new Grid(Style, ScreenManager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
@@ -90,14 +89,14 @@ namespace OctoAwesome.Client.UI.Controls
             {
                 Texture2D texture;
 
-                var panel = new Panel(ScreenManager) {Width = 44, Height = 44 };
+                var panel = new Panel(Style, ScreenManager) {Width = 44, Height = 44 };
                 panel.Background = new BorderBrush(LineType.Solid, Color.Black);
-                var label = new Label(ScreenManager) { Text = "", HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.Transparent) };
+                var label = new Label(Style, ScreenManager) { Text = "", HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.Transparent) };
                 if (inventorySlot.Definition is not null)
                 {
 
                     texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
-                    var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+                    var image = new Image(Style, ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
                     panel.Controls.Add(image);
                     image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
                     image.MouseLeave += (_, _) => { HoveredSlot = null; };
