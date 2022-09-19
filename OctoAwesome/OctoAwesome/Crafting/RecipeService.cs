@@ -25,6 +25,8 @@ public class RecipeService
     {
         foreach (string path in paths)
         {
+            if (!Directory.Exists(path))
+                continue;
             var recipes = Directory.GetFiles(path, "*.json");
             foreach (var item in recipes)
             {

@@ -59,7 +59,6 @@
     <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
     <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
     <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
-    <ProjectReference Include="..\OctoAwesome.PoC\OctoAwesome.PoC.csproj" />
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
   </ItemGroup>
 

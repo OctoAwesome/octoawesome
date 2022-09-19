@@ -5,7 +5,7 @@ using OctoAwesome.Components;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.jvbslContribution;
+using OctoAwesome;
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using static OctoAwesome.jvbslContribution.StateMachine;
+using static OctoAwesome.StateMachine;
 
 namespace OctoAwesome.Basics.EntityComponents;
 internal class BurningComponent : InstanceComponent<ComponentContainer>, IFunctionalBlockComponent, IUpdateable
