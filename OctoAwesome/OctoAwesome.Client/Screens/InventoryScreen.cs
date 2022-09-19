@@ -13,13 +13,11 @@ using OctoAwesome.Client.UI.Controls;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class InventoryScreen : Screen
+    internal sealed class InventoryScreen : OctoScreen
     {
         private readonly Dictionary<string, Texture2D> toolTextures = new();
 
         private readonly PlayerComponent player;
-
-        private readonly AssetComponent assets;
 
         private readonly InventoryControl inventory;
 
@@ -35,17 +33,16 @@ namespace OctoAwesome.Client.Screens
 
         private readonly Brush hoverBrush;
 
-        public InventoryScreen(ScreenComponent manager) : base(manager)
+        public InventoryScreen(AssetComponent assets)
+            : base(assets)
         {
-            assets = manager.Game.Assets;
-
-            foreach (var item in manager.Game.DefinitionManager.Definitions)
+            foreach (var item in ScreenManager.Game.DefinitionManager.Definitions)
             {
-                Texture2D texture = manager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
+                Texture2D texture = ScreenManager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
                 toolTextures.Add(item.GetType().FullName, texture);
             }
 
-            player = manager.Player;
+            player = ScreenManager.Player;
 
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.3f);
@@ -55,7 +52,7 @@ namespace OctoAwesome.Client.Screens
 
             Texture2D panelBackground = assets.LoadTexture("panel");
 
-            Grid grid = new Grid(manager)
+            Grid grid = new Grid()
             {
                 Width = 800,
                 Height = 500,
@@ -68,7 +65,7 @@ namespace OctoAwesome.Client.Screens
 
             Controls.Add(grid);
 
-            inventory = new InventoryControl(manager, assets, manager.Player.Inventory.Inventory)
+            inventory = new InventoryControl(assets, ScreenManager.Player.Inventory.Inventory)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -78,7 +75,7 @@ namespace OctoAwesome.Client.Screens
 
             grid.AddControl(inventory, 0, 0);
 
-            StackPanel infoPanel = new StackPanel(manager)
+            StackPanel infoPanel = new StackPanel()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -87,15 +84,15 @@ namespace OctoAwesome.Client.Screens
                 Margin = Border.All(10, 0, 0, 0),
             };
 
-            nameLabel = new Label(manager);
+            nameLabel = new Label();
             infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label(manager);
+            massLabel = new Label();
             infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label(manager);
+            volumeLabel = new Label();
             infoPanel.Controls.Add(volumeLabel);
             grid.AddControl(infoPanel, 1, 0);
 
-            Grid toolbar = new Grid(manager)
+            Grid toolbar = new Grid()
             {
                 Margin = Border.All(0, 10, 0, 0),
                 Height = 100,
@@ -113,7 +110,7 @@ namespace OctoAwesome.Client.Screens
             images = new Image[ToolBarComponent.TOOLCOUNT];
             for (int i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
-                Image image = images[i] = new Image(manager)
+                Image image = images[i] = new Image()
                 {
                     Width = 42,
                     Height = 42,
@@ -192,10 +189,10 @@ namespace OctoAwesome.Client.Screens
                 args.Handled = true;
             }
 
-            if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
+            if (ScreenManager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
                 args.Handled = true;
-                Manager.NavigateBack();
+                ScreenManager.NavigateBack();
             }
 
             base.OnKeyDown(args);
@@ -234,7 +231,7 @@ namespace OctoAwesome.Client.Screens
 
         protected override void OnNavigatedTo(NavigationEventArgs args)
         {
-            Manager.FreeMouse();
+            ScreenManager.FreeMouse();
             base.OnNavigatedTo(args);
         }
     }

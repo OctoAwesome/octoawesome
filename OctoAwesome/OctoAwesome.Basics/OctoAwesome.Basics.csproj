@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="dotVariant" Version="0.3.1" />
-    <PackageReference Include="engenious" Version="0.6.1.10-alpha" />
-    <PackageReference Include="engenious.UI" Version="0.6.0.1-alpha" />
+    <PackageReference Include="dotVariant" Version="0.5.2" />
+    <PackageReference Include="engenious" Version="0.7.1-alpha" />
+    <PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
   </ItemGroup>
 
   <ItemGroup>

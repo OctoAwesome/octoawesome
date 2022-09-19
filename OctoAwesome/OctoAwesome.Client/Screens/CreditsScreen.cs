@@ -3,13 +3,15 @@ using OctoAwesome.Client.Components;
 using engenious.UI;
 using OctoAwesome.Client.Crew;
 using engenious.UI.Controls;
+using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Screens;
 
 namespace OctoAwesome.Client.Screens
 {
     internal class CreditsScreen : BaseScreen
     {
-        public CreditsScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
+        public CreditsScreen(AssetComponent assets)
+            : base(assets)
         {
             Padding = new Border(0, 0, 0, 0);
 
@@ -17,16 +19,16 @@ namespace OctoAwesome.Client.Screens
 
             SetDefaultBackground();
 
-            List<CrewMember> crew = CrewMember.GetCrew(manager);
+            List<CrewMember> crew = CrewMember.GetCrew(assets);
 
-            ScrollContainer crewScroll = new ScrollContainer(manager)
+            ScrollContainer crewScroll = new ScrollContainer()
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Margin = new Border(10, 10, 10, 10),
                 CanFocus = false
             };
 
-            StackPanel crewList = new StackPanel(manager)
+            StackPanel crewList = new StackPanel()
             {
                 MinWidth = 700,
                 Padding = new Border(10, 0, 10, 0),
@@ -37,13 +39,13 @@ namespace OctoAwesome.Client.Screens
 
             foreach (CrewMember member in crew)
             {
-                Button memberButton = new TextButton(manager, member.Username);
+                Button memberButton = new TextButton(member.Username);
                 memberButton.HorizontalAlignment = HorizontalAlignment.Stretch;
                 memberButton.Margin = new Border(5, 5, 5, 5);
 
                 memberButton.LeftMouseClick += (s, e) =>
                 {
-                    manager.NavigateToScreen(new CrewMemberScreen(manager, member));
+                    ScreenManager.NavigateToScreen(new CrewMemberScreen(assets, member));
                 };
 
                 crewList.Controls.Add(memberButton);

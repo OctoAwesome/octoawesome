@@ -31,8 +31,7 @@ namespace OctoAwesome.Client.Controls
 
         private int lastActiveIndex;
 
-        public ToolbarControl(BaseScreenComponent screenManager, AssetComponent assets, PlayerComponent playerComponent, IDefinitionManager definitionManager)
-            : base(screenManager)
+        public ToolbarControl(AssetComponent assets, PlayerComponent playerComponent, IDefinitionManager definitionManager)
         {
             Background = new SolidColorBrush(Color.Transparent);
             Player = playerComponent;
@@ -48,7 +47,7 @@ namespace OctoAwesome.Client.Controls
                 toolTextures.Add(item.GetType().FullName, texture);
             }
 
-            var grid = new Grid(screenManager)
+            var grid = new Grid()
             {
                 Margin = new Border(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -64,7 +63,7 @@ namespace OctoAwesome.Client.Controls
                 grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Fixed, Width = 50 });
             }
 
-            activeToolLabel = new Label(screenManager)
+            activeToolLabel = new Label()
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -75,7 +74,7 @@ namespace OctoAwesome.Client.Controls
 
             for (var i = 0; i < ToolBarComponent.TOOLCOUNT; i++)
             {
-                buttons[i] = new Button(screenManager)
+                buttons[i] = new Button()
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch,
@@ -83,7 +82,7 @@ namespace OctoAwesome.Client.Controls
                     HoveredBackground = null,
                     PressedBackground = null,
                 };
-                buttons[i].Content = images[i] = new Image(screenManager)
+                buttons[i].Content = images[i] = new Image()
                 {
                     Width = 42,
                     Height = 42,

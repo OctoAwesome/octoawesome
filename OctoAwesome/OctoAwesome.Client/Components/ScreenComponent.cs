@@ -65,7 +65,7 @@ namespace OctoAwesome.Client.Components
 
             this.extensionService.ExecuteExtender(this);
 
-            NavigateToScreen(new MainScreen(this));
+            NavigateToScreen(new MainScreen(Game.Assets));
 
         }
 

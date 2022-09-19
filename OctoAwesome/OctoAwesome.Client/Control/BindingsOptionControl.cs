@@ -15,15 +15,15 @@ namespace OctoAwesome.Client.Controls
         private readonly ISettings settings;
         private readonly KeyMapper keyMapper;
 
-        public BindingsOptionControl(BaseScreenComponent manager, AssetComponent assets, KeyMapper keyMapper, ISettings settings) : base(manager)
+        public BindingsOptionControl(AssetComponent assets, KeyMapper keyMapper, ISettings settings)
         {
             this.assets = assets;
             this.settings = settings;
             this.keyMapper = keyMapper;
-            ScrollContainer bindingsScroll = new ScrollContainer(manager);
+            ScrollContainer bindingsScroll = new ScrollContainer();
             Controls.Add(bindingsScroll);
 
-            StackPanel bindingsStack = new StackPanel(manager)
+            StackPanel bindingsStack = new StackPanel()
             {
                 Orientation = Orientation.Vertical,
                 Padding = new Border(20, 20, 20, 20),
@@ -35,20 +35,20 @@ namespace OctoAwesome.Client.Controls
             var bindings = keyMapper.GetBindings();
             foreach (var binding in bindings)
             {
-                StackPanel bindingStack = new StackPanel(manager)
+                StackPanel bindingStack = new StackPanel()
                 {
                     Orientation = Orientation.Horizontal,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     Height = 35
                 };
 
-                Label lbl = new Label(manager)
+                Label lbl = new Label()
                 {
                     Text = binding.DisplayName,
                     Width = 480
                 };
 
-                Label bindingKeyLabel = new Label(manager)
+                Label bindingKeyLabel = new Label()
                 {
                     Text = binding.Keys.First().ToString(),
                     HorizontalAlignment = HorizontalAlignment.Right,
@@ -75,7 +75,7 @@ namespace OctoAwesome.Client.Controls
 
             Label lbl = (Label)sender;
 
-            MessageScreen screen = new MessageScreen(ScreenManager, assets, UI.Languages.OctoClient.PressKey, "", UI.Languages.OctoClient.Cancel);
+            MessageScreen screen = new MessageScreen(assets, UI.Languages.OctoClient.PressKey, "", UI.Languages.OctoClient.Cancel);
             screen.KeyDown += (s, a) =>
             {
                 keyMapper.RemoveKey(id, oldKey);

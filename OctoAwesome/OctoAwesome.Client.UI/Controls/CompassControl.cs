@@ -21,10 +21,9 @@ namespace OctoAwesome.Client.UI.Controls
         /// <summary>
         /// Initializes a new instance of the <see cref="CompassControl"/> class.
         /// </summary>
-        /// <param name="screenManager">The <see cref="T:engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="assets">The asset component to load resource assets from.</param>
         /// <param name="headComponent">The head component which determines the compass heading.</param>
-        public CompassControl(BaseScreenComponent screenManager, AssetComponent assets, HeadComponent headComponent) : base(screenManager)
+        public CompassControl(AssetComponent assets, HeadComponent headComponent)
         {
             this.assets = assets;
 

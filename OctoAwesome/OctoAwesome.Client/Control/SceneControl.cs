@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -119,7 +120,7 @@ namespace OctoAwesome.Client.Controls
             entities.LoadShader(new entityEffect.entityEffectSettings() { CASCADES = cascades });
         }
         public SceneControl(ScreenComponent manager, string style = "") :
-            base(manager, style)
+            base(style, manager)
         {
             Mask = (int)Math.Pow(2, VIEWRANGE) - 1;
             Span = (int)Math.Pow(2, VIEWRANGE);
@@ -158,14 +159,10 @@ namespace OctoAwesome.Client.Controls
             {
                 foreach (var bitmap in definition.Textures)
                 {
-                    System.Drawing.Bitmap texture = manager.Game.Assets.LoadBitmap(definition.GetType(), bitmap);
+                    var texture = manager.Game.Assets.LoadBitmap(definition.GetType(), bitmap);
 
-                    var scaled = texture;//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
-                    int[] data = new int[scaled.Width * scaled.Height];
-                    var bitmapData = scaled.LockBits(new System.Drawing.Rectangle(0, 0, scaled.Width, scaled.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, data, 0, data.Length);
-                    blockTextures.SetData(data, layer);
-                    scaled.UnlockBits(bitmapData);
+                    var scaled = texture.ToContinuousImage<Rgba32>();//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
+                    blockTextures.SetData(scaled, layer);
                     layer++;
                 }
             }

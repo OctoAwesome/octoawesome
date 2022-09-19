@@ -10,20 +10,17 @@ using System;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class TargetScreen : Screen
+    internal sealed class TargetScreen : OctoScreen
     {
-        private AssetComponent assets;
-
-        public TargetScreen(ScreenComponent manager, Action<Coordinate> tp, Coordinate position) : base(manager)
+        public TargetScreen(AssetComponent assets, Action<Coordinate> tp, Coordinate position)
+            : base(assets)
         {
-            assets = manager.Game.Assets;
-
             IsOverlay = true;
             Background = new BorderBrush(Color.Black * 0.5f);
             Title = UI.Languages.OctoClient.SelectTarget;
 
             Texture2D panelBackground = assets.LoadTexture("panel");
-            Panel panel = new Panel(manager)
+            Panel panel = new Panel()
             {
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = Border.All(20),
@@ -32,10 +29,10 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(panel);
 
-            StackPanel spanel = new StackPanel(manager);
+            StackPanel spanel = new StackPanel();
             panel.Controls.Add(spanel);
 
-            Label headLine = new Label(manager)
+            Label headLine = new Label()
             {
                 Text = Title,
                 Font = Skin.Current.HeadlineFont,
@@ -43,19 +40,19 @@ namespace OctoAwesome.Client.Screens
             };
             spanel.Controls.Add(headLine);
 
-            var grid = new Grid(manager);
+            var grid = new Grid();
             grid.Rows.Add(new RowDefinition() { Height = 1, ResizeMode = ResizeMode.Auto });
             grid.Rows.Add(new RowDefinition() { Height = 1, ResizeMode = ResizeMode.Auto });
             grid.Rows.Add(new RowDefinition() { Height = 1, ResizeMode = ResizeMode.Auto });
             grid.Columns.Add(new ColumnDefinition() { Width = 1, ResizeMode = ResizeMode.Auto });
             grid.Columns.Add(new ColumnDefinition() { Width = 1, ResizeMode = ResizeMode.Auto });
 
-            grid.AddControl(new Label(manager)
+            grid.AddControl(new Label()
             {
                 Text = $"{UI.Languages.OctoClient.Planet}:"
             }, 0, 0);
 
-            var pText = new NumericTextbox(manager)
+            var pText = new NumericTextbox()
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
@@ -64,12 +61,12 @@ namespace OctoAwesome.Client.Screens
             };
             grid.AddControl(pText, 1, 0);
 
-            grid.AddControl(new Label(manager)
+            grid.AddControl(new Label()
             {
                 Text = "X:"
             }, 0, 1);
 
-            var xText = new NumericTextbox(manager)
+            var xText = new NumericTextbox()
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
@@ -78,12 +75,12 @@ namespace OctoAwesome.Client.Screens
             };
             grid.AddControl(xText, 1, 1);
 
-            grid.AddControl(new Label(manager)
+            grid.AddControl(new Label()
             {
                 Text = "Y:"
             }, 0, 2);
 
-            var yText = new NumericTextbox(manager)
+            var yText = new NumericTextbox()
             {
                 Background = new BorderBrush(Color.Gray),
                 Width = 150,
@@ -92,7 +89,7 @@ namespace OctoAwesome.Client.Screens
             };
             grid.AddControl(yText, 1, 2);
 
-            Button closeButton = new TextButton(manager, UI.Languages.OctoClient.Teleport)
+            Button closeButton = new TextButton(UI.Languages.OctoClient.Teleport)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
@@ -103,11 +100,11 @@ namespace OctoAwesome.Client.Screens
                 int y = int.Parse(yText.Text);
                 var coordinate = new Coordinate(planet, new Index3(x, y, 0), Vector3.Zero);
 
-                var player = manager.Game.Player;
+                var player = ScreenManager.Game.Player;
                 var c = new LocalChunkCache(player.Position.Planet.GlobalChunkCache, 2, 1);
                 c.SetCenter(coordinate.ChunkIndex.XY, (b) =>
                 {
-                    Manager.Invoke(() =>
+                    ScreenManager.Invoke(() =>
                     {
                         var gl = c.GroundLevel(x, y);
                         c.Flush();
@@ -120,7 +117,7 @@ namespace OctoAwesome.Client.Screens
                         if (tp != null)
                             tp(coordinate);
                         else
-                            manager.NavigateBack();
+                            ScreenManager.NavigateBack();
                     });
                 });
             };
@@ -131,7 +128,7 @@ namespace OctoAwesome.Client.Screens
             KeyDown += (s, e) =>
             {
                 if (e.Key == engenious.Input.Keys.Escape)
-                    manager.NavigateBack();
+                    ScreenManager.NavigateBack();
                 e.Handled = true;
             };
         }

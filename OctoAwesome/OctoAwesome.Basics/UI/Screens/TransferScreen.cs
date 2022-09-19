@@ -48,9 +48,9 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <summary>
         /// Initializes a new instance of the <see cref="TransferScreen"/> class.
         /// </summary>
-        /// <param name="manager">The <see cref="T:engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="assetComponent">The asset component to load resource assets.</param>
-        public TransferScreen(BaseScreenComponent manager, AssetComponent assetComponent) : base(manager, assetComponent)
+        public TransferScreen(AssetComponent assetComponent)
+            : base(assetComponent)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
             IsOverlay = true;
@@ -58,7 +58,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
 
             panelBackground = this.assetComponent.LoadTexture("panel");
-            var grid = new Grid(manager)
+            var grid = new Grid()
             {
                 Width = 800,
                 Height = 500,
@@ -72,7 +72,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             Controls.Add(grid);
 
-            inventoryA = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
+            inventoryA = new InventoryControl(assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -83,7 +83,7 @@ namespace OctoAwesome.Basics.UI.Screens
             inventoryA.EndDrop += (s, e) => OnInventoryDrop(e, transferComponent.InventoryA);
             inventoryA.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.BToA, e);
 
-            inventoryB = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
+            inventoryB = new InventoryControl(assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -97,7 +97,7 @@ namespace OctoAwesome.Basics.UI.Screens
             grid.AddControl(inventoryA, 0, 0);
             grid.AddControl(inventoryB, 0, 2);
 
-            var infoPanel = new StackPanel(manager)
+            var infoPanel = new StackPanel()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -107,11 +107,11 @@ namespace OctoAwesome.Basics.UI.Screens
 
             };
 
-            nameLabel = new Label(manager);
+            nameLabel = new Label();
             infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label(manager);
+            massLabel = new Label();
             infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label(manager);
+            volumeLabel = new Label();
             infoPanel.Controls.Add(volumeLabel);
             grid.AddControl(infoPanel, 1, 0, 1, 3);
         }
@@ -171,9 +171,9 @@ namespace OctoAwesome.Basics.UI.Screens
             if (transferComponent.PrimaryUiKey != ScreenKey)
                 return;
 
-            if (transferComponent.Show && Manager.ActiveScreen != this)
+            if (transferComponent.Show && ScreenManager.ActiveScreen != this)
             {
-                _ = Manager.NavigateToScreen(this);
+                _ = ScreenManager.NavigateToScreen(this);
             }
 
             Rebuild(transferComponent.InventoryA, transferComponent.InventoryB);
@@ -217,10 +217,10 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <inheritdoc />
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
+            if (ScreenManager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
                 args.Handled = true;
-                Manager.NavigateBack();
+                ScreenManager.NavigateBack();
             }
 
             base.OnKeyDown(args);

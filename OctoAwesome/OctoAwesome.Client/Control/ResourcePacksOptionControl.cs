@@ -19,9 +19,9 @@ namespace OctoAwesome.Client.Controls
         private readonly Listbox<ResourcePack> activePacksList;
         private readonly Label infoLabel;
 
-        public ResourcePacksOptionControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
+        public ResourcePacksOptionControl(AssetComponent asset)
         {
-            Grid grid = new Grid(manager)
+            Grid grid = new Grid()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.Controls
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, Height = 1 });
 
-            StackPanel buttons = new StackPanel(manager)
+            StackPanel buttons = new StackPanel()
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
@@ -44,34 +44,34 @@ namespace OctoAwesome.Client.Controls
 
             #region Manipulationsbuttons
 
-            addButton = new TextButton(manager, UI.Languages.OctoClient.Add);
+            addButton = new TextButton(UI.Languages.OctoClient.Add);
             addButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             addButton.Visible = false;
             buttons.Controls.Add(addButton);
 
-            removeButton = new TextButton(manager, UI.Languages.OctoClient.Remove);
+            removeButton = new TextButton(UI.Languages.OctoClient.Remove);
             removeButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             removeButton.Visible = false;
             buttons.Controls.Add(removeButton);
 
-            moveUpButton = new TextButton(manager, UI.Languages.OctoClient.Up);
+            moveUpButton = new TextButton(UI.Languages.OctoClient.Up);
             moveUpButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             moveUpButton.Visible = false;
             buttons.Controls.Add(moveUpButton);
 
-            moveDownButton = new TextButton(manager, UI.Languages.OctoClient.Down);
+            moveDownButton = new TextButton(UI.Languages.OctoClient.Down);
             moveDownButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             moveDownButton.Visible = false;
             buttons.Controls.Add(moveDownButton);
 
             #endregion
 
-            applyButton = new TextButton(manager, UI.Languages.OctoClient.Apply);
+            applyButton = new TextButton(UI.Languages.OctoClient.Apply);
             applyButton.HorizontalAlignment = HorizontalAlignment.Right;
             applyButton.VerticalAlignment = VerticalAlignment.Bottom;
             grid.AddControl(applyButton, 0, 2, 3);
 
-            infoLabel = new Label(ScreenManager)
+            infoLabel = new Label()
             {
                 HorizontalTextAlignment = HorizontalAlignment.Left,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -82,7 +82,7 @@ namespace OctoAwesome.Client.Controls
 
             #region Listen
 
-            loadedPacksList = new Listbox<ResourcePack>(manager)
+            loadedPacksList = new Listbox<ResourcePack>()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -92,7 +92,7 @@ namespace OctoAwesome.Client.Controls
 
             grid.AddControl(loadedPacksList, 0, 0);
 
-            activePacksList = new Listbox<ResourcePack>(manager)
+            activePacksList = new Listbox<ResourcePack>()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -217,7 +217,7 @@ namespace OctoAwesome.Client.Controls
         private Control ListTemplateGenerator(ResourcePack? pack)
         {
             Debug.Assert(pack != null, nameof(pack) + " != null");
-            return new Label(ScreenManager)
+            return new Label()
             {
                 Text = pack.Name,
                 HorizontalAlignment = HorizontalAlignment.Stretch,

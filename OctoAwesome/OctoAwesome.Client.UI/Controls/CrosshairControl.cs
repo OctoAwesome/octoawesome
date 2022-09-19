@@ -41,9 +41,8 @@ namespace OctoAwesome.Client.UI.Controls
         /// <summary>
         /// Initializes a new instance of the <see cref="CrosshairControl"/> control.
         /// </summary>
-        /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="asset">The asset component to load resources from.</param>
-        public CrosshairControl(BaseScreenComponent manager, AssetComponent asset) : base(manager)
+        public CrosshairControl(AssetComponent asset)
         {
             assets = asset;
 

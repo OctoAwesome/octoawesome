@@ -9,60 +9,58 @@ using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Screens
 {
-    internal sealed class MainScreen : BaseScreen
+    internal sealed class MainScreen : OctoScreen
     {
-        private AssetComponent assets;
-
-        public MainScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
+        public MainScreen(AssetComponent assets)
+            : base(assets)
         {
-            assets = manager.Game.Assets;
 
             Padding = new Border(0, 0, 0, 0);
 
             Background = new TextureBrush(assets.LoadTexture("background"), TextureBrushMode.Stretch);
 
-            StackPanel stack = new StackPanel(manager);
+            StackPanel stack = new StackPanel();
             Controls.Add(stack);
 
-            Button startButton = new TextButton(manager, UI.Languages.OctoClient.Start);
+            Button startButton = new TextButton(UI.Languages.OctoClient.Start);
             startButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             startButton.Margin = new Border(0, 0, 0, 10);
             startButton.LeftMouseClick += (s, e) =>
             {
-                ((ContainerResourceManager)manager.Game.ResourceManager).CreateManager(false);
-                manager.NavigateToScreen(new LoadScreen(manager));
+                ((ContainerResourceManager)ScreenManager.Game.ResourceManager).CreateManager(false);
+                ScreenManager.NavigateToScreen(new LoadScreen(assets));
             };
             stack.Controls.Add(startButton);
 
-            Button multiplayerButton = new TextButton(manager, UI.Languages.OctoClient.Multiplayer);
+            Button multiplayerButton = new TextButton(UI.Languages.OctoClient.Multiplayer);
             multiplayerButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             multiplayerButton.Margin = new Border(0, 0, 0, 10);
             multiplayerButton.LeftMouseClick += (s, e) =>
             {
-                manager.NavigateToScreen(new ConnectionScreen(manager));
+                ScreenManager.NavigateToScreen(new ConnectionScreen(assets));
             };
             stack.Controls.Add(multiplayerButton);
 
-            Button optionButton = new TextButton(manager, UI.Languages.OctoClient.Options);
+            Button optionButton = new TextButton(UI.Languages.OctoClient.Options);
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             optionButton.Margin = new Border(0, 0, 0, 10);
             optionButton.MinWidth = 300;
             optionButton.LeftMouseClick += (s, e) =>
             {
-                manager.NavigateToScreen(new OptionsScreen(manager));
+                ScreenManager.NavigateToScreen(new OptionsScreen(assets));
             };
             stack.Controls.Add(optionButton);
 
-            Button creditsButton = new TextButton(manager, UI.Languages.OctoClient.CreditsCrew);
+            Button creditsButton = new TextButton(UI.Languages.OctoClient.CreditsCrew);
             creditsButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             creditsButton.Margin = new Border(0, 0, 0, 10);
             creditsButton.LeftMouseClick += (s, e) =>
             {
-                manager.NavigateToScreen(new CreditsScreen(manager));
+                ScreenManager.NavigateToScreen(new CreditsScreen(assets));
             };
             stack.Controls.Add(creditsButton);
 
-            Button webButton = new TextButton(manager, "Octoawesome.net");
+            Button webButton = new TextButton("Octoawesome.net");
             webButton.VerticalAlignment = VerticalAlignment.Bottom;
             webButton.HorizontalAlignment = HorizontalAlignment.Right;
             webButton.Margin = new Border(10, 10, 10, 10);
@@ -72,10 +70,10 @@ namespace OctoAwesome.Client.Screens
             };
             Controls.Add(webButton);
 
-            Button exitButton = new TextButton(manager, UI.Languages.OctoClient.Exit);
+            Button exitButton = new TextButton(UI.Languages.OctoClient.Exit);
             exitButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             exitButton.Margin = new Border(0, 0, 0, 10);
-            exitButton.LeftMouseClick += (s, e) => { manager.Exit(); };
+            exitButton.LeftMouseClick += (s, e) => { ScreenManager.Exit(); };
             stack.Controls.Add(exitButton);
         }
     }

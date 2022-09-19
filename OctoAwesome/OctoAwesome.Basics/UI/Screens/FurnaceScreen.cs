@@ -49,7 +49,8 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <summary>
         /// Initializes a new instance of the <see cref="FurnaceScreen"/> class.
         /// </summary>
-        public FurnaceScreen(BaseScreenComponent manager, AssetComponent assetComponent) : base(manager, assetComponent)
+        public FurnaceScreen(AssetComponent assetComponent)
+            : base(assetComponent)
         {
             Background = new BorderBrush(Color.Black * 0.3f);
             IsOverlay = true;
@@ -57,7 +58,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
 
             panelBackground = this.assetComponent.LoadTexture("panel");
-            var grid = new Grid(manager)
+            var grid = new Grid()
             {
                 Width = 800,
                 Height = 500,
@@ -71,7 +72,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             Controls.Add(grid);
 
-            inputInventory = new InventoryControl(manager, assetComponent, Array.Empty<InventorySlot>())
+            inputInventory = new InventoryControl(assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -81,7 +82,8 @@ namespace OctoAwesome.Basics.UI.Screens
 
             inputInventory.EndDrop += (s, e) => OnInventoryDrop(e, furnaceUIComponent.InventoryA);
 
-            furnace = new FurnaceControl(manager, assetComponent, Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
+            furnace = new FurnaceControl(assetComponent, Array.Empty<InventorySlot>(),
+                          Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -101,7 +103,7 @@ namespace OctoAwesome.Basics.UI.Screens
             grid.AddControl(inputInventory, 0, 0);
             grid.AddControl(furnace, 0, 2);
 
-            var infoPanel = new StackPanel(manager)
+            var infoPanel = new StackPanel()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -110,11 +112,11 @@ namespace OctoAwesome.Basics.UI.Screens
                 Margin = Border.All(10, 0, 0, 0),
             };
 
-            nameLabel = new Label(manager);
+            nameLabel = new Label();
             infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label(manager);
+            massLabel = new Label();
             infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label(manager);
+            volumeLabel = new Label();
             infoPanel.Controls.Add(volumeLabel);
             grid.AddControl(infoPanel, 1, 0, 1, 3);
         }
@@ -150,9 +152,9 @@ namespace OctoAwesome.Basics.UI.Screens
             if (furnaceUIComponent.PrimaryUiKey != ScreenKey)
                 return;
 
-            if (furnaceUIComponent.Show && Manager.ActiveScreen != this)
+            if (furnaceUIComponent.Show && ScreenManager.ActiveScreen != this)
             {
-                _ = Manager.NavigateToScreen(this);
+                _ = ScreenManager.NavigateToScreen(this);
             }
 
             Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, furnaceUIComponent.OutputInventory, furnaceUIComponent.ProductionResourceInventory);
@@ -190,10 +192,10 @@ namespace OctoAwesome.Basics.UI.Screens
         ///<inheritdoc/>
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            if (Manager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
+            if (ScreenManager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.I))
             {
                 args.Handled = true;
-                Manager.NavigateBack();
+                ScreenManager.NavigateBack();
             }
 
             base.OnKeyDown(args);

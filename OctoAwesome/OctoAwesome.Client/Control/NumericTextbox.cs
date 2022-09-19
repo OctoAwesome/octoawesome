@@ -1,17 +1,18 @@
-﻿using engenious.UI;
+﻿using System;
+using engenious.UI;
 using engenious.UI.Controls;
 
 namespace OctoAwesome.Client.Controls
 {
     internal class NumericTextbox : Textbox
     {
-        public NumericTextbox(BaseScreenComponent manager, string style = "") : base(manager, style)
+        public NumericTextbox()
         {
         }
 
         protected override void OnKeyTextPress(KeyTextEventArgs args)
         {
-            if (char.IsNumber(args.Character))
+            if (args.Character.IsAscii && char.IsNumber((char)args.Character.Value))
             {
                 base.OnKeyTextPress(args);
             }

@@ -12,24 +12,25 @@ namespace OctoAwesome.UI.Screens
     /// </summary>
     public abstract class BaseScreen : Screen
     {
-        private readonly AssetComponent assets;
+        protected readonly AssetComponent assets;
 
         private readonly Button backButton;
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseScreen"/> class.
         /// </summary>
-        public BaseScreen(BaseScreenComponent manager, AssetComponent assets) : base(manager)
+        /// <param name="assets">The asset component to load the assets from.</param>
+        public BaseScreen(AssetComponent assets)
         {
             this.assets = assets;
-            backButton = new TextButton(Manager, "Back")
+            backButton = new TextButton("Back")
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 TabStop = false,
             };
             backButton.LeftMouseClick += (s, e) =>
-            {
-                Manager.NavigateBack();
+            { 
+                ScreenManager.NavigateBack();
             };
             backButton.Margin = new Border(10, 10, 10, 10);
             Controls.Add(backButton);
@@ -62,10 +63,10 @@ namespace OctoAwesome.UI.Screens
         /// <inheritdoc/>
         protected override void OnKeyPress(KeyEventArgs args)
         {
-            if (Manager.CanGoBack && (args.Key == Keys.Back || args.Key == Keys.Escape))
+            if (ScreenManager.CanGoBack && (args.Key == Keys.Back || args.Key == Keys.Escape))
             {
                 args.Handled = true;
-                Manager.NavigateBack();
+                ScreenManager.NavigateBack();
             }
 
             base.OnKeyPress(args);
@@ -80,7 +81,7 @@ namespace OctoAwesome.UI.Screens
         protected void AddLabeledControl(Grid grid, string name, Control c)
         {
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto });
-            grid.AddControl(new Label(Manager) { Text = name, TabStop = false }, 0, grid.Rows.Count - 1);
+            grid.AddControl(new Label() { Text = name, TabStop = false }, 0, grid.Rows.Count - 1);
             grid.AddControl(c, 1, grid.Rows.Count - 1);
             grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Fixed, Height = 10 });
         }
@@ -92,7 +93,7 @@ namespace OctoAwesome.UI.Screens
         /// <returns>The button that was created</returns>
         protected Button GetButton(string title)
         {
-            Button button = new TextButton(Manager, title)
+            Button button = new TextButton(title, Style, ScreenManager)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
