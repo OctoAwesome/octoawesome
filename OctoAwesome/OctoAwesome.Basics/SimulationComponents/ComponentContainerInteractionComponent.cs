@@ -7,7 +7,7 @@ using OctoAwesome.Services;
 namespace OctoAwesome.Basics.SimulationComponents
 {
     /// <summary>
-    /// Component for simulation with block interactions with functional blocks.
+    /// Component for simulation with block interactions with entities.
     /// </summary>
     public class ComponentContainerInteractionComponent : SimulationComponent<
         Entity,

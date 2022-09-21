@@ -8,7 +8,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for rendering entities.
     /// </summary>
-    public class RenderComponent : Component, IEntityComponent, IFunctionalBlockComponent
+    public class RenderComponent : Component, IEntityComponent
     {
         private string? name, modelName, textureName;
 

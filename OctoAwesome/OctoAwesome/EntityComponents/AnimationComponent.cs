@@ -11,7 +11,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for animated models.
     /// </summary>
-    public class AnimationComponent : Component, IEntityComponent, IFunctionalBlockComponent
+    public class AnimationComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gets or sets the currently elapsed time for the animation.

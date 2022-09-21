@@ -11,10 +11,10 @@ using OctoAwesome.Extension;
 namespace OctoAwesome.Basics.FunctionBlocks
 {
     /// <summary>
-    /// Chest functional block implementation.
+    /// Chest entity implementation.
     /// </summary>
     [SerializationId(1, 3)]
-    public class Chest : FunctionalBlock
+    public class Chest : Entity
     {
         internal AnimationComponent AnimationComponent
         {

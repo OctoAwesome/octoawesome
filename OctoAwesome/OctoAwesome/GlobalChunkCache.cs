@@ -120,23 +120,6 @@ namespace OctoAwesome
 
                     simulationRelay.OnNext(notification);
                 }
-
-                if (type.IsAssignableTo(typeof(FunctionalBlock)))
-                {
-                    var functionalBlock
-                        = cacheService
-                        .Get<Guid, FunctionalBlock>(positionComponent.InstanceId)!;
-                    if (functionalBlock.Components.TryGetComponent<PositionComponent>(out var poscomp))
-                        Debug.WriteLine(poscomp.Position.ToString());
-                    positionComponent.SetInstance(functionalBlock);
-                    var notification = new FunctionalBlockNotification
-                    {
-                        Block = functionalBlock,
-                        Type = FunctionalBlockNotification.ActionType.Add
-                    };
-
-                    simulationRelay.OnNext(notification);
-                }
             }
 
             return column;

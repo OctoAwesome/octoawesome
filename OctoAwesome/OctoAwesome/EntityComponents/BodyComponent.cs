@@ -6,7 +6,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component describing the body properties of an entity.
     /// </summary>
-    public sealed class BodyComponent : Component, IEntityComponent, IFunctionalBlockComponent
+    public sealed class BodyComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gets or sets the body entity mass.

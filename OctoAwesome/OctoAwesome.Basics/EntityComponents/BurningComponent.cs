@@ -19,7 +19,7 @@ using static OctoAwesome.StateMachine;
 
 namespace OctoAwesome.Basics.EntityComponents;
 
-internal class ProductionInventoriesComponent : Component, IFunctionalBlockComponent, IEntityComponent
+internal class ProductionInventoriesComponent : Component, IEntityComponent
 {
     public InventoryComponent InputInventory { get; set; }
     public InventoryComponent OutputInventory { get; set; }
@@ -56,7 +56,7 @@ internal class ProductionInventoriesComponent : Component, IFunctionalBlockCompo
     }
 }
 
-internal class BurningComponent : InstanceComponent<ComponentContainer>, IFunctionalBlockComponent, IUpdateable
+internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IUpdateable
 {
     private StateMachine stateMachine;
     private RecipeService recipeService;

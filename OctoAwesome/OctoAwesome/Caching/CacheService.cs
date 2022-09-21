@@ -46,7 +46,6 @@ namespace OctoAwesome.Caching
             caches.Add(typeof(ChunkColumn), chunkColumnCache);
             caches.Add(typeof(IChunkColumn), chunkColumnCache);
             caches.Add(typeof(Entity), new ComponentContainerCache<Entity, IEntityComponent>(resourceManager));
-            caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
         }
 
         private void Cancel()

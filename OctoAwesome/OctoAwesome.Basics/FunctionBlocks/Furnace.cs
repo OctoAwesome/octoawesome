@@ -22,7 +22,7 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 /// Represents the furnace object in the world
 /// </summary>
 [SerializationId(1, 4)]
-public class Furnace : FunctionalBlock
+public class Furnace : Entity
 {
     internal ProductionInventoriesComponent productionInventoriesComponent;
     internal AnimationComponent animationComponent;

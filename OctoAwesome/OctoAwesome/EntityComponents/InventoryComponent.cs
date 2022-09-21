@@ -17,7 +17,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for inventories of entities/functional blocks.
     /// </summary>
-    public class InventoryComponent : Component, IEntityComponent, IFunctionalBlockComponent
+    public class InventoryComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gets a list of inventory slots this inventory consists of.
