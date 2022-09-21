@@ -28,10 +28,10 @@ namespace OctoAwesome
         {
             extensionLoader.Extend<Player>((player) =>
             {
-                player.Components.AddComponent(new ControllableComponent());
-                player.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
-                player.Components.AddComponent(new InventoryComponent(true, 120));
-                player.Components.AddComponent(new ToolBarComponent());
+                player.Components.AddIfTypeNotExists(new ControllableComponent());
+                player.Components.AddIfTypeNotExists(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
+                player.Components.AddIfTypeNotExists(new InventoryComponent(true, 120));
+                player.Components.AddIfTypeNotExists(new ToolBarComponent());
             });
         }
 

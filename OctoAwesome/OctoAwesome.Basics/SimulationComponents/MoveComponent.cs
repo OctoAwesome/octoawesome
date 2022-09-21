@@ -20,10 +20,9 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <inheritdoc />
         protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
         {
-            var poscomp = entity.Components.GetComponent<PositionComponent>();
-            var movecomp = entity.Components.GetComponent<MoveableComponent>();
-            var chunkCacheComponent = entity.Components.GetComponent<LocalChunkCacheComponent>();
-
+            var poscomp = entity.Components.Get<PositionComponent>();
+            var movecomp = entity.Components.Get<MoveableComponent>();
+            var cache = entity.Components.Get<LocalChunkCacheComponent>().LocalChunkCache;
 
             Debug.Assert(poscomp != null, nameof(poscomp) + " != null");
             Debug.Assert(movecomp != null, nameof(movecomp) + " != null");
@@ -49,12 +48,12 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             //TODO: very ugly
 
-            if (entity.Components.ContainsComponent<BoxCollisionComponent>())
+            if (entity.Components.Contains<BoxCollisionComponent>())
             {
                 CheckBoxCollision(gameTime, entity, movecomp, poscomp);
             }
 
-            var cacheComp = entity.Components.GetComponent<LocalChunkCacheComponent>();
+            var cacheComp = entity.Components.Get<LocalChunkCacheComponent>();
 
             Debug.Assert(cacheComp != null, nameof(cacheComp) + " != null");
             var cache = cacheComp.LocalChunkCache;
@@ -93,8 +92,8 @@ namespace OctoAwesome.Basics.SimulationComponents
 
         private void CheckBoxCollision(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
         {
-            if (!entity.Components.TryGetComponent<BodyComponent>(out var bc)
-                || !entity.Components.TryGetComponent<LocalChunkCacheComponent>(out var localChunkCacheComponent))
+            if (!entity.Components.TryGet<BodyComponent>(out var bc)
+                || !entity.Components.TryGet<LocalChunkCacheComponent>(out var localChunkCacheComponent))
                 return;
 
             Coordinate position = poscomp.Position;

@@ -62,9 +62,9 @@ namespace OctoAwesome
         {
             foreach (var entity in entities)
             {
-                if (entity.Components.ContainsComponent<PositionComponent>())
+                if (entity.Components.Contains<PositionComponent>())
                 {
-                    var position = entity.Components.GetComponent<PositionComponent>();
+                    var position = entity.Components.Get<PositionComponent>();
 
                     Debug.Assert(position != null, nameof(position) + " != null");
                     if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)

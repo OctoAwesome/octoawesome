@@ -42,8 +42,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             var controller = value.Component1;
             var inventory = value.Component2;
 
-            var toolbar = entity.Components.GetComponent<ToolBarComponent>();
-            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>()?.LocalChunkCache;
+            var toolbar = entity.Components.Get<ToolBarComponent>();
+            var cache = entity.Components.Get<LocalChunkCacheComponent>().LocalChunkCache;
             Debug.Assert(cache != null, nameof(cache) + " != null");
 
             controller
@@ -78,8 +78,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                         var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
                         bool intersects = false;
-                        var positioncomponent = entity.Components.GetComponent<PositionComponent>();
-                        var bodycomponent = entity.Components.GetComponent<BodyComponent>();
+                        var positioncomponent = entity.Components.Get<PositionComponent>();
+                        var bodycomponent = entity.Components.Get<BodyComponent>();
 
                         if (positioncomponent != null && bodycomponent != null)
                         {

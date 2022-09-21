@@ -50,7 +50,7 @@ namespace OctoAwesome.Client
         }
 
         /// <summary>
-        /// Restarts OctoAwesome.
+        /// Restarts <see cref="OctoAwesome"/>
         /// </summary>
         public static void Restart()
         {

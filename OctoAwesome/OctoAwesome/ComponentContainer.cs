@@ -203,7 +203,7 @@ namespace OctoAwesome
                     if (!localChunkCache.Enabled)
                         return;
 
-                    var positionComponent = Components.GetComponent<PositionComponent>();
+                    var positionComponent = Components.Get<PositionComponent>();
 
                     if (positionComponent == null)
                         return;
@@ -231,11 +231,11 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public override bool ContainsComponent<T>()
-            => Components.ContainsComponent<T>();
+            => Components.Contains<T>();
 
         /// <inheritdoc />
         public override T? GetComponent<T>() where T : default
-            => Components.GetComponent<T>();
+            => Components.Get<T>();
 
         /// <summary>
         /// Tries to get the component of the component container
@@ -244,7 +244,7 @@ namespace OctoAwesome
         /// <param name="component">The component to be returned</param>
         /// <returns>True if the component was found, otherwise false</returns>
         public bool TryGetComponent<T>([MaybeNullWhen(false)] out T component) where T : TComponent
-            => Components.TryGetComponent<T>(out component);
+            => Components.TryGet<T>(out component);
 
 
         /// <inheritdoc />

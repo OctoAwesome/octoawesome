@@ -24,7 +24,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <inheritdoc />
         protected override PoweredEntity OnAdd(Entity entity)
         {
-            var movComp = entity.Components.GetComponent<MoveableComponent>();
+            var movComp = entity.Components.Get<MoveableComponent>();
             Debug.Assert(movComp != null, nameof(movComp) + $" != null. Entity without {nameof(MoveableComponent)} cannot be power aggregated.");
             return new PoweredEntity(entity, movComp, entity.Components.OfType<PowerComponent>().ToArray());
         }

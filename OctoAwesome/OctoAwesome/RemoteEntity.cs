@@ -26,7 +26,7 @@ namespace OctoAwesome
             foreach (var component in Components)
             {
                 if (component.Sendable)
-                    Components.AddComponent(component);
+                    Components.AddIfTypeNotExists(component);
             }
             Id = originEntity.Id;
         }

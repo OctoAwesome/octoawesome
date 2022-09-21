@@ -56,7 +56,7 @@ namespace OctoAwesome.Basics
             var y = r.Next(0, Chunk.CHUNKSIZE_Y / 2);
 
             PositionComponent position = new PositionComponent() { Position = new Coordinate(0, new Index3(x + column00.Index.X * Chunk.CHUNKSIZE_X, y + column00.Index.Y * Chunk.CHUNKSIZE_Y, 200), new Vector3(0, 0, 0)) };
-            wauzi.Components.AddComponent(position);
+            wauzi.Components.AddIfTypeNotExists(position);
 
             simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, wauzi));
         }

@@ -1,4 +1,7 @@
 ﻿using OctoAwesome.Components;
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 using OctoAwesome.Extension;
 using OctoAwesome.Pooling;
@@ -8,7 +11,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for rendering entities.
     /// </summary>
-    public class RenderComponent : Component, IEntityComponent
+    public class RenderComponent : Component, IEntityComponent, IEquatable<RenderComponent?>
     {
         private string? name, modelName, textureName;
 
@@ -70,6 +73,40 @@ namespace OctoAwesome.EntityComponents
             TextureName = reader.ReadString();
             BaseZRotation = reader.ReadSingle();
             base.Deserialize(reader);
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as RenderComponent);
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(RenderComponent? other)
+        {
+            return other is not null &&
+                   Name == other.Name &&
+                   ModelName == other.ModelName &&
+                   TextureName == other.TextureName &&
+                   BaseZRotation == other.BaseZRotation;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, ModelName, TextureName, BaseZRotation);
+        }
+/// <inheritdoc/>
+
+        public static bool operator ==(RenderComponent? left, RenderComponent? right)
+        {
+            return EqualityComparer<RenderComponent>.Default.Equals(left, right);
+        }
+/// <inheritdoc/>
+
+        public static bool operator !=(RenderComponent? left, RenderComponent? right)
+        {
+            return !(left == right);
         }
     }
 }

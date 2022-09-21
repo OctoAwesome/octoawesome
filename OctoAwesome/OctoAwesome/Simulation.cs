@@ -254,10 +254,10 @@ namespace OctoAwesome
                 foreach (var fb in entities)
                 {
                     if (fb == entity
-                        || (fb.Components.ContainsComponent<UniquePositionComponent>()
-                            && entity.Components.ContainsComponent<UniquePositionComponent>()
-                            && fb.Components.TryGetComponent<PositionComponent>(out var existingPosition)
-                            && (!entity.Components.TryGetComponent<PositionComponent>(out var newPosComponent)
+                        || (fb.Components.Contains<UniquePositionComponent>()
+                            && entity.Components.Contains<UniquePositionComponent>()
+                            && fb.Components.TryGet<PositionComponent>(out var existingPosition)
+                            && (!entity.Components.TryGet<PositionComponent>(out var newPosComponent)
                                 || existingPosition.Position == newPosComponent.Position)))
                     {
                         return;
@@ -356,7 +356,7 @@ namespace OctoAwesome
             using (var _ = entitiesSemaphore.EnterCountScope())
                 foreach (var item in entities)
                 {
-                    if (item.Components.ContainsComponent<T>())
+                    if (item.Components.Contains<T>())
                         ret.Add(item);
                 }
 
@@ -376,7 +376,7 @@ namespace OctoAwesome
             using (var _ = entitiesSemaphore.EnterCountScope())
                 foreach (var item in entities)
                 {
-                    if (item.Components.ContainsComponent<T1>() && item.Components.ContainsComponent<T2>())
+                    if (item.Components.Contains<T1>() && item.Components.Contains<T2>())
                         ret.Add(item);
                 }
 
@@ -506,9 +506,9 @@ namespace OctoAwesome
             }
 
             var remoteEntity = new RemoteEntity(entity);
-            remoteEntity.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            remoteEntity.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
-            remoteEntity.Components.AddComponent(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
+            remoteEntity.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
 
             var newEntityNotification = entityNotificationPool.Rent();
             newEntityNotification.Entity = remoteEntity;

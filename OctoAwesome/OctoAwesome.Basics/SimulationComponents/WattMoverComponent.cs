@@ -36,7 +36,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             var controller = value.Component1;
             var powercomp = value.Component2;
 
-            if (e.Components.TryGetComponent<HeadComponent>(out var head))
+            if (e.Components.TryGet<HeadComponent>(out var head))
             {
                 float lookX = (float)Math.Cos(head.Angle);
                 float lookY = -(float)Math.Sin(head.Angle);
