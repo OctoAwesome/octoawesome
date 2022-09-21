@@ -127,10 +127,6 @@ namespace OctoAwesome.Client.Components
                     else if (entityNotification.Type == EntityNotification.ActionType.Add)
                         Add(entityNotification.Entity);
                     break;
-                case FunctionalBlockNotification functionalBlockNotification:
-                    if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Add)
-                        Add(functionalBlockNotification.Block);
-                    break;
                 default:
                     break;
             }

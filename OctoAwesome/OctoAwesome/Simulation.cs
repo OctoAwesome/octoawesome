@@ -57,9 +57,6 @@ namespace OctoAwesome
         private readonly List<Entity> entities = new();
         private readonly CountedScopeSemaphore entitiesSemaphore = new();
 
-        private readonly List<FunctionalBlock> functionalBlocks = new();
-        private readonly CountedScopeSemaphore functionalBlocksSemaphore = new();
-
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly Relay<Notification> networkRelay;
         private readonly Relay<Notification> uiRelay;
@@ -196,11 +193,6 @@ namespace OctoAwesome
                     updateable.Update(gameTime);
             }
 
-            foreach (var functionalBlock in functionalBlocks)
-            {
-                if (functionalBlock is IUpdateable updateable)
-                    updateable.Update(gameTime);
-            }
 
             // Update all Components
             foreach (var component in Components)
@@ -229,13 +221,6 @@ namespace OctoAwesome
                 Remove(entities[i]);
             }
 
-            for (int i = functionalBlocks.Count - 1; i >= 0; i--)
-            {
-                Remove(functionalBlocks[i]);
-            }
-
-            //while (entites.Count > 0)
-            //    RemoveEntity(Entities.First());
 
             State = SimulationState.Finished;
             // thread.Join();
@@ -263,6 +248,22 @@ namespace OctoAwesome
 
             if (entity.Simulation is not null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
+
+
+            using (var _ = entitiesSemaphore.EnterCountScope())
+                foreach (var fb in entities)
+                {
+                    if (fb == entity
+                        || (fb.Components.ContainsComponent<UniquePositionComponent>()
+                            && entity.Components.ContainsComponent<UniquePositionComponent>()
+                            && fb.Components.TryGetComponent<PositionComponent>(out var existingPosition)
+                            && (!entity.Components.TryGetComponent<PositionComponent>(out var newPosComponent)
+                                || existingPosition.Position == newPosComponent.Position)))
+                    {
+                        return;
+                    }
+                }
+
             Entity? existing;
             using (var _ = entitiesSemaphore.EnterCountScope())
             {
@@ -292,59 +293,6 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Adds a functional block to the simulation.
-        /// </summary>
-        /// <param name="block">The <see cref="FunctionalBlock"/> to add.</param>
-        /// <exception cref="NotSupportedException">
-        /// Thrown if simulation is not running or paused. Or if entity is already part of another simulation.
-        /// </exception>
-        public void Add(FunctionalBlock block)
-        {
-            Debug.Assert(block is not null, nameof(block) + " != null");
-
-            if (State is not (SimulationState.Running or SimulationState.Paused))
-                throw new NotSupportedException($"Adding {nameof(FunctionalBlock)} only allowed in running or paused state");
-
-            if (block.Simulation is not null && block.Simulation != this)
-                throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be part of more than one simulation");
-
-
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var fb in functionalBlocks)
-                {
-                    if (fb == block
-                        || (fb.Components.TryGetComponent<PositionComponent>(out var existing)
-                            && (!block.Components.TryGetComponent<PositionComponent>(out var newPosComponent)
-                                || existing.Position == newPosComponent.Position)))
-                    {
-                        return;
-                    }
-                }
-
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                if (functionalBlocks.Contains(block))
-                    return;
-
-
-
-            extensionService.ExecuteExtender(block);
-            block.Initialize(ResourceManager);
-            block.Simulation = this;
-
-            if (block.Id == Guid.Empty)
-                block.Id = Guid.NewGuid();
-
-            using (var _ = functionalBlocksSemaphore.EnterExclusiveScope())
-                functionalBlocks.Add(block);
-
-            foreach (var component in Components)
-            {
-                if (component is IHoldComponent<FunctionalBlock> holdComponent)
-                    holdComponent.Add(block);
-            }
-        }
-
-        /// <summary>
         /// Removes an entity from the simulation.
         /// </summary>
         /// <param name="entity">The <see cref="Entity"/> to remove.</param>
@@ -363,7 +311,7 @@ namespace OctoAwesome
                 throw new NotSupportedException("Entity can't be removed from a foreign simulation");
             }
 
-            if (!(State == SimulationState.Running || State == SimulationState.Paused))
+            if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException("Removing Entities only allowed in running or paused state");
 
             ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
@@ -378,52 +326,13 @@ namespace OctoAwesome
                 entities.Remove(entity);
             entity.Id = Guid.Empty;
             entity.Simulation = null;
-
         }
 
         /// <summary>
-        /// Removes a functional block from the simulation.
-        /// </summary>
-        /// <param name="block">The <see cref="FunctionalBlock"/> to remove.</param>
-        public void Remove(FunctionalBlock block)
-        {
-            Debug.Assert(block is not null, nameof(block) + " != null");
-
-            if (block.Id == Guid.Empty)
-                return;
-
-            if (block.Simulation != this)
-            {
-                if (block.Simulation == null)
-                    return;
-
-                throw new NotSupportedException($"{nameof(FunctionalBlock)} can't be removed from a foreign simulation");
-            }
-
-            if (State is not (SimulationState.Running or SimulationState.Paused))
-                throw new NotSupportedException($"Removing {nameof(FunctionalBlock)} only allowed in running or paused state");
-
-
-            ResourceManager.SaveComponentContainer<FunctionalBlock, IFunctionalBlockComponent>(block);
-
-            foreach (var component in Components)
-            {
-                if (component is IHoldComponent<FunctionalBlock> holdComponent)
-                    holdComponent.Remove(block);
-            }
-
-            using (var _ = functionalBlocksSemaphore.EnterExclusiveScope())
-                functionalBlocks.Remove(block);
-            block.Id = Guid.Empty;
-            block.Simulation = null;
-
-        }
-
-        /// <summary>
-        /// Search and get entites by a specified type from this simulation
+        /// Search and get entities by a specified type from this simulation
         /// </summary>
         /// <typeparam name="T">The type to search for</typeparam>
-        /// <returns>A collection of <typeparamref name="T"/> of the entites that are part of this simulation</returns>
+        /// <returns>A collection of <typeparamref name="T"/> of the entities that are part of this simulation</returns>
         public IReadOnlyCollection<T> GetEntitiesOfType<T>()
         {
             var ret = new List<T>();
@@ -450,12 +359,7 @@ namespace OctoAwesome
                     if (item.Components.ContainsComponent<T>())
                         ret.Add(item);
                 }
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (item.Components.ContainsComponent<T>())
-                        ret.Add(item);
-                }
+
             return ret;
         }
 
@@ -475,12 +379,7 @@ namespace OctoAwesome
                     if (item.Components.ContainsComponent<T1>() && item.Components.ContainsComponent<T2>())
                         ret.Add(item);
                 }
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (item.Components.ContainsComponent<T1>() && item.Components.ContainsComponent<T2>())
-                        ret.Add(item);
-                }
+
             return ret;
         }
 
@@ -493,13 +392,6 @@ namespace OctoAwesome
         {
             using (var _ = entitiesSemaphore.EnterCountScope())
                 foreach (var item in entities)
-                {
-                    if (item is T t && t.Id == id)
-                        return t;
-                }
-
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
                 {
                     if (item is T t && t.Id == id)
                         return t;
@@ -526,14 +418,6 @@ namespace OctoAwesome
                     return true;
                 }
 
-            using (var _ = functionalBlocksSemaphore.EnterCountScope())
-                foreach (var item in functionalBlocks)
-                {
-                    if (!(item is T t) || t.Id != id)
-                        continue;
-                    componentContainer = t;
-                    return true;
-                }
             componentContainer = default;
             return false;
         }
@@ -569,12 +453,6 @@ namespace OctoAwesome
                         EntityUpdate(entityNotification);
                     else if (entityNotification.Type == EntityNotification.ActionType.Request)
                         RequestEntity(entityNotification);
-
-                    uiRelay.OnNext(value);
-                    break;
-                case FunctionalBlockNotification functionalBlockNotification:
-                    if (functionalBlockNotification.Type == FunctionalBlockNotification.ActionType.Add)
-                        Add(functionalBlockNotification.Block);
 
                     uiRelay.OnNext(value);
                     break;

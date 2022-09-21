@@ -106,6 +106,7 @@ namespace OctoAwesome.Basics
                 c.Components.AddComponentNoneOfTypePresent(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
                 c.Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
                 c.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
+                c.Components.AddComponentNoneOfTypePresent(new UniquePositionComponent());
 
             });
 
@@ -152,6 +153,7 @@ namespace OctoAwesome.Basics
                 f.Components.AddComponentNoneOfTypePresent(new BodyComponent() { Height = 2f, Radius = 1f });
                 f.Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
                 f.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
+                f.Components.AddComponentNoneOfTypePresent(new UniquePositionComponent() );
 
             });
 

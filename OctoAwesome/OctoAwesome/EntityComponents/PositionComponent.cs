@@ -9,7 +9,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with an position.
     /// </summary>
-    public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IFunctionalBlockComponent
+    public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent
     {
         /// <summary>
         /// Gets or sets the position of the entity.

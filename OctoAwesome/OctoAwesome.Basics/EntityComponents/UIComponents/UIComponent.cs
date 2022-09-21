@@ -7,7 +7,7 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
     /// <summary>
     /// Base component for ui interactions.
     /// </summary>
-    public abstract class UIComponent : Component, IEntityComponent, IFunctionalBlockComponent
+    public abstract class UIComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gets the screen component for interacting with UI elements.

@@ -312,7 +312,7 @@ namespace OctoAwesome.Client.Controls
             Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
             var selBlock = GetSelectedBlock(centerblock, renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out var bestBlockDistance);
-            var funcBlock = GetSelectedFunctionalBlock(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint, out var bestFunctionalBlockDistance);
+            var funcBlock = GetSelectedEntity(centerblock, renderOffset, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint, out var bestFunctionalBlockDistance);
 
             if (bestBlockDistance > bestFunctionalBlockDistance)
             {
@@ -452,7 +452,7 @@ namespace OctoAwesome.Client.Controls
             return block;
         }
 
-        private ComponentContainer? GetSelectedFunctionalBlock(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
+        private ComponentContainer? GetSelectedEntity(Index3 centerblock, Index3 renderOffset, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
         {
             selected = null;
             selectedAxis = null;
@@ -460,8 +460,6 @@ namespace OctoAwesome.Client.Controls
             bestDistance = float.MaxValue;
             ComponentContainer? componentContainer = null;
 
-            //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
-            //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
             foreach (var item in Manager.Game.Simulation.Simulation.GetByComponentTypes<PositionComponent, BoxCollisionComponent>())
             {
                 if (!item.ContainsComponent<PositionComponent>() || !item.ContainsComponent<BoxCollisionComponent>())

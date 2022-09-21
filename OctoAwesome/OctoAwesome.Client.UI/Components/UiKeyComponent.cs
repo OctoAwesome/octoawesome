@@ -3,9 +3,9 @@
 namespace OctoAwesome.UI.Components;
 
 /// <summary>
-/// Component to identify which UIComponent to use for an entity/functional block interaction.
+/// Component to identify which UIComponent to use for an entity interaction.
 /// </summary>
-public class UiKeyComponent : Component, IEntityComponent, IFunctionalBlockComponent
+public class UiKeyComponent : Component, IEntityComponent
 {
     /// <summary>
     /// Gets the primary key.

@@ -4,7 +4,7 @@ using System;
 using System.IO;
 
 namespace OctoAwesome.Basics.EntityComponents;
-internal class RelatedEntityComponent : Component, IEntityComponent, IFunctionalBlockComponent
+internal class RelatedEntityComponent : Component, IEntityComponent
 {
     public Guid RelatedEntityId { get; set; }
 

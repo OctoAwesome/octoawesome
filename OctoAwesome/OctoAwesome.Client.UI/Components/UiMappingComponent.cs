@@ -4,9 +4,9 @@ using OctoAwesome.Rx;
 namespace OctoAwesome.UI.Components;
 
 /// <summary>
-/// Class for mapping a <see cref="Component"/> to an <see cref="IEntityComponent"/> or <see cref="IFunctionalBlockComponent"/>
+/// Class for mapping a <see cref="Component"/> to an <see cref="IEntityComponent"/>
 /// </summary>
-public class UiMappingComponent : Component, IEntityComponent, IFunctionalBlockComponent
+public class UiMappingComponent : Component, IEntityComponent
 {
     /// <summary>
     /// Gets the relay that can be subscribed for receiving changed events

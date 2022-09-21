@@ -7,7 +7,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with box collision.
     /// </summary>
-    public sealed class BoxCollisionComponent : CollisionComponent, IFunctionalBlockComponent
+    public sealed class BoxCollisionComponent : CollisionComponent
     {
         /// <summary>
         /// Gets the collision bounding boxes of the entity.
