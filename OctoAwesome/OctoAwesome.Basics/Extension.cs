@@ -27,11 +27,13 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public string Name => Languages.OctoBasics.ExtensionName;
 
+        private ITypeContainer typeContainer;
 
         /// <inheritdoc />
         public void Register(ITypeContainer typeContainer)
         {
             typeContainer.Register<IPlanet, ComplexPlanet>();
+            this.typeContainer = typeContainer;
         }
 
         /// <inheritdoc />
@@ -59,16 +61,16 @@ namespace OctoAwesome.Basics
             {
                 var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
-                player.Components.AddComponent(posComponent);
-                player.Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
-                player.Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
-                player.Components.AddComponent(new GravityComponent());
-                player.Components.AddComponent(new MoveableComponent());
-                player.Components.AddComponent(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
-                player.Components.AddComponent(new EntityCollisionComponent());
-                player.Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
-                player.Components.AddComponent(new TransferComponent());
-                player.Components.AddComponent(new UiMappingComponent() { });
+                player.Components.AddIfTypeNotExists(posComponent);
+                player.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
+                player.Components.AddIfTypeNotExists(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
+                player.Components.AddIfTypeNotExists(new GravityComponent());
+                player.Components.AddIfTypeNotExists(new MoveableComponent());
+                player.Components.AddIfTypeNotExists(new BoxCollisionComponent(Array.Empty<BoundingBox>()));
+                player.Components.AddIfTypeNotExists(new EntityCollisionComponent());
+                player.Components.AddIfTypeNotExists(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
+                player.Components.AddIfTypeNotExists(new TransferComponent());
+                player.Components.AddIfTypeNotExists(new UiMappingComponent() { });
 
             });
 
@@ -79,34 +81,34 @@ namespace OctoAwesome.Basics
                 if (!c.ContainsComponent<PositionComponent>())
                 {
                     var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0));
-                    c.Components.AddComponent(new PositionComponent()
+                    c.Components.AddIfTypeNotExists(new PositionComponent()
                     {
                         Position = pos
                     });
 
                 }
 
-                if (!c.Components.TryGetComponent<AnimationComponent>(out var animationComponent))
+                if (!c.Components.TryGet<AnimationComponent>(out var animationComponent))
                 {
                     c.AnimationComponent = new AnimationComponent();
-                    c.Components.AddComponent(c.AnimationComponent);
+                    c.Components.AddIfTypeNotExists(c.AnimationComponent);
                 }
                 else
                     c.AnimationComponent = animationComponent;
 
-                if (!c.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
+                if (!c.Components.TryGet<InventoryComponent>(out var inventoryComponent))
                 {
                     inventoryComponent = new InventoryComponent();
-                    c.Components.AddComponent(inventoryComponent);
+                    c.Components.AddIfTypeNotExists(inventoryComponent);
                 }
 
 
-                c.Components.AddComponentNoneOfTypePresent(new UiKeyComponent() { PrimaryKey = "Transfer" });
+                c.Components.AddIfNotExists(new UiKeyComponent() { PrimaryKey = "Transfer" });
 
-                c.Components.AddComponentNoneOfTypePresent(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
-                c.Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
-                c.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
-                c.Components.AddComponentNoneOfTypePresent(new UniquePositionComponent());
+                c.Components.AddIfNotExists(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
+                c.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
+                c.Components.AddIfNotExists(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
+                c.Components.AddIfTypeNotExists(new UniquePositionComponent());
 
             });
 
@@ -117,26 +119,26 @@ namespace OctoAwesome.Basics
                 if (!f.ContainsComponent<PositionComponent>())
                 {
                     var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0));
-                    f.Components.AddComponent(new PositionComponent()
+                    f.Components.AddIfTypeNotExists(new PositionComponent()
                     {
                         Position = pos
                     });
 
                 }
 
-                if (!f.Components.TryGetComponent<AnimationComponent>(out var animationComponent))
+                if (!f.Components.TryGet<AnimationComponent>(out var animationComponent))
                 {
                     f.AnimationComponent = new AnimationComponent();
-                    f.Components.AddComponent(f.AnimationComponent);
+                    f.Components.Add(f.AnimationComponent);
                 }
                 else
                     f.AnimationComponent = animationComponent;
 
-                if (!f.Components.TryGetComponent<ProductionInventoriesComponent>(out var inventoryComponent))
+                if (!f.Components.TryGet<ProductionInventoriesComponent>(out var inventoryComponent))
                 {
                     inventoryComponent = new ProductionInventoriesComponent(true, 1);
                     f.productionInventoriesComponent = inventoryComponent;
-                    f.Components.AddComponent(inventoryComponent);
+                    f.Components.AddIfTypeNotExists(inventoryComponent);
                 }
                 else
                     f.productionInventoriesComponent = inventoryComponent;
@@ -147,37 +149,37 @@ namespace OctoAwesome.Basics
                     inventoryComponent.InputInventory.Add(new InventorySlot(inventoryComponent.InputInventory));
                 }
 
-                f.Components.AddComponent(new BurningComponent());
+                f.Components.Add(new BurningComponent());
 
-                f.Components.AddComponentNoneOfTypePresent(new UiKeyComponent() { PrimaryKey = "Furnace" });
-                f.Components.AddComponentNoneOfTypePresent(new BodyComponent() { Height = 2f, Radius = 1f });
-                f.Components.AddComponentNoneOfTypePresent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
-                f.Components.AddComponentNoneOfTypePresent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
-                f.Components.AddComponentNoneOfTypePresent(new UniquePositionComponent() );
+                f.Components.AddIfNotExists(new UiKeyComponent() { PrimaryKey = "Furnace" });
+                f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
+                f.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
+                f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
+                f.Components.AddIfTypeNotExists(new UniquePositionComponent() );
 
             });
 
             extensionLoader.Extend<Simulation>((s) =>
             {
-                s.Components.AddComponent(new WattMoverComponent());
-                s.Components.AddComponent(new NewtonGravitatorComponent());
-                s.Components.AddComponent(new ForceAggregatorComponent());
-                s.Components.AddComponent(new PowerAggregatorComponent());
-                s.Components.AddComponent(new AccelerationComponent());
-                s.Components.AddComponent(new MoveComponent());
+                s.Components.AddIfTypeNotExists(new WattMoverComponent());
+                s.Components.AddIfTypeNotExists(new NewtonGravitatorComponent());
+                s.Components.AddIfTypeNotExists(new ForceAggregatorComponent());
+                s.Components.AddIfTypeNotExists(new PowerAggregatorComponent());
+                s.Components.AddIfTypeNotExists(new AccelerationComponent());
+                s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddComponent(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?
             });
             extensionLoader.Extend<IScreenComponent>((s) =>
             {
-                s.Components.AddComponent(new TransferUIComponent());
-                s.Add(TypeContainer.GetUnregistered<TransferScreen>());
+                s.Components.AddIfTypeNotExists(new TransferUIComponent());
+                s.Add(typeContainer.GetUnregistered<TransferScreen>());
 
-                s.Components.AddComponent(new FurnaceUIComponent());
-                s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
+                s.Components.AddIfTypeNotExists(new FurnaceUIComponent());
+                s.Add(typeContainer.GetUnregistered<FurnaceScreen>());
             });
 
         }

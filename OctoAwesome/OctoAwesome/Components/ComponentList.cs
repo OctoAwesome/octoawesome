@@ -70,13 +70,13 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <typeparam name="V">The type of the component to add.</typeparam>
-        public void AddComponentNoneOfTypePresent<V>(V component) where V : T
+        public void AddIfTypeNotExists<V>(V component) where V : T
         {
             Type type = component.GetType();
 
             if (flatComponents.Contains(component))
                 return;
-            
+
             if (!componentsByType.TryGetValue(type, out var existing))
             {
                 existing = new();
@@ -98,7 +98,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="component">The component to add or replace.</param>
         /// <typeparam name="V">The type of the component to add.</typeparam>
-        public void AddComponent<V>(V component) where V : T
+        public void Add<V>(V component) where V : T
         {
             Type type = component.GetType();
 
@@ -120,6 +120,37 @@ namespace OctoAwesome
             onInserter?.Invoke(component);
         }
 
+
+        /// <summary>
+        /// Adds a component.
+        /// </summary>
+        /// <param name="component">The component to add or replace.</param>
+        /// <typeparam name="V">The type of the component to add.</typeparam>
+        public void AddIfNotExists<V>(V component) where V : T
+        {
+            Type type = component.GetType();
+
+            if (flatComponents.Contains(component))
+                return;
+
+
+            if (componentsByType.TryGetValue(type, out var existing))
+            {
+                if(!existing.Contains(component))
+                    existing.Add(component);
+
+            }
+            else
+            {
+                componentsByType[type] = new() { component };
+            }
+
+            flatComponents.Add(component);
+            insertValidator?.Invoke(component);
+            onInserter?.Invoke(component);
+        }
+
+
         /// <summary>
         /// Checks whether the component of <typeparamref name="V"/> is present in the internal dictionary as a key.
         /// </summary>
@@ -130,7 +161,7 @@ namespace OctoAwesome
         ///     <item><see langword="false"/> if the component was not found</item>
         /// </list>
         /// </returns>
-        public bool ContainsComponent<V>()
+        public bool Contains<V>()
         {
             var type = typeof(V);
             foreach (var x in typeKeys)
@@ -146,7 +177,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>True if the component was found, false otherwise</returns>
-        public bool TryGetComponent<V>([MaybeNullWhen(false)] out V component) where V : T
+        public bool TryGet<V>([MaybeNullWhen(false)] out V component) where V : T
         {
             var contains = componentsByType.TryGetValue(typeof(V), out var result);
             if (!contains || result is null || result.Count < 1)
@@ -164,7 +195,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>Component</returns>
-        public V? GetComponent<V>()
+        public V? Get<V>()
         {
             if (componentsByType.TryGetValue(typeof(V), out var result) && result.Count > 0)
                 return GenericCaster<T, V>.Cast(result[0]);
@@ -177,7 +208,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">Component Type</typeparam>
         /// <returns>Component</returns>
-        public List<V>? GetComponents<V>()
+        public List<V>? GetAll<V>()
         {
             if (componentsByType.TryGetValue(typeof(V), out var result))
                 return GenericCaster<T, V>.CastList<List<T>, List<V>>(result);
@@ -190,7 +221,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="V">The type of the component to remove.</typeparam>
         /// <returns>A value indicating whether the remove was successful or not.</returns>
-        public bool RemoveComponent<V>(V component) where V : T
+        public bool Remove<V>(V component) where V : T
         {
             if (!flatComponents.Contains(component))
                 return false;
@@ -208,6 +239,67 @@ namespace OctoAwesome
 
             return false;
         }
+
+        public virtual bool Replace<V>(V toReplace, V replacement, [MaybeNullWhen(false)] out V replaced) where V : T
+        {
+
+            if (!componentsByType.TryGetValue(typeof(V), out var components))
+            {
+                replaced = default;
+                return false;
+            }
+
+            var index = components.IndexOf(toReplace);
+            replaced = GenericCaster<T, V>.Cast(components[index]);
+            components[index] = replacement;
+            return true;
+        }
+        public virtual bool ReplaceOrAdd<V>(V? toReplace, V replacement, [MaybeNullWhen(false)] out V replaced) where V : T
+        {
+            replaced = default;
+
+            if (componentsByType.TryGetValue(typeof(V), out var components))
+            {
+                if (toReplace is null)
+                {
+                    components.Add(replacement);
+                }
+                else
+                {
+                    var index = components.IndexOf(toReplace);
+                    replaced = GenericCaster<T, V>.Cast(components[index]);
+                    components[index] = replacement;
+                    return true;
+                }
+            }
+            else
+            {
+                componentsByType[typeof(V)] = new List<T> { replacement };
+            }
+            return false;
+        }
+
+        public virtual void ReplaceAllWith<V>(V replacement) where V : T
+        {
+            if (componentsByType.TryGetValue(typeof(V), out var components))
+            {
+                if (components.Count > 0)
+                {
+                    components[0] = replacement;
+                    for (int i = components.Count - 1; i >= 1; i--)
+                    {
+                        components.RemoveAt(i);
+                    }
+                }
+                else
+                    components.Add(replacement);
+            }
+            else
+            {
+                componentsByType[typeof(V)] = new List<T> { replacement };
+            }
+        }
+
 
         /// <summary>
         /// Serializes the component list to a binary writer..
@@ -246,7 +338,7 @@ namespace OctoAwesome
                     componentsByType[type] = new();
 
                 var component = GenericCaster<object, T>.Cast(TypeContainer.GetUnregistered(type));
-                AddComponent(component);
+                AddIfTypeNotExists(component);
                 component.Deserialize(reader);
             }
         }

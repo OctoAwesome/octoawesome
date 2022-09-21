@@ -24,7 +24,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             var gravity = 10f;
 
-            var positionComponent = gravityEntity.Entity.Components.GetComponent<PositionComponent>();
+            var positionComponent = gravityEntity.Entity.Components.Get<PositionComponent>();
             if (positionComponent != null)
             {
                 var planet = positionComponent.Planet;
@@ -37,8 +37,8 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <inheritdoc />
         protected override GravityEntity OnAdd(Entity entity)
         {
-            var gravComp = entity.Components.GetComponent<GravityComponent>();
-            var bodyComp = entity.Components.GetComponent<BodyComponent>();
+            var gravComp = entity.Components.Get<GravityComponent>();
+            var bodyComp = entity.Components.Get<BodyComponent>();
             Debug.Assert(gravComp != null, nameof(gravComp) + $" != null. Entity without {nameof(GravityComponent)} cannot be a {nameof(GravityEntity)}.");
             Debug.Assert(bodyComp != null, nameof(bodyComp) + $" != null. Entity without {nameof(BodyComponent)} cannot be a affected by gravity.");
             return new GravityEntity(entity, gravComp, bodyComp);

@@ -98,24 +98,24 @@ namespace OctoAwesome.Client.Components
 
             currentEntity = entity;
 
-            var controlComp = entity.Components.GetComponent<ControllableComponent>();
+            var controlComp = entity.Components.Get<ControllableComponent>();
 
             Debug.Assert(controlComp != null, nameof(controlComp) + " != null");
             currentController = controlComp;
 
-            currentEntityHead = entity.Components.GetComponent<HeadComponent>();
+            currentEntityHead = entity.Components.Get<HeadComponent>();
             if (currentEntityHead is null)
                 currentEntityHead = new() { Offset = new(0, 0, 3.2f) };
 
-            inventory = entity.Components.GetComponent<InventoryComponent>();
+            inventory = entity.Components.Get<InventoryComponent>();
             if (inventory is null)
                 inventory = new();
 
-            toolbar = entity.Components.GetComponent<ToolBarComponent>();
+            toolbar = entity.Components.Get<ToolBarComponent>();
             if (toolbar is null)
                 toolbar = new();
 
-            position = entity.Components.GetComponent<PositionComponent>();
+            position = entity.Components.Get<PositionComponent>();
             if (position is null)
                 position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
             
@@ -188,7 +188,7 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         internal void AllBlocksDebug()
         {
-            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            var inventory = CurrentEntity.Components.Get<InventoryComponent>();
             if (inventory == null)
                 return;
 
@@ -200,7 +200,7 @@ namespace OctoAwesome.Client.Components
 
         internal void AllFoodsDebug()
         {
-            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            var inventory = CurrentEntity.Components.Get<InventoryComponent>();
             if (inventory == null)
                 return;
 
@@ -219,7 +219,7 @@ namespace OctoAwesome.Client.Components
 
         internal void AllItemsDebug()
         {
-            var inventory = CurrentEntity.Components.GetComponent<InventoryComponent>();
+            var inventory = CurrentEntity.Components.Get<InventoryComponent>();
             if (inventory == null)
                 return;
 

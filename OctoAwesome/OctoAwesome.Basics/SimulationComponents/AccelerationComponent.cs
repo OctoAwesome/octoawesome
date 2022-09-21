@@ -65,8 +65,8 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <inheritdoc />
         protected override AcceleratedEntity OnAdd(Entity entity)
         {
-            var movComp = entity.Components.GetComponent<MoveableComponent>();
-            var bodyComp = entity.Components.GetComponent<BodyComponent>();
+            var movComp = entity.Components.Get<MoveableComponent>();
+            var bodyComp = entity.Components.Get<BodyComponent>();
             Debug.Assert(movComp != null, nameof(movComp) + $" != null. Entity without {nameof(MoveableComponent)} cannot be accelerated.");
             Debug.Assert(bodyComp != null, nameof(bodyComp) + $" != null. Entity without {nameof(BodyComponent)} cannot be accelerated.");
             return new AcceleratedEntity(entity, movComp, bodyComp);

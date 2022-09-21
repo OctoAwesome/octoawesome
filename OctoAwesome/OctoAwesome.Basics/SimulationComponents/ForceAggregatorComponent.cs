@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <inheritdoc />
         protected override ForcedEntity OnAdd(Entity entity)
         {
-            var movComp = entity.Components.GetComponent<MoveableComponent>();
+            var movComp = entity.Components.Get<MoveableComponent>();
             Debug.Assert(movComp is not null, $"{nameof(movComp)} is not null. Forces cannot be applied to entities without a {nameof(MoveableComponent)}");
             return new ForcedEntity(entity,
                 movComp,

@@ -48,7 +48,7 @@ public class Furnace : Entity
     /// </summary>
     public Furnace(Coordinate position) : this()
     {
-        Components.AddComponent(new PositionComponent()
+        Components.AddIfTypeNotExists(new PositionComponent()
         {
             Position = position
         });

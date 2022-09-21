@@ -1,4 +1,7 @@
 ﻿using OctoAwesome.Components;
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OctoAwesome.EntityComponents
@@ -6,7 +9,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component describing the body properties of an entity.
     /// </summary>
-    public sealed class BodyComponent : Component, IEntityComponent
+    public sealed class BodyComponent : Component, IEntityComponent, IEquatable<BodyComponent?>
     {
         /// <summary>
         /// Gets or sets the body entity mass.
@@ -51,6 +54,39 @@ namespace OctoAwesome.EntityComponents
             Mass = reader.ReadSingle();
             Radius = reader.ReadSingle();
             Height = reader.ReadSingle();
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as BodyComponent);
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(BodyComponent? other)
+        {
+            return other is not null &&
+                   Mass == other.Mass &&
+                   Radius == other.Radius &&
+                   Height == other.Height;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Mass, Radius, Height);
+        }
+
+        /// <inheritdoc/>
+        public static bool operator ==(BodyComponent? left, BodyComponent? right)
+        {
+            return EqualityComparer<BodyComponent>.Default.Equals(left, right);
+        }
+
+        /// <inheritdoc/>
+        public static bool operator !=(BodyComponent? left, BodyComponent? right)
+        {
+            return !(left == right);
         }
     }
 }

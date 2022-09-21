@@ -47,7 +47,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// <param name="position">The position the chest is at.</param>
         public Chest(Coordinate position)
         {
-            Components.AddComponent(new PositionComponent()
+            Components.AddIfTypeNotExists(new PositionComponent()
             {
                 Position = position
             });
