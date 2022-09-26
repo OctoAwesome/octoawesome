@@ -103,7 +103,7 @@ namespace OctoAwesome.Client.Controls
             #endregion
 
             //////////////////////View range//////////////////////
-            string viewrange = settings.Get<string>("Viewrange");
+            string viewrange = settings.Get<string>("Viewrange", OctoGame.DefaultViewRange.ToString());
 
             rangeTitle = new Label()
             {
@@ -136,12 +136,14 @@ namespace OctoAwesome.Client.Controls
             };
             persistenceStack.Controls.Add(persistenceTitle);
 
+            var checkText = assets.LoadTexture("iconCheck_brown");
+            Debug.Assert(checkText != null, nameof(checkText) + " != null");
             Checkbox disablePersistence = new Checkbox()
             {
                 Checked = settings.Get("DisablePersistence", false),
-                HookBrush = new TextureBrush(assets.LoadTexture("iconCheck_brown"), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(checkText, TextureBrushMode.Stretch),
             };
-            disablePersistence.CheckedChanged += (state) => SetPersistence(state);
+            disablePersistence.CheckedChanged += SetPersistence;
             persistenceStack.Controls.Add(disablePersistence);
 
             //////////////////////Map Path//////////////////////
@@ -155,7 +157,7 @@ namespace OctoAwesome.Client.Controls
 
             mapPath = new Textbox()
             {
-                Text = settings.Get<string>("ChunkRoot"),
+                Text = settings.Get<string>("ChunkRoot", "")!,
                 Enabled = false,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
@@ -182,10 +184,12 @@ namespace OctoAwesome.Client.Controls
             };
             fullscreenStack.Controls.Add(fullscreenTitle);
 
+            var checkBoxHook = assets.LoadTexture("iconCheck_brown");
+            Debug.Assert(checkBoxHook != null, nameof(checkBoxHook) + " != null");
             Checkbox enableFullscreen = new Checkbox()
             {
                 Checked = settings.Get<bool>("EnableFullscreen"),
-                HookBrush = new TextureBrush(assets.LoadTexture("iconCheck_brown"), TextureBrushMode.Stretch),
+                HookBrush = new TextureBrush(checkBoxHook, TextureBrushMode.Stretch),
             };
             enableFullscreen.CheckedChanged += (state) => SetFullscreen(state);
             fullscreenStack.Controls.Add(enableFullscreen);
@@ -206,7 +210,7 @@ namespace OctoAwesome.Client.Controls
 
             Textbox resolutionWidthTextbox = new Textbox()
             {
-                Text = settings.Get<string>("Width"),
+                Text = settings.Get<string>("Width", OctoGame.DefaultResolutionWidth.ToString()),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -221,7 +225,7 @@ namespace OctoAwesome.Client.Controls
 
             Textbox resolutionHeightTextbox = new Textbox()
             {
-                Text = settings.Get<string>("Height"),
+                Text = settings.Get<string>("Height", OctoGame.DefaultResolutionHeight.ToString()),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -237,14 +241,14 @@ namespace OctoAwesome.Client.Controls
 
         private void ResolutionWidthTextbox_TextChanged(Control sender, PropertyEventArgs<string> args)
         {
-            settings.Set("Width", args.NewValue);
+            settings.Set("Width", args.NewValue ?? OctoGame.DefaultResolutionWidth.ToString());
 
             optionsScreen.NeedRestart();
         }
 
         private void ResolutionHeightTextbox_TextChanged(Control sender, PropertyEventArgs<string> args)
         {
-            settings.Set("Height", args.NewValue);
+            settings.Set("Height", args.NewValue ?? OctoGame.DefaultResolutionHeight.ToString());
 
             optionsScreen.NeedRestart();
         }

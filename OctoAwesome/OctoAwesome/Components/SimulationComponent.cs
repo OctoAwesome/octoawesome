@@ -1,8 +1,11 @@
-﻿using engenious;
+﻿using System;
+using engenious;
 
 using OctoAwesome.EntityComponents;
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace OctoAwesome.Components
 {
@@ -106,7 +109,12 @@ namespace OctoAwesome.Components
         /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
-            => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent>(value, value.GetComponent<TComponent>());
+        {
+            var component = value.GetComponent<TComponent>();
+            Debug.Assert(component != null, nameof(component) + " != null");
+            return (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent>(value,
+                component);
+        }
 
         /// <inheritdoc />
         public void Remove(TContainer value)
@@ -190,7 +198,14 @@ namespace OctoAwesome.Components
         /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
-            => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
+        {
+            var component1 = value.GetComponent<TComponent1>();
+            var component2 = value.GetComponent<TComponent2>();
+            Debug.Assert(component1 != null, nameof(component1) + " != null");
+            Debug.Assert(component2 != null, nameof(component2) + " != null");
+            return (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2>(value,
+                component1, component2);
+        }
 
         /// <inheritdoc />
         public void Remove(TContainer value)
@@ -277,7 +292,16 @@ namespace OctoAwesome.Components
         /// <param name="value">instance of <typeparamref name="TContainer"/> that is passed to <see cref="Add(TContainer)"/></param>
         /// <returns>Converted <paramref name="value"/> as <typeparamref name="TCachedContainer"/></returns>
         protected virtual TCachedContainer OnAdd(TContainer value)
-            => (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(value, value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>(), value.GetComponent<TComponent3>());
+        {
+            var component1 = value.GetComponent<TComponent1>();
+            var component2 = value.GetComponent<TComponent2>();
+            var component3 = value.GetComponent<TComponent3>();
+            Debug.Assert(component1 != null, nameof(component1) + " != null");
+            Debug.Assert(component2 != null, nameof(component2) + " != null");
+            Debug.Assert(component3 != null, nameof(component3) + " != null");
+            return (TCachedContainer)new SimulationComponentRecord<TContainer, TComponent1, TComponent2, TComponent3>(
+                value, component1, component2, component3);
+        }
 
         /// <inheritdoc />
         public void Remove(TContainer value)

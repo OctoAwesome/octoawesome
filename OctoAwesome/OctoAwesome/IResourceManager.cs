@@ -111,7 +111,7 @@ namespace OctoAwesome
         /// <param name="planet">The planet to load the chunk column of.</param>
         /// <param name="index">The location to load the chunk column from.</param>
         /// <returns></returns>
-        IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index);
+        IChunkColumn? LoadChunkColumn(IPlanet planet, Index2 index);
 
         /// <summary>
         /// Loads an entity by its id.

@@ -14,8 +14,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IPlanet GeneratePlanet(Guid universe, int id, int seed)
         {
-            Planet planet = new Planet(id, universe, new Index3(5, 5, 4), seed);
-            planet.Generator = this;
+            Planet planet = new Planet(id, universe, new Index3(5, 5, 4), this, seed);
             return planet;
         }
 
@@ -64,7 +63,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IPlanet GeneratePlanet(Stream stream)
         {
-            IPlanet planet = new Planet();
+            IPlanet planet = new Planet(this);
             using (var reader = new BinaryReader(stream))
                 planet.Deserialize(reader);
             return planet;

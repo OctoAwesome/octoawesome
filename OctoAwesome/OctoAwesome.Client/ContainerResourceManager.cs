@@ -24,7 +24,7 @@ namespace OctoAwesome.Client
         public IDefinitionManager DefinitionManager => ResourceManager.DefinitionManager;
 
         /// <inheritdoc />
-        public IUniverse CurrentUniverse => ResourceManager.CurrentUniverse;
+        public IUniverse? CurrentUniverse => ResourceManager.CurrentUniverse;
 
         /// <summary>
         /// Gets a value indicating whether the resource manager is in multiplayer mode.
@@ -203,21 +203,21 @@ namespace OctoAwesome.Client
         public void SaveChunkColumn(IChunkColumn chunkColumn) => ResourceManager.SaveChunkColumn(chunkColumn);
 
         /// <inheritdoc />
-        public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index) => ResourceManager.LoadChunkColumn(planet, index);
+        public IChunkColumn? LoadChunkColumn(IPlanet planet, Index2 index) => ResourceManager.LoadChunkColumn(planet, index);
 
         /// <inheritdoc />
         public void Dispose()
         {
-            if (ResourceManager is IDisposable disposable)
+            if (resourceManager is IDisposable disposable)
                 disposable.Dispose();
         }
 
         /// <inheritdoc />
-        public Entity LoadEntity(Guid entityId)
+        public Entity? LoadEntity(Guid entityId)
             => ResourceManager.LoadEntity(entityId);
 
         /// <inheritdoc />
-        public TContainer LoadComponentContainer<TContainer, TComponent>(Guid id)
+        public TContainer? LoadComponentContainer<TContainer, TComponent>(Guid id)
            where TContainer : ComponentContainer<TComponent>
            where TComponent : IComponent
             => ResourceManager.LoadComponentContainer<TContainer, TComponent>(id);

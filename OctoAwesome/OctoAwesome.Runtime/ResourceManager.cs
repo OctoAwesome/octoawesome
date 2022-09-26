@@ -29,7 +29,7 @@ namespace OctoAwesome.Runtime
         private readonly bool disablePersistence;
         private readonly IPersistenceManager persistenceManager;
         private readonly ILogger logger;
-        private readonly List<IMapPopulator>? populators;
+        private readonly List<IMapPopulator> populators;
         private Player? player;
         private readonly LockSemaphore semaphoreSlim;
 
@@ -47,7 +47,7 @@ namespace OctoAwesome.Runtime
         private readonly Extension.ExtensionService extensionService;
         private readonly CountedScopeSemaphore loadingSemaphore;
         private CancellationToken currentToken;
-        private CancellationTokenSource tokenSource;
+        private CancellationTokenSource? tokenSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceManager"/> class.
@@ -141,7 +141,7 @@ namespace OctoAwesome.Runtime
         public void UnloadUniverse()
         {
             using (loadingSemaphore.EnterExclusiveScope())
-                tokenSource.Cancel();
+                tokenSource?.Cancel();
 
             using (loadingSemaphore.EnterExclusiveScope())
             {
@@ -155,8 +155,8 @@ namespace OctoAwesome.Runtime
                     persistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
                     planet.Value.Dispose();
                 }
-                if (persistenceManager is IDisposable disposable)
-                    disposable.Dispose();
+                // if (persistenceManager is IDisposable disposable)
+                //     disposable.Dispose();
                 Planets.Clear();
 
                 CurrentUniverse = null;
@@ -203,6 +203,7 @@ namespace OctoAwesome.Runtime
                     else
                     {
                         awaiter.WaitOnAndRelease();
+                        Debug.Assert(planet != null, nameof(planet) + " != null");
                     }
 
                     Planets.TryAdd(id, planet);
@@ -239,17 +240,19 @@ namespace OctoAwesome.Runtime
         }
 
         /// <inheritdoc />
-        public IChunkColumn LoadChunkColumn(IPlanet planet, Index2 index)
+        public IChunkColumn? LoadChunkColumn(IPlanet planet, Index2 index)
         {
+            Debug.Assert(CurrentUniverse != null, nameof(CurrentUniverse) + " not loaded!");
             // Load from disk
-            Awaiter awaiter;
+            Awaiter? awaiter;
             IChunkColumn column11;
 
             do
             {
                 using (loadingSemaphore.EnterCountScope())
                 {
-                    currentToken.ThrowIfCancellationRequested();
+                    if (currentToken.IsCancellationRequested)
+                        return null;
 
                     awaiter = persistenceManager.Load(out var loadedColumn, CurrentUniverse.Id, planet, index);
                     if (awaiter == null)
@@ -329,6 +332,7 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public void SaveChunkColumn(IChunkColumn chunkColumn)
         {
+            Debug.Assert(CurrentUniverse != null, nameof(CurrentUniverse) + " not loaded!");
             if (disablePersistence)
                 return;
 
@@ -345,7 +349,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                var awaiter = persistenceManager.Load(out Entity entity, CurrentUniverse.Id, entityId);
+                var awaiter = persistenceManager.Load(out var entity, CurrentUniverse.Id, entityId);
 
                 if (awaiter == null)
                     return null;
@@ -406,6 +410,7 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public (Guid Id, T Component)[] GetAllComponents<T>() where T : IComponent, new()
         {
+            Debug.Assert(CurrentUniverse != null, nameof(CurrentUniverse) + " not loaded!");
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
@@ -415,7 +420,7 @@ namespace OctoAwesome.Runtime
                 {
                     foreach (var item in retValues)
                     {
-                        GenericCaster<T, PositionComponent>.Cast(item.Component).InstanceId = item.Id;
+                        GenericCaster<T, PositionComponent>.Cast(item.Component)!.InstanceId = item.Id;
                     }
                 }
                 return retValues;
@@ -425,6 +430,8 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public T GetComponent<T>(Guid id) where T : IComponent, new()
         {
+            Debug.Assert(CurrentUniverse != null, nameof(CurrentUniverse) + " not loaded!");
+
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();

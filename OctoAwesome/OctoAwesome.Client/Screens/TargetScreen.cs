@@ -7,6 +7,7 @@ using OctoAwesome.Client.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.EntityComponents;
 using System;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -19,7 +20,8 @@ namespace OctoAwesome.Client.Screens
             Background = new BorderBrush(Color.Black * 0.5f);
             Title = UI.Languages.OctoClient.SelectTarget;
 
-            Texture2D panelBackground = assets.LoadTexture("panel");
+            var panelBackground = assets.LoadTexture("panel");
+            Debug.Assert(panelBackground != null, nameof(panelBackground) + " != null");
             Panel panel = new Panel()
             {
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),

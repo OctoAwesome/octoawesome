@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -32,28 +34,55 @@ namespace OctoAwesome.Client
         }
 
         /// <inheritdoc/>
-        public T? Get<T>(string key)
+        public T Get<T>(string key)
         {
-            return Get<T>(key, default);
+            if (TryGet<T>(key, out var value))
+                return value;
+            throw new KeyNotFoundException();
         }
 
         /// <inheritdoc/>
         public T? Get<T>(string key, T? defaultValue)
         {
-            var settingElement = _config.AppSettings.Settings[key];
-            if (settingElement == null)
-                return defaultValue;
-            var valueConfig = settingElement.Value;
-
-            return (T)Convert.ChangeType(valueConfig, typeof(T));
+            return TryGet<T>(key, out var value) ? value : defaultValue;
         }
 
         /// <inheritdoc/>
         public T[] GetArray<T>(string key)
         {
-            var valueConfig = _config.AppSettings.Settings[key].Value;
+            if (TryGetArray<T>(key, out var values))
+                return values;
+            throw new KeyNotFoundException();
+        }
 
-            return DeserializeArray<T>(valueConfig);
+        /// <inheritdoc />
+        public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
+        {
+            var settingElement = _config.AppSettings.Settings[key];
+            if (settingElement is null)
+            {
+                value = default;
+                return false;
+            }
+
+            var valueConfig = settingElement.Value;
+
+            value = (T)Convert.ChangeType(valueConfig, typeof(T));
+            return true;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetArray<T>(string key, [MaybeNullWhen(false)] out T[] values)
+        {
+            var valueConfig = _config.AppSettings.Settings[key]?.Value;
+            if (valueConfig is not null)
+            {
+                values = DeserializeArray<T>(valueConfig);
+                return true;
+            }
+
+            values = default;
+            return false;
         }
 
         /// <inheritdoc/>

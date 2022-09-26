@@ -3,6 +3,7 @@ using OctoAwesome.Database;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -36,11 +37,20 @@ namespace OctoAwesome.Serialization.Entities
             entityDefinitionContext = new ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext(database);
             componentsDbContext = new ComponentContainerComponentDbContext<TComponent>(databaseProvider, universe);
 
-            getComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
+            var getComponentMeth = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
 
-            addOrUpdateComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.AddOrUpdate));
+            Debug.Assert(getComponentMeth != null, nameof(getComponentMethod) + " != null");
+            getComponentMethod = getComponentMeth;
 
-            removeComponentMethod = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
+            var addOrUpdateComponentMeth = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.AddOrUpdate));
+
+            Debug.Assert(addOrUpdateComponentMeth != null, nameof(addOrUpdateComponentMethod) + " != null");
+            addOrUpdateComponentMethod = addOrUpdateComponentMeth;
+            
+            var removeComponentMeth = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
+
+            Debug.Assert(removeComponentMeth != null, nameof(removeComponentMethod) + " != null");
+            removeComponentMethod = removeComponentMeth;
         }
 
         /// <inheritdoc />
@@ -60,14 +70,17 @@ namespace OctoAwesome.Serialization.Entities
         public TContainer Get(GuidTag<TContainer> key)
         {
             var definition = entityDefinitionContext.Get(new GuidTag<ComponentContainerDefinition<TComponent>>(key.Id));
-            var entity = (TContainer)Activator.CreateInstance(definition.Type);
-            entity!.Id = definition.Id;
-            foreach (Type component in definition.Components)
+            var entity = (TContainer?)Activator.CreateInstance(definition.Type);
+            Debug.Assert(entity != null, nameof(entity) + " != null");
+            entity.Id = definition.Id;
+            foreach (Type componentType in definition.Components)
             {
                 try
                 {
-                    MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(component);
-                    entity.Components.AddComponent((TComponent)genericMethod.Invoke(componentsDbContext, new object[] { entity }));
+                    MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(componentType);
+                    var component = (TComponent?)genericMethod.Invoke(componentsDbContext, new object[] { entity });
+                    Debug.Assert(component != null, nameof(component) + " != null");
+                    entity.Components.AddComponent(component);
                 }
                 catch (Exception)
                 {

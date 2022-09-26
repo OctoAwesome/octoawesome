@@ -3,6 +3,7 @@ using OctoAwesome.Caching;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome
 {
@@ -30,10 +31,9 @@ namespace OctoAwesome
         public override void RegisterExtender<T>(Action<T> extenderDelegate)
         {
             Type type = typeof(T);
-            List<Action<ComponentContainer>> list;
             if (!typeof(ComponentContainer).IsAssignableFrom(typeof(T)))
                 return;
-            if (!componentContainerExtender.TryGetValue(type, out list))
+            if (!componentContainerExtender.TryGetValue(type, out var list))
             {
                 list = new List<Action<ComponentContainer>>();
                 componentContainerExtender.Add(type, list);
@@ -41,7 +41,7 @@ namespace OctoAwesome
             if (extenderDelegate is Action<ComponentContainer> ccAction)
                 list.Add(ccAction);
             else
-                list.Add((ComponentContainer cc) => { extenderDelegate(GenericCaster<ComponentContainer, T>.Cast(cc)); });
+                list.Add((ComponentContainer cc) => { extenderDelegate(GenericCaster<ComponentContainer, T>.Cast(cc)!); });
         }
 
         /// <summary>
@@ -62,7 +62,9 @@ namespace OctoAwesome
             stack.Add(t);
             do
             {
-                t = t!.BaseType;
+                var baseType = t.BaseType;
+                Debug.Assert(baseType != null, nameof(baseType) + $" != null. T needs to inherit from {nameof(ComponentContainer)}");
+                t = baseType;
                 stack.Add(t);
             }
             while (t != typeof(ComponentContainer));
@@ -70,8 +72,7 @@ namespace OctoAwesome
 
             foreach (var type in stack)
             {
-                List<Action<ComponentContainer>> list;
-                if (!componentContainerExtender.TryGetValue(type, out list))
+                if (!componentContainerExtender.TryGetValue(type, out var list))
                     continue;
 
                 foreach (var item in list)

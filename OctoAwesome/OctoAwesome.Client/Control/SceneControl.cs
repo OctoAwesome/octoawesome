@@ -15,9 +15,9 @@ using OctoAwesome.Client.UI.Components;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Imaging;
 using System.Threading;
-using System.Threading.Tasks;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace OctoAwesome.Client.Controls
@@ -30,21 +30,21 @@ namespace OctoAwesome.Client.Controls
         public static int Span;
         public static int SpanOver2;
 
-        private PlayerComponent player;
+        private readonly PlayerComponent player;
         private CameraComponent camera;
-        private AssetComponent assets;
+        private readonly AssetComponent assets;
         private EntityGameComponent entities;
 
-        private ChunkRenderer[,] chunkRenderer;
+        private readonly ChunkRenderer[,] chunkRenderer;
         private readonly List<ChunkRenderer> orderedChunkRenderer;
 
-        private IPlanet planet;
+        private readonly IPlanet planet;
 
         // private List<Index3> distances = new List<Index3>();
 
         private readonly BasicEffect sunEffect;
         private readonly BasicEffect selectionEffect;
-        private Matrix miniMapProjectionMatrix;
+        private readonly Matrix miniMapProjectionMatrix;
 
         //private Texture2D blockTextures;
         private readonly Texture2DArray blockTextures;
@@ -102,6 +102,7 @@ namespace OctoAwesome.Client.Controls
         private readonly int _fillIncrement;
         private readonly CancellationTokenSource cancellationTokenSource;
 
+        [MemberNotNull(nameof(ShadowMaps), nameof(_shadowMapsRenderTarget))]
         public void LoadShader(uint cascades = 2)
         {
             chunkShader?.Dispose();
@@ -143,7 +144,9 @@ namespace OctoAwesome.Client.Controls
             Debug.Assert(loadedShader != null, nameof(loadedShader) + " != null");
             chunkEffectInstantiator = loadedShader;
             chunkShader = null!;
-            sunTexture = assets.LoadTexture("sun");
+            var sunText = assets.LoadTexture("sun");
+            Debug.Assert(sunText != null, nameof(sunText) + " != null");
+            sunTexture = sunText;
 
             //List<Bitmap> bitmaps = new List<Bitmap>();
             var definitions = Manager.Game.DefinitionManager.BlockDefinitions;
@@ -161,6 +164,7 @@ namespace OctoAwesome.Client.Controls
                 {
                     var texture = manager.Game.Assets.LoadBitmap(definition.GetType(), bitmap);
 
+                    Debug.Assert(texture != null, nameof(texture) + " != null");
                     var scaled = texture.ToContinuousImage<Rgba32>();//new Bitmap(bitmap, new System.Drawing.Size(bitmapSize, bitmapSize));
                     blockTextures.SetData(scaled, layer);
                     layer++;
@@ -192,10 +196,10 @@ namespace OctoAwesome.Client.Controls
 
             var token = cancellationTokenSource.Token;
 
-            backgroundTask = new Task(BackgroundLoop, token, token, TaskCreationOptions.LongRunning);
+            backgroundTask = new Task(() => BackgroundLoop(token), token, TaskCreationOptions.LongRunning);
             backgroundTask.Start();
 
-            backgroundThread2 = new Task(ForceUpdateBackgroundLoop, token, token, TaskCreationOptions.LongRunning);
+            backgroundThread2 = new Task(() => ForceUpdateBackgroundLoop(token), token, TaskCreationOptions.LongRunning);
             backgroundThread2.Start();
 
             int additional;
@@ -212,7 +216,8 @@ namespace OctoAwesome.Client.Controls
             for (int i = 0; i < additional; i++)
             {
                 var are = new AutoResetEvent(false);
-                var t = new Task(AdditionalFillerBackgroundLoop, (are, i, token), token, TaskCreationOptions.LongRunning);
+                var copyOfI = i; // Needed for late task start, because capturing i is by reference
+                var t = new Task(() => AdditionalFillerBackgroundLoop(are, copyOfI, token), token, TaskCreationOptions.LongRunning);
                 t.Start();
                 additionalFillResetEvents[i] = are;
                 _additionalRegenerationThreads[i] = t;
@@ -274,8 +279,6 @@ namespace OctoAwesome.Client.Controls
 
             miniMapProjectionMatrix = Matrix.CreateOrthographic(128, 128, 1, 10000);
 
-            _shadowMapsRenderTarget = null!;
-            ShadowMaps = null!;
             LoadShader((uint)Math.Max((VIEWRANGE + 1) / 2, 2));
         }
 
@@ -455,7 +458,7 @@ namespace OctoAwesome.Client.Controls
             selectedAxis = null;
             selectionPoint = null;
             bestDistance = float.MaxValue;
-            ComponentContainer componentContainer = null;
+            ComponentContainer? componentContainer = null;
 
             //Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             //Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
@@ -469,10 +472,12 @@ namespace OctoAwesome.Client.Controls
 
             return componentContainer;
 
-            void CalcBestDistance(Index3 centerblock, Index3 renderOffset, ref Index3? selected, ref Axis? selectedAxis, ref Vector3? selectionPoint, ref float bestDistance, ref ComponentContainer componentContainer, ComponentContainer funcBlock)
+            void CalcBestDistance(Index3 centerblock, Index3 renderOffset, ref Index3? selected, ref Axis? selectedAxis, ref Vector3? selectionPoint, ref float bestDistance, ref ComponentContainer? componentContainer, ComponentContainer funcBlock)
             {
                 var posComponent = funcBlock.GetComponent<PositionComponent>();
                 var boxCollisionComponent = funcBlock.GetComponent<BoxCollisionComponent>();
+                if (posComponent is null || boxCollisionComponent is null)
+                    return;
                 Index3 shortestDistance = centerblock.ShortestDistanceXY(posComponent.Position.GlobalBlockIndex, planet.Size);
 
                 if (Math.Abs(shortestDistance.X) < Player.SELECTIONRANGE
@@ -503,7 +508,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnPreDraw(GameTime gameTime)
         {
-            if (player?.CurrentEntity == null)
+            if (!player.Enabled)
                 return;
 
             if (ControlTexture == null)
@@ -714,6 +719,8 @@ namespace OctoAwesome.Client.Controls
             foreach(var e in entities.ComponentContainers)
             {
                 var p = e.GetComponent<PositionComponent>();
+                if (p is null)
+                    continue;
                 var offset = p.Position.ChunkIndex.ShortestDistanceXY(chunkOffset, new Index2(planet.Size));
                 var viewDist = 1 << VIEWRANGE;
                 if (offset.X > viewDist || offset.X < -viewDist || offset.Y > viewDist || offset.Y < -viewDist)
@@ -866,9 +873,9 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void FillChunkRenderer()
+        private void FillChunkRenderer(CancellationToken token)
         {
-            if (player?.CurrentEntity == null)
+            if (!player.Enabled)
                 return;
 
             Index2 destinationChunk = new Index2(player.Position.Position.ChunkIndex);
@@ -926,13 +933,15 @@ namespace OctoAwesome.Client.Controls
             foreach (var e in additionalFillResetEvents)
                 e.Set();
 
-            RegenerateAll(0);
+            RegenerateAll(0, token);
         }
 
-        private void RegenerateAll(int start)
+        private void RegenerateAll(int start, CancellationToken token)
         {
             for (var index = start; index < orderedChunkRenderer.Count; index += _fillIncrement)
             {
+                if (token.IsCancellationRequested)
+                    return;
                 var renderer = orderedChunkRenderer[index];
                 if (renderer.NeedsUpdate)
                 {
@@ -941,41 +950,34 @@ namespace OctoAwesome.Client.Controls
             }
         }
 
-        private void BackgroundLoop(object? state)
+        private void BackgroundLoop(CancellationToken token)
         {
-            var token = state is CancellationToken stateToken ? stateToken : CancellationToken.None;
-
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                token.ThrowIfCancellationRequested();
                 fillResetEvent.WaitOne();
-                FillChunkRenderer();
+                if (token.IsCancellationRequested)
+                    return;
+                FillChunkRenderer(token);
             }
         }
 
-        private void AdditionalFillerBackgroundLoop(object? state)
+        private void AdditionalFillerBackgroundLoop(AutoResetEvent @event, int n, CancellationToken token)
         {
-            Debug.Assert(state != null, nameof(state) + " != null");
-            var (@event, n, token) = ((AutoResetEvent Event, int N, CancellationToken Token))state;
-
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                token.ThrowIfCancellationRequested();
                 @event.WaitOne();
-                RegenerateAll(n + 1);
+                if (token.IsCancellationRequested)
+                    return;
+                RegenerateAll(n + 1, token);
             }
         }
 
-        private void ForceUpdateBackgroundLoop(object? state)
+        private void ForceUpdateBackgroundLoop(CancellationToken token)
         {
-            var token = state is CancellationToken stateToken ? stateToken : CancellationToken.None;
-
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                token.ThrowIfCancellationRequested();
                 forceResetEvent.WaitOne();
-
-                while (!forcedRenders.IsEmpty)
+                while (!token.IsCancellationRequested && !forcedRenders.IsEmpty)
                 {
                     while (forcedRenders.TryDequeue(out var r))
                     {
@@ -1042,6 +1044,17 @@ namespace OctoAwesome.Client.Controls
             disposed = true;
 
             cancellationTokenSource.Cancel();
+            fillResetEvent.Set();
+            forceResetEvent.Set();
+            foreach (var e in additionalFillResetEvents)
+                e.Set();
+
+            backgroundTask.Wait();
+            backgroundThread2.Wait();
+            
+            foreach (var t in _additionalRegenerationThreads)
+                t.Wait();
+            
             cancellationTokenSource.Dispose();
 
             foreach (var cr in chunkRenderer)
@@ -1053,20 +1066,11 @@ namespace OctoAwesome.Client.Controls
             foreach (var renderer in chunkRenderer)
                 renderer.SetChunk(null, null, null);
 
-            chunkRenderer = null;
             orderedChunkRenderer.Clear();
-
-            localChunkCache = null;
 
             selectionIndexBuffer.Dispose();
             selectionLines.Dispose();
             billboardVertexbuffer.Dispose();
-
-            player = null;
-            camera = null;
-            assets = null;
-            entities = null;
-            planet = null;
 
             sunEffect.Dispose();
             selectionEffect.Dispose();

@@ -1,6 +1,7 @@
 ﻿using dotVariant;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,6 @@ namespace OctoAwesome.Extension
     [Variant]
     public partial class ExtensionInformation
     {
-        static partial void VariantOf(IExtension extension, IExtensionRegistrar registrar, IExtensionExtender extensionExtender);
+        static partial void VariantOf([NoImplicitConversion] IExtension extension, [NoImplicitConversion] IExtensionRegistrar registrar, [NoImplicitConversion] IExtensionExtender extensionExtender);
     }
 }

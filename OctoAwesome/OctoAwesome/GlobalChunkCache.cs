@@ -93,12 +93,12 @@ namespace OctoAwesome
         /// <inheritdoc />
         public IChunkColumn Subscribe(Index2 position)
         {
-            var column = cacheService.Get<Index2, ChunkColumn>(position);
+            var column = cacheService.Get<Index2, ChunkColumn>(position)!;
             var chunkIndex = new Index3(position, Planet.Id);
 
             var positionComponents
                         = cacheService
-                        .Get<Index3, List<PositionComponent>>(chunkIndex);
+                        .Get<Index3, List<PositionComponent>>(chunkIndex)!;
 
             foreach (var positionComponent in positionComponents)
             {
@@ -109,7 +109,7 @@ namespace OctoAwesome
                 {
                     var entity
                         = cacheService
-                        .Get<Guid, Entity>(positionComponent.InstanceId);
+                        .Get<Guid, Entity>(positionComponent.InstanceId)!;
 
                     positionComponent.SetInstance(entity);
                     var notification = new EntityNotification
@@ -125,7 +125,7 @@ namespace OctoAwesome
                 {
                     var functionalBlock
                         = cacheService
-                        .Get<Guid, FunctionalBlock>(positionComponent.InstanceId);
+                        .Get<Guid, FunctionalBlock>(positionComponent.InstanceId)!;
                     if (functionalBlock.Components.TryGetComponent<PositionComponent>(out var poscomp))
                         Debug.WriteLine(poscomp.Position.ToString());
                     positionComponent.SetInstance(functionalBlock);
@@ -219,7 +219,7 @@ namespace OctoAwesome
                 var column = cacheService.Get<Index3, ChunkColumn>(new Index3(chunk.ChunkPos.X, chunk.ChunkPos.Y, chunk.Planet), LoadingMode.OnlyCached);
                 if (column is null)
                     return;
-                column?.Update(notification);
+                column.Update(notification);
             }
         }
 
@@ -233,8 +233,8 @@ namespace OctoAwesome
             networkSource.Dispose();
             chunkSource.Dispose();
             tokenSource.Dispose();
-            networkRelay?.Dispose();
-            chunkRelay?.Dispose();
+            networkRelay.Dispose();
+            chunkRelay.Dispose();
 
             cacheService.Dispose();
         }

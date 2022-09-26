@@ -3,6 +3,7 @@ using OctoAwesome.Serialization;
 
 using System;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Notifications
 {
@@ -26,11 +27,11 @@ namespace OctoAwesome.Notifications
         /// </summary>
         public Entity Entity
         {
-            get => entity;
+            get => NullabilityHelper.NotNullAssert(entity, $"{nameof(Entity)} was not initialized!");
             set
             {
-                entity = value;
-                EntityId = value?.Id ?? default;
+                entity = NullabilityHelper.NotNullAssert(value, $"{nameof(Entity)} cannot be initialized with null!");
+                EntityId = value.Id;
             }
         }
 
@@ -44,7 +45,7 @@ namespace OctoAwesome.Notifications
         /// </summary>
         public PropertyChangedNotification? Notification { get; set; }
 
-        private Entity entity;
+        private Entity? entity;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace OctoAwesome.Notifications
             writer.Write(subNotification);
             if (subNotification)
             {
-                var bytes = Serializer.Serialize(Notification);
+                var bytes = Serializer.Serialize(Notification!);
                 writer.Write(bytes.Length);
                 writer.Write(bytes);
             }
@@ -123,7 +124,7 @@ namespace OctoAwesome.Notifications
             Notification?.Release();
 
             Type = default;
-            Entity = default;
+            entity = default;
             Notification = default;
 
             base.OnRelease();

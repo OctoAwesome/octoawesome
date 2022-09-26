@@ -9,6 +9,7 @@ using OctoAwesome.Serialization.Entities;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace OctoAwesome.Runtime
         private const string PlanetFilename = "planet.info";
 
         private DirectoryInfo? root;
-        private IUniverse currentUniverse;
+        private IUniverse? currentUniverse;
         private readonly ISettings settings;
         private readonly IPool<Awaiter> awaiterPool;
         private readonly IPool<BlockChangedNotification> blockChangedNotificationPool;
@@ -163,7 +164,13 @@ namespace OctoAwesome.Runtime
                 string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
                 if (Guid.TryParse(id, out Guid guid))
                 {
-                    Load(out var universe, guid).WaitOnAndRelease();
+                    var universeLoader = Load(out var universe, guid);
+                    if (universeLoader is null)
+                    {
+                        continue;
+                    }
+
+                    universeLoader.WaitOnAndRelease();
                     universes.Add(universe);
                 }
             }
@@ -194,13 +201,15 @@ namespace OctoAwesome.Runtime
         }
 
         /// <inheritdoc />
-        public Awaiter? Load(out IPlanet planet, Guid universeGuid, int planetId)
+        public Awaiter? Load(out IPlanet? planet, Guid universeGuid, int planetId)
         {
             string file = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetFilename);
             string generatorInfo = Path.Combine(GetRoot(), universeGuid.ToString(), planetId.ToString(), PlanetGeneratorInfo);
-            planet = new Planet();
             if (!File.Exists(generatorInfo) || !File.Exists(file))
+            {
+                planet = null;
                 return null;
+            }
 
             IMapGenerator? generator = null;
             using (Stream stream = File.Open(generatorInfo, FileMode.Open, FileAccess.Read))
@@ -214,7 +223,6 @@ namespace OctoAwesome.Runtime
 
             if (generator == null)
                 throw new Exception("Unknown Generator");
-
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
             {
@@ -355,6 +363,7 @@ namespace OctoAwesome.Runtime
 
         private void SaveChunk(BlockChangedNotification chunkNotification)
         {
+            Debug.Assert(currentUniverse != null, nameof(currentUniverse) + " != null");
             var database = databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true);
             var databaseContext = new ChunkDiffDbContext(database, blockChangedNotificationPool);
             databaseContext.AddOrUpdate(chunkNotification);
@@ -362,6 +371,7 @@ namespace OctoAwesome.Runtime
 
         private void SaveChunk(BlocksChangedNotification chunkNotification)
         {
+            Debug.Assert(currentUniverse != null, nameof(currentUniverse) + " != null");
             var database = databaseProvider.GetDatabase<ChunkDiffTag>(currentUniverse.Id, chunkNotification.Planet, true);
             var databaseContext = new ChunkDiffDbContext(database, blockChangedNotificationPool);
             databaseContext.AddOrUpdate(chunkNotification);

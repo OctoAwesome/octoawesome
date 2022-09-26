@@ -14,6 +14,7 @@ using OctoAwesome.UI.Screens;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Components
 {
@@ -95,12 +96,24 @@ namespace OctoAwesome.Client.Components
         /// <inheritdoc/>
         public void ReloadAssets()
         {
-            Skin.Current.ButtonBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("buttonLong_brown"), 15, 15);
-            Skin.Current.ButtonHoverBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("buttonLong_beige"), 15, 15);
-            Skin.Current.ButtonPressedBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("buttonLong_beige_pressed"), 15, 15);
-            Skin.Current.ButtonDisabledBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("buttonLong_brown_disabled"), 15, 15);
-            Skin.Current.ProgressBarBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("progress_red"), 10, 8);
-            Skin.Current.HorizontalScrollBackgroundBrush = NineTileBrush.FromSingleTexture(Game.Assets.LoadTexture("progress_background"), 10, 8);
+            var button = Game.Assets.LoadTexture("buttonLong_brown");
+            var buttonHover = Game.Assets.LoadTexture("buttonLong_beige");
+            var buttonPressed = Game.Assets.LoadTexture("buttonLong_beige_pressed");
+            var buttonDisabled = Game.Assets.LoadTexture("buttonLong_brown_disabled");
+            var progress = Game.Assets.LoadTexture("progress_red");
+            var scrollBackground = Game.Assets.LoadTexture("progress_background");
+            Debug.Assert(button != null, nameof(button) + " != null");
+            Debug.Assert(buttonHover != null, nameof(buttonHover) + " != null");
+            Debug.Assert(buttonPressed != null, nameof(buttonPressed) + " != null");
+            Debug.Assert(buttonDisabled != null, nameof(buttonDisabled) + " != null");
+            Debug.Assert(progress != null, nameof(progress) + " != null");
+            Debug.Assert(scrollBackground != null, nameof(scrollBackground) + " != null");
+            Skin.Current.ButtonBrush = NineTileBrush.FromSingleTexture(button, 15, 15);
+            Skin.Current.ButtonHoverBrush = NineTileBrush.FromSingleTexture(buttonHover, 15, 15);
+            Skin.Current.ButtonPressedBrush = NineTileBrush.FromSingleTexture(buttonPressed, 15, 15);
+            Skin.Current.ButtonDisabledBrush = NineTileBrush.FromSingleTexture(buttonDisabled, 15, 15);
+            Skin.Current.ProgressBarBrush = NineTileBrush.FromSingleTexture(progress, 10, 8);
+            Skin.Current.HorizontalScrollBackgroundBrush = NineTileBrush.FromSingleTexture(scrollBackground, 10, 8);
         }
 
 

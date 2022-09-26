@@ -10,6 +10,7 @@ using OctoAwesome.EntityComponents;
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -43,8 +44,10 @@ namespace OctoAwesome.Client.Controls
 
             foreach (IDefinition item in definitionManager.Definitions)
             {
-                Texture2D texture = assets.LoadTexture(item.GetType(), item.Icon);
-                toolTextures.Add(item.GetType().FullName, texture);
+                var texture = assets.LoadTexture(item.GetType(), item.Icon);
+                if (texture is null)
+                    continue;
+                toolTextures.Add(NullabilityHelper.NotNullAssert(item.GetType().FullName, "Item definition type was null!"), texture);
             }
 
             var grid = new Grid()
@@ -96,7 +99,7 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled)
                 return;
 
-            if (Player.CurrentEntity == null)
+            if (!Player.Enabled)
                 return;
 
             if (Player.Toolbar.ActiveIndex != lastActiveIndex)

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Network
 {
@@ -34,7 +35,11 @@ namespace OctoAwesome.Network
         /// <summary>
         /// The underlying socket.
         /// </summary>
-        protected Socket Socket;
+        protected Socket Socket
+        {
+            get => NullabilityHelper.NotNullAssert(socket);
+            set => socket = NullabilityHelper.NotNullAssert(value);
+        }
 
         /// <summary>
         /// Low level pooled <see cref="SocketAsyncEventArgs"/> for receiving socket data.
@@ -44,7 +49,7 @@ namespace OctoAwesome.Network
         private byte readSendQueueIndex;
         private byte nextSendQueueWriteIndex;
         private bool sending;
-        private Package currentPackage;
+        private Package? currentPackage;
         private readonly PackagePool packagePool;
         private readonly SocketAsyncEventArgs sendArgs;
 
@@ -53,6 +58,7 @@ namespace OctoAwesome.Network
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentRelay<Package> packages;
+        private Socket? socket;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseClient"/> class.
@@ -192,7 +198,7 @@ namespace OctoAwesome.Network
             }
         }
 
-        private void OnSent(object sender, SocketAsyncEventArgs e)
+        private void OnSent(object? sender, SocketAsyncEventArgs e)
         {
             byte[] data;
             int len;
@@ -228,7 +234,7 @@ namespace OctoAwesome.Network
         {
             do
             {
-                if (e.BytesTransferred < 1)
+                if (e.BytesTransferred < 1 || e.Buffer is null)
                     return;
 
                 int offset = 0;
@@ -288,10 +294,10 @@ namespace OctoAwesome.Network
         /// <inheritdoc />
         public virtual void Dispose()
         {
-            packages?.Dispose();
-            ReceiveArgs?.Dispose();
-            sendArgs?.Dispose();
-            cancellationTokenSource?.Dispose();
+            packages.Dispose();
+            ReceiveArgs.Dispose();
+            sendArgs.Dispose();
+            cancellationTokenSource.Dispose();
         }
     }
 }

@@ -176,15 +176,15 @@ namespace OctoAwesome.Client.Screens
         private void Play()
         {
             Debug.Assert(levelList.SelectedItem != null, "levelList.SelectedItem != null");
-            ScreenManager.Player.SetEntity(null);
+            ScreenManager.Player.Unload();
 
             ScreenManager.Game.Simulation.LoadGame(levelList.SelectedItem.Id);
             settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
 
             Player player = ScreenManager.Game.Simulation.LoginPlayer("");
-            ScreenManager.Game.Player.SetEntity(player);
+            ScreenManager.Game.Player.Load(player);
 
-            ScreenManager.NavigateToScreen(new LoadingScreen(assets));
+            ScreenManager.NavigateToScreen(new LoadingScreen(Assets));
         }
     }
 }

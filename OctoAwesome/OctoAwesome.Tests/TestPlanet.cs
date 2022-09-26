@@ -29,7 +29,7 @@ namespace OctoAwesome.Tests
 
         public IGlobalChunkCache GlobalChunkCache { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IUpdateHub UpdateHub { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        IMapGenerator IPlanet.Generator { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        IMapGenerator IPlanet.Generator => throw new NotImplementedException();
 
         public void Deserialize(BinaryReader reader) => throw new NotImplementedException();
         public void Dispose() => throw new NotImplementedException();

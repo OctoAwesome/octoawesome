@@ -81,11 +81,6 @@ namespace OctoAwesome.Definitions
         TimeSpan TimeToVolumeReset { get; }
 
         /// <summary>
-        /// Gets the material the block is made of.
-        /// </summary>
-        IMaterialDefinition Material { get; }
-
-        /// <summary>
         /// Checks whether the provided <see cref="Wall"/> is solid on the block.
         /// </summary>
         /// <param name="wall">The <see cref="Wall"/> to check.</param>

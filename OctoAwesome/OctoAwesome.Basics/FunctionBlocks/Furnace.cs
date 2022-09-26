@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OctoAwesome.Extension;
 
 
 namespace OctoAwesome.Basics.FunctionBlocks;
@@ -23,12 +24,35 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 [SerializationId(1, 4)]
 public class Furnace : FunctionalBlock
 {
-    internal InventoryComponent inventoryComponent;
-    internal AnimationComponent animationComponent;
+    private InventoryComponent? inventoryComponent;
+    private AnimationComponent? animationComponent;
+    private OutputInventoryComponent? outputComponent;
+    private ProductionResourcesInventoryComponent? productionResourcesInventoryComponent;
 
-    internal OutputInventoryComponent outputComponent;
-    internal ProductionResourcesInventoryComponent productionResourcesInventoryComponent;
-    internal BurningComponent burningComponent;
+    internal InventoryComponent InventoryComponent
+    {
+        get => NullabilityHelper.NotNullAssert(inventoryComponent, $"{nameof(InventoryComponent)} was not initialized!");
+        set => inventoryComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryComponent)} cannot be initialized with null!");
+    }
+
+    internal AnimationComponent AnimationComponent
+    {
+        get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
+        set => animationComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(AnimationComponent)} cannot be initialized with null!");
+    }
+
+    internal OutputInventoryComponent OutputComponent
+    {
+        get => NullabilityHelper.NotNullAssert(outputComponent, $"{nameof(OutputComponent)} was not initialized!");
+        set => outputComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(OutputComponent)} cannot be initialized with null!");
+    }
+
+    internal ProductionResourcesInventoryComponent ProductionResourcesInventoryComponent
+    {
+        get => NullabilityHelper.NotNullAssert(productionResourcesInventoryComponent, $"{nameof(ProductionResourcesInventoryComponent)} was not initialized!");
+        set => productionResourcesInventoryComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(ProductionResourcesInventoryComponent)} cannot be initialized with null!");
+    }
+    // internal BurningComponent BurningComponent;
 
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
@@ -67,13 +91,13 @@ public class Furnace : FunctionalBlock
            && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
         {
             transferComponent.Targets.Clear();
-            transferComponent.Targets.Add(inventoryComponent);
-            transferComponent.Targets.Add(outputComponent);
-            transferComponent.Targets.Add(productionResourcesInventoryComponent);
+            transferComponent.Targets.Add(InventoryComponent);
+            transferComponent.Targets.Add(OutputComponent);
+            transferComponent.Targets.Add(ProductionResourcesInventoryComponent);
             uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
-            animationComponent.CurrentTime = 0f;
-            animationComponent.AnimationSpeed = 60f;
+            AnimationComponent.CurrentTime = 0f;
+            AnimationComponent.AnimationSpeed = 60f;
         }
     }
 }

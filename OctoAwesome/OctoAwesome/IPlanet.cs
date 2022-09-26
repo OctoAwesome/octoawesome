@@ -41,7 +41,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gets the map generator for the planet.
         /// </summary>
-        IMapGenerator Generator { get; set; }
+        IMapGenerator Generator { get; }
 
         /// <summary>
         /// Gets the global chunk cache for the planet.

@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using System;
+using System.Diagnostics;
 using engenious;
 using engenious.Helper;
 using OctoAwesome.Components;
@@ -21,6 +22,8 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             var controllable = entity.GetComponent<ControllableComponent>();
             var bodyPower = entity.GetComponent<BodyPowerComponent>();
+            Debug.Assert(controllable != null, nameof(controllable) + " != null");
+            Debug.Assert(bodyPower != null, nameof(bodyPower) + " != null");
             return new SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>(entity, controllable, bodyPower);
         }
 
@@ -33,10 +36,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             var controller = value.Component1;
             var powercomp = value.Component2;
 
-            if (e.Components.ContainsComponent<HeadComponent>())
+            if (e.Components.TryGetComponent<HeadComponent>(out var head))
             {
-                var head = e.Components.GetComponent<HeadComponent>();
-
                 float lookX = (float)Math.Cos(head.Angle);
                 float lookY = -(float)Math.Sin(head.Angle);
                 var velocitydirection = new Vector3(lookX, lookY, 0) * controller.MoveInput.Y;

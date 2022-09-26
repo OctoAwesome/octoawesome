@@ -26,7 +26,7 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
         public bool CanMineMaterial(IMaterialDefinition material) => false;
 
         /// <inheritdoc/>
-        public Item Create(IMaterialDefinition material)
+        public Item? Create(IMaterialDefinition material)
         {
             if (material is not IFoodMaterialDefinition md)
                 return null;

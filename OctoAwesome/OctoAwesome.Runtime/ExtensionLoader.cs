@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -58,7 +59,7 @@ namespace OctoAwesome.Runtime
             if (tempAssembly == null)
                 tempAssembly = Assembly.GetAssembly(GetType());
 
-            DirectoryInfo dir = new(Path.GetDirectoryName(tempAssembly!.Location!)!);
+            DirectoryInfo dir = new(Path.GetDirectoryName(tempAssembly!.Location)!);
             assemblies.AddRange(LoadAssemblies(dir));
 
             DirectoryInfo plugins = new(Path.Combine(dir.FullName, "plugins"));
@@ -111,7 +112,7 @@ namespace OctoAwesome.Runtime
                     {
                         try
                         {
-                            IExtension extension = (IExtension)typeContainer.GetUnregistered(type)!;
+                            IExtension extension = (IExtension)typeContainer.GetUnregistered(type);
 
                             extension.Register(typeContainer);
                             extension.Register(extensionService);
@@ -139,7 +140,12 @@ namespace OctoAwesome.Runtime
         /// <param name="disabledExtensions">List of Extensions</param>
         public void Apply(IList<IExtension> disabledExtensions)
         {
-            var types = disabledExtensions.Select(e => e.GetType().FullName).ToArray();
+            var types = disabledExtensions.Select(e =>
+                                                  {
+                                                      var typeName = e.GetType().FullName;
+                                                      Debug.Assert(typeName != null, nameof(typeName) + " != null");
+                                                      return typeName;
+                                                  }).ToArray();
             settings.Set(SETTINGSKEY, types);
         }
 

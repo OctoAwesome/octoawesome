@@ -134,12 +134,12 @@ namespace OctoAwesome.Network
         /// <inheritdoc />
         public void Dispose()
         {
-            hubSubscription?.Dispose();
-            simulationSource?.Dispose();
-            chunkSource?.Dispose();
-            chunk?.Dispose();
-            simulation?.Dispose();
-            clientSubscription?.Dispose();
+            hubSubscription.Dispose();
+            simulationSource.Dispose();
+            chunkSource.Dispose();
+            chunk.Dispose();
+            simulation.Dispose();
+            clientSubscription.Dispose();
         }
     }
 }

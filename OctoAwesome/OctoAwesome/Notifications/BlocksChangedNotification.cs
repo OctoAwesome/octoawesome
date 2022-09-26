@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Notifications
 {
@@ -9,10 +10,16 @@ namespace OctoAwesome.Notifications
     /// </summary>
     public sealed class BlocksChangedNotification : SerializableNotification, IChunkNotification
     {
+        private ICollection<BlockInfo>? blockInfos;
+
         /// <summary>
         /// Gets or sets the collection of block info of the changed blocks.
         /// </summary>
-        public ICollection<BlockInfo> BlockInfos { get; set; }
+        public ICollection<BlockInfo> BlockInfos
+        {
+            get => NullabilityHelper.NotNullAssert(blockInfos, $"{nameof(BlockInfos)} was not initialized!");
+            set => blockInfos = NullabilityHelper.NotNullAssert(value, $"{nameof(BlockInfos)} cannot be initialized with null!");
+        }
 
         /// <inheritdoc />
         public Index3 ChunkPos { get; internal set; }
@@ -72,7 +79,7 @@ namespace OctoAwesome.Notifications
         /// <inheritdoc />
         protected override void OnRelease()
         {
-            BlockInfos = default;
+            blockInfos = default;
             ChunkPos = default;
             Planet = default;
 

@@ -14,22 +14,29 @@ namespace OctoAwesome.Logging
 
         static NullLogger()
         {
-            Default = new NullLogger().As(nameof(Default));
+            Default = new NullLogger(nameof(Default));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NullLogger"/> class.
+        /// </summary>
+        /// <param name="name">The name of the logger.</param>
+        public NullLogger(string name)
+        {
+            Name = name;
         }
 
         /// <summary>
         /// Gets the name of the logger.
         /// </summary>
-        public string Name { get; private init; }
+        public string Name { get; }
 
         /// <inheritdoc />
-        public ILogger As(string loggerName) => new NullLogger
-        {
-            Name = loggerName
-        };
+        public ILogger As(string loggerName) => new NullLogger(loggerName);
+
         /// <inheritdoc/>
         public ILogger As(Type type)
-            => As(type.FullName);
+            => As(type.FullName ?? type.Name);
 
         /// <inheritdoc />
         public void Debug(string message) { }

@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Pooling;
 using System;
 using System.Threading;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Network
 {
@@ -20,10 +21,24 @@ namespace OctoAwesome.Network
         /// </summary>
         public static uint NextUId => Interlocked.Increment(ref nextUid) - 1;
 
+        private int internalOffset;
+        private IPool? pool;
+        private IPool Pool
+        {
+            get => NullabilityHelper.NotNullAssert(pool, $"{nameof(IPoolElement)} was not initialized!");
+            set => pool = NullabilityHelper.NotNullAssert(value, $"{nameof(Pool)} cannot be initialized with null!");
+        }
+        private BaseClient? baseClient;
+        private byte[]? payload;
+
         /// <summary>
         /// Gets or sets the client his package was received from.
         /// </summary>
-        public BaseClient BaseClient { get; set; }
+        public BaseClient BaseClient
+        {
+            get => NullabilityHelper.NotNullAssert(baseClient, $"{nameof(IPoolElement)} was not initialized!");
+            set => baseClient = NullabilityHelper.NotNullAssert(value, $"{nameof(BaseClient)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets the official command id for this package.
@@ -39,7 +54,11 @@ namespace OctoAwesome.Network
         /// <summary>
         /// Gets or sets the raw payload for the package.
         /// </summary>
-        public byte[] Payload { get; set; }
+        public byte[] Payload
+        {
+            get => NullabilityHelper.NotNullAssert(payload, $"{nameof(IPoolElement)} was not initialized!");
+            set => payload = NullabilityHelper.NotNullAssert(value, $"{nameof(Payload)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets or sets the UId of the package.
@@ -55,9 +74,6 @@ namespace OctoAwesome.Network
         /// Gets a value indicating the number of bytes missing for the package to be completed.
         /// </summary>
         public int PayloadRest => Payload.Length - internalOffset;
-
-        private int internalOffset;
-        private IPool pool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Package"/> class.
@@ -153,19 +169,20 @@ namespace OctoAwesome.Network
         public void Init(IPool pool)
         {
             Payload = Array.Empty<byte>();
-            this.pool = pool;
+            Pool = pool;
         }
 
         /// <inheritdoc />
         public void Release()
         {
-            BaseClient = default;
+            baseClient = default;
             Command = default;
-            Payload = default;
+            payload = default;
             UId = default;
             internalOffset = default;
 
-            pool.Return(this);
+            Pool.Return(this);
+            pool = null;
         }
     }
 }

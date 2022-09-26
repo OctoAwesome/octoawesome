@@ -33,7 +33,7 @@ namespace OctoAwesome.Caching
         /// <param name="key">The identifying key to get the value by.</param>
         /// <param name="loadingMode">The <see cref="LoadingMode"/> used.</param>
         /// <returns>The value from the cache.</returns>
-        public abstract TValue Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists);
+        public abstract TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists);
 
         internal virtual void Start()
         {
@@ -86,7 +86,7 @@ namespace OctoAwesome.Caching
         /// <exception cref="NotSupportedException">
         /// Thrown when <paramref name="loadingMode"/> has an invalid value.
         /// </exception>
-        protected virtual TValue GetBy(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+        protected virtual TValue? GetBy(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
         {
             Debug.Assert(IsStarted, IsStarted + " == true");
 
@@ -109,6 +109,8 @@ namespace OctoAwesome.Caching
             if (loadingMode == LoadingMode.LoadIfNotExists)
             {
                 var loadedValue = Load(key);
+                if (loadedValue is null)
+                    return default;
                 cacheItem = new(loadedValue);
 
                 using var @lock = lockSemaphore.EnterExclusiveScope();
@@ -131,7 +133,7 @@ namespace OctoAwesome.Caching
         /// </summary>
         /// <param name="key">The identifying key to load the value by.</param>
         /// <returns>The loaded value.</returns>
-        protected abstract TValue Load(TKey key);
+        protected abstract TValue? Load(TKey key);
 
         /// <summary>
         /// Add or update a cache item identified by the given key.
@@ -172,11 +174,11 @@ namespace OctoAwesome.Caching
         }
 
         /// <inheritdoc />
-        public override TV Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+        public override TV? Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists) where TV : default
         {
             return GenericCaster<TValue, TV>
                 .Cast(
-                    GetBy(GenericCaster<TK, TKey>.Cast(key), loadingMode)
+                    GetBy(GenericCaster<TK, TKey>.Cast(key)!, loadingMode)
                 );
         }
 

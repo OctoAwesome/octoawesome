@@ -2,21 +2,10 @@
 
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
-using OctoAwesome.Definitions.Items;
+using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using System.Diagnostics;
-using engenious;
 using OctoAwesome.Services;
-using OctoAwesome.Definitions;
-using OctoAwesome.Components;
-using OctoAwesome.Definitions.Items;
-using OctoAwesome.Services;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -54,12 +43,17 @@ namespace OctoAwesome.Basics.SimulationComponents
             var inventory = value.Component2;
 
             var toolbar = entity.Components.GetComponent<ToolBarComponent>();
-            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
+            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>()?.LocalChunkCache;
+            Debug.Assert(cache != null, nameof(cache) + " != null");
 
             controller
                 .Selection?
                 .Visit(
-                    blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                    blockInfo =>
+                    {
+                        Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
+                        InteractWith(blockInfo, inventory, toolbar, cache);
+                    },
                     componentContainer => componentContainer?.Interact(gameTime, entity)
                 );
 
@@ -133,7 +127,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
-                IItem activeItem = null!;
+                IItem activeItem;
                 if (toolbar.ActiveTool?.Item is IItem item)
                     activeItem = item;
                 else

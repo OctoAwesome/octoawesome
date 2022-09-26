@@ -2,6 +2,7 @@
 using OctoAwesome.Pooling;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome.Services
 {
@@ -43,6 +44,7 @@ namespace OctoAwesome.Services
             {
                 var definition = definitionManager.GetBlockDefinitionByIndex(block.Block);
                 volumeState = blockCollectionPool.Rent();
+                Debug.Assert(definition != null, nameof(definition) + " != null");
                 volumeState.Initialize(block, definition, DateTimeOffset.Now);
                 blockCollectionInformation.Add(block, volumeState);
             }

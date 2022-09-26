@@ -13,11 +13,11 @@ namespace OctoAwesome.Caching
         /// <summary>
         /// Casts type of <typeparamref name="TFrom"/> to type of <typeparamref name="TTo"/>.
         /// </summary>
-        public static Func<TFrom, TTo> Cast { get; }
+        public static Func<TFrom?, TTo?> Cast { get; }
         static GenericCaster()
         {
             var param = Expression.Parameter(typeof(TFrom), "tFrom");
-            Cast = Expression.Lambda<Func<TFrom, TTo>>(Expression.Convert(param, typeof(TTo)), param).Compile();
+            Cast = Expression.Lambda<Func<TFrom?, TTo?>>(Expression.Convert(param, typeof(TTo)), param).Compile();
         }
     }
 }

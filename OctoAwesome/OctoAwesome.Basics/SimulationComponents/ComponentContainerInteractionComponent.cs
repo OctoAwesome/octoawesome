@@ -1,19 +1,8 @@
 ﻿using engenious;
 
 using OctoAwesome.Components;
-using OctoAwesome.Definitions;
-using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Services;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using engenious;
-using OctoAwesome.Services;
-using OctoAwesome.Components;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

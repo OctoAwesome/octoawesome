@@ -119,14 +119,14 @@ namespace OctoAwesome.Network
         }
 
         /// <inheritdoc />
-        public Awaiter Load(out Entity entity, Guid universeGuid, Guid entityId)
+        public Awaiter? Load(out Entity? entity, Guid universeGuid, Guid entityId)
         {
             entity = null;
             return null;
         }
 
         /// <inheritdoc />
-        public Awaiter Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+        public Awaiter? Load<TContainer, TComponent>(out TContainer? componentContainer, Guid universeGuid, Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent
         {
@@ -258,14 +258,14 @@ namespace OctoAwesome.Network
         /// <inheritdoc />
         public void Dispose()
         {
-            subscription?.Dispose();
+            subscription.Dispose();
         }
 
         /// <inheritdoc />
         public T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new()
         {
             //TODO
-            return default;
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,69 +8,43 @@ namespace OctoAwesome.Client.UI.Controls
     /// </summary>
     public class GroupBox : Control
     {
-        private Brush borderColor = SolidColorBrush.Black;
-
         /// <summary>
         /// Gets or sets the border color brush.
         /// </summary>
-        public Brush BorderColor
+        public Brush? BorderColor
         {
-            get => borderColor;
-            set
-            {
-                if (outerPanel is not null)
-                    outerPanel.Background = value;
-                borderColor = value;
-            }
+            get => outerPanel.Background;
+            set => outerPanel.Background = value;
         }
-
-        private Border border = Border.All(2);
 
         /// <summary>
         /// Gets or sets the border size.
         /// </summary>
         public Border Border
         {
-            get => border;
-            set
-            {
-                if (outerPanel is not null)
-                    outerPanel.Padding = value;
-                border = value;
-            }
+            get => outerPanel.Padding;
+            set => outerPanel.Padding = value;
         }
-        private Orientation orientation = Orientation.Vertical;
 
         /// <summary>
         /// Gets or sets the orientation for the inner stack panel.
         /// </summary>
         public Orientation Orientation
         {
-            get => orientation;
-            set
-            {
-                if (contentPanel is not null)
-                    contentPanel.Orientation = value;
-                orientation = value;
-            }
+            get => contentPanel.Orientation;
+            set => contentPanel.Orientation = value;
         }
-
-        private string headline;
 
         /// <summary>
         /// Gets or sets the head line for the group box.
         /// </summary>
         public string Headline
         {
-            get => headline;
+            get => headlineLabel.Text;
             set
             {
-                headline = value ?? string.Empty;
-                if (headlineLabel is not null)
-                {
-                    headlineLabel.Height = string.IsNullOrEmpty(headline) ? 0 : null;
-                    headlineLabel.Text = headline;
-                }
+                headlineLabel.Height = string.IsNullOrEmpty(value) ? 0 : null;
+                headlineLabel.Text = value;
             }
         }
 
@@ -86,13 +60,13 @@ namespace OctoAwesome.Client.UI.Controls
         /// </summary>
         /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
         /// <param name="style">The style to use for this control.</param>
-        public GroupBox(string style = "", BaseScreenComponent manager = null)
+        public GroupBox(string style = "", BaseScreenComponent? manager = null)
             : base(style, manager)
         {
             outerPanel = new()
             {
-                Padding = Border,
-                Background = BorderColor
+                Padding = Border.All(2),
+                Background = SolidColorBrush.Black
             };
 
             StackPanel innerPanel = new()
@@ -109,7 +83,7 @@ namespace OctoAwesome.Client.UI.Controls
 
             headlineLabel = new Label()
             {
-                Text = Headline,
+                Text = "",
                 Height = 0,
             };
 
@@ -122,7 +96,7 @@ namespace OctoAwesome.Client.UI.Controls
 
             contentPanel = new StackPanel()
             {
-                Orientation = Orientation,
+                Orientation = Orientation.Vertical,
                 Background = SolidColorBrush.White,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };

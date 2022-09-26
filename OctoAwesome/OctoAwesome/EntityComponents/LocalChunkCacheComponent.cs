@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Components;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -10,7 +11,13 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets or sets the local chunk cache of the entity.
         /// </summary>
-        public ILocalChunkCache? LocalChunkCache { get; set; }
+        public ILocalChunkCache LocalChunkCache
+        {
+            get => NullabilityHelper.NotNullAssert(localChunkCache, $"{nameof(LocalChunkCache)} was not initialized!");
+            set => localChunkCache = NullabilityHelper.NotNullAssert(value, $"{nameof(LocalChunkCache)} cannot be initialized with null!");
+        }
+
+        private ILocalChunkCache? localChunkCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalChunkCacheComponent"/> class.

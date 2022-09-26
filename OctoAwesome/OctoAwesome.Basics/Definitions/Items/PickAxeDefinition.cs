@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             => material is ISolidMaterialDefinition;
 
         /// <inheritdoc />
-        public Item Create(IMaterialDefinition material)
+        public Item? Create(IMaterialDefinition material)
         {
             if (material is IFoodMaterialDefinition)
                 return null;

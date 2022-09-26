@@ -6,6 +6,7 @@ using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
 using System;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics.FunctionBlocks
 {
@@ -15,8 +16,14 @@ namespace OctoAwesome.Basics.FunctionBlocks
     [SerializationId(1, 3)]
     public class Chest : FunctionalBlock
     {
-        internal AnimationComponent animationComponent;
-        private IDisposable changedSub;
+        internal AnimationComponent AnimationComponent
+        {
+            get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
+            set => animationComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(AnimationComponent)} cannot be initialized with null!");
+        }
+
+        private IDisposable? changedSub;
+        private AnimationComponent? animationComponent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Chest"/> class.
@@ -51,7 +58,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
         {
             if (e.show)
                 return;
-            animationComponent.AnimationSpeed = -60f;
+            AnimationComponent.AnimationSpeed = -60f;
             changedSub?.Dispose();
 
         }
@@ -70,8 +77,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
                 changedSub?.Dispose();
                 changedSub = lastUiMappingComponent.Changed.Subscribe(UiComponentChanged);
 
-                animationComponent.CurrentTime = 0f;
-                animationComponent.AnimationSpeed = 60f;
+                AnimationComponent.CurrentTime = 0f;
+                AnimationComponent.AnimationSpeed = 60f;
             }
         }
     }

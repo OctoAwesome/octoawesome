@@ -1,9 +1,12 @@
-﻿namespace OctoAwesome.Definitions.Items
+﻿using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
+
+namespace OctoAwesome.Basics.Definitions.Items
 {
     /// <summary>
     /// Item placeholder definition for the hand(no item selected).
     /// </summary>
-    public class HandDefinition : IItemDefinition
+    internal class HandDefinition : IItemDefinition
     {
         /// <inheritdoc />
         public string DisplayName => nameof(Hand);
@@ -11,14 +14,13 @@
         /// <inheritdoc />
         public string Icon => "";
 
-        private readonly Hand hand;
+        private Hand hand => Hand.Instance;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandDefinition"/> class.
         /// </summary>
         public HandDefinition()
         {
-            hand = new Hand(this);
         }
 
         /// <inheritdoc />

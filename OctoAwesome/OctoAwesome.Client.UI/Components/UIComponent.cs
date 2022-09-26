@@ -5,6 +5,7 @@ using OctoAwesome.Rx;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome.UI.Components
 {
@@ -21,7 +22,7 @@ namespace OctoAwesome.UI.Components
         /// <summary>
         /// Gets or sets the key for this component that should be unique
         /// </summary>
-        public string PrimaryUiKey { get; protected set; }
+        public string? PrimaryUiKey { get; protected set; }
 
         /// <summary>
         /// Gets or sets the relay that can be used to subscribe to an event to know if the ui component has changed
@@ -61,6 +62,7 @@ namespace OctoAwesome.UI.Components
                 componentContainers.Add(value);
 
                 var uiMappingComponent = value.GetComponent<UiMappingComponent>();
+                Debug.Assert(uiMappingComponent != null, nameof(uiMappingComponent) + " != null");
                 componentContainerSubs[value] = uiMappingComponent.Changed.Subscribe(UiMappingChanged);
             }
         }
@@ -148,7 +150,12 @@ namespace OctoAwesome.UI.Components
         protected abstract bool TryUpdate(ComponentContainer value, TComponent1 component);
 
         /// <inheritdoc/>
-        protected sealed override void OnAdd(ComponentContainer value) => componentCache[value] = new UiComponentRecord<TComponent1>(value.GetComponent<TComponent1>());
+        protected sealed override void OnAdd(ComponentContainer value)
+        {
+            var comp = value.GetComponent<TComponent1>();
+            Debug.Assert(comp != null, nameof(comp) + " != null");
+            componentCache[value] = new UiComponentRecord<TComponent1>(comp);
+        }
 
         /// <inheritdoc/>
         protected sealed override void OnRemove(ComponentContainer value)
@@ -206,7 +213,11 @@ namespace OctoAwesome.UI.Components
         /// <inheritdoc/>
         protected sealed override void OnAdd(ComponentContainer value)
         {
-            componentCache[value] = new UiComponentRecord<TComponent1, TComponent2>(value.GetComponent<TComponent1>(), value.GetComponent<TComponent2>());
+            var comp1 = value.GetComponent<TComponent1>();
+            var comp2 = value.GetComponent<TComponent2>();
+            Debug.Assert(comp1 != null, nameof(comp1) + " != null");
+            Debug.Assert(comp2 != null, nameof(comp2) + " != null");
+            componentCache[value] = new UiComponentRecord<TComponent1, TComponent2>(comp1, comp2);
         }
 
         /// <inheritdoc/>
@@ -267,11 +278,14 @@ namespace OctoAwesome.UI.Components
         /// <inheritdoc/>
         protected sealed override void OnAdd(ComponentContainer value)
         {
+            var comp1 = value.GetComponent<TComponent1>();
+            var comp2 = value.GetComponent<TComponent2>();
+            var comp3 = value.GetComponent<TComponent3>();
+            Debug.Assert(comp1 != null, nameof(comp1) + " != null");
+            Debug.Assert(comp2 != null, nameof(comp2) + " != null");
+            Debug.Assert(comp3 != null, nameof(comp3) + " != null");
             componentCache[value]
-                = new UiComponentRecord<TComponent1, TComponent2, TComponent3>(
-                    value.GetComponent<TComponent1>(),
-                    value.GetComponent<TComponent2>(),
-                    value.GetComponent<TComponent3>());
+                = new UiComponentRecord<TComponent1, TComponent2, TComponent3>(comp1, comp2 ,comp3);
         }
 
         /// <inheritdoc/>

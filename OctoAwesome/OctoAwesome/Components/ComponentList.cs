@@ -3,6 +3,7 @@ using OctoAwesome.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -16,10 +17,10 @@ namespace OctoAwesome
     /// <typeparam name="T">Type of the components contained in the list.</typeparam>
     public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializable
     {
-        private readonly Action<T> insertValidator;
-        private readonly Action<T> removeValidator;
-        private readonly Action<T> onInserter;
-        private readonly Action<T> onRemover;
+        private readonly Action<T>? insertValidator;
+        private readonly Action<T>? removeValidator;
+        private readonly Action<T>? onInserter;
+        private readonly Action<T>? onRemover;
 
         private readonly Dictionary<Type, T> components = new Dictionary<Type, T>();
 
@@ -43,7 +44,7 @@ namespace OctoAwesome
         /// <param name="removeValidator">The validator for removals.</param>
         /// <param name="onInserter">The method to call on insertion.</param>
         /// <param name="onRemover">The method to call on removal.</param>
-        public ComponentList(Action<T> insertValidator, Action<T> removeValidator, Action<T> onInserter, Action<T> onRemover)
+        public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover)
         {
             this.insertValidator = insertValidator;
             this.removeValidator = removeValidator;
@@ -194,6 +195,7 @@ namespace OctoAwesome
 
                 var type = Type.GetType(name);
 
+                Debug.Assert(type != null, nameof(type) + " != null");
                 if (!components.TryGetValue(type, out var component))
                 {
                     component = (T)TypeContainer.GetUnregistered(type);

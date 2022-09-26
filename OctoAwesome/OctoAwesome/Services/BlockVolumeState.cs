@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Pooling;
 using System;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Services
 {
@@ -17,7 +18,11 @@ namespace OctoAwesome.Services
         /// <summary>
         /// Gets the block definition for the block type this volume state is associated to.
         /// </summary>
-        public IBlockDefinition BlockDefinition { get; private set; }
+        public IBlockDefinition BlockDefinition
+        {
+            get => NullabilityHelper.NotNullAssert(blockDefinition, $"{nameof(BlockDefinition)} was not initialized!");
+            private set => blockDefinition = NullabilityHelper.NotNullAssert(value, $"{nameof(BlockDefinition)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets a value indicating the remaining volume.
@@ -30,7 +35,14 @@ namespace OctoAwesome.Services
         /// </summary>
         public DateTimeOffset ValidUntil { get; set; }
 
-        private IPool pool;
+        private IPool? pool;
+        private IBlockDefinition? blockDefinition;
+
+        private IPool Pool
+        {
+            get => NullabilityHelper.NotNullAssert(pool, $"{nameof(IPoolElement)} was not initialized!");
+            set => pool = NullabilityHelper.NotNullAssert(value, $"{nameof(Pool)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Initializes the pooled <see cref="BlockVolumeState"/> instance with values.
@@ -51,13 +63,14 @@ namespace OctoAwesome.Services
         /// <inheritdoc />
         public void Init(IPool pool)
         {
-            this.pool = pool;
+            Pool = pool;
         }
 
         /// <inheritdoc />
         public void Release()
         {
-            pool.Return(this);
+            Pool.Return(this);
+            pool = null;
         }
 
         internal bool TryReset()

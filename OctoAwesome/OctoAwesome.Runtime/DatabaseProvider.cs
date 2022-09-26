@@ -27,7 +27,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="rootPath">The root path to load databases from.</param>
         /// <param name="logger">The logger to log messages to.</param>
-        public DatabaseProvider(string rootPath, ILogger logger)
+        public DatabaseProvider(string rootPath, ILogger? logger)
         {
             this.rootPath = rootPath;
             this.logger = (logger ?? NullLogger.Default).As(nameof(DatabaseProvider));
@@ -47,7 +47,7 @@ namespace OctoAwesome.Runtime
             {
                 if (globalDatabaseRegister.TryGetValue(key, out var database))
                 {
-                    return database as Database<T>;
+                    return (Database<T>)database;
                 }
                 else
                 {
@@ -77,7 +77,7 @@ namespace OctoAwesome.Runtime
             {
                 if (universeDatabaseRegister.TryGetValue(key, out var database))
                 {
-                    return database as Database<T>;
+                    return (Database<T>)database;
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace OctoAwesome.Runtime
             {
                 if (planetDatabaseRegister.TryGetValue(key, out var database))
                 {
-                    return database as Database<T>;
+                    return (Database<T>)database;
                 }
                 else
                 {
@@ -170,7 +170,7 @@ namespace OctoAwesome.Runtime
 
                 do
                 {
-                    path = Path.Combine(path, typeName!);
+                    path = Path.Combine(path, typeName);
                     type = type.GenericTypeArguments.First();
 
                     if (type.GenericTypeArguments.Length == 0)
@@ -181,7 +181,7 @@ namespace OctoAwesome.Runtime
 
                     typeName = type.Name;
 
-                } while (type != default);
+                } while (true);
 
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);

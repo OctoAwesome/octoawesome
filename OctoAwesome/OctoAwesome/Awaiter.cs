@@ -2,8 +2,10 @@
 using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome
 {
@@ -24,7 +26,13 @@ namespace OctoAwesome
         private readonly ManualResetEventSlim manualReset;
         private readonly LockSemaphore semaphore;
         private bool alreadyDeserialized;
-        private IPool pool;
+        private IPool? pool;
+        private IPool Pool
+        {
+            get => NullabilityHelper.NotNullAssert(pool, $"{nameof(IPoolElement)} was not initialized!");
+            set => pool = NullabilityHelper.NotNullAssert(value, $"{nameof(Pool)} cannot be initialized with null!");
+        }
+
         private bool isPooled;
 
         /// <summary>
@@ -42,6 +50,7 @@ namespace OctoAwesome
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
         public ISerializable? WaitOn()
         {
+            Debug.Assert(!isPooled, "Is released into pool!");
             if (!alreadyDeserialized)
                 TimedOut = !manualReset.Wait(10000);
 
@@ -54,6 +63,7 @@ namespace OctoAwesome
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
         public ISerializable? WaitOnAndRelease()
         {
+            Debug.Assert(!isPooled, "Is released into pool!");
             var res = WaitOn();
             Release();
             return res;
@@ -65,6 +75,7 @@ namespace OctoAwesome
         /// <param name="result"></param>
         public void SetResult(ISerializable result)
         {
+            Debug.Assert(!isPooled, "Is released into pool!");
             using (semaphore.Wait())
             {
                 Result = result;
@@ -81,6 +92,7 @@ namespace OctoAwesome
         /// <exception cref="ArgumentNullException">Throws when <see cref="Result"/> is <c>null</c>.</exception>
         public bool TrySetResult(byte[] bytes)
         {
+            Debug.Assert(!isPooled, "Is released into pool!");
             try
             {
                 using (semaphore.Wait())
@@ -110,7 +122,7 @@ namespace OctoAwesome
         /// <inheritdoc />
         public void Init(IPool pool)
         {
-            this.pool = pool;
+            Pool = pool;
             TimedOut = false;
             isPooled = false;
             alreadyDeserialized = false;
@@ -128,7 +140,8 @@ namespace OctoAwesome
 
                 isPooled = true;
 
-                pool.Return(this);
+                Pool.Return(this);
+                pool = null;
             }
         }
 

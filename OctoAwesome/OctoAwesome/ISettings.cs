@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace OctoAwesome
 {
     /// <summary>
     /// Interface managing application settings.
@@ -22,7 +24,8 @@
         /// <returns>
         /// The value of the setting, or <paramref name="defaultValue"/> if no matching setting was found.
         /// </returns>
-        T Get<T>(string key, T defaultValue);
+        [return: NotNullIfNotNull(parameterName: "defaultValue")]
+        T? Get<T>(string key, T? defaultValue);
 
         /// <summary>
         /// Gets a setting value as an array associated to a key.
@@ -31,6 +34,28 @@
         /// <returns>The value array of the setting.</returns>
         T[] GetArray<T>(string key);
 
+        /// <summary>
+        /// Gets the setting value associated to a key.
+        /// </summary>
+        /// <param name="key">The identification key for the setting to query.</param>
+        /// <param name="value">The value of the setting.</param>
+        /// <returns>
+        /// <see langword="true"/> if a value associated with the <paramref name="key"/> exists;
+        /// <see langword="false"/> otherwise.
+        /// </returns>
+        bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value);
+
+        /// <summary>
+        /// Gets a setting value as an array associated to a key.
+        /// </summary>
+        /// <param name="key">The identification key for the setting to query.</param>
+        /// <param name="values">The value array of the setting.</param>
+        /// <returns>
+        /// <see langword="true"/> if an array associated with the <paramref name="key"/> exists;
+        /// <see langword="false"/> otherwise.
+        /// </returns>
+        bool TryGetArray<T>(string key, [MaybeNullWhen(false)] out T[] values);
+        
         /// <summary>
         /// Checks whether a setting referenced by an identification key exists.
         /// </summary>

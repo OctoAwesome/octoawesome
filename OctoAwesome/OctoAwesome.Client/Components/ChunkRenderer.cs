@@ -31,7 +31,7 @@ namespace OctoAwesome.Client.Components
         /// Reference to the current chunk, or <c>null</c> if no chunk is to be rendered.
         /// </summary>
         private IChunk? centerChunk;
-        private readonly IChunk[] chunks;
+        private readonly IChunk?[] chunks;
 
         private readonly IBlockDefinition?[] blockDefinitions;
         private readonly Action<IChunk> chunkChanged;
@@ -40,7 +40,7 @@ namespace OctoAwesome.Client.Components
 
         public bool CanRender => VertexBuffer != null && VertexCount > 0;
 
-        public int VertexCount => (int)VertexBuffer?.VertexCount;
+        public int VertexCount => (int)(VertexBuffer?.VertexCount ?? 0);
         private int indexCount => VertexCount / 4 * 6;
         private ILocalChunkCache? _manager;
         private Index3 _shift;
@@ -111,7 +111,7 @@ namespace OctoAwesome.Client.Components
                 // definitionMapping.Add(definition.GetBlockType(), definition);
                 definitionIndex += textureCount;
             }
-            chunks = new IChunk[27];
+            chunks = new IChunk?[27];
             blockDefinitions = new IBlockDefinition[27];
 
             chunkChanged = OnChunkChanged;
@@ -439,7 +439,7 @@ namespace OctoAwesome.Client.Components
             var globalZ = z + centerChunk.Index.Z * Chunk.CHUNKSIZE_Z;
 
             // Top
-            if (topBlock == 0 || (!topBlockDefintion.IsSolidWall(Wall.Bottom) && topBlock != block))
+            if (topBlock == 0 || (!topBlockDefintion!.IsSolidWall(Wall.Bottom) && topBlock != block))
             {
                 var top = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Top, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Top, _manager, globalX, globalY, globalZ);
@@ -492,7 +492,7 @@ namespace OctoAwesome.Client.Components
 
 
             // Bottom
-            if (bottomBlock == 0 || (!bottomBlockDefintion.IsSolidWall(Wall.Top) && bottomBlock != block))
+            if (bottomBlock == 0 || (!bottomBlockDefintion!.IsSolidWall(Wall.Top) && bottomBlock != block))
             {
                 var bottom = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Bottom, _manager, globalX, globalY, globalZ));
                 var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
@@ -527,7 +527,7 @@ namespace OctoAwesome.Client.Components
                 }
             }
             // South
-            if (southBlock == 0 || (!southBlockDefintion.IsSolidWall(Wall.Front) && southBlock != block))
+            if (southBlock == 0 || (!southBlockDefintion!.IsSolidWall(Wall.Front) && southBlock != block))
             {
                 var front = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Front, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Front, _manager, globalX, globalY, globalZ);
@@ -562,7 +562,7 @@ namespace OctoAwesome.Client.Components
             }
 
             // North
-            if (northBlock == 0 || (!northBlockDefintion.IsSolidWall(Wall.Back) && northBlock != block))
+            if (northBlock == 0 || (!northBlockDefintion!.IsSolidWall(Wall.Back) && northBlock != block))
             {
                 var back = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Back, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Back, _manager, globalX, globalY, globalZ);
@@ -596,7 +596,7 @@ namespace OctoAwesome.Client.Components
                 }
             }
             // West
-            if (westBlock == 0 || (!westBlockDefintion.IsSolidWall(Wall.Right) && westBlock != block))
+            if (westBlock == 0 || (!westBlockDefintion!.IsSolidWall(Wall.Right) && westBlock != block))
             {
                 var left = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Left, _manager, globalX, globalY, globalZ));
                 int rotation = -blockDefinition.GetTextureRotation(Wall.Left, _manager, globalX, globalY, globalZ);
@@ -633,7 +633,7 @@ namespace OctoAwesome.Client.Components
 
 
             // East
-            if (eastBlock == 0 || (!eastBlockDefintion.IsSolidWall(Wall.Left) && eastBlock != block))
+            if (eastBlock == 0 || (!eastBlockDefintion!.IsSolidWall(Wall.Left) && eastBlock != block))
             {
                 var right = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Right, _manager, globalX, globalY, globalZ));
                 var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 0, 1), Wall.Front);

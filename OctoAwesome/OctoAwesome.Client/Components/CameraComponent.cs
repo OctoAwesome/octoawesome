@@ -32,10 +32,7 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (!Enabled)
-                return;
-
-            if (player == null || player.CurrentEntity == null)
+            if (!player.Enabled)
                 return;
 
             Entity entity = player.CurrentEntity;

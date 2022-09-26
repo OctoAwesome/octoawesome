@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ public class StateMachine
     public INode CurrentNode
     {
         get => currentNode;
+        [MemberNotNull(nameof(currentNode))]
         private set
         {
             currentNode = value;
@@ -37,7 +39,6 @@ public class StateMachine
         transitions = new Dictionary<INode, TransitionMap>();
         nodes = new HashSet<INode>();
         AddNode(startNode);
-        currentNode = null!;
         CurrentNode = startNode;
     }
 

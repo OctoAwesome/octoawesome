@@ -30,7 +30,7 @@ namespace OctoAwesome.Rx
 
             for (int i = 0; i < subscriptions.Count; i++)
             {
-                subscriptions[i]?.Observer.OnCompleted();
+                subscriptions[i].Observer.OnCompleted();
             }
         }
 
@@ -41,7 +41,7 @@ namespace OctoAwesome.Rx
 
             for (int i = 0; i < subscriptions.Count; i++)
             {
-                subscriptions[i]?.Observer.OnError(error);
+                subscriptions[i].Observer.OnError(error);
             }
         }
 
@@ -52,7 +52,7 @@ namespace OctoAwesome.Rx
 
             for (int i = 0; i < subscriptions.Count; i++)
             {
-                subscriptions[i]?.Observer.OnNext(value);
+                subscriptions[i].Observer.OnNext(value);
             }
         }
 

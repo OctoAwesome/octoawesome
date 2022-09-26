@@ -5,6 +5,7 @@ using OctoAwesome.Client.Components;
 using OctoAwesome.UI.Screens;
 using System;
 using OctoAwesome.Client.UI.Components;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -46,7 +47,7 @@ namespace OctoAwesome.Client.Screens
 
             var serverNameInput = new Textbox()
             {
-                Text = game.Settings.Get("server", "localhost"),
+                Text = game.Settings.Get("server", "localhost")!,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black)
             };
@@ -83,15 +84,15 @@ namespace OctoAwesome.Client.Screens
 
         private void PlayMultiplayer(ScreenComponent manager, string playerName)
         {
-            ScreenManager.Player.SetEntity(null);
+            ScreenManager.Player.Unload();
 
             ScreenManager.Game.Simulation.LoadGame(Guid.Empty);
             //settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
 
             Player player = ScreenManager.Game.Simulation.LoginPlayer(playerName);
-            ScreenManager.Game.Player.SetEntity(player);
+            ScreenManager.Game.Player.Load(player);
 
-            ScreenManager.NavigateToScreen(new GameScreen(assets));
+            ScreenManager.NavigateToScreen(new GameScreen(Assets));
         }
     }
 }

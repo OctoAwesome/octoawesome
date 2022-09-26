@@ -21,7 +21,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// Initializes a new instance of the <see cref="Axe"/> class.
         /// </summary>
         /// <remarks>This is only to be used for deserialization.</remarks>
-        public Axe() : base(null, null)
+        public Axe()
         {
 
         }

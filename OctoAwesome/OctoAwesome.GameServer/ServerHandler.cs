@@ -57,7 +57,7 @@ namespace OctoAwesome.GameServer
             server.OnClientConnected += ServerOnClientConnected;
         }
 
-        private void ServerOnClientConnected(object sender, ConnectedClient e)
+        private void ServerOnClientConnected(object? sender, ConnectedClient e)
         {
             logger.Debug("Hurra ein neuer Spieler");
             e.ServerSubscription = e.Packages.Subscribe(OnNext, ex => logger.Error(ex.Message, ex));

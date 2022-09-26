@@ -77,7 +77,7 @@ namespace OctoAwesome
         /// <returns>The amount of items removed, 0 if no item was present or didn't match the item in the slot</returns>
         public int Remove(IInventoryable item)
         {
-            if (item is null || Item != item)
+            if (Item != item)
                 return 0;
             return inventoryComponent.Remove(item, this);
         }

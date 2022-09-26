@@ -33,28 +33,22 @@ namespace OctoAwesome.Basics
         {
             IDefinition[] definitions = definitionManager.Definitions;
             //TODO More Generic, reconsider complete planet generation (Heatmap + Heightmap + Biome + Modding)
-            IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().FirstOrDefault();
-            ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
-            IBlockDefinition snowDefinition = definitions.OfType<SnowBlockDefinition>().FirstOrDefault();
-            ushort snowIndex = (ushort)(Array.IndexOf(definitions.ToArray(), snowDefinition) + 1);
+            ushort GetBlockDefinitionInfo<T>()
+            {
+                var blockIndex = Array.FindIndex(definitions, (x) => x.GetType() == typeof(T));
+                return (ushort)(blockIndex + 1);
+            }
 
-            IBlockDefinition groundDefinition = definitions.OfType<DirtBlockDefinition>().FirstOrDefault();
-            ushort groundIndex = (ushort)(Array.IndexOf(definitions.ToArray(), groundDefinition) + 1);
+            ushort sandIndex = GetBlockDefinitionInfo<SandBlockDefinition>();
+            ushort snowIndex = GetBlockDefinitionInfo<SnowBlockDefinition>();
+            ushort dirtIndex = GetBlockDefinitionInfo<DirtBlockDefinition>();
+            ushort stoneIndex = GetBlockDefinitionInfo<StoneBlockDefinition>();
+            ushort waterIndex = GetBlockDefinitionInfo<WaterBlockDefinition>();
+            ushort grassIndex = GetBlockDefinitionInfo<GrassBlockDefinition>();
 
-            IBlockDefinition stoneDefinition = definitions.OfType<StoneBlockDefinition>().FirstOrDefault();
-            ushort stoneIndex = (ushort)(Array.IndexOf(definitions.ToArray(), stoneDefinition) + 1);
-
-            IBlockDefinition waterDefinition = definitions.OfType<WaterBlockDefinition>().FirstOrDefault();
-            ushort waterIndex = (ushort)(Array.IndexOf(definitions.ToArray(), waterDefinition) + 1);
-
-            IBlockDefinition grassDefinition = definitions.OfType<GrassBlockDefinition>().FirstOrDefault();
-            ushort grassIndex = (ushort)(Array.IndexOf(definitions.ToArray(), grassDefinition) + 1);
-
-            if (!(planet is ComplexPlanet))
+            if (planet is not ComplexPlanet localPlanet)
                 throw new ArgumentException("planet is not a Type of ComplexPlanet");
-
-            ComplexPlanet localPlanet = (ComplexPlanet)planet;
 
             var localHeightmap = ArrayPool<float>.Shared.Rent(Chunk.CHUNKSIZE_X * Chunk.CHUNKSIZE_Y);
 
@@ -62,7 +56,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)
-                chunks[i] = chunkPool.Rent(new Index3(index, i), planet);
+                chunks[i] = chunkPool.Rent(new Index3(index, i), localPlanet);
 
             int obersteSchicht;
             bool surfaceBlock;
@@ -100,7 +94,7 @@ namespace OctoAwesome.Basics
                                     else if (absoluteZ >= localPlanet.Size.Z * Chunk.CHUNKSIZE_Z * 0.6f)
                                     {
                                         if (temp > 12)
-                                            chunks[i].Blocks[flatIndex] = groundIndex;
+                                            chunks[i].Blocks[flatIndex] = dirtIndex;
                                         else
                                             chunks[i].Blocks[flatIndex] = stoneIndex;
                                     }
@@ -113,7 +107,7 @@ namespace OctoAwesome.Basics
                                         }
                                         else
                                         {
-                                            chunks[i].Blocks[flatIndex] = groundIndex;
+                                            chunks[i].Blocks[flatIndex] = dirtIndex;
                                         }
                                     }
                                     else if (temp <= 0)
@@ -125,12 +119,12 @@ namespace OctoAwesome.Basics
                                         }
                                         else
                                         {
-                                            chunks[i].Blocks[flatIndex] = groundIndex;
+                                            chunks[i].Blocks[flatIndex] = dirtIndex;
                                         }
                                     }
                                     else
                                     {
-                                        chunks[i].Blocks[flatIndex] = groundIndex;
+                                        chunks[i].Blocks[flatIndex] = dirtIndex;
                                     }
                                     obersteSchicht--;
                                 }
@@ -152,7 +146,7 @@ namespace OctoAwesome.Basics
                 }
             }
             ArrayPool<float>.Shared.Return(localHeightmap);
-            ChunkColumn column = new ChunkColumn(chunks, planet, index);
+            ChunkColumn column = new ChunkColumn(chunks, localPlanet, index);
             column.CalculateHeights();
             return column;
         }
@@ -160,10 +154,9 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IPlanet GeneratePlanet(Stream stream)
         {
-            IPlanet planet = new ComplexPlanet();
+            IPlanet planet = new ComplexPlanet(this);
             using (var reader = new BinaryReader(stream))
                 planet.Deserialize(reader);
-            planet.Generator = this;
             return planet;
         }
 

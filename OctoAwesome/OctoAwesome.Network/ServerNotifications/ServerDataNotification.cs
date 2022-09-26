@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Notifications;
 using System.Collections.Generic;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Network.ServerNotifications
 {
@@ -8,10 +9,17 @@ namespace OctoAwesome.Network.ServerNotifications
     /// </summary>
     public class ServerDataNotification : Notification
     {
+        private byte[]? data;
+
         /// <summary>
         /// Gets or sets the notification data.
         /// </summary>
-        public byte[] Data { get; set; }
+        public byte[] Data
+        {
+            get => NullabilityHelper.NotNullAssert(data);
+            set => data = NullabilityHelper.NotNullAssert(value);
+        }
+
         /// <summary>
         /// Gets or sets the notification command.
         /// </summary>

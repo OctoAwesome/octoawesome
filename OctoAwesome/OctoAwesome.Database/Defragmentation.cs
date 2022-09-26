@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace OctoAwesome.Database
@@ -66,6 +67,29 @@ namespace OctoAwesome.Database
 
         private IEnumerable<Key<TTag>> DefragmentValues(FileInfo newValueStoreFile, byte[] keyBuffer)
         {
+            bool TryReadInt(FileStream currentValueStoreStream, out int length)
+            {
+                Span<byte> intBuffer = stackalloc byte[sizeof(int)];
+                if (currentValueStoreStream.Read(intBuffer) == 0)
+                {
+                    length = 0;
+                    return false;
+                }
+
+                length = BitConverter.ToInt32(intBuffer) - sizeof(int);
+                return true;
+            }
+
+            bool TryWriteValue(Key<TTag> key, FileStream currentValueStoreStream, FileStream newValueStoreStream)
+            {
+                Span<byte> buffer = stackalloc byte[key.ValueLength];
+                if (currentValueStoreStream.Read(buffer) == 0)
+                    return false;
+                newValueStoreStream.Write(keyBuffer, 0, keyBuffer.Length);
+                newValueStoreStream.Write(buffer);
+                return true;
+            }
+
             using (FileStream newValueStoreStream = newValueStoreFile.Open(FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
             using (FileStream currentValueStoreStream = valueStoreFile.Open(FileMode.Open, FileAccess.Read, FileShare.None))
             {
@@ -77,21 +101,16 @@ namespace OctoAwesome.Database
 
                     if (key.IsEmpty)
                     {
-                        Span<byte> intBuffer = stackalloc byte[sizeof(int)];
-                        if (currentValueStoreStream.Read(intBuffer) == 0)
+                        if (!TryReadInt(currentValueStoreStream, out var length))
                             break;
-                        var length = BitConverter.ToInt32(intBuffer) - sizeof(int);
                         if (length < 0)
                             throw new DataMisalignedException();
                         currentValueStoreStream.Seek(length, SeekOrigin.Current);
                     }
                     else
                     {
-                        Span<byte> buffer = stackalloc byte[key.ValueLength];
-                        if (currentValueStoreStream.Read(buffer) == 0)
+                        if (!TryWriteValue(key, currentValueStoreStream, newValueStoreStream))
                             break;
-                        newValueStoreStream.Write(keyBuffer, 0, keyBuffer.Length);
-                        newValueStoreStream.Write(buffer);
                         yield return key;
                     }
                 } while (currentValueStoreStream.Position < currentValueStoreStream.Length);

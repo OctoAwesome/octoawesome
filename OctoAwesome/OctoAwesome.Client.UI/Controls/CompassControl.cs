@@ -1,5 +1,6 @@
 ﻿using engenious.UI;
 using System;
+using System.Diagnostics;
 using engenious;
 using engenious.Graphics;
 using OctoAwesome.Client.UI.Components;
@@ -30,15 +31,18 @@ namespace OctoAwesome.Client.UI.Controls
             this.headComponent = headComponent;
             Padding = Border.All(7);
 
-            Texture2D background = assets.LoadTexture("buttonLong_brown_pressed");
+            var background = assets.LoadTexture("buttonLong_brown_pressed");
+            Debug.Assert(background != null, nameof(background) + " != null");
             Background = NineTileBrush.FromSingleTexture(background, 7, 7);
-            compassTexture = assets.LoadTexture(GetType(), "compass");
+            var compassText = assets.LoadTexture(GetType(), "compass");
+            Debug.Assert(compassText != null, nameof(compassText) + " != null");
+            compassTexture = compassText;
         }
 
         /// <inheritdoc />
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
-            if (headComponent is null || !assets.Ready)
+            if (!assets.Ready)
                 return;
 
             float compassValue = headComponent.Angle / (float)(2 * Math.PI);

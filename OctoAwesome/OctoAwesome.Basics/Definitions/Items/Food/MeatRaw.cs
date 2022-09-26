@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
         /// <summary>
         /// Initializes a new instance of the<see cref="MeatRaw" /> class
         /// </summary>
-        public MeatRaw() : base(null, null)
+        public MeatRaw()
         {
 
         }

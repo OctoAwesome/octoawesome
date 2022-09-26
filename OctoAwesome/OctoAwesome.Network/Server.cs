@@ -78,7 +78,7 @@ namespace OctoAwesome.Network
             Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");
             var socket = (Socket)ar.AsyncState;
 
-            var tmpSocket = socket!.EndAccept(ar);
+            var tmpSocket = socket.EndAccept(ar);
 
             tmpSocket.NoDelay = true;
 

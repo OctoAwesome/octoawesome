@@ -10,13 +10,9 @@ using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
 using System.Reflection;
 using System;
-using engenious;
 using OctoAwesome.Extension;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
-
-using System;
-using System.Reflection;
 
 namespace OctoAwesome.Basics
 {
@@ -44,7 +40,7 @@ namespace OctoAwesome.Basics
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if (!t.IsAbstract && typeof(IDefinition).IsAssignableFrom(t))
+                if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
                     extensionLoader.Register(t, ChannelNames.Definitions);
             }
 
@@ -80,9 +76,6 @@ namespace OctoAwesome.Basics
             {
                 var c = chest;
 
-                if (c is null)
-                    return;
-
                 if (!c.ContainsComponent<PositionComponent>())
                 {
                     var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0));
@@ -95,11 +88,11 @@ namespace OctoAwesome.Basics
 
                 if (!c.Components.TryGetComponent<AnimationComponent>(out var animationComponent))
                 {
-                    c.animationComponent = new AnimationComponent();
-                    c.Components.AddComponent(c.animationComponent);
+                    c.AnimationComponent = new AnimationComponent();
+                    c.Components.AddComponent(c.AnimationComponent);
                 }
                 else
-                    c.animationComponent = animationComponent;
+                    c.AnimationComponent = animationComponent;
 
                 if (!c.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
                 {
@@ -108,7 +101,7 @@ namespace OctoAwesome.Basics
                 }
 
 
-                c.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Transfer" }, true);
+                c.Components.AddComponent(new UiKeyComponent("Transfer"), true);
 
                 c.Components.AddComponent(new BodyComponent() { Height = 0.4f, Radius = 0.2f }, true);
                 c.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }), true);
@@ -119,9 +112,6 @@ namespace OctoAwesome.Basics
             extensionLoader.Extend<Furnace>((furnace) =>
             {
                 var f = furnace;
-
-                if (f is null)
-                    return;
 
                 if (!f.ContainsComponent<PositionComponent>())
                 {
@@ -135,38 +125,38 @@ namespace OctoAwesome.Basics
 
                 if (!f.Components.TryGetComponent<AnimationComponent>(out var animationComponent))
                 {
-                    f.animationComponent = new AnimationComponent();
-                    f.Components.AddComponent(f.animationComponent);
+                    f.AnimationComponent = new AnimationComponent();
+                    f.Components.AddComponent(f.AnimationComponent);
                 }
                 else
-                    f.animationComponent = animationComponent;
+                    f.AnimationComponent = animationComponent;
 
                 if (!f.Components.TryGetComponent<InventoryComponent>(out var inventoryComponent))
                 {
                     inventoryComponent = new InventoryComponent();
-                    f.inventoryComponent = inventoryComponent;
+                    f.InventoryComponent = inventoryComponent;
                     f.Components.AddComponent(inventoryComponent);
                 }
                 else
-                    f.inventoryComponent = inventoryComponent;
+                    f.InventoryComponent = inventoryComponent;
 
                 if (!f.Components.TryGetComponent<OutputInventoryComponent>(out var outputComponent))
                 {
                     outputComponent = new OutputInventoryComponent();
-                    f.outputComponent = outputComponent;
+                    f.OutputComponent = outputComponent;
                     f.Components.AddComponent(outputComponent);
                 }
                 else
-                    f.outputComponent = outputComponent;
+                    f.OutputComponent = outputComponent;
 
                 if (!f.Components.TryGetComponent<ProductionResourcesInventoryComponent>(out var productionResourcesInventoryComponent))
                 {
                     productionResourcesInventoryComponent = new ProductionResourcesInventoryComponent(true, 1);
-                    f.productionResourcesInventoryComponent = productionResourcesInventoryComponent;
+                    f.ProductionResourcesInventoryComponent = productionResourcesInventoryComponent;
                     f.Components.AddComponent(productionResourcesInventoryComponent);
                 }
                 else
-                    f.productionResourcesInventoryComponent = productionResourcesInventoryComponent;
+                    f.ProductionResourcesInventoryComponent = productionResourcesInventoryComponent;
 
                 while (inventoryComponent.Inventory.Count < 2)
                 {
@@ -175,7 +165,7 @@ namespace OctoAwesome.Basics
 
                 f.Components.AddComponent(new BurningComponent());
 
-                f.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Furnace" }, true);
+                f.Components.AddComponent(new UiKeyComponent("Furnace"), true);
                 f.Components.AddComponent(new BodyComponent() { Height = 2f, Radius = 1f }, true);
                 f.Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
                 f.Components.AddComponent(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" }, true);

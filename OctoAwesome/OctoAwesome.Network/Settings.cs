@@ -1,6 +1,7 @@
 ﻿//using OpenTK;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -48,20 +49,51 @@ namespace OctoAwesome.Network
 
         /// <inheritdoc />
         public T Get<T>(string key)
-            => (T)Convert.ChangeType(dictionary[key], typeof(T));
+        {
+            if (TryGet<T>(key, out var value))
+                return value;
+            throw new KeyNotFoundException();
+        }
 
         /// <inheritdoc />
-        public T Get<T>(string key, T defaultValue)
+        public T? Get<T>(string key, T? defaultValue)
         {
-            if (dictionary.TryGetValue(key, out var value))
-                return (T)Convert.ChangeType(value, typeof(T));
-
-            return defaultValue;
+            return TryGet<T>(key, out var value) ? value : defaultValue;
         }
 
         /// <inheritdoc />
         public T[] GetArray<T>(string key)
-            => DeserializeArray<T>(dictionary[key]);
+        {
+            if (TryGetArray<T>(key, out var values))
+                return values;
+            throw new KeyNotFoundException();
+        }
+
+        /// <inheritdoc />
+        public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
+        {
+            if (dictionary.TryGetValue(key, out var val))
+            {
+                value = (T)Convert.ChangeType(val, typeof(T));
+                return true;
+            }
+
+            value = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetArray<T>(string key, [MaybeNullWhen(false)] out T[] values)
+        {
+            if (dictionary.TryGetValue(key, out var val))
+            {
+                values = DeserializeArray<T>(val);
+                return true;
+            }
+
+            values = default;
+            return false;
+        }
 
         /// <inheritdoc />
         public bool KeyExists(string key)
@@ -129,10 +161,8 @@ namespace OctoAwesome.Network
 
         private Dictionary<string, string> InternalLoad(FileInfo fileInfo)
         {
-            using (var reader = new StreamReader(fileInfo.OpenRead()))
-            {
-                return System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd());
-            }
+            using var reader = new StreamReader(fileInfo.OpenRead());
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd()) ?? new ();
         }
 
         private T[] DeserializeArray<T>(string arrayString)

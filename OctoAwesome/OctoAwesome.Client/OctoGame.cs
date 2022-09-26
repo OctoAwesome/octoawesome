@@ -7,6 +7,7 @@ using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 using OctoAwesome.Notifications;
 using OctoAwesome.Common;
 using OctoAwesome.Definitions;
@@ -23,6 +24,11 @@ namespace OctoAwesome.Client
     /// </summary>
     internal class OctoGame : Game
     {
+        public const int DefaultResolutionWidth = 1680;
+        public const int DefaultResolutionHeight = 1050;
+
+        public const int DefaultViewRange = 4;
+        
         private readonly ITypeContainer typeContainer;
 
         //GraphicsDeviceManager graphics;
@@ -94,8 +100,8 @@ namespace OctoAwesome.Client
             Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
-            int width = Settings.Get("Width", 1680);
-            int height = Settings.Get("Height", 1050);
+            int width = Settings.Get("Width", DefaultResolutionWidth);
+            int height = Settings.Get("Height", DefaultResolutionHeight);
             Window.ClientSize = new Size(width, height);
 
             Window.Fullscreen = Settings.Get("EnableFullscreen", false);
@@ -157,9 +163,12 @@ namespace OctoAwesome.Client
         {
             base.LoadContent();
 
-            Skin.Current.BoldFont = Screen.Content.Load<SpriteFont>("Fonts/BoldFont");
-            Skin.Current.TextFont = Screen.Content.Load<SpriteFont>("Fonts/GameFont");
-            Skin.Current.HeadlineFont = Screen.Content.Load<SpriteFont>("Fonts/HeadlineFont");
+            Skin.Current.BoldFont = NullabilityHelper.NotNullAssert(Screen.Content.Load<SpriteFont>("Fonts/BoldFont"),
+                                                                    "Could not load bold font content!");
+            Skin.Current.TextFont = NullabilityHelper.NotNullAssert(Screen.Content.Load<SpriteFont>("Fonts/GameFont"),
+                                                                    "Could not load bold font content!");
+            Skin.Current.HeadlineFont = NullabilityHelper.NotNullAssert(Screen.Content.Load<SpriteFont>("Fonts/HeadlineFont"),
+                                                                    "Could not load bold font content!");
         }
 
         private static void Register(ITypeContainer typeContainer)
@@ -195,7 +204,12 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:flymode", UI.Languages.OctoKeys.flymode);
             KeyMapper.RegisterBinding("octoawesome:jump", UI.Languages.OctoKeys.jump);
             for (int i = 0; i < 10; i++)
-                KeyMapper.RegisterBinding("octoawesome:slot" + i, UI.Languages.OctoKeys.ResourceManager.GetString("slot" + i));
+            {
+                var slotName = UI.Languages.OctoKeys.ResourceManager.GetString("slot" + i);
+                Debug.Assert(slotName != null, nameof(slotName) + " != null");
+                KeyMapper.RegisterBinding("octoawesome:slot" + i, slotName);
+            }
+
             KeyMapper.RegisterBinding("octoawesome:debug.allblocks", UI.Languages.OctoKeys.debug_allblocks);
             KeyMapper.RegisterBinding("octoawesome:debug.allfoods", UI.Languages.OctoKeys.debug_allfoods);
             KeyMapper.RegisterBinding("octoawesome:debug.allitems", UI.Languages.OctoKeys.debug_allitems);
@@ -260,7 +274,7 @@ namespace OctoAwesome.Client
 
         protected override void OnExiting(EventArgs args)
         {
-            Player.SetEntity(null);
+            Player.Unload();
             Simulation.ExitGame();
         }
     }
