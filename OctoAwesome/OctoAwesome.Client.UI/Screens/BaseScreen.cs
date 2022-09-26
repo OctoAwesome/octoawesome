@@ -67,15 +67,15 @@ namespace OctoAwesome.UI.Screens
         }
 
         /// <inheritdoc/>
-        protected override void OnKeyPress(KeyEventArgs args)
+        protected override void OnKeyDown(KeyEventArgs args)
         {
-            if (ScreenManager.CanGoBack && (args.Key == Keys.Back || args.Key == Keys.Escape))
+            if (!args.Handled && ScreenManager.CanGoBack && (args.Key == Keys.Back || args.Key == Keys.Escape))
             {
                 args.Handled = true;
                 ScreenManager.NavigateBack();
             }
 
-            base.OnKeyPress(args);
+            base.OnKeyDown(args);
         }
 
         /// <summary>
