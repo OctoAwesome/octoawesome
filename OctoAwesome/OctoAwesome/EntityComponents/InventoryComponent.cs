@@ -226,9 +226,6 @@ namespace OctoAwesome.EntityComponents
                     }
                 }
 
-                if (inventoryItem == default)
-                    continue;
-
                 var slot = new InventorySlot(inventoryItem, this)
                 {
                     Amount = amount,
@@ -344,7 +341,7 @@ namespace OctoAwesome.EntityComponents
         /// <returns>The amount of items removed, 0 if no item was present or didn't match the item in the slot</returns>
         public int Remove(IInventoryable item, InventorySlot slot)
         {
-            if (slot is null || item is null || slot.Item != item)
+            if (slot.Item != item)
                 return 0;
             return Remove(slot, slot.Amount);
         }
@@ -528,7 +525,12 @@ namespace OctoAwesome.EntityComponents
         /// <param name="quantity">The maxmium quantity, if not set <see cref="int.MaxValue"/> will be used</param>
         /// <returns>The quantity that can be added</returns>
         public int GetQuantityLimitFor(IInventorySlot slot, int quantity = int.MaxValue)
-            => Math.Min(GetQuantityLimitFor(slot.Item, quantity), (slot.Item.StackLimit * slot.Item.VolumePerUnit) - slot.Amount);
+        {
+            if (slot.Item is null)
+                return int.MaxValue;
+            return Math.Min(GetQuantityLimitFor(slot.Item, quantity),
+                (slot.Item.StackLimit * slot.Item.VolumePerUnit) - slot.Amount);
+        }
 
         private void CalcCurrentInventoryUsage()
         {
@@ -620,8 +622,6 @@ namespace OctoAwesome.EntityComponents
         /// <returns>The slot or null if the inventoryable was not part of this inventory</returns>
         public InventorySlot? GetSlot(IInventoryable item)
         {
-            if (item is null)
-                return null;
             return inventory.FirstOrDefault(x => x.Item == item);
         }
 
@@ -631,7 +631,7 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         /// <param name="definition">The definition to search for</param>
         /// <returns>The slot or null if no item of the inventory had this definition</returns>
-        public InventorySlot? GetSlot(IDefinition definition)
+        public InventorySlot? GetSlot(IDefinition? definition)
         {
             if (definition is null)
                 return null;

@@ -14,6 +14,7 @@ using OctoAwesome.UI.Screens;
 
 using System;
 using System.Diagnostics;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -35,8 +36,14 @@ namespace OctoAwesome.Basics.UI.Screens
         private readonly Label nameLabel;
         private readonly Label massLabel;
         private readonly Label volumeLabel;
-        private IDisposable subscription;
-        private TransferUIComponent transferComponent;
+        private IDisposable? subscription;
+        private TransferUIComponent? transferComponent;
+
+        private TransferUIComponent TransferComponent
+        {
+            get => NullabilityHelper.NotNullAssert(transferComponent, $"{nameof(TransferComponent)} was not initialized!");
+            set => transferComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(TransferComponent)} cannot be initialized with null!");
+        }
 
         private enum TransferDirection
         {
@@ -56,8 +63,10 @@ namespace OctoAwesome.Basics.UI.Screens
             IsOverlay = true;
             this.assetComponent = assetComponent;
 
+            var panelText = this.assetComponent.LoadTexture("panel");
 
-            panelBackground = this.assetComponent.LoadTexture("panel");
+            Debug.Assert(panelText != null, nameof(panelText) + " != null");
+            panelBackground = panelText;
             var grid = new Grid()
             {
                 Width = 800,
@@ -80,7 +89,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryA.EndDrop += (s, e) => OnInventoryDrop(e, transferComponent.InventoryA);
+            inventoryA.EndDrop += (s, e) => OnInventoryDrop(e, TransferComponent.InventoryA);
             inventoryA.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.BToA, e);
 
             inventoryB = new InventoryControl(assetComponent, Array.Empty<InventorySlot>())
@@ -91,7 +100,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inventoryB.EndDrop += (s, e) => OnInventoryDrop(e, transferComponent.InventoryB);
+            inventoryB.EndDrop += (s, e) => OnInventoryDrop(e, TransferComponent.InventoryB);
             inventoryB.LeftMouseClick += (s, e) => OnMouseClick(TransferDirection.AToB, e);
 
             grid.AddControl(inventoryA, 0, 0);
@@ -122,10 +131,9 @@ namespace OctoAwesome.Basics.UI.Screens
             if (uiComponent is not TransferUIComponent transferComponent)
                 return;
 
-            if (subscription is not null)
-                subscription.Dispose();
+            subscription?.Dispose();
 
-            this.transferComponent = transferComponent;
+            TransferComponent = transferComponent;
             subscription = transferComponent.Changes.Subscribe(InventoryChanged);
         }
 
@@ -140,13 +148,13 @@ namespace OctoAwesome.Basics.UI.Screens
             if (!keyboardState.IsKeyDown(Keys.ShiftLeft))
                 return;
 
-            var slot = sourceControl.HoveredSlot as InventorySlot;
+            var slot = sourceControl.HoveredSlot;
 
             mouseEventArgs.Handled = true;
             if (transferDirection == TransferDirection.AToB)
-                transferComponent.Transfer(transferComponent.InventoryA, transferComponent.InventoryB, slot);
+                TransferComponent.Transfer(TransferComponent.InventoryA, TransferComponent.InventoryB, slot);
             else if (transferDirection == TransferDirection.BToA)
-                transferComponent.Transfer(transferComponent.InventoryB, transferComponent.InventoryA, slot);
+                TransferComponent.Transfer(TransferComponent.InventoryB, TransferComponent.InventoryA, slot);
             else
                 Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
 
@@ -159,8 +167,7 @@ namespace OctoAwesome.Basics.UI.Screens
             if (uiComponent != transferComponent)
                 return;
 
-            if (subscription is not null)
-                subscription.Dispose();
+            subscription?.Dispose();
 
             transferComponent = null;
             base.RemoveUiComponent(uiComponent);
@@ -168,15 +175,15 @@ namespace OctoAwesome.Basics.UI.Screens
 
         private void InventoryChanged(Unit unit)
         {
-            if (transferComponent.PrimaryUiKey != ScreenKey)
+            if (TransferComponent.PrimaryUiKey != ScreenKey)
                 return;
 
-            if (transferComponent.Show && ScreenManager.ActiveScreen != this)
+            if (TransferComponent.Show && ScreenManager.ActiveScreen != this)
             {
                 _ = ScreenManager.NavigateToScreen(this);
             }
 
-            Rebuild(transferComponent.InventoryA, transferComponent.InventoryB);
+            Rebuild(TransferComponent.InventoryA, TransferComponent.InventoryB);
         }
 
         /// <inheritdoc/>
@@ -192,16 +199,18 @@ namespace OctoAwesome.Basics.UI.Screens
             {
                 var source = slot.GetParentInventory();
                 e.Handled = true;
-                transferComponent.Transfer(source, target, slot);
+                TransferComponent.Transfer(source, target, slot);
             }
         }
 
         private static void MoveSlot(IInventorySlot slot, InventoryComponent source, InventoryComponent target)
         {
-            var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
+            var item = slot.Item;
+            if (item is null)
+                return;
+            var toAddAndRemove = target.GetQuantityLimitFor(item, slot.Amount);
             if (toAddAndRemove == 0)
                 return;
-            var item = slot.Item;
             var amount = source.Remove(slot, toAddAndRemove);
 
             var addedAddedAmount = target.Add(item, toAddAndRemove);
@@ -229,7 +238,7 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <inheritdoc />
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
-            transferComponent.OnClose(ScreenKey);
+            TransferComponent.OnClose(ScreenKey);
             base.OnNavigatedFrom(args);
             Closed?.Invoke(this, args);
         }

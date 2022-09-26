@@ -10,7 +10,7 @@ namespace OctoAwesome
         /// <summary>
         /// The item in the inventory slot.
         /// </summary>
-        IInventoryable Item { get; }
+        IInventoryable? Item { get; }
         /// <summary>
         /// The volume amount of <see cref="Item"/> in this slot[dm³].
         /// </summary>

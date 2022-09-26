@@ -12,6 +12,7 @@ using OctoAwesome.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OctoAwesome
@@ -63,9 +64,9 @@ namespace OctoAwesome
         private readonly Relay<Notification> networkRelay;
         private readonly Relay<Notification> uiRelay;
 
-        private IDisposable simulationSubscription;
-        private IDisposable networkSubscription;
-        private IDisposable uiSubscription;
+        private IDisposable? simulationSubscription;
+        private IDisposable? networkSubscription;
+        private IDisposable? uiSubscription;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Simulation"/> class.
@@ -313,7 +314,7 @@ namespace OctoAwesome
                 {
                     if (fb == block
                         || (fb.Components.TryGetComponent<PositionComponent>(out var existing)
-                            && (!block.Components.TryGetComponent<PositionComponent>(out PositionComponent newPosComponent)
+                            && (!block.Components.TryGetComponent<PositionComponent>(out var newPosComponent)
                                 || existing.Position == newPosComponent.Position)))
                     {
                         return;
@@ -488,7 +489,7 @@ namespace OctoAwesome
         /// </summary>
         /// <typeparam name="T">The <see cref="ComponentContainer"/> to search for</typeparam>
         /// <returns><see cref="ComponentContainer"/> that has been found or <see langword="default"/></returns>
-        public T GetById<T>(Guid id) where T : ComponentContainer
+        public T? GetById<T>(Guid id) where T : ComponentContainer
         {
             using (var _ = entitiesSemaphore.EnterCountScope())
                 foreach (var item in entities)
@@ -514,7 +515,7 @@ namespace OctoAwesome
         /// <param name="id">The id to search by.</param>
         /// <param name="componentContainer"><see cref="ComponentContainer"/> that has been found or <see langword="default"/></param>
         /// <returns><see langword="true"/> if a container was found, otherwise <see langword="false"/></returns>
-        public bool TryGetById<T>(Guid id, out T componentContainer) where T : ComponentContainer
+        public bool TryGetById<T>(Guid id, [MaybeNullWhen(false)] out T componentContainer) where T : ComponentContainer
         {
             using (var _ = entitiesSemaphore.EnterCountScope())
                 foreach (var item in entities)
@@ -608,6 +609,7 @@ namespace OctoAwesome
             }
             else
             {
+                Debug.Assert(notification.Notification != null, "notification.Notification != null");
                 entity.Push(notification.Notification);
             }
         }

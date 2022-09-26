@@ -72,7 +72,7 @@ namespace OctoAwesome.Basics
             {
                 if (disposing)
                 {
-                    simulationSubscription?.Dispose();
+                    simulationSubscription.Dispose();
                 }
 
                 disposedValue = true;

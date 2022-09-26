@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Logging
 {
@@ -106,7 +107,7 @@ namespace OctoAwesome.Logging
 
         /// <inheritdoc />
         public ILogger As(Type type)
-            => As(type.FullName);
+            => As(NullabilityHelper.NotNullAssert(type.FullName, "type.FullName != null"));
 
         /// <inheritdoc />
         public void Flush()

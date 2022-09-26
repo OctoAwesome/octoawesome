@@ -19,6 +19,6 @@ namespace OctoAwesome.Definitions
         /// </summary>
         /// <param name="material">The material the item should be made of.</param>
         /// <returns>The created item.</returns>
-        Item Create(IMaterialDefinition material);
+        Item? Create(IMaterialDefinition material);
     }
 }

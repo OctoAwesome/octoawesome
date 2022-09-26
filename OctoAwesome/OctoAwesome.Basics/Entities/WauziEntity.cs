@@ -1,18 +1,11 @@
-﻿using engenious;
+﻿using System;
+using System.Diagnostics;
+using engenious;
 
 using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Serialization;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using engenious;
-using OctoAwesome.Basics.EntityComponents;
-using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.Entities
@@ -21,7 +14,7 @@ namespace OctoAwesome.Basics.Entities
     /// An entity used for dogs in the game.
     /// </summary>
     [SerializationId(1, 2)]
-    public class WauziEntity : Entity, IUpdateable
+    public class WauziEntity : Entity
     {
         /// <summary>
         /// Gets or sets a value indicating the time left to the next jump.
@@ -29,8 +22,15 @@ namespace OctoAwesome.Basics.Entities
         public int JumpTime { get; set; }
 
         private Vector2 moveDir = new Vector2(0.5f, 0.5f);
-        private PositionComponent posComponent;
-        private Entity followEntity;        
+
+        private PositionComponent PositionComponent
+        {
+            get => NullabilityHelper.NotNullAssert(positionComponent, $"{nameof(PositionComponent)} was not initialized!");
+            set => positionComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(PositionComponent)} cannot be initialized with null!");
+        }
+
+        private Entity? followEntity;
+        private PositionComponent? positionComponent;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="WauziEntity" /> class
@@ -45,10 +45,10 @@ namespace OctoAwesome.Basics.Entities
             if (!entity.Components.TryGetComponent<ToolBarComponent>(out var toolbar)
                 || !entity.Components.TryGetComponent<InventoryComponent>(out var inventory)
                 || !entity.Components.TryGetComponent<PositionComponent>(out var position)
-                || toolbar.ActiveTool?.Item is not MeatRaw)
+                || toolbar.ActiveTool?.Item is not MeatRaw
+                || !Components.TryGetComponent<ControllableComponent>(out var controller))
                 return;
 
-            ControllableComponent controller = Components.GetComponent<ControllableComponent>();
             controller.JumpInput = true;
             if (!Components.ContainsComponent<RelatedEntityComponent>())
             {
@@ -69,7 +69,10 @@ namespace OctoAwesome.Basics.Entities
         /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            PositionComponent position = null;
+            Debug.Assert(Simulation != null, nameof(Simulation) + " != null");
+            base.Update(gameTime);
+
+            PositionComponent? position = null;
 
             if (followEntity is null && Components.TryGetComponent<RelatedEntityComponent>(out var relEntity))
             {
@@ -95,13 +98,13 @@ namespace OctoAwesome.Basics.Entities
 
             if (position is not null)
             {
-                var diff = posComponent.Position.GlobalBlockIndex.ShortestDistanceXY(position.Position.GlobalBlockIndex, posComponent.Planet.Size);
+                var diff = PositionComponent.Position.GlobalBlockIndex.ShortestDistanceXY(position.Position.GlobalBlockIndex, PositionComponent.Planet.Size);
                 var length = diff.Length();
                 if (followEntity is not null || length < 50)
                 {
-                    if (length > 250 || length != length)
-                        posComponent.Position = position.Position;
-                    if (length < 5 || length != length)
+                    if (length is > 250 or double.NaN)
+                        PositionComponent.Position = position.Position;
+                    if (length is < 5 or double.NaN)
                         diff = Index3.Zero;
 
                     moveDir = new Vector2(diff.X, diff.Y);
@@ -114,7 +117,8 @@ namespace OctoAwesome.Basics.Entities
             else
                 moveDir = new Vector2(0.5f, 0.5f);
 
-            ControllableComponent controller = Components.GetComponent<ControllableComponent>();
+            var controller = Components.GetComponent<ControllableComponent>();
+            Debug.Assert(controller != null, nameof(controller) + " != null");
             controller.MoveInput = moveDir;
             if (JumpTime <= 0)
             {
@@ -135,9 +139,9 @@ namespace OctoAwesome.Basics.Entities
         /// <inheritdoc />
         public override void RegisterDefault()
         {
-            posComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
+            PositionComponent = Components.GetComponent<PositionComponent>() ?? new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
-            Components.AddComponent(posComponent);
+            Components.AddComponent(PositionComponent);
             Components.AddComponent(new GravityComponent());
             Components.AddComponent(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             Components.AddComponent(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
@@ -145,7 +149,7 @@ namespace OctoAwesome.Basics.Entities
             Components.AddComponent(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }), true);
             Components.AddComponent(new ControllableComponent());
             Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            Components.AddComponent(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 2, 1));
+            Components.AddComponent(new LocalChunkCacheComponent(PositionComponent.Planet.GlobalChunkCache, 2, 1));
         }
     }
 }

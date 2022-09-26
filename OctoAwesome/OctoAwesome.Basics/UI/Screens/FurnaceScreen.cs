@@ -15,6 +15,7 @@ using OctoAwesome.UI.Screens;
 
 using System;
 using System.Diagnostics;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -26,19 +27,24 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <summary>
         /// Eventhandler that gets called when this screen was closed
         /// </summary>
-        public event EventHandler<NavigationEventArgs> Closed;
+        public event EventHandler<NavigationEventArgs>? Closed;
 
         private const string ScreenKey = "Furnace";
         private readonly AssetComponent assetComponent;
         private readonly Texture2D panelBackground;
         private readonly InventoryControl inputInventory;
-        private readonly OutputInventoryComponent outputInventory;
         private readonly FurnaceControl furnace;
         private readonly Label nameLabel;
         private readonly Label massLabel;
         private readonly Label volumeLabel;
-        private IDisposable subscription;
-        private FurnaceUIComponent furnaceUIComponent;
+        private IDisposable? subscription;
+        private FurnaceUIComponent? furnaceUiComponent;
+
+        private FurnaceUIComponent FurnaceUiComponent
+        {
+            get => NullabilityHelper.NotNullAssert(furnaceUiComponent, $"{nameof(FurnaceUiComponent)} was not initialized!");
+            set => furnaceUiComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(FurnaceUiComponent)} cannot be initialized with null!");
+        }
 
         private enum TransferDirection
         {
@@ -56,8 +62,10 @@ namespace OctoAwesome.Basics.UI.Screens
             IsOverlay = true;
             this.assetComponent = assetComponent;
 
+            var panelText = this.assetComponent.LoadTexture("panel");
 
-            panelBackground = this.assetComponent.LoadTexture("panel");
+            Debug.Assert(panelText != null, nameof(panelText) + " != null");
+            panelBackground = panelText;
             var grid = new Grid()
             {
                 Width = 800,
@@ -72,6 +80,7 @@ namespace OctoAwesome.Basics.UI.Screens
 
             Controls.Add(grid);
 
+            Debug.Assert(panelBackground != null, nameof(panelBackground) + " != null");
             inputInventory = new InventoryControl(assetComponent, Array.Empty<InventorySlot>())
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -80,7 +89,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Padding = Border.All(20),
             };
 
-            inputInventory.EndDrop += (s, e) => OnInventoryDrop(e, furnaceUIComponent.InventoryA);
+            inputInventory.EndDrop += (s, e) => OnInventoryDrop(e, FurnaceUiComponent.InventoryA);
 
             furnace = new FurnaceControl(assetComponent, Array.Empty<InventorySlot>(),
                           Array.Empty<InventorySlot>(), Array.Empty<InventorySlot>())
@@ -94,9 +103,9 @@ namespace OctoAwesome.Basics.UI.Screens
             furnace.EndDrop += (s, e) =>
             {
                 if (furnace.resourceSlotPanel.ActualClientArea.Contains(e.GlobalPosition - furnace.resourceSlotPanel.AbsolutePosition))
-                    OnInventoryDrop(e, furnaceUIComponent.ProductionResourceInventory);
+                    OnInventoryDrop(e, FurnaceUiComponent.ProductionResourceInventory);
                 else
-                    OnInventoryDrop(e, furnaceUIComponent.InputInventory);
+                    OnInventoryDrop(e, FurnaceUiComponent.InputInventory);
             };
 
 
@@ -127,37 +136,35 @@ namespace OctoAwesome.Basics.UI.Screens
             if (uiComponent is not FurnaceUIComponent transferComponent)
                 return;
 
-            if (subscription is not null)
-                subscription.Dispose();
+            subscription?.Dispose();
 
-            this.furnaceUIComponent = transferComponent;
+            FurnaceUiComponent = transferComponent;
             subscription = transferComponent.Changes.Subscribe(InventoryChanged);
         }
 
         /// <inheritdoc/>
         public override void RemoveUiComponent(UIComponent uiComponent)
         {
-            if (uiComponent != furnaceUIComponent)
+            if (uiComponent != FurnaceUiComponent)
                 return;
 
-            if (subscription is not null)
-                subscription.Dispose();
+            subscription?.Dispose();
 
-            furnaceUIComponent = null;
+            furnaceUiComponent = null;
             base.RemoveUiComponent(uiComponent);
         }
 
         private void InventoryChanged(Unit unit)
         {
-            if (furnaceUIComponent.PrimaryUiKey != ScreenKey)
+            if (FurnaceUiComponent.PrimaryUiKey != ScreenKey)
                 return;
 
-            if (furnaceUIComponent.Show && ScreenManager.ActiveScreen != this)
+            if (FurnaceUiComponent.Show && ScreenManager.ActiveScreen != this)
             {
                 _ = ScreenManager.NavigateToScreen(this);
             }
 
-            Rebuild(furnaceUIComponent.InventoryA, furnaceUIComponent.InputInventory, furnaceUIComponent.OutputInventory, furnaceUIComponent.ProductionResourceInventory);
+            Rebuild(FurnaceUiComponent.InventoryA, FurnaceUiComponent.InputInventory, FurnaceUiComponent.OutputInventory, FurnaceUiComponent.ProductionResourceInventory);
         }
 
         private void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
@@ -166,11 +173,11 @@ namespace OctoAwesome.Basics.UI.Screens
                 return;
 
 
-            if (furnaceUIComponent is not null)
+            if (furnaceUiComponent is not null)
             {
                 e.Handled = true;
                 var source = slot.GetParentInventory();
-                furnaceUIComponent.Transfer(source, target, slot);
+                FurnaceUiComponent.Transfer(source, target, slot);
             }
         }
 
@@ -204,7 +211,7 @@ namespace OctoAwesome.Basics.UI.Screens
         ///<inheritdoc/>
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
-            furnaceUIComponent.OnClose(ScreenKey);
+            FurnaceUiComponent.OnClose(ScreenKey);
             base.OnNavigatedFrom(args);
             Closed?.Invoke(this, args);
         }

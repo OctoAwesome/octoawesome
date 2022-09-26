@@ -45,18 +45,13 @@ namespace OctoAwesome.Caching
         {
             using var @lock = lockSemaphore.EnterExclusiveScope();
 
-            var returnValue = base.Remove(key, out positionComponent);
-
-            if (returnValue)
+            if (base.Remove(key, out positionComponent))
             {
-                return returnValue
-                     && positionComponentByCoor
+                return positionComponentByCoor
                          .Remove(positionComponent.Position);
             }
-            else
-            {
-                return returnValue;
-            }
+
+            return false;
         }
 
         /// <inheritdoc />
@@ -108,7 +103,8 @@ namespace OctoAwesome.Caching
         }
 
         /// <inheritdoc />
-        public override TValue Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+        public override TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+            where TValue : default
             => key switch
             {
                 Guid guid => GenericCaster<PositionComponent, TValue>.Cast(GetBy(guid, loadingMode)),

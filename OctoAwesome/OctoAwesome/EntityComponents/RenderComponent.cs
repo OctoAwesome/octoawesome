@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Components;
 using System.IO;
+using OctoAwesome.Extension;
+using OctoAwesome.Pooling;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -8,20 +10,34 @@ namespace OctoAwesome.EntityComponents
     /// </summary>
     public class RenderComponent : Component, IEntityComponent, IFunctionalBlockComponent
     {
+        private string? name, modelName, textureName;
+
         /// <summary>
         /// Gets or sets the name of the entity to render.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get => NullabilityHelper.NotNullAssert(name, $"{nameof(Name)} was not initialized!");
+            set => name = NullabilityHelper.NotNullAssert(value, $"{nameof(Name)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets or sets the name of the model to render for this entity.
         /// </summary>
-        public string ModelName { get; set; }
+        public string ModelName
+        {
+            get => NullabilityHelper.NotNullAssert(modelName, $"{nameof(ModelName)} was not initialized!");
+            set => modelName = NullabilityHelper.NotNullAssert(value, $"{nameof(ModelName)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets or sets the name of the texture to render on the model.
         /// </summary>
-        public string TextureName { get; set; }
+        public string TextureName
+        {
+            get => NullabilityHelper.NotNullAssert(textureName, $"{nameof(TextureName)} was not initialized!");
+            set => textureName = NullabilityHelper.NotNullAssert(value, $"{nameof(TextureName)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets or sets the rotation of the z-axis of the model.

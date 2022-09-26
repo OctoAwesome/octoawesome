@@ -76,12 +76,11 @@ namespace OctoAwesome.Basics.Noise
             }
         }
 
-        private void CreatePermutations()
+        private byte[] CreatePermutations()
         {
             var rnd = new Random(Seed);
             byte[] temp = range.OrderBy(a => rnd.Next()).ToArray();
-            permutations = temp.Concat(temp).ToArray();
-
+            return temp.Concat(temp).ToArray();
         }
 
         private float MaxValue { get; set; }
@@ -115,7 +114,7 @@ namespace OctoAwesome.Basics.Noise
             FrequencyZ = frequencyZ;
             FrequencyW = frequencyW;
             Factor = 1;
-            CreatePermutations();
+            permutations = CreatePermutations();
         }
 
         #region NoiseMaps

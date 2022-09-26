@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using System;
+using System.Diagnostics;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome
 {
@@ -50,7 +52,15 @@ namespace OctoAwesome
         /// The size of a chunk as <see cref="Index3"/> in blocks.
         /// </summary>
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
-        private IChunkColumn chunkColumn;
+        private IChunkColumn? chunkColumnField;
+        private IPlanet? planet;
+        private Index3 index;
+
+        private IChunkColumn ChunkColumn
+        {
+            get => NullabilityHelper.NotNullAssert(chunkColumnField, $"{nameof(ChunkColumn)} was not initialized!");
+            set => chunkColumnField = NullabilityHelper.NotNullAssert(value, $"{nameof(ChunkColumn)} cannot be initialized with null!");
+        }
 
         /// <inheritdoc />
         public ushort[] Blocks { get; }
@@ -59,10 +69,22 @@ namespace OctoAwesome
         public int[] MetaData { get; }
 
         /// <inheritdoc />
-        public Index3 Index { get; private set; }
+        public Index3 Index
+        {
+            get
+            {
+                Debug.Assert(planet is not null, $"{nameof(IPoolElement)} was not initialized!");
+                return index;
+            }
+            private set => index = value;
+        }
 
         /// <inheritdoc />
-        public IPlanet Planet { get; private set; }
+        public IPlanet Planet
+        {
+            get => NullabilityHelper.NotNullAssert(planet, $"{nameof(IPoolElement)} was not initialized!");
+            private set => planet = NullabilityHelper.NotNullAssert(value, $"{nameof(Planet)} cannot be initialized with null!");
+        }
 
         /// <inheritdoc />
         public int Version { get; set; }
@@ -165,11 +187,11 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public void SetColumn(IChunkColumn chunkColumn)
-            => this.chunkColumn = chunkColumn;
+            => ChunkColumn = chunkColumn;
 
         /// <inheritdoc />
         public void OnUpdate(SerializableNotification notification)
-            => chunkColumn?.OnUpdate(notification);
+            => chunkColumnField?.OnUpdate(notification);
 
         /// <inheritdoc />
         public void Update(SerializableNotification notification)
@@ -269,7 +291,7 @@ namespace OctoAwesome
         public void Release()
         {
             Index = default;
-            Planet = default;
+            planet = default;
         }
     }
 }

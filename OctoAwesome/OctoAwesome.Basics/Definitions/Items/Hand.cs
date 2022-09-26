@@ -1,4 +1,8 @@
-﻿namespace OctoAwesome.Definitions.Items
+﻿using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
+
+namespace OctoAwesome.Basics.Definitions.Items
 {
     /// <summary>
     /// Item placeholder for the hand(no item selected).
@@ -6,7 +10,7 @@
     public class Hand : Item
     {
         /// <summary>
-        /// Get's the singleton hand instance
+        /// Gets the singleton hand instance
         /// </summary>
         public static readonly Hand Instance = new Hand(new HandDefinition());
 
@@ -14,7 +18,7 @@
         /// Initializes a new instance of the <see cref="Hand"/> class.
         /// </summary>
         /// <param name="handDefinition">The item definition for this item.</param>
-        public Hand(HandDefinition handDefinition) : base(handDefinition, null)
+        private Hand(HandDefinition handDefinition) : base(handDefinition, new PlayerMeatMaterialDefinition())
         {
 
         }

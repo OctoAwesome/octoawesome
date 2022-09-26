@@ -90,6 +90,9 @@ namespace OctoAwesome.Network
                 IsServerSide = true
             };
 
+            cancellationTokenSource = new CancellationTokenSource();
+            var token = cancellationTokenSource.Token;
+            backgroundTask = new Task(SimulationLoop, token, token, TaskCreationOptions.LongRunning);
         }
 
         /// <summary>
@@ -99,10 +102,6 @@ namespace OctoAwesome.Network
         {
             IsRunning = true;
             GameTime = new GameTime();
-
-            cancellationTokenSource = new CancellationTokenSource();
-            var token = cancellationTokenSource.Token;
-            backgroundTask = new Task(SimulationLoop, token, token, TaskCreationOptions.LongRunning);
 
             //TODO: Load and Save logic for Server (Multiple games etc.....)
             var universe = settings.Get<string>("LastUniverse");
@@ -131,8 +130,8 @@ namespace OctoAwesome.Network
         {
             IsRunning = false;
             Simulation.ExitGame();
-            cancellationTokenSource?.Cancel();
-            cancellationTokenSource?.Dispose();
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
         }
 
         /// <summary>
@@ -140,7 +139,7 @@ namespace OctoAwesome.Network
         /// </summary>
         /// <returns>The currently loaded universe.</returns>
         public IUniverse GetUniverse()
-            => ResourceManager.CurrentUniverse;
+            => NullabilityHelper.NotNullAssert(ResourceManager.CurrentUniverse);
 
         /// <summary>
         /// Creates a new universe.

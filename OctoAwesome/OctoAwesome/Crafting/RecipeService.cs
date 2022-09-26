@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -10,12 +11,12 @@ namespace OctoAwesome.Crafting;
 /// </summary>
 public class RecipeService
 {
+    private readonly List<Recipe> recipes = new();
+
     /// <summary>
     /// Gets a collection of recipes managed by this service.
     /// </summary>
-    public IReadOnlyCollection<Recipe> Recipes { get; }
-
-    readonly List<Recipe> recipes = new();
+    public IReadOnlyCollection<Recipe> Recipes => recipes;
 
     /// <summary>
     /// Load recipes from the given paths.
@@ -32,6 +33,7 @@ public class RecipeService
             {
                 var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
                 //TODO Check validity of recipe before adding and write exception otherwise
+                Debug.Assert(recipe != null, nameof(recipe) + " != null");
                 this.recipes.Add(recipe);
             }
         }

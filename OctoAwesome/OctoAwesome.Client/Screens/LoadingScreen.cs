@@ -32,8 +32,11 @@ namespace OctoAwesome.Client.Screens
             tokenSource = new CancellationTokenSource();
 
             Title = "Loading";
+            
+            var background = assets.LoadTexture("background_new");
 
-            Background = new TextureBrush(assets.LoadTexture("background_new"), TextureBrushMode.Stretch);
+            Debug.Assert(background != null, nameof(background) + " != null");
+            Background = new TextureBrush(background, TextureBrushMode.Stretch);
 
             //Main Panel
             var mainStack = new Grid();
@@ -106,7 +109,7 @@ namespace OctoAwesome.Client.Screens
             {
                 tokenSource.Cancel();
                 tokenSource.Dispose();
-                ScreenManager.Player.SetEntity(null);
+                ScreenManager.Player.Unload();
                 ScreenManager.Game.Simulation.ExitGame();
                 gameScreen.Unload();
                 ScreenManager.NavigateBack();

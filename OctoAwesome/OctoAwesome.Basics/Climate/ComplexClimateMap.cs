@@ -1,7 +1,6 @@
 ﻿using OctoAwesome.Basics.Noise;
 
 using System;
-using OctoAwesome.Basics.Noise;
 
 namespace OctoAwesome.Basics.Climate
 {

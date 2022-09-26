@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Basics.EntityComponents;
+﻿using System.Diagnostics;
+using OctoAwesome.Basics.EntityComponents;
 using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Components;
@@ -35,10 +36,13 @@ namespace OctoAwesome.Basics.SimulationComponents
 
         /// <inheritdoc />
         protected override GravityEntity OnAdd(Entity entity)
-            => new GravityEntity(
-                entity,
-                entity.Components.GetComponent<GravityComponent>(),
-                entity.Components.GetComponent<BodyComponent>());
+        {
+            var gravComp = entity.Components.GetComponent<GravityComponent>();
+            var bodyComp = entity.Components.GetComponent<BodyComponent>();
+            Debug.Assert(gravComp != null, nameof(gravComp) + $" != null. Entity without {nameof(GravityComponent)} cannot be a {nameof(GravityEntity)}.");
+            Debug.Assert(bodyComp != null, nameof(bodyComp) + $" != null. Entity without {nameof(BodyComponent)} cannot be a affected by gravity.");
+            return new GravityEntity(entity, gravComp, bodyComp);
+        }
 
         /// <summary>
         /// Wrapper for gravity influenced entities, to cache components.

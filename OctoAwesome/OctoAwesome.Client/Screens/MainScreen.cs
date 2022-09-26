@@ -17,7 +17,9 @@ namespace OctoAwesome.Client.Screens
 
             Padding = new Border(0, 0, 0, 0);
 
-            Background = new TextureBrush(assets.LoadTexture("background"), TextureBrushMode.Stretch);
+            var background = assets.LoadTexture("background");
+            Debug.Assert(background != null, nameof(background) + " != null");
+            Background = new TextureBrush(background, TextureBrushMode.Stretch);
 
             StackPanel stack = new StackPanel();
             Controls.Add(stack);

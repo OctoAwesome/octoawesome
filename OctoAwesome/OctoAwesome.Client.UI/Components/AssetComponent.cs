@@ -3,6 +3,7 @@ using engenious.Graphics;
 using engenious.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -84,7 +85,7 @@ namespace OctoAwesome.Client.UI.Components
                     var packPathes = activePackPathes.Split(';');
                     foreach (var packPath in packPathes)
                     {
-                        ResourcePack resourcePack = loadedPacks.FirstOrDefault(p => p.Path.Equals(packPath));
+                        var resourcePack = loadedPacks.FirstOrDefault(p => p.Path.Equals(packPath));
                         if (resourcePack != null)
                             toLoad.Add(resourcePack);
                     }
@@ -109,8 +110,9 @@ namespace OctoAwesome.Client.UI.Components
                         // Scan info File
                         var serializer = new XmlSerializer(typeof(ResourcePack));
                         using Stream stream = File.OpenRead(Path.Combine(directory, INFOFILENAME));
-                        var pack = (ResourcePack)serializer.Deserialize(stream);
-                        pack!.Path = info.FullName;
+                        var pack = (ResourcePack?)serializer.Deserialize(stream);
+                        Debug.Assert(pack != null, nameof(pack) + " != null");
+                        pack.Path = info.FullName;
                         loadedPacks.Add(pack);
                     }
                     else
@@ -175,9 +177,9 @@ namespace OctoAwesome.Client.UI.Components
         /// </summary>
         /// <param name="key">The key name to load the texture for.</param>
         /// <returns>The loaded texture from the resource pack.</returns>
-        public Texture2D LoadTexture(string key)
+        public Texture2D? LoadTexture(string key)
         {
-            Texture2D texture2D = default;
+            Texture2D? texture2D = default;
 
             if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
                 return Load(typeof(AssetComponent), key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
@@ -196,9 +198,9 @@ namespace OctoAwesome.Client.UI.Components
         /// <param name="baseType">The base type for the assembly to load the resource from.</param>
         /// <param name="key">The key name to load the texture for.</param>
         /// <returns>The loaded texture from the resource pack.</returns>
-        public Texture2D LoadTexture(Type baseType, string key)
+        public Texture2D? LoadTexture(Type baseType, string key)
         {
-            Texture2D texture2D = default;
+            Texture2D? texture2D = default;
 
             if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
                 return Load(baseType, key, textureTypes, textures, (stream) => Texture2D.FromStream(GraphicsDevice, stream));
@@ -218,9 +220,9 @@ namespace OctoAwesome.Client.UI.Components
         /// <param name="baseType">The base type for the assembly to load the resource from.</param>
         /// <param name="key">The key name to load the texture for.</param>
         /// <returns>The loaded bitmap from the resource pack.</returns>
-        public Image LoadBitmap(Type baseType, string key)
+        public Image? LoadBitmap(Type baseType, string key)
         {
-            Image bitmap = default;
+            Image? bitmap = default;
 
             if (screenComponent.GraphicsDevice.UiThread.IsOnGraphicsThread())
                 return Load<Image>(baseType, key, textureTypes, bitmaps, (stream) => Image.Load(stream));
@@ -240,7 +242,7 @@ namespace OctoAwesome.Client.UI.Components
         /// <param name="key">The key name to load the texture for.</param>
         /// <param name="fileTypes">The valid file types to load from disk as a fallback option.</param>
         /// <returns>The loaded bitmap from the resource pack.</returns>
-        public Stream LoadStream(Type baseType, string key, params string[] fileTypes)
+        public Stream? LoadStream(Type baseType, string key, params string[] fileTypes)
         {
             return Load(baseType, key, fileTypes, null, (stream) =>
             {
@@ -257,7 +259,7 @@ namespace OctoAwesome.Client.UI.Components
             });
         }
 
-        private T Load<T>(Type baseType, string key, string[] fileTypes, Dictionary<string, T> cache, Func<Stream, T> callback)
+        private T? Load<T>(Type baseType, string key, string[] fileTypes, Dictionary<string, T>? cache, Func<Stream, T> callback)
         {
             if (baseType == null)
                 throw new ArgumentNullException();
@@ -315,8 +317,13 @@ namespace OctoAwesome.Client.UI.Components
 
             if (result == null)
                 // In worst case scenario: load the fallback checker-board texture
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("OctoAwesome.Client.Assets.FallbackTexture.png"))
-                    result = callback(stream);
+            {
+                using var stream = Assembly.GetExecutingAssembly()
+                    .GetManifestResourceStream("OctoAwesome.Client.Assets.FallbackTexture.png");
+                Debug.Assert(stream != null, nameof(stream) + " != null");
+                result = callback(stream);
+            }
+
             lock (textures)
 
                 // Save to cache
@@ -326,9 +333,9 @@ namespace OctoAwesome.Client.UI.Components
             return result;
         }
 
-        private TOut LoadFrom<TOut>(Type baseType, string ressourceKey, string[] fileExtensions, Func<Stream, TOut> callback, Func<string, string> replaceAssemblyName = null)
+        private TOut? LoadFrom<TOut>(Type baseType, string resourceKey, string[] fileExtensions, Func<Stream, TOut> callback, Func<string, string>? replaceAssemblyName = null)
         {
-            var fullkey = $"{baseType.Namespace}.{ressourceKey}";
+            var fullkey = $"{baseType.Namespace}.{resourceKey}";
             var assemblyName = baseType.Assembly.GetName().Name!;
             var resKey = fullkey.Replace(assemblyName, "");
 

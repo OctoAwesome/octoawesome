@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.EntityComponents;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome
 {
@@ -65,16 +66,12 @@ namespace OctoAwesome
                 {
                     var position = entity.Components.GetComponent<PositionComponent>();
 
+                    Debug.Assert(position != null, nameof(position) + " != null");
                     if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
                     {
-                        yield return new FailEntityChunkArgs()
-                        {
-                            Entity = entity,
-                            CurrentChunk = column.Index,
-                            CurrentPlanet = column.Planet,
-                            TargetChunk = new Index2(position.Position.ChunkIndex),
-                            TargetPlanet = resourceManager.GetPlanet(position.Position.Planet),
-                        };
+                        yield return new FailEntityChunkArgs(entity: entity, currentChunk: column.Index,
+                            currentPlanet: column.Planet, targetChunk: new Index2(position.Position.ChunkIndex),
+                            targetPlanet: resourceManager.GetPlanet(position.Position.Planet));
                     }
                 }
             }

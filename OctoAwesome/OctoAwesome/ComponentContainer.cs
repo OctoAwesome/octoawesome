@@ -8,6 +8,7 @@ using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace OctoAwesome
@@ -84,7 +85,7 @@ namespace OctoAwesome
         public virtual void Push(SerializableNotification notification)
         {
             foreach (var component in notificationComponents)
-                component?.OnNotification(notification);
+                component.OnNotification(notification);
         }
 
         /// <inheritdoc />
@@ -96,7 +97,7 @@ namespace OctoAwesome
         /// <inheritdoc />
         public abstract bool ContainsComponent<T>();
         /// <inheritdoc />
-        public abstract T GetComponent<T>();
+        public abstract T? GetComponent<T>();
 
     }
     /// <summary>
@@ -199,7 +200,7 @@ namespace OctoAwesome
             {
                 if (component is LocalChunkCacheComponent localChunkCache)
                 {
-                    if (localChunkCache.LocalChunkCache != null)
+                    if (!localChunkCache.Enabled)
                         return;
 
                     var positionComponent = Components.GetComponent<PositionComponent>();
@@ -242,7 +243,7 @@ namespace OctoAwesome
         /// <typeparam name="T">The Type of the component to search for</typeparam>
         /// <param name="component">The component to be returned</param>
         /// <returns>True if the component was found, otherwise false</returns>
-        public bool TryGetComponent<T>(out T component) where T : TComponent
+        public bool TryGetComponent<T>([MaybeNullWhen(false)] out T component) where T : TComponent
             => Components.TryGetComponent<T>(out component);
 
 

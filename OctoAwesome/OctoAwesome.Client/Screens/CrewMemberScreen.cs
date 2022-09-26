@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using engenious.UI;
 using OctoAwesome.Client.Components;
@@ -29,7 +30,8 @@ namespace OctoAwesome.Client.Screens
             SetDefaultBackground();
 
             //The Panel
-            Texture2D panelBackground = assets.LoadTexture("panel");
+            var panelBackground = assets.LoadTexture("panel");
+            Debug.Assert(panelBackground != null, nameof(panelBackground) + " != null");
             Panel panel = new Panel()
             {
                 MaxWidth = 750,

@@ -2,6 +2,7 @@
 using OctoAwesome.Serialization;
 using System;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -12,10 +13,16 @@ namespace OctoAwesome.EntityComponents
     public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification>
         where T : ComponentContainer
     {
+        private T? instance;
+
         /// <summary>
         /// Gets the reference to the <see cref="ComponentContainer{TComponent}"/>.
         /// </summary>
-        public T Instance { get; private set; }
+        public T Instance
+        {
+            get => NullabilityHelper.NotNullAssert(instance, $"{nameof(Instance)} was not initialized!");
+            private set => instance = NullabilityHelper.NotNullAssert(value, $"{nameof(Instance)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets the unique identifier for the <see cref="Instance"/>.
@@ -38,26 +45,26 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Sets the component container instance (<see cref="Instance"/>).
         /// </summary>
-        /// <param name="instance">The component container instance to set to.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="instance"/> is <c>null</c>.</exception>
+        /// <param name="value">The component container instance to set to.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="NotSupportedException">Thrown if the <see cref="Instance"/> was already set.</exception>
-        public void SetInstance(T instance)
+        public void SetInstance(T value)
         {
-            if (instance is null)
-                throw new ArgumentNullException(nameof(instance));
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
 
-            if (Instance?.Id == instance.Id)
+            if (instance?.Id == value.Id)
                 return;
 
-            var type = instance.GetType();
-            if (Instance != null)
+            var type = value.GetType();
+            if (instance != null)
             {
                 throw new NotSupportedException("Can not change the " + type.Name);
             }
 
             InstanceTypeId = type.SerializationId();
-            InstanceId = instance.Id;
-            Instance = instance;
+            InstanceId = value.Id;
+            Instance = value;
             OnSetInstance();
         }
 
@@ -95,7 +102,7 @@ namespace OctoAwesome.EntityComponents
         /// <inheritdoc />
         public virtual void Push(SerializableNotification notification)
         {
-            Instance?.OnNotification(notification);
+            instance?.OnNotification(notification);
         }
 
     }

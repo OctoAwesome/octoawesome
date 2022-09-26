@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Pooling;
+﻿using OctoAwesome.Extension;
+using OctoAwesome.Pooling;
 
 namespace OctoAwesome.Notifications
 {
@@ -12,7 +13,12 @@ namespace OctoAwesome.Notifications
         /// </summary>
         public uint SenderId { get; set; }
 
-        private IPool pool;
+        private IPool? pool;
+        private IPool Pool
+        {
+            get => NullabilityHelper.NotNullAssert(pool, $"{nameof(IPoolElement)} was not initialized!");
+            set => pool = NullabilityHelper.NotNullAssert(value, $"{nameof(Pool)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Match this notification to a specific filter.
@@ -28,7 +34,7 @@ namespace OctoAwesome.Notifications
         /// <inheritdoc />
         public void Init(IPool pool)
         {
-            this.pool = pool;
+            Pool = pool;
             OnInit();
         }
 
@@ -37,7 +43,8 @@ namespace OctoAwesome.Notifications
         {
             SenderId = 0;
             OnRelease();
-            pool.Return(this);
+            Pool.Return(this);
+            pool = null;
         }
 
         /// <summary>

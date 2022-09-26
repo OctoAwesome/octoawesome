@@ -38,8 +38,6 @@ namespace OctoAwesome.Tests
             Loaded = new List<PlanetIndex3>();
         }
 
-        public event EventHandler<IChunkColumn> ChunkColumnChanged;
-
         public void Reset()
         {
             LoadCounter = 0;

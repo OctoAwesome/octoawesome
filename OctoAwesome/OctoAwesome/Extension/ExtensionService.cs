@@ -4,6 +4,7 @@ using OctoAwesome.Database;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,13 +101,12 @@ public class ExtensionService
 
             foreach (var extender in extenderInformation.Extenders)
             {
-                if (extender is IExtensionExtender genericExtender)
-                {
-                    var method = extender.GetType().GetMethod("RegisterExtender");
-                    var genMethod = method.MakeGenericMethod(typeof(T));
+                var extenderType = extender.GetType();
+                var method = extenderType.GetMethod("RegisterExtender");
+                Debug.Assert(method != null, $"RegisterExtender method not found on {extenderType}!");
+                var genMethod = method.MakeGenericMethod(typeof(T));
 
-                    genMethod.Invoke(extender, new object[] { extend });
-                }
+                genMethod.Invoke(extender, new object[] { extend });
             }
         }
     }
@@ -134,6 +134,7 @@ public class ExtensionService
     /// <param name="toExtend">The instance to extend</param>
     public void ExecuteExtender<T>(T toExtend)
     {
+        Debug.Assert(toExtend != null, nameof(toExtend) + " != null");
         foreach (var key in GetAllBaseTypesAndInterfaces(typeof(T)))
         {
             if (!extender.TryGetValue(key, out var extenderInformation))
@@ -143,13 +144,12 @@ public class ExtensionService
 
             foreach (var extender in extenderInformation.Extenders)
             {
-                if (extender is IExtensionExtender genericExtender)
-                {
-                    var method = extender.GetType().GetMethod("Execute");
-                    var genMethod = method.MakeGenericMethod(typeof(T));
+                var extenderType = extender.GetType();
+                var method = extenderType.GetMethod("Execute");
+                Debug.Assert(method != null, $"RegisterExtender method not found on {extenderType}!");
+                var genMethod = method.MakeGenericMethod(typeof(T));
 
-                    genMethod.Invoke(extender, new object[] { toExtend });
-                }
+                genMethod.Invoke(extender, new object[] { toExtend });
             }
         }
     }

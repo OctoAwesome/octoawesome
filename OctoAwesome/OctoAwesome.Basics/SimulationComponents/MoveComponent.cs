@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
@@ -21,11 +22,18 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             var poscomp = entity.Components.GetComponent<PositionComponent>();
             var movecomp = entity.Components.GetComponent<MoveableComponent>();
-            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
+            var chunkCacheComponent = entity.Components.GetComponent<LocalChunkCacheComponent>();
 
-            var planet = cache.Planet;
+
+            Debug.Assert(poscomp != null, nameof(poscomp) + " != null");
+            Debug.Assert(movecomp != null, nameof(movecomp) + " != null");
+            Debug.Assert(chunkCacheComponent != null, nameof(chunkCacheComponent) + " != null");
+
+            var chunkCache = chunkCacheComponent.LocalChunkCache;
+
+            var planet = chunkCache.Planet;
             poscomp.Position.NormalizeChunkIndexXY(planet.Size);
-            cache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
+            chunkCache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
             return new SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>(entity, movecomp, poscomp);
         }
 
@@ -35,9 +43,6 @@ namespace OctoAwesome.Basics.SimulationComponents
             var entity = value.Value;
             var movecomp = value.Component1;
             var poscomp = value.Component2;
-
-            if (movecomp is null || poscomp is null)
-                return;
 
             if (entity.Id == Guid.Empty)
                 return;
@@ -49,7 +54,10 @@ namespace OctoAwesome.Basics.SimulationComponents
                 CheckBoxCollision(gameTime, entity, movecomp, poscomp);
             }
 
-            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
+            var cacheComp = entity.Components.GetComponent<LocalChunkCacheComponent>();
+
+            Debug.Assert(cacheComp != null, nameof(cacheComp) + " != null");
+            var cache = cacheComp.LocalChunkCache;
 
             var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(cache.Planet.Size);
@@ -79,17 +87,15 @@ namespace OctoAwesome.Basics.SimulationComponents
             //Direction
             if (movecomp.PositionMove.LengthSquared != 0)
             {
-                poscomp.Direction = (float)MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
+                poscomp.Direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
             }
         }
 
         private void CheckBoxCollision(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
         {
-            if (!entity.Components.ContainsComponent<BodyComponent>())
+            if (!entity.Components.TryGetComponent<BodyComponent>(out var bc)
+                || !entity.Components.TryGetComponent<LocalChunkCacheComponent>(out var localChunkCacheComponent))
                 return;
-
-            BodyComponent bc = entity.Components.GetComponent<BodyComponent>();
-
 
             Coordinate position = poscomp.Position;
 
@@ -120,7 +126,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             bool abort = false;
 
-            var cache = entity.Components.GetComponent<LocalChunkCacheComponent>().LocalChunkCache;
+            var cache = localChunkCacheComponent.LocalChunkCache;
 
             for (int z = minz; z <= maxz && !abort; z++)
             {

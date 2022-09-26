@@ -21,15 +21,6 @@ namespace OctoAwesome
     /// </summary>
     public abstract class FunctionalBlock : ComponentContainer<IFunctionalBlockComponent>
     {
-        /// <summary>
-        /// Interact with this block.
-        /// </summary>
-        /// <param name="gameTime">The game time.</param>
-        /// <param name="entity">The entity that interacts with this block.</param>
-        public void Interact(GameTime gameTime, Entity entity)
-        {
-            OnInteract(gameTime, entity);
-        }
 
     }
 }

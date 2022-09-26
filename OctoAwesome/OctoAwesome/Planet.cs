@@ -40,7 +40,7 @@ namespace OctoAwesome
         public float Gravity { get; protected set; }
 
         /// <inheritdoc />
-        public IMapGenerator Generator { get; set; }
+        public IMapGenerator Generator { get; }
 
         /// <inheritdoc />
         public IGlobalChunkCache GlobalChunkCache { get; }
@@ -58,8 +58,9 @@ namespace OctoAwesome
         /// <param name="id">The id of the planet.</param>
         /// <param name="universe">The <see cref="Guid"/> of the universe.</param>
         /// <param name="size">Size number of chunks in dualistic logarithmic scale.</param>
+        /// <param name="generator">The map generator to use for generating the planet.</param>
         /// <param name="seed">The seed to generate data with.</param>
-        public Planet(int id, Guid universe, Index3 size, int seed) : this()
+        public Planet(int id, Guid universe, Index3 size, IMapGenerator generator, int seed) : this(generator)
         {
             Id = id;
             Universe = universe;
@@ -73,8 +74,11 @@ namespace OctoAwesome
         /// <summary>
         /// Initializes a new instance of the <see cref="Planet"/> class.
         /// </summary>
-        public Planet()
+        /// <param name="generator">The map generator to use for generating the planet.</param>
+        public Planet(IMapGenerator generator)
         {
+            Generator = generator;
+
             GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>(), TypeContainer.Get<SerializationIdTypeProvider>());
         }
 

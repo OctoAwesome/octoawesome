@@ -211,7 +211,7 @@ namespace OctoAwesome
 
 
         /// <inheritdoc/>
-        public override bool Equals(object obj) => obj is Coordinate coordinate && Equals(coordinate);
+        public override bool Equals(object? obj) => obj is Coordinate coordinate && Equals(coordinate);
         /// <inheritdoc/>
         public bool Equals(Coordinate other) => Planet == other.Planet && block.Equals(other.block) && position.Equals(other.position);
         /// <inheritdoc/>

@@ -22,11 +22,6 @@ public sealed class FurnaceControl : Panel
 
     internal InventoryControl inputSlotPanel, outputSlotPanel, resourceSlotPanel;
 
-    /// <summary>
-    /// Gibt den aktuell selektierten Slot an.
-    /// </summary>
-    public InventorySlot HoveredSlot { get; private set; }
-
     private Grid grid;
     private readonly AssetComponent assets;
 

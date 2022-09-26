@@ -8,7 +8,16 @@ namespace OctoAwesome.UI.Components;
 public class UiKeyComponent : Component, IEntityComponent, IFunctionalBlockComponent
 {
     /// <summary>
-    /// Gets or sets the primary key.
+    /// Initializes a new instance of the <see cref="UiKeyComponent"/> class.
     /// </summary>
-    public string PrimaryKey { get; set; }
+    /// <param name="primaryKey">The primary key.</param>
+    public UiKeyComponent(string primaryKey)
+    {
+        PrimaryKey = primaryKey;
+    }
+
+    /// <summary>
+    /// Gets the primary key.
+    /// </summary>
+    public string PrimaryKey { get; }
 }

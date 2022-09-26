@@ -74,13 +74,13 @@ namespace OctoAwesome.Client.Screens
                 if (string.IsNullOrEmpty(nameInput.Text))
                     return;
 
-                ScreenManager.Player.SetEntity(null);
+                ScreenManager.Player.Unload();
 
                 Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
                 settings.Set("LastUniverse", guid.ToString());
 
                 Player player = ScreenManager.Game.Simulation.LoginPlayer("");
-                ScreenManager.Game.Player.SetEntity(player);
+                ScreenManager.Game.Player.Load(player);
 
                 ScreenManager.NavigateToScreen(new LoadingScreen(assets));
             };

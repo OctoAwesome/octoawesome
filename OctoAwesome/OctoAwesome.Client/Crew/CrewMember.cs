@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using System.IO;
 using OctoAwesome.Client.Components;
 using System;
+using System.Diagnostics;
 using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Crew
@@ -115,22 +116,23 @@ namespace OctoAwesome.Client.Crew
 
         internal static List<CrewMember> GetCrew(AssetComponent assets)
         {
-            using (Stream stream = assets.LoadStream(typeof(CrewMember), "Crew.crew", "xml"))
+            using var stream = assets.LoadStream(typeof(CrewMember), "Crew.crew", "xml");
+            try
             {
-                try
+                if (stream is not null)
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<CrewMember>));
+                    var serializer = new XmlSerializer(typeof(List<CrewMember>));
                     var res = serializer.Deserialize(stream);
                     if (res is List<CrewMember> crewMembers)
                     {
                         return crewMembers;
                     }
                 }
-                catch (Exception)
-                { }
-
-                return new List<CrewMember>();
             }
+            catch (Exception)
+            { }
+
+            return new List<CrewMember>();
         }
 
         /// <inheritdoc />

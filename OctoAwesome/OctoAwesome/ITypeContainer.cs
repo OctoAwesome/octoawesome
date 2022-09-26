@@ -26,23 +26,99 @@ namespace OctoAwesome
         /// <remarks>The type does not need to be registered, but the constructor parameter types do.</remarks>
         T? CreateObject<T>() where T : class;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="registrar"></param>
+        /// <param name="type"></param>
+        /// <param name="instanceBehavior"></param>
         void Register(Type registrar, Type type, InstanceBehavior instanceBehavior);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceBehavior"></param>
+        /// <typeparam name="T"></typeparam>
         void Register<T>(InstanceBehavior instanceBehavior = InstanceBehavior.Instance) where T : class;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceBehavior"></param>
+        /// <typeparam name="TRegistrar"></typeparam>
+        /// <typeparam name="T"></typeparam>
         void Register<TRegistrar, T>(InstanceBehavior instanceBehavior = InstanceBehavior.Instance) where T : class;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="registrar"></param>
+        /// <param name="type"></param>
+        /// <param name="singleton"></param>
         void Register(Type registrar, Type type, object singleton);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="singleton"></param>
+        /// <typeparam name="T"></typeparam>
         void Register<T>(T singleton) where T : class;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="singleton"></param>
+        /// <typeparam name="TRegistrar"></typeparam>
+        /// <typeparam name="T"></typeparam>
         void Register<TRegistrar, T>(object singleton) where T : class;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         bool TryGet(Type type, [MaybeNullWhen(false)] out object instance);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         bool TryGet<T>([MaybeNullWhen(false)] out T instance) where T : class;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         object Get(Type type);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         T Get<T>() where T : class;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         object GetUnregistered(Type type);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         T GetUnregistered<T>() where T : class;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         object? GetOrNull(Type type);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         T? GetOrNull<T>() where T : class;
     }
 }

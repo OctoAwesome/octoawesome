@@ -4,6 +4,7 @@ using OctoAwesome.UI.Components;
 
 using System.Diagnostics;
 using System.Linq;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics.UI.Components;
 
@@ -15,18 +16,26 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     /// <summary>
     /// Gets the first inventory to transfer to and from.
     /// </summary>
-    public InventoryComponent InventoryA { get; private set; }
-    
+    public InventoryComponent InventoryA
+    {
+        get => NullabilityHelper.NotNullAssert(inventoryA, $"{nameof(InventoryA)} was not initialized!");
+        private set => inventoryA = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryA)} cannot be initialized with null!");
+    }
+
     /// <summary>
     /// Gets a value indicating the version of the <see cref="InventoryA"/> value,
     /// which is changed when <see cref="InventoryA"/> has changed.
     /// </summary>
     public int VersionA { get; private set; }
-    
+
     /// <summary>
     /// Gets the second inventory to transfer to and from.
     /// </summary>
-    public InventoryComponent InventoryB { get; private set; }
+    public InventoryComponent InventoryB
+    {
+        get => NullabilityHelper.NotNullAssert(inventoryB, $"{nameof(InventoryB)} was not initialized!");
+        private set => inventoryB = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryB)} cannot be initialized with null!");
+    }
 
     /// <summary>
     /// Gets a value indicating the version of the <see cref="InventoryB"/> value,
@@ -35,14 +44,16 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     public int VersionB { get; private set; }
 
     private bool show = false;
+    private InventoryComponent? inventoryA;
+    private InventoryComponent? inventoryB;
 
     /// <inheritdoc/>
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
         if (show == Show
             && (component2.Targets.Count == 0
-                || ((InventoryA?.Version ?? -1) == VersionA
-                    && (InventoryB?.Version ?? -1) == VersionB))
+                || ((inventoryA?.Version ?? -1) == VersionA
+                    && (inventoryB?.Version ?? -1) == VersionB))
             || PrimaryUiKey != "Transfer")
                 
         {
@@ -65,13 +76,14 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     /// <param name="source">The source inventory to transfer the inventory slot content from.</param>
     /// <param name="target">The target inventory to transfer the inventory slot content to.</param>
     /// <param name="slot">The slot to transfer.</param>
-    public virtual void Transfer(InventoryComponent source, InventoryComponent target, InventorySlot slot)
+    public virtual void Transfer(InventoryComponent source, InventoryComponent target, IInventorySlot slot)
     {
-
-        var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
+        var item = slot.Item;
+        if (item is null)
+            return;
+        var toAddAndRemove = target.GetQuantityLimitFor(item, slot.Amount);
         if (toAddAndRemove == 0)
             return;
-        var item = slot.Item;
         var amount = source.Remove(slot, toAddAndRemove);
 
         var addedAddedAmount = target.Add(item, toAddAndRemove);
@@ -83,6 +95,9 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
         var interactingComponentContainer = componentContainers.FirstOrDefault();
         var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
         if (components is not null)
-            components.Changed.OnNext((interactingComponentContainer, key, false));
+            components.Changed.OnNext((interactingComponentContainer!, key, false));
+
+        VersionA = VersionB = 0;
+        inventoryA = inventoryB = null;
     }
 }

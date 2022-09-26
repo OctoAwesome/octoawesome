@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
         /// <summary>
         /// Initializes a new instance of the<see cref="MeatCooked" /> class
         /// </summary>
-        public MeatCooked() : base(null, null)
+        public MeatCooked()
         {
 
         }

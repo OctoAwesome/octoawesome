@@ -1,4 +1,5 @@
-﻿using engenious.UI;
+﻿using System.Diagnostics;
+using engenious.UI;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using engenious.Graphics;
@@ -22,8 +23,12 @@ namespace OctoAwesome.Client.Screens
 
             Title = UI.Languages.OctoClient.Options;
 
-            Texture2D panelBackground = assets.LoadTexture("panel");
-
+            var panelBackground = assets.LoadTexture("panel");
+            var tabBackground = assets.LoadTexture("buttonLong_brown");
+            var tabActiveBackground = assets.LoadTexture("buttonLong_beige");
+            Debug.Assert(panelBackground != null, nameof(panelBackground) + " != null");
+            Debug.Assert(tabBackground != null, nameof(tabBackground) + " != null");
+            Debug.Assert(tabActiveBackground != null, nameof(tabActiveBackground) + " != null");
             SetDefaultBackground();
 
             TabControl tabs = new TabControl()
@@ -31,8 +36,8 @@ namespace OctoAwesome.Client.Screens
                 Padding = new Border(20, 20, 20, 20),
                 Width = 700,
                 TabPageBackground = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
-                TabBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture("buttonLong_brown"), 15, 15),
-                TabActiveBrush = NineTileBrush.FromSingleTexture(assets.LoadTexture("buttonLong_beige"), 15, 15),
+                TabBrush = NineTileBrush.FromSingleTexture(tabBackground, 15, 15),
+                TabActiveBrush = NineTileBrush.FromSingleTexture(tabActiveBackground, 15, 15),
             };
             Controls.Add(tabs);
 

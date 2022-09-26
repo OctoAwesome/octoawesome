@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using engenious.UI;
 using engenious;
 using engenious.Graphics;
@@ -48,7 +49,9 @@ namespace OctoAwesome.Client.UI.Controls
 
             transparency = 0.5f;
 
-            texture = assets.LoadTexture(GetType(), "octocross");
+            var crossTexture = assets.LoadTexture(GetType(), "octocross");
+            Debug.Assert(crossTexture != null, nameof(crossTexture) + " != null");
+            texture = crossTexture;
         }
 
         /// <inheritdoc />

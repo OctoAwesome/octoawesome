@@ -21,7 +21,7 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public BoxCollisionComponent()
         {
-
+            boundingBoxes = Array.Empty<BoundingBox>();
         }
 
         /// <summary>

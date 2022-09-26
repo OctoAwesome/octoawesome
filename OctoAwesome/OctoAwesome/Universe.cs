@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome
 {
@@ -8,11 +9,17 @@ namespace OctoAwesome
     /// </summary>
     public class Universe : IUniverse
     {
+        private string? name;
+
         /// <inheritdoc />
         public Guid Id { get; set; }
 
         /// <inheritdoc />
-        public string Name { get; set; }
+        public string Name
+        {
+            get => NullabilityHelper.NotNullAssert(name);
+            set => name = NullabilityHelper.NotNullAssert(value, nameof(value));
+        }
 
         /// <inheritdoc />
         public int Seed { get; set; }

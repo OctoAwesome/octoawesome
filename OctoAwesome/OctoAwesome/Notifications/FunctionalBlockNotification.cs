@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Serialization;
 using System;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Notifications
 {
@@ -24,14 +25,15 @@ namespace OctoAwesome.Notifications
         /// </summary>
         public FunctionalBlock Block
         {
-            get => block; set
+            get => NullabilityHelper.NotNullAssert(block, $"{nameof(Block)} was not initialized!");
+            set
             {
-                block = value;
-                BlockId = value?.Id ?? default;
+                block = NullabilityHelper.NotNullAssert(value, $"{nameof(Block)} cannot be initialized with null!");
+                BlockId = value.Id;
             }
         }
 
-        private FunctionalBlock block;
+        private FunctionalBlock? block;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionalBlockNotification"/> class.
@@ -84,7 +86,7 @@ namespace OctoAwesome.Notifications
         protected override void OnRelease()
         {
             Type = default;
-            Block = default;
+            block = default;
 
             base.OnRelease();
         }

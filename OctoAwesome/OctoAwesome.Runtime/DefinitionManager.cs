@@ -124,7 +124,8 @@ namespace OctoAwesome.Runtime
             return default;
         }
 
-        private static T GetDefinitionFromArrayByTypeName<T>(string typeName, IDefinition[] array) where T : IDefinition
+        private static T? GetDefinitionFromArrayByTypeName<T>(string typeName, IDefinition[] array)
+            where T : IDefinition
         {
             foreach (var definition in array)
             {

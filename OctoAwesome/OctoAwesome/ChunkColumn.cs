@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome
 {
@@ -16,14 +17,30 @@ namespace OctoAwesome
     /// </summary>
     public class ChunkColumn : IChunkColumn
     {
-        private readonly IGlobalChunkCache globalChunkCache;
 
         /// <summary>
         /// List of all entities contained in the column.
         /// </summary>
         private readonly IEntityList entities;
         private readonly LockSemaphore entitySemaphore;
-        private static ChunkPool chunkPool;
+
+        private static ChunkPool ChunkPool
+        {
+            get => NullabilityHelper.NotNullAssert(chunkPool, $"{nameof(ChunkPool)} was not initialized!");
+            set => chunkPool = NullabilityHelper.NotNullAssert(value, $"{nameof(ChunkPool)} cannot be initialized with null!");
+        }
+        private static ChunkPool? chunkPool;
+
+        private IChunk[]? chunks;
+        private IPlanet? planet;
+        private IGlobalChunkCache? globalChunkCache;
+
+
+        private IGlobalChunkCache GlobalChunkCache
+        {
+            get => NullabilityHelper.NotNullAssert(globalChunkCache, $"{nameof(GlobalChunkCache)} was not initialized!");
+            set => globalChunkCache = NullabilityHelper.NotNullAssert(value, $"{nameof(GlobalChunkCache)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets the definition manager.
@@ -52,21 +69,28 @@ namespace OctoAwesome
                 chunk.SetColumn(this);
             }
         }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
         /// </summary>
-        /// <param name="planet">The planet to generate the chunk column for.</param>
-        public ChunkColumn(IPlanet planet)
+        /// <remarks>This is only to be used for deserialization.</remarks>
+        public ChunkColumn()
         {
             Heights = new int[Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y];
             entities = new EntityList(this);
             entitySemaphore = new LockSemaphore(1, 1);
             DefinitionManager = TypeContainer.Get<IDefinitionManager>();
-            Planet = planet;
-            globalChunkCache = planet.GlobalChunkCache;
             if (chunkPool == null)
-                chunkPool = TypeContainer.Get<ChunkPool>();
+                ChunkPool = TypeContainer.Get<ChunkPool>();
+        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
+        /// </summary>
+        /// <param name="planet">The planet to generate the chunk column for.</param>
+        public ChunkColumn(IPlanet planet)
+            : this()
+        {
+            Planet = planet;
+            GlobalChunkCache = planet.GlobalChunkCache;
         }
 
         private void OnChunkChanged(IChunk arg1)
@@ -107,8 +131,8 @@ namespace OctoAwesome
         /// <inheritdoc />
         public IChunk[] Chunks
         {
-            get;
-            private set;
+            get => NullabilityHelper.NotNullAssert(chunks);
+            private set => chunks = NullabilityHelper.NotNullAssert(value);
         }
 
         /// <inheritdoc />
@@ -121,8 +145,8 @@ namespace OctoAwesome
         /// <inheritdoc />
         public IPlanet Planet
         {
-            get;
-            private set;
+            get => NullabilityHelper.NotNullAssert(planet, $"{nameof(Planet)} was not initialized!");
+            private set => planet = NullabilityHelper.NotNullAssert(value, $"{nameof(Planet)} cannot be initialized with null!");
         }
 
 
@@ -305,20 +329,25 @@ namespace OctoAwesome
             Span<ushort> map = stackalloc ushort[typecount];
 
 
+            IDefinition[] definitions = DefinitionManager.Definitions;
             for (var i = 0; i < typecount; i++)
             {
                 var typeName = reader.ReadString();
-                IDefinition[] definitions = DefinitionManager.Definitions.ToArray();
-                IDefinition blockDefinition = definitions.FirstOrDefault(d => d.GetType().FullName == typeName);
+                int foundIndex = Array.FindIndex(definitions, (d) => d.GetType().FullName == typeName);
+                if (foundIndex == -1)
+                {
+                    Debug.Assert(false, "No matching definition type found!");
+                    continue;
+                }
+                var blockDefinition = definitions[foundIndex];
+                map[types.Count] = (ushort)(foundIndex + 1);
                 types.Add(blockDefinition);
-
-                map[types.Count - 1] = (ushort)(Array.IndexOf(definitions, blockDefinition) + 1);
             }
 
             // Phase 3 (Chunk Infos)
             for (var c = 0; c < Chunks.Length; c++)
             {
-                IChunk chunk = Chunks[c] = chunkPool.Rent(new Index3(Index, c), Planet);
+                IChunk chunk = Chunks[c] = ChunkPool.Rent(new Index3(Index, c), Planet);
                 chunk.Version = reader.ReadInt32();
                 chunk.Changed += OnChunkChanged;
                 chunk.SetColumn(this);
@@ -333,9 +362,9 @@ namespace OctoAwesome
 
                         chunk.Blocks[i] = definitionIndex;
 
-                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(definitionIndex);
+                        var definition = DefinitionManager.GetBlockDefinitionByIndex(definitionIndex);
 
-                        if (definition.HasMetaData)
+                        if (definition is { HasMetaData: true })
                             chunk.MetaData[i] = reader.ReadInt32();
                     }
                 }
@@ -345,7 +374,7 @@ namespace OctoAwesome
         /// <inheritdoc />
         public void OnUpdate(SerializableNotification notification)
         {
-            globalChunkCache.OnUpdate(notification);
+            GlobalChunkCache.OnUpdate(notification);
         }
 
         /// <inheritdoc />
@@ -395,9 +424,6 @@ namespace OctoAwesome
         /// <inheritdoc />
         public void FlagDirty()
         {
-            if (Chunks is null)
-                return;
-
             foreach (var chunk in Chunks)
             {
                 chunk.FlagDirty();

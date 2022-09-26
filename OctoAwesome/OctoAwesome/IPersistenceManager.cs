@@ -2,6 +2,7 @@
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OctoAwesome
 {
@@ -44,7 +45,7 @@ namespace OctoAwesome
         /// <param name="universeGuid"><see cref="Guid"/> of the universe the planet resides in.</param>
         /// <param name="planetId">Index of the planet to load.</param>
         /// <returns>An awaiter to wait for completion of loading; or <c>null</c> if no planet was loaded.</returns>
-        Awaiter? Load(out IPlanet planet, Guid universeGuid, int planetId);
+        Awaiter? Load(out IPlanet? planet, Guid universeGuid, int planetId);
 
         /// <summary>
         /// Saves a planet.
@@ -105,7 +106,7 @@ namespace OctoAwesome
         /// <param name="universeGuid"><see cref="Guid"/> of the universe.</param>
         /// <param name="entityId">The id of the entity to load.</param>
         /// <returns>An awaiter to wait for completion of loading; or <c>null</c> if no entity was loaded.</returns>
-        Awaiter? Load(out Entity entity, Guid universeGuid, Guid entityId);
+        Awaiter? Load(out Entity? entity, Guid universeGuid, Guid entityId);
 
         /// <summary>
         /// Gets an enumeration of id-component mapping of specific component type
@@ -150,7 +151,7 @@ namespace OctoAwesome
         /// <param name="universeGuid"><see cref="Guid"/> of the universe.</param>
         /// <param name="id">The id of the component container to load.</param>
         /// <returns>An awaiter to wait for completion of loading; or <c>null</c> if no entity was loaded.</returns>
-        Awaiter? Load<TContainer, TComponent>(out TContainer componentContainer, Guid universeGuid, Guid id)
+        Awaiter? Load<TContainer, TComponent>(out TContainer? componentContainer, Guid universeGuid, Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent;
     }

@@ -10,6 +10,7 @@ using engenious.UI.Controls;
 using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -38,8 +39,12 @@ namespace OctoAwesome.Client.Screens
         {
             foreach (var item in ScreenManager.Game.DefinitionManager.Definitions)
             {
-                Texture2D texture = ScreenManager.Game.Assets.LoadTexture(item.GetType(), item.Icon);
-                toolTextures.Add(item.GetType().FullName, texture);
+                var texture = assets.LoadTexture(item.GetType(), item.Icon);
+                if (texture is null)
+                    continue;
+                toolTextures.Add(
+                    NullabilityHelper.NotNullAssert(item.GetType().FullName, "Tool item definition type name is null!"),
+                    texture);
             }
 
             player = ScreenManager.Player;
@@ -50,8 +55,8 @@ namespace OctoAwesome.Client.Screens
             backgroundBrush = new BorderBrush(Color.Black);
             hoverBrush = new BorderBrush(Color.Brown);
 
-            Texture2D panelBackground = assets.LoadTexture("panel");
-
+            var panelBackground = assets.LoadTexture("panel");
+            Debug.Assert(panelBackground != null, nameof(panelBackground) + " != null");
             Grid grid = new Grid()
             {
                 Width = 800,
@@ -124,10 +129,14 @@ namespace OctoAwesome.Client.Screens
                 {
                     Debug.Assert(image.Tag != null, nameof(image.Tag) + " != null");
                     var slot = player.Toolbar.Tools[(int)image.Tag];
-                    if (slot != null)
+                    if (slot is { Definition: { } slotDefinition })
                     {
                         e.Handled = true;
-                        e.Icon = toolTextures[slot.Definition.GetType().FullName];
+                        e.Icon = toolTextures.TryGetValue(NullabilityHelper.NotNullAssert(
+                            slotDefinition.GetType().FullName,
+                            "Slot definition type name not null!"), out var texture)
+                            ? texture
+                            : null;
                         e.Content = slot;
                         e.Sender = toolbar;
                     }
@@ -185,7 +194,9 @@ namespace OctoAwesome.Client.Screens
             if ((int)args.Key >= (int)Keys.D0 && (int)args.Key <= (int)Keys.D9)
             {
                 int offset = (int)args.Key - (int)Keys.D0;
-                player.Toolbar.SetTool((InventorySlot)inventory.HoveredSlot, offset);
+                var invSlot = inventory.HoveredSlot as InventorySlot;
+                Debug.Assert(invSlot != null, nameof(invSlot) + " != null");
+                player.Toolbar.SetTool(invSlot, offset);
                 args.Handled = true;
             }
 
@@ -220,7 +231,7 @@ namespace OctoAwesome.Client.Screens
                     var toolName = tool.Definition.GetType().FullName;
 
                     Debug.Assert(toolName != null, nameof(toolName) + " != null");
-                    images[i].Texture = toolTextures[toolName];
+                    images[i].Texture = toolTextures.TryGetValue(toolName, out var texture) ? texture : null;
                 }
                 else
                 {

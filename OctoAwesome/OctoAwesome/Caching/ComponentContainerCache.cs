@@ -24,7 +24,10 @@ namespace OctoAwesome.Caching
         }
 
         /// <inheritdoc />
-        protected override TContainer Load(Guid key)
-            => resourceManager.LoadComponentContainer<TContainer, TComponent>(key);
+        protected override TContainer? Load(Guid key)
+        {
+            var componentContainer = resourceManager.LoadComponentContainer<TContainer, TComponent>(key);
+            return componentContainer;
+        }
     }
 }

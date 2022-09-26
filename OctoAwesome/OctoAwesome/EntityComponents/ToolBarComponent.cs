@@ -89,7 +89,7 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         /// <param name="slot">The slot to get the index to.</param>
         /// <returns>The index of the slot if it was found; otherwise -1.</returns>
-        public int GetSlotIndex(InventorySlot slot)
+        public int GetSlotIndex(InventorySlot? slot)
         {
             for (int j = 0; j < Tools.Length; j++)
                 if (Tools[j] == slot)

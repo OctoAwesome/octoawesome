@@ -46,9 +46,9 @@ namespace OctoAwesome.GameServer.Commands
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk column data.</param>
         /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.SaveColumn)]
-        public static byte[] SaveColumn(CommandParameter parameter)
+        public static byte[]? SaveColumn(CommandParameter parameter)
         {
-            var chunkColumn = new ChunkColumn(null);
+            var chunkColumn = new ChunkColumn();
 
             using (var memoryStream = new MemoryStream(parameter.Data))
             using (var reader = new BinaryReader(memoryStream))

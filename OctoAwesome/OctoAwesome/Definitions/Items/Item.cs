@@ -1,7 +1,9 @@
 ﻿using engenious;
 using OctoAwesome.Serialization;
 using System;
+using System.Diagnostics;
 using System.IO;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Definitions.Items
 {
@@ -17,10 +19,18 @@ namespace OctoAwesome.Definitions.Items
         public Coordinate? Position { get; set; }
 
         /// <inheritdoc />
-        public IItemDefinition Definition { get; private set; }
+        public IItemDefinition Definition
+        {
+            get => NullabilityHelper.NotNullAssert(definition, $"{nameof(Definition)} was not initialized!");
+            private set => definition = NullabilityHelper.NotNullAssert(value, $"{nameof(Definition)} cannot be initialized with null!");
+        }
 
         /// <inheritdoc />
-        public IMaterialDefinition Material { get; private set; }
+        public IMaterialDefinition Material
+        {
+            get => NullabilityHelper.NotNullAssert(material, $"{nameof(Material)} was not initialized!");
+            private set => material = NullabilityHelper.NotNullAssert(value, $"{nameof(Material)} cannot be initialized with null!");
+        }
 
         /// <inheritdoc />
         public virtual int VolumePerUnit => 1;
@@ -32,19 +42,30 @@ namespace OctoAwesome.Definitions.Items
         public int Density => Material.Density;
 
         private readonly IDefinitionManager definitionManager;
+        private IItemDefinition? definition;
+        private IMaterialDefinition? material;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Item"/> class.
+        /// </summary>
+        /// <remarks>This is only to be used for deserialization.</remarks>
+        protected Item()
+        {
+            Condition = 99;
+
+            definitionManager = TypeContainer.Get<IDefinitionManager>();
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
         /// </summary>
         /// <param name="definition">The item definition.</param>
         /// <param name="material">The material definition.</param>
         public Item(IItemDefinition definition, IMaterialDefinition material)
+            : this()
         {
             Definition = definition;
             Material = material;
-            Condition = 99;
-
-            definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
 
         /// <inheritdoc />
@@ -100,8 +121,13 @@ namespace OctoAwesome.Definitions.Items
         /// <inheritdoc />
         public virtual void Deserialize(BinaryReader reader)
         {
-            Definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
-            Material = definitionManager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+            var definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
+            var material = definitionManager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+
+            Debug.Assert(definition != null, nameof(this.definition) + " != null");
+            Debug.Assert(material != null, nameof(this.material) + " != null");
+            Definition = definition;
+            Material = material;
 
             InternalDeserialize(reader);
         }

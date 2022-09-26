@@ -13,7 +13,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// </summary>
         /// <param name="style">The style to use for this control.</param>
         /// <param name="manager">The <see cref="engenious.UI.BaseScreenComponent" />.</param>
-        public HealthBarControl(string style = "", BaseScreenComponent manager = null)
+        public HealthBarControl(string style = "", BaseScreenComponent? manager = null)
             : base(style, manager)
         {
             Background = Skin.Current.HorizontalScrollBackgroundBrush;

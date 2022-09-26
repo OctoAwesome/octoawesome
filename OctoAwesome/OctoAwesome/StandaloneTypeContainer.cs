@@ -67,12 +67,13 @@ namespace OctoAwesome
         /// <inheritdoc />
         public bool TryGet<T>([MaybeNullWhen(false)] out T instance) where T : class
         {
-            var result = TryGet(typeof(T), out var obj);
-            if (result)
-                instance = (T)obj!;
-            else
-                instance = null;
-            return result;
+            if (TryGet(typeof(T), out var obj))
+            {
+                instance = (T)obj;
+                return true;
+            }
+            instance = null;
+            return false;
         }
 
         /// <inheritdoc />

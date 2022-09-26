@@ -1,4 +1,5 @@
-﻿using engenious.Input;
+﻿using System.Diagnostics;
+using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
@@ -15,7 +16,10 @@ namespace OctoAwesome.Client.Screens
             // IsOverlay = true;
             // Background = new BorderBrush(new Color(Color.Black, 0.5f));
 
-            Background = new TextureBrush(assets.LoadTexture("background"), TextureBrushMode.Stretch);
+            var background = assets.LoadTexture("background");
+
+            Debug.Assert(background != null, nameof(background) + " != null");
+            Background = new TextureBrush(background, TextureBrushMode.Stretch);
 
             StackPanel stack = new StackPanel();
             Controls.Add(stack);
@@ -53,7 +57,7 @@ namespace OctoAwesome.Client.Screens
             mainMenuButton.Margin = new Border(0, 0, 0, 10);
             mainMenuButton.LeftMouseClick += (s, e) =>
             {
-                ScreenManager.Player.SetEntity(null);
+                ScreenManager.Player.Unload();
                 ScreenManager.Game.Simulation.ExitGame();
 
                 foreach (var gameScreen in ScreenManager.History.OfType<GameScreen>())

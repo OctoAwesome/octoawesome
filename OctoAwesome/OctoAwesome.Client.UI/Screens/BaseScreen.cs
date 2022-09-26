@@ -4,6 +4,7 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using System;
+using System.Diagnostics;
 
 namespace OctoAwesome.UI.Screens
 {
@@ -12,7 +13,10 @@ namespace OctoAwesome.UI.Screens
     /// </summary>
     public abstract class BaseScreen : Screen
     {
-        protected readonly AssetComponent assets;
+        /// <summary>
+        /// Component used to load assets.
+        /// </summary>
+        protected readonly AssetComponent Assets;
 
         private readonly Button backButton;
         /// <summary>
@@ -21,7 +25,7 @@ namespace OctoAwesome.UI.Screens
         /// <param name="assets">The asset component to load the assets from.</param>
         public BaseScreen(AssetComponent assets)
         {
-            this.assets = assets;
+            Assets = assets;
             backButton = new TextButton("Back")
             {
                 VerticalAlignment = VerticalAlignment.Top,
@@ -57,7 +61,9 @@ namespace OctoAwesome.UI.Screens
         /// </summary>
         protected void SetDefaultBackground()
         {
-            Background = new TextureBrush(assets.LoadTexture("background_new"), TextureBrushMode.Stretch);
+            var background = Assets.LoadTexture("background_new");
+            Debug.Assert(background != null, nameof(background) + " != null");
+            Background = new TextureBrush(background, TextureBrushMode.Stretch);
         }
 
         /// <inheritdoc/>

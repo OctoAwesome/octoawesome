@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using OctoAwesome.Extension;
 using NLog.LayoutRenderers;
 
 namespace OctoAwesome.Client.Components
@@ -22,7 +23,7 @@ namespace OctoAwesome.Client.Components
             private Matrix projection;
             private Matrix view;
             private Matrix world;
-            private Texture texture;
+            private Texture? texture;
 
             public EntityModelEffect(GraphicsDevice graphicsDevice) : base(graphicsDevice)
             {
@@ -63,13 +64,13 @@ namespace OctoAwesome.Client.Components
                 }
             }
 
-            public Texture Texture
+            public Texture? Texture
             {
                 get => texture;
                 set
                 {
                     texture = value;
-                    Ambient.Texture = (Texture2D)value;
+                    Ambient.Texture = (Texture2D?)value;
                 }
             }
         }
@@ -79,14 +80,22 @@ namespace OctoAwesome.Client.Components
             public Texture2D texture;
             public Model model;
         }
-        private GraphicsDevice graphicsDevice;
-        private EntityModelEffect effect;
-        private readonly EffectInstantiator effectInstantiator;
         public SimulationComponent Simulation { get; private set; }
 
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
 
         public List<ComponentContainer> ComponentContainers { get; set; }
+
+        private EntityModelEffect Effect
+        {
+            get => NullabilityHelper.NotNullAssert(effect, $"{nameof(Effect)} was not initialized!");
+            set => effect = NullabilityHelper.NotNullAssert(value, $"{nameof(Effect)} cannot be initialized with null!");
+        }
+
+
+        private GraphicsDevice graphicsDevice;
+        private readonly EffectInstantiator effectInstantiator;
+        private EntityModelEffect? effect;
 
         public EntityGameComponent(OctoGame game, SimulationComponent simulation) : base(game)
         {
@@ -95,40 +104,38 @@ namespace OctoAwesome.Client.Components
             ComponentContainers = new List<ComponentContainer>();
             graphicsDevice = game.GraphicsDevice;
 
-            effectInstantiator = game.Content.Load<EffectInstantiator>("Effects/entityEffect");
-            
+            effectInstantiator = NullabilityHelper.NotNullAssert(game.Content.Load<EffectInstantiator>("Effects/entityEffect"),
+                                                    "Could not load entityEffect game content!");
         }
 
         public void LoadShader(entityEffect.entityEffectSettings? settings)
         {
             effect?.Dispose();
-            effect = effectInstantiator.CreateInstance<EntityModelEffect, entityEffect.entityEffectSettings>(settings);
+            Effect = effectInstantiator.CreateInstance<EntityModelEffect, entityEffect.entityEffectSettings>(settings);
         }
 
         public void Draw(GameTime gameTime, Texture2DArray shadowMaps, Matrix view, Matrix projection, Index3 chunkOffset, Index2 planetSize, Vector3 sunDirection)
         {
-            effect.CurrentTechnique = effect.Ambient;
-            effect.Ambient.AmbientIntensity = 0.4f;
-            effect.Ambient.AmbientColor = Color.White.ToVector4();
-            effect.Ambient.View = view;
-            effect.Ambient.Proj = projection;
-            effect.Ambient.ShadowMaps = shadowMaps;
-            effect.Ambient.DiffuseColor = new Color(190, 190, 190);
-            effect.Ambient.DiffuseIntensity = 0.6f;
-            effect.Ambient.DiffuseDirection = sunDirection;
+            Effect.CurrentTechnique = Effect.Ambient;
+            Effect.Ambient.AmbientIntensity = 0.4f;
+            Effect.Ambient.AmbientColor = Color.White.ToVector4();
+            Effect.Ambient.View = view;
+            Effect.Ambient.Proj = projection;
+            Effect.Ambient.ShadowMaps = shadowMaps;
+            Effect.Ambient.DiffuseColor = new Color(190, 190, 190);
+            Effect.Ambient.DiffuseIntensity = 0.6f;
+            Effect.Ambient.DiffuseDirection = sunDirection;
 
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
             //using var writer = File.AppendText(Path.Combine(".", "render.log"));
-            foreach (var pass in effect.Ambient.Passes)
+            foreach (var pass in Effect.Ambient.Passes)
             {
                 pass.Apply();
 
 
                 foreach (var componentContainer in ComponentContainers)
                 {
-
-                    var success = TryGetRenderInfo(componentContainer, out var rendercomp, out var modelinfo);
-                    if (!success)
+                    if (!TryGetRenderInfo(componentContainer, out var rendercomp, out var modelinfo))
                         continue;
 
                     var animationcomp = componentContainer.GetComponent<AnimationComponent>();
@@ -139,33 +146,31 @@ namespace OctoAwesome.Client.Components
                         animationcomp.MaxTime = modelinfo.model.CurrentAnimation?.MaxTime ?? 0f;
                         animationcomp.Update(gameTime, modelinfo.model);
                     }
-                    modelinfo.model.Draw(effect);
+                    modelinfo.model.Draw(Effect);
                 }
             }
         }
 
         public void ApplyCropMatrix(int index, float cascadeDepth, Matrix cropMatrix)
         {
-            effect.Ambient.CropMatrices[index] = cropMatrix;
-            effect.Ambient.CascadeDepth[index] = cascadeDepth;
-            effect.Shadow.CropMatrices[index] = cropMatrix;
+            Effect.Ambient.CropMatrices[index] = cropMatrix;
+            Effect.Ambient.CascadeDepth[index] = cascadeDepth;
+            Effect.Shadow.CropMatrices[index] = cropMatrix;
         }
 
         public void DrawShadow(GameTime gameTime, Index3 chunkOffset, Index2 planetSize)
         {
-            effect.CurrentTechnique = effect.Shadow;
+            Effect.CurrentTechnique = Effect.Shadow;
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
-            foreach (var pass in effect.CurrentTechnique.Passes)
+            foreach (var pass in Effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 
 
                 foreach (var componentContainer in ComponentContainers)
                 {
-
-                    var success = TryGetRenderInfo(componentContainer, out var rendercomp, out var modelinfo);
-                    if (!success)
+                    if (!TryGetRenderInfo(componentContainer, out var rendercomp, out var modelinfo))
                         continue;
 
                     var animationcomp = componentContainer.GetComponent<AnimationComponent>();
@@ -176,7 +181,7 @@ namespace OctoAwesome.Client.Components
                         animationcomp.MaxTime = modelinfo.model.CurrentAnimation?.MaxTime ?? 0f;
                         animationcomp.Update(gameTime, modelinfo.model);
                     }
-                    modelinfo.model.Draw(effect);
+                    modelinfo.model.Draw(Effect);
                 }
             }
         }
@@ -186,8 +191,8 @@ namespace OctoAwesome.Client.Components
         {
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
 
-            effect.World = world;
-            effect.Texture = modelinfo.texture;
+            Effect.World = world;
+            Effect.Texture = modelinfo.texture;
             modelinfo.model.Transform = world;
         }
 
@@ -195,16 +200,17 @@ namespace OctoAwesome.Client.Components
         {
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
 
-            effect.World = world;
+            Effect.World = world;
             modelinfo.model.Transform = world;
         }
 
         private static Matrix GetWorldMatrix(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, float zOffset = 0.0f) 
         {
             var positioncomp = componentContainer.GetComponent<PositionComponent>();
-            Debug.Assert(positioncomp != null, nameof(positioncomp) + " != null");
-            var position = positioncomp.Position;
             var body = componentContainer.GetComponent<BodyComponent>();
+            Debug.Assert(positioncomp != null, nameof(positioncomp) + " != null");
+            Debug.Assert(body != null, nameof(body) + " != null");
+            var position = positioncomp.Position;
 
             Index3 shift = chunkOffset.ShortestDistanceXY(
            position.ChunkIndex, planetSize);
@@ -248,7 +254,7 @@ namespace OctoAwesome.Client.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (Simulation?.Simulation == null)
+            if (!Simulation.Enabled)
                 return;
 
             var simulation = Simulation.Simulation;
@@ -259,7 +265,7 @@ namespace OctoAwesome.Client.Components
             ComponentContainers.Clear();
             foreach (var item in simulation.GetByComponentType< PositionComponent>())
             {
-                    ComponentContainers.Add(item);
+                ComponentContainers.Add(item);
             }
 
         }

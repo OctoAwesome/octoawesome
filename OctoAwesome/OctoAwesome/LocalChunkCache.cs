@@ -96,7 +96,7 @@ namespace OctoAwesome
                 if (loadingTask != null && !loadingTask.IsCompleted)
                 {
                     logger.Debug("Continue with task on index " + index);
-                    loadingTask = loadingTask.ContinueWith(_ => InternalSetCenter(cancellationToken!.Token, index, successCallback));
+                    loadingTask = loadingTask.ContinueWith(_ => InternalSetCenter(cancellationToken!.Token, index, successCallback), cancellationToken!.Token);
                 }
                 else
                 {
@@ -120,94 +120,96 @@ namespace OctoAwesome
         /// </param>
         private void InternalSetCenter(CancellationToken token, Index2 index, Action<bool>? successCallback)
         {
-            if (Planet == null)
+            try
             {
-                successCallback?.Invoke(true);
-                return;
-            }
+                List<Index2> requiredChunkColumns = new List<Index2>();
 
-            List<Index2> requiredChunkColumns = new List<Index2>();
-
-            for (int x = -range; x <= range; x++)
-            {
-                for (int y = -range; y <= range; y++)
+                for (int x = -range; x <= range; x++)
                 {
-                    Index2 local = new Index2(index.X + x, index.Y + y);
-                    local.NormalizeXY(Planet.Size);
-                    requiredChunkColumns.Add(local);
-                }
-            }
-
-            // First cancel opportunity
-            if (token.IsCancellationRequested)
-            {
-                successCallback?.Invoke(false);
-                return;
-            }
-
-            foreach (var chunkColumnIndex in requiredChunkColumns
-                                                .OrderBy(c => index.ShortestDistanceXY(c, new Index2(Planet.Size))
-                                                .LengthSquared()))
-            {
-                int localX = chunkColumnIndex.X & mask;
-                int localY = chunkColumnIndex.Y & mask;
-                int flatIndex = FlatIndex(localX, localY);
-                var chunkColumn = chunkColumns[flatIndex];
-
-                // Remove old chunks if necessary
-
-                using (semaphore.Wait())
-                {
-                    if (chunkColumn != null && chunkColumn.Index != chunkColumnIndex)
+                    for (int y = -range; y <= range; y++)
                     {
-                        //logger.Debug($"Remove Chunk: {chunkColumn.Index}, new: {chunkColumnIndex}");
-                        globalCache.Release(chunkColumn.Index);
-
-
-                        chunkColumns[flatIndex] = null;
-                        chunkColumn = null;
+                        Index2 local = new Index2(index.X + x, index.Y + y);
+                        local.NormalizeXY(Planet.Size);
+                        requiredChunkColumns.Add(local);
                     }
                 }
 
-                // Second cancel opportunity
+                // First cancel opportunity
                 if (token.IsCancellationRequested)
                 {
                     successCallback?.Invoke(false);
                     return;
                 }
 
-                using (semaphore.Wait())
+                foreach (var chunkColumnIndex in requiredChunkColumns
+                                                    .OrderBy(c => index.ShortestDistanceXY(c, new Index2(Planet.Size))
+                                                    .LengthSquared()))
                 {
-                    // Load new chunk
-                    if (chunkColumn == null)
+                    int localX = chunkColumnIndex.X & mask;
+                    int localY = chunkColumnIndex.Y & mask;
+                    int flatIndex = FlatIndex(localX, localY);
+                    var chunkColumn = chunkColumns[flatIndex];
+
+                    // Remove old chunks if necessary
+
+                    using (semaphore.Wait())
                     {
-                        chunkColumn = globalCache.Subscribe(chunkColumnIndex);
-
-                        if (chunkColumn?.Index != chunkColumnIndex)
-                            logger.Error($"Loaded Chunk Index: {chunkColumn?.Index}, wanted: {chunkColumnIndex} ");
-                        if (chunkColumns[flatIndex] != null)
-                            logger.Error($"Chunk in Array!!: {flatIndex}, on index: {chunkColumns[flatIndex].Index} ");
-
-
-                        chunkColumns[flatIndex] = chunkColumn;
-
-                        if (chunkColumn == null)
+                        if (chunkColumn != null && chunkColumn.Index != chunkColumnIndex)
                         {
-                            successCallback?.Invoke(false);
-                            return;
+                            //logger.Debug($"Remove Chunk: {chunkColumn.Index}, new: {chunkColumnIndex}");
+                            globalCache.Release(chunkColumn.Index);
+
+
+                            chunkColumns[flatIndex] = null;
+                            chunkColumn = null;
                         }
                     }
+
+                    // Second cancel opportunity
+                    if (token.IsCancellationRequested)
+                    {
+                        successCallback?.Invoke(false);
+                        return;
+                    }
+
+                    using (semaphore.Wait())
+                    {
+                        // Load new chunk
+                        if (chunkColumn == null)
+                        {
+                            chunkColumn = globalCache.Subscribe(chunkColumnIndex);
+
+                            if (chunkColumn.Index != chunkColumnIndex)
+                                logger.Error($"Loaded Chunk Index: {chunkColumn.Index}, wanted: {chunkColumnIndex} ");
+                            var chunkInArray = chunkColumns[flatIndex];
+                            if (chunkInArray != null)
+                                logger.Error($"Chunk in Array!!: {flatIndex}, on index: {chunkInArray.Index} ");
+
+
+                            chunkColumns[flatIndex] = chunkColumn;
+
+                            // if (chunkColumn == null)
+                            // {
+                            //     successCallback?.Invoke(false);
+                            //     return;
+                            // }
+                        }
+                    }
+
+                    // Third cancel opportunity
+                    if (token.IsCancellationRequested)
+                    {
+                        successCallback?.Invoke(false);
+                        return;
+                    }
                 }
 
-                // Third cancel opportunity
-                if (token.IsCancellationRequested)
-                {
-                    successCallback?.Invoke(false);
-                    return;
-                }
+                successCallback?.Invoke(true);
             }
-
-            successCallback?.Invoke(true);
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         /// <inheritdoc />
@@ -217,13 +219,13 @@ namespace OctoAwesome
         /// <inheritdoc />
         public IChunk? GetChunk(int x, int y, int z)
         {
-            if (Planet == null || z < 0 || z >= Planet.Size.Z)
+            if (z < 0 || z >= Planet.Size.Z)
                 return null;
 
             x = Index2.NormalizeAxis(x, Planet.Size.X);
             y = Index2.NormalizeAxis(y, Planet.Size.Y);
 
-            IChunkColumn chunkColumn = chunkColumns[FlatIndex(x, y)];
+            var chunkColumn = chunkColumns[FlatIndex(x, y)];
 
             if (chunkColumn != null && chunkColumn.Index.X == x && chunkColumn.Index.Y == y)
                 return chunkColumn.Chunks[z];

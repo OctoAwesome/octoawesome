@@ -8,9 +8,6 @@ namespace OctoAwesome.GameServer
 {
     internal class Program
     {
-        private static ManualResetEvent manualResetEvent;
-        private static ILogger logger;
-
         private static void Main(string[] args)
         {
             using (var typeContainer = TypeContainer.Get<ITypeContainer>())
@@ -20,7 +17,7 @@ namespace OctoAwesome.GameServer
 
                 Network.Startup.Register(typeContainer);
 
-                logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As("OctoAwesome.GameServer");
+                var logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As("OctoAwesome.GameServer");
                 AppDomain.CurrentDomain.UnhandledException += (s, e) =>
                 {
                     File.WriteAllText(
@@ -36,7 +33,7 @@ namespace OctoAwesome.GameServer
                     logger.Flush();
                 };
 
-                manualResetEvent = new ManualResetEvent(false);
+                var manualResetEvent = new ManualResetEvent(false);
 
                 logger.Info("Server start");
                 var fileInfo = new FileInfo(Path.Combine(".", "settings.json"));

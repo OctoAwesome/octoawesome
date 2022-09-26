@@ -39,10 +39,10 @@ namespace OctoAwesome.Caching
 
 
         /// <inheritdoc />
-        protected override IChunkColumn Load(Index2 key)
+        protected override IChunkColumn? Load(Index2 key)
             => resourceManager.LoadChunkColumn(planet, key);
 
-        private IChunkColumn GetBy(Index3 chunkColumnIndex, LoadingMode loadingMode)
+        private IChunkColumn? GetBy(Index3 chunkColumnIndex, LoadingMode loadingMode)
         {
             if (planet.Id != chunkColumnIndex.Z)
                 return default;
@@ -51,7 +51,8 @@ namespace OctoAwesome.Caching
 
 
         /// <inheritdoc />
-        public override TV Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+        public override TV? Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+            where TV : default
             => key switch
             {
                 Index2 chunkColumnIndex => GenericCaster<IChunkColumn, TV>.Cast(GetBy(chunkColumnIndex, loadingMode)),

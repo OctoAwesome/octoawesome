@@ -3,6 +3,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,8 +17,8 @@ namespace OctoAwesome.Caching
         private readonly Dictionary<Type, Cache> caches;
         private readonly IPlanet planet;
         private readonly IResourceManager resourceManager;
-        private CancellationTokenSource cancellationTokenSource;
-        private Task garbageCollectionTask;
+        private CancellationTokenSource? cancellationTokenSource;
+        private Task? garbageCollectionTask;
 
 
         /// <summary>
@@ -48,16 +49,21 @@ namespace OctoAwesome.Caching
             caches.Add(typeof(FunctionalBlock), new ComponentContainerCache<FunctionalBlock, IFunctionalBlockComponent>(resourceManager));
         }
 
-        /// <summary>
-        /// Starts the service and all underlying caches.
-        /// </summary>
-        public void Start()
+        private void Cancel()
         {
             if (cancellationTokenSource is not null)
             {
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Starts the service and all underlying caches.
+        /// </summary>
+        public void Start()
+        {
+            Cancel();
 
             cancellationTokenSource = new CancellationTokenSource();
             var token = cancellationTokenSource.Token;
@@ -69,8 +75,8 @@ namespace OctoAwesome.Caching
 
                 item.Start();
             }
-
-            garbageCollectionTask = new Task(() => GarbageCollection(token), token, TaskCreationOptions.LongRunning);
+            
+            garbageCollectionTask = new Task(async () => await GarbageCollection(token), token, TaskCreationOptions.LongRunning);
             garbageCollectionTask.Start();
 
         }
@@ -80,8 +86,7 @@ namespace OctoAwesome.Caching
         /// </summary>
         public void Stop()
         {
-            cancellationTokenSource.Cancel();
-            cancellationTokenSource.Dispose();
+            Cancel();
 
             foreach (var item in caches.Values)
             {
@@ -128,15 +133,22 @@ namespace OctoAwesome.Caching
 
         private async Task GarbageCollection(CancellationToken cancellationToken)
         {
-            while (true)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                foreach (var item in caches.Values)
-                {
-                    item.CollectGarbage();
-                }
 
-                await Task.Delay(30000, cancellationToken);
+                while (true)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    foreach (var item in caches.Values)
+                    {
+                        item.CollectGarbage();
+                    }
+
+                    await Task.Delay(30000, cancellationToken);
+                }
+            }
+            catch (TaskCanceledException)
+            {
             }
         }
     }

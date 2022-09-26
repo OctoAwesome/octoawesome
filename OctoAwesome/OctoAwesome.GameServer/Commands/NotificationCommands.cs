@@ -46,7 +46,7 @@ namespace OctoAwesome.GameServer.Commands
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the entity notification data.</param>
         /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.EntityNotification)]
-        public static byte[] EntityNotification(CommandParameter parameter)
+        public static byte[]? EntityNotification(CommandParameter parameter)
         {
             var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, parameter.Data);
             entityNotification.SenderId = parameter.ClientId;
@@ -64,7 +64,7 @@ namespace OctoAwesome.GameServer.Commands
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk notification data.</param>
         /// <returns><c>null</c></returns>
         [Command((ushort)OfficialCommand.ChunkNotification)]
-        public static byte[] ChunkNotification(CommandParameter parameter)
+        public static byte[]? ChunkNotification(CommandParameter parameter)
         {
             var notificationType = (BlockNotificationType)parameter.Data[0];
             Notification chunkNotification;
