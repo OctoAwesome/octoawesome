@@ -28,6 +28,9 @@ namespace OctoAwesome.Definitions.Items
         /// <inheritdoc />
         public virtual int StackLimit => 1;
 
+        /// <inheritdoc />
+        public int Density => Material.Density;
+
         private readonly IDefinitionManager definitionManager;
 
         /// <summary>
@@ -148,5 +151,11 @@ namespace OctoAwesome.Definitions.Items
             item.InternalDeserialize(reader);
             return item;
         }
+
+        /// <summary>
+        /// Get Definition with which the item was constructed
+        /// </summary>
+        /// <returns>The current <see cref="IItemDefinition"/></returns>
+        public IDefinition GetDefinition() => Definition;
     }
 }

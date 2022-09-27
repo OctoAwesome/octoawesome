@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Extension;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +12,25 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class DefinitionManager : IDefinitionManager
     {
-        private readonly IExtensionResolver extensionResolver;
+        private readonly ExtensionService extensionService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
         /// </summary>
-        /// <param name="extensionResolver">The extension resolver to get definitions from extensions with.</param>
-        public DefinitionManager(IExtensionResolver extensionResolver)
+        /// <param name="extensionService">The extension servuce to get definitions from extensions with.</param>
+        public DefinitionManager(ExtensionService extensionService)
         {
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
 
-            Definitions = extensionResolver.GetDefinitions<IDefinition>().ToArray();
+            var definitions = new List<IDefinition>();
+
+            foreach (var item in extensionService.GetRegistrars(ChannelNames.Definitions))
+            {
+                if (item is DefinitionRegistrar registrar)
+                    definitions.AddRange(registrar.Get<IDefinition>());
+            }
+
+            Definitions = definitions.ToArray();
 
             // collect items
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
@@ -30,6 +40,9 @@ namespace OctoAwesome.Runtime
 
             // collect materials
             MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
+
+            //collect foods
+            FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
         }
 
         /// <inheritdoc />
@@ -43,6 +56,8 @@ namespace OctoAwesome.Runtime
 
         /// <inheritdoc />
         public IMaterialDefinition[] MaterialDefinitions { get; }
+        /// <inheritdoc />
+        public IFoodMaterialDefinition[] FoodDefinitions { get; }
 
         /// <inheritdoc />
         public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)
@@ -84,7 +99,7 @@ namespace OctoAwesome.Runtime
         public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
         {
             // TODO: Caching (Generalized IDefinition-Interface for Dictionary (+1 from Maxi on 07.04.2021))
-            return extensionResolver.GetDefinitions<T>();
+            return Definitions.OfType<T>();
         }
 
         /// <inheritdoc />

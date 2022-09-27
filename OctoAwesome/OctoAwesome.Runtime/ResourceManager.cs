@@ -44,8 +44,7 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public ConcurrentDictionary<int, IPlanet> Planets { get; }
 
-        private readonly IExtensionResolver extensionResolver;
-
+        private readonly Extension.ExtensionService extensionService;
         private readonly CountedScopeSemaphore loadingSemaphore;
         private CancellationToken currentToken;
         private CancellationTokenSource tokenSource;
@@ -53,17 +52,22 @@ namespace OctoAwesome.Runtime
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceManager"/> class.
         /// </summary>
-        public ResourceManager(IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager, IUpdateHub updateHub)
+        /// <param name="extensionService">The extension service.</param>
+        /// <param name="definitionManager">The definition manager.</param>
+        /// <param name="persistenceManager">The persistence manager.</param>
+        /// <param name="updateHub">The update hub to use for update notifications.</param>
+        /// <param name="settings">The game settings.</param>
+        public ResourceManager(Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings, IPersistenceManager persistenceManager, IUpdateHub updateHub)
         {
             semaphoreSlim = new LockSemaphore(1, 1);
             loadingSemaphore = new CountedScopeSemaphore();
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             DefinitionManager = definitionManager;
             this.persistenceManager = persistenceManager;
 
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ResourceManager));
 
-            populators = extensionResolver.GetMapPopulators().OrderBy(p => p.Order).ToList();
+            populators = extensionService.GetFromRegistrar<IMapPopulator>().OrderBy(p => p.Order).ToList();
 
             Planets = new ConcurrentDictionary<int, IPlanet>();
             UpdateHub = updateHub;
@@ -190,7 +194,7 @@ namespace OctoAwesome.Runtime
                     {
                         // No planet available -> generate new planet
                         Random rand = new Random(CurrentUniverse.Seed + id);
-                        var generators = extensionResolver.GetMapGenerators().ToArray();
+                        var generators = extensionService.GetFromRegistrar<IMapGenerator>().ToArray();
                         int index = rand.Next(generators.Length - 1);
                         IMapGenerator generator = generators[index];
                         planet = generator.GeneratePlanet(CurrentUniverse.Id, id, CurrentUniverse.Seed + id);

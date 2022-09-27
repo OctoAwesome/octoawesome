@@ -6,7 +6,7 @@
     public class HandDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => nameof(Hand);
+        public string DisplayName => nameof(Hand);
 
         /// <inheritdoc />
         public string Icon => "";

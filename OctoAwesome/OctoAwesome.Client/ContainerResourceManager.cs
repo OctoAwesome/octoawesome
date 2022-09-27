@@ -1,6 +1,8 @@
 ﻿
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
@@ -45,6 +47,7 @@ namespace OctoAwesome.Client
             }
         }
 
+        private readonly OctoAwesome.Extension.ExtensionService extensionService;
         private ResourceManager ResourceManager
         {
             get
@@ -54,7 +57,6 @@ namespace OctoAwesome.Client
             }
         }
 
-        private readonly IExtensionResolver extensionResolver;
         private readonly IDefinitionManager definitionManager;
         private readonly ISettings settings;
         private readonly ITypeContainer typeContainer;
@@ -67,14 +69,14 @@ namespace OctoAwesome.Client
         /// </summary>
         /// <param name="typeContainer">The type container to manage types.</param>
         /// <param name="updateHub">The update hub to use for update notifications.</param>
-        /// <param name="extensionResolver">The extension resolver.</param>
+        /// <param name="extensionService">The extension service.</param>
         /// <param name="definitionManager">The manager for definitions.</param>
         /// <param name="settings">The application settings.</param>
-        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, IExtensionResolver extensionResolver, IDefinitionManager definitionManager, ISettings settings)
+        public ContainerResourceManager(ITypeContainer typeContainer, IUpdateHub updateHub, OctoAwesome.Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings)
         {
             UpdateHub = updateHub;
             this.typeContainer = typeContainer;
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             this.definitionManager = definitionManager;
             this.settings = settings;
         }
@@ -145,10 +147,10 @@ namespace OctoAwesome.Client
             }
             else
             {
-                persistenceManager = new DiskPersistenceManager(extensionResolver, settings, UpdateHub);
+                persistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
             }
 
-            resourceManager = new ResourceManager(extensionResolver, definitionManager, settings, persistenceManager, UpdateHub);
+            resourceManager = new ResourceManager(extensionService, definitionManager, settings, persistenceManager, UpdateHub);
 
 
             IsMultiplayer = multiplayer;

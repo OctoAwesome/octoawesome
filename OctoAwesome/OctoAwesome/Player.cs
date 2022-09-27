@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Notifications;
+﻿using engenious;
+
+using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 
@@ -39,5 +41,7 @@ namespace OctoAwesome
             entityNotification.Release();
         }
 
+        /// <inheritdoc/>
+        protected override void OnInteract(GameTime gameTime, Entity entity) => throw new System.NotImplementedException();
     }
 }

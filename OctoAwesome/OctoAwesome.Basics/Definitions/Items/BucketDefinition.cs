@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class BucketDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Bucket";
+        public string DisplayName => "Bucket";
 
         /// <inheritdoc />
         public string Icon => "bucket";
@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Bucket(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Bucket(this, material);
+        }
     }
 }

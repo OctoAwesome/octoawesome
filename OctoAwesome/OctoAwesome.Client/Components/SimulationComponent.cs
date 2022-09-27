@@ -2,14 +2,19 @@
 using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Common;
+using OctoAwesome.Extension;
+using OctoAwesome.Notifications;
+using OctoAwesome.Rx;
 
 namespace OctoAwesome.Client.Components
 {
     internal sealed class SimulationComponent : GameComponent
     {
-        private readonly IExtensionResolver extensionResolver;
+        private readonly ExtensionService extensionService;
 
         private readonly IResourceManager resourceManager;
+        private readonly Relay<Notification> simulationRelay;
+        private readonly IDisposable simulationSource;
 
         public Simulation? Simulation { get; private set; }
 
@@ -17,11 +22,13 @@ namespace OctoAwesome.Client.Components
 
         public SimulationState State => Simulation?.State ?? SimulationState.Undefined;
 
-        public SimulationComponent(OctoGame game, IExtensionResolver extensionResolver, IResourceManager resourceManager) : base(game)
+        public SimulationComponent(OctoGame game, ExtensionService extensionService, IResourceManager resourceManager) : base(game)
         {
             Service = game.Service;
-            this.extensionResolver = extensionResolver;
+            this.extensionService = extensionService;
             this.resourceManager = resourceManager;
+            simulationRelay = new Relay<Notification>();
+            simulationSource = resourceManager.UpdateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
         public Guid NewGame(string name, string seed)
@@ -32,7 +39,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(resourceManager, extensionResolver, Service);
+            Simulation = new Simulation(resourceManager, extensionService, Service);
             return Simulation.NewGame(name, seed);
         }
 
@@ -44,7 +51,7 @@ namespace OctoAwesome.Client.Components
                 Simulation = null;
             }
 
-            Simulation = new Simulation(resourceManager, extensionResolver, Service);
+            Simulation = new Simulation(resourceManager, extensionService, Service);
             Simulation.TryLoadGame(guid);
         }
 
@@ -73,8 +80,8 @@ namespace OctoAwesome.Client.Components
             Player player = resourceManager.LoadPlayer(playerName);
 
             player.Components.AddComponent(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 }, true);
-            Simulation.Add(player);
 
+            simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, player) { OverwriteExisting = true });
 
             return player;
         }

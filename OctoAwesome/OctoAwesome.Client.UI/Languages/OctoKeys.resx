@@ -126,6 +126,12 @@
   <data name="debug_allblocks" xml:space="preserve">
     <value>DEBUG: All Blocktypes in Inventory</value>
   </data>
+  <data name="debug_allfoods" xml:space="preserve">
+    <value>DEBUG: All Foods in Inventory</value>
+  </data>
+  <data name="debug_allitems" xml:space="preserve">
+    <value>DEBUG: All Items in Inventory</value>
+  </data>
   <data name="debug_control" xml:space="preserve">
     <value>DEBUG: Show/Hide Debug Control</value>
   </data>

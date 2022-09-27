@@ -27,6 +27,7 @@ namespace OctoAwesome.Logging
         {
             Name = loggerName
         };
+        /// <inheritdoc/>
         public ILogger As(Type type)
             => As(type.FullName);
 

@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Components;
+﻿using engenious;
+
+using OctoAwesome;
+using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
@@ -64,6 +67,19 @@ namespace OctoAwesome
         {
         }
 
+        /// <summary>
+        /// Used to interact with this component container
+        /// </summary>
+        /// <param name="gameTime">The current game time when the event happened</param>
+        /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
+        public void Interact(GameTime gameTime, Entity entity) => OnInteract(gameTime, entity);
+
+        /// <summary>
+        /// Called when this component container got interacted with
+        /// </summary>
+        /// <param name="gameTime">The current game time when the event happened</param>
+        /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
+        protected abstract void OnInteract(GameTime gameTime, Entity entity);
         /// <inheritdoc />
         public virtual void Push(SerializableNotification notification)
         {
@@ -79,21 +95,23 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public abstract bool ContainsComponent<T>();
-
         /// <inheritdoc />
-        public abstract T? GetComponent<T>();
+        public abstract T GetComponent<T>();
+
     }
     /// <summary>
     /// Base class for classes containing components of a specific type.
     /// </summary>
     /// <typeparam name="TComponent">The type of the components to contain.</typeparam>
-    public abstract class ComponentContainer<TComponent> : ComponentContainer where TComponent : IComponent
+    public abstract class ComponentContainer<TComponent> : ComponentContainer, IUpdateable where TComponent : IComponent
     {
         /// <summary>
         /// Gets a list of all components this container holds.
         /// </summary>
         public ComponentList<TComponent> Components { get; }
 
+
+        private List<IUpdateable> updateables = new();
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContainer{TComponent}"/> class.
         /// </summary>
@@ -136,6 +154,8 @@ namespace OctoAwesome
 
             if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
                 notificationComponents.Add(nofiticationComponent);
+            if (component is IUpdateable updateable)
+                updateables.Add(updateable);
         }
 
         /// <summary>
@@ -147,8 +167,6 @@ namespace OctoAwesome
         /// </exception>
         protected virtual void ValidateAddComponent(TComponent component)
         {
-            if (Simulation is not null)
-                throw new NotSupportedException("Can't add components during simulation");
         }
 
         /// <summary>
@@ -160,8 +178,6 @@ namespace OctoAwesome
         /// </exception>
         protected virtual void ValidateRemoveComponent(TComponent component)
         {
-            if (Simulation is not null)
-                throw new NotSupportedException("Can't remove components during simulation");
         }
 
         /// <summary>
@@ -219,5 +235,23 @@ namespace OctoAwesome
         /// <inheritdoc />
         public override T? GetComponent<T>() where T : default
             => Components.GetComponent<T>();
+
+        /// <summary>
+        /// Tries to get the component of the component container
+        /// </summary>
+        /// <typeparam name="T">The Type of the component to search for</typeparam>
+        /// <param name="component">The component to be returned</param>
+        /// <returns>True if the component was found, otherwise false</returns>
+        public bool TryGetComponent<T>(out T component) where T : TComponent
+            => Components.TryGetComponent<T>(out component);
+
+
+        /// <inheritdoc />
+        public virtual void Update(GameTime gameTime)
+        {
+            foreach (var item in updateables)
+                item.Update(gameTime);
+            
+        }
     }
 }

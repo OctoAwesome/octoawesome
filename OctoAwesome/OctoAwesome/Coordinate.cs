@@ -1,13 +1,14 @@
-﻿using System;
+﻿using engenious;
+
+using System;
 using System.Xml.Serialization;
-using engenious;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Struct for exact position in the OctoAwesome universe.
     /// </summary>
-    public struct Coordinate
+    public struct Coordinate : IEquatable<Coordinate>
     {
         /// <summary>
         /// Planet Id the coordinate points to.
@@ -203,20 +204,17 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public override string ToString() => $@"({ Planet }/{(block.X + position.X):0.000000}/{(block.Y + position.Y):0.000000}/{(block.Z + position.Z):0.000000})";
+        /// <inheritdoc/>
+        public static bool operator ==(Coordinate left, Coordinate right) => left.Equals(right);
+        /// <inheritdoc/>
+        public static bool operator !=(Coordinate left, Coordinate right) => !(left == right);
 
-        /// <inheritdoc />
-        public override bool Equals(object? obj)
-        {
-            if (obj is Coordinate coordinate)
-                return (Planet == coordinate.Planet &&
-                        position == coordinate.position &&
-                        block == coordinate.block
-                    );
 
-            return base.Equals(obj);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode() => base.GetHashCode();
+        /// <inheritdoc/>
+        public override bool Equals(object obj) => obj is Coordinate coordinate && Equals(coordinate);
+        /// <inheritdoc/>
+        public bool Equals(Coordinate other) => Planet == other.Planet && block.Equals(other.block) && position.Equals(other.position);
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCode.Combine(Planet, block, position);
     }
 }

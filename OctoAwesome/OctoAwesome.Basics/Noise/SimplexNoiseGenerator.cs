@@ -78,7 +78,7 @@ namespace OctoAwesome.Basics.Noise
 
         private void CreatePermutations()
         {
-            Random rnd = new Random(Seed);
+            var rnd = new Random(Seed);
             byte[] temp = range.OrderBy(a => rnd.Next()).ToArray();
             permutations = temp.Concat(temp).ToArray();
 
@@ -186,13 +186,13 @@ namespace OctoAwesome.Basics.Noise
 
                     for (int i = 0; i < Octaves; i++)
                     {
-                        array[(y * Chunk.CHUNKSIZE_X) + x] += Noise4D(nx * frequencyX, ny * frequencyY, nz * frequencyX, nw * frequencyY) * amplitude;
+                        array[y * Chunk.CHUNKSIZE_X + x] += Noise4D(nx * frequencyX, ny * frequencyY, nz * frequencyX, nw * frequencyY) * amplitude;
 
                         amplitude *= Persistence;
                         frequencyX *= 2f;
                         frequencyY *= 2f;
                     }
-                    array[(y * Chunk.CHUNKSIZE_X) + x] = array[(y * Chunk.CHUNKSIZE_X) + x] * Factor / MaxValue;
+                    array[y * Chunk.CHUNKSIZE_X + x] = array[y * Chunk.CHUNKSIZE_X + x] * Factor / MaxValue;
                 }
             });
         }
@@ -494,19 +494,19 @@ namespace OctoAwesome.Basics.Noise
             unchecked
             {
                 int n = x * Seed;
-                n = (n << 13) ^ n;
+                n = n << 13 ^ n;
                 n *= n * 15731;
                 n += 789221;
                 n *= n;
                 n += 1376312589;
                 n = n & 0x7fffffff;
 
-                return (float)(1.0 - (n / 1073741824.0));
+                return (float)(1.0 - n / 1073741824.0);
             }
         }
         private float LinearInterpolation(float a, float b, float x)
         {
-            return a + ((b - a) * x);
+            return a + (b - a) * x;
         }
         private float Noise(float x)
         {
@@ -540,16 +540,18 @@ namespace OctoAwesome.Basics.Noise
 
             int i1, j1;
 
-            if (x0 > y0) { i1 = 1; j1 = 0; }
+            if (x0 > y0)
+            { i1 = 1; j1 = 0; }
 
-            else { i1 = 0; j1 = 1; }
+            else
+            { i1 = 0; j1 = 1; }
 
             float x1 = x0 - i1 + G2;
 
             float y1 = y0 - j1 + G2;
-            float x2 = x0 - 1.0f + (2.0f * G2);
+            float x2 = x0 - 1.0f + 2.0f * G2;
 
-            float y2 = y0 - 1.0f + (2.0f * G2);
+            float y2 = y0 - 1.0f + 2.0f * G2;
 
             int ii = i & 255;
             int jj = j & 255;
@@ -557,22 +559,25 @@ namespace OctoAwesome.Basics.Noise
             int gi1 = permutations[ii + i1 + permutations[jj + j1]] % 12;
             int gi2 = permutations[ii + 1 + permutations[jj + 1]] % 12;
 
-            float t0 = 0.5f - (x0 * x0) - (y0 * y0);
-            if (t0 <= 0) n0 = 0.0f;
+            float t0 = 0.5f - x0 * x0 - y0 * y0;
+            if (t0 <= 0)
+                n0 = 0.0f;
             else
             {
                 t0 *= t0;
                 n0 = t0 * t0 * DotProduct(gi0 * 3, x0, y0);
             }
-            float t1 = 0.5f - (x1 * x1) - (y1 * y1);
-            if (t1 <= 0) n1 = 0.0f;
+            float t1 = 0.5f - x1 * x1 - y1 * y1;
+            if (t1 <= 0)
+                n1 = 0.0f;
             else
             {
                 t1 *= t1;
                 n1 = t1 * t1 * DotProduct(gi1 * 3, x1, y1);
             }
-            float t2 = 0.5f - (x2 * x2) - (y2 * y2);
-            if (t2 <= 0) n2 = 0.0f;
+            float t2 = 0.5f - x2 * x2 - y2 * y2;
+            if (t2 <= 0)
+                n2 = 0.0f;
             else
             {
                 t2 *= t2;
@@ -602,25 +607,30 @@ namespace OctoAwesome.Basics.Noise
             {
                 if (y0 >= z0)
                 { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
-                else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
-                else { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
+                else if (x0 >= z0)
+                { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
+                else
+                { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
             }
             else
             {
-                if (y0 < z0) { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
-                else if (x0 < z0) { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
-                else { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+                if (y0 < z0)
+                { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
+                else if (x0 < z0)
+                { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
+                else
+                { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
             }
 
             float x1 = x0 - i1 + G3;
             float y1 = y0 - j1 + G3;
             float z1 = z0 - k1 + G3;
-            float x2 = x0 - i2 + (2.0f * G3);
-            float y2 = y0 - j2 + (2.0f * G3);
-            float z2 = z0 - k2 + (2.0f * G3);
-            float x3 = x0 - 1.0f + (3.0f * G3);
-            float y3 = y0 - 1.0f + (3.0f * G3);
-            float z3 = z0 - 1.0f + (3.0f * G3);
+            float x2 = x0 - i2 + 2.0f * G3;
+            float y2 = y0 - j2 + 2.0f * G3;
+            float z2 = z0 - k2 + 2.0f * G3;
+            float x3 = x0 - 1.0f + 3.0f * G3;
+            float y3 = y0 - 1.0f + 3.0f * G3;
+            float z3 = z0 - 1.0f + 3.0f * G3;
 
             int ii = i & 255;
             int jj = j & 255;
@@ -631,29 +641,33 @@ namespace OctoAwesome.Basics.Noise
             int gi2 = permutations[ii + i2 + permutations[jj + j2 + permutations[kk + k2]]] % 12;
             int gi3 = permutations[ii + 1 + permutations[jj + 1 + permutations[kk + 1]]] % 12;
 
-            float t0 = 0.6f - (x0 * x0) - (y0 * y0) - (z0 * z0);
-            if (t0 <= 0) n0 = 0.0f;
+            float t0 = 0.6f - x0 * x0 - y0 * y0 - z0 * z0;
+            if (t0 <= 0)
+                n0 = 0.0f;
             else
             {
                 t0 *= t0;
                 n0 = t0 * t0 * DotProduct(gi0 * 3, x0, y0, z0);
             }
-            float t1 = 0.6f - (x1 * x1) - (y1 * y1) - (z1 * z1);
-            if (t1 <= 0) n1 = 0.0f;
+            float t1 = 0.6f - x1 * x1 - y1 * y1 - z1 * z1;
+            if (t1 <= 0)
+                n1 = 0.0f;
             else
             {
                 t1 *= t1;
                 n1 = t1 * t1 * DotProduct(gi1 * 3, x1, y1, z1);
             }
-            float t2 = 0.6f - (x2 * x2) - (y2 * y2) - (z2 * z2);
-            if (t2 <= 0) n2 = 0.0f;
+            float t2 = 0.6f - x2 * x2 - y2 * y2 - z2 * z2;
+            if (t2 <= 0)
+                n2 = 0.0f;
             else
             {
                 t2 *= t2;
                 n2 = t2 * t2 * DotProduct(gi2 * 3, x2, y2, z2);
             }
-            float t3 = 0.6f - (x3 * x3) - (y3 * y3) - (z3 * z3);
-            if (t3 <= 0) n3 = 0.0f;
+            float t3 = 0.6f - x3 * x3 - y3 * y3 - z3 * z3;
+            if (t3 <= 0)
+                n3 = 0.0f;
             else
             {
                 t3 *= t3;
@@ -687,12 +701,30 @@ namespace OctoAwesome.Basics.Noise
             int ranky = 0;
             int rankz = 0;
             int rankw = 0;
-            if (x0 > y0) rankx++; else ranky++;
-            if (x0 > z0) rankx++; else rankz++;
-            if (x0 > w0) rankx++; else rankw++;
-            if (y0 > z0) ranky++; else rankz++;
-            if (y0 > w0) ranky++; else rankw++;
-            if (z0 > w0) rankz++; else rankw++;
+            if (x0 > y0)
+                rankx++;
+            else
+                ranky++;
+            if (x0 > z0)
+                rankx++;
+            else
+                rankz++;
+            if (x0 > w0)
+                rankx++;
+            else
+                rankw++;
+            if (y0 > z0)
+                ranky++;
+            else
+                rankz++;
+            if (y0 > w0)
+                ranky++;
+            else
+                rankw++;
+            if (z0 > w0)
+                rankz++;
+            else
+                rankw++;
             int i1, j1, k1, l1;
             int i2, j2, k2, l2;
             int i3, j3, k3, l3;
@@ -716,18 +748,18 @@ namespace OctoAwesome.Basics.Noise
             float y1 = y0 - j1 + G4;
             float z1 = z0 - k1 + G4;
             float w1 = w0 - l1 + G4;
-            float x2 = x0 - i2 + (2.0f * G4);
-            float y2 = y0 - j2 + (2.0f * G4);
-            float z2 = z0 - k2 + (2.0f * G4);
-            float w2 = w0 - l2 + (2.0f * G4);
-            float x3 = x0 - i3 + (3.0f * G4);
-            float y3 = y0 - j3 + (3.0f * G4);
-            float z3 = z0 - k3 + (3.0f * G4);
-            float w3 = w0 - l3 + (3.0f * G4);
-            float x4 = x0 - 1.0f + (4.0f * G4);
-            float y4 = y0 - 1.0f + (4.0f * G4);
-            float z4 = z0 - 1.0f + (4.0f * G4);
-            float w4 = w0 - 1.0f + (4.0f * G4);
+            float x2 = x0 - i2 + 2.0f * G4;
+            float y2 = y0 - j2 + 2.0f * G4;
+            float z2 = z0 - k2 + 2.0f * G4;
+            float w2 = w0 - l2 + 2.0f * G4;
+            float x3 = x0 - i3 + 3.0f * G4;
+            float y3 = y0 - j3 + 3.0f * G4;
+            float z3 = z0 - k3 + 3.0f * G4;
+            float w3 = w0 - l3 + 3.0f * G4;
+            float x4 = x0 - 1.0f + 4.0f * G4;
+            float y4 = y0 - 1.0f + 4.0f * G4;
+            float z4 = z0 - 1.0f + 4.0f * G4;
+            float w4 = w0 - 1.0f + 4.0f * G4;
 
             int ii = i & 255;
             int jj = j & 255;
@@ -739,36 +771,41 @@ namespace OctoAwesome.Basics.Noise
             int gi3 = permutations[ii + i3 + permutations[jj + j3 + permutations[kk + k3 + permutations[ll + l3]]]] % 32;
             int gi4 = permutations[ii + 1 + permutations[jj + 1 + permutations[kk + 1 + permutations[ll + 1]]]] % 32;
 
-            float t0 = 0.6f - (x0 * x0) - (y0 * y0) - (z0 * z0) - (w0 * w0);
-            if (t0 < 0) n0 = 0.0f;
+            float t0 = 0.6f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
+            if (t0 < 0)
+                n0 = 0.0f;
             else
             {
                 t0 *= t0;
                 n0 = t0 * t0 * DotProduct(gi0 * 4, x0, y0, z0, w0);
             }
-            float t1 = 0.6f - (x1 * x1) - (y1 * y1) - (z1 * z1) - (w1 * w1);
-            if (t1 < 0) n1 = 0.0f;
+            float t1 = 0.6f - x1 * x1 - y1 * y1 - z1 * z1 - w1 * w1;
+            if (t1 < 0)
+                n1 = 0.0f;
             else
             {
                 t1 *= t1;
                 n1 = t1 * t1 * DotProduct(gi1 * 4, x1, y1, z1, w1);
             }
-            float t2 = 0.6f - (x2 * x2) - (y2 * y2) - (z2 * z2) - (w2 * w2);
-            if (t2 < 0) n2 = 0.0f;
+            float t2 = 0.6f - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2;
+            if (t2 < 0)
+                n2 = 0.0f;
             else
             {
                 t2 *= t2;
                 n2 = t2 * t2 * DotProduct(gi2 * 4, x2, y2, z2, w2);
             }
-            float t3 = 0.6f - (x3 * x3) - (y3 * y3) - (z3 * z3) - (w3 * w3);
-            if (t3 < 0) n3 = 0.0f;
+            float t3 = 0.6f - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3;
+            if (t3 < 0)
+                n3 = 0.0f;
             else
             {
                 t3 *= t3;
                 n3 = t3 * t3 * DotProduct(gi3 * 4, x3, y3, z3, w3);
             }
-            float t4 = 0.6f - (x4 * x4) - (y4 * y4) - (z4 * z4) - (w4 * w4);
-            if (t4 < 0) n4 = 0.0f;
+            float t4 = 0.6f - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4;
+            if (t4 < 0)
+                n4 = 0.0f;
             else
             {
                 t4 *= t4;
@@ -805,17 +842,44 @@ namespace OctoAwesome.Basics.Noise
             int rankz = 0;
             int rankw = 0;
             int rankv = 0;
-            if (x0 > y0) rankx++; else ranky++;
-            if (x0 > z0) rankx++; else rankz++;
-            if (x0 > w0) rankx++; else rankw++;
-            if (x0 > v0) rankx++; else rankv++;
+            if (x0 > y0)
+                rankx++;
+            else
+                ranky++;
+            if (x0 > z0)
+                rankx++;
+            else
+                rankz++;
+            if (x0 > w0)
+                rankx++;
+            else
+                rankw++;
+            if (x0 > v0)
+                rankx++;
+            else
+                rankv++;
 
-            if (y0 > z0) ranky++; else rankz++;
-            if (y0 > w0) ranky++; else rankw++;
-            if (y0 > v0) ranky++; else rankv++;
+            if (y0 > z0)
+                ranky++;
+            else
+                rankz++;
+            if (y0 > w0)
+                ranky++;
+            else
+                rankw++;
+            if (y0 > v0)
+                ranky++;
+            else
+                rankv++;
 
-            if (z0 > w0) rankz++; else rankw++;
-            if (z0 > v0) rankz++; else rankv++;
+            if (z0 > w0)
+                rankz++;
+            else
+                rankw++;
+            if (z0 > v0)
+                rankz++;
+            else
+                rankv++;
 
             int i1, j1, k1, l1, m1;
             int i2, j2, k2, l2, m2;
@@ -852,29 +916,29 @@ namespace OctoAwesome.Basics.Noise
             float w1 = w0 - l1 + G5;
             float v1 = v0 - m1 + G5;
 
-            float x2 = x0 - i2 + (2.0f * G5);
-            float y2 = y0 - j2 + (2.0f * G5);
-            float z2 = z0 - k2 + (2.0f * G5);
-            float w2 = w0 - l2 + (2.0f * G5);
-            float v2 = v0 - m2 + (2.0f * G5);
+            float x2 = x0 - i2 + 2.0f * G5;
+            float y2 = y0 - j2 + 2.0f * G5;
+            float z2 = z0 - k2 + 2.0f * G5;
+            float w2 = w0 - l2 + 2.0f * G5;
+            float v2 = v0 - m2 + 2.0f * G5;
 
-            float x3 = x0 - i3 + (3.0f * G5);
-            float y3 = y0 - j3 + (3.0f * G5);
-            float z3 = z0 - k3 + (3.0f * G5);
-            float w3 = w0 - l3 + (3.0f * G5);
-            float v3 = v0 - m3 + (3.0f * G5);
+            float x3 = x0 - i3 + 3.0f * G5;
+            float y3 = y0 - j3 + 3.0f * G5;
+            float z3 = z0 - k3 + 3.0f * G5;
+            float w3 = w0 - l3 + 3.0f * G5;
+            float v3 = v0 - m3 + 3.0f * G5;
 
-            float x4 = x0 - i4 + (4.0f * G5);
-            float y4 = y0 - j4 + (4.0f * G5);
-            float z4 = z0 - k4 + (4.0f * G5);
-            float w4 = w0 - l4 + (4.0f * G5);
-            float v4 = v0 - m4 + (4.0f * G5);
+            float x4 = x0 - i4 + 4.0f * G5;
+            float y4 = y0 - j4 + 4.0f * G5;
+            float z4 = z0 - k4 + 4.0f * G5;
+            float w4 = w0 - l4 + 4.0f * G5;
+            float v4 = v0 - m4 + 4.0f * G5;
 
-            float x5 = x0 - 1.0f + (5.0f * G5);
-            float y5 = y0 - 1.0f + (5.0f * G5);
-            float z5 = z0 - 1.0f + (5.0f * G5);
-            float w5 = w0 - 1.0f + (5.0f * G5);
-            float v5 = v0 - 1.0f + (5.0f * G5);
+            float x5 = x0 - 1.0f + 5.0f * G5;
+            float y5 = y0 - 1.0f + 5.0f * G5;
+            float z5 = z0 - 1.0f + 5.0f * G5;
+            float w5 = w0 - 1.0f + 5.0f * G5;
+            float v5 = v0 - 1.0f + 5.0f * G5;
 
             int ii = i & 255;
             int jj = j & 255;
@@ -888,43 +952,49 @@ namespace OctoAwesome.Basics.Noise
             int gi4 = permutations[ii + i4 + permutations[jj + j4 + permutations[kk + k4 + permutations[ll + l4 + permutations[mm + m4]]]]] % 80;
             int gi5 = permutations[ii + 1 + permutations[jj + 1 + permutations[kk + 1 + permutations[ll + 1 + permutations[mm + 1]]]]] % 80;
 
-            float t0 = 0.6f - (x0 * x0) - (y0 * y0) - (z0 * z0) - (w0 * w0) - (v0 * v0);
-            if (t0 < 0) n0 = 0.0f;
+            float t0 = 0.6f - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0 - v0 * v0;
+            if (t0 < 0)
+                n0 = 0.0f;
             else
             {
                 t0 *= t0;
                 n0 = t0 * t0 * DotProduct(gi0 * 5, x0, y0, z0, w0, v0);
             }
-            float t1 = 0.6f - (x1 * x1) - (y1 * y1) - (z1 * z1) - (w1 * w1) - (v1 * v1);
-            if (t1 < 0) n1 = 0.0f;
+            float t1 = 0.6f - x1 * x1 - y1 * y1 - z1 * z1 - w1 * w1 - v1 * v1;
+            if (t1 < 0)
+                n1 = 0.0f;
             else
             {
                 t1 *= t1;
                 n1 = t1 * t1 * DotProduct(gi1 * 5, x1, y1, z1, w1, v1);
             }
-            float t2 = 0.6f - (x2 * x2) - (y2 * y2) - (z2 * z2) - (w2 * w2) - (v2 * v2);
-            if (t2 < 0) n2 = 0.0f;
+            float t2 = 0.6f - x2 * x2 - y2 * y2 - z2 * z2 - w2 * w2 - v2 * v2;
+            if (t2 < 0)
+                n2 = 0.0f;
             else
             {
                 t2 *= t2;
                 n2 = t2 * t2 * DotProduct(gi2 * 5, x2, y2, z2, w2, v2);
             }
-            float t3 = 0.6f - (x3 * x3) - (y3 * y3) - (z3 * z3) - (w3 * w3) - (v3 * v3);
-            if (t3 < 0) n3 = 0.0f;
+            float t3 = 0.6f - x3 * x3 - y3 * y3 - z3 * z3 - w3 * w3 - v3 * v3;
+            if (t3 < 0)
+                n3 = 0.0f;
             else
             {
                 t3 *= t3;
                 n3 = t3 * t3 * DotProduct(gi3 * 5, x3, y3, z3, w3, v3);
             }
-            float t4 = 0.6f - (x4 * x4) - (y4 * y4) - (z4 * z4) - (w4 * w4) - (v4 * v4);
-            if (t4 < 0) n4 = 0.0f;
+            float t4 = 0.6f - x4 * x4 - y4 * y4 - z4 * z4 - w4 * w4 - v4 * v4;
+            if (t4 < 0)
+                n4 = 0.0f;
             else
             {
                 t4 *= t4;
                 n4 = t4 * t4 * DotProduct(gi4 * 5, x4, y4, z4, w4, v4);
             }
-            float t5 = 0.6f - (x5 * x5) - (y5 * y5) - (z5 * z5) - (w5 * w5) - (v5 * v5);
-            if (t5 < 0) n5 = 0.0f;
+            float t5 = 0.6f - x5 * x5 - y5 * y5 - z5 * z5 - w5 * w5 - v5 * v5;
+            if (t5 < 0)
+                n5 = 0.0f;
             else
             {
                 t5 *= t5;

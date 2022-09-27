@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class ShovelDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Shovel";
+        public string DisplayName => "Shovel";
 
         /// <inheritdoc />
         public string Icon => "shovel_iron";
@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Shovel(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Shovel(this, material);
+        }
     }
 }

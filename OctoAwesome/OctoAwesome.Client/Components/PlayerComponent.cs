@@ -2,6 +2,10 @@
 using System.Diagnostics;
 using System.Linq;
 using engenious;
+
+
+using System;
+using System.Linq;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.SumTypes;
 
@@ -160,7 +164,7 @@ namespace OctoAwesome.Client.Components
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
 
-            if (InteractInput && SelectedBox.HasValue)
+            if (InteractInput && SelectedBox.HasValue )
                 CurrentController.Selection = Selection;
             else
                 CurrentController.Selection = null;
@@ -218,18 +222,50 @@ namespace OctoAwesome.Client.Components
 
             var blockDefinitions = resourceManager.DefinitionManager.BlockDefinitions;
             foreach (var blockDefinition in blockDefinitions)
-                inventory.AddUnit(blockDefinition.VolumePerUnit, blockDefinition);
+                inventory.Add(blockDefinition, blockDefinition.VolumePerUnit);
+
+        }
+
+        internal void AllFoodsDebug()
+        {
+            var inventory = CurrentEntity?.Components.GetComponent<InventoryComponent>();
+            if (inventory == null)
+                return;
 
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
-            var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Wood");
-            var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.Name == "Stone");
+           var foodMaterial = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {
-                var woodItem = itemDefinition.Create(wood);
-                inventory.AddUnit(woodItem.VolumePerUnit, woodItem);
-                var stoneItem = itemDefinition.Create(stone);
-                inventory.AddUnit(stoneItem.VolumePerUnit, stoneItem);
+
+                var fooditem = itemDefinition.Create(foodMaterial);
+                if (fooditem is not null)
+                    inventory.Add(fooditem, fooditem.VolumePerUnit);
             }
+
         }
+
+        internal void AllItemsDebug()
+        {
+            var inventory = CurrentEntity?.Components.GetComponent<InventoryComponent>();
+            if (inventory == null)
+                return;
+
+            var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
+            var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Wood");
+            var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Stone");
+           foreach (var itemDefinition in itemDefinitions)
+            {
+                var woodItem = itemDefinition.Create(wood);
+                if (woodItem is not null)
+                    inventory.Add(woodItem, woodItem.VolumePerUnit);
+
+                var stoneItem = itemDefinition.Create(stone);
+                if (stoneItem is not null)
+                    inventory.Add(stoneItem, stoneItem.VolumePerUnit);
+
+            }
+
+        }
+
     }
 }

@@ -5,6 +5,7 @@ using engenious.UserDefined.Effects;
 
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -85,15 +86,13 @@ namespace OctoAwesome.Client.Components
 
         private Dictionary<string, ModelInfo> models = new Dictionary<string, ModelInfo>();
 
-        public List<Entity> Entities { get; set; }
-        public List<FunctionalBlock> FunctionalBlocks { get; set; }
+        public List<ComponentContainer> ComponentContainers { get; set; }
 
         public EntityGameComponent(OctoGame game, SimulationComponent simulation) : base(game)
         {
             Simulation = simulation;
 
-            Entities = new List<Entity>();
-            FunctionalBlocks = new List<FunctionalBlock>();
+            ComponentContainers = new List<ComponentContainer>();
             graphicsDevice = game.GraphicsDevice;
 
             effectInstantiator = game.Content.Load<EffectInstantiator>("Effects/entityEffect");
@@ -123,25 +122,17 @@ namespace OctoAwesome.Client.Components
             foreach (var pass in effect.Ambient.Passes)
             {
                 pass.Apply();
-                foreach (var entity in Entities)
+
+
+                foreach (var componentContainer in ComponentContainers)
                 {
-                    var success = TryGetRenderInfo(entity, out var rendercomp, out var modelinfo);
+
+                    var success = TryGetRenderInfo(componentContainer, out var rendercomp, out var modelinfo);
                     if (!success)
                         continue;
 
-                    SetTransforms(chunkOffset, planetSize, entity, rendercomp!, modelinfo);
-                    modelinfo.model.Draw(effect);
-                }
-
-                foreach (var functionalBlock in FunctionalBlocks)
-                {
-
-                    var success = TryGetRenderInfo(functionalBlock, out var rendercomp, out var modelinfo);
-                    if (!success)
-                        continue;
-
-                    var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
-                    SetTransforms(chunkOffset, planetSize, functionalBlock, rendercomp, modelinfo, -0.5f);
+                    var animationcomp = componentContainer.GetComponent<AnimationComponent>();
+                    SetTransforms(chunkOffset, planetSize, componentContainer, rendercomp, modelinfo, -0.5f);
                     modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
                     if (animationcomp is not null)
                     {
@@ -168,25 +159,17 @@ namespace OctoAwesome.Client.Components
             foreach (var pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                foreach (var entity in Entities)
+
+
+                foreach (var componentContainer in ComponentContainers)
                 {
-                    var success = TryGetRenderInfo(entity, out var rendercomp, out var modelinfo);
+
+                    var success = TryGetRenderInfo(componentContainer, out var rendercomp, out var modelinfo);
                     if (!success)
                         continue;
 
-                    SetShadowTransforms(chunkOffset, planetSize, entity, rendercomp, modelinfo);
-                    modelinfo.model.Draw(effect);
-                }
-
-                foreach (var functionalBlock in FunctionalBlocks)
-                {
-
-                    var success = TryGetRenderInfo(functionalBlock, out var rendercomp, out var modelinfo);
-                    if (!success)
-                        continue;
-
-                    var animationcomp = functionalBlock.Components.GetComponent<AnimationComponent>();
-                    SetShadowTransforms(chunkOffset, planetSize, functionalBlock, rendercomp, modelinfo, -0.5f);
+                    var animationcomp = componentContainer.GetComponent<AnimationComponent>();
+                    SetShadowTransforms(chunkOffset, planetSize, componentContainer, rendercomp, modelinfo, -0.5f);
                     modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
                     if (animationcomp is not null)
                     {
@@ -199,7 +182,7 @@ namespace OctoAwesome.Client.Components
         }
 
 
-        private void SetTransforms<T>(Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) where T : IComponent
+        private void SetTransforms(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) 
         {
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
 
@@ -208,20 +191,20 @@ namespace OctoAwesome.Client.Components
             modelinfo.model.Transform = world;
         }
 
-        private void SetShadowTransforms<T>(Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) where T : IComponent
+        private void SetShadowTransforms(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) 
         {
             var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
-       
+
             effect.World = world;
             modelinfo.model.Transform = world;
         }
 
-        private static Matrix GetWorldMatrix<T>(Index3 chunkOffset, Index2 planetSize, ComponentContainer<T> componentContainer, RenderComponent rendercomp, float zOffset = 0.0f) where T : IComponent
+        private static Matrix GetWorldMatrix(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, float zOffset = 0.0f) 
         {
-            var positioncomp = componentContainer.Components.GetComponent<PositionComponent>();
+            var positioncomp = componentContainer.GetComponent<PositionComponent>();
             Debug.Assert(positioncomp != null, nameof(positioncomp) + " != null");
             var position = positioncomp.Position;
-            var body = componentContainer.Components.GetComponent<BodyComponent>();
+            var body = componentContainer.GetComponent<BodyComponent>();
 
             Index3 shift = chunkOffset.ShortestDistanceXY(
            position.ChunkIndex, planetSize);
@@ -235,16 +218,16 @@ namespace OctoAwesome.Client.Components
             return world;
         }
 
-        private bool TryGetRenderInfo<T>(ComponentContainer<T> componentContainer, [MaybeNullWhen(false)] out RenderComponent rendercomp, out ModelInfo modelinfo) where T : IComponent
+        private bool TryGetRenderInfo(ComponentContainer componentContainer, [MaybeNullWhen(false)] out RenderComponent rendercomp, out ModelInfo modelinfo)
         {
             rendercomp = null;
             modelinfo = default;
-            if (!componentContainer.Components.ContainsComponent<RenderComponent>())
+            if (!componentContainer.ContainsComponent<RenderComponent>())
             {
                 return false;
             }
 
-            rendercomp = componentContainer.Components.GetComponent<RenderComponent>();
+            rendercomp = componentContainer.GetComponent<RenderComponent>();
 
             Debug.Assert(rendercomp != null, nameof(rendercomp) + " != null");
             if (!models.TryGetValue(rendercomp.Name, out modelinfo))
@@ -273,19 +256,12 @@ namespace OctoAwesome.Client.Components
             if (!(simulation.State == SimulationState.Running || simulation.State == SimulationState.Paused))
                 return;
 
-            Entities.Clear();
-            foreach (var item in simulation.Entities)
+            ComponentContainers.Clear();
+            foreach (var item in simulation.GetByComponentType< PositionComponent>())
             {
-                if (item.Components.ContainsComponent<PositionComponent>())
-                    Entities.Add(item);
+                    ComponentContainers.Add(item);
             }
-            FunctionalBlocks.Clear();
-            foreach (var item in simulation.FunctionalBlocks)
-            {
-                if (item.Components.ContainsComponent<PositionComponent>())
-                    FunctionalBlocks.Add(item);
-            }
-            //base.Update(gameTime);
+
         }
     }
 }

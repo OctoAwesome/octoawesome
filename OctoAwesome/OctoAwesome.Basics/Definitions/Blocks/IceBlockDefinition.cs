@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class IceBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Ice;
+        public override string DisplayName => Languages.OctoBasics.Ice;
 
         /// <inheritdoc />
         public override string Icon => "ice";

@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class StoneBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Stone;
+        public override string DisplayName => Languages.OctoBasics.Stone;
 
         /// <inheritdoc />
         public override string Icon => "stone";

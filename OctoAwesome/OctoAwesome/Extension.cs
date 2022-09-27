@@ -1,5 +1,12 @@
 ﻿using engenious;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OctoAwesome
 {
@@ -8,7 +15,7 @@ namespace OctoAwesome
     /// <summary>
     /// The base extension implementation.
     /// </summary>
-    public sealed class Extension : IExtension
+    internal sealed class CoreExtension : IExtension
     {
         /// <inheritdoc />
         public string Description => "OctoAwesome";
@@ -17,15 +24,14 @@ namespace OctoAwesome
         public string Name => "OctoAwesome";
 
         /// <inheritdoc />
-        public void Register(IExtensionLoader extensionLoader, ITypeContainer typeContainer)
+        public void Register(OctoAwesome.Extension.ExtensionService extensionLoader)
         {
-            extensionLoader.RegisterEntityExtender<Player>((player) =>
+            extensionLoader.Extend<Player>((player) =>
             {
-                var p = (Player)player;
-                p.Components.AddComponent(new ControllableComponent());
-                p.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
-                p.Components.AddComponent(new InventoryComponent());
-                p.Components.AddComponent(new ToolBarComponent());
+                player.Components.AddComponent(new ControllableComponent());
+                player.Components.AddComponent(new HeadComponent() { Offset = new Vector3(0, 0, 3.2f) });
+                player.Components.AddComponent(new InventoryComponent(true, 120));
+                player.Components.AddComponent(new ToolBarComponent());
             });
         }
 

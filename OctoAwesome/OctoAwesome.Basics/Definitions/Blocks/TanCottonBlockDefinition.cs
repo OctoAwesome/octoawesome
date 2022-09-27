@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class TanCottonBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.TanCotton;
+        public override string DisplayName => Languages.OctoBasics.TanCotton;
 
         /// <inheritdoc />
         public override string Icon => "cotton_tan";

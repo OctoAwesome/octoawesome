@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class HammerDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Hammer";
+        public string DisplayName => "Hammer";
 
         /// <inheritdoc />
         public string Icon => "hammer_iron";
@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Hammer(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Hammer(this, material);
+        }
     }
 }

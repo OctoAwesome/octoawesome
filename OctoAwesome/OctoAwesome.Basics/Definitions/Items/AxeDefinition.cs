@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class AxeDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Axe";
+        public string DisplayName => "Axe";
 
         /// <inheritdoc />
         public string Icon => "axe_iron";
@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Axe(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Axe(this, material);
+        }
     }
 }

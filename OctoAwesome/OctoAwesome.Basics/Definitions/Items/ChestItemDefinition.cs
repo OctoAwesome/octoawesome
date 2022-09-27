@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class ChestItemDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Chest";
+        public string DisplayName => "Chest";
 
         /// <inheritdoc />
         public string Icon => "chest";
@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new ChestItem(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new ChestItem(this, material);
+        }
     }
 }

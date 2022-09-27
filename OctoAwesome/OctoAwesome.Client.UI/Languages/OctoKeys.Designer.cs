@@ -88,6 +88,24 @@ namespace OctoAwesome.Client.UI.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DEBUG: All Foods in Inventory.
+        /// </summary>
+        public static string debug_allfoods {
+            get {
+                return ResourceManager.GetString("debug_allfoods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEBUG: All Items in Inventory.
+        /// </summary>
+        public static string debug_allitems {
+            get {
+                return ResourceManager.GetString("debug_allitems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DEBUG: Show/Hide Debug Control.
         /// </summary>
         public static string debug_control {

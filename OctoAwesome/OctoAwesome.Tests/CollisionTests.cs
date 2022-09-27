@@ -16,6 +16,9 @@ namespace OctoAwesome.Tests
         private Player Player;
         private List<Index3> blocks = new List<Index3>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollisionTests" /> class.
+        /// </summary>
         public CollisionTests()
         {
             Player = new Player(null);

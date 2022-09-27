@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class BirchWoodBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.BirchWood;
+        public override string DisplayName => Languages.OctoBasics.BirchWood;
 
         /// <inheritdoc />
         public override string Icon => "birch_wood_top";

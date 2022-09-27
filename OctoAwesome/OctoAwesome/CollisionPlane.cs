@@ -250,7 +250,7 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="d1">The vector to compare to.</param>
         /// <param name="d2">The vector to compare with.</param>
-        /// <returns>A value indicating whether <paramref name="d2"/> is bigger than <see cref="d1"/>.</returns>
+        /// <returns>A value indicating whether <paramref name="d2"/> is bigger than <paramref name="d1"/>.</returns>
         public static bool CheckDistance(Vector3 d1, Vector3 d2)
         {
             if (d1.X == 0 || d1.Y == 0 || d1.Z == 0)

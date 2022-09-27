@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class RedPlankBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.RedPlank;
+        public override string DisplayName => Languages.OctoBasics.RedPlank;
 
         /// <inheritdoc />
         public override string Icon => "planks_red";

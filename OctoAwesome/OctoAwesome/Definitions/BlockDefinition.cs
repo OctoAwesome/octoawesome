@@ -14,7 +14,7 @@ namespace OctoAwesome.Definitions
         public virtual uint SolidWall => 0x3f;
 
         /// <inheritdoc />
-        public abstract string Name { get; }
+        public abstract string DisplayName { get; }
 
         /// <inheritdoc />
         public abstract string Icon { get; }
@@ -39,6 +39,8 @@ namespace OctoAwesome.Definitions
 
         /// <inheritdoc />
         public abstract IMaterialDefinition Material { get; }
+        /// <inheritdoc />
+        public int Density => Material.Density;
 
         private readonly BoundingBox[] defaultCollisionBoxes = new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
 
@@ -62,6 +64,12 @@ namespace OctoAwesome.Definitions
 
         /// <inheritdoc />
         public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
+
+        /// <summary>
+        /// Get the current definiton for this definition
+        /// </summary>
+        /// <returns>Current <see cref="BlockDefinition"/></returns>
+        public IDefinition GetDefinition() => this;
 
     }
 }

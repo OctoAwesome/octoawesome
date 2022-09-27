@@ -11,7 +11,7 @@
         int Hardness { get; }
 
         /// <summary>
-        /// Gets the density in kg/m^3, How much needed (volume calculation) for crafting or hit result etc...
+        /// Gets the density in g/dm^3, How much needed (volume calculation) for crafting or hit result etc...
         /// </summary>
         int Density { get; }
 

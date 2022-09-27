@@ -2,6 +2,7 @@
 using engenious.UI;
 using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
+using OctoAwesome.UI.Screens;
 using System;
 
 namespace OctoAwesome.Client.Screens
@@ -17,7 +18,7 @@ namespace OctoAwesome.Client.Screens
 
         private bool firstTimeFocusNameBox = true;
 
-        public CreateUniverseScreen(ScreenComponent manager) : base(manager)
+        public CreateUniverseScreen(ScreenComponent manager) : base(manager, manager.Game.Assets)
         {
             Manager = manager;
             settings = manager.Game.Settings;

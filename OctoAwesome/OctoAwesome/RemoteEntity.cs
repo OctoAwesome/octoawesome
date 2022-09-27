@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using engenious;
+
+using System.IO;
 
 namespace OctoAwesome
 {
@@ -42,5 +44,8 @@ namespace OctoAwesome
             Components.Deserialize(reader);
             base.Deserialize(reader);
         }
+
+        /// <inheritdoc />
+        protected override void OnInteract(GameTime gameTime, Entity entity) => throw new System.NotImplementedException();
     }
 }

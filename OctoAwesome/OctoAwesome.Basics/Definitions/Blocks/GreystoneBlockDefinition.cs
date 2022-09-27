@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class GreystoneBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Greystone;
+        public override string DisplayName => Languages.OctoBasics.Greystone;
 
         /// <inheritdoc />
         public override string Icon => "greystone";

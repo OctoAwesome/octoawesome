@@ -10,7 +10,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class WoodBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => OctoBasics.Wood;
+        public override string DisplayName => OctoBasics.Wood;
 
         /// <inheritdoc />
         public override string Icon => "wood_top";

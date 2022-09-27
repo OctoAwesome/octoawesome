@@ -27,7 +27,12 @@ jobs:
           sudo apt-get install -y locate libgl1-mesa-dev libglfw3
           Xvfb :99 &
         if: matrix.os == 'ubuntu-latest'
-
+      - name: Install SegoeUI Emoji font in linux
+        run: |
+          sudo mkdir /usr/share/fonts/truetype/windows
+          sudo wget -O /usr/share/fonts/truetype/windows/seguiemj.ttf https://github.com/Vyshnav2255/Windows-11-Emojis-on-Linux/blob/main/seguiemj.ttf?raw=true
+          fc-cache -f
+        if: matrix.os == 'ubuntu-latest'
       - name: Install OpenAl on linux
         run: |
           sudo apt-get install libopenal1 alsa-utils alsa-oss pulseaudio

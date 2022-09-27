@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class WaterBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Water;
+        public override string DisplayName => Languages.OctoBasics.Water;
 
         /// <inheritdoc />
         public override uint SolidWall => 0;

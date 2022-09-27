@@ -13,6 +13,9 @@ namespace OctoAwesome.Network.Tests
         private OctoNetworkStream testStream;
         private Random rand;
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="OctoNetworkStreamTest" /> class
+        /// </summary>
         public OctoNetworkStreamTest()
         {
             testStream = new OctoNetworkStream();

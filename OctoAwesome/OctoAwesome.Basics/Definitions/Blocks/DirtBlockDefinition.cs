@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class DirtBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Ground;
+        public override string DisplayName => Languages.OctoBasics.Ground;
 
         /// <inheritdoc />
         public override string Icon => "dirt";

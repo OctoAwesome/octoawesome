@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class HoeDefinition : IItemDefinition
     {
         /// <inheritdoc />
-        public string Name => "Hoe";
+        public string DisplayName => "Hoe";
 
         /// <inheritdoc />
         public string Icon => "hoe_iron";
@@ -20,6 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
-            => new Hoe(this, material);
+        {
+            if (material is IFoodMaterialDefinition)
+                return null;
+            return new Hoe(this, material);
+        }
     }
 }

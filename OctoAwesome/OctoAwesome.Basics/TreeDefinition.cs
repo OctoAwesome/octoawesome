@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics
     {
         /// <inheritdoc />
         /// <remarks>This is <c>string.Empty</c> as trees need no names.</remarks>
-        public string Name => "";
+        public string DisplayName => "";
 
         /// <inheritdoc />
         /// <remarks>This is <c>string.Empty</c> as trees need no icon.</remarks>

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
@@ -37,6 +37,10 @@
     <Content Remove="Content\obj\**" />
   </ItemGroup>
 
+    <ItemGroup>
+        <None Remove="Content\Fonts\Emoji.spritefont" />
+    </ItemGroup>
+    
   <ItemGroup>
     <PackageReference Include="engenious" Version="0.6.1.10-alpha" />
     <PackageReference Include="engenious.ContentTool" Version="0.6.1.11-alpha" PrivateAssets="all" />

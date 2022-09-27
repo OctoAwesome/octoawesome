@@ -1,9 +1,9 @@
 ﻿//using OpenTK;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace OctoAwesome.Network
 {
@@ -123,7 +123,7 @@ namespace OctoAwesome.Network
             FileInfo.Delete();
             using (var writer = new StreamWriter(FileInfo.OpenWrite()))
             {
-                writer.Write(JsonConvert.SerializeObject(dictionary, Formatting.Indented));
+                writer.Write(System.Text.Json.JsonSerializer.Serialize(dictionary, new JsonSerializerOptions() { WriteIndented = true }));
             }
         }
 
@@ -131,7 +131,7 @@ namespace OctoAwesome.Network
         {
             using (var reader = new StreamReader(fileInfo.OpenRead()))
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(reader.ReadToEnd());
+                return System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(reader.ReadToEnd());
             }
         }
 

@@ -2,10 +2,12 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
+
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -109,16 +111,19 @@ namespace OctoAwesome.Client.Controls
 
             var newText = "";
 
-            // Refresh the active tool label
-            newText = Player.Toolbar.ActiveTool.Definition?.Name ?? string.Empty;
+            // Aktualisierung des ActiveTool Labels
+            if (Player.Toolbar.ActiveTool != null && Player.Toolbar.ActiveTool.Definition != null)
+            {
+                newText = Player.Toolbar.ActiveTool.Definition.DisplayName;
 
-            if (Player.Toolbar.ActiveTool.Amount > 1)
-                newText += $" ({Player.Toolbar.ActiveTool.Amount})";
+                if (Player.Toolbar.ActiveTool?.Amount > 1)
+                    newText += $" ({Player.Toolbar.ActiveTool.Amount})";
 
-            activeToolLabel.Text = newText;
-            activeToolLabel.Visible = activeToolLabel.Text != string.Empty;
+                activeToolLabel.Text = newText;
+                activeToolLabel.Visible = activeToolLabel.Text != string.Empty;
 
-            base.OnUpdate(gameTime);
+                base.OnUpdate(gameTime);
+            }
         }
 
         private void SetTexture(InventorySlot? inventorySlot, int index)

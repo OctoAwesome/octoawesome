@@ -20,7 +20,7 @@ namespace OctoAwesome.Basics.Definitions.Materials
         public int Density => 934;
 
         /// <inheritdoc />
-        public string Name => "Ice";
+        public string DisplayName => "Ice";
 
         /// <inheritdoc />
         public string Icon => "";

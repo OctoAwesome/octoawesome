@@ -1,5 +1,8 @@
 ﻿using engenious;
+
+using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
+using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 using System;
@@ -21,7 +24,7 @@ namespace OctoAwesome.Network
         /// <summary>
         /// Gets the simulation.
         /// </summary>
-        public Simulation Simulation { get; }
+        public Simulation Simulation => simulation;
 
         /// <summary>
         /// Gets the current game time.
@@ -38,7 +41,7 @@ namespace OctoAwesome.Network
         /// </summary>
         public GameService Service { get; }
 
-        private readonly ExtensionLoader extensionLoader;
+        private Simulation simulation;
 
         private Task backgroundTask;
         private CancellationTokenSource cancellationTokenSource;
@@ -59,24 +62,30 @@ namespace OctoAwesome.Network
             this.settings = settings;
             this.updateHub = updateHub;
 
+            var typeContainer = TypeContainer.Get<ITypeContainer>();
 
-            TypeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
-            TypeContainer.Register<IExtensionLoader, ExtensionLoader>(InstanceBehavior.Singleton);
-            TypeContainer.Register<IExtensionResolver, ExtensionLoader>(InstanceBehavior.Singleton);
-            TypeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
-            TypeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
-            TypeContainer.Register<DiskPersistenceManager>(InstanceBehavior.Singleton);
-            TypeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehavior.Singleton);
-            TypeContainer.Register<ResourceManager>(InstanceBehavior.Singleton);
-            TypeContainer.Register<IResourceManager, ResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehavior.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<DiskPersistenceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<ResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehavior.Singleton);
 
-            extensionLoader = TypeContainer.Get<ExtensionLoader>();
+            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
+            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
+            typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
+
+            var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
 
-            ResourceManager = TypeContainer.Get<ResourceManager>();
+            var extensionService = typeContainer.Get<ExtensionService>();
 
-            Service = new GameService(ResourceManager);
-            Simulation = new Simulation(ResourceManager, extensionLoader, Service)
+            ResourceManager = typeContainer.Get<ResourceManager>();
+
+            Service = typeContainer.Get<GameService>();
+            simulation = new Simulation(ResourceManager, extensionService, Service)
             {
                 IsServerSide = true
             };

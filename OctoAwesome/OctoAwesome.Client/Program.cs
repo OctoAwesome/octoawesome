@@ -1,6 +1,7 @@
 ﻿#region Using Statements
 
 using OctoAwesome.Logging;
+
 using System;
 using System.IO;
 

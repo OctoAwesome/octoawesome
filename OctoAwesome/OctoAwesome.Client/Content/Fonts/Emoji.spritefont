@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EngeniousFont>
+  <FontName>Segoe UI Emoji</FontName>
+	<FontType>BitmapFont</FontType>
+  <Size>24</Size>
+  <Spacing>0</Spacing>
+  <UseKerning>True</UseKerning>
+  <Style>Regular</Style>
+  <DefaultCharacter>&#x0;</DefaultCharacter>
+  <CharacterRegions>
+    <!--<CharacterRegion>
+      <Start>1114112</Start>
+      <End>1124351</End>
+    </CharacterRegion>-->
+	
+	  <CharacterRegion>
+		  <Start>9632</Start>
+		  <End>10175</End>
+	  </CharacterRegion>
+  </CharacterRegions>
+</EngeniousFont>

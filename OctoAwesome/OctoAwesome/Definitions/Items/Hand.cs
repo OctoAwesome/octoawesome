@@ -6,6 +6,11 @@
     public class Hand : Item
     {
         /// <summary>
+        /// Get's the singleton hand instance
+        /// </summary>
+        public static readonly Hand Instance = new Hand(new HandDefinition());
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Hand"/> class.
         /// </summary>
         /// <param name="handDefinition">The item definition for this item.</param>

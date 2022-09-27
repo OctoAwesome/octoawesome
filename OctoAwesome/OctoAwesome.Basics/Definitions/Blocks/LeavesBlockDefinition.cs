@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class LeavesBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Leaves;
+        public override string DisplayName => Languages.OctoBasics.Leaves;
 
         /// <inheritdoc />
         public override string Icon => "leaves";

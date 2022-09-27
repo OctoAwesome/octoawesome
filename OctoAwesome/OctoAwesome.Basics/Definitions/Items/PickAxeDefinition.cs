@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public string Icon => "pick_iron";
 
         /// <inheritdoc />
-        public string Name => "Pickaxe";
+        public string DisplayName => "Pickaxe";
 
         /// <inheritdoc />
         public bool CanMineMaterial(IMaterialDefinition material)
@@ -21,6 +21,8 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public Item Create(IMaterialDefinition material)
         {
+            if (material is IFoodMaterialDefinition)
+                return null;
             return new Pickaxe(this, material);
         }
     }

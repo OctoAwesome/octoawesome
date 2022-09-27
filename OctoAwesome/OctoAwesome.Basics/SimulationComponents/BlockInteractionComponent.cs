@@ -1,9 +1,22 @@
-﻿using OctoAwesome.EntityComponents;
+﻿using engenious;
+
+using OctoAwesome.Components;
+using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.EntityComponents;
 using System.Diagnostics;
 using engenious;
 using OctoAwesome.Services;
 using OctoAwesome.Definitions;
 using OctoAwesome.Components;
+using OctoAwesome.Definitions.Items;
+using OctoAwesome.Services;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -46,25 +59,24 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
-                functionalBlock => functionalBlock?.Interact(gameTime, entity),
-                entity => { }
+                    blockInfo => InteractWith(blockInfo, inventory, toolbar, cache),
+                    componentContainer => componentContainer?.Interact(gameTime, entity)
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
             {
                 if (toolbar.ActiveTool != null)
                 {
-                    Index3 add = new Index3();
-                    switch (controller.ApplySide)
+                    Index3 add = controller.ApplySide switch
                     {
-                        case OrientationFlags.SideWest: add = new Index3(-1, 0, 0); break;
-                        case OrientationFlags.SideEast: add = new Index3(1, 0, 0); break;
-                        case OrientationFlags.SideSouth: add = new Index3(0, -1, 0); break;
-                        case OrientationFlags.SideNorth: add = new Index3(0, 1, 0); break;
-                        case OrientationFlags.SideBottom: add = new Index3(0, 0, -1); break;
-                        case OrientationFlags.SideTop: add = new Index3(0, 0, 1); break;
-                    }
+                        OrientationFlags.SideWest => new Index3(-1, 0, 0),
+                        OrientationFlags.SideEast => new Index3(1, 0, 0),
+                        OrientationFlags.SideSouth => new Index3(0, -1, 0),
+                        OrientationFlags.SideNorth => new Index3(0, 1, 0),
+                        OrientationFlags.SideBottom => new Index3(0, 0, -1),
+                        OrientationFlags.SideTop => new Index3(0, 0, 1),
+                        _ => new Index3(),
+                    };
 
                     if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
@@ -103,7 +115,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         if (!intersects)
                         {
-                            if (inventory.RemoveUnit(toolbar.ActiveTool))
+                            if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
                             {
                                 cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
                                 cache.SetBlockMeta(idx, (int)controller.ApplySide);
@@ -122,14 +134,10 @@ namespace OctoAwesome.Basics.SimulationComponents
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
                 IItem activeItem = null!;
-                if (toolbar.ActiveTool.Item is IItem item)
-                {
+                if (toolbar.ActiveTool?.Item is IItem item)
                     activeItem = item;
-                }
-                else if (toolbar.HandSlot.Item is IItem handItem)
-                {
-                    activeItem = handItem;
-                }
+                else
+                    activeItem = Hand.Instance;
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
@@ -145,11 +153,10 @@ namespace OctoAwesome.Basics.SimulationComponents
                         }
                         else if (definition is IInventoryable invDef)
                         {
-                            inventory.AddUnit(quantity, invDef);
+                            inventory.Add(invDef, quantity);
                         }
 
                     }
-
 
             }
         }

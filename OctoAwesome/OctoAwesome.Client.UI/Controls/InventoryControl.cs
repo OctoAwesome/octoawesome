@@ -2,9 +2,12 @@
 using engenious.Graphics;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.UI.Components;
+
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace OctoAwesome.Client.UI.Controls
 {
@@ -18,7 +21,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// <summary>
         /// Gets the slot that is currently hovered over by the cursor.
         /// </summary>
-        public InventorySlot HoveredSlot { get; private set; }
+        public IInventorySlot HoveredSlot { get; private set; }
 
         private Grid grid;
         private readonly ScrollContainer scroll;
@@ -31,14 +34,20 @@ namespace OctoAwesome.Client.UI.Controls
         /// <param name="assets">The asset component used to load resource assets.</param>
         /// <param name="inventorySlots">The inventory slots of the inventory to show.</param>
         /// <param name="columns">The number of columns for the inventory.</param>
-        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, List<InventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
+        public InventoryControl(BaseScreenComponent manager, AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS) : base(manager)
         {
+            Background = new SolidColorBrush(Color.Transparent);
             scroll = new ScrollContainer(manager)
             {
+                Background = new SolidColorBrush(Color.Transparent),
                 Margin = new Border(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalScrollbarVisibility = ScrollbarVisibility.Never,
+                VerticalScrollbarEnabled = true
+
             };
+            scroll.VerticalScrollbar.Background = new SolidColorBrush(Color.Transparent);
 
             grid = new Grid(manager)
             {
@@ -58,7 +67,7 @@ namespace OctoAwesome.Client.UI.Controls
         /// </summary>
         /// <param name="inventorySlots">The inventory slots to create controls for.</param>
         /// <param name="columns">The number of columns to split the inventory into.</param>
-        public void Rebuild(List<InventorySlot> inventorySlots, int columns = COLUMNS)
+        public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, int columns = COLUMNS)
         {
             grid = new Grid(ScreenManager)
             {
@@ -77,29 +86,35 @@ namespace OctoAwesome.Client.UI.Controls
             int column = 0;
             int row = 0;
 
-            foreach (var inventorySlot in inventorySlots)
+            foreach (var inventorySlot in inventorySlots.OrderBy(x => x.Item is null).ThenBy(x => x.Item?.GetType().Name))
             {
                 Texture2D texture;
-                if (inventorySlot.Definition is null)
-                    continue;
-                else
-                    texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
 
-                var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
-                image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
-                image.MouseLeave += (_, _) => { HoveredSlot = null; };
-                image.StartDrag += (_, e) =>
+                var panel = new Panel(ScreenManager) {Width = 44, Height = 44 };
+                panel.Background = new BorderBrush(LineType.Solid, Color.Black);
+                var label = new Label(ScreenManager) { Text = "", HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.Transparent) };
+                if (inventorySlot.Definition is not null)
                 {
-                    e.Handled = true;
-                    e.Icon = texture;
-                    e.Content = inventorySlot;
-                    e.Sender = image;
-                };
-                image.LeftMouseClick += (s, e) => HoveredSlot = inventorySlot;
-                var label = new Label(ScreenManager) { Text = inventorySlot.Amount.ToString(CultureInfo.InvariantCulture), HorizontalAlignment = HorizontalAlignment.Right, VerticalTextAlignment = VerticalAlignment.Bottom, Background = new BorderBrush(Color.White) };
-                grid.AddControl(image, column, row);
-                grid.AddControl(label, column, row);
 
+                    texture = assets.LoadTexture(inventorySlot.Definition.GetType(), inventorySlot.Definition.Icon);
+                    var image = new Image(ScreenManager) { Texture = texture, Width = 42, Height = 42, VerticalAlignment = VerticalAlignment.Center };
+                    panel.Controls.Add(image);
+                    image.MouseEnter += (_, _) => { HoveredSlot = inventorySlot; };
+                    image.MouseLeave += (_, _) => { HoveredSlot = null; };
+                    image.StartDrag += (_, e) =>
+                    {
+                        e.Handled = true;
+                        e.Icon = texture;
+                        e.Content = inventorySlot;
+                        e.Sender = image;
+                    };
+                    image.LeftMouseClick += (s, e) => HoveredSlot = inventorySlot;
+                    label.Background = new BorderBrush(Color.White);
+                    label.Text = inventorySlot.Amount.ToString(CultureInfo.InvariantCulture);
+
+                }
+                grid.AddControl(panel, column, row);
+                grid.AddControl(label, column, row);
                 column++;
                 if (column >= columns)
                 {

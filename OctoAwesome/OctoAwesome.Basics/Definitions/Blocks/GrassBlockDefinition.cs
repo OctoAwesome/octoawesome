@@ -9,7 +9,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     public sealed class GrassBlockDefinition : BlockDefinition
     {
         /// <inheritdoc />
-        public override string Name => Languages.OctoBasics.Grass;
+        public override string DisplayName => Languages.OctoBasics.Grass;
 
         /// <inheritdoc />
         public override string Icon => "grass_top";
