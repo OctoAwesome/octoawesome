@@ -18,8 +18,6 @@ namespace OctoAwesome.Basics.FunctionBlocks
         internal AnimationComponent animationComponent;
         private IDisposable changedSub;
 
-        //internal TransferUIComponent transferUiComponent;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Chest"/> class.
         /// </summary>

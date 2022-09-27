@@ -76,9 +76,6 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
 
         var addedAddedAmount = target.Add(item, toAddAndRemove);
         Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
-        //sourceControl.Rebuild(source.Inventory);
-        //targetControl.Rebuild(target.Inventory);
-
     }
 
     internal void OnClose(string key)

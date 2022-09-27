@@ -108,7 +108,6 @@ namespace OctoAwesome.Basics.UI.Screens
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = Border.All(20),
                 Margin = Border.All(10, 0, 0, 0),
-
             };
 
             nameLabel = new Label(manager);
@@ -170,12 +169,6 @@ namespace OctoAwesome.Basics.UI.Screens
                 e.Handled = true;
                 var source = slot.GetParentInventory();
                 furnaceUIComponent.Transfer(source, target, slot);
-
-                //if (transferDirection == TransferDirection.AToB)
-                //else if (transferDirection == TransferDirection.BToA)
-                //    furnaceUIComponent.Transfer(furnaceUIComponent.InputInventory, furnaceUIComponent.InventoryA, slot);
-                //else
-                //    Debug.Fail($"{nameof(transferDirection)} has to be {nameof(TransferDirection.AToB)} or {nameof(TransferDirection.BToA)}");
             }
         }
 

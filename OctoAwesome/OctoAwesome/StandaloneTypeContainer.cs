@@ -132,7 +132,7 @@ namespace OctoAwesome
                     {
                         tmpList.Clear();
                         next = true;
-                        break; 
+                        break;
                     }
                 }
 

@@ -28,10 +28,10 @@ namespace OctoAwesome.Tests
             }
         }
 
-        public IPlanet Planet => throw new NotImplementedException();        
+        public IPlanet Planet => throw new NotImplementedException();
 
         /// <summary>
-        /// Initializes a new instance of the<see cref="TestGlobalCache" /> class
+        /// Initializes a new instance of the <see cref="TestGlobalCache" /> class.
         /// </summary>
         public TestGlobalCache()
         {

@@ -51,15 +51,7 @@ namespace OctoAwesome
         /// </summary>
         public IGameService Service { get; }
 
-        ///// <summary>
-        ///// Gets a list of all entities in the simulation.
-        ///// </summary>
-        //public IReadOnlyList<Entity> Entities => entities;
 
-        ///// <summary>
-        ///// Gets a list of all functional blocks in the simulation.
-        ///// </summary>
-        //public IReadOnlyList<FunctionalBlock> FunctionalBlocks => functionalBlocks;
 
         private readonly ExtensionService extensionService;
 

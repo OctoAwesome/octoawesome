@@ -21,9 +21,7 @@ namespace OctoAwesome.UI.Screens
         public BaseScreen(BaseScreenComponent manager, AssetComponent assets) : base(manager)
         {
             this.assets = assets;
-            backButton = new TextButton(Manager, "Back"
-                //UI.Languages.OctoClient.Back
-                )
+            backButton = new TextButton(Manager, "Back")
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,

@@ -12,10 +12,10 @@ namespace OctoAwesome.Tests
 
     public class LocalChunkCacheTest
     {
-        TestGlobalCache globalCache;        
+        TestGlobalCache globalCache;
 
         /// <summary>
-        /// Initializes a new instance of the<see cref="LocalChunkCacheTest" /> class
+        /// Initializes a new instance of the <see cref="LocalChunkCacheTest" /> class.
         /// </summary>
         public LocalChunkCacheTest()
         {

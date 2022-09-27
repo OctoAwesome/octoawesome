@@ -274,49 +274,12 @@ namespace OctoAwesome.EntityComponents
         }
 
         /*
-        ✓ 1. Remove X from Inventory
-        ✓ 2. Remove X with Amount Y from Inventory
-        ✓ 8. Remove X from Inventory in Slot Y
-
-        ✓ 3. Add X with Amount Y to Inventory
-        ✓ 12. Add / Remove empty slot
-
-        ✓ 4. Does Inventory contain X
-        ✓ 5. Does Inventory contain X with Amount Y
-        ✓ 11. Does inventory contains Slot X
-
-        ✓ 6. Can X be added to Inventory
-        ✓ 7. Can X with Amount Y be added to Inventory
-
-        ✓ 9. Get Slot X
-        ✓ 10. Get Slot X with Definition / item Y
-
-        ✓ 13. Get Inventory Fullness (Public prop getter for current and max)
-        ✓ 14. How much of X can be added to Inventory
-
-
-        ✓ TODO Rework serialize / deserialize to support the new inventory structure
-         
-        ✓ TODO Add all slots on initialize for fixed size inventory
-        ✓ TODO Where and How to Initialize Limits
-     
         TODO Can a slot be in multiple inventories at the same time? Complicated limits, threadsafe and and and
             Add some of these methods as a wrapper on the IInventorySlot itself
         ✓ TODO Remove all occurences of item? <see Line 162>
         TODO Threadsafety?
         */
 
-        //public int RemoveUnits(IInventoryable item, int units = 1)
-        //{
-        //    int alreadyRemoved = 0;
-        //    var slots = inventory.Where(x => x.Item == item);
-
-        //    foreach (var slot in slots)
-        //    {
-        //        Remove(item, slot);
-
-        //    }
-        //}
         /// <summary>
         /// Removes all occurences of the item
         /// </summary>
@@ -688,41 +651,5 @@ namespace OctoAwesome.EntityComponents
             return Remove(invSlot, definition.VolumePerUnit);
         }
 
-        ///// <summary>
-        ///// Removes an inventory slot from the inventory.
-        ///// </summary>
-        ///// <param name="inventorySlot">The inventory slot to remove.</param>
-        ///// <returns>A value indicating whether removing was successful.</returns>
-        //public bool RemoveSlot(IInventorySlot inventorySlot)
-        //{
-        //    if (inventorySlot is not InventorySlot invSlot)
-        //        return false;
-
-        //    return inventory.Remove(invSlot);
-        //}
-
-        ///// <summary>
-        ///// Adds a new inventory slot.
-        ///// </summary>
-        ///// <param name="inventorySlot">The inventory slot to add.</param>
-        //public void AddSlot(IInventorySlot inventorySlot)
-        //{
-        //    var slot = inventory.FirstOrDefault(s => s.Item == inventorySlot.Item &&
-        //       s.Amount < s.Item.VolumePerUnit * s.Item.StackLimit);
-
-        //    // If there is no slot available, or the available one is full, then add a new slot.
-        //    if (slot == null)
-        //    {
-        //        slot = new InventorySlot(inventorySlot.Item, this)
-        //        {
-        //            Amount = inventorySlot.Amount,
-        //        };
-        //        inventory.Add(slot);
-        //    }
-        //    else
-        //    {
-        //        slot.Amount += inventorySlot.Amount;
-        //    }
-        //}
     }
 }

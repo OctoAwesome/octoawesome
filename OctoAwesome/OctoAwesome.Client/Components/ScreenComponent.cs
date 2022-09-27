@@ -3,7 +3,6 @@ using engenious.UI;
 using engenious.UI.Controls;
 
 using OctoAwesome.Client.Screens;
-using System;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Database;
@@ -13,6 +12,7 @@ using OctoAwesome.Runtime;
 using OctoAwesome.Rx;
 using OctoAwesome.UI.Screens;
 
+using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Client.Components

@@ -55,7 +55,6 @@ namespace OctoAwesome.UI.Components
         /// <inheritdoc/>
         public void Add(ComponentContainer value)
         {
-
             if (!componentContainers.Contains(value) && Match(value))
             {
                 OnAdd(value);

@@ -167,8 +167,6 @@ namespace OctoAwesome
         /// </exception>
         protected virtual void ValidateAddComponent(TComponent component)
         {
-            //if (Simulation is not null)
-            //    throw new NotSupportedException("Can't add components during simulation");
         }
 
         /// <summary>
@@ -180,8 +178,6 @@ namespace OctoAwesome
         /// </exception>
         protected virtual void ValidateRemoveComponent(TComponent component)
         {
-            //if (Simulation is not null)
-            //    throw new NotSupportedException("Can't remove components during simulation");
         }
 
         /// <summary>

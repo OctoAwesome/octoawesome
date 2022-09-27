@@ -193,8 +193,6 @@ namespace OctoAwesome.Basics.UI.Screens
                 var source = slot.GetParentInventory();
                 e.Handled = true;
                 transferComponent.Transfer(source, target, slot);
-                //if (source.RemoveSlot(slot))
-                //    target.AddSlot(slot);
             }
         }
 
@@ -208,8 +206,6 @@ namespace OctoAwesome.Basics.UI.Screens
 
             var addedAddedAmount = target.Add(item, toAddAndRemove);
             Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
-            //sourceControl.Rebuild(source.Inventory);
-            //targetControl.Rebuild(target.Inventory);
         }
 
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)

@@ -75,3 +75,43 @@ Entscheidung:
 Rausgefallen:
 - Required: Mindestzeit
 - Optional: Energy OR Zeit 
+
+[RecipeService.cs](https://github.com/OctoAwesome/octoawesome/blob/0a4e469fad1744f5c663b61779e4392d2fb117b1/OctoAwesome/OctoAwesome/Crafting/RecipeService.cs)
+```csharp
+
+//TODO Implement on a later point when needed or all discrepancies are solved
+public Recipe? Match(IReadOnlyCollection<Recipe> recipes, IReadOnlyCollection<RecipeItem> inputs, IReadOnlyCollection<RecipeItem> outputs, string category = "", string type = "")
+{
+    foreach (var recipe in recipes.OrderBy(x => x.Inputs.Length))
+    {
+        if (!string.IsNullOrWhiteSpace(category) && recipe.Category != category)
+            continue;
+        if (!string.IsNullOrWhiteSpace(type) && recipe.Type != type)
+            continue;
+
+        int counter = 0;
+        foreach (var inputItem in recipe.Inputs)
+        {
+            foreach (var input in inputs)
+            {
+                if (inputItem.Count <= input.Count
+                    && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
+                    && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+                {
+                    counter++;
+                    break;
+                }
+            }
+        }
+        if (counter >= recipe.Inputs.Length)
+            return recipe;
+    }
+
+    return null;
+}
+
+// TODO Is this needed, when match is finally implemented
+public IReadOnlyCollection<Recipe> Search(string query)
+{
+    throw new NotImplementedException();
+}

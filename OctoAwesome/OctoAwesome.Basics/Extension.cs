@@ -107,13 +107,6 @@ namespace OctoAwesome.Basics
                     c.Components.AddComponent(inventoryComponent);
                 }
 
-                //if (!c.ContainsComponent<TransferUIComponent>())
-                //{
-                //    c.transferUiComponent = new TransferUIComponent(inventoryComponent);
-                //    c.transferUiComponent.Closed += c.TransferUiComponentClosed;
-                //    //TODO: Fix this
-                //    //c.Components.AddComponent(c.transferUiComponent, true);
-                //}
 
                 c.Components.AddComponent(new UiKeyComponent() { PrimaryKey = "Transfer" }, true);
 
@@ -179,14 +172,6 @@ namespace OctoAwesome.Basics
                 {
                     inventoryComponent.Add(new InventorySlot(inventoryComponent));
                 }
-
-                //if (!c.ContainsComponent<TransferUIComponent>())
-                //{
-                //    c.transferUiComponent = new TransferUIComponent(inventoryComponent);
-                //    c.transferUiComponent.Closed += c.TransferUiComponentClosed;
-                //    //TODO: Fix this
-                //    //c.Components.AddComponent(c.transferUiComponent, true);
-                //}
 
                 f.Components.AddComponent(new BurningComponent());
 

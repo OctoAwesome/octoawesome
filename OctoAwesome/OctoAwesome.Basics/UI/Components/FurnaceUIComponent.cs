@@ -104,19 +104,6 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         var addedAddedAmount = target.Add(item, toAddAndRemove);
         Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
 
-        //var firstSlot = target.Inventory.First();
-
-        //target.RemoveSlot(firstSlot);
-        //target.AddSlot(slot, 0);
-        //source.AddSlot(firstSlot);
-        //}
-        //else
-        //{
-        //    var inputOrOutput = source.Inventory.IndexOf(slot);
-        //    source.RemoveSlot(slot);
-        //    target.AddSlot(slot);
-        //    source.AddSlot(new InventorySlot(), inputOrOutput);
-        //}
     }
 
     internal void OnClose(string key)
