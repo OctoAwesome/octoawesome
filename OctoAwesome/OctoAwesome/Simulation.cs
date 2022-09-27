@@ -51,13 +51,10 @@ namespace OctoAwesome
         /// </summary>
         public IGameService Service { get; }
 
-
-
         private readonly ExtensionService extensionService;
 
         private readonly List<Entity> entities = new();
         private readonly CountedScopeSemaphore entitiesSemaphore = new();
-
 
         private readonly List<FunctionalBlock> functionalBlocks = new();
         private readonly CountedScopeSemaphore functionalBlocksSemaphore = new();
