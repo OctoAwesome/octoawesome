@@ -1,6 +1,5 @@
 ﻿using engenious;
 
-using OctoAwesome;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
