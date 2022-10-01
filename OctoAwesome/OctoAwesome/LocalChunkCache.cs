@@ -187,12 +187,6 @@ namespace OctoAwesome
 
 
                             chunkColumns[flatIndex] = chunkColumn;
-
-                            // if (chunkColumn == null)
-                            // {
-                            //     successCallback?.Invoke(false);
-                            //     return;
-                            // }
                         }
                     }
 
