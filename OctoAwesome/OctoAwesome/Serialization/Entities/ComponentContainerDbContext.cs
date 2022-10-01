@@ -37,20 +37,20 @@ namespace OctoAwesome.Serialization.Entities
             entityDefinitionContext = new ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext(database);
             componentsDbContext = new ComponentContainerComponentDbContext<TComponent>(databaseProvider, universe);
 
-            var getComponentMeth = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
+            var componentGetter = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
 
-            Debug.Assert(getComponentMeth != null, nameof(getComponentMethod) + " != null");
-            getComponentMethod = getComponentMeth;
+            Debug.Assert(componentGetter != null, nameof(getComponentMethod) + " != null");
+            getComponentMethod = componentGetter;
 
-            var addOrUpdateComponentMeth = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.AddOrUpdate));
+            var addOrUpdateComponent = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.AddOrUpdate));
 
-            Debug.Assert(addOrUpdateComponentMeth != null, nameof(addOrUpdateComponentMethod) + " != null");
-            addOrUpdateComponentMethod = addOrUpdateComponentMeth;
+            Debug.Assert(addOrUpdateComponent != null, nameof(addOrUpdateComponentMethod) + " != null");
+            addOrUpdateComponentMethod = addOrUpdateComponent;
             
-            var removeComponentMeth = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
+            var removeComponent = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
 
-            Debug.Assert(removeComponentMeth != null, nameof(removeComponentMethod) + " != null");
-            removeComponentMethod = removeComponentMeth;
+            Debug.Assert(removeComponent != null, nameof(removeComponentMethod) + " != null");
+            removeComponentMethod = removeComponent;
         }
 
         /// <inheritdoc />
