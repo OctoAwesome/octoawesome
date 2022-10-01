@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+
 using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.UI;
 using OctoAwesome.Client.UI.Components;
 

@@ -43,7 +43,7 @@ namespace OctoAwesome.Database
                     continue;
                 }
 
-                keys.Add(key.Tag, key);
+                keys[key.Tag] = key;
             }
         }
 

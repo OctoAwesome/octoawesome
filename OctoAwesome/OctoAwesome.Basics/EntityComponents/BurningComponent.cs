@@ -62,12 +62,11 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
     private RecipeService recipeService;
     private IDefinitionManager definitionManager;
 
-    internal ProductionInventoriesComponent inventoryComponent;
+    internal ProductionInventoriesComponent? inventoryComponent;
 
     private Recipe? currentRecipe;
     private int requiredMillisecondsForRecipe;
-    private int energieLeft = 0;
-    private int energyLeft = 0;
+    private int energyLeft;
     private IReadOnlyCollection<Recipe>? recipes;
 
     private IReadOnlyCollection<Recipe> Recipes
@@ -114,8 +113,10 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
         recipeService = TypeContainer.Get<RecipeService>();
         definitionManager = TypeContainer.Get<IDefinitionManager>();
         recipes = recipeService.GetByType(typename);
-
-        inventoryComponent = Instance.GetComponent<ProductionInventoriesComponent>();
+        var ivComponent = Instance.GetComponent<ProductionInventoriesComponent>();
+        Debug.Assert(ivComponent is not null,
+            $"Entity for Burning component needs to have a not null {nameof(ProductionInventoriesComponent)}.");
+        inventoryComponent = ivComponent;
         Debug.Assert(inventoryComponent != null, nameof(inventoryComponent) + " != null");
     }
 
@@ -129,9 +130,9 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
         Debug.WriteLine(energyLeft);
         if (energyLeft <= 0)
         {
-            var firstProductionResource = inventoryComponent.ProductionInventory.Inventory.First();
+            var firstProductionResource = InventoryComponent.ProductionInventory.Inventory.First();
 
-            if (firstProductionResource?.Definition is not BlockDefinition bd 
+            if (firstProductionResource?.Definition is not BlockDefinition bd
                 || (bd.Material is not WoodMaterialDefinition
                     && bd.Material is not CottonMaterialDefinition
                     && bd.Material is not LeaveMaterialDefinition))
@@ -141,8 +142,8 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
             }
             if (firstProductionResource.Definition is BlockDefinition { Material: ISolidMaterialDefinition smd })
             {
-                energieLeft = smd.Density; //TODO real energy stuff calculations
-                inventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
+                energyLeft = smd.Density; //TODO real energy stuff calculations
+                InventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
             }
         }
 
@@ -166,7 +167,7 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
             var inputItem = currentRecipe.Inputs[0];
             var inputDef = definitionManager.Definitions.FirstOrDefault(x => x.DisplayName == inputItem.ItemName);
 
-            var inputSlot = inventoryComponent.InputInventory.GetSlot(inputDef);
+            var inputSlot = InventoryComponent.InputInventory.GetSlot(inputDef);
 
             if (inputSlot?.Item is null)
                 return false;
@@ -186,20 +187,21 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
 
                     if (mat is null)
                         return false;
-                    inventoryComponent.OutputInventory.Add(itemDef.Create(mat), outputItem.Count);
 
                     var createdItem = itemDef.Create(mat);
 
                     if (createdItem is null)
                         return false;
-                    
+
+                    InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
+
                 }
                 else if (outputDef is IBlockDefinition blockDefinition)
                 {
-                    inventoryComponent.OutputInventory.Add(blockDefinition, outputItem.Count);
+                    InventoryComponent.OutputInventory.Add(blockDefinition, outputItem.Count);
                 }
             }
-            inventoryComponent.InputInventory.Remove(inputSlot.Item, inputItem.Count);
+            InventoryComponent.InputInventory.Remove(inputSlot.Item, inputItem.Count);
         }
         else if (currentRecipe.Inputs.Length > 1)
         {
@@ -207,7 +209,7 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
             {
                 var inputDef = definitionManager.Definitions.FirstOrDefault(x => x.DisplayName == inputItem.ItemName);
 
-                var inputSlot = inventoryComponent.InputInventory.GetSlot(inputDef);
+                var inputSlot = InventoryComponent.InputInventory.GetSlot(inputDef);
 
                 if (inputSlot?.Item is null)
                     return false;
@@ -230,20 +232,20 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
 
                         if (mat is null)
                             return false;
-                        inventoryComponent.OutputInventory.Add(itemDef.Create(mat), outputItem.Count);
 
                         var createdItem = itemDef.Create(mat);
 
                         if (createdItem is null)
                             return false;
+                        InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
 
                     }
                     else if (outputDef is IBlockDefinition blockDefinition)
                     {
-                        inventoryComponent.OutputInventory.Add(blockDefinition, outputItem.Count);
+                        InventoryComponent.OutputInventory.Add(blockDefinition, outputItem.Count);
                     }
                 }
-                inventoryComponent.InputInventory.Remove(inputSlot.Item, inputItem.Count);
+                InventoryComponent.InputInventory.Remove(inputSlot.Item, inputItem.Count);
             }
         }
         else
@@ -259,15 +261,16 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
 
                     if (mat is null)
                         return false;
-                    inventoryComponent.OutputInventory.Add(itemDef.Create(mat), outputItem.Count);
+
                     var createdItem = itemDef.Create(mat);
 
                     if (createdItem is null)
                         return false;
+                    InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
                 }
                 else if (outputDef is IBlockDefinition blockDefinition)
                 {
-                    inventoryComponent.OutputInventory.Add(blockDefinition, outputItem.Count);
+                    InventoryComponent.OutputInventory.Add(blockDefinition, outputItem.Count);
                 }
             }
         }
@@ -296,7 +299,7 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
         if (energyLeft > 0)
             return true;
 
-        var firstProductionResource = inventoryComponent.ProductionInventory.Inventory.First();
+        var firstProductionResource = InventoryComponent.ProductionInventory.Inventory.First();
 
         if (firstProductionResource.Definition is not BlockDefinition bd
             || (bd.Material is not WoodMaterialDefinition
@@ -309,8 +312,8 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
         else if (firstProductionResource.Definition is BlockDefinition bd2
             && bd2.Material is ISolidMaterialDefinition smd)
         {
-            energieLeft = smd.Density; //TODO real energy stuff calculations
-            inventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
+            energyLeft = smd.Density; //TODO real energy stuff calculations
+            InventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
         }
 
         return true;
@@ -318,13 +321,10 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
 
     private Recipe? GetRecipe()
     {
-        if (inventoryComponent is null)
-            return null; //Reset recipe, time etc. pp.
-                         //var inputSlot = Input.Inventory.FirstOrDefault();
-        var inputs = inventoryComponent.InputInventory.Inventory
+        var inputs = InventoryComponent.InputInventory.Inventory
             .Where(x => !string.IsNullOrWhiteSpace(x.Definition?.DisplayName))
-            .GroupBy(x => x.Definition.DisplayName)
-            .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item.Material.DisplayName, null /*TODO Name not Displayname*/))
+            .GroupBy(x => x.Definition!.DisplayName)
+            .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Name not Displayname*/))
             .ToArray();
         if (inputs.Length == 0)
             return null; //Reset recipe, time etc. pp.

@@ -1,5 +1,4 @@
 ﻿using OctoAwesome.Client.Components;
-using OctoAwesome.Client.Controls;
 using OctoAwesome.Runtime;
 using System;
 using engenious.UI;
@@ -16,6 +15,7 @@ using OctoAwesome.UI.Components;
 using OctoAwesome.Extension;
 using OctoAwesome.Crafting;
 using engenious.Graphics;
+using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client
 {

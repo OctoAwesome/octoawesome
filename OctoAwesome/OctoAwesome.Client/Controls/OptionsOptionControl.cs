@@ -1,9 +1,11 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.Screens;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
+
 using System;
 using System.Diagnostics;
 
@@ -103,7 +105,7 @@ namespace OctoAwesome.Client.Controls
             #endregion
 
             //////////////////////View range//////////////////////
-            string viewrange = settings.Get<string>("Viewrange", OctoGame.DefaultViewRange.ToString());
+            string viewrange = settings.Get("Viewrange", OctoGame.DefaultViewRange.ToString());
 
             rangeTitle = new Label()
             {
@@ -157,7 +159,7 @@ namespace OctoAwesome.Client.Controls
 
             mapPath = new Textbox()
             {
-                Text = settings.Get<string>("ChunkRoot", "")!,
+                Text = settings.Get("ChunkRoot", "")!,
                 Enabled = false,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
@@ -210,7 +212,7 @@ namespace OctoAwesome.Client.Controls
 
             Textbox resolutionWidthTextbox = new Textbox()
             {
-                Text = settings.Get<string>("Width", OctoGame.DefaultResolutionWidth.ToString()),
+                Text = settings.Get("Width", OctoGame.DefaultResolutionWidth.ToString()),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };
@@ -225,7 +227,7 @@ namespace OctoAwesome.Client.Controls
 
             Textbox resolutionHeightTextbox = new Textbox()
             {
-                Text = settings.Get<string>("Height", OctoGame.DefaultResolutionHeight.ToString()),
+                Text = settings.Get("Height", OctoGame.DefaultResolutionHeight.ToString()),
                 Width = 50,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Gray)
             };

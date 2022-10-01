@@ -93,7 +93,7 @@ namespace OctoAwesome.GameServer
                 return;
             }
 
-            value.BaseClient.SendPackageAsync(value);
+            _ = value.BaseClient.SendPackageAsync(value);
         }
     }
 }

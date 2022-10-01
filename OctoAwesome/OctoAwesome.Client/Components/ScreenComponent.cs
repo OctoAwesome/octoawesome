@@ -15,6 +15,7 @@ using OctoAwesome.UI.Screens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using OctoAwesome.Components;
 
 namespace OctoAwesome.Client.Components
 {

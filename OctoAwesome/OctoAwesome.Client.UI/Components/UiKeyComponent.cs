@@ -15,11 +15,6 @@ public class UiKeyComponent : Component, IEntityComponent, IEquatable<UiKeyCompo
     /// </summary>
     public string PrimaryKey { get; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UiKeyComponent"/> class.
-    /// </summary>
-    public string PrimaryKey { get; set; }
-
     /// <param name="primaryKey">The primary key.</param>
     public UiKeyComponent(string primaryKey)
     {
@@ -27,13 +22,13 @@ public class UiKeyComponent : Component, IEntityComponent, IEquatable<UiKeyCompo
     }
 
     /// <inheritdoc/>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return Equals(obj as UiKeyComponent);
     }
 
     /// <inheritdoc/>
-    public bool Equals(UiKeyComponent other)
+    public bool Equals(UiKeyComponent? other)
     {
         return other is not null &&
                PrimaryKey == other.PrimaryKey;
