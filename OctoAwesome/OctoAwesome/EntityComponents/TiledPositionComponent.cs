@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents;
+/// <summary>
+/// Restricts an entity to be the only one at a given position component
+/// </summary>
 public class UniquePositionComponent : Component, IEntityComponent
 {
 }

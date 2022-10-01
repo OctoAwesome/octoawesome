@@ -1,5 +1,4 @@
 ﻿using engenious;
-using engenious.Graphics;
 using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
@@ -29,23 +28,20 @@ namespace OctoAwesome.Basics.UI.Screens
         /// </summary>
         public event EventHandler<NavigationEventArgs>? Closed;
 
-        private const string ScreenKey = "Furnace";
-        private readonly AssetComponent assetComponent;
-        private readonly Texture2D panelBackground;
-        private readonly InventoryControl inputInventory;
-        private readonly InventoryComponent outputInventory;
-        private readonly FurnaceControl furnace;
-        private readonly Label nameLabel;
-        private readonly Label massLabel;
-        private readonly Label volumeLabel;
-        private IDisposable? subscription;
-        private FurnaceUIComponent? furnaceUiComponent;
-
         private FurnaceUIComponent FurnaceUiComponent
         {
             get => NullabilityHelper.NotNullAssert(furnaceUiComponent, $"{nameof(FurnaceUiComponent)} was not initialized!");
             set => furnaceUiComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(FurnaceUiComponent)} cannot be initialized with null!");
         }
+        private InventoryControl InputInventory => NullabilityHelper.NotNullAssert(inputInventory, $"{nameof(InputInventory)} was not initialized!");
+
+        private const string ScreenKey = "Furnace";
+        private readonly AssetComponent assetComponent;
+        private readonly InventoryControl? inputInventory;
+        private readonly FurnaceControl furnace;
+        private IDisposable? subscription;
+        private FurnaceUIComponent? furnaceUiComponent;
+
 
         private enum TransferDirection
         {
@@ -66,7 +62,7 @@ namespace OctoAwesome.Basics.UI.Screens
             var panelText = this.assetComponent.LoadTexture("panel");
 
             Debug.Assert(panelText != null, nameof(panelText) + " != null");
-            panelBackground = panelText;
+            var panelBackground = panelText;
             var grid = new Grid()
             {
                 Width = 800,
@@ -122,11 +118,11 @@ namespace OctoAwesome.Basics.UI.Screens
                 Margin = Border.All(10, 0, 0, 0),
             };
 
-            nameLabel = new Label();
+            var nameLabel = new Label();
             infoPanel.Controls.Add(nameLabel);
-            massLabel = new Label();
+            var massLabel = new Label();
             infoPanel.Controls.Add(massLabel);
-            volumeLabel = new Label();
+            var volumeLabel = new Label();
             infoPanel.Controls.Add(volumeLabel);
             grid.AddControl(infoPanel, 1, 0, 1, 3);
         }
@@ -191,7 +187,7 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <param name="productionResourceInventory">Mostly fuel of furnace</param>
         internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB, InventoryComponent inventoryComponentC, InventoryComponent productionResourceInventory)
         {
-            inputInventory.Rebuild(inventoryComponentA.Inventory);
+            InputInventory.Rebuild(inventoryComponentA.Inventory);
             furnace.Rebuild(inventoryComponentB.Inventory, inventoryComponentC.Inventory, productionResourceInventory.Inventory);
         }
 

@@ -22,7 +22,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         {
             var poscomp = entity.Components.Get<PositionComponent>();
             var movecomp = entity.Components.Get<MoveableComponent>();
-            var cache = entity.Components.Get<LocalChunkCacheComponent>().LocalChunkCache;
+            var chunkCacheComponent = entity.Components.Get<LocalChunkCacheComponent>();
 
             Debug.Assert(poscomp != null, nameof(poscomp) + " != null");
             Debug.Assert(movecomp != null, nameof(movecomp) + " != null");

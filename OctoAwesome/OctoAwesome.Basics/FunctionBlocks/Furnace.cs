@@ -24,10 +24,27 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 [SerializationId(1, 4)]
 public class Furnace : Entity
 {
-    internal ProductionInventoriesComponent productionInventoriesComponent;
-    internal AnimationComponent animationComponent;
+    internal ProductionInventoriesComponent ProductionInventoriesComponent
+    {
+        get => NullabilityHelper.NotNullAssert(productionInventoriesComponent, $"{nameof(ProductionInventoriesComponent)} was not initialized!");
+        set => productionInventoriesComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(ProductionInventoriesComponent)} cannot be initialized with null!");
+    }
+    internal AnimationComponent AnimationComponent
+    {
+                get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
+        set => animationComponent= NullabilityHelper.NotNullAssert(value, $"{nameof(AnimationComponent)} cannot be initialized with null!");
+    }
+    internal BurningComponent BurningComponent
+    {
+                get => NullabilityHelper.NotNullAssert(burningComponent, $"{nameof(BurningComponent)} was not initialized!");
+        set => burningComponent= NullabilityHelper.NotNullAssert(value, $"{nameof(BurningComponent)} cannot be initialized with null!");
+    }
 
-    internal BurningComponent burningComponent;
+
+    private ProductionInventoriesComponent? productionInventoriesComponent;
+    private AnimationComponent? animationComponent;
+    private BurningComponent? burningComponent;
+
 
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
@@ -52,7 +69,7 @@ public class Furnace : Entity
         {
             Position = position
         });
-        
+
     }
 
     /// <inheritdoc/>
@@ -66,9 +83,9 @@ public class Furnace : Entity
            && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
         {
             transferComponent.Targets.Clear();
-            transferComponent.Targets.Add(productionInventoriesComponent.InputInventory);
-            transferComponent.Targets.Add(productionInventoriesComponent.OutputInventory);
-            transferComponent.Targets.Add(productionInventoriesComponent.ProductionInventory);
+            transferComponent.Targets.Add(ProductionInventoriesComponent.InputInventory);
+            transferComponent.Targets.Add(ProductionInventoriesComponent.OutputInventory);
+            transferComponent.Targets.Add(ProductionInventoriesComponent.ProductionInventory);
             uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
             AnimationComponent.CurrentTime = 0f;

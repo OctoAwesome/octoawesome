@@ -21,13 +21,20 @@ namespace OctoAwesome.Caching
             Cast = Expression.Lambda<Func<TFrom?, TTo?>>(Expression.Convert(param, typeof(TTo)), param).Compile();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TListFrom"></typeparam>
+        /// <typeparam name="TListTo"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static TListTo CastList<TListFrom, TListTo>(TListFrom list) 
             where TListFrom : IEnumerable<TFrom>
             where TListTo : ICollection<TTo>, new()
         {
             var to = new TListTo();
             foreach (var item in list)
-                to.Add(Cast(item));
+                to.Add(Cast(item)!);
             
             return to;
         }

@@ -1,14 +1,13 @@
 ﻿using engenious.UI;
-using OctoAwesome.Client.Controls;
 using OctoAwesome.Client.Components;
 using System;
 using engenious;
 using engenious.Input;
 using engenious.UI.Controls;
-using OctoAwesome.UI.Controls;
 using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client.Screens
 {

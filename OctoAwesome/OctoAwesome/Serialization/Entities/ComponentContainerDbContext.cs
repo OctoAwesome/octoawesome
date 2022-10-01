@@ -80,7 +80,7 @@ namespace OctoAwesome.Serialization.Entities
                     MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(componentType);
                     var component = (TComponent?)genericMethod.Invoke(componentsDbContext, new object[] { entity });
                     Debug.Assert(component != null, nameof(component) + " != null");
-                    entity.Components.AddComponent(component);
+                    entity.Components.Add(component);
                 }
                 catch (Exception)
                 {

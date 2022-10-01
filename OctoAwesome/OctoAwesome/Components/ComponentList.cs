@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using OctoAwesome.Caching;
-using System.Diagnostics;
 
 namespace OctoAwesome.Components;
 
@@ -28,10 +27,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
 
     private IReadOnlyCollection<Type> TypeKeys => componentsByType.Keys;
 
-    private readonly Action<T> insertValidator;
-    private readonly Action<T> removeValidator;
-    private readonly Action<T> onInserter;
-    private readonly Action<T> onRemover;
+    private readonly Action<T>? insertValidator;
+    private readonly Action<T>? removeValidator;
+    private readonly Action<T>? onInserter;
+    private readonly Action<T>? onRemover;
 
     private readonly HashSet<T> flatComponents = new();
     private readonly Dictionary<Type, List<T>> componentsByType = new();
@@ -43,20 +42,20 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     {
     }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ComponentList{T}"/> class.
-        /// </summary>
-        /// <param name="insertValidator">The validator for insertions.</param>
-        /// <param name="removeValidator">The validator for removals.</param>
-        /// <param name="onInserter">The method to call on insertion.</param>
-        /// <param name="onRemover">The method to call on removal.</param>
-        public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover)
-        {
-            this.insertValidator = insertValidator;
-            this.removeValidator = removeValidator;
-            this.onInserter = onInserter;
-            this.onRemover = onRemover;
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ComponentList{T}"/> class.
+    /// </summary>
+    /// <param name="insertValidator">The validator for insertions.</param>
+    /// <param name="removeValidator">The validator for removals.</param>
+    /// <param name="onInserter">The method to call on insertion.</param>
+    /// <param name="onRemover">The method to call on removal.</param>
+    public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover)
+    {
+        this.insertValidator = insertValidator;
+        this.removeValidator = removeValidator;
+        this.onInserter = onInserter;
+        this.onRemover = onRemover;
+    }
 
     /// <inheritdoc />
     public IEnumerator<T> GetEnumerator()
@@ -264,7 +263,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             return false;
         }
 
-        replaced = GenericCaster<T, V>.Cast(components[index]);
+        replaced = GenericCaster<T, V>.Cast(components[index])!;
         components[index] = replacement;
         return true;
     }
@@ -290,7 +289,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             else
             {
                 var index = components.IndexOf(toReplace);
-                replaced = GenericCaster<T, V>.Cast(components[index]);
+                replaced = GenericCaster<T, V>.Cast(components[index])!;
                 components[index] = replacement;
                 return true;
             }
@@ -360,9 +359,9 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             if (!componentsByType.TryGetValue(type, out var _))
                 componentsByType[type] = new();
 
-            var component = GenericCaster<object, T>.Cast(TypeContainer.GetUnregistered(type));
-            AddIfTypeNotExists(component);
+            var component = (T)TypeContainer.GetUnregistered(type);
             component.Deserialize(reader);
+            AddIfTypeNotExists(component);
         }
     }
 }

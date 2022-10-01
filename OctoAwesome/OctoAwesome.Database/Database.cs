@@ -127,7 +127,7 @@ namespace OctoAwesome.Database
                 keyStore.Open();
             }
             catch (Exception ex)
-                when (ex is InvalidKeyException || ex is ArgumentException)
+                when (ex is InvalidKeyException or ArgumentException)
             {
                 keyStore.Close();
                 defragmentation.RecreateKeyFile();

@@ -27,7 +27,13 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public string Name => Languages.OctoBasics.ExtensionName;
 
-        private ITypeContainer typeContainer;
+        private ITypeContainer TypeContainer
+        {
+            get => NullabilityHelper.NotNullAssert(typeContainer, $"{nameof(TypeContainer)} was not initialized!");
+            set => typeContainer = NullabilityHelper.NotNullAssert(value, $"{nameof(TypeContainer)} cannot be initialized with null!");
+        }
+
+        private ITypeContainer? typeContainer;
 
         /// <inheritdoc />
         public void Register(ITypeContainer typeContainer)
@@ -103,7 +109,7 @@ namespace OctoAwesome.Basics
                 }
 
 
-                c.Components.AddIfNotExists(new UiKeyComponent() { PrimaryKey = "Transfer" });
+                c.Components.AddIfNotExists(new UiKeyComponent("Transfer"));
 
                 c.Components.AddIfNotExists(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
                 c.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
@@ -137,11 +143,11 @@ namespace OctoAwesome.Basics
                 if (!f.Components.TryGet<ProductionInventoriesComponent>(out var inventoryComponent))
                 {
                     inventoryComponent = new ProductionInventoriesComponent(true, 1);
-                    f.productionInventoriesComponent = inventoryComponent;
+                    f.ProductionInventoriesComponent = inventoryComponent;
                     f.Components.AddIfTypeNotExists(inventoryComponent);
                 }
                 else
-                    f.productionInventoriesComponent = inventoryComponent;
+                    f.ProductionInventoriesComponent = inventoryComponent;
 
 
                 while (inventoryComponent.InputInventory.Inventory.Count < 2)
@@ -151,7 +157,7 @@ namespace OctoAwesome.Basics
 
                 f.Components.Add(new BurningComponent());
 
-                f.Components.AddIfNotExists(new UiKeyComponent() { PrimaryKey = "Furnace" });
+                f.Components.AddIfNotExists(new UiKeyComponent("Furnace"));
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
                 f.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
                 f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
@@ -168,7 +174,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, typeContainer.Get<BlockCollectionService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?
@@ -176,10 +182,10 @@ namespace OctoAwesome.Basics
             extensionLoader.Extend<IScreenComponent>((s) =>
             {
                 s.Components.AddIfTypeNotExists(new TransferUIComponent());
-                s.Add(typeContainer.GetUnregistered<TransferScreen>());
+                s.Add(TypeContainer.GetUnregistered<TransferScreen>());
 
                 s.Components.AddIfTypeNotExists(new FurnaceUIComponent());
-                s.Add(typeContainer.GetUnregistered<FurnaceScreen>());
+                s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
             });
 
         }
