@@ -1,75 +1,75 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <LangVersion>11</LangVersion>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>11</LangVersion>
 
-    <ApplicationIcon>octoawesome.ico</ApplicationIcon>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>$(MSBuildThisFileDirectory)\Generated</CompilerGeneratedFilesOutputPath>
+		<ApplicationIcon>octoawesome.ico</ApplicationIcon>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(MSBuildThisFileDirectory)\Generated</CompilerGeneratedFilesOutputPath>
 
 
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
-    <Content Include="Content\**" />
-    <Content Include="Copyright.txt" />
+	<ItemGroup>
+		<RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
+		<Content Include="Content\**" />
+		<Content Include="Copyright.txt" />
 
-    <None Include="de\LoadingScreenQuotes.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+		<None Include="de\LoadingScreenQuotes.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 
-    <Content Include="FEEDBACK.txt" />
-    <Content Include="octoawesome.ico" />
-    <Content Include="TODO.txt" />
-  </ItemGroup>
+		<Content Include="FEEDBACK.txt" />
+		<Content Include="octoawesome.ico" />
+		<Content Include="TODO.txt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Content\bin\**" />
-    <Compile Remove="Content\obj\**" />
-    <EmbeddedResource Remove="Content\bin\**" />
-    <EmbeddedResource Remove="Content\obj\**" />
-    <None Remove="Content\bin\**" />
-    <None Remove="Content\obj\**" />
-    <Content Remove="Content\bin\**" />
-    <Content Remove="Content\obj\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Content\bin\**" />
+		<Compile Remove="Content\obj\**" />
+		<EmbeddedResource Remove="Content\bin\**" />
+		<EmbeddedResource Remove="Content\obj\**" />
+		<None Remove="Content\bin\**" />
+		<None Remove="Content\obj\**" />
+		<Content Remove="Content\bin\**" />
+		<Content Remove="Content\obj\**" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Remove="Content\Fonts\Emoji.spritefont" />
-    </ItemGroup>
-    
-  <ItemGroup>
-    <PackageReference Include="engenious" Version="0.7.1-alpha" />
-    <PackageReference Include="engenious.ContentTool" Version="0.7.1.4-alpha" PrivateAssets="all" />
-    <PackageReference Include="engenious.ContentTool.SourceGen" Version="0.7.1.4-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-    <PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="OpenAL.Soft" Version="1.19.1" Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Windows')))" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
-    <PackageReference Include="System.IO" Version="4.3.0" />
-    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Content\Fonts\Emoji.spritefont" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
-    <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
-    <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
-    <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="engenious" Version="0.7.1-alpha" />
+		<PackageReference Include="engenious.ContentTool" Version="0.7.1.4-alpha" PrivateAssets="all" />
+		<PackageReference Include="engenious.ContentTool.SourceGen" Version="0.7.1.4-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+		<PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="OpenAL.Soft" Version="1.19.1" Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Windows')))" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
+		<PackageReference Include="System.IO" Version="4.3.0" />
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
+		<PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+		<PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EngeniousContentReference Include="Content\Content.ecp" />
-    <Compile Remove="Generated\**" />
-    <None Include="Generated\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
+		<ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
+		<ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
+		<ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EngeniousContentReference Include="Content\Content.ecp" />
+		<Compile Remove="Generated\**" />
+		<None Include="Generated\**" />
+	</ItemGroup>
 
 </Project>

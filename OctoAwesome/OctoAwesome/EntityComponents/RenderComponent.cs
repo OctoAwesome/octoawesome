@@ -96,14 +96,22 @@ namespace OctoAwesome.EntityComponents
         {
             return HashCode.Combine(Name, ModelName, TextureName, BaseZRotation);
         }
-/// <inheritdoc/>
 
+        /// <summary>Compare two render components for equality.</summary>
+        /// <param name="left">The first <see cref="RenderComponent" /> to compare.</param>
+        /// <param name="right">The second <see cref="RenderComponent" /> to compare.</param>
+        /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are considered equal; otherwise, <see langword="false" />.</returns>
+        /// <seealso cref="Equals(RenderComponent)" />
         public static bool operator ==(RenderComponent? left, RenderComponent? right)
         {
             return EqualityComparer<RenderComponent>.Default.Equals(left, right);
         }
-/// <inheritdoc/>
 
+        /// <summary>Compare two render components for inequality.</summary>
+        /// <param name="left">The first <see cref="RenderComponent" /> to compare.</param>
+        /// <param name="right">The second <see cref="RenderComponent" /> to compare.</param>
+        /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are not considered equal; otherwise, <see langword="false" />.</returns>
+        /// <seealso cref="Equals(RenderComponent)" />
         public static bool operator !=(RenderComponent? left, RenderComponent? right)
         {
             return !(left == right);

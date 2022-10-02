@@ -93,14 +93,21 @@ namespace OctoAwesome.EntityComponents
         {
             return HashCode.Combine(boundingBoxes);
         }
-        /// <inheritdoc/>
-
+        /// <summary>Compare two box collision components for equality.</summary>
+        /// <param name="left">The first <see cref="BoxCollisionComponent" /> to compare.</param>
+        /// <param name="right">The second <see cref="BoxCollisionComponent" /> to compare.</param>
+        /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are considered equal; otherwise, <see langword="false" />.</returns>
+        /// <seealso cref="Equals(BoxCollisionComponent)" />
         public static bool operator ==(BoxCollisionComponent? left, BoxCollisionComponent? right)
         {
             return EqualityComparer<BoxCollisionComponent>.Default.Equals(left, right);
         }
-        /// <inheritdoc/>
 
+        /// <summary>Compare two box collision components for equality.</summary>
+        /// <param name="left">The first <see cref="BoxCollisionComponent" /> to compare.</param>
+        /// <param name="right">The second <see cref="BoxCollisionComponent" /> to compare.</param>
+        /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are considered equal; otherwise, <see langword="false" />.</returns>
+        /// <seealso cref="Equals(BoxCollisionComponent)" />
         public static bool operator !=(BoxCollisionComponent? left, BoxCollisionComponent? right)
         {
             return !(left == right);
