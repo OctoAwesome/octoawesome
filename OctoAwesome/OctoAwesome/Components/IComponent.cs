@@ -16,6 +16,5 @@ namespace OctoAwesome.Components
         /// Gets or sets a value indicating whether this component is enabled.
         /// </summary>
         bool Enabled { get; set; }
-
     }
 }

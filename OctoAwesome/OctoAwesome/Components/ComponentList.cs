@@ -123,7 +123,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <summary>
     /// Adds a component.
     /// </summary>
-    /// <param name="component">The component to add or replace.</param>
+    /// <param name="component">The component to add if no component of same type is already present.</param>
     /// <typeparam name="V">The type of the component to add.</typeparam>
     public void AddIfNotExists<V>(V component) where V : T
     {
@@ -151,9 +151,9 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
 
 
     /// <summary>
-    /// Checks whether the component of <typeparamref name="V"/> is present in the internal dictionary as a key.
+    /// Checks whether the component of <typeparamref name="V"/> is present.
     /// </summary>
-    /// <typeparam name="V">The type to search in the internal dictionary</typeparam>
+    /// <typeparam name="V">The type to search for.</typeparam>
     /// <returns>
     /// <list type="bullet">
     ///     <item><see langword="true"/> if the component was found</item>
@@ -172,10 +172,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Tries to return the Component of the given Type or null
+    /// Tries to get the component of the given type.
     /// </summary>
-    /// <typeparam name="V">Component Type</typeparam>
-    /// <returns>True if the component was found, false otherwise</returns>
+    /// <typeparam name="V">The component type to search for.</typeparam>
+    /// <returns><see langword="true"/> if the component was found; otherwise <see langword="false"/>.</returns>
     public bool TryGet<V>([MaybeNullWhen(false)] out V component) where V : T
     {
         var contains = componentsByType.TryGetValue(typeof(V), out var result);
@@ -190,10 +190,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Returns the first Component of the given Type or null
+    /// Get the component of the given type.
     /// </summary>
-    /// <typeparam name="V">Component Type</typeparam>
-    /// <returns>Component</returns>
+    /// <typeparam name="V">The component type to search for.</typeparam>
+    /// <returns>The component if found; otherwise <c>null</c>.</returns>
     public V? Get<V>()
     {
         if (componentsByType.TryGetValue(typeof(V), out var result) && result.Count > 0)
@@ -203,10 +203,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Returns a list of the Component with the given Type or null
+    /// Gets a list of components of the given type.
     /// </summary>
-    /// <typeparam name="V">Component Type</typeparam>
-    /// <returns>Component</returns>
+    /// <typeparam name="V">The component type to search for.</typeparam>
+    /// <returns>A list of components if any was found; otherwise <c>null</c>.</returns>
     public List<V>? GetAll<V>()
     {
         if (componentsByType.TryGetValue(typeof(V), out var result))
@@ -216,7 +216,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Removes the Component of the given type.
+    /// Removes the given component.
     /// </summary>
     /// <typeparam name="V">The type of the component to remove.</typeparam>
     /// <returns>A value indicating whether the remove was successful or not.</returns>
@@ -240,12 +240,12 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Replaces one component with another and retrieves the replaces value when any was found
+    /// Replace one component with another and retrieve the replaced value if one was found.
     /// </summary>
-    /// <typeparam name="V">The type to to replace</typeparam>
-    /// <param name="toReplace">Component to search for to be replaced</param>
-    /// <param name="replacement">Component that replaces the <paramref name="toReplace"/></param>
-    /// <param name="replaced">The item that equaled <paramref name="toReplace"/> and was replaced</param>
+    /// <typeparam name="V">The type to search for and replace.</typeparam>
+    /// <param name="toReplace">The component to search for to be replaced.</param>
+    /// <param name="replacement">The component that replaces <paramref name="toReplace"/>.</param>
+    /// <param name="replaced">The item that was equal to <paramref name="toReplace"/> and was replaced</param>
     /// <returns><see langword="true"/> if <paramref name="toReplace"/> was found, otherwise <see langword="false"/></returns>
     public virtual bool Replace<V>(V toReplace, V replacement, [MaybeNullWhen(false)] out V replaced) where V : T
     {
@@ -269,12 +269,12 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Replaces <paramref name="toReplace"/> with replacements or just adds <paramref name="replacement"/>, if <paramref name="toReplace"/> was not found
+    /// Replace <paramref name="toReplace"/> with <paramref name="replacement"/> or just add <paramref name="replacement"/>, if <paramref name="toReplace"/> was not found.
     /// </summary>
-    /// <typeparam name="V">Type to add or replace</typeparam>
-    /// <param name="toReplace">Component to search for to be replaced</param>
-    /// <param name="replacement">Component that replaces the <paramref name="toReplace"/></param>
-    /// <param name="replaced">The item that equaled <paramref name="toReplace"/> and was replaced</param>
+    /// <typeparam name="V">The component type to add or replace</typeparam>
+    /// <param name="toReplace">The component to search for to be replaced.</param>
+    /// <param name="replacement">The component that replaces <paramref name="toReplace"/>.</param>
+    /// <param name="replaced">The item that was equal to <paramref name="toReplace"/> and was replaced.</param>
     /// <returns><see langword="false"/> if only insert took place, otherwise <see langword="true"/> when <paramref name="toReplace"/> was found and replaced</returns>
     public virtual bool ReplaceOrAdd<V>(V? toReplace, V replacement, [MaybeNullWhen(false)] out V replaced) where V : T
     {
@@ -302,10 +302,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Remove all components of type v and insert the replacement
+    /// Remove all components of a given type and insert a single component in place of the removed ones.
     /// </summary>
-    /// <typeparam name="V">Type that should be removed and inserted</typeparam>
-    /// <param name="replacement">The only value after replacement</param>
+    /// <typeparam name="V">Type of the components to be replaced and replaced with.</typeparam>
+    /// <param name="replacement">The value to replace with.</param>
     public virtual void ReplaceAllWith<V>(V replacement) where V : T
     {
         if (componentsByType.TryGetValue(typeof(V), out var components))
@@ -329,7 +329,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
 
 
     /// <summary>
-    /// Serializes the component list to a binary writer..
+    /// Serializes the component list to a binary writer.
     /// </summary>
     /// <param name="writer">The binary writer to serialize the component list to.</param>
     public virtual void Serialize(BinaryWriter writer)
@@ -343,7 +343,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
-    /// Deserializes the component list from a binary reader..
+    /// Deserializes the component list from a binary reader.
     /// </summary>
     /// <param name="reader">The binary reader to deserialize the component list from.</param>
     public virtual void Deserialize(BinaryReader reader)

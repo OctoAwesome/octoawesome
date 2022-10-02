@@ -31,20 +31,18 @@ public class Furnace : Entity
     }
     internal AnimationComponent AnimationComponent
     {
-                get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
-        set => animationComponent= NullabilityHelper.NotNullAssert(value, $"{nameof(AnimationComponent)} cannot be initialized with null!");
+        get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
+        set => animationComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(AnimationComponent)} cannot be initialized with null!");
     }
     internal BurningComponent BurningComponent
     {
-                get => NullabilityHelper.NotNullAssert(burningComponent, $"{nameof(BurningComponent)} was not initialized!");
-        set => burningComponent= NullabilityHelper.NotNullAssert(value, $"{nameof(BurningComponent)} cannot be initialized with null!");
+        get => NullabilityHelper.NotNullAssert(burningComponent, $"{nameof(BurningComponent)} was not initialized!");
+        set => burningComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(BurningComponent)} cannot be initialized with null!");
     }
-
 
     private ProductionInventoriesComponent? productionInventoriesComponent;
     private AnimationComponent? animationComponent;
     private BurningComponent? burningComponent;
-
 
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class

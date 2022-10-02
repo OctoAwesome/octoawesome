@@ -43,7 +43,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             var inventory = value.Component2;
 
             var toolbar = entity.Components.Get<ToolBarComponent>();
-            var cache = entity.Components.Get<LocalChunkCacheComponent>().LocalChunkCache;
+            var cache = entity.Components.Get<LocalChunkCacheComponent>()?.LocalChunkCache;
             Debug.Assert(cache != null, nameof(cache) + " != null");
 
             controller

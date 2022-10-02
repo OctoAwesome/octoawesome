@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Components;
+
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -14,7 +15,6 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public bool Sendable { get; set; }
-        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Component"/> class.

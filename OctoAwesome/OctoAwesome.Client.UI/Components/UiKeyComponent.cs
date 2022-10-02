@@ -15,6 +15,9 @@ public class UiKeyComponent : Component, IEntityComponent, IEquatable<UiKeyCompo
     /// </summary>
     public string PrimaryKey { get; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UiKeyComponent"/> class.
+    /// </summary>
     /// <param name="primaryKey">The primary key.</param>
     public UiKeyComponent(string primaryKey)
     {
@@ -39,14 +42,22 @@ public class UiKeyComponent : Component, IEntityComponent, IEquatable<UiKeyCompo
     {
         return HashCode.Combine(PrimaryKey);
     }
-/// <inheritdoc/>
 
+    /// <summary>Compare two ui key components for equality.</summary>
+    /// <param name="left">The first <see cref="UiKeyComponent" /> to compare.</param>
+    /// <param name="right">The second <see cref="UiKeyComponent" /> to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are considered equal; otherwise, <see langword="false" />.</returns>
+    /// <seealso cref="Equals(UiKeyComponent)" />
     public static bool operator ==(UiKeyComponent left, UiKeyComponent right)
     {
         return EqualityComparer<UiKeyComponent>.Default.Equals(left, right);
     }
-/// <inheritdoc/>
 
+    /// <summary>Compare two ui key components for inequality.</summary>
+    /// <param name="left">The first <see cref="UiKeyComponent" /> to compare.</param>
+    /// <param name="right">The second <see cref="UiKeyComponent" /> to compare.</param>
+    /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are not considered equal; otherwise, <see langword="false" />.</returns>
+    /// <seealso cref="Equals(UiKeyComponent)" />
     public static bool operator !=(UiKeyComponent left, UiKeyComponent right)
     {
         return !(left == right);

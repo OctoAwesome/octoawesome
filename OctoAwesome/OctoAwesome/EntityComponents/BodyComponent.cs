@@ -77,13 +77,21 @@ namespace OctoAwesome.EntityComponents
             return HashCode.Combine(Mass, Radius, Height);
         }
 
-        /// <inheritdoc/>
+        /// <summary>Compare two body components for equality.</summary>
+        /// <param name="left">The first <see cref="BodyComponent" /> to compare.</param>
+        /// <param name="right">The second <see cref="BodyComponent" /> to compare.</param>
+        /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are considered equal; otherwise, <see langword="false" />.</returns>
+        /// <seealso cref="Equals(BodyComponent)" />
         public static bool operator ==(BodyComponent? left, BodyComponent? right)
         {
             return EqualityComparer<BodyComponent>.Default.Equals(left, right);
         }
 
-        /// <inheritdoc/>
+        /// <summary>Compare two body components for inequality.</summary>
+        /// <param name="left">The first <see cref="BodyComponent" /> to compare.</param>
+        /// <param name="right">The second <see cref="BodyComponent" /> to compare.</param>
+        /// <returns><see langword="true" /> if <paramref name="left"/> and <paramref name="right"/> are not considered equal; otherwise, <see langword="false" />.</returns>
+        /// <seealso cref="Equals(BodyComponent)" />
         public static bool operator !=(BodyComponent? left, BodyComponent? right)
         {
             return !(left == right);
