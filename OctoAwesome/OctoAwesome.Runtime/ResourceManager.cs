@@ -420,7 +420,7 @@ namespace OctoAwesome.Runtime
                 {
                     foreach (var item in retValues)
                     {
-                        GenericCaster<T, PositionComponent>.Cast(item.Component)!.InstanceId = item.Id;
+                        GenericCaster<T, PositionComponent>.Cast(item.Component).InstanceId = item.Id;
                     }
                 }
                 return retValues;

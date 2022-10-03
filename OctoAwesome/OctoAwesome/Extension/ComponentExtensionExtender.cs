@@ -41,7 +41,7 @@ namespace OctoAwesome
             if (extenderDelegate is Action<ComponentContainer> ccAction)
                 list.Add(ccAction);
             else
-                list.Add((ComponentContainer cc) => { extenderDelegate(GenericCaster<ComponentContainer, T>.Cast(cc)!); });
+                list.Add((ComponentContainer cc) => { extenderDelegate(GenericCaster<ComponentContainer, T>.Cast(cc)); });
         }
 
         /// <summary>

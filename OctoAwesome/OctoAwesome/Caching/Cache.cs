@@ -33,7 +33,8 @@ namespace OctoAwesome.Caching
         /// <param name="key">The identifying key to get the value by.</param>
         /// <param name="loadingMode">The <see cref="LoadingMode"/> used.</param>
         /// <returns>The value from the cache.</returns>
-        public abstract TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists);
+        public abstract TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+            where TKey : notnull;
 
         internal virtual void Start()
         {
@@ -174,11 +175,12 @@ namespace OctoAwesome.Caching
         }
 
         /// <inheritdoc />
-        public override TV? Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists) where TV : default
+        public override TV? Get<TK, TV>(TK key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+            where TV : default
         {
             return GenericCaster<TValue, TV>
                 .Cast(
-                    GetBy(GenericCaster<TK, TKey>.Cast(key)!, loadingMode)
+                    GetBy(GenericCaster<TK, TKey>.Cast(key), loadingMode)
                 );
         }
 
