@@ -289,7 +289,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             else
             {
                 var index = components.IndexOf(toReplace);
-                replaced = GenericCaster<T, V>.Cast(components[index])!;
+                replaced = GenericCaster<T, V>.Cast(components[index]);
                 components[index] = replacement;
                 return true;
             }

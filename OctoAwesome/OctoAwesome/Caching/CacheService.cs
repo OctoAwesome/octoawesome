@@ -121,6 +121,7 @@ namespace OctoAwesome.Caching
         /// <param name="loadingMode">Is ignored, because this cache load everything on startup and therefore is always cached</param>
         /// <returns>The value from the cache service.</returns>
         public TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
+            where TKey : notnull
         {
             if (caches.TryGetValue(typeof(TValue), out var cache))
             {
