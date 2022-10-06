@@ -1,8 +1,6 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
-using OctoAwesome.Client.Components;
-using OctoAwesome.UI.Screens;
 using System;
 using OctoAwesome.Client.UI.Components;
 
@@ -17,6 +15,7 @@ namespace OctoAwesome.Client.Screens
         private readonly ISettings settings;
 
         private bool firstTimeFocusNameBox = true;
+        private volatile bool creatingNewWorld = false;
 
         public CreateUniverseScreen(AssetComponent assets)
             : base(assets)
@@ -69,28 +68,31 @@ namespace OctoAwesome.Client.Screens
                 Visible = false,
                 TabStop = false,
             };
-            createButton.LeftMouseClick += (s, e) =>
-            {
-                if (string.IsNullOrEmpty(nameInput.Text))
-                    return;
 
-                ScreenManager.Player.Unload();
-
-                Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
-                settings.Set("LastUniverse", guid.ToString());
-
-                Player player = ScreenManager.Game.Simulation.LoginPlayer("");
-                ScreenManager.Game.Player.Load(player);
-
-                ScreenManager.NavigateToScreen(new LoadingScreen(assets));
-            };
-
-            nameInput.TextChanged += (s, e) =>
-                                     {
-                                         createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
-                                     };
+            createButton.LeftMouseClick += (s, e) => Create();
+            nameInput.TextChanged += (s, e) => createButton.Visible = !string.IsNullOrEmpty(e.NewValue);
             panel.Controls.Add(createButton);
+        }
 
+        private void Create()
+        {
+            if (string.IsNullOrEmpty(nameInput.Text))
+                return;
+
+            if (creatingNewWorld)
+                return;
+
+            creatingNewWorld = true;
+
+            ScreenManager.Player.Unload();
+
+            Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
+            settings.Set("LastUniverse", guid.ToString());
+
+            Player player = ScreenManager.Game.Simulation.LoginPlayer("");
+            ScreenManager.Game.Player.Load(player);
+
+            ScreenManager.NavigateToScreen(new LoadingScreen(Assets));
         }
 
         protected override void OnUpdate(GameTime gameTime)
@@ -111,7 +113,22 @@ namespace OctoAwesome.Client.Screens
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background = new BorderBrush(Color.LightGray, LineType.Solid, Color.Black),
-                TabStop = true
+                TabStop = true,
+            };
+
+            t.KeyPress += (s, e) =>
+            {
+                switch (e.Key)
+                {
+                    case engenious.Input.Keys.Enter:
+                    case engenious.Input.Keys.KeypadEnter:
+                        Create();
+                        break;
+
+                    case engenious.Input.Keys.Escape:
+                        ScreenManager.NavigateBack();
+                        break;
+                }
             };
             return t;
         }
