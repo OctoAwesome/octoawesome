@@ -3,6 +3,7 @@ using engenious.UI;
 using engenious.UI.Controls;
 using System;
 using OctoAwesome.Client.UI.Components;
+using System.Threading;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -15,7 +16,7 @@ namespace OctoAwesome.Client.Screens
         private readonly ISettings settings;
 
         private bool firstTimeFocusNameBox = true;
-        private volatile bool creatingNewWorld = false;
+        private int creatingNewWorld = 0;
 
         public CreateUniverseScreen(AssetComponent assets)
             : base(assets)
@@ -79,10 +80,8 @@ namespace OctoAwesome.Client.Screens
             if (string.IsNullOrEmpty(nameInput.Text))
                 return;
 
-            if (creatingNewWorld)
+            if (Interlocked.Exchange(ref creatingNewWorld, 1) == 0)
                 return;
-
-            creatingNewWorld = true;
 
             ScreenManager.Player.Unload();
 
