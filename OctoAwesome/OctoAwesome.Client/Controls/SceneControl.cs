@@ -758,12 +758,12 @@ namespace OctoAwesome.Client.Controls
             DrawSelectionBox(chunkOffset);
 
 #if DEBUG
-            var world = Matrix.Identity;
-            foreach (var bb in _casters)
-            {
-                Manager.GraphicsDevice.Debug.RenderBoundingBox(bb, world, camera.View, camera.Projection, Color.Red);
-            }
-            //Manager.GraphicsDevice.Debug.RenderBoundingFrustum(new BoundingFrustum(cropMatrix), Matrix.Identity, camera.View, camera.Projection);
+            //            var world = Matrix.Identity;
+            //            foreach (var bb in _casters)
+            //            {
+            //                Manager.GraphicsDevice.Debug.RenderBoundingBox(bb, world, camera.View, camera.Projection, Color.Red);
+            //            }
+            //            //Manager.GraphicsDevice.Debug.RenderBoundingFrustum(new BoundingFrustum(cropMatrix), Matrix.Identity, camera.View, camera.Projection);
 #endif
             Manager.GraphicsDevice.SetRenderTarget((RenderTarget2D?)null);
         }

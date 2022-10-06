@@ -1,7 +1,10 @@
 ﻿using engenious;
+
 using OctoAwesome.Components;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
+
 using System.IO;
 
 namespace OctoAwesome.EntityComponents
@@ -108,12 +111,7 @@ namespace OctoAwesome.EntityComponents
                 updateNotification.Issuer = nameof(PositionComponent);
                 updateNotification.Property = propertyName;
 
-                using (var stream = new MemoryStream())
-                using (var writer = new BinaryWriter(stream))
-                {
-                    Serialize(writer);
-                    updateNotification.Value = stream.ToArray();
-                }
+                updateNotification.Value = Serializer.Serialize(this);
 
                 Push(updateNotification);
             }
@@ -130,11 +128,7 @@ namespace OctoAwesome.EntityComponents
                 {
                     if (changedNotification.Property == nameof(Position))
                     {
-                        using (var stream = new MemoryStream(changedNotification.Value))
-                        using (var reader = new BinaryReader(stream))
-                        {
-                            Deserialize(reader);
-                        }
+                        _ = Serializer.Deserialize(this, changedNotification.Value);
                     }
                 }
             }

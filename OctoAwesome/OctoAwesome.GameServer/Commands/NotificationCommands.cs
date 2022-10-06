@@ -1,4 +1,4 @@
-﻿using CommandManagementSystem.Attributes;
+﻿
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
@@ -45,7 +45,6 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the entity notification data.</param>
         /// <returns><c>null</c></returns>
-        [Command((ushort)OfficialCommand.EntityNotification)]
         public static byte[]? EntityNotification(CommandParameter parameter)
         {
             var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, parameter.Data);
@@ -63,7 +62,6 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk notification data.</param>
         /// <returns><c>null</c></returns>
-        [Command((ushort)OfficialCommand.ChunkNotification)]
         public static byte[]? ChunkNotification(CommandParameter parameter)
         {
             var notificationType = (BlockNotificationType)parameter.Data[0];

@@ -1,5 +1,7 @@
-﻿using CommandManagementSystem.Attributes;
+﻿
 using OctoAwesome.Network;
+using OctoAwesome.Serialization;
+
 using System;
 using System.IO;
 
@@ -15,7 +17,6 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> given location to load the column at.</param>
         /// <returns>The loaded chunk column data.</returns>
-        [Command((ushort)OfficialCommand.LoadColumn)]
         public static byte[] LoadColumn(CommandParameter parameter)
         {
             Guid guid;
@@ -32,12 +33,7 @@ namespace OctoAwesome.GameServer.Commands
 
             var column = TypeContainer.Get<SimulationManager>().LoadColumn(planetId, index2);
 
-            using (var memoryStream = new MemoryStream())
-            using (var writer = new BinaryWriter(memoryStream))
-            {
-                column.Serialize(writer);
-                return memoryStream.ToArray();
-            }
+            return Serializer.Serialize(column);
         }
 
         /// <summary>
@@ -45,16 +41,9 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk column data.</param>
         /// <returns><c>null</c></returns>
-        [Command((ushort)OfficialCommand.SaveColumn)]
         public static byte[]? SaveColumn(CommandParameter parameter)
         {
-            var chunkColumn = new ChunkColumn();
-
-            using (var memoryStream = new MemoryStream(parameter.Data))
-            using (var reader = new BinaryReader(memoryStream))
-            {
-                chunkColumn.Deserialize(reader);
-            }
+            var chunkColumn = Serializer.Deserialize<ChunkColumn>(parameter.Data);
 
             TypeContainer.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn);
 

@@ -1,11 +1,13 @@
-﻿using CommandManagementSystem;
-using OctoAwesome.Logging;
+﻿using OctoAwesome.Logging;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using System;
 using System.Net;
 using OctoAwesome.Rx;
-
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using OctoAwesome.GameServer.Commands;
+using System.Linq;
 
 namespace OctoAwesome.GameServer
 {
@@ -26,7 +28,9 @@ namespace OctoAwesome.GameServer
 
         private readonly ILogger logger;
         private readonly Server server;
-        private readonly DefaultCommandManager<ushort, CommandParameter, byte[]> defaultManager;
+        public readonly ConcurrentDictionary<ushort, CommandFunc> CommandFunctions;
+
+        public delegate byte[]? CommandFunc(CommandParameter parameter);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerHandler"/> class.
@@ -44,7 +48,17 @@ namespace OctoAwesome.GameServer
             UpdateHub = TypeContainer.Get<IUpdateHub>();
             server = TypeContainer.Get<Server>();
 
-            defaultManager = new DefaultCommandManager<ushort, CommandParameter, byte[]>(typeof(ServerHandler).Namespace + ".Commands");
+            CommandFunctions = new ConcurrentDictionary<ushort, CommandFunc>(new List<(OfficialCommand, CommandFunc)>
+                {
+                    (OfficialCommand.Whoami, PlayerCommands.Whoami),
+                    (OfficialCommand.EntityNotification, NotificationCommands.EntityNotification),
+                    (OfficialCommand.ChunkNotification, NotificationCommands.ChunkNotification),
+                    (OfficialCommand.GetUniverse, GeneralCommands.GetUniverse),
+                    (OfficialCommand.GetPlanet, GeneralCommands.GetPlanet),
+                    (OfficialCommand.SaveColumn, ChunkCommands.SaveColumn),
+                    (OfficialCommand.LoadColumn, ChunkCommands.LoadColumn),
+                }
+                .ToDictionary(x => (ushort)x.Item1, x => x.Item2));
         }
 
         /// <summary>
@@ -77,7 +91,7 @@ namespace OctoAwesome.GameServer
             logger.Trace("Received a new Package with ID: " + value.UId);
             try
             {
-                value.Payload = defaultManager.Dispatch(value.Command, new CommandParameter(value.BaseClient.Id, value.Payload));
+                value.Payload = CommandFunctions[value.Command](new CommandParameter(value.BaseClient.Id, value.Payload));
             }
             catch (Exception ex)
             {

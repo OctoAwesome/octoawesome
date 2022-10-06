@@ -54,10 +54,10 @@ namespace OctoAwesome.Network
         /// <summary>
         /// Gets or sets the raw payload for the package.
         /// </summary>
-        public byte[] Payload
+        public byte[]? Payload
         {
-            get => NullabilityHelper.NotNullAssert(payload, $"{nameof(IPoolElement)} was not initialized!");
-            set => payload = NullabilityHelper.NotNullAssert(value, $"{nameof(Payload)} cannot be initialized with null!");
+            get => payload;
+            set => payload = value;
         }
 
         /// <summary>

@@ -38,6 +38,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public void Register(ITypeContainer typeContainer)
         {
+            typeContainer.Register<IMapGenerator, ComplexPlanetGenerator>();
             typeContainer.Register<IPlanet, ComplexPlanet>();
             this.typeContainer = typeContainer;
         }

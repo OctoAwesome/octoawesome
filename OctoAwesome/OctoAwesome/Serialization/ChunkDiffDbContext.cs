@@ -98,7 +98,8 @@ namespace OctoAwesome.Serialization
         private BlockInfo InternalGet(ChunkDiffTag tag)
         {
             Value value = Database.GetValue(tag);
-            using (var memory = new MemoryStream(value.Content))
+
+            using (var memory =  Serializer.Manager.GetStream(value.Content))
             using (var reader = new BinaryReader(memory))
             {
                 return BlockInfo.Deserialize(reader);

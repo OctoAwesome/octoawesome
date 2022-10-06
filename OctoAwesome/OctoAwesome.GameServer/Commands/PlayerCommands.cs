@@ -1,5 +1,4 @@
-﻿using CommandManagementSystem.Attributes;
-using engenious;
+﻿using engenious;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
@@ -37,7 +36,6 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the player data.</param>
         /// <returns><c>null</c></returns>
-        [Command((ushort)OfficialCommand.Whoami)]
         public static byte[] Whoami(CommandParameter parameter)
         {
             var updateHub = TypeContainer.Get<IUpdateHub>();

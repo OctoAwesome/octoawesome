@@ -102,12 +102,8 @@ namespace OctoAwesome
 
                     if (Result == null)
                         throw new ArgumentNullException(nameof(Result));
-
-                    using (var stream = new MemoryStream(bytes))
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        Result.Deserialize(reader);
-                    }
+                    Result = Serializer.Deserialize(Result, bytes);
+   
                     manualReset.Set();
                     return alreadyDeserialized = true;
                 }

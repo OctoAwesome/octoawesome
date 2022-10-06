@@ -245,6 +245,7 @@ namespace OctoAwesome.Network
 
                 } while (offset < e.BytesTransferred);
 
+
             } while (!Socket.ReceiveAsync(e));
         }
 
