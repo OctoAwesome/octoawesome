@@ -403,7 +403,7 @@ namespace OctoAwesome.Client.Screens
                 {
                     foreach (var type in item.GetTypes())
                     {
-                        if (type.IsAssignableTo(typeof(IViewCreator)))
+                        if (!type.IsInterface && !type.IsAbstract && type.IsAssignableTo(typeof(IViewCreator)))
                             viewCreators.Add((IViewCreator)Activator.CreateInstance(type));
                     }
                 }
