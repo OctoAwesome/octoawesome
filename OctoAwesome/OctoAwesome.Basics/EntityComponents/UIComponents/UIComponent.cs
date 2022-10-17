@@ -27,6 +27,5 @@ namespace OctoAwesome.Basics.EntityComponents.UIComponents
             ScreenComponent = TypeContainer.Get<BaseScreenComponent>();
             AssetComponent = TypeContainer.Get<AssetComponent>();
         }
-
-    //}
+    }
 }

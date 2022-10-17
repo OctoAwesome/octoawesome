@@ -14,6 +14,7 @@ using OctoAwesome.UI.Components;
 
 using System;
 using System.Reflection;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics
 {
@@ -176,7 +177,7 @@ namespace OctoAwesome.Basics
                 if (!f.ContainsComponent<PositionComponent>())
                 {
                     var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0));
-                    f.Components.AddComponent(new PositionComponent()
+                    f.Components.Add(new PositionComponent()
                     {
                         Position = pos
                     });
@@ -190,7 +191,7 @@ namespace OctoAwesome.Basics
                         s.Components.AddIfTypeNotExists(new AccelerationComponent());
                         s.Components.AddIfTypeNotExists(new MoveComponent());
                         //TODO: Fix this
-                        s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
+                        s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>()));
 
                         //TODO: ugly
                         //TODO: TypeContainer?

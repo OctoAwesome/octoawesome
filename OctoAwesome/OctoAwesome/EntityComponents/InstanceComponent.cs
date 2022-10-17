@@ -1,9 +1,10 @@
 ﻿using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
+using OctoAwesome.Components;
+using OctoAwesome.Extension;
 
 using System;
 using System.IO;
-using OctoAwesome.Extension;
 
 namespace OctoAwesome.EntityComponents
 {

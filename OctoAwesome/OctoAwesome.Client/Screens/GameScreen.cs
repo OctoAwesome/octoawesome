@@ -412,25 +412,25 @@ namespace OctoAwesome.Client.Screens
                 }
             }
 
-            Manager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
 
-                Manager.Camera.ViewCreator = viewCreators[(viewCreators.IndexOf(Manager.Camera.ViewCreator) + 1) % viewCreators.Count];
+                ScreenManager.Camera.ViewCreator = viewCreators[(viewCreators.IndexOf(ScreenManager.Camera.ViewCreator) + 1) % viewCreators.Count];
 
             });
 
             bool lastToggle = false;
-            Manager.Game.KeyMapper.AddAction("octoawesome:zoom", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:zoom", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
 
                 if (!lastToggle)
-                    Manager.Camera.RecreateProjection(30);
+                    ScreenManager.Camera.RecreateProjection(30);
                 else
-                    Manager.Camera.RecreateProjection();
+                    ScreenManager.Camera.RecreateProjection();
                 lastToggle = !lastToggle;
 
             });

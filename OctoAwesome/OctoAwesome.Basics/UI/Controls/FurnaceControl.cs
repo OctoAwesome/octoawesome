@@ -72,15 +72,11 @@ public sealed class FurnaceControl : Panel
     /// <param name="ressourceInventory">The ressource slots in the middle</param>
     /// <param name="columns">The amount of columns for inventory and output slot</param>
     public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, IReadOnlyCollection<IInventorySlot> ressourceInventory, int columns = COLUMNS)
-            {
+    {
         inputSlotPanel.Rebuild(inventorySlots, columns / 2);
         outputSlotPanel.Rebuild(outputInventory, columns / 2);
         resourceSlotPanel.Rebuild(ressourceInventory, columns / 2);
         //TODO Draw in a grid formation
 
-            panel.Controls.Clear();
-            panel.Controls.Add(grid);
-            column += 2;
-        }
     }
 }

@@ -8,6 +8,8 @@ using OctoAwesome.Client.UI.Components;
 using OctoAwesome.EntityComponents;
 using System;
 using System.Diagnostics;
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Client.Screens
 {

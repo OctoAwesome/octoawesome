@@ -18,9 +18,11 @@ using OctoAwesome.Client.UI.Components;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Imaging;
 using System.Threading;
+using System.Threading.Tasks;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace OctoAwesome.Client.Controls

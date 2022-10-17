@@ -53,7 +53,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// Initializes a new instance of the <see cref="Chest"/> class.
         /// </summary>
         /// <param name="position">The position the chest is at.</param>
-        public Chest(Coordinate position)
+        /// <param name="direction">The direction the chest is facing to.</param>
+        public Chest(Coordinate position, float direction)
         {
             Components.AddIfTypeNotExists(new PositionComponent()
             {

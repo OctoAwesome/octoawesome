@@ -103,7 +103,7 @@ namespace OctoAwesome.Basics.Entities
         public int JumpTime { get; set; }
 
         private Vector2 moveDir = new Vector2(0.5f, 0.5f);
-        private PositionComponent posComponent;
+        private PositionComponent positionComponent;
         private Entity followEntity;
         private MoveLogic moveLogic = new();
 
@@ -111,36 +111,38 @@ namespace OctoAwesome.Basics.Entities
         {
         }
 
+        /// <inheritdoc />
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (!entity.Components.TryGetComponent<ToolBarComponent>(out var toolbar)
-                || !entity.Components.TryGetComponent<InventoryComponent>(out var inventory)
-                || !entity.Components.TryGetComponent<PositionComponent>(out var position)
+            if (!entity.Components.TryGet<ToolBarComponent>(out var toolbar)
+                || !entity.Components.TryGet<InventoryComponent>(out var inventory)
+                || !entity.Components.TryGet<PositionComponent>(out var position)
                 || toolbar.ActiveTool?.Item is not MeatRaw)
                 return;
 
-            ControllableComponent controller = Components.GetComponent<ControllableComponent>();
+            var controller = Components.Get<ControllableComponent>();
             controller.JumpInput = true;
-            if (!Components.ContainsComponent<RelatedEntityComponent>())
+            if (!Components.Contains<RelatedEntityComponent>())
             {
                 var relEntity = new RelatedEntityComponent();
                 relEntity.RelatedEntityId = entity.Id;
-                Components.AddComponent(relEntity);
+                Components.Add(relEntity);
                 followEntity = entity;
             }
 
             inventory.RemoveUnit(toolbar.ActiveTool);
             if (toolbar.ActiveTool.Amount < 1)
             {
-                inventory.RemoveSlot(toolbar.ActiveTool);
+                inventory.Remove(toolbar.ActiveTool);
                 toolbar.RemoveSlot(toolbar.ActiveTool);
             }
         }
 
 
+        /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            PositionComponent position = null;
+            PositionComponent? position = null;
 
             if (followEntity is null && Components.TryGet<RelatedEntityComponent>(out var relEntity))
             {
@@ -149,10 +151,9 @@ namespace OctoAwesome.Basics.Entities
 
             if (followEntity is null)
             {
-                foreach (var item in Simulation)
+                foreach (var player in Simulation.GetEntitiesOfType<Player>())
                 {
-                    if (item is Player player
-                        && player.Components.TryGet<ToolBarComponent>(out var toolbar)
+                    if (player.Components.TryGet<ToolBarComponent>(out var toolbar)
                         && player.Components.TryGet<PositionComponent>(out var newPos)
                         && toolbar.ActiveTool?.Item is MeatRaw)
                     {
@@ -162,10 +163,10 @@ namespace OctoAwesome.Basics.Entities
             }
             else
             {
-                position = followEntity.Get<PositionComponent>();
+                position = followEntity.Components.Get<PositionComponent>();
             }
 
-            moveDir = moveLogic.GetMoveDir(position, posComponent, followEntity, new Index2(posComponent.Planet.Size.X * Chunk.CHUNKSIZE_X, posComponent.Planet.Size.Y * Chunk.CHUNKSIZE_Y));
+            moveDir = moveLogic.GetMoveDir(position, positionComponent, followEntity, new Index2(positionComponent.Planet.Size.X * Chunk.CHUNKSIZE_X, positionComponent.Planet.Size.Y * Chunk.CHUNKSIZE_Y));
 
             ControllableComponent controller = Components.Get<ControllableComponent>();
             controller.MoveInput = moveDir;

@@ -2,7 +2,6 @@
 using OctoAwesome.Runtime;
 using System;
 using engenious.UI;
-using EventArgs = System.EventArgs;
 using engenious;
 using engenious.Input;
 using System.Collections.Generic;

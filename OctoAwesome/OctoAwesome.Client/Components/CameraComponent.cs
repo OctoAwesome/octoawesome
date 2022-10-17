@@ -12,8 +12,8 @@ namespace OctoAwesome.Client.Components
 {
     internal sealed class CameraComponent : DrawableGameComponent
     {
-        private PlayerComponent player;
-        private OctoGame game;
+        private readonly PlayerComponent player;
+        private OctoGame game => (OctoGame)base.Game;
 
         public CameraComponent(OctoGame game)
             : base(game)
@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.Components
             if (overrideFOV > 0)
                 fov = overrideFOV;
             else
-                fov = game.Settings.Get<int>("FOV");
+                fov = game.Settings.Get("FOV", 90);
             Projection = Matrix.CreatePerspectiveFieldOfView(
                 (float)(fov / 180f * Math.PI), GraphicsDevice.Viewport.AspectRatio, NearPlaneDistance, FarPlaneDistance);
         }
@@ -56,19 +56,19 @@ namespace OctoAwesome.Client.Components
 
             var ray = new Ray(lookAt, CameraPosition - lookAt);
 
-            if (!viewCreator.IsFirstPerson && player.CurrentEntity.Components.TryGetComponent<LocalChunkCacheComponent>(out var localChunkCacheComponent))
+            if (!viewCreator.IsFirstPerson && player.CurrentEntity.Components.TryGet<LocalChunkCacheComponent>(out var localChunkCacheComponent))
             {
                 Index3 centerblock = player.Position.Position.GlobalBlockIndex;
                 Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
                 var bi = SceneControl.GetSelectedBlock(centerblock, renderOffset, localChunkCacheComponent.LocalChunkCache, game.DefinitionManager, ray, position.Planet.Size, out _, out _, out _, out var distance);
 
-                var funcBlock = SceneControl.GetSelectedFunctionalBlock(centerblock, renderOffset, game.Simulation.Simulation, ray, position.Planet.Size, out _, out _, out _, out var bestFunctionalBlockDistance);
+                var selectedEntity = SceneControl.GetSelectedEntity(centerblock, renderOffset, game.Simulation.Simulation, ray, position.Planet.Size, out _, out _, out _, out var bestFunctionalBlockDistance);
 
                 if (distance > bestFunctionalBlockDistance)
                     distance = bestFunctionalBlockDistance;
 
-                if ((bi.Block > 0 || funcBlock is not null) && distance < 1)
+                if ((bi.Block > 0 || selectedEntity is not null) && distance < 1)
                 {
                     var selectionPoint = (ray.Position + (ray.Direction * distance * 0.9f));
                     CameraPosition = selectionPoint;

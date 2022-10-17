@@ -6,19 +6,24 @@ namespace OctoAwesome.Basics.Definitions.Items
 {
     public class WauziItemDefinition : IItemDefinition
     {
-        public string Name { get; }
+        /// <inheritdoc />
+        public string DisplayName { get; }
+
+        /// <inheritdoc />
         public string Icon { get; }
 
         public WauziItemDefinition()
         {
-            Name = "Wauziegg";
+            DisplayName = "Wauziegg";
             Icon = "wauziegg";
         }
 
+        /// <inheritdoc />
         public bool CanMineMaterial(IMaterialDefinition material)
             => false;
 
-        public Item Create(IMaterialDefinition material)
+        /// <inheritdoc />
+        public Item? Create(IMaterialDefinition material)
         {
             if (material is not IFoodMaterialDefinition md)
                 return null;

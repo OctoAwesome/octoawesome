@@ -126,7 +126,7 @@ namespace OctoAwesome.Client.Controls
                 fovTitle.Text = "FOV: " + (value + 45);
 
                 settings.Set("FOV", value + 45);
-                if (manager.Game is OctoGame og)
+                if (ScreenManager.Game is OctoGame og)
                     og.Camera.RecreateProjection();
             };
 

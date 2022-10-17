@@ -11,7 +11,6 @@ using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Rx;
 using OctoAwesome.UI.Components;
-using OctoAwesome.UI.Controls;
 using OctoAwesome.UI.Screens;
 
 using System;

@@ -6,6 +6,7 @@ using OctoAwesome.Definitions;
 using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using System.Diagnostics;
+using OctoAwesome.Location;
 using OctoAwesome.Services;
 
 namespace OctoAwesome.Basics.SimulationComponents
@@ -106,13 +107,13 @@ namespace OctoAwesome.Basics.SimulationComponents
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
                 IItem activeItem;
-                if (toolbar.ActiveTool.Item is IItem item)
+                if (toolbar.ActiveTool?.Item is IItem item)
                 {
                     activeItem = item;
                 }
                 else
                 {
-                    activeItem = toolbar.HandSlot.Item as IItem;
+                    activeItem = Hand.Instance;
                 }
 
                 _ = service.Apply(lastBlock, activeItem, cache);
@@ -156,8 +157,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
 
-            var positioncomponent = entity.Components.GetComponent<PositionComponent>();
-            var bodycomponent = entity.Components.GetComponent<BodyComponent>();
+            var positioncomponent = entity.Components.Get<PositionComponent>();
+            var bodycomponent = entity.Components.Get<BodyComponent>();
 
             if (positioncomponent != null && bodycomponent != null)
             {

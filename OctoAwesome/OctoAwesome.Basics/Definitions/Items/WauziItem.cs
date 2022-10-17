@@ -35,6 +35,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
+        /// <inheritdoc />
         public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
             BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out var _);
@@ -42,13 +43,14 @@ namespace OctoAwesome.Basics.Definitions.Items
             WauziEntity wauzi = new WauziEntity();
 
             PositionComponent position = new PositionComponent() { Position = new Coordinate(0, index3, new Vector3(0, 0, 0)) };
-            wauzi.Components.AddComponent(position);
+            wauzi.Components.Add(position);
 
             simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, wauzi));
 
             return 0;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             simulationSource.Dispose();

@@ -22,9 +22,9 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 /// <summary>
 /// Represents the furnace object in the world
 /// </summary>
-    [SerializationId(1, 4)]
+[SerializationId(1, 4)]
 public class Furnace : Entity
-    {
+{
     internal ProductionInventoriesComponent ProductionInventoriesComponent
     {
         get => NullabilityHelper.NotNullAssert(productionInventoriesComponent, $"{nameof(ProductionInventoriesComponent)} was not initialized!");
@@ -48,8 +48,8 @@ public class Furnace : Entity
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
     /// </summary>
-        public Furnace()
-        {
+    public Furnace()
+    {
     }
 
     /// <inheritdoc />
@@ -57,31 +57,33 @@ public class Furnace : Entity
     {
         base.OnInitialize(manager);
         GetComponent<BurningComponent>()?.Initialize("furnace");
-        }
+    }
 
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
     /// </summary>
-    public Furnace(Coordinate position) : this()
-        {
+    /// <param name="position">The position the furnace is at.</param>
+    /// <param name="direction">The direction the chest is facing to.</param>
+    public Furnace(Coordinate position, float direction) : this()
+    {
         Components.AddIfTypeNotExists(new PositionComponent()
-            {
-            Position = position
-            });
-
-        }
+        {
+            Position = position,
+            Direction = direction
+        });
+    }
 
     /// <inheritdoc/>
     public override void Deserialize(BinaryReader reader) => base.Deserialize(reader);//Doesnt get called
 
     /// <inheritdoc/>
     protected override void OnInteract(GameTime gameTime, Entity entity)
+    {
+        if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+           && entity.TryGetComponent<TransferComponent>(out var transferComponent)
+           && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
         {
-            if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
-               && entity.TryGetComponent<TransferComponent>(out var transferComponent)
-               && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
-            {
-                transferComponent.Targets.Clear();
+            transferComponent.Targets.Clear();
             transferComponent.Targets.Add(ProductionInventoriesComponent.InputInventory);
             transferComponent.Targets.Add(ProductionInventoriesComponent.OutputInventory);
             transferComponent.Targets.Add(ProductionInventoriesComponent.ProductionInventory);

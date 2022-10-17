@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-	  <DocumentationFile>$(OutDir)\OctoAwesome.Basics.XML</DocumentationFile>
+<!--	  <DocumentationFile>$(OutDir)\OctoAwesome.Basics.XML</DocumentationFile>-->
   </PropertyGroup>
 
   <ItemGroup>

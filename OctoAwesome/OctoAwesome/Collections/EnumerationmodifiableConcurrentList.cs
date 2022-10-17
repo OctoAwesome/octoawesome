@@ -25,7 +25,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
         }
         set
         {
-            using (scopeSemaphore.EnterExclusivScope())
+            using (scopeSemaphore.EnterExclusiveScope())
                 list[index] = value;
         }
     }
@@ -77,7 +77,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
     public void Add(T item)
     {
         var index = list.Count;
-        using var _ = scopeSemaphore.EnterExclusivScope();
+        using var _ = scopeSemaphore.EnterExclusiveScope();
         list.Add(item);
         pool.InsertAt(index);
     }
@@ -85,7 +85,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
     /// <inheritdoc/>
     public void Clear()
     {
-        using var _ = scopeSemaphore.EnterExclusivScope();
+        using var _ = scopeSemaphore.EnterExclusiveScope();
         list.Clear();
         pool.Clear();
     }
@@ -98,7 +98,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex)
     {
-        using var _ = scopeSemaphore.EnterExclusivScope();
+        using var _ = scopeSemaphore.EnterExclusiveScope();
         list.CopyTo(array, arrayIndex);
     }
     /// <inheritdoc/>
@@ -110,7 +110,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
     /// <inheritdoc/>
     public void Insert(int index, T item)
     {
-        using var _ = scopeSemaphore.EnterExclusivScope();
+        using var _ = scopeSemaphore.EnterExclusiveScope();
         list.Insert(index, item);
         pool.InsertAt(index);
     }
@@ -127,13 +127,13 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
     /// <inheritdoc/>
     public void RemoveAt(int index)
     {
-        using var _ = scopeSemaphore.EnterExclusivScope();
+        using var _ = scopeSemaphore.EnterExclusiveScope();
         list.RemoveAt(index);
         pool.RemoveAt(index);
     }
 
     /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
-    public Enumerator GetEnumerator() => pool.Get();
+    public Enumerator GetEnumerator() => pool.Rent();
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -164,7 +164,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
                 if (index > currentIndex)
                     return;
 
-            using (scopeSemaphore.EnterExclusivScope())
+            using (scopeSemaphore.EnterExclusiveScope())
             {
                 if (index == currentIndex)
                     Current = default;
@@ -179,7 +179,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
                     return;
 
 
-            using (scopeSemaphore.EnterExclusivScope())
+            using (scopeSemaphore.EnterExclusiveScope())
                 currentIndex++;
         }
 
@@ -192,7 +192,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
         /// <inheritdoc/>
         public bool MoveNext()
         {
-            using var _ = scopeSemaphore.EnterExclusivScope();
+            using var _ = scopeSemaphore.EnterExclusiveScope();
 
             currentIndex++;
             if (currentIndex >= parent.Count)
@@ -218,7 +218,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
         /// <inheritdoc/>
         public void Release()
         {
-            pool.Push(this);
+            pool.Return(this);
         }
     }
 
@@ -257,12 +257,12 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
         }
 
 
-        public Enumerator Get()
+        public Enumerator Rent()
         {
             if (pool.Count > 0)
             {
                 Enumerator item;
-                using (var __ = scopeSemaphore.EnterExclusivScope())
+                using (var __ = scopeSemaphore.EnterExclusiveScope())
                 {
                     item = pool.Pop();
                     item.Reset();
@@ -273,19 +273,19 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
 
             var e = new Enumerator(list);
             e.Init(this);
-            using var _ = scopeSemaphore.EnterExclusivScope();
+            using var _ = scopeSemaphore.EnterExclusiveScope();
             gottem.Add(e);
             return e;
         }
 
-        public void Push(Enumerator obj)
+        public void Return(Enumerator obj)
         {
-            using var _ = scopeSemaphore.EnterExclusivScope();
+            using var _ = scopeSemaphore.EnterExclusiveScope();
             gottem.Remove(obj);
             pool.Push(obj);
         }
 
-        public void Push(IPoolElement obj)
+        public void Return(IPoolElement obj)
         {
             if (obj is Enumerator e)
                 pool.Push(e);

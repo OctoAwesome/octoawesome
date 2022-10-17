@@ -42,7 +42,7 @@ namespace OctoAwesome.Basics.Definitions.Items
 
             Chest chest = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0.0f)), rot);
 
-            var notification = new FunctionalBlockNotification
+            var notification = new EntityNotification
             {
                 Entity = chest,
                 Type = EntityNotification.ActionType.Add

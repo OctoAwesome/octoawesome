@@ -181,6 +181,11 @@ namespace OctoAwesome.Client.Controls
                 targetedBlockName.Text = definitionManager.GetBlockDefinitionByIndex(blockInfo.Block)?.DisplayName ?? "";
                 targetedBlockPosition.Text = blockInfo.Position == default ? "" : blockInfo.Position.ToString();
             },
+            applyInfo =>
+            {
+                targetedBlockName.Text = definitionManager.GetBlockDefinitionByIndex(applyInfo.Block)?.DisplayName ?? "";
+                targetedBlockPosition.Text = applyInfo.Position == default ? "" : applyInfo.Position.ToString();
+            },
             componentContainer => SetTargetedBlockInfo(componentContainer));
 
             void SetTargetedBlockInfo(ComponentContainer container)

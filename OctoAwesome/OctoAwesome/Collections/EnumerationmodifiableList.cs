@@ -123,7 +123,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
     }
 
     /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
-    public Enumerator GetEnumerator() => pool.Get();
+    public Enumerator GetEnumerator() => pool.Rent();
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -199,7 +199,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
         /// <inheritdoc/>
         public void Release()
         {
-            pool.Push(this);
+            pool.Return(this);
         }
     }
 
@@ -234,7 +234,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
         }
 
 
-        public Enumerator Get()
+        public Enumerator Rent()
         {
             if (pool.Count > 0)
             {
@@ -251,13 +251,13 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
             return e;
         }
 
-        public void Push(Enumerator obj)
+        public void Return(Enumerator obj)
         {
             gottem.Remove(obj);
             pool.Push(obj);
         }
 
-        public void Push(IPoolElement obj)
+        public void Return(IPoolElement obj)
         {
             if (obj is Enumerator e)
                 pool.Push(e);

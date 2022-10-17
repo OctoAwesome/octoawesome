@@ -192,7 +192,7 @@ namespace OctoAwesome
             //Update all Entitiesxsq
             foreach (var entity in entities)
             {
-                if (entity is UpdateableEntity updateableEntity)
+                if (entity is IUpdateable updateableEntity)
                     updateableEntity.Update(gameTime);
             }
 
@@ -251,27 +251,22 @@ namespace OctoAwesome
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
 
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var fb in entities)
-                {
-                    if (fb == entity
-                        || (fb.Components.Contains<UniquePositionComponent>()
-                            && entity.Components.Contains<UniquePositionComponent>()
-                            && fb.Components.TryGet<PositionComponent>(out var existingPosition)
-                            && (!entity.Components.TryGet<PositionComponent>(out var newPosComponent)
-                                || existingPosition.Position == newPosComponent.Position)))
-                    {
-                        return;
-                    }
-                }
-
-            Entity? existing;
-            using (var _ = entitiesSemaphore.EnterCountScope())
+            foreach (var fb in entities)
             {
-                existing = entities.FirstOrDefault(x => x.Id == entity.Id);
-                if (existing != default && !overwriteExisting)
+                if (fb == entity
+                    || (fb.Components.Contains<UniquePositionComponent>()
+                        && entity.Components.Contains<UniquePositionComponent>()
+                        && fb.Components.TryGet<PositionComponent>(out var existingPosition)
+                        && (!entity.Components.TryGet<PositionComponent>(out var newPosComponent)
+                            || existingPosition.Position == newPosComponent.Position)))
+                {
                     return;
+                }
             }
+
+            var existing = entities.FirstOrDefault(x => x.Id == entity.Id);
+            if (existing != default && !overwriteExisting)
+                return;
 
             if (existing != default)
                 Remove(existing);
@@ -283,8 +278,7 @@ namespace OctoAwesome
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
-            using (var _ = entitiesSemaphore.EnterExclusiveScope())
-                entities.Add(entity);
+            entities.Add(entity);
 
             foreach (var component in Components)
             {
@@ -323,8 +317,7 @@ namespace OctoAwesome
                     holdComponent.Remove(entity);
             }
 
-            using (var _ = entitiesSemaphore.EnterExclusiveScope())
-                entities.Remove(entity);
+            entities.Remove(entity);
             entity.Id = Guid.Empty;
             entity.Simulation = null;
         }
@@ -337,7 +330,6 @@ namespace OctoAwesome
         public IReadOnlyCollection<T> GetEntitiesOfType<T>()
         {
             var ret = new List<T>();
-            using var _ = entitiesSemaphore.EnterCountScope();
             foreach (var item in entities)
             {
                 if (item is T t)
@@ -354,12 +346,11 @@ namespace OctoAwesome
         public IReadOnlyCollection<ComponentContainer> GetByComponentType<T>()
         {
             var ret = new List<ComponentContainer>();
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item.Components.Contains<T>())
-                        ret.Add(item);
-                }
+            foreach (var item in entities)
+            {
+                if (item.Components.Contains<T>())
+                    ret.Add(item);
+            }
 
             return ret;
         }
@@ -374,12 +365,11 @@ namespace OctoAwesome
         public IReadOnlyCollection<ComponentContainer> GetByComponentTypes<T1, T2>()
         {
             var ret = new List<ComponentContainer>();
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item.Components.Contains<T1>() && item.Components.Contains<T2>())
-                        ret.Add(item);
-                }
+            foreach (var item in entities)
+            {
+                if (item.Components.Contains<T1>() && item.Components.Contains<T2>())
+                    ret.Add(item);
+            }
 
             return ret;
         }
@@ -391,12 +381,11 @@ namespace OctoAwesome
         /// <returns><see cref="ComponentContainer"/> that has been found or <see langword="default"/></returns>
         public T? GetById<T>(Guid id) where T : ComponentContainer
         {
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item is T t && t.Id == id)
-                        return t;
-                }
+            foreach (var item in entities)
+            {
+                if (item is T t && t.Id == id)
+                    return t;
+            }
 
             return default;
         }
@@ -410,14 +399,13 @@ namespace OctoAwesome
         /// <returns><see langword="true"/> if a container was found, otherwise <see langword="false"/></returns>
         public bool TryGetById<T>(Guid id, [MaybeNullWhen(false)] out T componentContainer) where T : ComponentContainer
         {
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (!(item is T t) || t.Id != id)
-                        continue;
-                    componentContainer = t;
-                    return true;
-                }
+            foreach (var item in entities)
+            {
+                if (!(item is T t) || t.Id != id)
+                    continue;
+                componentContainer = t;
+                return true;
+            }
 
             componentContainer = default;
             return false;
