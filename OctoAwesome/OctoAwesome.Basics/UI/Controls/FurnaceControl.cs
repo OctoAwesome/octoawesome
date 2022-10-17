@@ -22,6 +22,11 @@ public sealed class FurnaceControl : Panel
 
     internal InventoryControl inputSlotPanel, outputSlotPanel, resourceSlotPanel;
 
+    /// <summary>
+    /// Gibt den aktuell selektierten Slot an.
+    /// </summary>
+    public InventorySlot HoveredSlot { get; private set; }
+
     private Grid grid;
     private readonly AssetComponent assets;
 
@@ -41,7 +46,7 @@ public sealed class FurnaceControl : Panel
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 2 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
-        
+
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
 
@@ -67,11 +72,15 @@ public sealed class FurnaceControl : Panel
     /// <param name="ressourceInventory">The ressource slots in the middle</param>
     /// <param name="columns">The amount of columns for inventory and output slot</param>
     public void Rebuild(IReadOnlyCollection<IInventorySlot> inventorySlots, IReadOnlyCollection<IInventorySlot> outputInventory, IReadOnlyCollection<IInventorySlot> ressourceInventory, int columns = COLUMNS)
-    {
+            {
         inputSlotPanel.Rebuild(inventorySlots, columns / 2);
         outputSlotPanel.Rebuild(outputInventory, columns / 2);
         resourceSlotPanel.Rebuild(ressourceInventory, columns / 2);
         //TODO Draw in a grid formation
 
+            panel.Controls.Clear();
+            panel.Controls.Add(grid);
+            column += 2;
+        }
     }
 }

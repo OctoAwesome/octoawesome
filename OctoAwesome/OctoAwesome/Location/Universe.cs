@@ -1,8 +1,9 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 using OctoAwesome.Extension;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// A universe of OctoAwesome. A universe contains multiple planets and is a save state.

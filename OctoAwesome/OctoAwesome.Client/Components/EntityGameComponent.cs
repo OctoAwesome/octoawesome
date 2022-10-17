@@ -4,7 +4,9 @@ using engenious.Helper;
 using engenious.UserDefined.Effects;
 
 using OctoAwesome.Components;
+using OctoAwesome.Chunking;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 
 using System.Collections.Generic;
 using System.Diagnostics;

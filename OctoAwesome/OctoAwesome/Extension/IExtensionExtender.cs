@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// The base extension extender interface

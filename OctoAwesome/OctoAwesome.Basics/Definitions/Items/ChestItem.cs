@@ -1,9 +1,14 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
+using OctoAwesome.Services;
+
 using System;
 
 namespace OctoAwesome.Basics.Definitions.Items
@@ -31,12 +36,13 @@ namespace OctoAwesome.Basics.Definitions.Items
         }
 
         /// <inheritdoc />
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
-            //TODO: Implement Place Chest and remove this item
-            var position = blockInfo.Position;
-            Chest chest = new(new Coordinate(0, new(position.X, position.Y, position.Z + 1), new Vector3(0.5f, 0.5f, 0.5f)));
-            var notification = new EntityNotification
+            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out var rot);
+
+            Chest chest = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0.0f)), rot);
+
+            var notification = new FunctionalBlockNotification
             {
                 Entity = chest,
                 Type = EntityNotification.ActionType.Add

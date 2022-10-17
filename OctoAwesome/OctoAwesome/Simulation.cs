@@ -1,9 +1,11 @@
 ﻿using engenious;
 
+using OctoAwesome.Collections;
 using OctoAwesome.Common;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
@@ -54,8 +56,7 @@ namespace OctoAwesome
 
         private readonly ExtensionService extensionService;
 
-        private readonly List<Entity> entities = new();
-        private readonly CountedScopeSemaphore entitiesSemaphore = new();
+        private readonly EnumerationmodifiableConcurrentList<Entity> entities = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly Relay<Notification> networkRelay;
@@ -90,6 +91,7 @@ namespace OctoAwesome
 
             extensionService.ExecuteExtender(this);
         }
+
 
         private void ValidateAddComponent(SimulationComponent component)
         {
@@ -170,6 +172,7 @@ namespace OctoAwesome
                 .AddSource(uiRelay, DefaultChannels.UI);
 
 
+
             State = SimulationState.Running;
         }
 
@@ -182,15 +185,15 @@ namespace OctoAwesome
             if (State != SimulationState.Running)
                 return;
 
+
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
-            //Update all Entities
-            for (var i = 0; i < entities.Count; i++)
+            //Update all Entitiesxsq
+            foreach (var entity in entities)
             {
-                var entity = entities[i];
-                if (entity is IUpdateable updateable)
-                    updateable.Update(gameTime);
+                if (entity is UpdateableEntity updateableEntity)
+                    updateableEntity.Update(gameTime);
             }
 
 
@@ -216,10 +219,8 @@ namespace OctoAwesome
 
             //TODO: unschön, Dispose Entity's, Reset Extensions
 
-            for (int i = entities.Count - 1; i >= 0; i--)
-            {
-                Remove(entities[i]);
-            }
+            foreach (var item in entities)
+                Remove(item);
 
 
             State = SimulationState.Finished;
@@ -428,8 +429,6 @@ namespace OctoAwesome
         /// <param name="entityId">The <see cref="Guid"/> of the entity to remove.</param>
         public void RemoveEntity(Guid entityId)
         {
-
-            var _ = entitiesSemaphore.EnterExclusiveScope();
             Remove(entities.First(e => e.Id == entityId));
         }
 
@@ -474,9 +473,7 @@ namespace OctoAwesome
 
         private void EntityUpdate(EntityNotification notification)
         {
-            Entity? entity;
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
+            var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
             if (entity == null)
             {
                 var entityNotification = entityNotificationPool.Rent();
@@ -497,13 +494,9 @@ namespace OctoAwesome
             if (!IsServerSide)
                 return;
 
-            Entity? entity;
-            using (var _ = entitiesSemaphore.EnterCountScope())
-            {
-                entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
-                if (entity == null)
-                    return;
-            }
+            var entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
+            if (entity == null)
+                return;
 
             var remoteEntity = new RemoteEntity(entity);
             remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });

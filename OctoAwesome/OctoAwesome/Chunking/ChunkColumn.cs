@@ -1,8 +1,11 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +13,7 @@ using System.IO;
 using System.Linq;
 using OctoAwesome.Extension;
 
-namespace OctoAwesome
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Chunk column implementation containing <see cref="IChunk"/> in a column.
@@ -118,9 +121,7 @@ namespace OctoAwesome
             {
 
                 if (GetBlock(x, y, z) != 0)
-                {
                     return z;
-                }
             }
             return -1;
         }
@@ -241,7 +242,7 @@ namespace OctoAwesome
             }
 
             var longIndex = definitions.Count > 254;
-            writer.Write((byte)((longIndex) ? 1 : 0));
+            writer.Write((byte)(longIndex ? 1 : 0));
 
             // Serialization Phase 1 (Column Meta: Heightmap, populated, chunk count)
             writer.Write((byte)Chunks.Length); // Chunk Count
@@ -281,7 +282,7 @@ namespace OctoAwesome
                     else
                     {
                         // Definition index
-                        var definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
 
                         Debug.Assert(definition != null, nameof(definition) + " != null");
                         if (longIndex)

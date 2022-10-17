@@ -1,4 +1,4 @@
-﻿namespace OctoAwesome
+﻿namespace OctoAwesome.Location
 {
     /// <summary>
     /// Interface for the climate map of a planet.

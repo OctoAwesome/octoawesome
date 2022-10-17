@@ -1,6 +1,9 @@
 ﻿using engenious;
+
+using OctoAwesome.Chunking;
 using OctoAwesome.Information;
 using OctoAwesome.Services;
+
 using System;
 
 namespace OctoAwesome.Definitions
@@ -16,6 +19,14 @@ namespace OctoAwesome.Definitions
         /// <param name="blockVolume">The block volume information for the block to hit.</param>
         /// <param name="itemDefinition">The item to hit the block with.</param>
         BlockHitInformation Hit(BlockVolumeState blockVolume, IItem itemDefinition);
+
+
+        /// <summary>
+        /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
+        /// </summary>
+        /// <param name="block">Der Block-Typ des interagierenden Elements</param>
+        /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
+        BlockHitInformation Apply(BlockVolumeState blockVolume, IItem itemDefinition);
 
         /// <summary>
         /// Gets an array of texture names for all block sides.

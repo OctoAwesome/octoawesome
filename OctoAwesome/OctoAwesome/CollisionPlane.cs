@@ -1,4 +1,7 @@
 ﻿using engenious;
+
+using OctoAwesome.Location;
+
 using System.Collections.Generic;
 
 namespace OctoAwesome

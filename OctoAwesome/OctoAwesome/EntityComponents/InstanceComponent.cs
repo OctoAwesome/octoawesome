@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
+
 using System;
 using System.IO;
 using OctoAwesome.Extension;

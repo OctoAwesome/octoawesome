@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Noise;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics.Biomes
 {

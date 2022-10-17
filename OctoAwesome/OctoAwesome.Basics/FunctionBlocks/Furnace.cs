@@ -5,6 +5,7 @@ using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
@@ -21,9 +22,9 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 /// <summary>
 /// Represents the furnace object in the world
 /// </summary>
-[SerializationId(1, 4)]
+    [SerializationId(1, 4)]
 public class Furnace : Entity
-{
+    {
     internal ProductionInventoriesComponent ProductionInventoriesComponent
     {
         get => NullabilityHelper.NotNullAssert(productionInventoriesComponent, $"{nameof(ProductionInventoriesComponent)} was not initialized!");
@@ -47,8 +48,8 @@ public class Furnace : Entity
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
     /// </summary>
-    public Furnace()
-    {
+        public Furnace()
+        {
     }
 
     /// <inheritdoc />
@@ -56,35 +57,35 @@ public class Furnace : Entity
     {
         base.OnInitialize(manager);
         GetComponent<BurningComponent>()?.Initialize("furnace");
-    }
+        }
 
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
     /// </summary>
     public Furnace(Coordinate position) : this()
-    {
-        Components.AddIfTypeNotExists(new PositionComponent()
         {
+        Components.AddIfTypeNotExists(new PositionComponent()
+            {
             Position = position
-        });
+            });
 
-    }
+        }
 
     /// <inheritdoc/>
     public override void Deserialize(BinaryReader reader) => base.Deserialize(reader);//Doesnt get called
 
     /// <inheritdoc/>
     protected override void OnInteract(GameTime gameTime, Entity entity)
-    {
-        if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
-           && entity.TryGetComponent<TransferComponent>(out var transferComponent)
-           && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
         {
-            transferComponent.Targets.Clear();
+            if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+               && entity.TryGetComponent<TransferComponent>(out var transferComponent)
+               && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
+            {
+                transferComponent.Targets.Clear();
             transferComponent.Targets.Add(ProductionInventoriesComponent.InputInventory);
             transferComponent.Targets.Add(ProductionInventoriesComponent.OutputInventory);
             transferComponent.Targets.Add(ProductionInventoriesComponent.ProductionInventory);
-            uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
+                uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
             AnimationComponent.CurrentTime = 0f;
             AnimationComponent.AnimationSpeed = 60f;

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Serialization;
 
-namespace OctoAwesome
+using System;
+using System.Collections.Generic;
+
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Interface for a column of chunks.

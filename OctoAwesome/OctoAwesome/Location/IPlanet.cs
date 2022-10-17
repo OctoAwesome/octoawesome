@@ -1,7 +1,10 @@
-﻿using OctoAwesome.Serialization;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
+
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Interface for all planet implementations.

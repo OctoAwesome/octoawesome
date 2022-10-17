@@ -5,6 +5,7 @@ using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using engenious.Helper;
 using OctoAwesome.Components;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

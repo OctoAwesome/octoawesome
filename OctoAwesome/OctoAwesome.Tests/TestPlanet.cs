@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 
 namespace OctoAwesome.Tests

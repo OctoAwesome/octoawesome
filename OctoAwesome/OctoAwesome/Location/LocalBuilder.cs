@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Information;
+
+using System.Collections.Generic;
 using System.Linq;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// A builder for managing 2x2 chunk columns relative to a given origin coordinate system.

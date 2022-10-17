@@ -1,6 +1,7 @@
-﻿using System;
+﻿
+using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Bit flag enumeration of axes.

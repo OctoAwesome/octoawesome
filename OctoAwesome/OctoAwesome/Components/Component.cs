@@ -1,9 +1,9 @@
-﻿using OctoAwesome.Components;
+﻿using OctoAwesome.Serialization;
 
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace OctoAwesome
+namespace OctoAwesome.Components
 {
     /// <summary>
     /// Base Class for all components.

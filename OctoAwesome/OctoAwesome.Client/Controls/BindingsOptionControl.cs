@@ -73,9 +73,9 @@ namespace OctoAwesome.Client.Controls
             object[] data = (object[])sender.Tag;
 
             string id = (string)data[0];
-            Keys oldKey = (Keys)data[1];
+            var oldKey = (Keys)data[1];
 
-            Label lbl = (Label)sender;
+            var lbl = (Label)sender;
 
             MessageScreen screen = new MessageScreen(assets, UI.Languages.OctoClient.PressKey, "", UI.Languages.OctoClient.Cancel);
             screen.KeyDown += (s, a) =>

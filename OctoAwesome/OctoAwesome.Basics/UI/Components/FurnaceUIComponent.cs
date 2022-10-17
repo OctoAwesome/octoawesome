@@ -117,9 +117,6 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         if (source == target || target == OutputInventory || slot.Item is null)
             return;
 
-        //if (source == InventoryA)
-        //{
-
         var toAddAndRemove = target.GetQuantityLimitFor(slot.Item, slot.Amount);
         if (toAddAndRemove == 0)
             return;
@@ -129,6 +126,20 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         var addedAddedAmount = target.Add(item, toAddAndRemove);
         Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
 
+        if (source == InventoryA)
+        {
+            var firstSlot = target.Inventory.First();
+            target.RemoveSlot(firstSlot);
+            target.AddSlot(slot, 0);
+            source.AddSlot(firstSlot);
+        }
+        else
+        {
+            var inputOrOutput = source.Inventory.IndexOf(slot);
+            source.RemoveSlot(slot);
+            target.AddSlot(slot);
+            source.AddSlot(new InventorySlot(), inputOrOutput);
+        }
     }
 
     internal void OnClose(string key)

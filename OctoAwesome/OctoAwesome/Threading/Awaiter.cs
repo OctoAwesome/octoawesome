@@ -1,13 +1,13 @@
 ﻿using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
-using OctoAwesome.Threading;
+
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using OctoAwesome.Extension;
 
-namespace OctoAwesome
+namespace OctoAwesome.Threading
 {
     /// <summary>
     /// For awaiting a result from an asynchronous task.

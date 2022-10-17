@@ -1,9 +1,11 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
+
 using System;
 using System.Xml.Serialization;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Struct for exact position in the OctoAwesome universe.
@@ -52,9 +54,9 @@ namespace OctoAwesome
             {
                 Index3 localBlockIndex = LocalBlockIndex;
                 block = new Index3(
-                    (value.X * Chunk.CHUNKSIZE_X) + localBlockIndex.X,
-                    (value.Y * Chunk.CHUNKSIZE_Y) + localBlockIndex.Y,
-                    (value.Z * Chunk.CHUNKSIZE_Z) + localBlockIndex.Z);
+                    value.X * Chunk.CHUNKSIZE_X + localBlockIndex.X,
+                    value.Y * Chunk.CHUNKSIZE_Y + localBlockIndex.Y,
+                    value.Z * Chunk.CHUNKSIZE_Z + localBlockIndex.Z);
             }
         }
 
@@ -77,17 +79,17 @@ namespace OctoAwesome
             {
                 Index3 chunk = ChunkIndex;
                 return new Index3(
-                    block.X - (chunk.X * Chunk.CHUNKSIZE_X),
-                    block.Y - (chunk.Y * Chunk.CHUNKSIZE_Y),
-                    block.Z - (chunk.Z * Chunk.CHUNKSIZE_Z));
+                    block.X - chunk.X * Chunk.CHUNKSIZE_X,
+                    block.Y - chunk.Y * Chunk.CHUNKSIZE_Y,
+                    block.Z - chunk.Z * Chunk.CHUNKSIZE_Z);
             }
             set
             {
                 Index3 chunk = ChunkIndex;
                 GlobalBlockIndex = new Index3(
-                    (chunk.X * Chunk.CHUNKSIZE_X) + value.X,
-                    (chunk.Y * Chunk.CHUNKSIZE_Y) + value.Y,
-                    (chunk.Z * Chunk.CHUNKSIZE_Z) + value.Z);
+                    chunk.X * Chunk.CHUNKSIZE_X + value.X,
+                    chunk.Y * Chunk.CHUNKSIZE_Y + value.Y,
+                    chunk.Z * Chunk.CHUNKSIZE_Z + value.Z);
                 Normalize();
             }
         }
@@ -155,7 +157,7 @@ namespace OctoAwesome
         /// </summary>
         private void Normalize()
         {
-            Index3 shift = new Index3(
+            var shift = new Index3(
                 (int)Math.Floor(position.X),
                 (int)Math.Floor(position.Y),
                 (int)Math.Floor(position.Z));

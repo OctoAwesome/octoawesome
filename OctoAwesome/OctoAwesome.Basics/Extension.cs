@@ -8,11 +8,12 @@ using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using System.Reflection;
-using System;
 using OctoAwesome.Extension;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
+
+using System;
+using System.Reflection;
 
 namespace OctoAwesome.Basics
 {
@@ -161,33 +162,51 @@ namespace OctoAwesome.Basics
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
                 f.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
                 f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
-                f.Components.AddIfTypeNotExists(new UniquePositionComponent() );
+                f.Components.AddIfTypeNotExists(new UniquePositionComponent());
 
             });
 
-            extensionLoader.Extend<Simulation>((s) =>
+            extensionLoader.Extend<Furnace>((furnace) =>
             {
-                s.Components.AddIfTypeNotExists(new WattMoverComponent());
-                s.Components.AddIfTypeNotExists(new NewtonGravitatorComponent());
-                s.Components.AddIfTypeNotExists(new ForceAggregatorComponent());
-                s.Components.AddIfTypeNotExists(new PowerAggregatorComponent());
-                s.Components.AddIfTypeNotExists(new AccelerationComponent());
-                s.Components.AddIfTypeNotExists(new MoveComponent());
-                //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
+                var f = furnace;
 
-                //TODO: ugly
-                //TODO: TypeContainer?
+                if (f is null)
+                    return;
+
+                if (!f.ContainsComponent<PositionComponent>())
+                {
+                    var pos = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0));
+                    f.Components.AddComponent(new PositionComponent()
+                    {
+                        Position = pos
+                    });
+
+                    extensionLoader.Extend<Simulation>((s) =>
+                    {
+                        s.Components.AddIfTypeNotExists(new WattMoverComponent());
+                        s.Components.AddIfTypeNotExists(new NewtonGravitatorComponent());
+                        s.Components.AddIfTypeNotExists(new ForceAggregatorComponent());
+                        s.Components.AddIfTypeNotExists(new PowerAggregatorComponent());
+                        s.Components.AddIfTypeNotExists(new AccelerationComponent());
+                        s.Components.AddIfTypeNotExists(new MoveComponent());
+                        //TODO: Fix this
+                        s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
+
+                        //TODO: ugly
+                        //TODO: TypeContainer?
+                    });
+                    extensionLoader.Extend<IScreenComponent>((s) =>
+                    {
+                        s.Components.AddIfTypeNotExists(new TransferUIComponent());
+                        s.Add(TypeContainer.GetUnregistered<TransferScreen>());
+
+                        s.Components.AddIfTypeNotExists(new FurnaceUIComponent());
+                        s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
+                    });
+
+                }
+
             });
-            extensionLoader.Extend<IScreenComponent>((s) =>
-            {
-                s.Components.AddIfTypeNotExists(new TransferUIComponent());
-                s.Add(TypeContainer.GetUnregistered<TransferScreen>());
-
-                s.Components.AddIfTypeNotExists(new FurnaceUIComponent());
-                s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
-            });
-
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using OctoAwesome.Logging;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
+using OctoAwesome.Logging;
 using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OctoAwesome
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Chunk Cache for local regions.
@@ -68,7 +71,7 @@ namespace OctoAwesome
         /// <param name="range">The range of the chunk cache in all axis directions.</param>
         public LocalChunkCache(IGlobalChunkCache globalCache, int dimensions, int range)
         {
-            if (1 << dimensions < (range * 2) + 1)
+            if (1 << dimensions < range * 2 + 1)
                 throw new ArgumentException("Range too big");
 
 
@@ -122,7 +125,7 @@ namespace OctoAwesome
         {
             try
             {
-                List<Index2> requiredChunkColumns = new List<Index2>();
+                var requiredChunkColumns = new List<Index2>();
 
                 for (int x = -range; x <= range; x++)
                 {
@@ -319,7 +322,7 @@ namespace OctoAwesome
         /// <param name="y">The y coordinate component.</param>
         /// <returns>The flat array index.</returns>
         private int FlatIndex(int x, int y)
-            => ((y & mask) << limit) | (x & mask);
+            => (((y & (mask)) << limit) | ((x & (mask))));
 
         /// <inheritdoc />
         public int GroundLevel(int x, int y)
@@ -334,5 +337,5 @@ namespace OctoAwesome
 
             return column.Heights[(x & (Chunk.CHUNKSIZE_X - 1)), (y & (Chunk.CHUNKSIZE_Y - 1))];
         }
-    }
+}
 }

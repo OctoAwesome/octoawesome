@@ -1,6 +1,8 @@
 ﻿using engenious;
 using engenious.UI;
 using engenious.UI.Controls;
+using OctoAwesome.Client.Components;
+using OctoAwesome.UI.Screens;
 using System;
 using OctoAwesome.Client.UI.Components;
 using System.Threading;

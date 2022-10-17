@@ -1,5 +1,9 @@
 ﻿using engenious;
+
+using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
+using OctoAwesome.Location;
+
 using System;
 
 namespace OctoAwesome.Common

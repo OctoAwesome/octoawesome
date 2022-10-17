@@ -2,7 +2,7 @@
 
 using engenious;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Struct for 2D index position.
@@ -173,7 +173,7 @@ namespace OctoAwesome
         /// <returns>The calculated euclidean distance squared.</returns>
         /// <remarks>X^2 + Y^2</remarks>
         public int LengthSquared()
-            => (X * X) + (Y * Y);
+            => X * X + Y * Y;
 
         /// <summary>
         /// Calculates the sum of two <see cref="Index2"/> componentwise.

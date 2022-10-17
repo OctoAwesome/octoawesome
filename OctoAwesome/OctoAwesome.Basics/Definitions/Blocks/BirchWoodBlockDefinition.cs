@@ -1,5 +1,8 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Basics.Properties;
+using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
+using OctoAwesome.Information;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {

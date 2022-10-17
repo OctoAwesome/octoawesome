@@ -1,6 +1,9 @@
-﻿using System;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
 
-namespace OctoAwesome
+using System;
+
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Interface for a chunk cache that manages a local region.

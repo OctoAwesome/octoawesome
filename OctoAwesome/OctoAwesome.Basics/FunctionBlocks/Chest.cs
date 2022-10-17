@@ -1,12 +1,20 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
+using OctoAwesome.Location;
+using OctoAwesome.Rx;
+using OctoAwesome.Serialization;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
+
+using System;
+using OctoAwesome.UI.Components;
+using System;
 using System;
 using System.IO;
-using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics.FunctionBlocks
 {
@@ -49,7 +57,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
         {
             Components.AddIfTypeNotExists(new PositionComponent()
             {
-                Position = position
+                Position = position,
+                Direction = direction
             });
         }
 
@@ -59,6 +68,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
             if (e.show)
                 return;
             AnimationComponent.AnimationSpeed = -60f;
+            changedSub?.Dispose();
+
             changedSub?.Dispose();
 
         }

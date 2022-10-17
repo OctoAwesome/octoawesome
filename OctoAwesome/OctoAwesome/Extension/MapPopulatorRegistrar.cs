@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿
+using OctoAwesome.Location;
 
-namespace OctoAwesome
+using System.Collections.Generic;
+
+namespace OctoAwesome.Extension
 {
 
     /// <summary>
@@ -8,7 +11,7 @@ namespace OctoAwesome
     /// </summary>
     public class MapPopulatorRegistrar : BaseRegistrar<IMapPopulator>
     {
-        private List<IMapPopulator> mapPopulators;        
+        private List<IMapPopulator> mapPopulators;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="MapPopulatorRegistrar" /> class

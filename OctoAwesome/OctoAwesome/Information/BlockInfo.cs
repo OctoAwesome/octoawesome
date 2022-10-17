@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using OctoAwesome.Location;
+
 using System.IO;
 
-namespace OctoAwesome
+namespace OctoAwesome.Information
 {
     /// <summary>
     /// Represents information of a block.

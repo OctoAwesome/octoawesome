@@ -1,5 +1,6 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
@@ -80,6 +81,21 @@ namespace OctoAwesome
         /// <param name="gameTime">The current game time when the event happened</param>
         /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
         protected abstract void OnInteract(GameTime gameTime, Entity entity);
+
+        /// <summary>
+        /// Used to hit this component container
+        /// </summary>
+        /// <param name="gameTime">The current game time when the event happened</param>
+        /// <param name="entity">The <see cref="Entity"/> that was hit by us.</param>
+        public void Hit(GameTime gameTime, Entity entity) => OnHit(gameTime, entity);
+
+        /// <summary>
+        /// Called when this component container got hit
+        /// </summary>
+        /// <param name="gameTime">The current game time when the event happened</param>
+        /// <param name="entity">The <see cref="Entity"/> that hit us</param>
+        protected virtual void OnHit(GameTime gameTime, Entity entity) { }
+
         /// <inheritdoc />
         public virtual void Push(SerializableNotification notification)
         {

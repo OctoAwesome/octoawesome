@@ -1,7 +1,8 @@
 ﻿using System;
+
 using engenious;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Struct for 3D index position.
