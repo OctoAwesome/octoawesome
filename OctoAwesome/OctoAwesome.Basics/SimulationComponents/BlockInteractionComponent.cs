@@ -61,7 +61,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
                         ApplyWith(applyInfo, inventory, toolbar, cache);
                     },
-                    componentContainer => componentContainer?.Hit(gameTime, entity)
+                    componentContainer => componentContainer?.Interact(gameTime, entity)
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)

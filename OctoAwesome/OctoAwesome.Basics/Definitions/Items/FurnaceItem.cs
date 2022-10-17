@@ -45,7 +45,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         {
             BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out var rot);
 
-            Furnace furnace = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0f)), rot);
+            Furnace furnace = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0.5f)), rot);
             var notification = new EntityNotification
             {
                 Entity = furnace,
