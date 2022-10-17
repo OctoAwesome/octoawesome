@@ -106,7 +106,7 @@ namespace OctoAwesome.Client.Controls
 
 
             //////////////////////FOV//////////////////////
-            int fov = settings.Get<int>("FOV", 90);
+            int fov = settings.Get<int>("FOV", 70);
 
             var fovTitle = new Label()
             {

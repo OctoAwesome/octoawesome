@@ -92,6 +92,8 @@ namespace OctoAwesome.Definitions.Items
             //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
         }
+
+        /// <inheritdoc />
         public virtual int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
             return 0;

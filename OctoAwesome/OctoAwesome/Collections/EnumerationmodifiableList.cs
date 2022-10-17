@@ -135,7 +135,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
     {
         /// <inheritdoc/>
         public T Current { get; private set; }
-        object IEnumerator.Current => Current;
+        object IEnumerator.Current => Current!;
 
         private int currentIndex = -1;
         private readonly EnumerationmodifiableList<T> parent;
@@ -145,6 +145,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
         {
             parent = list;
             pool = list.pool;
+            Current = default!;
         }
 
         internal void RemoveAt(int index)
@@ -153,7 +154,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
                 return;
 
             if (index == currentIndex)
-                Current = default;
+                Current = default!;
             currentIndex--;
         }
 
@@ -187,7 +188,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
         public void Reset()
         {
             currentIndex = -1;
-            Current = default;
+            Current = default!;
         }
 
         /// <inheritdoc/>

@@ -168,7 +168,7 @@ namespace OctoAwesome.Network
         /// <param name="planet">The planet to load the chunk column from.</param>
         /// <param name="index2">The location to load the chunk column at.</param>
         /// <returns>The loaded chunk column.</returns>
-        /// <seealso cref="LoadColumn(int,OctoAwesome.Index2)"/>
+        /// <seealso cref="LoadColumn(int, OctoAwesome.Location.Index2)"/>
         public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
             => planet.GlobalChunkCache.Subscribe(index2);
 
@@ -178,7 +178,7 @@ namespace OctoAwesome.Network
         /// <param name="planetId">The id of the planet to load the chunk column from.</param>
         /// <param name="index2">The location to load the chunk column at.</param>
         /// <returns>The loaded chunk column.</returns>
-        /// <seealso cref="LoadColumn(IPlanet,OctoAwesome.Index2)"/>
+        /// <seealso cref="LoadColumn(IPlanet,OctoAwesome.Location.Index2)"/>
         public IChunkColumn LoadColumn(int planetId, Index2 index2)
             => LoadColumn(GetPlanet(planetId), index2);
 

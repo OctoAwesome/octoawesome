@@ -3,7 +3,7 @@
 namespace OctoAwesome.SumTypes
 {
     /// <summary>
-    /// Selection variant of either <see cref="BlockInfo"/>, <see cref="Entity"/>.
+    /// Selection variant of either <see cref="HitInfo"/>, <see cref="ApplyInfo"/>, <see cref="ComponentContainer"/>.
     /// </summary>
     [Variant]
     public partial class Selection

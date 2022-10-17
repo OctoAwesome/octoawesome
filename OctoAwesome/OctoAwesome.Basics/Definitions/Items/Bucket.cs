@@ -63,11 +63,12 @@ namespace OctoAwesome.Basics.Definitions.Items
             return base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
         }
 
+        /// <inheritdoc />
         public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
             if (Quantity > 125 && FluidBlock is not null)
             {
-                BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out _);
+                BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var facingDirection, out _);
             }
 
             return base.Apply(material, hitInfo, volumeRemaining);

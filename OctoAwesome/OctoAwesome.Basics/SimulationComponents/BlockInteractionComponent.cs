@@ -79,15 +79,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                         _ => new Index3(),
                     };
 
-                    IBlockDefinition definition = toolbar.ActiveTool.Item as IBlockDefinition;
-
-                    if (definition is not null)
+                    if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
                         bool intersects = !GetPosition(entity, controller, cache, add, definition, out var idx);
 
                         if (!intersects)
                         {
-                            if (toolbar.ActiveTool.Item is not IBlockDefinition || inventory.RemoveUnit(toolbar.ActiveTool) > 0)
+                            if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
                             {
                                 cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
                                 cache.SetBlockMeta(idx, (int)controller.ApplySide);
@@ -132,7 +130,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
-                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+                var blockHitInformation = service.Interact(lastBlock, activeItem, cache);
 
                 if (blockHitInformation.Valid && blockHitInformation.List != null)
                     foreach (var (quantity, definition) in blockHitInformation.List)
@@ -153,6 +151,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         }
         private static bool GetPosition(Entity entity, ControllableComponent controller, ILocalChunkCache cache, Index3 add, IBlockDefinition definition, out Index3 idx)
         {
+            Debug.Assert(controller.ApplyBlock != null, "controller.ApplyBlock != null");
             idx = controller.ApplyBlock.Value + add;
             var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 

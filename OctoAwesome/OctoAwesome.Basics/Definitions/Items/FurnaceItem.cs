@@ -43,9 +43,9 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
-            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out var rot);
+            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var facingDirection, out var rot);
 
-            Furnace furnace = new(new Coordinate(0, index3, new Vector3(0.5f, 0.5f, 0.5f)), rot);
+            Furnace furnace = new(new Coordinate(0, facingDirection, new Vector3(0.5f, 0.5f, 0.5f)), rot);
             var notification = new EntityNotification
             {
                 Entity = furnace,

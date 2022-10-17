@@ -282,7 +282,7 @@ namespace OctoAwesome.Chunking
                     else
                     {
                         // Definition index
-                        var definition = (IBlockDefinition)DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                        var definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
 
                         Debug.Assert(definition != null, nameof(definition) + " != null");
                         if (longIndex)

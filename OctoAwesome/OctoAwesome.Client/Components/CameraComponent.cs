@@ -13,7 +13,7 @@ namespace OctoAwesome.Client.Components
     internal sealed class CameraComponent : DrawableGameComponent
     {
         private readonly PlayerComponent player;
-        private OctoGame game => (OctoGame)base.Game;
+        public new OctoGame Game => (OctoGame)base.Game;
 
         public CameraComponent(OctoGame game)
             : base(game)
@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.Components
             if (overrideFOV > 0)
                 fov = overrideFOV;
             else
-                fov = game.Settings.Get("FOV", 90);
+                fov = Game.Settings.Get("FOV", 70);
             Projection = Matrix.CreatePerspectiveFieldOfView(
                 (float)(fov / 180f * Math.PI), GraphicsDevice.Viewport.AspectRatio, NearPlaneDistance, FarPlaneDistance);
         }
@@ -56,14 +56,14 @@ namespace OctoAwesome.Client.Components
 
             var ray = new Ray(lookAt, CameraPosition - lookAt);
 
-            if (!viewCreator.IsFirstPerson && player.CurrentEntity.Components.TryGet<LocalChunkCacheComponent>(out var localChunkCacheComponent))
+            if (!viewCreator.IsFirstPerson && entity.Components.TryGet<LocalChunkCacheComponent>(out var localChunkCacheComponent))
             {
                 Index3 centerblock = player.Position.Position.GlobalBlockIndex;
                 Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
-                var bi = SceneControl.GetSelectedBlock(centerblock, renderOffset, localChunkCacheComponent.LocalChunkCache, game.DefinitionManager, ray, position.Planet.Size, out _, out _, out _, out var distance);
+                var bi = SceneControl.GetSelectedBlock(centerblock, renderOffset, localChunkCacheComponent.LocalChunkCache, Game.DefinitionManager, ray, position.Planet.Size, out _, out _, out _, out var distance);
 
-                var selectedEntity = SceneControl.GetSelectedEntity(centerblock, renderOffset, game.Simulation.Simulation, ray, position.Planet.Size, out _, out _, out _, out var bestFunctionalBlockDistance);
+                var selectedEntity = SceneControl.GetSelectedEntity(centerblock, renderOffset, Game.Simulation.Simulation, ray, position.Planet.Size, out _, out _, out _, out var bestFunctionalBlockDistance);
 
                 if (distance > bestFunctionalBlockDistance)
                     distance = bestFunctionalBlockDistance;
@@ -87,8 +87,8 @@ namespace OctoAwesome.Client.Components
                     (float)Math.Cos(head.Angle),
                     (float)Math.Sin(-head.Angle), 0f));
 
-            float centerX = GraphicsDevice.Viewport.Width / 2;
-            float centerY = GraphicsDevice.Viewport.Height / 2;
+            float centerX = (float)GraphicsDevice.Viewport.Width / 2;
+            float centerY = (float)GraphicsDevice.Viewport.Height / 2;
 
 
             Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(centerX, centerY, 0f), Projection, View, Matrix.Identity);
@@ -118,11 +118,16 @@ namespace OctoAwesome.Client.Components
         public float NearPlaneDistance => 0.1f;
         public float FarPlaneDistance => 10000.0f;
     }
-
+    
+    /// <summary>
+    /// Camera creator for third person view.
+    /// </summary>
     public class ThirdPersonViewCreator : IViewCreator
     {
+        /// <inheritdoc />
         public bool IsFirstPerson => false;
 
+        /// <inheritdoc />
         public (Vector3 cameraPosition, Vector3 lookAt, Vector3 cameraUpVector) CreateCameraUpVectorAndView(HeadComponent head, Coordinate playerPos)
         {
             float height = (float)Math.Sin(head.Tilt);
@@ -145,10 +150,15 @@ namespace OctoAwesome.Client.Components
 
     }
 
+    /// <summary>
+    /// Camera creator for drone view.
+    /// </summary>
     public class DroneViewCreator : IViewCreator
     {
+        /// <inheritdoc />
         public bool IsFirstPerson => false;
 
+        /// <inheritdoc />
         public (Vector3 cameraPosition, Vector3 lookAt, Vector3 cameraUpVector) CreateCameraUpVectorAndView(HeadComponent head, Coordinate playerPos)
         {
             float height = (float)Math.Sin(head.Tilt);
@@ -170,10 +180,16 @@ namespace OctoAwesome.Client.Components
         }
 
     }
+
+    /// <summary>
+    /// Camera creator for first person view.
+    /// </summary>
     public class FirstPersonViewCreator : IViewCreator
     {
+        /// <inheritdoc />
         public bool IsFirstPerson => true;
 
+        /// <inheritdoc />
         public (Vector3 cameraPosition, Vector3 lookAt, Vector3 cameraUpVector) CreateCameraUpVectorAndView(HeadComponent head, Coordinate playerPos)
         {
             float height = (float)Math.Sin(head.Tilt);

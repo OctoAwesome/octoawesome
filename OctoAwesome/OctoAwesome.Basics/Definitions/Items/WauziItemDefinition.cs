@@ -4,6 +4,9 @@ using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
+    /// <summary>
+    /// Wauzi egg item definition.
+    /// </summary>
     public class WauziItemDefinition : IItemDefinition
     {
         /// <inheritdoc />
@@ -12,6 +15,9 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public string Icon { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WauziItemDefinition"/> class.
+        /// </summary>
         public WauziItemDefinition()
         {
             DisplayName = "Wauziegg";

@@ -15,7 +15,11 @@ namespace OctoAwesome.Services
         /// <summary>
         /// Gets the interaction info for the block that is associated with this volume state.
         /// </summary>
-        public IBlockInteraction BlockInfo { get; private set; }
+        public IBlockInteraction BlockInfo
+        {
+            get => NullabilityHelper.NotNullAssert(blockInfo, $"{nameof(BlockInfo)} was not initialized!");
+            private set => blockInfo = NullabilityHelper.NotNullAssert(value, $"{nameof(BlockInfo)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets the block definition for the block type this volume state is associated to.
@@ -39,6 +43,7 @@ namespace OctoAwesome.Services
 
         private IPool? pool;
         private IBlockDefinition? blockDefinition;
+        private IBlockInteraction? blockInfo;
 
         private IPool Pool
         {

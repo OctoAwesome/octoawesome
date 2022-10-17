@@ -3,8 +3,6 @@ using OctoAwesome.Basics.Noise;
 using OctoAwesome.Chunking;
 using OctoAwesome.Location;
 
-using OctoAwesome.Basics.Noise;
-
 using System;
 using System.Buffers;
 

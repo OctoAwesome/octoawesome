@@ -16,16 +16,19 @@ using System;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
+    /// <summary>
+    /// Wauzi egg item.
+    /// </summary>
     public class WauziItem : Item, IDisposable
     {
-        public override int VolumePerUnit => base.VolumePerUnit;
-
-        public override int StackLimit => base.StackLimit;
-
-
         private readonly Relay<Notification> simulationRelay;
         private readonly IDisposable simulationSource;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WauziItem"/> class.
+        /// </summary>
+        /// <param name="definition">The wauzi item egg definition.</param>
+        /// <param name="materialDefinition">The material the egg is made of.</param>
         public WauziItem(WauziItemDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
@@ -38,11 +41,11 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
-            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var index3, out var _);
+            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var facingDirection, out var _);
 
             WauziEntity wauzi = new WauziEntity();
 
-            PositionComponent position = new PositionComponent() { Position = new Coordinate(0, index3, new Vector3(0, 0, 0)) };
+            PositionComponent position = new PositionComponent() { Position = new Coordinate(0, facingDirection, new Vector3(0, 0, 0)) };
             wauzi.Components.Add(position);
 
             simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, wauzi));

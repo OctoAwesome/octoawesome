@@ -6,31 +6,47 @@ using OctoAwesome.Pooling;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome.Services
 {
+    /// <summary>
+    /// Service for managing interactions with blocks.
+    /// </summary>
     public sealed class BlockInteractionService
     {
         private readonly IPool<BlockVolumeState> blockCollectionPool;
         private readonly IDefinitionManager definitionManager;
-        private readonly Dictionary<IBlockInteraction, BlockVolumeState> blockCollectionInformations;
+        private readonly Dictionary<IBlockInteraction, BlockVolumeState> blockCollectionInformation;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlockInteractionService"/> class.
+        /// </summary>
+        /// <param name="blockCollectionPool">Memory pool for <see cref="BlockVolumeState"/> instances.</param>
+        /// <param name="definitionManager">The definition manager.</param>
         public BlockInteractionService(IPool<BlockVolumeState> blockCollectionPool, IDefinitionManager definitionManager)
         {
             this.blockCollectionPool = blockCollectionPool;
             this.definitionManager = definitionManager;
-            blockCollectionInformations = new Dictionary<IBlockInteraction, BlockVolumeState>();
+            blockCollectionInformation = new Dictionary<IBlockInteraction, BlockVolumeState>();
         }
 
-        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)> List) Hit(HitInfo block, IItem item, ILocalChunkCache cache)
+        /// <summary>
+        /// Interact with a block.
+        /// </summary>
+        /// <param name="block">The block interaction information.</param>
+        /// <param name="item">The item that the block was hit with.</param>
+        /// <param name="cache">The chunk cache.</param>
+        /// <returns>Tuple of a value indicating whether the interaction was valid, and a list of item and quantity tuples.</returns>
+        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Interact(HitInfo block, IItem item, ILocalChunkCache cache)
         {
-            BlockVolumeState volumeState;
-            if (!blockCollectionInformations.TryGetValue(block, out volumeState))
+            if (!blockCollectionInformation.TryGetValue(block, out var volumeState))
             {
                 var definition = definitionManager.GetBlockDefinitionByIndex(block.Block);
                 volumeState = blockCollectionPool.Rent();
+                Debug.Assert(definition != null, nameof(definition) + " != null");
                 volumeState.Initialize(block, definition, DateTimeOffset.Now);
-                blockCollectionInformations.Add(block, volumeState);
+                blockCollectionInformation.Add(block, volumeState);
             }
 
             volumeState.TryReset();
@@ -45,7 +61,7 @@ namespace OctoAwesome.Services
 
             if (volumeState.VolumeRemaining < 1)
             {
-                blockCollectionInformations.Remove(block);
+                blockCollectionInformation.Remove(block);
                 volumeState.Release();
                 cache.SetBlock(block.Position, 0);
                 return (true, blockHitInformation.Definitions);
@@ -54,11 +70,19 @@ namespace OctoAwesome.Services
             return (false, null);
         }
 
-        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)> List) Apply(ApplyInfo block, IItem item, ILocalChunkCache cache)
+        /// <summary>
+        /// Apply an item to a block.
+        /// </summary>
+        /// <param name="block">The block interaction information.</param>
+        /// <param name="item">The item that the block was interacted with.</param>
+        /// <param name="cache">The chunk cache.</param>
+        /// <returns>Tuple of a value indicating whether the interaction was valid, and a list of item and quantity tuples.</returns>
+        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Apply(ApplyInfo block, IItem item, ILocalChunkCache cache)
         {
             var definition = definitionManager.GetBlockDefinitionByIndex(block.Block);
 
             var volumeState = blockCollectionPool.Rent();
+            Debug.Assert(definition != null, nameof(definition) + " != null");
             volumeState.Initialize(block, definition, DateTimeOffset.Now);
 
             try
@@ -78,11 +102,17 @@ namespace OctoAwesome.Services
 
         }
 
-        public static void CalculatePositionAndRotation(IBlockInteraction hitInfo, out Index3 index3, out float rot)
+        /// <summary>
+        /// Calculate rotation for placing entities.
+        /// </summary>
+        /// <param name="hitInfo">The interaction information.</param>
+        /// <param name="facingDirection">The direction the block is facing.</param>
+        /// <param name="rot">The resulting rotation.</param>
+        public static void CalculatePositionAndRotation(IBlockInteraction hitInfo, out Index3 facingDirection, out float rot)
         {
             var position = hitInfo.Position;
             bool checkPositionAndSide = (hitInfo.SelectedSide & (OrientationFlags.SideBottom | OrientationFlags.SideTop)) != 0;
-            index3 = hitInfo.SelectedSide switch
+            facingDirection = hitInfo.SelectedSide switch
             {
                 OrientationFlags.SideWest => new Index3(position.X - 1, position.Y, position.Z),
                 OrientationFlags.SideEast => new(position.X + 1, position.Y, position.Z),
@@ -92,7 +122,7 @@ namespace OctoAwesome.Services
                 OrientationFlags.SideTop => new(position.X, position.Y, position.Z + 1),
                 _ => new(position.X, position.Y, position.Z + 1),
             };
-            var change = position - index3;
+            var change = position - facingDirection;
             if (checkPositionAndSide)
                 change = hitInfo.SelectedEdge switch
                 {
@@ -100,7 +130,7 @@ namespace OctoAwesome.Services
                     OrientationFlags.EdgeWestBottom or OrientationFlags.EdgeWestTop => new Index3(1, 0, 0),
                     OrientationFlags.EdgeSouthBottom or OrientationFlags.EdgeSouthTop => new Index3(0, 1, 0),
                     OrientationFlags.EdgeNorthBottom or OrientationFlags.EdgeNorthTop => new Index3(0, -1, 0),
-                    _ => position - index3
+                    _ => position - facingDirection
                 };
 
             if (change.X > 0)

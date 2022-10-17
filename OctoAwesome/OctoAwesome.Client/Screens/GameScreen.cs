@@ -1,11 +1,10 @@
-﻿using engenious.UI;
-using OctoAwesome.Client.Components;
-using System;
-using engenious;
+﻿using engenious;
 using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Definitions;
+using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.Controls;
@@ -404,7 +403,10 @@ namespace OctoAwesome.Client.Screens
                     foreach (var type in item.GetTypes())
                     {
                         if (!type.IsInterface && !type.IsAbstract && type.IsAssignableTo(typeof(IViewCreator)))
-                            viewCreators.Add((IViewCreator)Activator.CreateInstance(type));
+                        {
+                            if (Activator.CreateInstance(type) is IViewCreator viewCreator)
+                                viewCreators.Add(viewCreator);
+                        }
                     }
                 }
                 catch

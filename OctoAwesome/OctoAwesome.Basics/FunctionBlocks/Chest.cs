@@ -6,13 +6,8 @@ using OctoAwesome.Extension;
 using OctoAwesome.Location;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
-using OctoAwesome.Rx;
-using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
 
-using System;
-using OctoAwesome.UI.Components;
-using System;
 using System;
 using System.IO;
 

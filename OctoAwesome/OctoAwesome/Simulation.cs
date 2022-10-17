@@ -189,7 +189,7 @@ namespace OctoAwesome
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
-            //Update all Entitiesxsq
+            //Update all Entities
             foreach (var entity in entities)
             {
                 if (entity is IUpdateable updateableEntity)

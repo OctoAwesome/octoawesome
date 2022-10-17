@@ -145,7 +145,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
     {
         /// <inheritdoc/>
         public T Current { get; private set; }
-        object IEnumerator.Current => Current;
+        object IEnumerator.Current => Current!;
 
         private int currentIndex = -1;
         private readonly EnumerationmodifiableConcurrentList<T> parent;
@@ -156,6 +156,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
         {
             parent = list;
             pool = list.pool;
+            Current = default!;
         }
 
         internal void RemoveAt(int index)
@@ -167,7 +168,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
             using (scopeSemaphore.EnterExclusiveScope())
             {
                 if (index == currentIndex)
-                    Current = default;
+                    Current = default!;
                 currentIndex--;
             }
         }
@@ -206,7 +207,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
         public void Reset()
         {
             currentIndex = -1;
-            Current = default;
+            Current = default!;
         }
 
         /// <inheritdoc/>

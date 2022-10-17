@@ -22,10 +22,10 @@ namespace OctoAwesome.Definitions
 
 
         /// <summary>
-        /// Geplante Methode, mit der der Block auf Interaktion von aussen reagieren kann.
+        /// Gets block hit information for interacting with a specific block with a specific item.
         /// </summary>
-        /// <param name="block">Der Block-Typ des interagierenden Elements</param>
-        /// <param name="itemProperties">Die physikalischen Parameter des interagierenden Elements</param>
+        /// <param name="blockVolume">The block volume information for the block to apply to.</param>
+        /// <param name="itemDefinition">The item to apply to the block.</param>
         BlockHitInformation Apply(BlockVolumeState blockVolume, IItem itemDefinition);
 
         /// <summary>

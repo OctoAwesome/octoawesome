@@ -424,7 +424,7 @@ namespace OctoAwesome.Client.Controls
                         var localBlock = localChunkCache.GetBlockInfo(pos);
                         if (localBlock.Block == 0)
                             continue;
-                        IBlockDefinition blockDefinition = definitionManager.GetBlockDefinitionByIndex(localBlock.Block);
+                        var blockDefinition = definitionManager.GetBlockDefinitionByIndex(localBlock.Block);
 
                         Debug.Assert(blockDefinition != null, nameof(blockDefinition) + " != null");
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, pickRay, out Axis? collisionAxis);
@@ -454,7 +454,7 @@ namespace OctoAwesome.Client.Controls
             return block;
         }
 
-        public static ComponentContainer GetSelectedEntity(Index3 centerblock, Index3 renderOffset, Simulation simulation, Ray pickRay, Index3 planetSize, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
+        public static ComponentContainer? GetSelectedEntity(Index3 centerblock, Index3 renderOffset, Simulation simulation, Ray pickRay, Index3 planetSize, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
         {
             selected = null;
             selectedAxis = null;

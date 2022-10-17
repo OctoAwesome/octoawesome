@@ -37,7 +37,7 @@ namespace OctoAwesome.Chunking
         /// <param name="y">The chunk index y-component to retrieve the chunk for.</param>
         /// <param name="z">The chunk index z-component to retrieve the chunk for.</param>
         /// <returns>The retrieved chunk;<c>null</c> if chunk is out of cache range.</returns>
-        /// <seealso cref="GetChunk(OctoAwesome.Index3)"/>
+        /// <seealso cref="GetChunk(OctoAwesome.Location.Index3)"/>
         IChunk? GetChunk(int x, int y, int z);
 
         /// <summary>
