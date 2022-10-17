@@ -87,7 +87,7 @@ public class Furnace : Entity
             transferComponent.Targets.Add(ProductionInventoriesComponent.InputInventory);
             transferComponent.Targets.Add(ProductionInventoriesComponent.OutputInventory);
             transferComponent.Targets.Add(ProductionInventoriesComponent.ProductionInventory);
-                uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
+            uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
             AnimationComponent.CurrentTime = 0f;
             AnimationComponent.AnimationSpeed = 60f;
