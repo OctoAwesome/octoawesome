@@ -35,18 +35,18 @@ namespace OctoAwesome.GameServer
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerHandler"/> class.
         /// </summary>
-        public ServerHandler()
+        public ServerHandler(ITypeContainer typeContainer)
         {
-            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
+            logger = (typeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
 
-            TypeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
-            TypeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
-            TypeContainer.Register<Server>(InstanceBehavior.Singleton);
-            TypeContainer.Register<SimulationManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
+            typeContainer.Register<Server>(InstanceBehavior.Singleton);
+            typeContainer.Register<SimulationManager>(InstanceBehavior.Singleton);
 
-            SimulationManager = TypeContainer.Get<SimulationManager>();
-            UpdateHub = TypeContainer.Get<IUpdateHub>();
-            server = TypeContainer.Get<Server>();
+            SimulationManager = typeContainer.Get<SimulationManager>();
+            UpdateHub = typeContainer.Get<IUpdateHub>();
+            server = typeContainer.Get<Server>();
 
             CommandFunctions = new ConcurrentDictionary<ushort, CommandFunc>(new List<(OfficialCommand, CommandFunc)>
                 {
