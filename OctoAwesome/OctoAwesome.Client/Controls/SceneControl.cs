@@ -70,6 +70,7 @@ namespace OctoAwesome.Client.Controls
 
         private readonly Task[] _additionalRegenerationThreads;
 
+        public bool RenderBoundingBoxes { get; set; }
         public RenderTarget2D MiniMapTexture { get; set; }
         public RenderTarget2D? ControlTexture { get; set; }
         public Texture2DArray ShadowMaps { get; private set; }
@@ -760,10 +761,13 @@ namespace OctoAwesome.Client.Controls
             DrawSelectionBox(chunkOffset);
 
 #if DEBUG
-            var world = Matrix.Identity;
-            foreach (var bb in _casters)
+            if (RenderBoundingBoxes)
             {
-                Manager.GraphicsDevice.Debug.RenderBoundingBox(bb, world, camera.View, camera.Projection, Color.Red);
+                var world = Matrix.Identity;
+                foreach (var bb in _casters)
+                {
+                    Manager.GraphicsDevice.Debug.RenderBoundingBox(bb, world, camera.View, camera.Projection, Color.Red);
+                }
             }
             //Manager.GraphicsDevice.Debug.RenderBoundingFrustum(new BoundingFrustum(cropMatrix), Matrix.Identity, camera.View, camera.Projection);
 #endif

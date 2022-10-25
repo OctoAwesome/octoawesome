@@ -217,6 +217,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:debug.allfoods", UI.Languages.OctoKeys.debug_allfoods);
             KeyMapper.RegisterBinding("octoawesome:debug.allitems", UI.Languages.OctoKeys.debug_allitems);
             KeyMapper.RegisterBinding("octoawesome:debug.control", UI.Languages.OctoKeys.debug_control);
+            KeyMapper.RegisterBinding("octoawesome:debug.boundingboxes", UI.Languages.OctoKeys.debug_boundingboxes);
             KeyMapper.RegisterBinding("octoawesome:inventory", UI.Languages.OctoKeys.inventory);
             KeyMapper.RegisterBinding("octoawesome:hidecontrols", UI.Languages.OctoKeys.hidecontrols);
             KeyMapper.RegisterBinding("octoawesome:exit", UI.Languages.OctoKeys.exit);
@@ -256,6 +257,7 @@ namespace OctoAwesome.Client
                 { "octoawesome:debug.allitems", Keys.Keypad2 },
                 { "octoawesome:debug.allfoods", Keys.Keypad3 },
                 { "octoawesome:debug.control", Keys.F3 },
+                { "octoawesome:debug.boundingboxes", Keys.F4 },
                 { "octoawesome:toggleCamera", Keys.F5 },
                 { "octoawesome:zoom", Keys.Z },
                 { "octoawesome:inventory", Keys.I },

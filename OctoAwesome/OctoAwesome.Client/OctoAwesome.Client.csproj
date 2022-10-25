@@ -47,8 +47,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="engenious" Version="0.7.1-alpha" />
-		<PackageReference Include="engenious.ContentTool" Version="0.7.1.4-alpha" PrivateAssets="all" />
-		<PackageReference Include="engenious.ContentTool.SourceGen" Version="0.7.1.4-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+		<PackageReference Include="engenious.ContentTool" Version="0.7.1.9-alpha" PrivateAssets="all" />
+		<PackageReference Include="engenious.ContentTool.SourceGen" Version="0.7.1.9-alpha" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
 		<PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="OpenAL.Soft" Version="1.19.1" Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Windows')))" />

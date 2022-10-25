@@ -339,6 +339,12 @@ namespace OctoAwesome.Client.Screens
                     return;
                 debug.Visible = !debug.Visible;
             });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.boundingboxes", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+                scene.RenderBoundingBoxes = !scene.RenderBoundingBoxes;
+            });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:inventory", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
