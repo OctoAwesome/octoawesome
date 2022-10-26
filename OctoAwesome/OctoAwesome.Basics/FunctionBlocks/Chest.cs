@@ -66,8 +66,6 @@ namespace OctoAwesome.Basics.FunctionBlocks
             AnimationComponent.AnimationSpeed = -60f;
             changedSub?.Dispose();
 
-            changedSub?.Dispose();
-
         }
 
         /// <inheritdoc />

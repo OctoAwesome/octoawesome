@@ -100,7 +100,7 @@ namespace OctoAwesome.Basics.Entities
         }
 
         /// <summary>
-        /// Gets or sets the time left for jumping.
+        /// Gets or sets a value indicating the time left to the next jump.
         /// </summary>
         public int JumpTime { get; set; }
 

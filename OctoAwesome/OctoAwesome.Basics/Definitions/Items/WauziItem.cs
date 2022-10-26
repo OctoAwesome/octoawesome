@@ -57,7 +57,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public void Dispose()
         {
             simulationSource.Dispose();
-            simulationRelay?.Dispose();
+            simulationRelay.Dispose();
         }
     }
 }
