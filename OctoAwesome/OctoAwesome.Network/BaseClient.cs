@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using OctoAwesome.Extension;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace OctoAwesome.Network
 {
@@ -35,76 +37,67 @@ namespace OctoAwesome.Network
         /// <summary>
         /// The underlying socket.
         /// </summary>
-        protected Socket Socket
+        protected TcpClient TcpClient
         {
-            get => NullabilityHelper.NotNullAssert(socket);
-            set => socket = NullabilityHelper.NotNullAssert(value);
+            get => NullabilityHelper.NotNullAssert(tcpClient);
+            set => tcpClient = NullabilityHelper.NotNullAssert(value);
         }
 
-        /// <summary>
-        /// Low level pooled <see cref="SocketAsyncEventArgs"/> for receiving socket data.
-        /// </summary>
-        protected readonly SocketAsyncEventArgs ReceiveArgs;
 
-        private byte readSendQueueIndex;
-        private byte nextSendQueueWriteIndex;
-        private bool sending;
         private Package? currentPackage;
         private readonly PackagePool packagePool;
-        private readonly SocketAsyncEventArgs sendArgs;
 
-        private readonly (byte[] data, int len)[] sendQueue;
-        private readonly object sendLock;
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentRelay<Package> packages;
-        private Socket? socket;
+        private TcpClient? tcpClient;
+        private NetworkStream stream;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseClient"/> class.
-        /// </summary>
-        protected BaseClient()
-        {
-            packages = new ConcurrentRelay<Package>();
-
-            sendQueue = new (byte[] data, int len)[256];
-            sendLock = new object();
-            ReceiveArgs = new SocketAsyncEventArgs();
-            ReceiveArgs.Completed += OnReceived;
-            ReceiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(1024 * 1024), 0, 1024 * 1024);
-            packagePool = TypeContainer.Get<PackagePool>();
-
-            sendArgs = new SocketAsyncEventArgs();
-            sendArgs.Completed += OnSent;
-
-            cancellationTokenSource = new CancellationTokenSource();
-
-            Id = NextId;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseClient"/> class.
         /// </summary>
         /// <param name="socket">The low level base socket.</param>
-        protected BaseClient(Socket socket) : this()
+        protected BaseClient(TcpClient socket) 
         {
-            Socket = socket;
-            Socket.NoDelay = true;
+            packages = new ConcurrentRelay<Package>();
+
+            packagePool = TypeContainer.Get<PackagePool>();
+
+            cancellationTokenSource = new CancellationTokenSource();
+
+            Id = NextId;
+            TcpClient = socket;
+            TcpClient.NoDelay = true;
         }
 
         /// <summary>
         /// Starts receiving data for this client asynchronously.
         /// </summary>
         /// <returns>The created receiving task.</returns>
-        public Task Start()
+        public async ValueTask Start()
         {
-            return Task.Run(() =>
-            {
-                if (Socket.ReceiveAsync(ReceiveArgs))
-                    return;
+            stream = TcpClient.GetStream();
 
-                Receive(ReceiveArgs);
-            }, cancellationTokenSource.Token);
+            var buffer = new byte[1024 * 1024];
+            do
+            {
+                var readBytes = await stream.ReadAsync(buffer, cancellationTokenSource.Token);
+
+                if (readBytes < 1)
+                {
+                    //abort!
+                    return;
+                }
+
+                int offset = 0;
+                do
+                {
+                    offset += DataReceived(buffer, readBytes, offset);
+                } while (offset < readBytes);
+
+            } while (true);
+
         }
 
         /// <summary>
@@ -121,27 +114,17 @@ namespace OctoAwesome.Network
         /// <param name="data">The byte buffer to send data from.</param>
         /// <param name="len">The slice length of the data to send.</param>
         /// <returns>The created sending task.</returns>
-        public Task SendAsync(byte[] data, int len)
+        public ValueTask SendAsync(byte[] data, int len)
         {
-            lock (sendLock)
-            {
-                if (sending)
-                {
-                    sendQueue[nextSendQueueWriteIndex++] = (data, len);
-                    return Task.CompletedTask;
-                }
 
-                sending = true;
-            }
-
-            return Task.Run(() => SendInternal(data, len));
+            return SendInternal(data, len);
         }
 
         /// <summary>
         /// Send a package asynchronously.
         /// </summary>
         /// <param name="package">The package to send asynchronously.</param>
-        public async Task SendPackageAsync(Package package)
+        public async ValueTask SendPackageAsync(Package package)
         {
             byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
             package.SerializePackage(bytes, 0);
@@ -153,7 +136,7 @@ namespace OctoAwesome.Network
         /// </summary>
         /// <param name="package">The package to send asynchronously.</param>
         /// <seealso cref="SendPackageAndRelease"/>
-        public async Task SendPackageAndReleaseAsync(Package package)
+        public async ValueTask SendPackageAndReleaseAsync(Package package)
         {
             await SendPackageAsync(package);
             package.Release();
@@ -171,85 +154,15 @@ namespace OctoAwesome.Network
             package.Release();
         }
 
-        private void SendInternal(byte[] data, int len)
+        private async ValueTask SendInternal(byte[] data, int len)
         {
-            while (true)
-            {
-                sendArgs.SetBuffer(data, 0, len);
+                await stream.WriteAsync(data.AsMemory(0, len));
+                Console.WriteLine("Send package");
 
-                Console.WriteLine("Send now a package");
-                if (Socket.SendAsync(sendArgs))
-                    return;
-
-                lock (sendLock)
-                {
-                    if (readSendQueueIndex < nextSendQueueWriteIndex)
-                    {
-                        (data, len) = sendQueue[readSendQueueIndex++];
-                    }
-                    else
-                    {
-                        nextSendQueueWriteIndex = 0;
-                        readSendQueueIndex = 0;
-                        sending = false;
-                        return;
-                    }
-                }
-            }
         }
 
-        private void OnSent(object? sender, SocketAsyncEventArgs e)
-        {
-            byte[] data;
-            int len;
 
-            lock (sendLock)
-            {
-                if (readSendQueueIndex < nextSendQueueWriteIndex)
-                {
-                    (data, len) = sendQueue[readSendQueueIndex++];
-                }
-                else
-                {
-                    nextSendQueueWriteIndex = 0;
-                    readSendQueueIndex = 0;
-                    sending = false;
-                    return;
-                }
-            }
-
-            SendInternal(data, len);
-        }
-
-        private void OnReceived(object? sender, SocketAsyncEventArgs e)
-        {
-            Receive(e);
-        }
-
-        /// <summary>
-        /// Receive low level socket data.
-        /// </summary>
-        /// <param name="e">Low level socket receive event arguments.</param>
-        protected void Receive(SocketAsyncEventArgs e)
-        {
-            do
-            {
-                if (e.BytesTransferred < 1 || e.Buffer is null)
-                    return;
-
-                int offset = 0;
-
-                do
-                {
-                    offset += DataReceived(e.Buffer, e.BytesTransferred, offset);
-
-                } while (offset < e.BytesTransferred);
-
-
-            } while (!Socket.ReceiveAsync(e));
-        }
-
-        private int DataReceived(byte[] buffer, int length, int bufferOffset)
+        private int DataReceived(Span<byte> buffer, int length, int bufferOffset)
         {
             int offset = 0;
 
@@ -296,8 +209,6 @@ namespace OctoAwesome.Network
         public virtual void Dispose()
         {
             packages.Dispose();
-            ReceiveArgs.Dispose();
-            sendArgs.Dispose();
             cancellationTokenSource.Dispose();
         }
     }

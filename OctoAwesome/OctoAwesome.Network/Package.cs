@@ -117,14 +117,14 @@ namespace OctoAwesome.Network
         /// <param name="buffer">The buffer to deserialize data from.</param>
         /// <param name="offset">The offset to start deserialization from.</param>
         /// <returns>Whether the header deserialization was successful.</returns>
-        public bool TryDeserializeHeader(byte[] buffer, int offset)
+        public bool TryDeserializeHeader(Span<byte> buffer, int offset)
         {
             if (buffer.Length - offset < HEAD_LENGTH)
                 return false;
 
             Command = (ushort)((buffer[offset] << 8) | buffer[offset + 1]);
-            Payload = new byte[BitConverter.ToInt32(buffer, offset + 2)];
-            UId = BitConverter.ToUInt32(buffer, offset + 6);
+            Payload = new byte[BitConverter.ToInt32(buffer[(offset + 2)..])];
+            UId = BitConverter.ToUInt32(buffer[(offset + 6)..]);
             internalOffset = 0;
             return true;
         }
@@ -136,12 +136,15 @@ namespace OctoAwesome.Network
         /// <param name="offset">The offset to start deserialization from.</param>
         /// <param name="count">The number of bytes that are allowed to be taken from the buffer.</param>
         /// <returns>The number of bytes that was deserialized.</returns>
-        public int DeserializePayload(byte[] buffer, int offset, int count)
+        public int DeserializePayload(Span<byte> buffer, int offset, int count)
         {
+            if(count == 0)
+                return 0;
+
             if (internalOffset + count > Payload.Length)
                 count = PayloadRest;
 
-            Buffer.BlockCopy(buffer, offset, Payload, internalOffset, count);
+            buffer[offset..(offset + count)].CopyTo(Payload.AsSpan(internalOffset));
             internalOffset += count;
 
             return count;

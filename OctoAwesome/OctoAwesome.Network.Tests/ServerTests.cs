@@ -59,8 +59,7 @@ namespace OctoAwesome.Network.Tests
 
             Task.Run(() =>
             {
-                var testClient = new Client();
-                testClient.Connect("127.0.0.1", 44444);
+                var testClient = new Client("127.0.0.1", 44444);
 
                 wait.WaitOne();
 

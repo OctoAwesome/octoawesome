@@ -25,7 +25,7 @@ namespace OctoAwesome.Network
         /// Initializes a new instance of the <see cref="ConnectedClient"/> class.
         /// </summary>
         /// <param name="socket">The low level base socket.</param>
-        public ConnectedClient(Socket socket) : base(socket)
+        public ConnectedClient(TcpClient socket) : base(socket)
         {
             packagePool = TypeContainer.Get<PackagePool>();
             var updateHub = TypeContainer.Get<IUpdateHub>();
@@ -35,7 +35,7 @@ namespace OctoAwesome.Network
 
         private void OnError(Exception error)
         {
-            Socket.Close();
+            TcpClient.Close();
             throw error;
         }
 

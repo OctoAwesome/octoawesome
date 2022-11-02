@@ -11,9 +11,6 @@
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(MSBuildThisFileDirectory)\Generated</CompilerGeneratedFilesOutputPath>
-
-
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -68,8 +65,6 @@
 
 	<ItemGroup>
 		<EngeniousContentReference Include="Content\Content.ecp" />
-		<Compile Remove="Generated\**" />
-		<None Include="Generated\**" />
 	</ItemGroup>
 
 </Project>

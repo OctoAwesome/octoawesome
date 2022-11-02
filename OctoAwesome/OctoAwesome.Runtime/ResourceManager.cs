@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+
 using OctoAwesome.Caching;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
@@ -126,8 +127,8 @@ namespace OctoAwesome.Runtime
 
                 if (awaiter == null)
                     return false;
-                else
-                    awaiter.WaitOnAndRelease();
+
+                awaiter.WaitOnAndRelease();
 
                 CurrentUniverse = universe;
                 if (CurrentUniverse == null)

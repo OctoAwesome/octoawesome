@@ -17,8 +17,7 @@ namespace OctoAwesome.Network
         /// </summary>
         public event EventHandler<ConnectedClient>? OnClientConnected;
 
-        private readonly Socket ipv4Socket;
-        private readonly Socket ipv6Socket;
+        private TcpListener tcpListener = default!;
         private readonly List<ConnectedClient> connectedClients;
         private readonly object lockObj;
 
@@ -27,8 +26,7 @@ namespace OctoAwesome.Network
         /// </summary>
         public Server()
         {
-            ipv4Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ipv6Socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+
             connectedClients = new List<ConnectedClient>();
             lockObj = new object();
 
@@ -42,23 +40,15 @@ namespace OctoAwesome.Network
         {
             connectedClients.Clear();
 
-            if (endpoints.Any(x => x.AddressFamily == AddressFamily.InterNetwork))
-            {
-                foreach (var endpoint in endpoints)
-                    if (endpoint.AddressFamily == AddressFamily.InterNetwork)
-                        ipv4Socket.Bind(endpoint);
+            tcpListener = new TcpListener(endpoints.First());
+            tcpListener.Server.DualMode = true;
+            tcpListener.Server.NoDelay = true;
 
-                ipv4Socket.Listen(1024);
-                ipv4Socket.BeginAccept(OnClientAccepted, ipv4Socket);
-            }
-            if (endpoints.Any(x => x.AddressFamily == AddressFamily.InterNetworkV6))
-            {
-                foreach (var endpoint in endpoints.Where(e => e.AddressFamily == AddressFamily.InterNetworkV6))
-                    ipv6Socket.Bind(endpoint);
+            foreach (var endpoint in endpoints.Skip(1))
+                tcpListener.Server.Bind(endpoint);
+            tcpListener.Start();
+            tcpListener.BeginAcceptTcpClient(OnClientAccepted, tcpListener);
 
-                ipv6Socket.Listen(1024);
-                ipv6Socket.BeginAccept(OnClientAccepted, ipv6Socket);
-            }
         }
         /// <summary>
         /// Starts listening on the specified host and port.
@@ -68,7 +58,7 @@ namespace OctoAwesome.Network
         public void Start(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).Where(
-                a => a.AddressFamily == ipv4Socket.AddressFamily || a.AddressFamily == ipv6Socket.AddressFamily);
+                a => a.AddressFamily == AddressFamily.InterNetwork || a.AddressFamily == AddressFamily.InterNetworkV6);
 
             Start(address.Select(a => new IPEndPoint(a, port)).ToArray());
         }
@@ -76,9 +66,9 @@ namespace OctoAwesome.Network
         private void OnClientAccepted(IAsyncResult ar)
         {
             Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");
-            var socket = (Socket)ar.AsyncState;
+            var listener = (TcpListener)ar.AsyncState;
 
-            var tmpSocket = socket.EndAccept(ar);
+            var tmpSocket = listener.EndAcceptTcpClient(ar);
 
             tmpSocket.NoDelay = true;
 
@@ -90,7 +80,7 @@ namespace OctoAwesome.Network
             lock (lockObj)
                 connectedClients.Add(client);
 
-            socket.BeginAccept(OnClientAccepted, socket);
+            listener.BeginAcceptTcpClient(OnClientAccepted, listener);
         }
     }
 }

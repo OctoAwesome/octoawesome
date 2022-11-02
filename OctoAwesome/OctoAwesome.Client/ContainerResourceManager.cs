@@ -140,8 +140,7 @@ namespace OctoAwesome.Client
                     host = rawIpAddress;
                 }
 
-                var client = new Network.Client();
-                client.Connect(host, port > 0 ? (ushort)port : (ushort)8888);
+                var client = new Network.Client(host, port > 0 ? (ushort)port : (ushort)8888);
                 persistenceManager = new NetworkPersistenceManager(typeContainer, client);
                 networkUpdateManager = new NetworkUpdateManager(client, UpdateHub);
             }
