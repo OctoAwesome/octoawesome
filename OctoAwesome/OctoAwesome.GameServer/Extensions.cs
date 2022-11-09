@@ -91,6 +91,11 @@ internal static class Extensions
         return childCommand;
     }
 
+    internal static Command Add(this Command parent, string name, string description, Action handler)
+    {
+        parent.Create(name, description, handler);
+        return parent;
+    }
     internal static Command Add<TArg>(this Command parent, string name, string description, Action<TArg> handler, Option<TArg> option)
     {
         parent.Create(name, description, handler, option);

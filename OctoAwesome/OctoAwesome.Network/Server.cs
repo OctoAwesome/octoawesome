@@ -63,6 +63,17 @@ namespace OctoAwesome.Network
             Start(address.Select(a => new IPEndPoint(a, port)).ToArray());
         }
 
+        public void Stop()
+        {
+            ipv4Socket.Close();
+            ipv6Socket.Close();
+            foreach (var item in connectedClients)
+            {
+                item.Stop();
+            }
+            connectedClients.Clear();
+        }
+
         private void OnClientAccepted(IAsyncResult ar)
         {
             Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");

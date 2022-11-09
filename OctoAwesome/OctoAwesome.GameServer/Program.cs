@@ -112,7 +112,7 @@ namespace OctoAwesome.GameServer
                 ExecuteCommand(
                     context.ServerHandler.SimulationManager.IsRunning
                         ? context.IngameCommandParser
-                        : context.StartupCommandParser, 
+                        : context.StartupCommandParser,
                     command);
 
                 command = Console.ReadLine();
@@ -170,7 +170,8 @@ namespace OctoAwesome.GameServer
             var sh = new ServerHandler(typeContainer);
             typeContainer.Register(sh);
 
-            var portOption = new Option<bool>("--port", "Defines the port where the server listen on");
+            var portOption = new Option<ushort>("--port", "Defines the port where the server listen on");
+            portOption.SetDefaultValue(8888);
             var ingameRoot = new Command("execute");
             var root = new RootCommand("starts the server with default options")
             {
@@ -183,15 +184,17 @@ namespace OctoAwesome.GameServer
             ingameRoot.Add(stopCommand);
 
             root
-                .Add("start", "this starts the server immediately", (_)=>sh.Start(), portOption)
+                .Add("start", "this starts the server immediately", sh.Start, portOption)
                 //.Add("wizard", "guides through the creation of a new world", ExecuteStart, portOption)
                 //.Add("execute", "Run Command immediately after start", ExecuteStart, portOption)
                 ;
 
-            //ingameRoot
-            //    .Add("stop", "stops the server and saves the world", ExecuteStart, portOption)
-            //    .Add("restart", "restarts the server after saving the world", ExecuteStart, portOption)
-            //    .Add("shutdown", "force stops the server without saving", ExecuteStart, portOption);
+            ingameRoot
+                .Add("stop", "stops the server and saves the world", sh.Stop)
+                .Add("start", "starts a previously stopped server", sh.Start, portOption)
+                //    .Add("restart", "restarts the server after saving the world", ExecuteStart, portOption)
+            //    .Add("shutdown", "force stops the server without saving", ExecuteStart, portOption)
+                ;
 
             //ingameRoot
             //    .Create("world", "world related commands")
@@ -200,12 +203,8 @@ namespace OctoAwesome.GameServer
             //        .Add("load", "loads an existing world", ExecuteStart, portOption)
             //        .Add("delete", "deletes an existing world", ExecuteStart, portOption);
 
-
-
             var builder = new CommandLineBuilder(root).UseDefaults().Build();
             var ingameCommands = new CommandLineBuilder(ingameRoot).UseDefaults().Build();
-
-
 
             return new ServerContext
             (

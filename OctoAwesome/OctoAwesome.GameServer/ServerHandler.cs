@@ -64,11 +64,21 @@ namespace OctoAwesome.GameServer
         /// <summary>
         /// Start the game server simulation and connection.
         /// </summary>
-        public void Start()
+        public void Start(ushort port)
         {
             SimulationManager.Start(); //Temp
-            server.Start(new IPEndPoint(IPAddress.IPv6Any, 8888));
+            server.Start(new IPEndPoint(IPAddress.IPv6Any, port));
             server.OnClientConnected += ServerOnClientConnected;
+        }
+
+        /// <summary>
+        /// Start the game server simulation and connection.
+        /// </summary>
+        public void Stop()
+        {
+            SimulationManager.Stop(); //Temp
+            server.Stop();
+            server.OnClientConnected -= ServerOnClientConnected;
         }
 
         private void ServerOnClientConnected(object? sender, ConnectedClient e)
