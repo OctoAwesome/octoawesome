@@ -58,7 +58,7 @@ namespace OctoAwesome.Network
         /// Initializes a new instance of the <see cref="BaseClient"/> class.
         /// </summary>
         /// <param name="socket">The low level base socket.</param>
-        protected BaseClient(TcpClient socket) 
+        protected BaseClient(TcpClient socket)
         {
             packages = new ConcurrentRelay<Package>();
 
@@ -156,9 +156,8 @@ namespace OctoAwesome.Network
 
         private async ValueTask SendInternal(byte[] data, int len)
         {
-                await stream.WriteAsync(data.AsMemory(0, len));
-                Console.WriteLine("Send package");
-
+            await stream.WriteAsync(data.AsMemory(0, len));
+            Console.WriteLine("Send package");
         }
 
 

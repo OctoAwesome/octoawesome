@@ -65,12 +65,11 @@ namespace OctoAwesome.Network
 
         public void Stop()
         {
-            ipv4Socket.Close();
-            ipv6Socket.Close();
             foreach (var item in connectedClients)
             {
                 item.Stop();
             }
+            tcpListener.Stop();
             connectedClients.Clear();
         }
 

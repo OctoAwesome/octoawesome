@@ -170,8 +170,7 @@ namespace OctoAwesome.GameServer
             var sh = new ServerHandler(typeContainer);
             typeContainer.Register(sh);
 
-            var portOption = new Option<ushort>("--port", "Defines the port where the server listen on");
-            portOption.SetDefaultValue(8888);
+            var portOption = new Option<ushort>("--port", ()=>8888, "Defines the port where the server listen on");
             var ingameRoot = new Command("execute");
             var root = new RootCommand("starts the server with default options")
             {
