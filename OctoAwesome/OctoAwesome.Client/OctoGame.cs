@@ -8,7 +8,6 @@ using engenious.Input;
 using System.Collections.Generic;
 using System.Diagnostics;
 using OctoAwesome.Notifications;
-using OctoAwesome.Common;
 using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
@@ -28,7 +27,7 @@ namespace OctoAwesome.Client
         public const int DefaultResolutionHeight = 1050;
 
         public const int DefaultViewRange = 4;
-        
+
         private readonly ITypeContainer typeContainer;
 
         //GraphicsDeviceManager graphics;
@@ -38,8 +37,6 @@ namespace OctoAwesome.Client
         public PlayerComponent Player { get; }
 
         public SimulationComponent Simulation { get; }
-
-        public GameService Service { get; }
 
         public ScreenComponent Screen { get; }
 
@@ -51,12 +48,14 @@ namespace OctoAwesome.Client
 
         public IDefinitionManager DefinitionManager { get; }
 
-        public IResourceManager ResourceManager { get; }
+        public IResourceManager ResourceManager => GameService.ResourceManager;
 
-        public ExtensionService ExtensionService { get; private set; }
+        public ExtensionService ExtensionService { get; }
 
-        public EntityGameComponent Entity { get; private set; }
-        public ExtensionLoader ExtensionLoader { get; }        
+        public EntityGameComponent Entity { get; }
+        public ExtensionLoader ExtensionLoader { get; }
+
+        public GameService GameService { get; }
 
         /// <summary>
         /// Initializes a new instance of the<see cref="OctoGame" /> class
@@ -67,7 +66,7 @@ namespace OctoAwesome.Client
             IsMouseVisible = true;
 
             typeContainer = TypeContainer.Get<ITypeContainer>();
-
+            typeContainer.Register(this);
             Register(typeContainer);
 
             ExtensionLoader = typeContainer.Get<ExtensionLoader>();
@@ -77,7 +76,7 @@ namespace OctoAwesome.Client
 
             DefinitionManager = typeContainer.Get<DefinitionManager>();
 
-            ResourceManager = typeContainer.Get<ContainerResourceManager>();
+            GameService = typeContainer.Get<GameService>();
 
             Settings = typeContainer.Get<Settings>();
 
@@ -97,7 +96,6 @@ namespace OctoAwesome.Client
 
             typeContainer.Get<RecipeService>().Load("Recipes");
 
-            Service = typeContainer.Get<GameService>();
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
             int width = Settings.Get("Width", DefaultResolutionWidth);
@@ -122,7 +120,7 @@ namespace OctoAwesome.Client
 
 
             #region GameComponents
-            
+
 
             Player = new PlayerComponent(this, ResourceManager);
             Player.UpdateOrder = 2;
@@ -180,13 +178,14 @@ namespace OctoAwesome.Client
             typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
             typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
             typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<ContainerResourceManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IResourceManager, ContainerResourceManager>(InstanceBehavior.Singleton);
             typeContainer.Register<GameService>(InstanceBehavior.Singleton);
-            typeContainer.Register<IGameService, GameService>(InstanceBehavior.Singleton);
             typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
             typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
+
+
+            var gs = typeContainer.Get<GameService>();
+            typeContainer.Register<IResourceManager>(gs.ResourceManager);
         }
 
         private void SetKeyBindings()

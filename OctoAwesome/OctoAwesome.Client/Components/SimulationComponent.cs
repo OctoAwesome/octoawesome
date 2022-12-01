@@ -1,7 +1,6 @@
 ﻿using System;
 using engenious;
 using OctoAwesome.EntityComponents;
-using OctoAwesome.Common;
 using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
@@ -22,13 +21,11 @@ namespace OctoAwesome.Client.Components
             get => NullabilityHelper.NotNullAssert(simulation, $"{nameof(Simulation)} was not initialized!");
         }
 
-        public IGameService Service { get; }
 
         public SimulationState State => simulation?.State ?? SimulationState.Undefined;
 
         public SimulationComponent(OctoGame game, ExtensionService extensionService, IResourceManager resourceManager) : base(game)
         {
-            Service = game.Service;
             this.extensionService = extensionService;
             this.resourceManager = resourceManager;
             simulationRelay = new Relay<Notification>();
@@ -47,7 +44,7 @@ namespace OctoAwesome.Client.Components
         {
             ExitSimulation();
 
-            simulation = new Simulation(resourceManager, extensionService, Service);
+            simulation = new Simulation(resourceManager, extensionService);
             var newGame = Simulation.NewGame(name, seed);
             Enabled = true;
             return newGame;
@@ -57,7 +54,7 @@ namespace OctoAwesome.Client.Components
         {
             ExitSimulation();
 
-            simulation = new Simulation(resourceManager, extensionService, Service);
+            simulation = new Simulation(resourceManager, extensionService);
             if (Simulation.TryLoadGame(guid))
                 Enabled = true;
         }

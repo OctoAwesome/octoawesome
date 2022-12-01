@@ -36,10 +36,6 @@ namespace OctoAwesome.Network
         /// </summary>
         public ResourceManager ResourceManager { get; }
 
-        /// <summary>
-        /// Gets the game service.
-        /// </summary>
-        public GameService Service { get; }
 
         private Simulation simulation;
 
@@ -74,7 +70,6 @@ namespace OctoAwesome.Network
             typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehavior.Singleton);
 
             typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
-            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
 
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
@@ -84,8 +79,7 @@ namespace OctoAwesome.Network
 
             ResourceManager = typeContainer.Get<ResourceManager>();
 
-            Service = typeContainer.Get<GameService>();
-            simulation = new Simulation(ResourceManager, extensionService, Service)
+            simulation = new Simulation(ResourceManager, extensionService)
             {
                 IsServerSide = true
             };

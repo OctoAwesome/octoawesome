@@ -53,7 +53,6 @@ namespace OctoAwesome
         /// </summary>
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
         private IChunkColumn? chunkColumnField;
-        private IPlanet? planet;
         private Index3 index;
 
         private IChunkColumn ChunkColumn
@@ -73,17 +72,16 @@ namespace OctoAwesome
         {
             get
             {
-                Debug.Assert(planet is not null, $"{nameof(IPoolElement)} was not initialized!");
                 return index;
             }
             private set => index = value;
         }
 
         /// <inheritdoc />
-        public IPlanet Planet
+        public int PlanetId
         {
-            get => NullabilityHelper.NotNullAssert(planet, $"{nameof(IPoolElement)} was not initialized!");
-            private set => planet = NullabilityHelper.NotNullAssert(value, $"{nameof(Planet)} cannot be initialized with null!");
+            get;
+            private set;
         }
 
         /// <inheritdoc />
@@ -93,14 +91,14 @@ namespace OctoAwesome
         /// Initializes a new instance of the <see cref="Chunk"/> class.
         /// </summary>
         /// <param name="pos">The position of the chunk.</param>
-        /// <param name="planet">The planet the chunk is part of</param>
-        public Chunk(Index3 pos, IPlanet planet)
+        /// <param name="planetId">The planet the chunk is part of</param>
+        public Chunk(Index3 pos, int planetId)
         {
             Blocks = new ushort[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
             MetaData = new int[CHUNKSIZE_X * CHUNKSIZE_Y * CHUNKSIZE_Z];
 
             Index = pos;
-            Planet = planet;
+            PlanetId = planetId;
         }
 
         /// <inheritdoc />
@@ -221,7 +219,7 @@ namespace OctoAwesome
             var notification = TypeContainer.Get<IPool<BlockChangedNotification>>().Rent();
             notification.BlockInfo = blockInfo;
             notification.ChunkPos = Index;
-            notification.Planet = Planet.Id;
+            notification.Planet = PlanetId;
 
             OnUpdate(notification);
 
@@ -232,7 +230,7 @@ namespace OctoAwesome
             var notification = TypeContainer.Get<IPool<BlocksChangedNotification>>().Rent();
             notification.BlockInfos = blockInfos;
             notification.ChunkPos = Index;
-            notification.Planet = Planet.Id;
+            notification.Planet = PlanetId;
 
             OnUpdate(notification);
 
@@ -269,10 +267,10 @@ namespace OctoAwesome
                    | (position.X & (CHUNKSIZE_X - 1));
         }
 
-        internal void Init(Index3 position, IPlanet planet)
+        internal void Init(Index3 position, int planetId)
         {
             Index = position;
-            Planet = planet;
+            PlanetId = planetId;
 
             for (int i = 0; i < Blocks.Length; i++)
                 Blocks[i] = 0;
@@ -291,7 +289,6 @@ namespace OctoAwesome
         public void Release()
         {
             Index = default;
-            planet = default;
         }
     }
 }

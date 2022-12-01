@@ -15,7 +15,7 @@ namespace OctoAwesome.Network
         /// </summary>
         public const int HEAD_LENGTH = sizeof(ushort) + sizeof(int) + sizeof(uint);
 
-        private static uint nextUid;
+        private static uint nextUid = 1;
         /// <summary>
         /// Gets the next available package UID.
         /// </summary>

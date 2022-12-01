@@ -17,7 +17,7 @@ namespace OctoAwesome
         /// <summary>
         /// Gets the planet the chunk column is part of.
         /// </summary>
-        IPlanet Planet { get; }
+        int PlanetId { get; }
 
         /// <summary>
         /// Gets the index position of the chunk column.
@@ -126,12 +126,6 @@ namespace OctoAwesome
         /// <param name="action">The action to execute for each entity.</param>
         void ForEachEntity(Action<Entity> action);
 
-        /// <summary>
-        /// Gets an enumeration of <see cref="FailEntityChunkArgs"/>
-        /// depicting entities that are not part of this chunk column anymore.
-        /// </summary>
-        /// <returns>The entities that are not part of this chunk column anymore.</returns>
-        IEnumerable<FailEntityChunkArgs> FailChunkEntity();
 
         /// <summary>
         /// Remove an entity from this chunk column.

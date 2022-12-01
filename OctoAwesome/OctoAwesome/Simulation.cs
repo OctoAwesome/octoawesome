@@ -1,6 +1,5 @@
 ﻿using engenious;
 
-using OctoAwesome.Common;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
@@ -47,10 +46,6 @@ namespace OctoAwesome
         /// </summary>
         public Guid UniverseId { get; }
 
-        /// <summary>
-        /// Gets the game service.
-        /// </summary>
-        public IGameService Service { get; }
 
         private readonly ExtensionService extensionService;
 
@@ -71,7 +66,7 @@ namespace OctoAwesome
         /// <param name="resourceManager">The resource manager for managing resources.</param>
         /// <param name="extensionService">The extension service for extending this simulation.</param>
         /// <param name="service">The game service.</param>
-        public Simulation(IResourceManager resourceManager, ExtensionService extensionService, IGameService service)
+        public Simulation(IResourceManager resourceManager, ExtensionService extensionService)
         {
             ResourceManager = resourceManager;
             networkRelay = new Relay<Notification>();
@@ -83,7 +78,6 @@ namespace OctoAwesome
             this.extensionService = extensionService;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
-            Service = service;
 
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, null, null);
@@ -445,14 +439,21 @@ namespace OctoAwesome
             switch (value)
             {
                 case EntityNotification entityNotification:
-                    if (entityNotification.Type == EntityNotification.ActionType.Remove)
-                        RemoveEntity(entityNotification.EntityId);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Add)
-                        Add(entityNotification.Entity, entityNotification.OverwriteExisting);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Update)
-                        EntityUpdate(entityNotification);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Request)
-                        RequestEntity(entityNotification);
+                    switch (entityNotification.Type)
+                    {
+                        case EntityNotification.ActionType.Remove:
+                            RemoveEntity(entityNotification.EntityId);
+                            break;
+                        case EntityNotification.ActionType.Add:
+                            Add(entityNotification.Entity, entityNotification.OverwriteExisting);
+                            break;
+                        case EntityNotification.ActionType.Update:
+                            EntityUpdate(entityNotification);
+                            break;
+                        case EntityNotification.ActionType.Request:
+                            RequestEntity(entityNotification);
+                            break;
+                    }
 
                     uiRelay.OnNext(value);
                     break;

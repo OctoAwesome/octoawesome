@@ -56,7 +56,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)
-                chunks[i] = chunkPool.Rent(new Index3(index, i), localPlanet);
+                chunks[i] = chunkPool.Rent(new Index3(index, i), localPlanet.Id);
 
             int obersteSchicht;
             bool surfaceBlock;
@@ -146,7 +146,7 @@ namespace OctoAwesome.Basics
                 }
             }
             ArrayPool<float>.Shared.Return(localHeightmap);
-            ChunkColumn column = new ChunkColumn(chunks, localPlanet, index);
+            ChunkColumn column = new ChunkColumn(chunks, localPlanet.Id, index);
             column.CalculateHeights();
             return column;
         }
@@ -163,7 +163,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
-            IChunkColumn column = new ChunkColumn(planet);
+            IChunkColumn column = new ChunkColumn(planet.Id);
             using (var reader = new BinaryReader(stream))
                 column.Deserialize(reader);
             return column;

@@ -45,7 +45,7 @@ namespace OctoAwesome.GameServer.Commands
         {
             var chunkColumn = Serializer.Deserialize<ChunkColumn>(parameter.Data);
 
-            TypeContainer.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn);
+            TypeContainer.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn, TypeContainer.Get<IResourceManager>().GetPlanet(chunkColumn.PlanetId));
 
             return null;
         }

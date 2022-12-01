@@ -42,7 +42,7 @@ namespace OctoAwesome.Serialization
             if (!Database.ContainsKey(key))
                 return null;
 
-            var chunkColumn = new ChunkColumn(currentPlanet);
+            var chunkColumn = new ChunkColumn(currentPlanet.Id);
             using var stream 
                 = Serializer
                     .Manager

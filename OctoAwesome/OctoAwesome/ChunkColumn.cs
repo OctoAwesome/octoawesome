@@ -57,9 +57,9 @@ namespace OctoAwesome
         /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
         /// </summary>
         /// <param name="chunks">The chunks for the column.</param>
-        /// <param name="planet">The planet to generate the column for.</param>
+        /// <param name="planetId">The planet to generate the column for.</param>
         /// <param name="columnIndex">The column position on the planet.</param>
-        public ChunkColumn(IChunk[] chunks, IPlanet planet, Index2 columnIndex) : this(planet)
+        public ChunkColumn(IChunk[] chunks, int planetId, Index2 columnIndex) : this(planetId)
         {
             Chunks = chunks;
             Index = columnIndex;
@@ -85,12 +85,11 @@ namespace OctoAwesome
         /// <summary>
         /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
         /// </summary>
-        /// <param name="planet">The planet to generate the chunk column for.</param>
-        public ChunkColumn(IPlanet planet)
+        /// <param name="planetId">The planet to generate the chunk column for.</param>
+        public ChunkColumn(int planetId)
             : this()
         {
-            Planet = planet;
-            GlobalChunkCache = planet.GlobalChunkCache;
+            PlanetId = planetId;
         }
 
         private void OnChunkChanged(IChunk arg1)
@@ -143,10 +142,10 @@ namespace OctoAwesome
         }
 
         /// <inheritdoc />
-        public IPlanet Planet
+        public int PlanetId
         {
-            get => NullabilityHelper.NotNullAssert(planet, $"{nameof(Planet)} was not initialized!");
-            private set => planet = NullabilityHelper.NotNullAssert(value, $"{nameof(Planet)} cannot be initialized with null!");
+            get;
+            private set;
         }
 
 
@@ -248,7 +247,7 @@ namespace OctoAwesome
             writer.Write(Populated); // Populated
             writer.Write(Index.X);
             writer.Write(Index.Y);
-            writer.Write(Planet.Id);
+            writer.Write(PlanetId);
 
             for (var y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
@@ -314,10 +313,8 @@ namespace OctoAwesome
             Populated = reader.ReadBoolean(); // Populated
 
             Index = new Index2(reader.ReadInt32(), reader.ReadInt32());
-            int planetId = reader.ReadInt32();
+            PlanetId = reader.ReadInt32();
 
-            var resManager = TypeContainer.Get<IResourceManager>();
-            Planet = resManager.GetPlanet(planetId);
 
             for (var y = 0; y < Chunk.CHUNKSIZE_Y; y++) // Heightmap
                 for (var x = 0; x < Chunk.CHUNKSIZE_X; x++)
@@ -347,7 +344,7 @@ namespace OctoAwesome
             // Phase 3 (Chunk Infos)
             for (var c = 0; c < Chunks.Length; c++)
             {
-                IChunk chunk = Chunks[c] = ChunkPool.Rent(new Index3(Index, c), Planet);
+                IChunk chunk = Chunks[c] = ChunkPool.Rent(new Index3(Index, c), PlanetId);
                 chunk.Version = reader.ReadInt32();
                 chunk.Changed += OnChunkChanged;
                 chunk.SetColumn(this);
@@ -374,6 +371,13 @@ namespace OctoAwesome
         /// <inheritdoc />
         public void OnUpdate(SerializableNotification notification)
         {
+            if (globalChunkCache is null)
+            {
+                var manager = TypeContainer.Get<IResourceManager>();
+                var planet = manager.GetPlanet(PlanetId);
+                globalChunkCache = planet.GlobalChunkCache;
+            }
+
             GlobalChunkCache.OnUpdate(notification);
         }
 
@@ -412,13 +416,6 @@ namespace OctoAwesome
         {
             using (entitySemaphore.Wait())
                 entities.Remove(entity);
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<FailEntityChunkArgs> FailChunkEntity()
-        {
-            using (entitySemaphore.Wait())
-                return entities.FailChunkEntity().ToList();
         }
 
         /// <inheritdoc />

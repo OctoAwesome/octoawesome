@@ -57,27 +57,6 @@ namespace OctoAwesome
 
         IEnumerator IEnumerable.GetEnumerator() => entities.GetEnumerator();
 
-        /// <inheritdoc />
-        public IEnumerable<FailEntityChunkArgs> FailChunkEntity()
-        {
-            foreach (var entity in entities)
-            {
-                if (entity.Components.Contains<PositionComponent>())
-                {
-                    var position = entity.Components.Get<PositionComponent>();
-
-                    Debug.Assert(position != null, nameof(position) + " != null");
-                    if (position.Position.ChunkIndex.X != column.Index.X || position.Position.ChunkIndex.Y != column.Index.Y)
-                    {
-                        yield return new FailEntityChunkArgs(
-                            entity: entity,
-                            currentChunk: column.Index,
-                            currentPlanet: column.Planet,
-                            targetChunk: new Index2(position.Position.ChunkIndex),
-                            targetPlanet: resourceManager.GetPlanet(position.Position.Planet));
-                    }
-                }
-            }
-        }
+       
     }
 }
