@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Logging;
+﻿using engenious;
+
+using OctoAwesome.Logging;
 using OctoAwesome.Network;
 
 using System;
@@ -37,6 +39,8 @@ namespace OctoAwesome.GameServer
             {
                 if (disposing)
                 {
+                    TypeContainer.Remove<IGame>();
+
                     TypeContainer.Dispose();
                 }
 

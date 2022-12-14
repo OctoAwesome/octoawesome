@@ -1,7 +1,10 @@
-﻿using System;
+﻿using OctoAwesome.Caching;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace OctoAwesome
 {
@@ -170,9 +173,31 @@ namespace OctoAwesome
                 .Where(t => t.Behavior == InstanceBehavior.Singleton && t.Instance != this)
                 .Select(t => t.Instance as IDisposable)
                 .ToList()
-                .ForEach(i => i?.Dispose());
+                .ForEach(i =>
+                {
+                    i?.Dispose();
+                });
 
             typeInformationRegister.Clear();
+        }
+
+        public T? Remove<T>() where T : class
+        {
+            //typeof(T) IGame
+            if (typeRegister.TryGetValue(typeof(T), out var searchType)) //Game
+            {
+                typeRegister.Remove(typeof(T));
+
+                if (typeRegister.ContainsValue(searchType))
+                    return null;
+
+                if (typeInformationRegister.TryGetValue(searchType, out var info))
+                {
+                    typeInformationRegister.Remove(searchType);
+                    return GenericCaster<object?, T?>.Cast(info.Instance);
+                }
+            }
+            return null;
         }
 
         private class TypeInformation

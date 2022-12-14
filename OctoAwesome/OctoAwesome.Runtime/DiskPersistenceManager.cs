@@ -158,7 +158,6 @@ namespace OctoAwesome.Runtime
             string root = GetRoot();
             var awaiter = awaiterPool.Rent();
             universes = new SerializableCollection<IUniverse>();
-            awaiter.Result = universes;
             foreach (var folder in Directory.GetDirectories(root))
             {
                 string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
@@ -170,7 +169,7 @@ namespace OctoAwesome.Runtime
                         continue;
                     }
 
-                    universeLoader.WaitOnAndRelease();
+                    universeLoader.WaitOnAndRelease(universe);
                     universes.Add(universe);
                 }
             }
@@ -294,7 +293,6 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         var awaiter = awaiterPool.Rent();
-                        awaiter.Result = player;
                         player.Deserialize(reader);
                         awaiter.SetResult(player);
                         return awaiter;

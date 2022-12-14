@@ -279,5 +279,7 @@ namespace OctoAwesome.Client
             Player.Unload();
             Simulation.ExitGame();
         }
+
+        
     }
 }

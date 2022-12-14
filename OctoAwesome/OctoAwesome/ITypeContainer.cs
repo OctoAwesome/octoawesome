@@ -120,5 +120,7 @@ namespace OctoAwesome
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T? GetOrNull<T>() where T : class;
+
+        T? Remove<T>() where T : class;
     }
 }

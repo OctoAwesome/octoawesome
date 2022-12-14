@@ -103,7 +103,7 @@ namespace OctoAwesome.Runtime
             var dpm = new DiskPersistenceManager(extensionService, settings, UpdateHub);
             var awaiter = dpm.Load(out SerializableCollection<IUniverse> universes);
 
-            awaiter.WaitOnAndRelease();
+            awaiter.WaitOnAndRelease<SerializableCollection<IUniverse>>();
 
             return universes.ToArray();
         }
@@ -127,7 +127,7 @@ namespace OctoAwesome.Runtime
                 if (awaiter == null)
                     return false;
 
-                awaiter.WaitOnAndRelease();
+                awaiter.WaitOnAndRelease<Universe>();
 
                 CurrentUniverse = universe;
                 if (CurrentUniverse == null)
@@ -202,7 +202,7 @@ namespace OctoAwesome.Runtime
                     }
                     else
                     {
-                        awaiter.WaitOnAndRelease();
+                        awaiter.WaitOnAndRelease(planet);
                         Debug.Assert(planet != null, nameof(planet) + " != null");
                     }
 
@@ -223,9 +223,7 @@ namespace OctoAwesome.Runtime
                 currentToken.ThrowIfCancellationRequested();
                 var awaiter = PersistenceManager.Load(out var player, CurrentUniverse.Id, playerName);
 
-                awaiter?.WaitOnAndRelease();
-
-                return player;
+                return awaiter?.WaitOnAndRelease<Player>() ?? new Player();
             }
         }
 
@@ -262,7 +260,7 @@ namespace OctoAwesome.Runtime
                     }
                     else
                     {
-                        awaiter.WaitOnAndRelease();
+                        awaiter.WaitOnAndRelease(loadedColumn);
                         Debug.Assert(loadedColumn != null, "loadedColumn != null");
                         column11 = loadedColumn;
                     }
@@ -354,7 +352,7 @@ namespace OctoAwesome.Runtime
                 if (awaiter == null)
                     return null;
                 else
-                    awaiter.WaitOnAndRelease();
+                    awaiter.WaitOnAndRelease(entity);
 
                 return entity;
             }
@@ -395,7 +393,7 @@ namespace OctoAwesome.Runtime
 
                 if (awaiter == null)
                     return null;
-                awaiter.WaitOnAndRelease();
+                awaiter.WaitOnAndRelease(container);
 
                 return container;
             }

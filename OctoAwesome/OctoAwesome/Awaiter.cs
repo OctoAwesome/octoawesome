@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using OctoAwesome.Extension;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome
 {
@@ -14,11 +15,9 @@ namespace OctoAwesome
     /// </summary>
     public class Awaiter : IPoolElement, IDisposable
     {
-        /// <summary>
-        /// Gets or sets the result for the awaiter.
-        /// </summary>
-        public ISerializable? Result { get; set; }
 
+        private ISerializable? knownResult;
+        private byte[]? result;
         /// <summary>
         /// Gets a value indicating whether awaiting has timed out.
         /// </summary>
@@ -48,25 +47,68 @@ namespace OctoAwesome
         /// Waits on the result or time outs(10000s).
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
-        public ISerializable? WaitOn()
+        public bool WaitOn()
         {
             Debug.Assert(!isPooled, "Is released into pool!");
             if (!alreadyDeserialized)
                 TimedOut = !manualReset.Wait(10000);
 
-            return Result;
+            return !TimedOut;
         }
 
         /// <summary>
         /// Waits on the result or time outs(10000s) and releases the awaiter.
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
-        public ISerializable? WaitOnAndRelease()
+        public T? WaitOnAndRelease<T>() where T : ISerializable, new()
         {
             Debug.Assert(!isPooled, "Is released into pool!");
             var res = WaitOn();
+            if (!res)
+            {
+                Release();
+                return default;
+            }
+
+            T? ret;
+            if (knownResult != default && result is null)
+                ret = GenericCaster<ISerializable, T>.Cast(knownResult);
+            else if(knownResult != default && result is not null)
+                ret = GenericCaster<ISerializable, T>.Cast(Serializer.Deserialize(knownResult, result));
+            else if (result is not null)
+                ret = Serializer.Deserialize<T>(result);
+            else
+                ret = default;
+
+
             Release();
-            return res;
+            return ret;
+        }
+
+        /// <summary>
+        /// Waits on the result or time outs(10000s) and releases the awaiter.
+        /// </summary>
+        /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
+        public T? WaitOnAndRelease<T>(T instance) where T : class, ISerializable
+        {
+            Debug.Assert(!isPooled, "Is released into pool!");
+            var res = WaitOn();
+            if (!res)
+            {
+                Release();
+                return null;
+            }
+
+            T? ret;
+            if (knownResult is not null && result is null)
+                ret = GenericCaster<ISerializable, T>.Cast(knownResult);
+            else if (result is not null)
+                ret = Serializer.Deserialize(instance, result);
+            else
+                ret = null;
+
+            Release();
+            return ret;
         }
 
         /// <summary>
@@ -78,7 +120,7 @@ namespace OctoAwesome
             Debug.Assert(!isPooled, "Is released into pool!");
             using (semaphore.Wait())
             {
-                Result = result;
+                knownResult = result;
                 manualReset.Set();
                 alreadyDeserialized = true;
             }
@@ -100,10 +142,7 @@ namespace OctoAwesome
                     if (TimedOut)
                         return false;
 
-                    if (Result == null)
-                        throw new ArgumentNullException(nameof(Result));
-                    Result = Serializer.Deserialize(Result, bytes);
-   
+                    result = bytes;
                     manualReset.Set();
                     return alreadyDeserialized = true;
                 }
@@ -122,7 +161,8 @@ namespace OctoAwesome
             TimedOut = false;
             isPooled = false;
             alreadyDeserialized = false;
-            Result = null;
+            result = null;
+            knownResult = null;
             manualReset.Reset();
         }
 
@@ -145,6 +185,7 @@ namespace OctoAwesome
         public void Dispose()
         {
             manualReset.Dispose();
+            semaphore.Dispose();
         }
     }
 }

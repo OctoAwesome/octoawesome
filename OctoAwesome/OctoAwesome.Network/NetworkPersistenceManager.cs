@@ -155,7 +155,7 @@ namespace OctoAwesome.Network
         private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
         {
             var awaiter = awaiterPool.Rent();
-            awaiter.Result = serializable;
+            awaiter.SetResult(serializable);
 
             if (!packages.TryAdd(packageUId, awaiter))
             {

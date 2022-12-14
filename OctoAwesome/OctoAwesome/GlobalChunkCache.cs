@@ -167,7 +167,7 @@ namespace OctoAwesome
 
 
         /// <summary>
-        /// Called when chunk notification occured.
+        /// Called when chunk notification occurred.
         /// </summary>
         /// <param name="value">The notification.</param>
         public void OnNext(Notification value)
