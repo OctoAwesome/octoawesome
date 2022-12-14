@@ -74,6 +74,8 @@ namespace OctoAwesome.Network
 
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
+            extensionLoader.RegisterExtensions();
+            extensionLoader.InstantiateExtensions();
 
             var extensionService = typeContainer.Get<ExtensionService>();
 

@@ -71,6 +71,11 @@ namespace OctoAwesome.Client
 
             ExtensionLoader = typeContainer.Get<ExtensionLoader>();
             ExtensionLoader.LoadExtensions();
+            ExtensionLoader.RegisterExtensions();
+
+
+            var gs = typeContainer.Get<GameService>();
+            typeContainer.Register<IResourceManager>(gs.ResourceManager);
 
             ExtensionService = typeContainer.Get<ExtensionService>();
 
@@ -88,6 +93,7 @@ namespace OctoAwesome.Client
 
             typeContainer.Register<BaseScreenComponent>(Screen);
             typeContainer.Register<ScreenComponent>(Screen);
+            ExtensionLoader.InstantiateExtensions();
 
             typeContainer.Register(Assets);
 
@@ -183,9 +189,6 @@ namespace OctoAwesome.Client
             typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
 
-
-            var gs = typeContainer.Get<GameService>();
-            typeContainer.Register<IResourceManager>(gs.ResourceManager);
         }
 
         private void SetKeyBindings()

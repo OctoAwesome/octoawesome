@@ -44,14 +44,18 @@ namespace OctoAwesome.Basics
         }
 
         /// <inheritdoc />
-        public void Register(ExtensionService extensionLoader)
+        public void RegisterTypes(ExtensionService extensionLoader)
         {
-
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
                     extensionLoader.Register(t, ChannelNames.Definitions);
             }
+        }
+
+        /// <inheritdoc />
+        public void Register(ExtensionService extensionLoader)
+        {
 
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 

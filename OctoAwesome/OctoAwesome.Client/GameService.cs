@@ -121,11 +121,11 @@ namespace OctoAwesome.Client
                 ResourceManager.UnloadUniverse();
 
             game.Player.Unload();
+            ResourceManager.PersistenceManager = persistenceManager;
             game.Simulation.LoadGame(gameId);
             var player = game.Simulation.LoginPlayer(playerName);
             game.Player.Load(player);
 
-            ResourceManager.PersistenceManager = persistenceManager;
         }
 
         /// <inheritdoc />

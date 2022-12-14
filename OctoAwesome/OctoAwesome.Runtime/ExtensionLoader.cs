@@ -31,6 +31,7 @@ namespace OctoAwesome.Runtime
         private readonly ISettings settings;
         private readonly ExtensionService extensionService;
         private readonly ITypeContainer typeContainer;
+        private List<Assembly> assemblies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtensionLoader"/> class.
@@ -53,7 +54,7 @@ namespace OctoAwesome.Runtime
         /// </summary>
         public void LoadExtensions()
         {
-            List<Assembly> assemblies = new();
+            assemblies = new List<Assembly>();
             var tempAssembly = Assembly.GetEntryAssembly();
 
             if (tempAssembly == null)
@@ -66,9 +67,6 @@ namespace OctoAwesome.Runtime
             if (plugins.Exists)
                 assemblies.AddRange(LoadAssemblies(plugins));
 
-            var disabledExtensions = settings.KeyExists(SETTINGSKEY)
-                ? settings.GetArray<string>(SETTINGSKEY)
-                : Array.Empty<string>();
 
             foreach (var assembly in assemblies)
             {
@@ -101,6 +99,14 @@ namespace OctoAwesome.Runtime
                 }
             }
 
+        }
+
+        public void RegisterExtensions()
+        {
+
+            var disabledExtensions = settings.KeyExists(SETTINGSKEY)
+                ? settings.GetArray<string>(SETTINGSKEY)
+                : Array.Empty<string>();
             foreach (var assembly in assemblies)
             {
                 var types = assembly
@@ -115,21 +121,42 @@ namespace OctoAwesome.Runtime
                             IExtension extension = (IExtension)typeContainer.GetUnregistered(type);
 
                             extension.Register(typeContainer);
-                            extension.Register(extensionService);
+                            extension.RegisterTypes(extensionService);
 
                             if (disabledExtensions.Contains(type.FullName))
                                 LoadedExtensions.Add(extension);
                             else
                                 ActiveExtensions.Add(extension);
 
-                            var extensionInformation = new ExtensionInformation(extension);
-                            extensionService.AddExtensionLoader(extensionInformation);
                         }
                         catch
                         {
                             // TODO: Logging
+                            ;
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Instantiated all loaded Plugins, except for those which are disabled.
+        /// </summary>
+        public void InstantiateExtensions()
+        {
+            foreach (var extension in ActiveExtensions)
+            {
+                try
+                {
+                    extension.Register(extensionService);
+
+                    var extensionInformation = new ExtensionInformation(extension);
+                    extensionService.AddExtensionLoader(extensionInformation);
+                }
+                catch
+                {
+                    // TODO: Logging
+                    ;
                 }
             }
         }

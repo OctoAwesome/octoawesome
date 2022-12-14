@@ -37,5 +37,10 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public void Register(ITypeContainer typeContainer) { }
+
+        /// <inheritdoc />
+        public void RegisterTypes(ExtensionService extensionLoader)
+        {
+        }
     }
 }

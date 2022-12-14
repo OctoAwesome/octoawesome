@@ -26,7 +26,7 @@ namespace OctoAwesome.Network
         private readonly IPool<Awaiter> awaiterPool;
         private readonly PackagePool packagePool;
         private readonly ITypeContainer typeContainer;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPersistenceManager"/> class.
         /// </summary>

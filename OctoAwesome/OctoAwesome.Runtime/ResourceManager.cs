@@ -27,6 +27,8 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public IUpdateHub UpdateHub { get; }
 
+        private readonly ISettings settings;
+
         public IPersistenceManager PersistenceManager { get; set; }
 
         /// <summary>
@@ -55,7 +57,6 @@ namespace OctoAwesome.Runtime
         /// </summary>
         /// <param name="extensionService">The extension service.</param>
         /// <param name="definitionManager">The definition manager.</param>
-        /// <param name="PersistenceManager">The persistence manager.</param>
         /// <param name="updateHub">The update hub to use for update notifications.</param>
         /// <param name="settings">The game settings.</param>
         public ResourceManager(Extension.ExtensionService extensionService, IDefinitionManager definitionManager, ISettings settings, IUpdateHub updateHub)
@@ -71,7 +72,7 @@ namespace OctoAwesome.Runtime
 
             Planets = new ConcurrentDictionary<int, IPlanet>();
             UpdateHub = updateHub;
-
+            this.settings = settings;
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
         }
 
@@ -90,6 +91,7 @@ namespace OctoAwesome.Runtime
 
                 Guid guid = Guid.NewGuid();
                 CurrentUniverse = new Universe(guid, name, seed);
+                PersistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
                 PersistenceManager.SaveUniverse(CurrentUniverse);
                 return guid;
             }
@@ -98,12 +100,10 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public IUniverse[] ListUniverses()
         {
-            var awaiter = PersistenceManager.Load(out SerializableCollection<IUniverse> universes);
+            var dpm = new DiskPersistenceManager(extensionService, settings, UpdateHub);
+            var awaiter = dpm.Load(out SerializableCollection<IUniverse> universes);
 
-            if (awaiter == null)
-                return Array.Empty<IUniverse>();
-            else
-                awaiter.WaitOnAndRelease();
+            awaiter.WaitOnAndRelease();
 
             return universes.ToArray();
         }
