@@ -122,14 +122,13 @@ namespace OctoAwesome.Runtime
                 currentToken = tokenSource.Token;
 
                 // Load/Generate new universe data
-                var awaiter = PersistenceManager.Load(out IUniverse universe, universeId);
+                var awaiter = PersistenceManager.Load(out _, universeId);
 
                 if (awaiter == null)
                     return false;
 
-                awaiter.WaitOnAndRelease<Universe>();
+                CurrentUniverse = awaiter.WaitOnAndRelease<Universe>();
 
-                CurrentUniverse = universe;
                 if (CurrentUniverse == null)
                     throw new NullReferenceException();
 
@@ -187,8 +186,9 @@ namespace OctoAwesome.Runtime
 
                 if (!Planets.TryGetValue(id, out var planet))
                 {
+
                     // Try loading already existing planet
-                    var awaiter = PersistenceManager.Load(out planet, CurrentUniverse.Id, id);
+                    var awaiter = PersistenceManager.Load(out _, CurrentUniverse.Id, id);
 
                     if (awaiter == null)
                     {
@@ -202,7 +202,7 @@ namespace OctoAwesome.Runtime
                     }
                     else
                     {
-                        awaiter.WaitOnAndRelease(planet);
+                        planet = awaiter.WaitOnAndRelease(planet);
                         Debug.Assert(planet != null, nameof(planet) + " != null");
                     }
 
@@ -221,7 +221,7 @@ namespace OctoAwesome.Runtime
             using (loadingSemaphore.EnterCountScope())
             {
                 currentToken.ThrowIfCancellationRequested();
-                var awaiter = PersistenceManager.Load(out var player, CurrentUniverse.Id, playerName);
+                var awaiter = PersistenceManager.Load(out _, CurrentUniverse.Id, playerName);
 
                 return awaiter?.WaitOnAndRelease<Player>() ?? new Player();
             }
@@ -260,7 +260,7 @@ namespace OctoAwesome.Runtime
                     }
                     else
                     {
-                        awaiter.WaitOnAndRelease(loadedColumn);
+                        awaiter.WaitOnAndRelease<ChunkColumn>();
                         Debug.Assert(loadedColumn != null, "loadedColumn != null");
                         column11 = loadedColumn;
                     }

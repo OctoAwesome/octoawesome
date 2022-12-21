@@ -10,7 +10,7 @@ namespace OctoAwesome.Notifications
     /// </summary>
     public class UpdateHub : IDisposable, IUpdateHub
     {
-        private readonly Dictionary<string, ConcurrentRelay<Notification>> channels;
+        private readonly Dictionary<string, ConcurrentRelay<object>> channels;
         private readonly LockSemaphore lockSemaphore;
 
         /// <summary>
@@ -23,14 +23,14 @@ namespace OctoAwesome.Notifications
         }
 
         /// <inheritdoc />
-        public IObservable<Notification> ListenOn(string channel)
+        public IObservable<object> ListenOn(string channel)
             => GetChannelRelay(channel);
 
         /// <inheritdoc />
-        public IDisposable AddSource(IObservable<Notification> notification, string channel)
+        public IDisposable AddSource(IObservable<object> notification, string channel)
             => notification.Subscribe(GetChannelRelay(channel));
 
-        private ConcurrentRelay<Notification> GetChannelRelay(string channel)
+        private ConcurrentRelay<object> GetChannelRelay(string channel)
         {
             using var scope = lockSemaphore.Wait();
 

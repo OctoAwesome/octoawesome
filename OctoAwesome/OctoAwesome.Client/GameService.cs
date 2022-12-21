@@ -31,7 +31,7 @@ namespace OctoAwesome.Client
         private readonly ITypeContainer typeContainer;
 
         internal ResourceManager ResourceManager { get; private set; }
-        private NetworkUpdateManager? networkUpdateManager;
+        private NetworkPackageManager? networkUpdateManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameService"/> class.
@@ -102,8 +102,8 @@ namespace OctoAwesome.Client
             }
 
             var client = new Network.Client(host, port > 0 ? (ushort)port : (ushort)8888);
-            var persistenceManager = new NetworkPersistenceManager(typeContainer, client);
-            networkUpdateManager = new NetworkUpdateManager(client, UpdateHub);
+            networkUpdateManager = new NetworkPackageManager(client, UpdateHub, typeContainer);
+            var persistenceManager = new NetworkPersistenceManager(typeContainer, networkUpdateManager);
 
             StartGame(persistenceManager, Guid.Empty, playerName);
         }

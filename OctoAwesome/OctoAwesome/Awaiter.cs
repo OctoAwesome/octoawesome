@@ -73,7 +73,7 @@ namespace OctoAwesome
             T? ret;
             if (knownResult != default && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
-            else if(knownResult != default && result is not null)
+            else if (knownResult != default && result is not null)
                 ret = GenericCaster<ISerializable, T>.Cast(Serializer.Deserialize(knownResult, result));
             else if (result is not null)
                 ret = Serializer.Deserialize<T>(result);
@@ -89,7 +89,7 @@ namespace OctoAwesome
         /// Waits on the result or time outs(10000s) and releases the awaiter.
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
-        public T? WaitOnAndRelease<T>(T instance) where T : class, ISerializable
+        public T? WaitOnAndRelease<T>(T? instance) where T : class, ISerializable
         {
             Debug.Assert(!isPooled, "Is released into pool!");
             var res = WaitOn();
@@ -102,7 +102,7 @@ namespace OctoAwesome
             T? ret;
             if (knownResult is not null && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
-            else if (result is not null)
+            else if (result is not null && instance is not null)
                 ret = Serializer.Deserialize(instance, result);
             else
                 ret = null;

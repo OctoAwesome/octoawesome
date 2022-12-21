@@ -87,7 +87,7 @@ namespace OctoAwesome.Serialization
 
         private void InternalAddOrUpdate(ChunkDiffTag tag, BlockInfo blockInfo)
         {
-            using (var memory = new MemoryStream())
+            using (var memory = Serializer.Manager.GetStream())
             using (var writer = new BinaryWriter(memory))
             {
                 BlockInfo.Serialize(writer, blockInfo);

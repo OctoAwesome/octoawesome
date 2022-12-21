@@ -16,13 +16,13 @@ namespace OctoAwesome.Notifications
         /// A reference to an interface that allows observers to stop receiving notifications
         /// before the provider has finished sending them.
         /// </returns>
-        IDisposable AddSource(IObservable<Notification> notification, string channel);
+        IDisposable AddSource(IObservable<object> notification, string channel);
 
         /// <summary>
         /// Gets an observable to listen for notifications on the specified channel.
         /// </summary>
         /// <param name="channel">The channel to listen on for notifications.</param>
         /// <returns>An observable to listen for notifications on the specified channel.</returns>
-        IObservable<Notification> ListenOn(string channel);
+        IObservable<object> ListenOn(string channel);
     }
 }
