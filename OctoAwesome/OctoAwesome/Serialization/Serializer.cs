@@ -29,6 +29,20 @@ namespace OctoAwesome.Serialization
         }
 
         /// <summary>
+        /// Serializes a generic serializable instance to an array of bytes.
+        /// </summary>
+        /// <param name="obj">The object to serialize.</param>
+        /// <typeparam name="T">The type of the object to serialize.</typeparam>
+        /// <returns>The serialized byte array data.</returns>
+        public static byte[] Serialize<T>(INoosonSerializable<T> obj)
+        {
+            using var stream = Manager.GetStream(nameof(Serialize));
+            using var writer = new BinaryWriter(stream);
+            obj.Serialize(writer);
+            return stream.ToArray();
+        }
+
+        /// <summary>
         /// Serializes a generic serializable instance to a compressed array of bytes.
         /// </summary>
         /// <param name="obj">The object to serialize.</param>

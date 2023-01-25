@@ -23,7 +23,7 @@ namespace OctoAwesome.Network
 
         private readonly ITypeContainer typeContainer;
         private readonly NetworkPackageManager networkPackageManager;
-        private readonly Pool<OfficialCommandRequest> requestPool;
+        private readonly Pool<OfficialCommandDTO> requestPool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPersistenceManager"/> class.
@@ -55,6 +55,8 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
+                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
+
                 binaryWriter.Write(universeGuid.ToByteArray());
                 binaryWriter.Write(planet.Id);
                 binaryWriter.Write(columnIndex.X);
@@ -64,7 +66,7 @@ namespace OctoAwesome.Network
                 request.Data = memoryStream.ToArray();
                 request.Command = OfficialCommand.LoadColumn;
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request));
+                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
 
                 request.Release();
                 return awaiter;
@@ -79,6 +81,7 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
+                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
                 Span<byte> guid = stackalloc byte[16];
                 universeGuid.TryWriteBytes(guid);
 
@@ -90,7 +93,7 @@ namespace OctoAwesome.Network
                 request.Data = memoryStream.ToArray();
                 request.Command = OfficialCommand.GetPlanet;
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request));
+                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
 
                 request.Release();
                 return awaiter;
@@ -104,6 +107,7 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
+                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
                 Span<byte> guid = stackalloc byte[16];
                 universeGuid.TryWriteBytes(guid);
 
@@ -115,7 +119,7 @@ namespace OctoAwesome.Network
                 request.Data = memoryStream.ToArray();
                 request.Command = OfficialCommand.Whoami;
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request));
+                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
 
                 request.Release();
                 return awaiter;
@@ -129,6 +133,7 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
+                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
                 Span<byte> guid = stackalloc byte[16];
                 universeGuid.TryWriteBytes(guid);
 
@@ -139,7 +144,7 @@ namespace OctoAwesome.Network
                 request.Data = memoryStream.ToArray();
                 request.Command = OfficialCommand.GetUniverse;
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request));
+                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
 
                 request.Release();
                 return awaiter;

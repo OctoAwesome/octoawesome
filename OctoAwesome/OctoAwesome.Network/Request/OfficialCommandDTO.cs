@@ -7,11 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NonSucking.Framework.Serialization;
 
 namespace OctoAwesome.Network.Request;
 
-
-public class OfficialCommandRequest : IPoolElement, ISerializable
+[SerializationId(1, uint.MaxValue-1)]
+[Nooson]
+public partial class OfficialCommandDTO : IPoolElement, INoosonSerializable<OfficialCommandDTO>
 {
     public OfficialCommand Command { get; set; }
     public byte[] Data { get; set; }
@@ -28,17 +30,4 @@ public class OfficialCommandRequest : IPoolElement, ISerializable
         pool.Return(this);
     }
 
-    public void Serialize(BinaryWriter writer)
-    {
-        writer.Write((ushort)Command);
-        writer.Write(Data.Length);
-        writer.Write(Data);
-    }
-
-    public void Deserialize(BinaryReader reader)
-    {
-        Command = (OfficialCommand)reader.ReadUInt16();
-        var len = reader.ReadInt32();
-        Data = reader.ReadBytes(len);
-    }
 }

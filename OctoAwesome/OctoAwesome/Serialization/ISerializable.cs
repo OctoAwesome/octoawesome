@@ -19,4 +19,15 @@ namespace OctoAwesome.Serialization
         /// <param name="reader">The binary reader to read the serialized instance from.</param>
         void Deserialize(BinaryReader reader);
     }
+
+    public interface INoosonSerializable<T>
+    {
+        /// <summary>
+        /// Serialize this instance to a <see cref="BinaryWriter"/>.
+        /// </summary>
+        /// <param name="writer">The binary writer to write the serialized instance to.</param>
+        void Serialize(BinaryWriter writer);
+
+        public abstract static T Deserialize(BinaryReader reader);
+    }
 }

@@ -12,6 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="engenious" Version="0.7.1-alpha" />
+    <PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.81-alpha" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
   </ItemGroup>
 

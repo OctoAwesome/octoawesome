@@ -39,9 +39,12 @@ namespace OctoAwesome.Network
             throw error;
         }
 
-        private void OnNext(Notification value)
+        private void OnNext(object value)
         {
-            if (value.SenderId == Id)
+            if (value is not Notification notification)
+                return;
+
+            if (notification.SenderId == Id)
                 return;
 
             OfficialCommand command;
@@ -52,7 +55,6 @@ namespace OctoAwesome.Network
                     command = OfficialCommand.EntityNotification;
                     payload = Serializer.Serialize(entityNotification);
                     break;
-
                 case BlocksChangedNotification _:
                 case BlockChangedNotification _:
                     command = OfficialCommand.ChunkNotification;

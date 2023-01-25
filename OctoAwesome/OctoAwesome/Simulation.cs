@@ -431,7 +431,7 @@ namespace OctoAwesome
         /// Gets called for receiving new notifications.
         /// </summary>
         /// <param name="value">The new notification.</param>
-        public void OnNext(Notification value)
+        public void OnNext(object value)
         {
             if (entities.Count < 0 && !IsServerSide)
                 return;
@@ -455,7 +455,7 @@ namespace OctoAwesome
                             break;
                     }
 
-                    uiRelay.OnNext(value);
+                    uiRelay.OnNext(entityNotification);
                     break;
                 default:
                     break;

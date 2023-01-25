@@ -27,9 +27,9 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Registers a Type with the required SerializationId attribute.
+        /// Registers a Type with the required <see cref="SerializationIdAttribute"/>.
         /// </summary>
-        /// <param name="type">Type with serialization id attribute</param>
+        /// <param name="type">Type with <see cref="SerializationIdAttribute"/></param>
         public override void Register(Type type)
         {
             var serId = type.SerializationId();
@@ -38,6 +38,20 @@ namespace OctoAwesome
                 throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Name}, so it cant be registered.");
 
             serializationIdTypeProvider.Register(serId, type);
+        }
+
+        /// <summary>
+        /// Registers a Type without the <see cref="SerializationIdAttribute"/>.
+        /// </summary>
+        /// <param name="type">Type without <see cref="SerializationIdAttribute"/></param>
+        /// <param name="serializationId">The serialization id which normally would be given via <see cref="SerializationIdAttribute"/></param>
+        public void Register(Type type, ulong serializationId)
+        {
+
+            if (serializationId == 0)
+                throw new ArgumentException($"0 is not allowed for a serialization id, because it indicates a missing attribute of {nameof(SerializationIdAttribute)}.");
+
+            serializationIdTypeProvider.Register(serializationId, type);
         }
 
         /// <summary>

@@ -9,9 +9,10 @@ namespace OctoAwesome.Network
     public enum PackageFlags : ushort
     {
         None = 1<<0,
-        Response = 1<<1,
-        Compressed = 1<<2,
-        Array = 1<<3,
+        Request = 1<<1,
+        Response = 1<<2,
+        Compressed = 1<<3,
+        Array = 1<<4,
         Reserved = 1<<15
     }
 
