@@ -55,7 +55,6 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
 
                 binaryWriter.Write(universeGuid.ToByteArray());
                 binaryWriter.Write(planet.Id);
@@ -68,6 +67,7 @@ namespace OctoAwesome.Network
 
                 var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
 
+                awaiter.SetDesializeFunc(GetDesializerFunc<ChunkColumn>());
                 request.Release();
                 return awaiter;
             }
@@ -76,12 +76,11 @@ namespace OctoAwesome.Network
         /// <inheritdoc />
         public Awaiter Load(out IPlanet planet, Guid universeGuid, int planetId)
         {
-            planet = typeContainer.Get<IPlanet>();
+            var planetInstance = planet = typeContainer.Get<IPlanet>();
 
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
                 Span<byte> guid = stackalloc byte[16];
                 universeGuid.TryWriteBytes(guid);
 
@@ -94,7 +93,16 @@ namespace OctoAwesome.Network
                 request.Command = OfficialCommand.GetPlanet;
 
                 var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
-
+                awaiter.SetDesializeFunc(
+                     (b) =>
+                     {
+                         using (var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..)))
+                         using (var binaryReader = new BinaryReader(memoryStream))
+                         {
+                             var dto = OfficialCommandDTO.Deserialize(binaryReader);
+                             return Serializer.Deserialize<IPlanet>(planetInstance, dto.Data);
+                         }
+                     });
                 request.Release();
                 return awaiter;
             }
@@ -107,7 +115,6 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
                 Span<byte> guid = stackalloc byte[16];
                 universeGuid.TryWriteBytes(guid);
 
@@ -120,6 +127,7 @@ namespace OctoAwesome.Network
                 request.Command = OfficialCommand.Whoami;
 
                 var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+                awaiter.SetDesializeFunc(GetDesializerFunc<Player>());
 
                 request.Release();
                 return awaiter;
@@ -133,7 +141,6 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
                 Span<byte> guid = stackalloc byte[16];
                 universeGuid.TryWriteBytes(guid);
 
@@ -145,10 +152,23 @@ namespace OctoAwesome.Network
                 request.Command = OfficialCommand.GetUniverse;
 
                 var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
-
+                awaiter.SetDesializeFunc(GetDesializerFunc<Universe>());
                 request.Release();
                 return awaiter;
             }
+        }
+
+        private static Func<byte[], object> GetDesializerFunc<T>() where T : ISerializable, new()
+        {
+            return (b) =>
+            {
+                using (var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..)))
+                using (var binaryReader = new BinaryReader(memoryStream))
+                {
+                    var dto = OfficialCommandDTO.Deserialize(binaryReader);
+                    return Serializer.Deserialize<T>(dto.Data);
+                }
+            };
         }
 
         /// <inheritdoc />

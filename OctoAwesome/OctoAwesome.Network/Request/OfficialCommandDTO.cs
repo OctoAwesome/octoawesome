@@ -11,10 +11,15 @@ using NonSucking.Framework.Serialization;
 
 namespace OctoAwesome.Network.Request;
 
-[SerializationId(1, uint.MaxValue-1)]
+[SerializationId(1, uint.MaxValue - 1)]
 [Nooson]
 public partial class OfficialCommandDTO : IPoolElement, INoosonSerializable<OfficialCommandDTO>
 {
+    [NoosonCustom(SerializeMethodName = nameof(WriteTypeId), DeserializeMethodName = nameof(ReadTypeId))]
+    [NoosonOrder(0)]
+    [NoosonInclude]
+    private static readonly ulong SerializationId = typeof(OfficialCommandDTO).SerializationId();
+
     public OfficialCommand Command { get; set; }
     public byte[] Data { get; set; }
 
@@ -28,6 +33,13 @@ public partial class OfficialCommandDTO : IPoolElement, INoosonSerializable<Offi
     public void Release()
     {
         pool.Return(this);
+    }
+
+    private static ulong ReadTypeId(BinaryReader reader) => 0;
+    private void WriteTypeId(BinaryWriter writer)
+    {
+        if (writer.BaseStream.Position == 0)
+            writer.Write(SerializationId);
     }
 
 }

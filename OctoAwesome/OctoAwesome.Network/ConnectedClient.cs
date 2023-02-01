@@ -1,8 +1,13 @@
-﻿using OctoAwesome.Network.Pooling;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Network.Pooling;
+using OctoAwesome.Network.Request;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+
 using System;
+using System.IO;
 using System.Net.Sockets;
 
 namespace OctoAwesome.Network
@@ -20,6 +25,7 @@ namespace OctoAwesome.Network
         public IDisposable? ServerSubscription { get; set; }
 
         private readonly PackagePool packagePool;
+        private readonly Pool<OfficialCommandDTO> requestPool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectedClient"/> class.
@@ -30,6 +36,7 @@ namespace OctoAwesome.Network
             packagePool = TypeContainer.Get<PackagePool>();
             var updateHub = TypeContainer.Get<IUpdateHub>();
             networkSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe(OnNext, OnError);
+            requestPool = new();
         }
 
 
@@ -53,26 +60,36 @@ namespace OctoAwesome.Network
             {
                 case EntityNotification entityNotification:
                     command = OfficialCommand.EntityNotification;
-                    payload = Serializer.Serialize(entityNotification);
+                    BuildAndSendPackage(entityNotification, command);
                     break;
                 case BlocksChangedNotification _:
                 case BlockChangedNotification _:
                     command = OfficialCommand.ChunkNotification;
-                    payload = Serializer.Serialize((SerializableNotification)value);
+                    BuildAndSendPackage(GenericCaster<object, SerializableNotification>.Cast(value), command);
                     break;
                 default:
                     return;
             }
 
-            BuildAndSendPackage(payload, command);
         }
 
-        private void BuildAndSendPackage(byte[] data, OfficialCommand officialCommand)
+        private void BuildAndSendPackage(SerializableNotification data, OfficialCommand officialCommand)
         {
             var package = packagePool.Rent();
-            package.Payload = data;
-            package.Command = (ushort)officialCommand;
-            SendPackageAndRelease(package);
+            using (var memoryStream = Serializer.Manager.GetStream())
+            using (var binaryWriter = new BinaryWriter(memoryStream))
+            {
+                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
+
+                data.Serialize(binaryWriter);
+
+                var request = requestPool.Rent();
+                request.Data = memoryStream.ToArray();
+                request.Command = officialCommand;
+
+                package.Payload = Serializer.Serialize(request);
+                SendPackageAndRelease(package);
+            }
         }
 
         /// <inheritdoc />

@@ -80,6 +80,7 @@ namespace OctoAwesome.Network
             var extensionService = typeContainer.Get<ExtensionService>();
 
             ResourceManager = typeContainer.Get<ResourceManager>();
+            ResourceManager.PersistenceManager = typeContainer.Get<IPersistenceManager>();
 
             simulation = new Simulation(ResourceManager, extensionService)
             {

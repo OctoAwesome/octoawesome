@@ -91,7 +91,7 @@ namespace OctoAwesome.Runtime
 
                 Guid guid = Guid.NewGuid();
                 CurrentUniverse = new Universe(guid, name, seed);
-                PersistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
+                //PersistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
                 PersistenceManager.SaveUniverse(CurrentUniverse);
                 return guid;
             }
@@ -260,7 +260,7 @@ namespace OctoAwesome.Runtime
                     }
                     else
                     {
-                        awaiter.WaitOnAndRelease<ChunkColumn>();
+                        loadedColumn = awaiter.WaitOnAndRelease<ChunkColumn>();
                         Debug.Assert(loadedColumn != null, "loadedColumn != null");
                         column11 = loadedColumn;
                     }

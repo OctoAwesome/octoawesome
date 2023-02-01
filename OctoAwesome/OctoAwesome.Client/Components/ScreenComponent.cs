@@ -118,7 +118,7 @@ namespace OctoAwesome.Client.Components
         }
 
 
-        private void OnNext(Notification notification)
+        private void OnNext(object notification)
         {
             switch (notification)
             {

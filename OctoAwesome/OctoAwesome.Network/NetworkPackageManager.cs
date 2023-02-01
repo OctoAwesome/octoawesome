@@ -29,7 +29,7 @@ namespace OctoAwesome.Network
         private readonly IPool<BlocksChangedNotification> blocksChangedNotificationPool;
         private readonly PackagePool packagePool;
         private readonly IPool<Awaiter> awaiterPool;
-        private readonly ConcurrentDictionary<uint, Awaiter> packages;
+        private readonly ConcurrentDictionary<uint, Awaiter> packages = new();
 
         private readonly Relay<object> simulation;
         private readonly Relay<object> chunk;

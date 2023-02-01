@@ -351,7 +351,7 @@ namespace OctoAwesome.Runtime
         /// Gets called when a new notification is received.
         /// </summary>
         /// <param name="notification">The received notification.</param>
-        public void OnNext(Notification notification)
+        public void OnNext(object notification)
         {
             if (notification is BlockChangedNotification blockChanged)
                 SaveChunk(blockChanged);

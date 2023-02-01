@@ -44,6 +44,7 @@ namespace OctoAwesome.Network
         }
 
 
+
         private Package? currentPackage;
         private readonly PackagePool packagePool;
 
@@ -78,7 +79,6 @@ namespace OctoAwesome.Network
         public async ValueTask Start()
         {
             stream = TcpClient.GetStream();
-
             var buffer = new byte[1024 * 1024];
             do
             {
@@ -116,7 +116,6 @@ namespace OctoAwesome.Network
         /// <returns>The created sending task.</returns>
         public ValueTask SendAsync(byte[] data, int len)
         {
-
             return SendInternal(data, len);
         }
 

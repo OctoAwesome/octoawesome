@@ -1,6 +1,8 @@
 ﻿using Microsoft.IO;
 
 using OctoAwesome.Pooling;
+
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -86,7 +88,7 @@ namespace OctoAwesome.Serialization
         /// <param name="data">The data to deserialize the instance from.</param>
         /// <typeparam name="T">The type of the object to deserialize.</typeparam>
         /// <returns>The deserialized object.</returns>
-        public static T Deserialize<T>(byte[] data) where T : ISerializable, new()
+        public static T Deserialize<T>(Span<byte> data) where T : ISerializable, new()
         {
             var obj = new T();
             InternalDeserialize(ref obj, data);
@@ -100,7 +102,7 @@ namespace OctoAwesome.Serialization
         /// <param name="data">The data to deserialize the instance from.</param>
         /// <typeparam name="T">The type of the object to deserialize.</typeparam>
         /// <returns>The deserialized object.</returns>
-        public static T Deserialize<T>(T instance, byte[] data) where T : ISerializable
+        public static T Deserialize<T>(T instance, Span<byte> data) where T : ISerializable
         {
             InternalDeserialize(ref instance, data);
             return instance;
@@ -111,7 +113,7 @@ namespace OctoAwesome.Serialization
         /// <param name="data">The compressed data to deserialize the instance from.</param>
         /// <typeparam name="T">The type of the object to deserialize.</typeparam>
         /// <returns>The deserialized object.</returns>
-        public static T DeserializeCompressed<T>(byte[] data) where T : ISerializable, new()
+        public static T DeserializeCompressed<T>(Span<byte> data) where T : ISerializable, new()
         {
             var obj = new T();
             InternalDeserializeCompressed(ref obj, data);
@@ -124,7 +126,7 @@ namespace OctoAwesome.Serialization
         /// <param name="data">The data to deserialize the instance from.</param>
         /// <typeparam name="T">The type of the object to serialize.</typeparam>
         /// <returns>The deserialized object from the memory pool.</returns>
-        public static T DeserializePoolElement<T>(byte[] data) where T : ISerializable, IPoolElement, new()
+        public static T DeserializePoolElement<T>(Span<byte> data) where T : ISerializable, IPoolElement, new()
         {
             var obj = TypeContainer.Get<IPool<T>>().Rent();
             InternalDeserialize(ref obj, data);
@@ -139,21 +141,21 @@ namespace OctoAwesome.Serialization
         /// <param name="data">The data to deserialize the instance from.</param>
         /// <typeparam name="T">The type of the object to serialize.</typeparam>
         /// <returns>The deserialized object from the memory pool.</returns>
-        public static T DeserializePoolElement<T>(IPool<T> pool, byte[] data) where T : ISerializable, IPoolElement, new()
+        public static T DeserializePoolElement<T>(IPool<T> pool, Span<byte> data) where T : ISerializable, IPoolElement, new()
         {
             var obj = pool.Rent();
             InternalDeserialize(ref obj, data);
             return obj;
         }
 
-        private static void InternalDeserialize<T>(ref T instance, byte[] data) where T : ISerializable
+        private static void InternalDeserialize<T>(ref T instance, Span<byte> data) where T : ISerializable
         {
             using var stream = Manager.GetStream(data);
             using var reader = new BinaryReader(stream);
             instance.Deserialize(reader);
         }
 
-        private static void InternalDeserializeCompressed<T>(ref T instance, byte[] data) where T : ISerializable
+        private static void InternalDeserializeCompressed<T>(ref T instance, Span<byte> data) where T : ISerializable
         {
             using var stream = Manager.GetStream(data);
             using var zip = new GZipStream(stream, CompressionMode.Decompress);
