@@ -1,5 +1,7 @@
-﻿using OctoAwesome.Logging;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
+using OctoAwesome.Network.Request;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
@@ -9,7 +11,11 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
+using System.IO.Compression;
+using System.Net.NetworkInformation;
+using System.Reflection.Metadata;
 
 namespace OctoAwesome.Network
 {
@@ -30,9 +36,10 @@ namespace OctoAwesome.Network
         private readonly PackagePool packagePool;
         private readonly IPool<Awaiter> awaiterPool;
         private readonly ConcurrentDictionary<uint, Awaiter> packages = new();
+        private readonly Pool<OfficialCommandDTO> requestPool;
 
-        private readonly Relay<object> simulation;
-        private readonly Relay<object> chunk;
+        private readonly Relay<object> simulationRelay;
+        private readonly Relay<object> chunkChannel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPackageManager"/> class.
@@ -50,18 +57,19 @@ namespace OctoAwesome.Network
             packagePool = typeContainer.Get<PackagePool>();
             awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
 
-            simulation = new Relay<object>();
-            chunk = new Relay<object>();
+            simulationRelay = new Relay<object>();
+            chunkChannel = new Relay<object>();
 
             hubSubscription
                 = updateHub
                 .ListenOn(DefaultChannels.Network)
                 .Subscribe(OnNext, error => logger.Error(error.Message, error));
 
-            simulationSource = updateHub.AddSource(simulation, DefaultChannels.Simulation);
-            chunkSource = updateHub.AddSource(chunk, DefaultChannels.Chunk);
+            simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
+            chunkSource = updateHub.AddSource(chunkChannel, DefaultChannels.Chunk);
 
-            clientSubscription = client.Packages.Subscribe(package => OnNext(package), err => OnError(err));
+            clientSubscription = client.Packages.Subscribe(OnNext, OnError);
+            requestPool = new();
 
         }
 
@@ -86,10 +94,49 @@ namespace OctoAwesome.Network
                 return;
             }
 
+            using var ms = Serializer.Manager.GetStream(package.Payload);
+            using Stream s = (package.PackageFlags & PackageFlags.Compressed) > 0 ? new GZipStream(ms, CompressionLevel.Optimal) : ms;
+            using var br = new BinaryReader(s);
 
-            //Is Compressed?
+            var desId = br.ReadUInt64();
 
-            //Is Array?
+            if (desId == typeof(OfficialCommandDTO).SerializationId())
+            {
+                //Is Array, currently only non array support?
+                if ((package.PackageFlags & PackageFlags.Array) == 0)
+                {
+                    Notification? notification = null;
+                    ;
+                    var dto = OfficialCommandDTO.Deserialize(br);
+                    switch (dto.Command)
+                    {
+                        case OfficialCommand.EntityNotification:
+                            notification = Serializer.DeserializePoolElement<EntityNotification>(entityNotificationPool, dto.Data);
+                            if (notification is not null)
+                                simulationRelay.OnNext(notification);
+
+                            break;
+                        case OfficialCommand.ChunkNotification:
+                            var notificationType = (BlockNotificationType)dto.Data[0];
+                            switch (notificationType)
+                            {
+                                case BlockNotificationType.BlockChanged:
+                                    notification = Serializer.DeserializePoolElement(blockChangedNotificationPool, dto.Data);
+                                    break;
+                                case BlockNotificationType.BlocksChanged:
+                                    notification = Serializer.DeserializePoolElement(blocksChangedNotificationPool, dto.Data);
+                                    break;
+                            }
+                            if (notification is not null)
+                                chunkChannel.OnNext(notification);
+
+                            break;
+                    }
+                }
+            }
+            //TODO Notification deserialization and pushing (2023_02_08)
+
+
 
             //Get Type Info
             //Is Poolable? And maybe get Pool
@@ -99,22 +146,49 @@ namespace OctoAwesome.Network
 
         }
 
-        /// <summary>
-        /// Gets called when a new notification is received.
-        /// </summary>
-        /// <param name="value">The received notification.</param>
-        public void OnNext(object value)
+        private void OnNext(object value)
         {
-            //object is ISerializable because of serialization?
-            if (value is not ISerializable serializable)
+            if (value is not Notification notification)
                 return;
 
-            //Fire and forget
 
-            var package = packagePool.Rent();
-            package.Payload = Serializer.Serialize(serializable);
-            client.SendPackageAndRelease(package);
+            OfficialCommand command;
+            byte[] payload;
+            switch (value)
+            {
+                case EntityNotification entityNotification:
+                    command = OfficialCommand.EntityNotification;
+                    BuildAndSendPackage(entityNotification, command);
+                    break;
+                case BlocksChangedNotification _:
+                case BlockChangedNotification _:
+                    command = OfficialCommand.ChunkNotification;
+                    BuildAndSendPackage(GenericCaster<object, SerializableNotification>.Cast(value), command);
+                    break;
+                default:
+                    return;
+            }
+
         }
+
+        private void BuildAndSendPackage(SerializableNotification data, OfficialCommand officialCommand)
+        {
+            var package = packagePool.Rent();
+            using (var memoryStream = Serializer.Manager.GetStream())
+            using (var binaryWriter = new BinaryWriter(memoryStream))
+            {
+                data.Serialize(binaryWriter);
+
+                var request = requestPool.Rent();
+                request.Data = memoryStream.ToArray();
+                request.Command = officialCommand;
+
+                package.Payload = Serializer.Serialize(request);
+                package.PackageFlags = PackageFlags.Notification;
+                client.SendPackageAndRelease(package);
+            }
+        }
+
 
         /// <summary>
         /// Gets called when an error occured while receiving.
@@ -131,8 +205,8 @@ namespace OctoAwesome.Network
             hubSubscription.Dispose();
             simulationSource.Dispose();
             chunkSource.Dispose();
-            chunk.Dispose();
-            simulation.Dispose();
+            chunkChannel.Dispose();
+            simulationRelay.Dispose();
             clientSubscription.Dispose();
         }
 

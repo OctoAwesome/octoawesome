@@ -56,20 +56,20 @@ namespace OctoAwesome
                 case ClientType.DesktopClient:
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
-                        FileName = $"./logs/octoClient-{DateTime.Now:ddMMyy_hhmmss}.log"
+                        FileName = $"./logs/octoClient-{DateTime.Now:dd_MM_yyyy}.log"
                     });
                     break;
                 case ClientType.GameServer:
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
-                    config.AddRule(LogLevel.Debug, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
+                    config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
-                        FileName = $"./logs/server-{DateTime.Now:ddMMyy_hhmmss}.log"
+                        FileName = $"./logs/server-{DateTime.Now:dd_MM_yyyy}.log"
                     });
                     break;
                 default:
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
-                        FileName = $"./logs/generic-{DateTime.Now:ddMMyy_hhmmss}.log"
+                        FileName = $"./logs/generic-{DateTime.Now:dd_MM_yyyy}.log"
                     });
                     break;
             }

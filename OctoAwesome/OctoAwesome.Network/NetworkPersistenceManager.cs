@@ -9,6 +9,7 @@ using OctoAwesome.Components;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Network.Request;
+using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
@@ -115,10 +116,6 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                Span<byte> guid = stackalloc byte[16];
-                universeGuid.TryWriteBytes(guid);
-
-                binaryWriter.Write(guid);
                 binaryWriter.Write(playerName);
 
                 var request = requestPool.Rent();

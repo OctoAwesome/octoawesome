@@ -5,11 +5,17 @@ using OctoAwesome.Serialization;
 using System.Buffers;
 using System.IO.Compression;
 using System.IO;
+using OctoAwesome.Logging;
 
 namespace OctoAwesome.GameServer
 {
     public class PackageActionHub
     {
+        private readonly ILogger logger;
+        public PackageActionHub(ILogger logger)
+        {
+            this.logger = logger.As(nameof(PackageActionHub));
+        }
 
         public record struct RequestContext(BinaryReader Reader, Package Package)
         {
@@ -105,18 +111,26 @@ namespace OctoAwesome.GameServer
             var desId = br.ReadUInt64();
 
             var rc = new RequestContext(br, package);
+            Action<RequestContext>? val = null;
+            if ((package.PackageFlags & PackageFlags.Array) > 0 && registeredStuffDic.TryGetValue(desId, out val))
+                val.Invoke(rc);
+            else if ((package.PackageFlags & PackageFlags.Array) == 0 && registeredStuff.TryGetValue(desId, out val))
+                val.Invoke(rc);
 
-            if ((package.PackageFlags & PackageFlags.Array) > 0)
-                registeredStuffDic[desId].Invoke(rc);
-            else
-                registeredStuff[desId].Invoke(rc);
-
-            if ((package.PackageFlags & PackageFlags.Response) > 0 
-                && package.Payload is not null 
+            if (val is not null
+                && (package.PackageFlags & PackageFlags.Response) > 0
+                && package.Payload is not null
                 && package.Payload.Length > 0)
+            {
+
+                logger.Trace($"Sen: Package with id:{package.UId} and Flags: {package.PackageFlags}");
                 _ = client.SendPackageAndReleaseAsync(package);
+            }
 
-
+            if(val is null)
+            {
+                logger.Trace($"Received invalid desId ({desId}) with flags: {package.PackageFlags}, send help");
+            }
         }
     }
 

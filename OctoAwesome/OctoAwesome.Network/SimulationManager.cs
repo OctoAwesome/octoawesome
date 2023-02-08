@@ -12,17 +12,17 @@ using System.Threading.Tasks;
 namespace OctoAwesome.Network
 {
     /// <summary>
-    /// Manager for an OctoAwesome game simulation.
+    /// Manager for an OctoAwesome game simulationRelay.
     /// </summary>
     public class SimulationManager
     {
         /// <summary>
-        /// Gets a value indicating whether the simulation is currently running.
+        /// Gets a value indicating whether the simulationRelay is currently running.
         /// </summary>
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// Gets the simulation.
+        /// Gets the simulationRelay.
         /// </summary>
         public Simulation Simulation => simulation;
 
@@ -49,7 +49,7 @@ namespace OctoAwesome.Network
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulationManager"/> class.
         /// </summary>
-        /// <param name="settings">The game settings for the simulation.</param>
+        /// <param name="settings">The game settings for the simulationRelay.</param>
         /// <param name="updateHub">The update hub.</param>
         public SimulationManager(ISettings settings, UpdateHub updateHub)
         {
@@ -93,7 +93,7 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// Start the game simulation.
+        /// Start the game simulationRelay.
         /// </summary>
         public void Start()
         {
@@ -121,7 +121,7 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// Stop the game simulation.
+        /// Stop the game simulationRelay.
         /// </summary>
         public void Stop()
         {
@@ -156,21 +156,21 @@ namespace OctoAwesome.Network
         public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
 
         /// <summary>
-        /// Loads a chunk column at a given location for a specified planet.
+        /// Loads a chunkChannel column at a given location for a specified planet.
         /// </summary>
-        /// <param name="planet">The planet to load the chunk column from.</param>
-        /// <param name="index2">The location to load the chunk column at.</param>
-        /// <returns>The loaded chunk column.</returns>
+        /// <param name="planet">The planet to load the chunkChannel column from.</param>
+        /// <param name="index2">The location to load the chunkChannel column at.</param>
+        /// <returns>The loaded chunkChannel column.</returns>
         /// <seealso cref="LoadColumn(int,OctoAwesome.Index2)"/>
         public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
             => planet.GlobalChunkCache.Subscribe(index2);
 
         /// <summary>
-        /// Loads a chunk column at a given location for a specified planet.
+        /// Loads a chunkChannel column at a given location for a specified planet.
         /// </summary>
-        /// <param name="planetId">The id of the planet to load the chunk column from.</param>
-        /// <param name="index2">The location to load the chunk column at.</param>
-        /// <returns>The loaded chunk column.</returns>
+        /// <param name="planetId">The id of the planet to load the chunkChannel column from.</param>
+        /// <param name="index2">The location to load the chunkChannel column at.</param>
+        /// <returns>The loaded chunkChannel column.</returns>
         /// <seealso cref="LoadColumn(IPlanet,OctoAwesome.Index2)"/>
         public IChunkColumn LoadColumn(int planetId, Index2 index2)
             => LoadColumn(GetPlanet(planetId), index2);

@@ -79,14 +79,13 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(typeof(OfficialCommandDTO).SerializationId());
-
                 data.Serialize(binaryWriter);
 
                 var request = requestPool.Rent();
                 request.Data = memoryStream.ToArray();
                 request.Command = officialCommand;
 
+                package.PackageFlags = PackageFlags.Notification;
                 package.Payload = Serializer.Serialize(request);
                 SendPackageAndRelease(package);
             }

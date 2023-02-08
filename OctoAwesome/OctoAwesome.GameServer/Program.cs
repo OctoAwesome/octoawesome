@@ -178,9 +178,9 @@ namespace OctoAwesome.GameServer
             var ingameRoot = new Command("execute");
             var root = new RootCommand("starts the server with default options")
             {
-                ingameRoot
+                ingameRoot, portOption
             };
-            root.SetHandler(() => logger.Debug("Initial Root Command"));
+            root.SetHandler(sh.Start, portOption);
 
             var stopCommand = new Command("stop");
             stopCommand.SetHandler(() => Console.WriteLine("Stopped"));

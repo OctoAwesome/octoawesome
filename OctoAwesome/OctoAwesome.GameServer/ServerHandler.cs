@@ -54,7 +54,7 @@ namespace OctoAwesome.GameServer
             UpdateHub = typeContainer.Get<IUpdateHub>();
             server = typeContainer.Get<Server>();
             serializationTypeProvider = typeContainer.Get<SerializationIdTypeProvider>();
-            packageActionHub = new PackageActionHub();
+            packageActionHub = new PackageActionHub(logger);
 
             CommandFunctions = new ConcurrentDictionary<ushort, CommandFunc>(new List<(OfficialCommand, CommandFunc)>
                 {
@@ -70,9 +70,9 @@ namespace OctoAwesome.GameServer
 
             packageActionHub.Register<OfficialCommandDTO>((OfficialCommandDTO req, PackageActionHub.RequestContext cont) =>
             {
-                //TODO Add Client side, because we dont send chunk column, but OfficialCommandDTO Instead. Need to handle this, otherwise errors
                 req.Data = CommandFunctions[(ushort)req.Command].Invoke(new CommandParameter(cont.Package.BaseClient.Id, req.Data));
-                cont.SetResult(req);
+                if (req.Data is not null)
+                    cont.SetResult(req);
             });
         }
 
@@ -105,49 +105,21 @@ namespace OctoAwesome.GameServer
         /// <summary>
         /// Gets called when a new package is received.
         /// </summary>
-        /// <param name="value">The received package.</param>
-        public void OnNext(Package value)
+        /// <param name="package">The received package.</param>
+        public void OnNext(Package package)
         {
             /*
              1. Get Deserialization via reflection
              2. Cache Reflection call method
              3. Call Method to get deserialized object
              4. (Optional) Unsafe cast to runtime type
-             5. Get Handler for this type (via hub)
-             6. Call Method of hub so it can handle it all
+             5. Get Handler for this type (via hub) (done)
+             6. Call Method of hub so it can handle it all (Done)
              7. Profit
              */
 
-            packageActionHub.Dispatch(value, value.BaseClient);
-
-            //var payload = value.Payload;
-            //var uid = value.UId;
-
-            //if (value.Command == 0 && value.Payload.Length == 0)
-            //{
-            //    logger.Debug("Received null package");
-            //    return;
-            //}
-            //logger.Trace("Received a new Package with ID: " + value.UId);
-            //try
-            //{
-            //    value.Payload = CommandFunctions[value.Command](new CommandParameter(value.BaseClient.Id, value.Payload));
-            //}
-            //catch (Exception ex)
-            //{
-            //    logger.Error($"Dispatch failed in Command {value.OfficialCommand}\r\n{ex}", ex);
-            //    return;
-            //}
-
-            //logger.Trace(value.OfficialCommand);
-
-            //if (value.Payload == null)
-            //{
-            //    logger.Trace($"Payload is null, returning from Command {value.OfficialCommand} without sending return package.");
-            //    return;
-            //}
-
-            //_ = value.BaseClient.SendPackageAsync(value);
+            logger.Trace($"Rec: Package with id:{package.UId} and Flags: {package.PackageFlags}");
+            packageActionHub.Dispatch(package, package.BaseClient);
         }
     }
 

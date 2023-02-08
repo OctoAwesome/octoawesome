@@ -11,8 +11,10 @@ namespace OctoAwesome.Network
         None = 1<<0,
         Request = 1<<1,
         Response = 1<<2,
-        Compressed = 1<<3,
-        Array = 1<<4,
+        Notification = 1<<3,
+        Compressed = 1<<4,
+        Array = 1<<5,
+
         Reserved = 1<<15
     }
 
