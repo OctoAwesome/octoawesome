@@ -95,8 +95,8 @@ namespace OctoAwesome.Network
         public override void Dispose()
         {
             base.Dispose();
+            networkSubscription?.Dispose();
             ServerSubscription?.Dispose();
-            networkSubscription.Dispose();
         }
     }
 }

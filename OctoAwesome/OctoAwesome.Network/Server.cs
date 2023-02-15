@@ -16,6 +16,10 @@ namespace OctoAwesome.Network
         /// Called when a new client has connected to the server.
         /// </summary>
         public event EventHandler<ConnectedClient>? OnClientConnected;
+        /// <summary>
+        /// Called when a client has been disconnected from the server.
+        /// </summary>
+        public event EventHandler<ConnectedClient>? OnClientDisconnected;
 
         private TcpListener tcpListener = default!;
         private readonly List<ConnectedClient> connectedClients;
@@ -78,11 +82,12 @@ namespace OctoAwesome.Network
             Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");
             var listener = (TcpListener)ar.AsyncState;
 
-            var tmpSocket = listener.EndAcceptTcpClient(ar);
+            var tmpClient = listener.EndAcceptTcpClient(ar);
 
-            tmpSocket.NoDelay = true;
+            tmpClient.NoDelay = true;
 
-            var client = new ConnectedClient(tmpSocket);
+            var client = new ConnectedClient(tmpClient);
+            client.ClientDisconnected += Client_ClientDisconnected;
             client.Start();
 
             OnClientConnected?.Invoke(this, client);
@@ -91,6 +96,17 @@ namespace OctoAwesome.Network
                 connectedClients.Add(client);
 
             listener.BeginAcceptTcpClient(OnClientAccepted, listener);
+        }
+
+        private void Client_ClientDisconnected(object? sender, EventArgs e)
+        {
+            if (sender is ConnectedClient cc)
+            {
+                OnClientDisconnected?.Invoke(this, cc);
+                connectedClients.Remove(cc);
+                cc.Dispose();
+                //Socket.Select()
+            }
         }
     }
 }

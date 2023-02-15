@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Threading;
+﻿using NonSucking.Framework.Extension.Collections;
+
+using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +14,7 @@ namespace OctoAwesome.Rx
     /// <seealso cref="Relay{T}"/>
     public class ConcurrentRelay<T> : IObservable<T>, IObserver<T>, IDisposable
     {
-        private readonly List<RelaySubscription> subscriptions;
+        private readonly EnumerationModifiableConcurrentList<RelaySubscription> subscriptions;
         private readonly LockSemaphore lockSemaphore;
 
         /// <summary>
@@ -28,9 +31,9 @@ namespace OctoAwesome.Rx
         {
             using var scope = lockSemaphore.Wait();
 
-            for (int i = 0; i < subscriptions.Count; i++)
+            foreach (var sub in subscriptions)
             {
-                subscriptions[i].Observer.OnCompleted();
+                sub.Observer.OnCompleted();
             }
         }
 
@@ -39,9 +42,9 @@ namespace OctoAwesome.Rx
         {
             using var scope = lockSemaphore.Wait();
 
-            for (int i = 0; i < subscriptions.Count; i++)
+            foreach (var sub in subscriptions)
             {
-                subscriptions[i].Observer.OnError(error);
+                sub.Observer.OnError(error);
             }
         }
 
@@ -50,9 +53,9 @@ namespace OctoAwesome.Rx
         {
             using var scope = lockSemaphore.Wait();
 
-            for (int i = 0; i < subscriptions.Count; i++)
+            foreach (var sub in subscriptions)
             {
-                subscriptions[i].Observer.OnNext(value);
+                sub.Observer.OnNext(value);
             }
         }
 
@@ -61,8 +64,7 @@ namespace OctoAwesome.Rx
         {
             var sub = new RelaySubscription(this, observer);
 
-            using (var scope = lockSemaphore.Wait())
-                subscriptions.Add(sub);
+            subscriptions.Add(sub);
 
             return sub;
         }
@@ -70,16 +72,12 @@ namespace OctoAwesome.Rx
         /// <inheritdoc />
         public void Dispose()
         {
-
             subscriptions.Clear();
             lockSemaphore.Dispose();
         }
 
         private void Unsubscribe(RelaySubscription subscription)
         {
-
-            using var scope = lockSemaphore.Wait();
-
             subscriptions.Remove(subscription);
         }
 

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using OctoAwesome.Extension;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using OctoAwesome.Logging;
+using System.IO;
 
 namespace OctoAwesome.Network
 {
@@ -20,10 +22,11 @@ namespace OctoAwesome.Network
         private static uint NextId => ++nextId;
         private static uint nextId;
 
-        static BaseClient()
-        {
-            nextId = 0;
-        }
+        /// <summary>
+        /// Called when a the client has been disconnected from the server.
+        /// </summary>
+        public event EventHandler<EventArgs>? ClientDisconnected;
+
         /// <summary>
         /// Gets the client id.
         /// </summary>
@@ -43,11 +46,9 @@ namespace OctoAwesome.Network
             set => tcpClient = NullabilityHelper.NotNullAssert(value);
         }
 
-
-
         private Package? currentPackage;
         private readonly PackagePool packagePool;
-
+        private readonly ILogger logger;
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentRelay<Package> packages;
@@ -55,6 +56,10 @@ namespace OctoAwesome.Network
         private NetworkStream stream;
 
 
+        static BaseClient()
+        {
+            nextId = 0;
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseClient"/> class.
         /// </summary>
@@ -64,7 +69,7 @@ namespace OctoAwesome.Network
             packages = new ConcurrentRelay<Package>();
 
             packagePool = TypeContainer.Get<PackagePool>();
-
+            logger = TypeContainer.Get<ILogger>().As(typeof(BaseClient));
             cancellationTokenSource = new CancellationTokenSource();
 
             Id = NextId;
@@ -78,25 +83,36 @@ namespace OctoAwesome.Network
         /// <returns>The created receiving task.</returns>
         public async ValueTask Start()
         {
+            logger.Debug($"Starting connection to {TcpClient.Client.RemoteEndPoint}");
             stream = TcpClient.GetStream();
+
             var buffer = new byte[1024 * 1024];
-            do
+            try
             {
-                var readBytes = await stream.ReadAsync(buffer, cancellationTokenSource.Token);
-
-                if (readBytes < 1)
-                {
-                    //abort!
-                    return;
-                }
-
-                int offset = 0;
                 do
                 {
-                    offset += DataReceived(buffer, readBytes, offset);
-                } while (offset < readBytes);
+                    var readBytes = await stream.ReadAsync(buffer, cancellationTokenSource.Token);
 
-            } while (true);
+                    if (readBytes < 1)
+                    {
+                        //abort!
+                        Stop();
+                        return;
+                    }
+
+                    int offset = 0;
+                    do
+                    {
+                        offset += DataReceived(buffer, readBytes, offset);
+                    } while (offset < readBytes);
+
+                } while (true);
+            }
+            catch (IOException)
+            {
+                Stop();
+                throw;
+            }
 
         }
 
@@ -105,6 +121,8 @@ namespace OctoAwesome.Network
         /// </summary>
         public void Stop()
         {
+            logger.Debug($"Stopping connection {TcpClient.Client.RemoteEndPoint}");
+            ClientDisconnected?.Invoke(this, EventArgs.Empty);
             cancellationTokenSource.Cancel();
         }
 
@@ -125,6 +143,7 @@ namespace OctoAwesome.Network
         /// <param name="package">The package to send asynchronously.</param>
         public async ValueTask SendPackageAsync(Package package)
         {
+            logger.Debug($"Send package with id: {package.UId} and Flags: {package.PackageFlags} to client: {TcpClient.Client.RemoteEndPoint}");
             byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
             package.SerializePackage(bytes, 0);
             await SendAsync(bytes, bytes.Length);
@@ -155,8 +174,14 @@ namespace OctoAwesome.Network
 
         private async ValueTask SendInternal(byte[] data, int len)
         {
-            await stream.WriteAsync(data.AsMemory(0, len));
-            Console.WriteLine("Send package");
+            try
+            {
+                await stream.WriteAsync(data.AsMemory(0, len));
+            }
+            catch (IOException)
+            {
+                Stop();
+            }
         }
 
 
@@ -171,7 +196,8 @@ namespace OctoAwesome.Network
 
                 if (length - bufferOffset < Package.HEAD_LENGTH)
                 {
-                    var ex = new Exception($"Buffer is to small for package head deserialization [length: {length} | offset: {bufferOffset}]");
+                    var ex = new ArgumentOutOfRangeException(nameof(buffer), $"Buffer is to small for package head deserialization [buffersize: {buffer.Length} | length: {length} | offset: {bufferOffset}]");
+                    ex.Data.Add("buffer.Length", buffer.Length);
                     ex.Data.Add(nameof(length), length);
                     ex.Data.Add(nameof(bufferOffset), bufferOffset);
                     throw ex;
@@ -195,7 +221,6 @@ namespace OctoAwesome.Network
             {
                 var package = currentPackage;
 
-                Debug.WriteLine("Package:  " + package.UId);
                 packages.OnNext(package);
                 currentPackage = null;
             }

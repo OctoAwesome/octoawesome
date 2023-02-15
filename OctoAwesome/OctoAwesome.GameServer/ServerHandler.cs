@@ -11,6 +11,7 @@ using OctoAwesome.Pooling;
 using OctoAwesome.Network.Request;
 using System.Xml;
 using OctoAwesome.Database;
+using System;
 
 namespace OctoAwesome.GameServer
 {
@@ -84,6 +85,7 @@ namespace OctoAwesome.GameServer
             SimulationManager.Start(); //Temp
             server.Start(new IPEndPoint(IPAddress.IPv6Any, port));
             server.OnClientConnected += ServerOnClientConnected;
+            server.OnClientDisconnected += ServerOnClientDisconnected;
         }
 
         /// <summary>
@@ -102,6 +104,12 @@ namespace OctoAwesome.GameServer
             e.ServerSubscription = e.Packages.Subscribe(OnNext, ex => logger.Error(ex.Message, ex));
         }
 
+        private void ServerOnClientDisconnected(object? sender, ConnectedClient e)
+        {
+            logger.Debug("Ciao Spieler");
+            e.ServerSubscription?.Dispose();
+        }
+
         /// <summary>
         /// Gets called when a new package is received.
         /// </summary>
@@ -116,6 +124,8 @@ namespace OctoAwesome.GameServer
              5. Get Handler for this type (via hub) (done)
              6. Call Method of hub so it can handle it all (Done)
              7. Profit
+            
+             10. Implement solidly 
              */
 
             logger.Trace($"Rec: Package with id:{package.UId} and Flags: {package.PackageFlags}");
