@@ -122,6 +122,15 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
         pool.RemoveAt(index);
     }
 
+    /// <inheritdoc cref="System.Collections.Generic.List{T}"/>
+    public void RemoveAll(Func<T, bool> predicate)
+    {
+        foreach (var c in this.Where(predicate))
+        {
+            Remove(c);
+        }
+    }
+
     /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
     public Enumerator GetEnumerator() => pool.Rent();
 

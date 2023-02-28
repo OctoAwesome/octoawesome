@@ -204,6 +204,11 @@ namespace OctoAwesome.Client.Components
                 Keys = new List<Keys>();
                 Actions = new List<Action<KeyType>>();
             }
+
+            public override string ToString()
+            {
+                return $"{Id}: {string.Join(" | ", Keys)}";
+            }
         }
 
         public enum KeyType

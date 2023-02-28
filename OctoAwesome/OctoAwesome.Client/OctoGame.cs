@@ -224,6 +224,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:freemouse", UI.Languages.OctoKeys.freemouse);
             KeyMapper.RegisterBinding("octoawesome:fullscreen", UI.Languages.OctoKeys.fullscreen);
             KeyMapper.RegisterBinding("octoawesome:teleport", UI.Languages.OctoKeys.teleport);
+            KeyMapper.RegisterBinding("octoawesome:toggle_chat", UI.Languages.OctoKeys.toggle_chat);
             KeyMapper.RegisterBinding("octoawesome:toggleAmbientOcclusion", UI.Languages.OctoKeys.toggleAmbientOcclusion);
             KeyMapper.RegisterBinding("octoawesome:toggleWireFrame", UI.Languages.OctoKeys.toggleWireFrame);
             KeyMapper.RegisterBinding("octoawesome:toggleCamera", "Toggle Camera");
@@ -266,6 +267,7 @@ namespace OctoAwesome.Client
                 { "octoawesome:freemouse", Keys.F12 },
                 { "octoawesome:fullscreen", Keys.F11 },
                 { "octoawesome:teleport", Keys.T },
+                { "octoawesome:toggle_chat", Keys.Enter },
                 { "octoawesome:toggleAmbientOcclusion", Keys.O },
                 { "octoawesome:toggleWireFrame", Keys.J }
             };

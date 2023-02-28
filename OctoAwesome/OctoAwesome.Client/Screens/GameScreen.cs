@@ -32,6 +32,7 @@ namespace OctoAwesome.Client.Screens
         private readonly ToolbarControl toolbar;
         private readonly MinimapControl minimap;
         private readonly CrosshairControl crosshair;
+        private readonly ChatControl chat;
         private readonly HealthBarControl healthbar;
         private readonly PlayerComponent playerComponent;
         private readonly IDefinitionManager definitionManager;
@@ -91,6 +92,25 @@ namespace OctoAwesome.Client.Screens
             crosshair.HorizontalAlignment = HorizontalAlignment.Center;
             crosshair.VerticalAlignment = VerticalAlignment.Center;
             Controls.Add(crosshair);
+
+            
+            chat = new ChatControl()
+                   {
+                       HorizontalAlignment = HorizontalAlignment.Left,
+                       VerticalAlignment = VerticalAlignment.Bottom,
+                       Height = 200,
+                       Width = 500,
+                       Visible = false
+                   };
+            Controls.Add(chat);
+            chat.OnMessage += (message) =>
+                              {
+                                  // Do whatever you want with the message here:
+                                  if (message.StartsWith("/"))
+                                      chat.AddTextMessage($"Command: {message}");
+                                  else
+                                      chat.AddTextMessage(message);
+                              };
 
             Title = UI.Languages.OctoClient.Game;
 
@@ -386,65 +406,71 @@ namespace OctoAwesome.Client.Screens
                     ScreenManager.NavigateBack();
                 }, ScreenManager.Game.Player.Position.Position));
             });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggle_chat", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+                chat.Visible = true;
+            });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
-                    return;
+                                                                            {
+                                                                                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                                                                                    return;
 
-                ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
-            });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
-                    return;
+                                                                                ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
+                                                                            });
+                                                                            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
+                                                                            {
+                                                                                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                                                                                    return;
 
-                ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
-            });
+                                                                                ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
+                                                                            });
 
-            List<IViewCreator> viewCreators = new();
-            foreach (var item in AssemblyLoadContext.Default.Assemblies)
-            {
-                try
-                {
-                    foreach (var type in item.GetTypes())
-                    {
-                        if (!type.IsInterface && !type.IsAbstract && type.IsAssignableTo(typeof(IViewCreator)))
-                        {
-                            if (Activator.CreateInstance(type) is IViewCreator viewCreator)
-                                viewCreators.Add(viewCreator);
-                        }
-                    }
-                }
-                catch
-                {
-                }
-            }
+                                                                            List<IViewCreator> viewCreators = new();
+                                                                            foreach (var item in AssemblyLoadContext.Default.Assemblies)
+                                                                            {
+                                                                                try
+                                                                                {
+                                                                                    foreach (var type in item.GetTypes())
+                                                                                    {
+                                                                                        if (!type.IsInterface && !type.IsAbstract && type.IsAssignableTo(typeof(IViewCreator)))
+                                                                                        {
+                                                                                            if (Activator.CreateInstance(type) is IViewCreator viewCreator)
+                                                                                                viewCreators.Add(viewCreator);
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                catch
+                                                                                {
+                                                                                }
+                                                                            }
 
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
-                    return;
+                                                                            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
+                                                                            {
+                                                                                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                                                                                    return;
 
-                ScreenManager.Camera.ViewCreator = viewCreators[(viewCreators.IndexOf(ScreenManager.Camera.ViewCreator) + 1) % viewCreators.Count];
+                                                                                ScreenManager.Camera.ViewCreator = viewCreators[(viewCreators.IndexOf(ScreenManager.Camera.ViewCreator) + 1) % viewCreators.Count];
 
-            });
+                                                                            });
 
-            bool lastToggle = false;
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:zoom", type =>
-            {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
-                    return;
+                                                                            bool lastToggle = false;
+                                                                            ScreenManager.Game.KeyMapper.AddAction("octoawesome:zoom", type =>
+                                                                            {
+                                                                                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                                                                                    return;
 
-                if (!lastToggle)
-                    ScreenManager.Camera.RecreateProjection(30);
-                else
-                    ScreenManager.Camera.RecreateProjection();
-                lastToggle = !lastToggle;
+                                                                                if (!lastToggle)
+                                                                                    ScreenManager.Camera.RecreateProjection(30);
+                                                                                else
+                                                                                    ScreenManager.Camera.RecreateProjection();
+                                                                                lastToggle = !lastToggle;
 
-            });
+                                                                            });
 
 
-        }
+                                                                        }
 
         #endregion
 

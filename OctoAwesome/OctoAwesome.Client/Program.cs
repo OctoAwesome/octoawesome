@@ -15,6 +15,7 @@ namespace OctoAwesome.Client
     /// </summary>
     public static class Program
     {
+        private static (int abc, string def) asdf;
         static OctoGame? game;
         /// <summary>
         /// The main entry point for the application.

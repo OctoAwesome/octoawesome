@@ -110,6 +110,12 @@ namespace OctoAwesome
             => (T)GetUnregistered(typeof(T));
 
         /// <inheritdoc />
+        public IEnumerable<Type> GetRegisteredTypes()
+        {
+            return typeInformationRegister.Keys;
+        }
+
+        /// <inheritdoc />
         public object? CreateObject(Type type)
         {
             var tmpList = new List<object?>();

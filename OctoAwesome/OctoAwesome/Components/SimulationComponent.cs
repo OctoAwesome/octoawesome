@@ -6,6 +6,7 @@ using OctoAwesome.EntityComponents;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using OctoAwesome.Collections;
 
 namespace OctoAwesome.Components
 {
@@ -31,7 +32,7 @@ namespace OctoAwesome.Components
         /// <summary>
         /// Entities simulated by this <see cref="SimulationComponent{T}"/>.
         /// </summary>
-        protected readonly List<T> values = new();
+        protected readonly EnumerationmodifiableList<T> values = new();
 
         /// <inheritdoc />
         public void Add(T value)
@@ -92,7 +93,7 @@ namespace OctoAwesome.Components
         /// <summary>
         /// Entities simulated by this <see cref="SimulationComponent{T, S, C1}"/>.
         /// </summary>
-        protected readonly List<TCachedContainer> values = new();
+        protected readonly EnumerationmodifiableList<TCachedContainer> values = new();
 
         /// <inheritdoc />
         public void Add(TContainer value)
@@ -181,7 +182,7 @@ namespace OctoAwesome.Components
         /// <summary>
         /// Entities simulated by this <see cref="SimulationComponent{T, S, C1, C2}"/>.
         /// </summary>
-        protected readonly List<TCachedContainer> values = new();
+        protected readonly EnumerationmodifiableList<TCachedContainer> values = new();
 
         /// <inheritdoc />
         public void Add(TContainer value)
@@ -274,7 +275,7 @@ namespace OctoAwesome.Components
         /// <summary>
         /// Entities simulated by this <see cref="SimulationComponent{T, S, C1, C2, C3}"/>.
         /// </summary>
-        protected readonly List<TCachedContainer> values = new();
+        protected readonly EnumerationmodifiableList<TCachedContainer> values = new();
 
         /// <inheritdoc />
         public void Add(TContainer value)

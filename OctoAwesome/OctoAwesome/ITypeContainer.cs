@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace OctoAwesome
 {
@@ -120,5 +122,11 @@ namespace OctoAwesome
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         T? GetOrNull<T>() where T : class;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Type> GetRegisteredTypes();
     }
 }
