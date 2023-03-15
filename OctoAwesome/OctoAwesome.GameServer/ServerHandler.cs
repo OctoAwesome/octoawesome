@@ -36,7 +36,14 @@ namespace OctoAwesome.GameServer
         private readonly PackageActionHub packageActionHub;
         public readonly ConcurrentDictionary<ushort, CommandFunc> CommandFunctions;
 
-
+        /*
+         TODO:
+            - Try to get typed parameters into func, so deserialize can be done outside
+            - Return Something (Sascha wants typeof(ISerializable?))
+            - Split Notifications and Requests (No Notification via OfficialCommandDTO)
+            - Client centralized react on server responses and notifications (Needs a solution)
+            - Try to Get rid of the switch cases / on nextes somehow somewhere somewhat
+         */
         public delegate byte[]? CommandFunc(CommandParameter parameter);
 
         /// <summary>
@@ -69,12 +76,14 @@ namespace OctoAwesome.GameServer
                 }
                 .ToDictionary(x => (ushort)x.Item1, x => x.Item2));
 
-            packageActionHub.Register<OfficialCommandDTO>((OfficialCommandDTO req, PackageActionHub.RequestContext cont) =>
+            packageActionHub.Register((OfficialCommandDTO req, PackageActionHub.RequestContext cont) =>
             {
+                logger.Debug($"Got Official command with id {req.Command}");
                 req.Data = CommandFunctions[(ushort)req.Command].Invoke(new CommandParameter(cont.Package.BaseClient.Id, req.Data));
                 if (req.Data is not null)
                     cont.SetResult(req);
             });
+
         }
 
         /// <summary>

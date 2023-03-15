@@ -11,9 +11,11 @@ namespace OctoAwesome.Notifications
         /// <summary>
         /// Gets or sets the id of the sender of this notification.
         /// </summary>
+        [NoosonIgnore]
         public uint SenderId { get; set; }
 
         private IPool? pool;
+        [NoosonIgnore]
         private IPool Pool
         {
             get => NullabilityHelper.NotNullAssert(pool, $"{nameof(IPoolElement)} was not initialized!");

@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -8,7 +9,8 @@ namespace OctoAwesome
     /// <summary>
     /// Base Class for all components.
     /// </summary>
-    public abstract class Component : IComponent
+    [Nooson]
+    public abstract partial class Component : IComponent, ISerializable<Component>
     {
         /// <inheritdoc />
         public bool Enabled { get; set; }
@@ -25,17 +27,17 @@ namespace OctoAwesome
             Sendable = false;
         }
 
-        /// <inheritdoc />
-        public virtual void Serialize(BinaryWriter writer)
-        {
-            writer.Write(Enabled);
-        }
+        ///// <inheritdoc />
+        //public virtual void Serialize(BinaryWriter writer)
+        //{
+        //    writer.Write(Enabled);
+        //}
 
-        /// <inheritdoc />
-        public virtual void Deserialize(BinaryReader reader)
-        {
-            Enabled = reader.ReadBoolean();
-        }
+        ///// <inheritdoc />
+        //public virtual void Deserialize(BinaryReader reader)
+        //{
+        //    Enabled = reader.ReadBoolean();
+        //}
 
         /// <summary>
         /// Called when a value is changed.

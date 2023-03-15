@@ -353,10 +353,15 @@ namespace OctoAwesome.Runtime
         /// <param name="notification">The received notification.</param>
         public void OnNext(object notification)
         {
-            if (notification is BlockChangedNotification blockChanged)
-                SaveChunk(blockChanged);
-            else if (notification is BlocksChangedNotification blocksChanged)
-                SaveChunk(blocksChanged);
+            switch (notification)
+            {
+                case BlockChangedNotification blockChanged:
+                    SaveChunk(blockChanged);
+                    break;
+                case BlocksChangedNotification blocksChanged:
+                    SaveChunk(blocksChanged);
+                    break;
+            }
         }
 
         private void SaveChunk(BlockChangedNotification chunkNotification)

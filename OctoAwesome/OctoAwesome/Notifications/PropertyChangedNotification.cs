@@ -1,12 +1,14 @@
 ﻿using System.IO;
 using OctoAwesome.Extension;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Notifications
 {
     /// <summary>
     /// Notification for a property change.
     /// </summary>
-    public class PropertyChangedNotification : SerializableNotification
+    [Nooson]
+    public partial class PropertyChangedNotification : SerializableNotification, IConstructionSerializable<PropertyChangedNotification>
     {
         private string? issuer, property;
         private byte[]? value;
@@ -38,23 +40,6 @@ namespace OctoAwesome.Notifications
             set => this.value = NullabilityHelper.NotNullAssert(value, $"{nameof(Value)} cannot be initialized with null!");
         }
 
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            Issuer = reader.ReadString();
-            Property = reader.ReadString();
-            var count = reader.ReadInt32();
-            Value = reader.ReadBytes(count);
-        }
-
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(Issuer);
-            writer.Write(Property);
-            writer.Write(Value.Length);
-            writer.Write(Value);
-        }
 
         /// <inheritdoc />
         protected override void OnRelease()

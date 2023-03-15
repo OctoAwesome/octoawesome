@@ -2,8 +2,6 @@
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.OctoMath;
 
-using System;
-
 namespace OctoAwesome.Basics.Definitions.Items
 {
     /// <summary>

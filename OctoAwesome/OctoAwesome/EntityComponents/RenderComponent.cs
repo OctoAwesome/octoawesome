@@ -11,7 +11,8 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for rendering entities.
     /// </summary>
-    public class RenderComponent : Component, IEntityComponent, IEquatable<RenderComponent?>
+    [Nooson]
+    public partial class RenderComponent : Component, IEntityComponent, IEquatable<RenderComponent?>
     {
         private string? name, modelName, textureName;
 
@@ -53,26 +54,6 @@ namespace OctoAwesome.EntityComponents
         public RenderComponent()
         {
             Sendable = true;
-        }
-
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(Name);
-            writer.Write(ModelName);
-            writer.Write(TextureName);
-            writer.Write(BaseZRotation);
-            base.Serialize(writer);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            Name = reader.ReadString();
-            ModelName = reader.ReadString();
-            TextureName = reader.ReadString();
-            BaseZRotation = reader.ReadSingle();
-            base.Deserialize(reader);
         }
 
         /// <inheritdoc/>

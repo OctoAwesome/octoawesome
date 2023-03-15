@@ -6,13 +6,14 @@ using OctoAwesome.EntityComponents;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Components
 {
     /// <summary>
     /// Baseclass of all SimulationComponents who extend the <see cref="Simulation"/>.
     /// </summary>
-    public abstract class SimulationComponent : Component
+    public abstract partial class SimulationComponent : Component
     {
         /// <summary>
         /// Update method of this <see cref="Component"/>.

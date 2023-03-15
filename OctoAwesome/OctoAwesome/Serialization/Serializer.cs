@@ -14,6 +14,9 @@ namespace OctoAwesome.Serialization
     /// </summary>
     public static class Serializer
     {
+        /// <summary>
+        /// Instance of the <see cref="RecyclableMemoryStreamManager"/> for pooling memory streams.
+        /// </summary>
         public static RecyclableMemoryStreamManager Manager { get; } = new RecyclableMemoryStreamManager();
 
         /// <summary>
@@ -23,20 +26,6 @@ namespace OctoAwesome.Serialization
         /// <typeparam name="T">The type of the object to serialize.</typeparam>
         /// <returns>The serialized byte array data.</returns>
         public static byte[] Serialize<T>(T obj) where T : ISerializable
-        {
-            using var stream = Manager.GetStream(nameof(Serialize));
-            using var writer = new BinaryWriter(stream);
-            obj.Serialize(writer);
-            return stream.ToArray();
-        }
-
-        /// <summary>
-        /// Serializes a generic serializable instance to an array of bytes.
-        /// </summary>
-        /// <param name="obj">The object to serialize.</param>
-        /// <typeparam name="T">The type of the object to serialize.</typeparam>
-        /// <returns>The serialized byte array data.</returns>
-        public static byte[] Serialize<T>(INoosonSerializable<T> obj)
         {
             using var stream = Manager.GetStream(nameof(Serialize));
             using var writer = new BinaryWriter(stream);
@@ -93,6 +82,34 @@ namespace OctoAwesome.Serialization
             var obj = new T();
             InternalDeserialize(ref obj, data);
             return obj;
+        }
+
+        /// <summary>
+        /// Deserializes a generic deserializable instance from an array of bytes.
+        /// </summary>
+        /// <param name="data">The data to deserialize the instance from.</param>
+        /// <typeparam name="T">The type of the object to deserialize.</typeparam>
+        /// <returns>The deserialized object.</returns>
+        public static T DeserializeNooson<T>(Span<byte> data) where T : IConstructionSerializable<T>
+        {
+            using var stream = Manager.GetStream(data);
+            using var reader = new BinaryReader(stream);
+            return T.DeserializeAndCreate(reader);
+        }
+
+        /// <summary>
+        /// Deserializes a generic deserializable instance from an array of bytes.
+        /// </summary>
+        /// <param name="instance">Existing instance to deserialize into.</param>
+        /// <param name="data">The data to deserialize the instance from.</param>
+        /// <typeparam name="T">The type of the object to deserialize.</typeparam>
+        /// <returns>The deserialized object.</returns>
+        public static T DeserializeNooson<T>(T instance, Span<byte> data) where T : ISerializable
+        {
+            using var stream = Manager.GetStream(data);
+            using var reader = new BinaryReader(stream);
+            instance.Deserialize(reader);
+            return instance;
         }
 
         /// <summary>

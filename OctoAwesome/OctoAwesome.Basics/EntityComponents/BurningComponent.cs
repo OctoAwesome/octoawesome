@@ -5,21 +5,19 @@ using OctoAwesome.Components;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using OctoAwesome;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using OctoAwesome.Extension;
 using static OctoAwesome.StateMachine;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Basics.EntityComponents;
 
-internal class ProductionInventoriesComponent : Component, IEntityComponent
+[Nooson]
+internal partial class ProductionInventoriesComponent : Component, IEntityComponent, IConstructionSerializable<ProductionInventoriesComponent>
 {
     public InventoryComponent InputInventory { get; set; }
     public InventoryComponent OutputInventory { get; set; }
@@ -39,24 +37,9 @@ internal class ProductionInventoriesComponent : Component, IEntityComponent
         ProductionInventory = new(fixedSlot, slotCountProduction);
     }
 
-    public override void Serialize(BinaryWriter writer)
-    {
-        base.Serialize(writer);
-        InputInventory.Serialize(writer);
-        OutputInventory.Serialize(writer);
-        ProductionInventory.Serialize(writer);
-    }
-
-    public override void Deserialize(BinaryReader reader)
-    {
-        base.Deserialize(reader);
-        InputInventory.Deserialize(reader);
-        OutputInventory.Deserialize(reader);
-        ProductionInventory.Deserialize(reader);
-    }
 }
 
-internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IUpdateable
+internal partial class BurningComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IUpdateable
 {
     private StateMachine stateMachine;
     private RecipeService recipeService;
@@ -69,12 +52,13 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
     private int energyLeft;
     private IReadOnlyCollection<Recipe>? recipes;
 
+    [NoosonIgnore]
     private IReadOnlyCollection<Recipe> Recipes
     {
         get => NullabilityHelper.NotNullAssert(recipes, $"{nameof(Recipes)} was not initialized!");
         set => recipes = NullabilityHelper.NotNullAssert(value, $"{nameof(Recipes)} cannot be initialized with null!");
     }
-
+    [NoosonIgnore]
     internal ProductionInventoriesComponent InventoryComponent
     {
         get => NullabilityHelper.NotNullAssert(inventoryComponent, $"{nameof(InventoryComponent)} was not initialized!");

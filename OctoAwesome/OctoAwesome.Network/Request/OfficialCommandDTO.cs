@@ -13,7 +13,7 @@ namespace OctoAwesome.Network.Request;
 
 [SerializationId(1, uint.MaxValue - 1)]
 [Nooson]
-public partial class OfficialCommandDTO : IPoolElement, INoosonSerializable<OfficialCommandDTO>
+public partial class OfficialCommandDTO : IPoolElement, IConstructionSerializable<OfficialCommandDTO>
 {
     [NoosonCustom(SerializeMethodName = nameof(WriteTypeId), DeserializeMethodName = nameof(ReadTypeId))]
     [NoosonOrder(0)]

@@ -1,6 +1,8 @@
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

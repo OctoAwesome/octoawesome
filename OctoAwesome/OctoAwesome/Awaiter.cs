@@ -61,7 +61,7 @@ namespace OctoAwesome
         /// Waits on the result or time outs(10000s) and releases the awaiter.
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
-        public T? WaitOnAndRelease<T>() where T : ISerializable, new()
+        public T? WaitOnAndRelease<T>() where T : IConstructionSerializable<T>, new()
         {
             Debug.Assert(!isPooled, "Is released into pool!");
             var res = WaitOn();
@@ -76,10 +76,10 @@ namespace OctoAwesome
                 ret = GenericCaster<object, T>.Cast(deserializeFunc(result));
             else if (knownResult != default && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
-            else if (knownResult != default && result is not null)
-                ret = GenericCaster<ISerializable, T>.Cast(Serializer.Deserialize(knownResult, result));
+            else if (knownResult is T instance && result is not null)
+                ret = Serializer.DeserializeNooson(instance, result);
             else if (result is not null)
-                ret = Serializer.Deserialize<T>(result);
+                ret = Serializer.DeserializeNooson<T>(result);
             else
                 ret = default;
 
@@ -108,13 +108,14 @@ namespace OctoAwesome
             else if (knownResult is not null && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
             else if (result is not null && instance is not null)
-                ret = Serializer.Deserialize(instance, result);
+                ret = Serializer.DeserializeNooson(instance, result);
             else
                 ret = null;
 
             Release();
             return ret;
         }
+
 
         /// <summary>
         /// Sets the awaiter result to the given value.

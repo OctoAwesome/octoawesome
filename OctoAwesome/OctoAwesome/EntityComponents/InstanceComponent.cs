@@ -10,7 +10,8 @@ namespace OctoAwesome.EntityComponents
     /// Base Class for components that need to interact with a component container.
     /// </summary>
     /// <typeparam name="T">The component container that needs to be interacted with.</typeparam>
-    public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification>
+    [Nooson]
+    public abstract partial class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification>
         where T : ComponentContainer
     {
         private T? instance;
@@ -18,6 +19,7 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets the reference to the <see cref="ComponentContainer{TComponent}"/>.
         /// </summary>
+        [NoosonIgnore]
         public T Instance
         {
             get => NullabilityHelper.NotNullAssert(instance, $"{nameof(Instance)} was not initialized!");
@@ -33,7 +35,7 @@ namespace OctoAwesome.EntityComponents
         /// Gets the instance type id.
         /// </summary>
         /// <seealso cref="SerializationIdTypeProvider"/>
-        public ulong InstanceTypeId { get; private set; }
+        public ulong InstanceTypeId { get; protected set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InstanceComponent{T}"/> class.
@@ -68,22 +70,6 @@ namespace OctoAwesome.EntityComponents
             OnSetInstance();
         }
 
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(InstanceId.ToByteArray());
-            writer.Write(InstanceTypeId);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-
-            InstanceId = new Guid(reader.ReadBytes(16));
-            InstanceTypeId = reader.ReadUInt64();
-        }
 
         /// <summary>
         /// Gets called when the instance was set to a new value.

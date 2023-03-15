@@ -5,16 +5,18 @@ using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
 using System;
-using System.IO;
 using OctoAwesome.Extension;
+
+
 
 namespace OctoAwesome.Basics.FunctionBlocks
 {
     /// <summary>
     /// Chest entity implementation.
     /// </summary>
-    [SerializationId(1, 3)]
-    public class Chest : Entity
+    [SerializationId(2, 2)]
+    [Nooson]
+    public partial class Chest : Entity, ISerializable<Chest>
     {
         internal AnimationComponent AnimationComponent
         {
@@ -34,12 +36,6 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         }
 
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-            //Doesnt get called
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Chest"/> class.
@@ -66,8 +62,8 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// <inheritdoc />
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
-            if (TryGetComponent<UiKeyComponent>(out  var ownUiKeyComponent) 
-                && entity.TryGetComponent<TransferComponent>(out var transferComponent) 
+            if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+                && entity.TryGetComponent<TransferComponent>(out var transferComponent)
                 && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent)
                 && this.TryGetComponent<InventoryComponent>(out var inventoryComponent))
             {

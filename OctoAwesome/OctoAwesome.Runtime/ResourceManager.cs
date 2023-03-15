@@ -29,6 +29,9 @@ namespace OctoAwesome.Runtime
 
         private readonly ISettings settings;
 
+        /// <summary>
+        /// Manager for game world persistance.
+        /// </summary>
         public IPersistenceManager PersistenceManager { get; set; }
 
         /// <summary>
@@ -93,6 +96,7 @@ namespace OctoAwesome.Runtime
                 CurrentUniverse = new Universe(guid, name, seed);
                 //PersistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
                 PersistenceManager.SaveUniverse(CurrentUniverse);
+               
                 return guid;
             }
         }
@@ -186,7 +190,6 @@ namespace OctoAwesome.Runtime
 
                 if (!Planets.TryGetValue(id, out var planet))
                 {
-
                     // Try loading already existing planet
                     var awaiter = PersistenceManager.Load(out _, CurrentUniverse.Id, id);
 
@@ -360,8 +363,8 @@ namespace OctoAwesome.Runtime
 
         /// <inheritdoc />
         public void SaveComponentContainer<TContainer, TComponent>(TContainer container)
-    where TContainer : ComponentContainer<TComponent>
-    where TComponent : IComponent
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
 
         {
             if (CurrentUniverse == null)

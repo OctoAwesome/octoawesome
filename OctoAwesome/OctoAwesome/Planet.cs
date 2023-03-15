@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+
+using OctoAwesome.Caching;
 using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// The default implementation for planets.
     /// </summary>
-    public class Planet : IPlanet
+    [Nooson]
+    public partial class Planet : IPlanet, ISerializable<Planet>
     {
         /// <summary>
         /// Backing field for <see cref="ClimateMap"/>.
@@ -21,6 +25,7 @@ namespace OctoAwesome
         public Guid Universe { get; private set; }
 
         /// <inheritdoc />
+        [NoosonIgnore]
         public IClimateMap ClimateMap
         {
             get
@@ -40,9 +45,11 @@ namespace OctoAwesome
         public float Gravity { get; protected set; }
 
         /// <inheritdoc />
+        [NoosonCustom(DeserializeMethodName = nameof(DeserializeMapGenerator), SerializeMethodName = nameof(SerializeMapGenerator))]
         public IMapGenerator Generator { get; }
 
         /// <inheritdoc />
+        [NoosonIgnore]
         public IGlobalChunkCache GlobalChunkCache { get; }
 
         private bool disposed;
@@ -82,28 +89,15 @@ namespace OctoAwesome
             GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>(), TypeContainer.Get<SerializationIdTypeProvider>());
         }
 
-        /// <inheritdoc />
-        public virtual void Serialize(BinaryWriter writer)
+        private void SerializeMapGenerator(BinaryWriter bw)
         {
-            writer.Write(Id);
-            writer.Write(Seed);
-            writer.Write(Gravity);
-            writer.Write(Size.X);
-            writer.Write(Size.Y);
-            writer.Write(Size.Z);
-            writer.Write(Universe.ToByteArray());
+            bw.Write(Generator.GetType().AssemblyQualifiedName!);
+        }
+        private static IMapGenerator DeserializeMapGenerator(BinaryReader br)
+        {
+            return GenericCaster<object, IMapGenerator>.Cast(Activator.CreateInstance(Type.GetType(br.ReadString())!)!);
         }
 
-        /// <inheritdoc />
-        public virtual void Deserialize(BinaryReader reader)
-        {
-            Id = reader.ReadInt32();
-            Seed = reader.ReadInt32();
-            Gravity = reader.ReadSingle();
-            Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-            Universe = new Guid(reader.ReadBytes(16));
-            //var name = reader.ReadString();
-        }
 
         /// <inheritdoc />
         public void Dispose()

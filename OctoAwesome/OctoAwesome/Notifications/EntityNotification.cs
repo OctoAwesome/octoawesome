@@ -10,7 +10,7 @@ namespace OctoAwesome.Notifications
     /// <summary>
     /// Notifications caused by entities.
     /// </summary>
-    public sealed class EntityNotification : SerializableNotification
+    public sealed partial class EntityNotification : SerializableNotification, IConstructionSerializable<EntityNotification>
     {
         /// <summary>
         /// Gets or sets the action type that caused the notification.
@@ -118,6 +118,7 @@ namespace OctoAwesome.Notifications
             }
         }
 
+
         /// <inheritdoc />
         protected override void OnRelease()
         {
@@ -128,6 +129,23 @@ namespace OctoAwesome.Notifications
             Notification = default;
 
             base.OnRelease();
+        }
+
+        public static EntityNotification DeserializeAndCreate(BinaryReader reader)
+        {
+            var entity = new EntityNotification();
+            entity.Deserialize(reader);
+            return entity;
+        }
+
+        public static void Serialize(EntityNotification that, BinaryWriter writer)
+        {
+            that.Serialize(writer);
+        }
+
+        public static void Deserialize(EntityNotification that, BinaryReader reader)
+        {
+            that.Deserialize(reader);
         }
 
         /// <summary>

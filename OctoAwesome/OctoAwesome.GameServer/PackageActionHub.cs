@@ -6,6 +6,7 @@ using System.Buffers;
 using System.IO.Compression;
 using System.IO;
 using OctoAwesome.Logging;
+using NonSucking.Framework.Extension.Pooling;
 
 namespace OctoAwesome.GameServer
 {
@@ -19,7 +20,7 @@ namespace OctoAwesome.GameServer
 
         public record struct RequestContext(BinaryReader Reader, Package Package)
         {
-            public void SetResult<T>(T instance) where T : INoosonSerializable<T>
+            public void SetResult<T>(T instance) where T : ISerializable<T>
             {
                 using var ms = Serializer.Manager.GetStream();
                 using var bw = new BinaryWriter(ms);
@@ -29,7 +30,7 @@ namespace OctoAwesome.GameServer
                 Package.PackageFlags &= ~(PackageFlags.Array | PackageFlags.Request);
                 Package.PackageFlags |= PackageFlags.Response;
             }
-            public void SetResult<T>(Span<T> instance) where T : INoosonSerializable<T>
+            public void SetResult<T>(Span<T> instance) where T : ISerializable<T>
             {
                 using var ms = Serializer.Manager.GetStream();
                 using var bw = new BinaryWriter(ms);
@@ -61,7 +62,7 @@ namespace OctoAwesome.GameServer
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
-        public void Register<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : INoosonSerializable<T>, new()
+        public void Register<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, new()
         {
             if (id == 0)
                 id = typeof(T).SerializationId();
@@ -71,7 +72,7 @@ namespace OctoAwesome.GameServer
                 var length = package.Reader.ReadInt32();
                 var writeTo = ArrayPool<T>.Shared.Rent(length);
                 for (int i = 0; i < length; i++)
-                    writeTo[i] = T.Deserialize(package.Reader);
+                    writeTo[i] = T.DeserializeAndCreate(package.Reader);
 
                 action(writeTo.AsMemory(0..length), package);
                 ArrayPool<T>.Shared.Return(writeTo);
@@ -85,14 +86,14 @@ namespace OctoAwesome.GameServer
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
-        public void Register<T>(Action<T, RequestContext> action, ulong id = 0) where T : INoosonSerializable<T>, new()
+        public void Register<T>(Action<T, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, new()
         {
             if (id == 0)
                 id = typeof(T).SerializationId();
 
             var deserializeAction = (RequestContext package) =>
             {
-                var t = T.Deserialize(package.Reader);
+                var t = T.DeserializeAndCreate(package.Reader);
                 action(t, package);
             };
             registeredStuff.Add(id, deserializeAction);

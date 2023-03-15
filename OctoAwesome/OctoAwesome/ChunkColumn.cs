@@ -9,13 +9,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using OctoAwesome.Extension;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Chunk column implementation containing <see cref="IChunk"/> in a column.
     /// </summary>
-    public class ChunkColumn : IChunkColumn
+    public class ChunkColumn : IChunkColumn, IConstructionSerializable<ChunkColumn>
     {
 
         /// <summary>
@@ -425,6 +426,26 @@ namespace OctoAwesome
             {
                 chunk.FlagDirty();
             }
+        }
+
+        /// <inheritdoc />
+        public static ChunkColumn DeserializeAndCreate(BinaryReader reader)
+        {
+            var column = new ChunkColumn();
+            column.Deserialize(reader);
+            return column;
+        }
+
+        /// <inheritdoc />
+        public static void Serialize(ChunkColumn that, BinaryWriter writer)
+        {
+            that.Serialize(writer);
+        }
+
+        /// <inheritdoc />
+        public static void Deserialize(ChunkColumn that, BinaryReader reader)
+        {
+            that.Deserialize(reader);
         }
     }
 }

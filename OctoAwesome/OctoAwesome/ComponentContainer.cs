@@ -1,5 +1,7 @@
 ﻿using engenious;
 
+using NonSucking.Framework.Serialization;
+
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
@@ -15,16 +17,17 @@ namespace OctoAwesome
     /// <summary>
     /// Base class for classes containing components.
     /// </summary>
-    public abstract class ComponentContainer : ISerializable, IIdentification, IComponentContainer, INotificationSubject<SerializableNotification>
+    public abstract partial class ComponentContainer : IIdentification, IComponentContainer, INotificationSubject<SerializableNotification>
     {
         /// <summary>
         /// Gets the Id of the container.
         /// </summary>
-        public Guid Id { get; internal set; }
+        public Guid Id { get; internal protected set; }
 
         /// <summary>
         /// Gets the reference to the active simulation; or <c>null</c> when no simulation is active.
         /// </summary>
+        [NoosonIgnore]
         public Simulation? Simulation { get; internal set; }
 
         /// <summary>
@@ -87,11 +90,11 @@ namespace OctoAwesome
                 component.OnNotification(notification);
         }
 
-        /// <inheritdoc />
-        public abstract void Serialize(BinaryWriter writer);
+        ///// <inheritdoc />
+        //public abstract void Serialize(BinaryWriter writer);
 
-        /// <inheritdoc />
-        public abstract void Deserialize(BinaryReader reader);
+        ///// <inheritdoc />
+        //public abstract void Deserialize(BinaryReader reader);
 
         /// <inheritdoc />
         public abstract bool ContainsComponent<T>();
@@ -103,12 +106,15 @@ namespace OctoAwesome
     /// Base class for classes containing components of a specific type.
     /// </summary>
     /// <typeparam name="TComponent">The type of the components to contain.</typeparam>
-    public abstract class ComponentContainer<TComponent> : ComponentContainer, IUpdateable where TComponent : IComponent
+    [Nooson]
+    public abstract partial class ComponentContainer<TComponent> : 
+        ComponentContainer, IUpdateable, ISerializable
+        where TComponent : IComponent, ISerializable
     {
         /// <summary>
         /// Gets a list of all components this container holds.
         /// </summary>
-        public ComponentList<TComponent> Components { get; }
+        public ComponentList<TComponent> Components { get; protected set; }
 
 
         private List<IUpdateable> updateables = new();
@@ -213,21 +219,7 @@ namespace OctoAwesome
             }
         }
 
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(Id.ToByteArray());
-
-            Components.Serialize(writer);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            Id = new Guid(reader.ReadBytes(16));
-            Components.Deserialize(reader);
-        }
-
+     
         /// <inheritdoc />
         public override bool ContainsComponent<T>()
             => Components.Contains<T>();

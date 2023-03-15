@@ -11,7 +11,8 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for animated models.
     /// </summary>
-    public class AnimationComponent : Component, IEntityComponent
+    [Nooson]
+    public partial class AnimationComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gets or sets the currently elapsed time for the animation.
@@ -34,24 +35,6 @@ namespace OctoAwesome.EntityComponents
         public AnimationComponent()
         {
             Sendable = true;
-        }
-
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(CurrentTime);
-            writer.Write(MaxTime);
-            writer.Write(AnimationSpeed);
-            base.Serialize(writer);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            CurrentTime = reader.ReadSingle();
-            MaxTime = reader.ReadSingle();
-            AnimationSpeed = reader.ReadSingle();
-            base.Deserialize(reader);
         }
 
         private float NextSmallerValue(float value)

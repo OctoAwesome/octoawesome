@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+
 using engenious;
 
 using OctoAwesome.Basics.Definitions.Items.Food;
@@ -7,14 +7,14 @@ using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
-
 namespace OctoAwesome.Basics.Entities
 {
     /// <summary>
     /// An entity used for dogs in the game.
     /// </summary>
-    [SerializationId(1, 2)]
-    public class WauziEntity : Entity
+    [SerializationId(2, 1)]
+    [Nooson]
+    public partial class WauziEntity : Entity, ISerializable<WauziEntity>
     {
         /// <summary>
         /// Gets or sets a value indicating the time left to the next jump.

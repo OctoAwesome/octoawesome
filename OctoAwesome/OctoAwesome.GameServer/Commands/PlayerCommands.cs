@@ -6,6 +6,7 @@ using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using System;
+using System.IO;
 using System.Text;
 
 namespace OctoAwesome.GameServer.Commands
@@ -58,6 +59,13 @@ namespace OctoAwesome.GameServer.Commands
             entityNotification = entityNotificationPool.Rent();
             entityNotification.Entity = remotePlayer;
             entityNotification.Type = EntityNotification.ActionType.Add;
+
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+            entityNotification.Serialize(bw);
+            ms.Position = 0;
+            using var br = new BinaryReader(ms);
+            var deserers = EntityNotification.DeserializeAndCreate(br);
 
             networkChannel.OnNext(entityNotification);
             entityNotification.Release();

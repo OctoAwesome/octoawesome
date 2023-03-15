@@ -106,8 +106,8 @@ namespace OctoAwesome.Network
                 if ((package.PackageFlags & PackageFlags.Array) == 0)
                 {
                     Notification? notification = null;
-                    ;
-                    var dto = OfficialCommandDTO.Deserialize(br);
+
+                    var dto = OfficialCommandDTO.DeserializeAndCreate(br);
                     switch (dto.Command)
                     {
                         case OfficialCommand.EntityNotification:

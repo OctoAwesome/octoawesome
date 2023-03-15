@@ -13,11 +13,11 @@ using System.Threading;
 
 namespace OctoAwesome.EntityComponents
 {
-   
+
     /// <summary>
     /// Component for inventories of entities/functional blocks.
     /// </summary>
-    public class InventoryComponent : Component, IEntityComponent
+    public partial class InventoryComponent : Component, IEntityComponent, IConstructionSerializable<InventoryComponent>
     {
         /// <summary>
         /// Gets a list of inventory slots this inventory consists of.
@@ -612,5 +612,24 @@ namespace OctoAwesome.EntityComponents
             return Remove(invSlot, definition.VolumePerUnit);
         }
 
+        /// <inheritdoc />
+        public static InventoryComponent DeserializeAndCreate(BinaryReader reader)
+        {
+            var ic = new InventoryComponent();
+            ic.Deserialize(reader);
+            return ic;
+        }
+
+        /// <inheritdoc />
+        public static void Serialize(InventoryComponent that, BinaryWriter writer)
+        {
+            that.Serialize(writer);
+        }
+
+        /// <inheritdoc />
+        public static void Deserialize(InventoryComponent that, BinaryReader reader)
+        {
+            that.Deserialize(reader);
+        }
     }
 }

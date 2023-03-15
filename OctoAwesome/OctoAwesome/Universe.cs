@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using OctoAwesome.Extension;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// A universe of OctoAwesome. A universe contains multiple planets and is a save state.
     /// </summary>
-    public class Universe : IUniverse
+    [Nooson]
+    public partial class Universe : IUniverse, IConstructionSerializable<Universe>
     {
         private string? name;
 
@@ -44,22 +46,6 @@ namespace OctoAwesome
             Seed = seed;
         }
 
-        /// <inheritdoc />
-        public void Deserialize(BinaryReader reader)
-        {
-            var tmpGuid = reader.ReadString();
-            Id = new Guid(tmpGuid);
-            Name = reader.ReadString();
-            Seed = reader.ReadInt32();
-        }
-
-        /// <inheritdoc />
-        public void Serialize(BinaryWriter writer)
-        {
-            writer.Write(Id.ToString());
-            writer.Write(Name);
-            writer.Write(Seed);
-        }
 
 
     }

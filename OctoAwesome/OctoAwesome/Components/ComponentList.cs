@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using OctoAwesome.Caching;
+using NonSucking.Framework.Serialization;
 
 namespace OctoAwesome.Components;
 
@@ -14,6 +15,7 @@ namespace OctoAwesome.Components;
 /// Base Class for all component based entities.
 /// </summary>
 /// <typeparam name="T">Type of the components contained in the list.</typeparam>
+[NoosonCustom(DeserializeMethodName = nameof(DeserializeStatic), SerializeMethodName = nameof(Serialize))]
 public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializable
 {
 
@@ -24,7 +26,8 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// 
     public IList<T> this[Type type] => componentsByType.TryGetValue(type, out var result) ?
         result : Array.Empty<T>();
-
+    
+    [NoosonIgnore]
     private IReadOnlyCollection<Type> TypeKeys => componentsByType.Keys;
 
     private readonly Action<T>? insertValidator;
@@ -329,20 +332,6 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
 
 
     /// <summary>
-    /// Serializes the component list to a binary writer.
-    /// </summary>
-    /// <param name="writer">The binary writer to serialize the component list to.</param>
-    public virtual void Serialize(BinaryWriter writer)
-    {
-        writer.Write(flatComponents.Count);
-        foreach (var component in flatComponents)
-        {
-            writer.Write(component.GetType().AssemblyQualifiedName!);
-            component.Serialize(writer);
-        }
-    }
-
-    /// <summary>
     /// Deserializes the component list from a binary reader.
     /// </summary>
     /// <param name="reader">The binary reader to deserialize the component list from.</param>
@@ -363,5 +352,32 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             component.Deserialize(reader);
             AddIfTypeNotExists(component);
         }
+    }
+
+
+    /// <summary>
+    /// Serializes the component list to a binary writer.
+    /// </summary>
+    /// <param name="writer">The binary writer to serialize the component list to.</param>
+    public virtual void Serialize(BinaryWriter writer)
+    {
+        writer.Write(flatComponents.Count);
+        foreach (var component in flatComponents)
+        {
+            writer.Write(component.GetType().AssemblyQualifiedName!);
+            component.Serialize(writer);
+        }
+    }
+
+
+    /// <summary>
+    /// Deserializes the component list from a binary reader.
+    /// </summary>
+    /// <param name="reader">The binary reader to deserialize the component list from.</param>
+    public static ComponentList<T> DeserializeStatic(BinaryReader reader)
+    {
+        var ret = new ComponentList<T>();
+        ret.Deserialize(reader);
+        return ret;
     }
 }

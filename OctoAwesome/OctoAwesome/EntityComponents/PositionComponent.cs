@@ -4,6 +4,7 @@ using OctoAwesome.Components;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
+using NonSucking.Framework.Serialization;
 
 using System.IO;
 
@@ -12,11 +13,14 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with an position.
     /// </summary>
-    public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent
+    //[NoosonCustom(SerializeMethodName = nameof(Serialize), DeserializeMethodName = nameof(Deserialize))]
+    [Nooson]
+    public sealed partial class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent, ISerializable<PositionComponent>
     {
         /// <summary>
         /// Gets or sets the position of the entity.
         /// </summary>
+        [NoosonIgnore]
         public Coordinate Position
         {
             get => position;
@@ -38,12 +42,14 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets or sets the direction the entity is facing.
         /// </summary>
+        [NoosonOrder(1)]
         public float Direction { get; set; }
         /// <summary>
         /// Gets the planet the entity is on.
         /// </summary>
+        [NoosonIgnore]
         public IPlanet Planet => planet ??= TryGetPlanet(position.Planet);
-
+        [NoosonInclude, NoosonOrder(0)]
         private Coordinate position;
         private bool posUpdate;
         private IPlanet? planet;
@@ -61,35 +67,37 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            base.Serialize(writer);
-            // Position
-            writer.Write(Position.Planet);
-            writer.Write(Position.GlobalBlockIndex.X);
-            writer.Write(Position.GlobalBlockIndex.Y);
-            writer.Write(Position.GlobalBlockIndex.Z);
-            writer.Write(Position.BlockPosition.X);
-            writer.Write(Position.BlockPosition.Y);
-            writer.Write(Position.BlockPosition.Z);
-        }
+        //public override void Serialize(BinaryWriter writer)
+        //{
+        //    base.Serialize(writer);
+        //    // Position
+        //    writer.Write(Position.Planet);
+        //    writer.Write(Position.GlobalBlockIndex.X);
+        //    writer.Write(Position.GlobalBlockIndex.Y);
+        //    writer.Write(Position.GlobalBlockIndex.Z);
+        //    writer.Write(Position.BlockPosition.X);
+        //    writer.Write(Position.BlockPosition.Y);
+        //    writer.Write(Position.BlockPosition.Z);
+        //}
 
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
+        ///// <inheritdoc />
+        //public static PositionComponent Deserialize(BinaryReader reader)
+        //{
+        //    var posCom = new PositionComponent();
+        //    ((InstanceComponent<ComponentContainer>) posCom).Deserialize(reader);
 
-            // Position
-            int planet = reader.ReadInt32();
-            int blockX = reader.ReadInt32();
-            int blockY = reader.ReadInt32();
-            int blockZ = reader.ReadInt32();
-            float posX = reader.ReadSingle();
-            float posY = reader.ReadSingle();
-            float posZ = reader.ReadSingle();
+        //    // Position
+        //    int planet = reader.ReadInt32();
+        //    int blockX = reader.ReadInt32();
+        //    int blockY = reader.ReadInt32();
+        //    int blockZ = reader.ReadInt32();
+        //    float posX = reader.ReadSingle();
+        //    float posY = reader.ReadSingle();
+        //    float posZ = reader.ReadSingle();
 
-            position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
-        }
+        //    posCom.position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+        //    return posCom;
+        //}
 
         private IPlanet TryGetPlanet(int planetId)
         {

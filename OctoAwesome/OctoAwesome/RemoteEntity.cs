@@ -1,13 +1,18 @@
 ﻿using engenious;
 
+using OctoAwesome.Serialization;
+
 using System.IO;
+
+using NonSucking.Framework.Serialization;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Entity that is simulated on a remote server.
     /// </summary>
-    public class RemoteEntity : Entity
+    [Nooson]
+    public partial class RemoteEntity : Entity, ISerializable<RemoteEntity>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteEntity"/> class.
@@ -29,20 +34,6 @@ namespace OctoAwesome
                     Components.AddIfTypeNotExists(component);
             }
             Id = originEntity.Id;
-        }
-
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            Components.Serialize(writer);
-            base.Serialize(writer);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            Components.Deserialize(reader);
-            base.Deserialize(reader);
         }
 
         /// <inheritdoc />

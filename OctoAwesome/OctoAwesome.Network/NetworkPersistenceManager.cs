@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using OctoAwesome.Caching;
 using OctoAwesome.Components;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
@@ -56,7 +57,6 @@ namespace OctoAwesome.Network
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-
                 binaryWriter.Write(universeGuid.ToByteArray());
                 binaryWriter.Write(planet.Id);
                 binaryWriter.Write(columnIndex.X);
@@ -100,8 +100,8 @@ namespace OctoAwesome.Network
                          using (var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..)))
                          using (var binaryReader = new BinaryReader(memoryStream))
                          {
-                             var dto = OfficialCommandDTO.Deserialize(binaryReader);
-                             return Serializer.Deserialize<IPlanet>(planetInstance, dto.Data);
+                             var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
+                             return Serializer.DeserializeNooson(planetInstance, dto.Data);
                          }
                      });
                 request.Release();
@@ -155,15 +155,15 @@ namespace OctoAwesome.Network
             }
         }
 
-        private static Func<byte[], object> GetDesializerFunc<T>() where T : ISerializable, new()
+        private static Func<byte[], object> GetDesializerFunc<T>() where T : IConstructionSerializable<T>
         {
             return (b) =>
             {
                 using (var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..)))
                 using (var binaryReader = new BinaryReader(memoryStream))
                 {
-                    var dto = OfficialCommandDTO.Deserialize(binaryReader);
-                    return Serializer.Deserialize<T>(dto.Data);
+                    var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
+                    return Serializer.DeserializeNooson<T>(dto.Data);
                 }
             };
         }

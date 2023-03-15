@@ -9,7 +9,8 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component describing the body properties of an entity.
     /// </summary>
-    public sealed class BodyComponent : Component, IEntityComponent, IEquatable<BodyComponent?>
+    [Nooson]
+    public sealed partial class BodyComponent : Component, IEntityComponent, IEquatable<BodyComponent?>
     {
         /// <summary>
         /// Gets or sets the body entity mass.
@@ -36,25 +37,6 @@ namespace OctoAwesome.EntityComponents
             Height = 1;
         }
 
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(Mass);
-            writer.Write(Radius);
-            writer.Write(Height);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-
-            Mass = reader.ReadSingle();
-            Radius = reader.ReadSingle();
-            Height = reader.ReadSingle();
-        }
 
         /// <inheritdoc/>
         public override bool Equals(object? obj)
