@@ -6,16 +6,19 @@ using System.Buffers;
 using System.IO.Compression;
 using System.IO;
 using OctoAwesome.Logging;
-using NonSucking.Framework.Extension.Pooling;
+using NonSucking.Framework.Extension.IoC;
+using OctoAwesome.Pooling;
 
 namespace OctoAwesome.GameServer
 {
     public class PackageActionHub
     {
         private readonly ILogger logger;
-        public PackageActionHub(ILogger logger)
+        private readonly ITypeContainer typeContainer;
+        public PackageActionHub(ILogger logger, ITypeContainer tc)
         {
             this.logger = logger.As(nameof(PackageActionHub));
+            this.typeContainer = tc;
         }
 
         public record struct RequestContext(BinaryReader Reader, Package Package)
@@ -62,7 +65,7 @@ namespace OctoAwesome.GameServer
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
-        public void Register<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, new()
+        public void Register<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>
         {
             if (id == 0)
                 id = typeof(T).SerializationId();
@@ -86,7 +89,39 @@ namespace OctoAwesome.GameServer
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
-        public void Register<T>(Action<T, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, new()
+        public void RegisterPoolable<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, IPoolElement
+        {
+            if (id == 0)
+                id = typeof(T).SerializationId();
+            var pool = typeContainer.Get<IPool<T>>();
+
+            var deserializeAction = (RequestContext package) =>
+            {
+                var length = package.Reader.ReadInt32();
+                var writeTo = ArrayPool<T>.Shared.Rent(length);
+                for (int i = 0; i < length; i++)
+                {
+                    var t = pool.Rent();
+                    t.Deserialize(package.Reader);
+                    writeTo[i] = t;
+                }
+
+                action(writeTo.AsMemory(0..length), package);
+                foreach (var item in writeTo)
+                    item.Release();
+                
+                ArrayPool<T>.Shared.Return(writeTo);
+            };
+            registeredStuffDic.Add(id, deserializeAction);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
+        public void Register<T>(Action<T, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>
         {
             if (id == 0)
                 id = typeof(T).SerializationId();
@@ -95,6 +130,28 @@ namespace OctoAwesome.GameServer
             {
                 var t = T.DeserializeAndCreate(package.Reader);
                 action(t, package);
+            };
+            registeredStuff.Add(id, deserializeAction);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
+        public void RegisterPoolable<T>(Action<T, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, IPoolElement
+        {
+            if (id == 0)
+                id = typeof(T).SerializationId();
+            var pool = typeContainer.Get<IPool<T>>();
+            var deserializeAction = (RequestContext package) =>
+            {
+                var t= pool.Rent();
+                t.Deserialize(package.Reader);
+                action(t, package);
+                t.Release();
             };
             registeredStuff.Add(id, deserializeAction);
         }

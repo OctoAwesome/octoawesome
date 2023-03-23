@@ -77,9 +77,9 @@ namespace OctoAwesome
             else if (knownResult != default && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
             else if (knownResult is T instance && result is not null)
-                ret = Serializer.DeserializeNooson(instance, result);
+                ret = Serializer.Deserialize(instance, result);
             else if (result is not null)
-                ret = Serializer.DeserializeNooson<T>(result);
+                ret = Serializer.DeserializeSpecialCtor<T>(result);
             else
                 ret = default;
 
@@ -108,7 +108,7 @@ namespace OctoAwesome
             else if (knownResult is not null && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
             else if (result is not null && instance is not null)
-                ret = Serializer.DeserializeNooson(instance, result);
+                ret = Serializer.Deserialize(instance, result);
             else
                 ret = null;
 

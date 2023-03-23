@@ -80,11 +80,10 @@ namespace OctoAwesome.Notifications
         {
             Type = (ActionType)reader.ReadInt32();
 
-
             if (Type == ActionType.Add)
                 Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
             else
-                EntityId = new Guid(reader.ReadBytes(16));
+                EntityId = reader.ReadUnmanaged<Guid>();
 
             var isNotification = reader.ReadBoolean();
             if (isNotification)
@@ -105,7 +104,7 @@ namespace OctoAwesome.Notifications
             }
             else
             {
-                writer.Write(EntityId.ToByteArray());
+                writer.WriteUnmanaged(EntityId);
             }
 
             var subNotification = Notification != null;

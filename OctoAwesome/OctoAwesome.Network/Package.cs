@@ -189,6 +189,11 @@ namespace OctoAwesome.Network
             Pool = pool;
         }
 
+        public override string ToString()
+        {
+            return $"Id: {UId}, Complete: {IsComplete}, Len: {Length}, Flags: {PackageFlags}";
+        }
+
         /// <inheritdoc />
         public void Release()
         {

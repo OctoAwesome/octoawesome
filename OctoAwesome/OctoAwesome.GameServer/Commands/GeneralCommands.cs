@@ -17,10 +17,10 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">This is currently ignored.</param>
         /// <returns>The universe data.</returns>
-        public static byte[] GetUniverse(CommandParameter parameter) // TODO: use parameter for multi universe server?
+        public static ISerializable GetUniverse(ITypeContainer tc, CommandParameter parameter) // TODO: use parameter for multi universe server?
         {
-            var universe = TypeContainer.Get<SimulationManager>().GetUniverse();
-            return Serializer.Serialize(universe);
+            return tc.Get<SimulationManager>().GetUniverse();
+
         }
 
         /// <summary>
@@ -28,9 +28,9 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">This is currently ignored.</param>
         /// <returns>The planet with id 0 - for now.</returns>
-        public static byte[] GetPlanet(CommandParameter parameter) // TODO: use parameter for actual planet server?
+        public static ISerializable GetPlanet(ITypeContainer tc, CommandParameter parameter) // TODO: use parameter for actual planet server?
         {
-            return Serializer.Serialize(TypeContainer.Get<SimulationManager>().GetPlanet(0));
+            return tc.Get<SimulationManager>().GetPlanet(0);
         }
     }
 }

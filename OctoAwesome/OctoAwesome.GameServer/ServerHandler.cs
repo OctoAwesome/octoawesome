@@ -12,9 +12,21 @@ using OctoAwesome.Network.Request;
 using System.Xml;
 using OctoAwesome.Database;
 using System;
+using OctoAwesome.Serialization;
+using static OctoAwesome.GameServer.PackageActionHub;
+using dotVariant;
 
 namespace OctoAwesome.GameServer
 {
+    [Variant]
+    public partial class Invocation
+    {
+        static partial void VariantOf(
+            Func<CommandParameter, ISerializable> WithReturn, 
+            Action<CommandParameter> VoidReturn);
+    }
+
+
     /// <summary>
     /// Handler for server connection and simulation.
     /// </summary>
@@ -34,17 +46,19 @@ namespace OctoAwesome.GameServer
         private readonly Server server;
         private readonly SerializationIdTypeProvider serializationTypeProvider;
         private readonly PackageActionHub packageActionHub;
-        public readonly ConcurrentDictionary<ushort, CommandFunc> CommandFunctions;
+        public readonly ConcurrentDictionary<OfficialCommand, Invocation> CommandFunctions;
+        private readonly ITypeContainer typeContainer;
 
         /*
          TODO:
             - Try to get typed parameters into func, so deserialize can be done outside
             - Return Something (Sascha wants typeof(ISerializable?))
+
             - Split Notifications and Requests (No Notification via OfficialCommandDTO)
-            - Client centralized react on server responses and notifications (Needs a solution)
+        
             - Try to Get rid of the switch cases / on nextes somehow somewhere somewhat
+            - Client centralized react on server responses and notifications (Needs a solution)
          */
-        public delegate byte[]? CommandFunc(CommandParameter parameter);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerHandler"/> class.
@@ -62,28 +76,76 @@ namespace OctoAwesome.GameServer
             UpdateHub = typeContainer.Get<IUpdateHub>();
             server = typeContainer.Get<Server>();
             serializationTypeProvider = typeContainer.Get<SerializationIdTypeProvider>();
-            packageActionHub = new PackageActionHub(logger);
+            packageActionHub = new PackageActionHub(logger, typeContainer);
 
-            CommandFunctions = new ConcurrentDictionary<ushort, CommandFunc>(new List<(OfficialCommand, CommandFunc)>
-                {
-                    (OfficialCommand.Whoami, PlayerCommands.Whoami),
-                    (OfficialCommand.EntityNotification, NotificationCommands.EntityNotification),
-                    (OfficialCommand.ChunkNotification, NotificationCommands.ChunkNotification),
-                    (OfficialCommand.GetUniverse, GeneralCommands.GetUniverse),
-                    (OfficialCommand.GetPlanet, GeneralCommands.GetPlanet),
-                    (OfficialCommand.SaveColumn, ChunkCommands.SaveColumn),
-                    (OfficialCommand.LoadColumn, ChunkCommands.LoadColumn),
-                }
-                .ToDictionary(x => (ushort)x.Item1, x => x.Item2));
+            CommandFunctions = new();
 
-            packageActionHub.Register((OfficialCommandDTO req, PackageActionHub.RequestContext cont) =>
+            Register(OfficialCommand.Whoami, PlayerCommands.Whoami);
+            Register(OfficialCommand.GetUniverse, GeneralCommands.GetUniverse);
+            Register(OfficialCommand.GetPlanet, GeneralCommands.GetPlanet);
+            Register<ChunkColumn>(OfficialCommand.SaveColumn, ChunkCommands.SaveColumn);
+            Register(OfficialCommand.LoadColumn, ChunkCommands.LoadColumn);
+            //Replace with Ser Id
+            Register(OfficialCommand.EntityNotification, NotificationCommands.EntityNotification);
+            Register(OfficialCommand.ChunkNotification, NotificationCommands.ChunkNotification);
+
+            packageActionHub.RegisterPoolable((OfficialCommandDTO req, RequestContext cont) =>
             {
                 logger.Debug($"Got Official command with id {req.Command}");
-                req.Data = CommandFunctions[(ushort)req.Command].Invoke(new CommandParameter(cont.Package.BaseClient.Id, req.Data));
-                if (req.Data is not null)
-                    cont.SetResult(req);
-            });
+                var invocation = CommandFunctions[req.Command];
+                var commandParameter = new CommandParameter(cont.Package.BaseClient.Id, req.Data);
+                var res = invocation.Visit<ISerializable?>(
+                    with => with(commandParameter),
+                    @void =>
+                    {
+                        @void(commandParameter);
+                        return null;
+                    });
 
+                if (res is not null)
+                {
+                    req.Data = Serializer.Serialize(res);
+                    cont.SetResult(req);
+                }
+            });
+            this.typeContainer = typeContainer;
+        }
+
+        private void Register<T>(OfficialCommand command, Func<ITypeContainer, CommandParameter, T, ISerializable> func)
+            where T : IConstructionSerializable<T>
+        {
+            Invocation deserializeAction = new((CommandParameter parameter) =>
+             {
+                 var t = Serializer.DeserializeSpecialCtor<T>(parameter.Data);
+                 return func(typeContainer, parameter, t);
+             });
+            CommandFunctions.TryAdd(command, deserializeAction);
+        }
+        private void Register(OfficialCommand command, Func<ITypeContainer, CommandParameter, ISerializable> func)
+        {
+            Invocation deserializeAction = new((CommandParameter parameter) =>
+            {
+                return func(typeContainer, parameter);
+            });
+            CommandFunctions.TryAdd(command, deserializeAction);
+        }
+        private void Register<T>(OfficialCommand command, Action<ITypeContainer, CommandParameter, T> func)
+            where T : IConstructionSerializable<T>
+        {
+            Invocation deserializeAction = new((CommandParameter parameter) =>
+            {
+                var t = Serializer.DeserializeSpecialCtor<T>(parameter.Data);
+                func(typeContainer, parameter, t);
+            });
+            CommandFunctions.TryAdd(command, deserializeAction);
+        }
+        private void Register(OfficialCommand command, Action<ITypeContainer, CommandParameter> func)
+        {
+            Invocation deserializeAction = new((CommandParameter parameter) =>
+            {
+                func(typeContainer, parameter);
+            });
+            CommandFunctions.TryAdd(command, deserializeAction);
         }
 
         /// <summary>
@@ -93,7 +155,7 @@ namespace OctoAwesome.GameServer
         {
             SimulationManager.Start(); //Temp
             server.Start(new IPEndPoint(IPAddress.IPv6Any, port));
-            server.OnClientConnected += ServerOnClientConnected;
+            server.OnClientConnecting += ServerOnClientConnecting;
             server.OnClientDisconnected += ServerOnClientDisconnected;
         }
 
@@ -104,10 +166,10 @@ namespace OctoAwesome.GameServer
         {
             SimulationManager.Stop(); //Temp
             server.Stop();
-            server.OnClientConnected -= ServerOnClientConnected;
+            server.OnClientConnected -= ServerOnClientConnecting;
         }
 
-        private void ServerOnClientConnected(object? sender, ConnectedClient e)
+        private void ServerOnClientConnecting(object? sender, ConnectedClient e)
         {
             logger.Debug("Hurra ein neuer Spieler");
             e.ServerSubscription = e.Packages.Subscribe(OnNext, ex => logger.Error(ex.Message, ex));

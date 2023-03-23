@@ -17,7 +17,7 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> given location to load the column at.</param>
         /// <returns>The loaded chunk column data.</returns>
-        public static byte[] LoadColumn(CommandParameter parameter)
+        public static ISerializable LoadColumn(ITypeContainer tc, CommandParameter parameter)
         {
             Guid guid;
             int planetId;
@@ -31,9 +31,7 @@ namespace OctoAwesome.GameServer.Commands
                 index2 = new Index2(reader.ReadInt32(), reader.ReadInt32());
             }
 
-            var column = TypeContainer.Get<SimulationManager>().LoadColumn(planetId, index2);
-
-            return Serializer.Serialize(column);
+            return tc.Get<SimulationManager>().LoadColumn(planetId, index2);
         }
 
         /// <summary>
@@ -41,13 +39,9 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk column data.</param>
         /// <returns><c>null</c></returns>
-        public static byte[]? SaveColumn(CommandParameter parameter)
+        public static void SaveColumn(ITypeContainer tc, CommandParameter parameter, ChunkColumn chunkColumn)
         {
-            var chunkColumn = Serializer.Deserialize<ChunkColumn>(parameter.Data);
-
-            TypeContainer.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn, TypeContainer.Get<IResourceManager>().GetPlanet(chunkColumn.PlanetId));
-
-            return null;
+            tc.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn, tc.Get<IResourceManager>().GetPlanet(chunkColumn.PlanetId));
         }
     }
 }

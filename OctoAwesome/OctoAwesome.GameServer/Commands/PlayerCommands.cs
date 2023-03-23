@@ -37,12 +37,11 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the player data.</param>
         /// <returns><c>null</c></returns>
-        public static byte[] Whoami(CommandParameter parameter)
+        public static ISerializable Whoami(ITypeContainer tc, CommandParameter parameter)
         {
-            var updateHub = TypeContainer.Get<IUpdateHub>();
             string playername = Encoding.UTF8.GetString(parameter.Data);
             var player = new Player();
-            var entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            var entityNotificationPool = tc.Get<IPool<EntityNotification>>();
             var entityNotification = entityNotificationPool.Rent();
             entityNotification.Entity = player;
             entityNotification.Type = EntityNotification.ActionType.Add;
@@ -69,7 +68,7 @@ namespace OctoAwesome.GameServer.Commands
 
             networkChannel.OnNext(entityNotification);
             entityNotification.Release();
-            return Serializer.Serialize(player);
+            return player;
         }
     }
 }

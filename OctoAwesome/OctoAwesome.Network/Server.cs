@@ -13,9 +13,13 @@ namespace OctoAwesome.Network
     public class Server //TODO: Should use a base class or interface
     {
         /// <summary>
-        /// Called when a new client has connected to the server.
+        /// Called when a new client has connected to the server. Packages could arrive before this event.
         /// </summary>
         public event EventHandler<ConnectedClient>? OnClientConnected;
+        /// <summary>
+        /// Called when a new client started the connection procedure. 
+        /// </summary>
+        public event EventHandler<ConnectedClient>? OnClientConnecting;
         /// <summary>
         /// Called when a client has been disconnected from the server.
         /// </summary>
@@ -88,9 +92,10 @@ namespace OctoAwesome.Network
 
             var client = new ConnectedClient(tmpClient);
             client.ClientDisconnected += Client_ClientDisconnected;
-            client.Start();
-
+            OnClientConnecting?.Invoke(this, client);
+            _ = client.Start();
             OnClientConnected?.Invoke(this, client);
+
 
             lock (lockObj)
                 connectedClients.Add(client);

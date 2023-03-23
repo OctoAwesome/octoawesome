@@ -1,5 +1,6 @@
 ﻿using NonSucking.Framework.Extension.Collections;
 
+using OctoAwesome.Logging;
 using OctoAwesome.Threading;
 
 using System;
@@ -15,6 +16,7 @@ namespace OctoAwesome.Rx
     public class ConcurrentRelay<T> : IObservable<T>, IObserver<T>, IDisposable
     {
         private readonly EnumerationModifiableConcurrentList<RelaySubscription> subscriptions;
+        private readonly ILogger logger;
         private readonly LockSemaphore lockSemaphore;
 
         /// <summary>
@@ -24,6 +26,7 @@ namespace OctoAwesome.Rx
         {
             lockSemaphore = new LockSemaphore(1, 1);
             subscriptions = new();
+            logger = TypeContainer.Get<ILogger>().As(nameof(ConcurrentRelay<T>));
         }
 
         /// <inheritdoc />
@@ -52,7 +55,8 @@ namespace OctoAwesome.Rx
         public void OnNext(T value)
         {
             using var scope = lockSemaphore.Wait();
-
+            logger.Trace($"Got lock, dispatching {value} to {subscriptions.Count} subs");
+            
             foreach (var sub in subscriptions)
             {
                 sub.Observer.OnNext(value);

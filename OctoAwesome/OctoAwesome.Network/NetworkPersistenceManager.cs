@@ -54,24 +54,23 @@ namespace OctoAwesome.Network
         {
             column = null;
 
-            using (var memoryStream = Serializer.Manager.GetStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream))
-            {
-                binaryWriter.Write(universeGuid.ToByteArray());
-                binaryWriter.Write(planet.Id);
-                binaryWriter.Write(columnIndex.X);
-                binaryWriter.Write(columnIndex.Y);
+            using var memoryStream = Serializer.Manager.GetStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
 
-                var request = requestPool.Rent();
-                request.Data = memoryStream.ToArray();
-                request.Command = OfficialCommand.LoadColumn;
+            binaryWriter.Write(universeGuid.ToByteArray());
+            binaryWriter.Write(planet.Id);
+            binaryWriter.Write(columnIndex.X);
+            binaryWriter.Write(columnIndex.Y);
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+            var request = requestPool.Rent();
+            request.Data = memoryStream.ToArray();
+            request.Command = OfficialCommand.LoadColumn;
 
-                awaiter.SetDesializeFunc(GetDesializerFunc<ChunkColumn>());
-                request.Release();
-                return awaiter;
-            }
+            var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+
+            awaiter.SetDesializeFunc(GetDesializerFunc<ChunkColumn>());
+            request.Release();
+            return awaiter;
         }
 
         /// <inheritdoc />
@@ -95,15 +94,13 @@ namespace OctoAwesome.Network
 
                 var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
                 awaiter.SetDesializeFunc(
-                     (b) =>
+                     (Func<byte[], object>)((b) =>
                      {
-                         using (var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..)))
-                         using (var binaryReader = new BinaryReader(memoryStream))
-                         {
-                             var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
-                             return Serializer.DeserializeNooson(planetInstance, dto.Data);
-                         }
-                     });
+                         using var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..));
+                         using var binaryReader = new BinaryReader(memoryStream);
+                         var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
+                         return (object)Serializer.Deserialize<IPlanet>(planetInstance, dto.Data);
+                     }));
                 request.Release();
                 return awaiter;
             }
@@ -113,58 +110,52 @@ namespace OctoAwesome.Network
         public Awaiter? Load(out Player player, Guid universeGuid, string playerName)
         {
             player = null;
-            using (var memoryStream = Serializer.Manager.GetStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream))
-            {
-                binaryWriter.Write(playerName);
+            using var memoryStream = Serializer.Manager.GetStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
+            binaryWriter.Write(playerName);
 
-                var request = requestPool.Rent();
+            var request = requestPool.Rent();
 
-                request.Data = memoryStream.ToArray();
-                request.Command = OfficialCommand.Whoami;
+            request.Data = memoryStream.ToArray();
+            request.Command = OfficialCommand.Whoami;
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
-                awaiter.SetDesializeFunc(GetDesializerFunc<Player>());
+            var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+            awaiter.SetDesializeFunc(GetDesializerFunc<Player>());
 
-                request.Release();
-                return awaiter;
-            }
+            request.Release();
+            return awaiter;
         }
 
         /// <inheritdoc />
         public Awaiter Load(out IUniverse universe, Guid universeGuid)
         {
             universe = null;
-            using (var memoryStream = Serializer.Manager.GetStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream))
-            {
-                Span<byte> guid = stackalloc byte[16];
-                universeGuid.TryWriteBytes(guid);
+            using var memoryStream = Serializer.Manager.GetStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
+            Span<byte> guid = stackalloc byte[16];
+            universeGuid.TryWriteBytes(guid);
 
-                binaryWriter.Write(guid);
+            binaryWriter.Write(guid);
 
-                var request = requestPool.Rent();
+            var request = requestPool.Rent();
 
-                request.Data = memoryStream.ToArray();
-                request.Command = OfficialCommand.GetUniverse;
+            request.Data = memoryStream.ToArray();
+            request.Command = OfficialCommand.GetUniverse;
 
-                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
-                awaiter.SetDesializeFunc(GetDesializerFunc<Universe>());
-                request.Release();
-                return awaiter;
-            }
+            var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+            awaiter.SetDesializeFunc(GetDesializerFunc<Universe>());
+            request.Release();
+            return awaiter;
         }
 
         private static Func<byte[], object> GetDesializerFunc<T>() where T : IConstructionSerializable<T>
         {
             return (b) =>
             {
-                using (var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..)))
-                using (var binaryReader = new BinaryReader(memoryStream))
-                {
-                    var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
-                    return Serializer.DeserializeNooson<T>(dto.Data);
-                }
+                using var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..));
+                using var binaryReader = new BinaryReader(memoryStream);
+                var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
+                return Serializer.DeserializeSpecialCtor<T>(dto.Data);
             };
         }
 

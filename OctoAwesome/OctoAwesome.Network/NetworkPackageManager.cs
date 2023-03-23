@@ -99,7 +99,7 @@ namespace OctoAwesome.Network
             using var br = new BinaryReader(s);
 
             var desId = br.ReadUInt64();
-
+            //TODO A bit more generic, like it is on the server
             if (desId == typeof(OfficialCommandDTO).SerializationId())
             {
                 //Is Array, currently only non array support?
@@ -116,6 +116,7 @@ namespace OctoAwesome.Network
                                 simulationRelay.OnNext(notification);
 
                             break;
+                            //TODO: Replace with type id
                         case OfficialCommand.ChunkNotification:
                             var notificationType = (BlockNotificationType)dto.Data[0];
                             switch (notificationType)

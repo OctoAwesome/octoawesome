@@ -90,26 +90,12 @@ namespace OctoAwesome.Serialization
         /// <param name="data">The data to deserialize the instance from.</param>
         /// <typeparam name="T">The type of the object to deserialize.</typeparam>
         /// <returns>The deserialized object.</returns>
-        public static T DeserializeNooson<T>(Span<byte> data) where T : IConstructionSerializable<T>
+        public static T DeserializeSpecialCtor<T>(Span<byte> data) where T : IConstructionSerializable<T>
         {
             using var stream = Manager.GetStream(data);
             using var reader = new BinaryReader(stream);
+         
             return T.DeserializeAndCreate(reader);
-        }
-
-        /// <summary>
-        /// Deserializes a generic deserializable instance from an array of bytes.
-        /// </summary>
-        /// <param name="instance">Existing instance to deserialize into.</param>
-        /// <param name="data">The data to deserialize the instance from.</param>
-        /// <typeparam name="T">The type of the object to deserialize.</typeparam>
-        /// <returns>The deserialized object.</returns>
-        public static T DeserializeNooson<T>(T instance, Span<byte> data) where T : ISerializable
-        {
-            using var stream = Manager.GetStream(data);
-            using var reader = new BinaryReader(stream);
-            instance.Deserialize(reader);
-            return instance;
         }
 
         /// <summary>

@@ -104,6 +104,7 @@ namespace OctoAwesome.Network
                     do
                     {
                         offset += DataReceived(buffer, readBytes, offset);
+                        logger.Trace($"Recveided bytes new offest: {offset}");
                     } while (offset < readBytes);
 
                 } while (true);
@@ -177,9 +178,11 @@ namespace OctoAwesome.Network
             try
             {
                 await stream.WriteAsync(data.AsMemory(0, len));
+                logger.Trace($"Did send the data with len {len}");
             }
-            catch (IOException)
+            catch (IOException ex)
             {
+                logger.Error(ex);
                 Stop();
             }
         }
@@ -200,6 +203,7 @@ namespace OctoAwesome.Network
                     ex.Data.Add("buffer.Length", buffer.Length);
                     ex.Data.Add(nameof(length), length);
                     ex.Data.Add(nameof(bufferOffset), bufferOffset);
+                    logger.Error($"Buffer was to small", ex);
                     throw ex;
                 }
                 else
@@ -210,7 +214,9 @@ namespace OctoAwesome.Network
                     }
                     else
                     {
-                        throw new InvalidCastException("Can not deserialize header with these bytes :(");
+                        var ex = new InvalidCastException("Can not deserialize header with these bytes :(");
+                        logger.Error($"Header deserialization failed", ex);
+                        throw ex;
                     }
                 }
             }
@@ -221,18 +227,23 @@ namespace OctoAwesome.Network
             {
                 var package = currentPackage;
 
+                logger.Trace($"Package {package} was complete, dispatching");
                 packages.OnNext(package);
                 currentPackage = null;
+            }
+            else
+            {
+                logger.Trace("Package was not complete, waiting for more bytes");
             }
 
             return offset;
         }
 
-        /// <inheritdoc />
         public virtual void Dispose()
         {
             packages.Dispose();
             cancellationTokenSource.Dispose();
+            stream?.Dispose();
         }
     }
 }

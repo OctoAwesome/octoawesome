@@ -45,16 +45,16 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the entity notification data.</param>
         /// <returns><c>null</c></returns>
-        public static byte[]? EntityNotification(CommandParameter parameter)
+        public static void EntityNotification(ITypeContainer tc, CommandParameter parameter)
         {
             var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, parameter.Data);
+
             entityNotification.SenderId = parameter.ClientId;
 
             simulationChannel.OnNext(entityNotification);
             networkChannel.OnNext(entityNotification);
 
             entityNotification.Release();
-            return null;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk notification data.</param>
         /// <returns><c>null</c></returns>
-        public static byte[]? ChunkNotification(CommandParameter parameter)
+        public static void ChunkNotification(ITypeContainer tc, CommandParameter parameter)
         {
             var notificationType = (BlockNotificationType)parameter.Data[0];
             Notification chunkNotification;
@@ -85,7 +85,6 @@ namespace OctoAwesome.GameServer.Commands
 
             chunkNotification.Release();
 
-            return null;
         }
     }
 }
