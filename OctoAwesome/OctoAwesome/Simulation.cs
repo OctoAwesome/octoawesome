@@ -53,7 +53,6 @@ namespace OctoAwesome
         private readonly CountedScopeSemaphore entitiesSemaphore = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
-        private readonly Relay<Notification> networkRelay;
         private readonly Relay<Notification> uiRelay;
 
         private IDisposable? simulationSubscription;
@@ -69,7 +68,6 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, ExtensionService extensionService)
         {
             ResourceManager = resourceManager;
-            networkRelay = new Relay<Notification>();
             uiRelay = new Relay<Notification>();
 
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
@@ -152,11 +150,6 @@ namespace OctoAwesome
                 .UpdateHub
                 .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
-
-            networkSubscription
-                = ResourceManager
-                .UpdateHub
-                .AddSource(networkRelay, DefaultChannels.Network);
 
             uiSubscription
                 = ResourceManager
@@ -435,7 +428,7 @@ namespace OctoAwesome
         {
             if (entities.Count < 0 && !IsServerSide)
                 return;
-
+            //TODO: Ist das hier noch der Richtige Platz?
             switch (value)
             {
                 case EntityNotification entityNotification:
@@ -446,9 +439,6 @@ namespace OctoAwesome
                             break;
                         case EntityNotification.ActionType.Add:
                             Add(entityNotification.Entity, entityNotification.OverwriteExisting);
-                            break;
-                        case EntityNotification.ActionType.Update:
-                            EntityUpdate(entityNotification);
                             break;
                         case EntityNotification.ActionType.Request:
                             RequestEntity(entityNotification);
@@ -463,67 +453,37 @@ namespace OctoAwesome
         }
 
 
-        /// <summary>
-        /// Called when an update notification was received.
-        /// </summary>
-        /// <param name="notification">The update notification.</param>
-        public void OnUpdate(SerializableNotification notification)
-        {
-            if (!IsServerSide)
-                networkRelay.OnNext(notification);
-        }
-
-        private void EntityUpdate(EntityNotification notification)
-        {
-            Entity? entity;
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
-            if (entity == null)
-            {
-                var entityNotification = entityNotificationPool.Rent();
-                entityNotification.EntityId = notification.EntityId;
-                entityNotification.Type = EntityNotification.ActionType.Request;
-                networkRelay.OnNext(entityNotification);
-                entityNotification.Release();
-            }
-            else
-            {
-                Debug.Assert(notification.Notification != null, "notification.Notification != null");
-                entity.Push(notification.Notification);
-            }
-        }
-
         private void RequestEntity(EntityNotification entityNotification)
         {
             if (!IsServerSide)
                 return;
 
-            Entity? entity;
-            using (var _ = entitiesSemaphore.EnterCountScope())
-            {
-                entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
-                if (entity == null)
-                    return;
-            }
+            ;
+            //Entity? entity;
+            //using (var _ = entitiesSemaphore.EnterCountScope())
+            //{
+            //    entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
+            //    if (entity == null)
+            //        return;
+            //}
 
-            var remoteEntity = new RemoteEntity(entity);
-            remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
-            remoteEntity.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            //var remoteEntity = new RemoteEntity(entity);
+            //remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            //remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
+            //remoteEntity.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
 
-            var newEntityNotification = entityNotificationPool.Rent();
-            newEntityNotification.Entity = remoteEntity;
-            newEntityNotification.Type = EntityNotification.ActionType.Add;
+            //var newEntityNotification = entityNotificationPool.Rent();
+            //newEntityNotification.Entity = remoteEntity;
+            //newEntityNotification.Type = EntityNotification.ActionType.Add;
 
-            networkRelay.OnNext(newEntityNotification);
-            newEntityNotification.Release();
+            //networkRelay.OnNext(newEntityNotification);
+            //newEntityNotification.Release();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
             uiRelay.Dispose();
-            networkRelay.Dispose();
         }
     }
 }

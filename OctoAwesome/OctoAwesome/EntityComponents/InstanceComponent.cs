@@ -1,8 +1,12 @@
-﻿using OctoAwesome.Notifications;
+﻿
 using OctoAwesome.Serialization;
 using System;
 using System.IO;
 using OctoAwesome.Extension;
+using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
+using System.Diagnostics;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -11,10 +15,13 @@ namespace OctoAwesome.EntityComponents
     /// </summary>
     /// <typeparam name="T">The component container that needs to be interacted with.</typeparam>
     [Nooson]
-    public abstract partial class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification>
+    public abstract partial class InstanceComponent<T> : Component
         where T : ComponentContainer
     {
         private T? instance;
+        private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly IUpdateHub updateHub;
+        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         /// <summary>
         /// Gets the reference to the <see cref="ComponentContainer{TComponent}"/>.
@@ -42,6 +49,11 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public InstanceComponent()
         {
+            var typeContainer = TypeContainer.Get<ITypeContainer>();
+            entityNotificationPool = typeContainer.Get<IPool<EntityNotification>>();
+            updateHub = typeContainer.Get<IUpdateHub>();
+
+            propertyChangedNotificationPool = typeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
         /// <summary>
@@ -76,20 +88,56 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         protected virtual void OnSetInstance()
         {
-
+            updateHub.ListenOn(DefaultChannels.Simulation).Subscribe(OnSimulationMessage);
         }
 
-        /// <inheritdoc />
-        public virtual void OnNotification(SerializableNotification notification)
+
+        protected override void OnPropertyChanged<T>(T value, string propertyName)
         {
+            if (instance is Entity entity)
+            {
+                var updateNotification = propertyChangedNotificationPool.Rent();
 
+                updateNotification.Issuer = GetType().Name;
+                updateNotification.Property = propertyName;
+
+                updateNotification.Value = Serializer.Serialize(this);
+
+                var entityNotification = entityNotificationPool.Rent();
+                entityNotification.Entity = entity;
+                entityNotification.Type = EntityNotification.ActionType.Update;
+                entityNotification.Notification = updateNotification;
+
+                updateHub.PushNetwork(entityNotification, DefaultChannels.Simulation);
+                entityNotification.Release();
+            }
         }
-
-        /// <inheritdoc />
-        public virtual void Push(SerializableNotification notification)
+        private void OnSimulationMessage(object obj)
         {
-            instance?.OnNotification(notification);
-        }
+            if (obj is not EntityNotification entityNotification)
+                return;
+            if (InstanceId == Guid.Empty)
+                return;
+            //TODO Why InstanceID empty, should we use instance.Id or not?
+            if (entityNotification.EntityId != InstanceId)
+                return;
 
+            switch (entityNotification.Type)
+            {
+                case EntityNotification.ActionType.Update:
+                    EntityUpdate(entityNotification);
+                    break;
+            }
+        }
+        private void EntityUpdate(EntityNotification notification)
+        {
+            if (notification.Notification is PropertyChangedNotification changedNotification)
+            {
+                if (changedNotification.Issuer == GetType().Name)
+                {
+                    _ = Serializer.Deserialize(this, changedNotification.Value);
+                }
+            }
+        }
     }
 }

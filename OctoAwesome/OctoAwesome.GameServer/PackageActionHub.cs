@@ -223,7 +223,12 @@ namespace OctoAwesome.GameServer
                     var notificationType = typeRegistrar.Get(desId);
                     if (notificationType.IsAssignableTo(typeof(IPoolElement)))
                     {
-                        var pool = GenericCaster<object, IPool<IPoolElement>>.Cast(typeContainer.Get(Type.MakeGenericSignatureType(typeof(IPool), notificationType)));
+                        var type = typeof(IPool<>).MakeGenericType(notificationType);
+                        var objectPool = typeContainer.Get(type);
+                    
+                        dynamic pool = objectPool; //Todo, how to cast correctly to get access to rent?
+                        //var pool = GenericCaster<object, IPool<IPoolElement>>.Cast(
+                            //typeContainer.Get(type));
                         notificationDeserializationMethodCache[desId]
                             = expression
                             = (BinaryReader reader) =>

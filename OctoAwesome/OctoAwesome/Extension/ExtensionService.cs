@@ -1,11 +1,14 @@
 ﻿using Microsoft.Win32;
-
 using OctoAwesome.Database;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -256,6 +259,27 @@ public class ExtensionService
                 }
             }
 
+        }
+    }
+
+    public void RegisterTypesWithSerializationId(Assembly assembly)
+    {
+        var types = assembly
+                  .GetTypes();
+
+        foreach (var type in types)
+        {
+            if (type.IsInterface || type.IsAbstract)
+            {
+                continue;
+            }
+
+            var serId = type.SerializationId();
+
+            if(serId > 0)
+            {
+                Register(type, ChannelNames.Serialization);
+            }
         }
     }
 

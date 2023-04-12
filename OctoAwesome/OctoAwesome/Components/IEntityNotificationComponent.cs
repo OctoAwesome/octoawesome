@@ -5,7 +5,7 @@ namespace OctoAwesome.Components
     /// <summary>
     /// Interface for components for entities to receive notifications.
     /// </summary>
-    public interface IEntityNotificationComponent : IEntityComponent, INotificationSubject<SerializableNotification>
+    public interface IEntityNotificationComponent : IEntityComponent
     {
     }
 }

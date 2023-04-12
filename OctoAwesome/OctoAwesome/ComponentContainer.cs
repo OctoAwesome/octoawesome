@@ -17,7 +17,7 @@ namespace OctoAwesome
     /// <summary>
     /// Base class for classes containing components.
     /// </summary>
-    public abstract partial class ComponentContainer : IIdentification, IComponentContainer, INotificationSubject<SerializableNotification>
+    public abstract partial class ComponentContainer : IIdentification, IComponentContainer
     {
         /// <summary>
         /// Gets the Id of the container.
@@ -31,16 +31,10 @@ namespace OctoAwesome
         public Simulation? Simulation { get; internal set; }
 
         /// <summary>
-        /// List of components with notification interface implementation.
-        /// </summary>
-        protected readonly List<INotificationSubject<SerializableNotification>> notificationComponents;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContainer"/> class.
         /// </summary>
         protected ComponentContainer()
         {
-            notificationComponents = new();
             Id = Guid.Empty;
         }
 
@@ -65,11 +59,6 @@ namespace OctoAwesome
             return ReferenceEquals(this, obj);
         }
 
-        /// <inheritdoc />
-        public virtual void OnNotification(SerializableNotification notification)
-        {
-        }
-
         /// <summary>
         /// Used to interact with this component container
         /// </summary>
@@ -83,12 +72,7 @@ namespace OctoAwesome
         /// <param name="gameTime">The current game time when the event happened</param>
         /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
         protected abstract void OnInteract(GameTime gameTime, Entity entity);
-        /// <inheritdoc />
-        public virtual void Push(SerializableNotification notification)
-        {
-            foreach (var component in notificationComponents)
-                component.OnNotification(notification);
-        }
+   
 
         ///// <inheritdoc />
         //public abstract void Serialize(BinaryWriter writer);
@@ -158,8 +142,6 @@ namespace OctoAwesome
             //cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
             //}
 
-            if (component is INotificationSubject<SerializableNotification> nofiticationComponent)
-                notificationComponents.Add(nofiticationComponent);
             if (component is IUpdateable updateable)
                 updateables.Add(updateable);
         }

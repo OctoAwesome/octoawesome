@@ -33,7 +33,7 @@ namespace OctoAwesome.EntityComponents
 
                 posUpdate = valueBlockX != positionBlockX || valueBlockY != positionBlockY
                     || position.BlockPosition.Z != value.BlockPosition.Z;
-
+                
                 SetValue(ref position, value);
                 planet = TryGetPlanet(value.Planet);
             }
@@ -63,41 +63,8 @@ namespace OctoAwesome.EntityComponents
         {
             Sendable = true;
             resourceManager = TypeContainer.Get<IResourceManager>();
-            propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
-        /// <inheritdoc />
-        //public override void Serialize(BinaryWriter writer)
-        //{
-        //    base.Serialize(writer);
-        //    // Position
-        //    writer.Write(Position.Planet);
-        //    writer.Write(Position.GlobalBlockIndex.X);
-        //    writer.Write(Position.GlobalBlockIndex.Y);
-        //    writer.Write(Position.GlobalBlockIndex.Z);
-        //    writer.Write(Position.BlockPosition.X);
-        //    writer.Write(Position.BlockPosition.Y);
-        //    writer.Write(Position.BlockPosition.Z);
-        //}
-
-        ///// <inheritdoc />
-        //public static PositionComponent Deserialize(BinaryReader reader)
-        //{
-        //    var posCom = new PositionComponent();
-        //    ((InstanceComponent<ComponentContainer>) posCom).Deserialize(reader);
-
-        //    // Position
-        //    int planet = reader.ReadInt32();
-        //    int blockX = reader.ReadInt32();
-        //    int blockY = reader.ReadInt32();
-        //    int blockZ = reader.ReadInt32();
-        //    float posX = reader.ReadSingle();
-        //    float posY = reader.ReadSingle();
-        //    float posZ = reader.ReadSingle();
-
-        //    posCom.position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
-        //    return posCom;
-        //}
 
         private IPlanet TryGetPlanet(int planetId)
         {
@@ -105,41 +72,6 @@ namespace OctoAwesome.EntityComponents
                 return planet;
 
             return resourceManager.GetPlanet(planetId);
-        }
-
-        /// <inheritdoc />
-        protected override void OnPropertyChanged<T>(T value, string propertyName)
-        {
-            base.OnPropertyChanged(value, propertyName);
-
-            if (propertyName == nameof(Position) && posUpdate)
-            {
-                var updateNotification = propertyChangedNotificationPool.Rent();
-
-                updateNotification.Issuer = nameof(PositionComponent);
-                updateNotification.Property = propertyName;
-
-                updateNotification.Value = Serializer.Serialize(this);
-
-                Push(updateNotification);
-            }
-        }
-
-        /// <inheritdoc />
-        public override void OnNotification(SerializableNotification notification)
-        {
-            base.OnNotification(notification);
-
-            if (notification is PropertyChangedNotification changedNotification)
-            {
-                if (changedNotification.Issuer == nameof(PositionComponent))
-                {
-                    if (changedNotification.Property == nameof(Position))
-                    {
-                        _ = Serializer.Deserialize(this, changedNotification.Value);
-                    }
-                }
-            }
         }
     }
 }

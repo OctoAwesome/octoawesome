@@ -41,6 +41,7 @@ namespace OctoAwesome
         /// <inheritdoc />
         public void RegisterTypes(ExtensionService extensionLoader)
         {
+            extensionLoader.RegisterTypesWithSerializationId(typeof(CoreExtension).Assembly);
         }
     }
 }

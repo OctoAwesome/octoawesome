@@ -62,9 +62,10 @@ namespace OctoAwesome.Basics
             extensionLoader.Register<IMapPopulator>(new TreePopulator());
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
-            extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
-            extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
-            extensionLoader.Register(typeof(Furnace), ChannelNames.Serialization);
+            extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
+            //extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
+            //extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
+            //extensionLoader.Register(typeof(Furnace), ChannelNames.Serialization);
 
             extensionLoader.Extend<WauziEntity>(wauziEntity => wauziEntity.RegisterDefault());
 

@@ -26,6 +26,7 @@ namespace OctoAwesome
         public const int SELECTIONRANGE = 8;
 
         private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly IUpdateHub updateHub;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
@@ -33,21 +34,9 @@ namespace OctoAwesome
         public Player()
         {
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            updateHub = TypeContainer.Get<IUpdateHub>();
         }
 
-        /// <inheritdoc />
-        public override void OnNotification(SerializableNotification notification)
-        {
-            base.OnNotification(notification);
-
-            var entityNotification = entityNotificationPool.Rent();
-            entityNotification.Entity = this;
-            entityNotification.Type = EntityNotification.ActionType.Update;
-            entityNotification.Notification = notification as PropertyChangedNotification;
-
-            Simulation?.OnUpdate(entityNotification);
-            entityNotification.Release();
-        }
 
         /// <inheritdoc/>
         protected override void OnInteract(GameTime gameTime, Entity entity) => throw new System.NotImplementedException();
