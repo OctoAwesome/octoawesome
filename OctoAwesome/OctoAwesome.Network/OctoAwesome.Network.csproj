@@ -32,4 +32,8 @@
 		</ItemGroup>
 		<Message Text="Removing System.Memory for mono compatibility" Importance="high" />
 	</Target>
+	
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
 </Project>

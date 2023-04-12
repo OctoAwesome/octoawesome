@@ -17,4 +17,7 @@
   <ItemGroup>
     <PackageReference Include="engenious" Version="0.7.1-alpha" />
   </ItemGroup>
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
 </Project>

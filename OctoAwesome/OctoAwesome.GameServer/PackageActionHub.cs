@@ -8,6 +8,13 @@ using System.IO;
 using OctoAwesome.Logging;
 using NonSucking.Framework.Extension.IoC;
 using OctoAwesome.Pooling;
+using System.Reflection;
+using OctoAwesome.Notifications;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
+using System.Net.Sockets;
+using OctoAwesome.Caching;
+using System.Text.Json.Serialization;
 
 namespace OctoAwesome.GameServer
 {
@@ -15,10 +22,19 @@ namespace OctoAwesome.GameServer
     {
         private readonly ILogger logger;
         private readonly ITypeContainer typeContainer;
+        private readonly SerializationIdTypeProvider typeRegistrar;
+        private readonly IUpdateHub updateHub;
+        private readonly Dictionary<ulong, Func<BinaryReader, object>> notificationDeserializationMethodCache;
+
+        //private readonly Dictionary<long, >
+
         public PackageActionHub(ILogger logger, ITypeContainer tc)
         {
             this.logger = logger.As(nameof(PackageActionHub));
             this.typeContainer = tc;
+            typeRegistrar = tc.Get<SerializationIdTypeProvider>();
+            updateHub = tc.Get<IUpdateHub>();
+            notificationDeserializationMethodCache = new();
         }
 
         public record struct RequestContext(BinaryReader Reader, Package Package)
@@ -109,7 +125,7 @@ namespace OctoAwesome.GameServer
                 action(writeTo.AsMemory(0..length), package);
                 foreach (var item in writeTo)
                     item.Release();
-                
+
                 ArrayPool<T>.Shared.Return(writeTo);
             };
             registeredStuffDic.Add(id, deserializeAction);
@@ -148,7 +164,7 @@ namespace OctoAwesome.GameServer
             var pool = typeContainer.Get<IPool<T>>();
             var deserializeAction = (RequestContext package) =>
             {
-                var t= pool.Rent();
+                var t = pool.Rent();
                 t.Deserialize(package.Reader);
                 action(t, package);
                 t.Release();
@@ -156,17 +172,40 @@ namespace OctoAwesome.GameServer
             registeredStuff.Add(id, deserializeAction);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
+        public void RegisterPoolable<T>(Action<T> action, ulong id = 0) where T : IConstructionSerializable<T>, IPoolElement
+        {
+            if (id == 0)
+                id = typeof(T).SerializationId();
+            var pool = typeContainer.Get<IPool<T>>();
+            var deserializeAction = (RequestContext package) =>
+            {
+                var t = pool.Rent();
+                t.Deserialize(package.Reader);
+                action(t);
+                t.Release();
+            };
+            registeredStuff.Add(id, deserializeAction);
+        }
+
         public void Dispatch(Package package, BaseClient client)
         {
-            //TODO Not supported by nooson yet, so we don't pool for now, sadly
-            //var pooled = typeof(IPoolElement).IsAssignableFrom(serType);
-            //Serializer.DeserializePoolElement();
-
             using var ms = Serializer.Manager.GetStream(package.Payload);
             using Stream s = (package.PackageFlags & PackageFlags.Compressed) > 0 ? new GZipStream(ms, CompressionLevel.Optimal) : ms;
             using var br = new BinaryReader(s);
 
+            bool isNotification = (package.PackageFlags & PackageFlags.Notification) > 0;
+
             var desId = br.ReadUInt64();
+            string channel = "";
+            if (isNotification)
+                channel = br.ReadString();
+            var startOfObjectPos = ms.Position;
 
             var rc = new RequestContext(br, package);
             Action<RequestContext>? val = null;
@@ -175,7 +214,44 @@ namespace OctoAwesome.GameServer
             else if ((package.PackageFlags & PackageFlags.Array) == 0 && registeredStuff.TryGetValue(desId, out val))
                 val.Invoke(rc);
 
-            if (val is not null
+            if (isNotification)
+            {
+                ms.Seek(startOfObjectPos, SeekOrigin.Begin);
+
+                if (!notificationDeserializationMethodCache.TryGetValue(desId, out var expression))
+                {
+                    var notificationType = typeRegistrar.Get(desId);
+                    if (notificationType.IsAssignableTo(typeof(IPoolElement)))
+                    {
+                        var pool = GenericCaster<object, IPool<IPoolElement>>.Cast(typeContainer.Get(Type.MakeGenericSignatureType(typeof(IPool), notificationType)));
+                        notificationDeserializationMethodCache[desId]
+                            = expression
+                            = (BinaryReader reader) =>
+                            {
+                                var element = pool.Rent();
+                                var des = GenericCaster<IPoolElement, ISerializable>.Cast(element);
+                                des.Deserialize(br);
+                                return des;
+                            };
+                    }
+                    else
+                    {
+                        var brParam = Expression.Parameter(typeof(BinaryReader));
+                        MethodInfo deserializationMethodInfo;
+                        deserializationMethodInfo = notificationType.GetMethod(nameof(IConstructionSerializable<bool>.DeserializeAndCreate), BindingFlags.Public | BindingFlags.Static, new[] { typeof(BinaryReader) })!;
+                        notificationDeserializationMethodCache[desId]
+                            = expression
+                            = Expression.Lambda<Func<BinaryReader, object>>(Expression.Call(deserializationMethodInfo, brParam), brParam).Compile();
+                    }
+                }
+
+                var notification = expression(br);
+                updateHub.Push(notification, channel);
+
+                if (notification is IPoolElement poolElement)
+                    poolElement.Release();
+            }
+            else if (val is not null
                 && (package.PackageFlags & PackageFlags.Response) > 0
                 && package.Payload is not null
                 && package.Payload.Length > 0)
@@ -185,7 +261,7 @@ namespace OctoAwesome.GameServer
                 _ = client.SendPackageAndReleaseAsync(package);
             }
 
-            if(val is null)
+            if (val is null)
             {
                 logger.Trace($"Received invalid desId ({desId}) with flags: {package.PackageFlags}, send help");
             }

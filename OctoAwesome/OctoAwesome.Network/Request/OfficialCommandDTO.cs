@@ -35,11 +35,10 @@ public partial class OfficialCommandDTO : IPoolElement, IConstructionSerializabl
         pool.Return(this);
     }
 
-    private static ulong ReadTypeId(BinaryReader reader) => 0;
+    private static ulong ReadTypeId(BinaryReader _) => 0;
     private void WriteTypeId(BinaryWriter writer)
     {
-        if (writer.BaseStream.Position == 0)
+        if (writer.BaseStream.Position == 0) //required because we sometimes have it already written on the outside
             writer.Write(SerializationId);
     }
-
 }

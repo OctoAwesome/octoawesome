@@ -35,7 +35,7 @@ namespace OctoAwesome.Network
         {
             packagePool = TypeContainer.Get<PackagePool>();
             var updateHub = TypeContainer.Get<IUpdateHub>();
-            networkSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe(OnNext, OnError);
+            networkSubscription = updateHub.ListenOnNetwork().Subscribe(OnNext, OnError);
             requestPool = new();
         }
 
@@ -46,50 +46,28 @@ namespace OctoAwesome.Network
             throw error;
         }
 
-        private void OnNext(object value)
+        private void OnNext(PushInfo value)
         {
-            if (value is not Notification notification)
+            if (value.Notification is not SerializableNotification notification)
                 return;
 
             if (notification.SenderId == Id)
                 return;
-
-            OfficialCommand command;
-            byte[] payload;
-            switch (value)
-            {
-                case EntityNotification entityNotification:
-                    command = OfficialCommand.EntityNotification;
-                    BuildAndSendPackage(entityNotification, command);
-                    break;
-                case BlocksChangedNotification _:
-                case BlockChangedNotification _:
-                    command = OfficialCommand.ChunkNotification;
-                    BuildAndSendPackage(GenericCaster<object, SerializableNotification>.Cast(value), command);
-                    break;
-                default:
-                    return;
-            }
-
-        }
-
-        private void BuildAndSendPackage(SerializableNotification data, OfficialCommand officialCommand)
-        {
             var package = packagePool.Rent();
+
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                data.Serialize(binaryWriter);
-
-                var request = requestPool.Rent();
-                request.Data = memoryStream.ToArray();
-                request.Command = officialCommand;
+                binaryWriter.Write(notification.GetType().SerializationId());
+                binaryWriter.Write(value.Channel);
+                notification.Serialize(binaryWriter);
 
                 package.PackageFlags = PackageFlags.Notification;
-                package.Payload = Serializer.Serialize(request);
+                package.Payload = memoryStream.ToArray();
                 SendPackageAndRelease(package);
             }
         }
+
 
         /// <inheritdoc />
         public override void Dispose()

@@ -177,17 +177,17 @@ namespace OctoAwesome.Client
 
         private static void Register(ITypeContainer typeContainer)
         {
-            typeContainer.Register<Settings>(InstanceBehavior.Singleton);
-            typeContainer.Register<ISettings, Settings>(InstanceBehavior.Singleton);
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
-            typeContainer.Register<ExtensionService>(InstanceBehavior.Singleton);
-            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
-            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
-            typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
-            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
-            typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
+            typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
+            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<GameService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<RecipeService, RecipeService>(InstanceBehaviour.Singleton);
 
         }
 

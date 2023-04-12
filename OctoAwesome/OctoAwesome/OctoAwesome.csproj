@@ -21,7 +21,7 @@
 		<PackageReference Include="engenious" Version="0.7.1-alpha" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
 		<PackageReference Include="NLog" Version="5.0.4" />
-		<PackageReference Include="NonSucking.Framework.Extension" Version="0.1.0.97-alpha" />
+		<PackageReference Include="NonSucking.Framework.Extension" Version="0.1.0.105-alpha" />
 		<PackageReference Include="System.Interactive" Version="6.0.1" />
 
 		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.98-alpha" />
@@ -34,6 +34,7 @@
 
 	<ItemGroup>
 		<Using Include="NonSucking.Framework.Serialization" />
+		<Using Include="NonSucking.Framework.Extension.IoC" />
 	</ItemGroup>
 
 </Project>

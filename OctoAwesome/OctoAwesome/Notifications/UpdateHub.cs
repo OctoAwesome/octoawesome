@@ -1,16 +1,20 @@
 ﻿using OctoAwesome.Rx;
 using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Notifications
 {
+    public record struct PushInfo(object Notification, string Channel);
+
     /// <summary>
     /// Update hub implementation for managing observers and observables in a thread safe manner.
     /// </summary>
     public class UpdateHub : IDisposable, IUpdateHub
     {
         private readonly Dictionary<string, ConcurrentRelay<object>> channels;
+        private readonly ConcurrentRelay<PushInfo> networkChannel;
         private readonly LockSemaphore lockSemaphore;
 
         /// <summary>
@@ -20,6 +24,7 @@ namespace OctoAwesome.Notifications
         {
             channels = new();
             lockSemaphore = new LockSemaphore(1, 1);
+            networkChannel = new ConcurrentRelay<PushInfo>();
         }
 
         /// <inheritdoc />
@@ -27,10 +32,26 @@ namespace OctoAwesome.Notifications
             => GetChannelRelay(channel);
 
         /// <inheritdoc />
-        public IDisposable AddSource(IObservable<object> notification, string channel)
-            => notification.Subscribe(GetChannelRelay(channel));
+        public IObservable<PushInfo> ListenOnNetwork() => networkChannel;
 
-        private ConcurrentRelay<object> GetChannelRelay(string channel)
+        /// <inheritdoc />
+        public IDisposable AddSource(IObservable<object> notification, string channel, bool sendOverNetwork = false)
+        {
+            if (sendOverNetwork)
+            {
+                return StableCompositeDisposable.Create(
+                    notification.Subscribe(GetChannelRelay(channel)),
+                    notification.Subscribe(x => networkChannel.OnNext(new(x, channel))));
+            }
+            else
+            {
+                return notification.Subscribe(GetChannelRelay(channel));
+
+            }
+        }
+
+
+        public ConcurrentRelay<object> GetChannelRelay(string channel)
         {
             using var scope = lockSemaphore.Wait();
 
@@ -43,7 +64,18 @@ namespace OctoAwesome.Notifications
             return channelRelay;
         }
 
-        /// <inheritdoc />
+
+        public void PushNetwork(object notification, string channel)
+        {
+            networkChannel.OnNext(new PushInfo(notification, channel));
+        }
+
+        public void Push(object notification, string channel)
+        {
+            if (channels.TryGetValue(channel, out var channelRelay))
+                channelRelay.OnNext(notification);
+        }
+
         public void Dispose()
         {
             foreach (var channel in channels)
@@ -53,7 +85,8 @@ namespace OctoAwesome.Notifications
 
             channels.Clear();
             lockSemaphore.Dispose();
+            networkChannel?.Dispose();
         }
-
     }
+
 }

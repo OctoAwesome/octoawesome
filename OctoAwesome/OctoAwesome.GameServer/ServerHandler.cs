@@ -55,9 +55,9 @@ namespace OctoAwesome.GameServer
             - Return Something (Sascha wants typeof(ISerializable?))
 
             - Split Notifications and Requests (No Notification via OfficialCommandDTO)
+            - Client centralized react on server responses and notifications (Needs a solution)
         
             - Try to Get rid of the switch cases / on nextes somehow somewhere somewhat
-            - Client centralized react on server responses and notifications (Needs a solution)
          */
 
         /// <summary>
@@ -67,16 +67,20 @@ namespace OctoAwesome.GameServer
         {
             logger = (typeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ServerHandler));
 
-            typeContainer.Register<UpdateHub>(InstanceBehavior.Singleton);
-            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehavior.Singleton);
-            typeContainer.Register<Server>(InstanceBehavior.Singleton);
-            typeContainer.Register<SimulationManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Server>(InstanceBehaviour.Singleton);
+            typeContainer.Register<SimulationManager>(InstanceBehaviour.Singleton);
 
             SimulationManager = typeContainer.Get<SimulationManager>();
             UpdateHub = typeContainer.Get<IUpdateHub>();
             server = typeContainer.Get<Server>();
             serializationTypeProvider = typeContainer.Get<SerializationIdTypeProvider>();
             packageActionHub = new PackageActionHub(logger, typeContainer);
+            typeContainer.Register(packageActionHub);
+            var pool = new Pool<OfficialCommandDTO>();
+            typeContainer.Register(pool);
+            typeContainer.Register<IPool<OfficialCommandDTO>>(pool);
 
             CommandFunctions = new();
 
@@ -85,9 +89,6 @@ namespace OctoAwesome.GameServer
             Register(OfficialCommand.GetPlanet, GeneralCommands.GetPlanet);
             Register<ChunkColumn>(OfficialCommand.SaveColumn, ChunkCommands.SaveColumn);
             Register(OfficialCommand.LoadColumn, ChunkCommands.LoadColumn);
-            //Replace with Ser Id
-            Register(OfficialCommand.EntityNotification, NotificationCommands.EntityNotification);
-            Register(OfficialCommand.ChunkNotification, NotificationCommands.ChunkNotification);
 
             packageActionHub.RegisterPoolable((OfficialCommandDTO req, RequestContext cont) =>
             {

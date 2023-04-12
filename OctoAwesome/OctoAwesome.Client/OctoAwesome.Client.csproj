@@ -65,5 +65,8 @@
 	<ItemGroup>
 		<EngeniousContentReference Include="Content\Content.ecp" />
 	</ItemGroup>
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
 
 </Project>
