@@ -8,6 +8,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Components;
 using System.IO;
 using OctoAwesome.Extension;
+using System;
 
 namespace OctoAwesome
 {
@@ -32,6 +33,12 @@ namespace OctoAwesome
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
         public Player()
+        {
+            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            updateHub = TypeContainer.Get<IUpdateHub>();
+        }
+
+        public Player(Guid id, ComponentList<IComponent> components) : base(id, components)
         {
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
             updateHub = TypeContainer.Get<IUpdateHub>();

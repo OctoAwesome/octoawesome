@@ -32,16 +32,5 @@
         /// </summary>
         SaveColumn = 105,
 
-
-        //400 - 500 Notifications
-        /// <summary>
-        /// For notification of entity changes.
-        /// </summary>
-        EntityNotification = 401,
-
-        /// <summary>
-        /// For notification of chunkChannel changes.
-        /// </summary>
-        ChunkNotification = 402
     }
 }

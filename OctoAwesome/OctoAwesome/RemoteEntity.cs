@@ -5,6 +5,8 @@ using OctoAwesome.Serialization;
 using System.IO;
 
 using NonSucking.Framework.Serialization;
+using OctoAwesome.Components;
+using System;
 
 namespace OctoAwesome
 {
@@ -12,14 +14,17 @@ namespace OctoAwesome
     /// Entity that is simulated on a remote server.
     /// </summary>
     [Nooson]
-    public partial class RemoteEntity : Entity, ISerializable<RemoteEntity>
+    public partial class RemoteEntity : Entity, IConstructionSerializable<RemoteEntity>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteEntity"/> class.
         /// </summary>
-        public RemoteEntity()
+        public RemoteEntity() : base()
         {
 
+        }
+        public RemoteEntity(Guid id, ComponentList<IComponent> components) : base(id, components)
+        {
         }
 
         /// <summary>

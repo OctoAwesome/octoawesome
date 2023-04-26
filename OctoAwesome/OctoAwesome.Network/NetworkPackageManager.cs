@@ -20,7 +20,7 @@ using System.Reflection.Metadata;
 namespace OctoAwesome.Network
 {
     /// <summary>
-    /// Manages updates received and to be sent over network.
+    /// Manages updates received and to be sent over network on client side.
     /// </summary>
     public class NetworkPackageManager : IDisposable
     {
@@ -40,6 +40,7 @@ namespace OctoAwesome.Network
 
         private readonly Relay<object> simulationRelay;
         private readonly Relay<object> chunkChannel;
+        private readonly PackageActionHub packageActionHub;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPackageManager"/> class.
@@ -59,6 +60,7 @@ namespace OctoAwesome.Network
 
             simulationRelay = new Relay<object>();
             chunkChannel = new Relay<object>();
+            packageActionHub = new PackageActionHub(logger, typeContainer);
 
             hubSubscription
                 = updateHub
@@ -82,8 +84,6 @@ namespace OctoAwesome.Network
 
             if ((package.PackageFlags & PackageFlags.Response) > 0)
             {
-                //var entityNotification = Serializer.DeserializePoolElement(entityNotificationPool, package.Payload);
-
                 logger.Trace($"Package with id:{package.UId} and Flags: {package.PackageFlags}");
 
                 if (packages.TryRemove(package.UId, out var awaiter))
@@ -91,60 +91,11 @@ namespace OctoAwesome.Network
                     if (!awaiter.TrySetResult(package.Payload))
                         logger.Warn($"Awaiter can not set result package {package.UId}");
                 }
-                return;
             }
-
-            using var ms = Serializer.Manager.GetStream(package.Payload);
-            using Stream s = (package.PackageFlags & PackageFlags.Compressed) > 0 ? new GZipStream(ms, CompressionLevel.Optimal) : ms;
-            using var br = new BinaryReader(s);
-
-            var desId = br.ReadUInt64();
-            //TODO A bit more generic, like it is on the server
-            if (desId == typeof(OfficialCommandDTO).SerializationId())
+            else
             {
-                //Is Array, currently only non array support?
-                if ((package.PackageFlags & PackageFlags.Array) == 0)
-                {
-                    Notification? notification = null;
-
-                    var dto = OfficialCommandDTO.DeserializeAndCreate(br);
-                    switch (dto.Command)
-                    {
-                        case OfficialCommand.EntityNotification:
-                            notification = Serializer.DeserializePoolElement<EntityNotification>(entityNotificationPool, dto.Data);
-                            if (notification is not null)
-                                simulationRelay.OnNext(notification);
-
-                            break;
-                        //TODO: Replace with type id
-                        case OfficialCommand.ChunkNotification:
-                            var notificationType = (BlockNotificationType)dto.Data[0];
-                            switch (notificationType)
-                            {
-                                case BlockNotificationType.BlockChanged:
-                                    notification = Serializer.DeserializePoolElement(blockChangedNotificationPool, dto.Data);
-                                    break;
-                                case BlockNotificationType.BlocksChanged:
-                                    notification = Serializer.DeserializePoolElement(blocksChangedNotificationPool, dto.Data);
-                                    break;
-                            }
-                            if (notification is not null)
-                                chunkChannel.OnNext(notification);
-
-                            break;
-                    }
-                }
+                packageActionHub.Dispatch(package, client);
             }
-            //TODO Notification deserialization and pushing (2023_02_08)
-
-
-
-            //Get Type Info
-            //Is Poolable? And maybe get Pool
-            //  Deserialize Pool Element
-
-            //Push into relays
-
         }
 
         private void OnNext(PushInfo value)
@@ -155,7 +106,7 @@ namespace OctoAwesome.Network
             var package = packagePool.Rent();
 
             using (var memoryStream = Serializer.Manager.GetStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream))
+            using (var binaryWriter = new BinaryWriter(memoryStream, System.Text.Encoding.Default, leaveOpen: true))
             {
                 binaryWriter.Write(notification.GetType().SerializationId());
                 binaryWriter.Write(value.Channel);

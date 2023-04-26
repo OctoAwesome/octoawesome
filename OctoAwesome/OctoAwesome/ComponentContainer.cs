@@ -72,7 +72,7 @@ namespace OctoAwesome
         /// <param name="gameTime">The current game time when the event happened</param>
         /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
         protected abstract void OnInteract(GameTime gameTime, Entity entity);
-   
+
 
         ///// <inheritdoc />
         //public abstract void Serialize(BinaryWriter writer);
@@ -91,15 +91,14 @@ namespace OctoAwesome
     /// </summary>
     /// <typeparam name="TComponent">The type of the components to contain.</typeparam>
     [Nooson]
-    public abstract partial class ComponentContainer<TComponent> : 
+    public abstract partial class ComponentContainer<TComponent> :
         ComponentContainer, IUpdateable, ISerializable
         where TComponent : IComponent, ISerializable
     {
         /// <summary>
         /// Gets a list of all components this container holds.
         /// </summary>
-        public ComponentList<TComponent> Components { get; protected set; }
-
+        public ComponentList<IComponent> Components { get; protected set; }
 
         private List<IUpdateable> updateables = new();
         /// <summary>
@@ -110,11 +109,22 @@ namespace OctoAwesome
             Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
         }
 
+        protected ComponentContainer(Guid id, ComponentList<IComponent> components)
+        {
+            Id = id;
+            Components = components;
+            foreach (var component in components)
+            {
+                if (component is InstanceComponent<ComponentContainer> instanceComponent)
+                    instanceComponent.SetInstance(this);
+            }
+        }
+
         /// <summary>
         /// Gets called when a component was removed from this container.
         /// </summary>
         /// <param name="component">The component that was removed.</param>
-        protected void OnRemoveComponent(TComponent component)
+        protected void OnRemoveComponent(IComponent component)
         {
 
         }
@@ -123,7 +133,7 @@ namespace OctoAwesome
         /// Gets called when a component was added to this container.
         /// </summary>
         /// <param name="component">The component that was added.</param>
-        protected virtual void OnAddComponent(TComponent component)
+        protected virtual void OnAddComponent(IComponent component)
         {
             if (component is InstanceComponent<ComponentContainer> instanceComponent)
                 instanceComponent.SetInstance(this);
@@ -153,7 +163,7 @@ namespace OctoAwesome
         /// <exception cref="NotSupportedException">
         /// Thrown when the component can not be added in the current state. E.g. during simulation.
         /// </exception>
-        protected virtual void ValidateAddComponent(TComponent component)
+        protected virtual void ValidateAddComponent(IComponent component)
         {
         }
 
@@ -164,7 +174,7 @@ namespace OctoAwesome
         /// <exception cref="NotSupportedException">
         /// Thrown when the component can not be removed in the current state. E.g. during simulation.
         /// </exception>
-        protected virtual void ValidateRemoveComponent(TComponent component)
+        protected virtual void ValidateRemoveComponent(IComponent component)
         {
         }
 
@@ -201,7 +211,7 @@ namespace OctoAwesome
             }
         }
 
-     
+
         /// <inheritdoc />
         public override bool ContainsComponent<T>()
             => Components.Contains<T>();
@@ -225,7 +235,7 @@ namespace OctoAwesome
         {
             foreach (var item in updateables)
                 item.Update(gameTime);
-            
+
         }
     }
 }

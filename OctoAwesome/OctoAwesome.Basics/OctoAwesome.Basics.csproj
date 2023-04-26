@@ -10,7 +10,7 @@
 		<PackageReference Include="dotVariant" Version="0.5.3" />
 		<PackageReference Include="engenious" Version="0.7.1-alpha" />
 		<PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
-		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.98-alpha" />
+		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.105-alpha" />
 		<!--<ProjectReference Include="..\..\..\..\NonSucking.Framework.Extension\NonSucking.Framework.Serialization\NonSucking.Framework.Serialization.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="true"/>-->
 	</ItemGroup>
 

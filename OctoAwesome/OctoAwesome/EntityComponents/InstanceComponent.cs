@@ -44,6 +44,8 @@ namespace OctoAwesome.EntityComponents
         /// <seealso cref="SerializationIdTypeProvider"/>
         public ulong InstanceTypeId { get; protected set; }
 
+        private ServerManagedComponent? managedComponent;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InstanceComponent{T}"/> class.
         /// </summary>
@@ -118,7 +120,6 @@ namespace OctoAwesome.EntityComponents
                 return;
             if (InstanceId == Guid.Empty)
                 return;
-            //TODO Why InstanceID empty, should we use instance.Id or not?
             if (entityNotification.EntityId != InstanceId)
                 return;
 
@@ -135,7 +136,13 @@ namespace OctoAwesome.EntityComponents
             {
                 if (changedNotification.Issuer == GetType().Name)
                 {
-                    _ = Serializer.Deserialize(this, changedNotification.Value);
+                    managedComponent ??= Instance.GetComponent<ServerManagedComponent>() ?? new();
+                    if (!managedComponent.OnServer && Instance is not Player)
+                        _ = Serializer.Deserialize(this, changedNotification.Value);
+                    if (managedComponent.OnServer)
+                    {
+                        updateHub.PushNetwork(notification, DefaultChannels.Simulation);
+                    }
                 }
             }
         }

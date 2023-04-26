@@ -1,10 +1,12 @@
 ﻿using engenious;
+
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+
 using System;
 using System.IO;
 using System.Text;
@@ -16,20 +18,17 @@ namespace OctoAwesome.GameServer.Commands
     /// </summary>
     public static class PlayerCommands
     {
+        private static readonly IUpdateHub updateHub;
         private static readonly ConcurrentRelay<Notification> simulationChannel;
-        private static readonly ConcurrentRelay<Notification> networkChannel;
         private static readonly IDisposable simulationChannelSub;
-        private static readonly IDisposable networkChannelSub;
 
         static PlayerCommands()
         {
-            var updateHub = TypeContainer.Get<IUpdateHub>();
+            updateHub = TypeContainer.Get<IUpdateHub>();
 
             simulationChannel = new ConcurrentRelay<Notification>();
-            networkChannel = new ConcurrentRelay<Notification>();
 
             simulationChannelSub = updateHub.AddSource(simulationChannel, DefaultChannels.Simulation);
-            networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
         }
 
         /// <summary>
@@ -46,7 +45,9 @@ namespace OctoAwesome.GameServer.Commands
             entityNotification.Entity = player;
             entityNotification.Type = EntityNotification.ActionType.Add;
 
+
             simulationChannel.OnNext(entityNotification);
+            player.Components.Add(new ServerManagedComponent() { OnServer = true, Enabled = true });
             entityNotification.Release();
 
             var remotePlayer = new RemoteEntity(player);
@@ -62,11 +63,11 @@ namespace OctoAwesome.GameServer.Commands
             using var ms = new MemoryStream();
             using var bw = new BinaryWriter(ms);
             entityNotification.Serialize(bw);
-            ms.Position = 0;
-            using var br = new BinaryReader(ms);
-            var deserers = EntityNotification.DeserializeAndCreate(br);
+            //ms.Position = 0;
+            //using var br = new BinaryReader(ms);
+            //var deserers = EntityNotification.DeserializeAndCreate(br);
 
-            networkChannel.OnNext(entityNotification);
+            updateHub.PushNetwork(entityNotification, DefaultChannels.Simulation);
             entityNotification.Release();
             return player;
         }

@@ -17,6 +17,16 @@ namespace OctoAwesome
     [Nooson]
     public partial class Entity : ComponentContainer<IEntityComponent>, ISerializable<Entity>
     {
+
+        public Entity() : base()
+        {
+                
+        }
+        public Entity(Guid id, ComponentList<IComponent> components) : base(id, components)
+        {
+            
+        }
+
         /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
@@ -25,9 +35,11 @@ namespace OctoAwesome
             Debug.Assert(Simulation != null, nameof(Simulation) + " != null. Entity not part of a simulation.");
         }
 
+
         protected override void OnInteract(GameTime gameTime, Entity entity)
         {
             throw new NotImplementedException();
         }
+
     }
 }

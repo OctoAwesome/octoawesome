@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Database;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -99,7 +100,7 @@ namespace OctoAwesome.Serialization
         {
             Value value = Database.GetValue(tag);
 
-            using (var memory =  Serializer.Manager.GetStream(value.Content))
+            using (var memory = Serializer.Manager.GetStream(value.Content))
             using (var reader = new BinaryReader(memory))
             {
                 return BlockInfo.Deserialize(reader);

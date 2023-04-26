@@ -47,7 +47,7 @@ namespace OctoAwesome.Client.Components
                 = game
                 .ResourceManager
                 .UpdateHub
-                .ListenOn(DefaultChannels.UI)
+                .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
 
         }

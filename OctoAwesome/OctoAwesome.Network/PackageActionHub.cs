@@ -1,22 +1,17 @@
-﻿using OctoAwesome.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using OctoAwesome.Serialization;
 using System.Buffers;
 using System.IO.Compression;
 using System.IO;
 using OctoAwesome.Logging;
-using NonSucking.Framework.Extension.IoC;
 using OctoAwesome.Pooling;
 using System.Reflection;
 using OctoAwesome.Notifications;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Net.Sockets;
 using OctoAwesome.Caching;
-using System.Text.Json.Serialization;
 
-namespace OctoAwesome.GameServer
+namespace OctoAwesome.Network
 {
     public class PackageActionHub
     {
@@ -25,6 +20,9 @@ namespace OctoAwesome.GameServer
         private readonly SerializationIdTypeProvider typeRegistrar;
         private readonly IUpdateHub updateHub;
         private readonly Dictionary<ulong, Func<BinaryReader, object>> notificationDeserializationMethodCache;
+
+        private readonly Dictionary<ulong, Action<RequestContext>> registeredStuff = new();
+        private readonly Dictionary<ulong, Action<RequestContext>> registeredStuffDic = new();
 
         //private readonly Dictionary<long, >
 
@@ -36,44 +34,6 @@ namespace OctoAwesome.GameServer
             updateHub = tc.Get<IUpdateHub>();
             notificationDeserializationMethodCache = new();
         }
-
-        public record struct RequestContext(BinaryReader Reader, Package Package)
-        {
-            public void SetResult<T>(T instance) where T : ISerializable<T>
-            {
-                using var ms = Serializer.Manager.GetStream();
-                using var bw = new BinaryWriter(ms);
-                bw.Write(typeof(T).SerializationId());
-                instance.Serialize(bw);
-                Package.Payload = ms.ToArray();
-                Package.PackageFlags &= ~(PackageFlags.Array | PackageFlags.Request);
-                Package.PackageFlags |= PackageFlags.Response;
-            }
-            public void SetResult<T>(Span<T> instance) where T : ISerializable<T>
-            {
-                using var ms = Serializer.Manager.GetStream();
-                using var bw = new BinaryWriter(ms);
-                bw.Write(typeof(T).SerializationId());
-                bw.Write(instance.Length);
-                foreach (var item in instance)
-                    item.Serialize(bw);
-
-                Package.Payload = ms.ToArray();
-                Package.PackageFlags &= ~PackageFlags.Request;
-                Package.PackageFlags |= (PackageFlags.Array | PackageFlags.Response);
-            }
-
-            public void SetResult(byte[] res)
-            {
-                Package.Payload = res;
-                Package.PackageFlags &= ~PackageFlags.Request;
-                Package.PackageFlags |= PackageFlags.Response;
-            }
-
-        }
-
-        private readonly Dictionary<ulong, Action<RequestContext>> registeredStuff = new();
-        private readonly Dictionary<ulong, Action<RequestContext>> registeredStuffDic = new();
 
         /// <summary>
         /// 
@@ -195,9 +155,11 @@ namespace OctoAwesome.GameServer
 
         public void Dispatch(Package package, BaseClient client)
         {
+            var packageId = package.UId;
+            logger.Trace($"Entered Dispatch logic for {packageId}");
             using var ms = Serializer.Manager.GetStream(package.Payload);
-            using Stream s = (package.PackageFlags & PackageFlags.Compressed) > 0 ? new GZipStream(ms, CompressionLevel.Optimal) : ms;
-            using var br = new BinaryReader(s);
+            using Stream s = (package.PackageFlags & PackageFlags.Compressed) > 0 ? new GZipStream(ms, CompressionLevel.Optimal, leaveOpen: true) : ms;
+            using var br = new BinaryReader(s, System.Text.Encoding.Default, leaveOpen: true);
 
             bool isNotification = (package.PackageFlags & PackageFlags.Notification) > 0;
 
@@ -206,6 +168,7 @@ namespace OctoAwesome.GameServer
             if (isNotification)
                 channel = br.ReadString();
             var startOfObjectPos = ms.Position;
+            logger.Trace($"Got {(isNotification ? "Notification" : "Package")} with des id {desId} {(isNotification ? $"for channel {channel}" : "")} package {packageId}");
 
             var rc = new RequestContext(br, package);
             Action<RequestContext>? val = null;
@@ -213,6 +176,8 @@ namespace OctoAwesome.GameServer
                 val.Invoke(rc);
             else if ((package.PackageFlags & PackageFlags.Array) == 0 && registeredStuff.TryGetValue(desId, out val))
                 val.Invoke(rc);
+
+            logger.Trace($"All invocations succesful, now dispatching to updatehub or sending response to client for {packageId}");
 
             if (isNotification)
             {
@@ -225,18 +190,23 @@ namespace OctoAwesome.GameServer
                     {
                         var type = typeof(IPool<>).MakeGenericType(notificationType);
                         var objectPool = typeContainer.Get(type);
-                    
-                        dynamic pool = objectPool; //Todo, how to cast correctly to get access to rent?
-                        //var pool = GenericCaster<object, IPool<IPoolElement>>.Cast(
-                            //typeContainer.Get(type));
+
+                        dynamic pool = objectPool; //Todo: how to cast correctly to get access to rent? (12.04.2023)
+                                                   //var pool = GenericCaster<object, IPool<IPoolElement>>.Cast(
+                                                   //typeContainer.Get(type));
                         notificationDeserializationMethodCache[desId]
                             = expression
                             = (BinaryReader reader) =>
                             {
                                 var element = pool.Rent();
-                                var des = GenericCaster<IPoolElement, ISerializable>.Cast(element);
-                                des.Deserialize(br);
-                                return des;
+                                //var des = GenericCaster<IPoolElement, ISerializable>.Cast(element);
+                                //logger.Trace("Casted element"); 
+                                if (element is ISerializable des)
+                                {
+                                    des.Deserialize(reader);
+                                    return des;
+                                }
+                                return default!;
                             };
                     }
                     else
@@ -248,6 +218,7 @@ namespace OctoAwesome.GameServer
                             = expression
                             = Expression.Lambda<Func<BinaryReader, object>>(Expression.Call(deserializationMethodInfo, brParam), brParam).Compile();
                     }
+                    logger.Trace($"Cached expression for {packageId}");
                 }
 
                 var notification = expression(br);
@@ -262,15 +233,52 @@ namespace OctoAwesome.GameServer
                 && package.Payload.Length > 0)
             {
 
-                logger.Trace($"Sen: Package with id:{package.UId} and Flags: {package.PackageFlags}");
+                logger.Trace($"Sen: Package with id:{packageId} and Flags: {package.PackageFlags}");
                 _ = client.SendPackageAndReleaseAsync(package);
             }
 
-            if (val is null)
+            if (val is null && !isNotification)
             {
                 logger.Trace($"Received invalid desId ({desId}) with flags: {package.PackageFlags}, send help");
             }
+
+            logger.Trace($"Finished Dispatch logic for {packageId}");
         }
     }
+    public record struct RequestContext(BinaryReader Reader, Package Package)
+    {
+        public void SetResult<T>(T instance) where T : ISerializable<T>
+        {
+            using var ms = Serializer.Manager.GetStream();
+            using var bw = new BinaryWriter(ms, System.Text.Encoding.Default, leaveOpen: true);
+            bw.Write(typeof(T).SerializationId());
+            instance.Serialize(bw);
+            Package.Payload = ms.ToArray();
+            Package.PackageFlags &= ~(PackageFlags.Array | PackageFlags.Request);
+            Package.PackageFlags |= PackageFlags.Response;
+        }
+        public void SetResult<T>(Span<T> instance) where T : ISerializable<T>
+        {
+            using var ms = Serializer.Manager.GetStream();
+            using var bw = new BinaryWriter(ms, System.Text.Encoding.Default, leaveOpen: true);
+            bw.Write(typeof(T).SerializationId());
+            bw.Write(instance.Length);
+            foreach (var item in instance)
+                item.Serialize(bw);
+
+            Package.Payload = ms.ToArray();
+            Package.PackageFlags &= ~PackageFlags.Request;
+            Package.PackageFlags |= (PackageFlags.Array | PackageFlags.Response);
+        }
+
+        public void SetResult(byte[] res)
+        {
+            Package.Payload = res;
+            Package.PackageFlags &= ~PackageFlags.Request;
+            Package.PackageFlags |= PackageFlags.Response;
+        }
+
+    }
+
 
 }

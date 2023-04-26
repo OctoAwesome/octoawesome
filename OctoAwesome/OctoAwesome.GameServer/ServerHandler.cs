@@ -13,7 +13,6 @@ using System.Xml;
 using OctoAwesome.Database;
 using System;
 using OctoAwesome.Serialization;
-using static OctoAwesome.GameServer.PackageActionHub;
 using dotVariant;
 
 namespace OctoAwesome.GameServer

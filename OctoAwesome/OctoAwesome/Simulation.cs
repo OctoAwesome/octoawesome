@@ -53,11 +53,8 @@ namespace OctoAwesome
         private readonly CountedScopeSemaphore entitiesSemaphore = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
-        private readonly Relay<Notification> uiRelay;
 
         private IDisposable? simulationSubscription;
-        private IDisposable? networkSubscription;
-        private IDisposable? uiSubscription;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Simulation"/> class.
@@ -68,7 +65,6 @@ namespace OctoAwesome
         public Simulation(IResourceManager resourceManager, ExtensionService extensionService)
         {
             ResourceManager = resourceManager;
-            uiRelay = new Relay<Notification>();
 
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
 
@@ -151,10 +147,6 @@ namespace OctoAwesome
                 .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
 
-            uiSubscription
-                = ResourceManager
-                .UpdateHub
-                .AddSource(uiRelay, DefaultChannels.UI);
 
 
             State = SimulationState.Running;
@@ -208,14 +200,10 @@ namespace OctoAwesome
                 Remove(entities[i]);
             }
 
-
             State = SimulationState.Finished;
-            // thread.Join();
 
             ResourceManager.UnloadUniverse();
             simulationSubscription?.Dispose();
-            networkSubscription?.Dispose();
-            uiSubscription?.Dispose();
         }
 
         /// <summary>
@@ -262,12 +250,13 @@ namespace OctoAwesome
             if (existing != default)
                 Remove(existing);
 
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
             extensionService.ExecuteExtender(entity);
             entity.Initialize(ResourceManager);
             entity.Simulation = this;
 
-            if (entity.Id == Guid.Empty)
-                entity.Id = Guid.NewGuid();
 
             using (var _ = entitiesSemaphore.EnterExclusiveScope())
                 entities.Add(entity);
@@ -399,7 +388,7 @@ namespace OctoAwesome
             using (var _ = entitiesSemaphore.EnterCountScope())
                 foreach (var item in entities)
                 {
-                    if (!(item is T t) || t.Id != id)
+                    if (item is not T t || t.Id != id)
                         continue;
                     componentContainer = t;
                     return true;
@@ -426,8 +415,6 @@ namespace OctoAwesome
         /// <param name="value">The new notification.</param>
         public void OnNext(object value)
         {
-            if (entities.Count < 0 && !IsServerSide)
-                return;
             //TODO: Ist das hier noch der Richtige Platz?
             switch (value)
             {
@@ -445,7 +432,6 @@ namespace OctoAwesome
                             break;
                     }
 
-                    uiRelay.OnNext(entityNotification);
                     break;
                 default:
                     break;
@@ -483,7 +469,7 @@ namespace OctoAwesome
         /// <inheritdoc />
         public void Dispose()
         {
-            uiRelay.Dispose();
+            simulationSubscription?.Dispose();
         }
     }
 }

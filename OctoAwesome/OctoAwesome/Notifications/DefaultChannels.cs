@@ -21,10 +21,6 @@
         public const string Simulation = "simulation";
 
         /// <summary>
-        /// The ui channel.
-        /// </summary>
-        public const string UI = "ui";
-        /// <summary>
         /// The chunk channel.
         /// </summary> 
         public const string Chunk = "chunk";

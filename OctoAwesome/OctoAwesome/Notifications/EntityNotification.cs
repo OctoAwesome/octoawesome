@@ -26,13 +26,13 @@ namespace OctoAwesome.Notifications
         /// <summary>
         /// Gets or sets the entity that caused the notification.
         /// </summary>
-        public Entity Entity
+        public Entity? Entity
         {
-            get => NullabilityHelper.NotNullAssert(entity, $"{nameof(Entity)} was not initialized!");
+            get => entity;
             set
             {
-                entity = NullabilityHelper.NotNullAssert(value, $"{nameof(Entity)} cannot be initialized with null!");
-                EntityId = value.Id;
+                entity = value;
+                EntityId = value?.Id ?? Guid.Empty;
             }
         }
 
@@ -82,7 +82,7 @@ namespace OctoAwesome.Notifications
             Type = (ActionType)reader.ReadInt32();
 
             if (Type == ActionType.Add)
-                Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
+                Entity = Serializer.DeserializeSpecialCtor<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
             else
                 EntityId = reader.ReadUnmanaged<Guid>();
 
