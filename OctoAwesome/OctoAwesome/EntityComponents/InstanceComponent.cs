@@ -19,9 +19,7 @@ namespace OctoAwesome.EntityComponents
         where T : ComponentContainer
     {
         private T? instance;
-        private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly IUpdateHub updateHub;
-        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
 
         /// <summary>
         /// Gets the reference to the <see cref="ComponentContainer{TComponent}"/>.
@@ -52,10 +50,7 @@ namespace OctoAwesome.EntityComponents
         public InstanceComponent()
         {
             var typeContainer = TypeContainer.Get<ITypeContainer>();
-            entityNotificationPool = typeContainer.Get<IPool<EntityNotification>>();
             updateHub = typeContainer.Get<IUpdateHub>();
-
-            propertyChangedNotificationPool = typeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
         /// <summary>
@@ -81,39 +76,10 @@ namespace OctoAwesome.EntityComponents
             InstanceTypeId = type.SerializationId();
             InstanceId = value.Id;
             Instance = value;
-            OnSetInstance();
         }
 
 
-        /// <summary>
-        /// Gets called when the instance was set to a new value.
-        /// </summary>
-        protected virtual void OnSetInstance()
-        {
-            updateHub.ListenOn(DefaultChannels.Simulation).Subscribe(OnSimulationMessage);
-        }
 
-
-        protected override void OnPropertyChanged<T>(T value, string propertyName)
-        {
-            if (instance is Entity entity)
-            {
-                var updateNotification = propertyChangedNotificationPool.Rent();
-
-                updateNotification.Issuer = GetType().Name;
-                updateNotification.Property = propertyName;
-
-                updateNotification.Value = Serializer.Serialize(this);
-
-                var entityNotification = entityNotificationPool.Rent();
-                entityNotification.Entity = entity;
-                entityNotification.Type = EntityNotification.ActionType.Update;
-                entityNotification.Notification = updateNotification;
-
-                updateHub.PushNetwork(entityNotification, DefaultChannels.Simulation);
-                entityNotification.Release();
-            }
-        }
         private void OnSimulationMessage(object obj)
         {
             if (obj is not EntityNotification entityNotification)

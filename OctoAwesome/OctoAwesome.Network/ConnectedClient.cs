@@ -39,7 +39,6 @@ namespace OctoAwesome.Network
             requestPool = new();
         }
 
-
         private void OnError(Exception error)
         {
             TcpClient.Close();

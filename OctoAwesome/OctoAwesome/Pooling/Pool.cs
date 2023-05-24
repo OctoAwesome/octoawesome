@@ -49,6 +49,12 @@ namespace OctoAwesome.Pooling
         }
 
         /// <inheritdoc />
+        public IPoolElement RentElement()
+        {
+            return Rent();
+        }
+
+        /// <inheritdoc />
         public void Return(T obj)
         {
             using (semaphoreExtended.Wait())
@@ -67,5 +73,6 @@ namespace OctoAwesome.Pooling
                 throw new InvalidCastException("Can not push object from type: " + obj.GetType());
             }
         }
+
     }
 }

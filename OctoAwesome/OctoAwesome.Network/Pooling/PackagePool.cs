@@ -39,6 +39,12 @@ namespace OctoAwesome.Network.Pooling
             obj.UId = Package.NextUId;
             return obj;
         }
+
+        /// <inheritdoc />
+        public IPoolElement RentElement()
+        {
+            return Rent();
+        }
         /// <summary>
         /// Gets a blank package without any <see cref="Package.UId"/> assigned to the package.
         /// </summary>

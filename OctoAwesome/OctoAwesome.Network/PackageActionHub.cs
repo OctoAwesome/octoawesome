@@ -24,12 +24,11 @@ namespace OctoAwesome.Network
         private readonly Dictionary<ulong, Action<RequestContext>> registeredStuff = new();
         private readonly Dictionary<ulong, Action<RequestContext>> registeredStuffDic = new();
 
-        //private readonly Dictionary<long, >
 
         public PackageActionHub(ILogger logger, ITypeContainer tc)
         {
             this.logger = logger.As(nameof(PackageActionHub));
-            this.typeContainer = tc;
+            typeContainer = tc;
             typeRegistrar = tc.Get<SerializationIdTypeProvider>();
             updateHub = tc.Get<IUpdateHub>();
             notificationDeserializationMethodCache = new();
@@ -191,16 +190,13 @@ namespace OctoAwesome.Network
                         var type = typeof(IPool<>).MakeGenericType(notificationType);
                         var objectPool = typeContainer.Get(type);
 
-                        dynamic pool = objectPool; //Todo: how to cast correctly to get access to rent? (12.04.2023)
-                                                   //var pool = GenericCaster<object, IPool<IPoolElement>>.Cast(
-                                                   //typeContainer.Get(type));
+                        var pool = GenericCaster<object, IPool>.Cast(objectPool);
+
                         notificationDeserializationMethodCache[desId]
                             = expression
                             = (BinaryReader reader) =>
                             {
-                                var element = pool.Rent();
-                                //var des = GenericCaster<IPoolElement, ISerializable>.Cast(element);
-                                //logger.Trace("Casted element"); 
+                                var element = pool.RentElement();
                                 if (element is ISerializable des)
                                 {
                                     des.Deserialize(reader);

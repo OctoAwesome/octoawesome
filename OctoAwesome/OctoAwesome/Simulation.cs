@@ -6,6 +6,7 @@ using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
+using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 
 using System;
@@ -53,7 +54,7 @@ namespace OctoAwesome
         private readonly CountedScopeSemaphore entitiesSemaphore = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
-
+        private readonly ComponentChangedNotificationHandler componentChangedHandler;
         private IDisposable? simulationSubscription;
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace OctoAwesome
             ResourceManager = resourceManager;
 
             entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
-
+            componentChangedHandler = TypeContainer.Get<ComponentChangedNotificationHandler>();
 
             this.extensionService = extensionService;
             State = SimulationState.Ready;
@@ -165,13 +166,9 @@ namespace OctoAwesome
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
             //Update all Entities
-            for (var i = 0; i < entities.Count; i++)
-            {
-                var entity = entities[i];
+            foreach (Entity entity in entities)
                 if (entity is IUpdateable updateable)
                     updateable.Update(gameTime);
-            }
-
 
             // Update all Components
             foreach (var component in Components)
@@ -426,9 +423,19 @@ namespace OctoAwesome
                             break;
                         case EntityNotification.ActionType.Add:
                             Add(entityNotification.Entity, entityNotification.OverwriteExisting);
+                            if (IsServerSide)
+                            {
+                                foreach (var item in entities)
+                                {
+                                    RequestEntity(item.Id);
+                                }
+                            }
                             break;
                         case EntityNotification.ActionType.Request:
-                            RequestEntity(entityNotification);
+                            RequestEntity(entityNotification.EntityId);
+                            break;
+                        case EntityNotification.ActionType.Update:
+                            EntityUpdate(entityNotification);
                             break;
                     }
 
@@ -437,33 +444,39 @@ namespace OctoAwesome
                     break;
             }
         }
+        private void EntityUpdate(EntityNotification notification)
+        {
+            var instance = entities.FirstOrDefault(x => x.Id == notification.EntityId);
+            if (instance is null)
+                return;
 
+            componentChangedHandler.Abc(instance, notification);
+        }
 
-        private void RequestEntity(EntityNotification entityNotification)
+        private void RequestEntity(Guid entityId)
         {
             if (!IsServerSide)
                 return;
 
-            ;
-            //Entity? entity;
-            //using (var _ = entitiesSemaphore.EnterCountScope())
-            //{
-            //    entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
-            //    if (entity == null)
-            //        return;
-            //}
+            Entity? entity;
+            using (var _ = entitiesSemaphore.EnterCountScope())
+            {
+                entity = entities.FirstOrDefault(e => e.Id == entityId);
+                if (entity == null)
+                    return;
+            }
 
-            //var remoteEntity = new RemoteEntity(entity);
-            //remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            //remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
-            //remoteEntity.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
+            var remoteEntity = new RemoteEntity(entity);
+            remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
+            remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
+            remoteEntity.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
 
-            //var newEntityNotification = entityNotificationPool.Rent();
-            //newEntityNotification.Entity = remoteEntity;
-            //newEntityNotification.Type = EntityNotification.ActionType.Add;
+            var newEntityNotification = entityNotificationPool.Rent();
+            newEntityNotification.Entity = remoteEntity;
+            newEntityNotification.Type = EntityNotification.ActionType.Add;
 
-            //networkRelay.OnNext(newEntityNotification);
-            //newEntityNotification.Release();
+            ResourceManager.UpdateHub.PushNetwork(newEntityNotification, DefaultChannels.Simulation);
+            newEntityNotification.Release();
         }
 
         /// <inheritdoc />

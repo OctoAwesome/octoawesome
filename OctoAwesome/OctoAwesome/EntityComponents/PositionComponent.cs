@@ -31,10 +31,11 @@ namespace OctoAwesome.EntityComponents
                 var positionBlockX = ((int)(position.BlockPosition.X * 100)) / 100f;
                 var positionBlockY = ((int)(position.BlockPosition.Y * 100)) / 100f;
 
-                posUpdate = valueBlockX != positionBlockX || valueBlockY != positionBlockY
+                posUpdate = valueBlockX != positionBlockX 
+                    || valueBlockY != positionBlockY
                     || position.BlockPosition.Z != value.BlockPosition.Z;
                 
-                SetValue(ref position, value);
+                position =  value;
                 planet = TryGetPlanet(value.Planet);
             }
         }

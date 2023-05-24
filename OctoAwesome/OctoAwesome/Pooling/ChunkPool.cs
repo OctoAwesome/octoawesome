@@ -52,6 +52,12 @@ namespace OctoAwesome.Pooling
             return obj;
         }
 
+        /// <inheritdoc/>
+        public IPoolElement RentElement()
+        {
+            throw new NotSupportedException($"Use Get(Index3, IPlanet) instead.");
+        }
+
 
         /// <inheritdoc />
         public void Return(Chunk obj)
