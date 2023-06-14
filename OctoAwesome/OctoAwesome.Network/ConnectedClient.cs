@@ -48,18 +48,29 @@ namespace OctoAwesome.Network
         private void OnNext(PushInfo value)
         {
             if (value.Notification is not SerializableNotification notification)
+            {
+                SendGeneric(value);
                 return;
+            }
 
             if (notification.SenderId == Id)
                 return;
+            SendGeneric(value);
+        }
+
+        private void SendGeneric(PushInfo value)
+        {
+            if (value.Notification is not ISerializable ser)
+                return;
+
             var package = packagePool.Rent();
 
             using (var memoryStream = Serializer.Manager.GetStream())
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(notification.GetType().SerializationId());
+                binaryWriter.Write(ser.GetType().SerializationId());
                 binaryWriter.Write(value.Channel);
-                notification.Serialize(binaryWriter);
+                ser.Serialize(binaryWriter);
 
                 package.PackageFlags = PackageFlags.Notification;
                 package.Payload = memoryStream.ToArray();

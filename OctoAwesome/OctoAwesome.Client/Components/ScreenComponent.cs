@@ -19,7 +19,7 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent, IScreenComponent
+    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent, IScreenComponent, IComponentContainer
     {
         private readonly ExtensionService extensionService;
         private readonly IDisposable componentSubscription;
@@ -31,15 +31,17 @@ namespace OctoAwesome.Client.Components
         public CameraComponent Camera => Game.Camera;
 
         public ComponentList<UIComponent> Components { get; private set; }
+        public Guid Id { get; }
+
         private readonly List<BaseScreen> screens;
 
         public ScreenComponent(OctoGame game, ExtensionService extensionService) : base(game)
         {
             Game = game;
             TitlePrefix = "OctoAwesome";
-
+            Id = Guid.NewGuid();
             screens = new();
-            Components = new ComponentList<UIComponent>(null, null, Add, Remove);
+            Components = new ComponentList<UIComponent>(null, null, Add, Remove, this);
 
             this.extensionService = extensionService;
 
@@ -193,5 +195,11 @@ namespace OctoAwesome.Client.Components
         {
             //TODO: Remove component container?
         }
+
+        public bool ContainsComponent<T>()
+            => Components.Contains<T>();
+
+        public T? GetComponent<T>()
+            => Components.Get<T>();
     }
 }

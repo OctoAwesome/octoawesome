@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using OctoAwesome.Caching;
 using NonSucking.Framework.Serialization;
+using System.ComponentModel;
 
 namespace OctoAwesome.Components;
 
@@ -26,10 +27,22 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// 
     public IList<T> this[Type type] => componentsByType.TryGetValue(type, out var result) ?
         result : Array.Empty<T>();
-    
+
     [NoosonIgnore]
     private IReadOnlyCollection<Type> TypeKeys => componentsByType.Keys;
+    internal IComponentContainer Parent
+    {
+        get => parent; set
+        {
+            parent = value;
+            foreach (var item in flatComponents)
+            {
+                item.Parent = value;
+            }
+        }
+    }
 
+    private IComponentContainer parent;
     private readonly Action<T>? insertValidator;
     private readonly Action<T>? removeValidator;
     private readonly Action<T>? onInserter;
@@ -43,6 +56,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// </summary>
     public ComponentList()
     {
+        parent = default;
     }
 
     /// <summary>
@@ -52,12 +66,13 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <param name="removeValidator">The validator for removals.</param>
     /// <param name="onInserter">The method to call on insertion.</param>
     /// <param name="onRemover">The method to call on removal.</param>
-    public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover)
+    public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover, IComponentContainer parent)
     {
         this.insertValidator = insertValidator;
         this.removeValidator = removeValidator;
         this.onInserter = onInserter;
         this.onRemover = onRemover;
+        this.parent = parent;
     }
 
     /// <inheritdoc />
@@ -90,6 +105,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
         }
 
         existing.Add(component);
+        component.Parent = parent;
         flatComponents.Add(component);
         insertValidator?.Invoke(component);
         onInserter?.Invoke(component);
@@ -117,6 +133,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             componentsByType[type] = new() { component };
         }
 
+        component.Parent = parent;
         flatComponents.Add(component);
         insertValidator?.Invoke(component);
         onInserter?.Invoke(component);
@@ -147,6 +164,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             componentsByType[type] = new() { component };
         }
 
+        component.Parent = parent;
         flatComponents.Add(component);
         insertValidator?.Invoke(component);
         onInserter?.Invoke(component);
@@ -179,7 +197,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// </summary>
     /// <typeparam name="V">The component type to search for.</typeparam>
     /// <returns><see langword="true"/> if the component was found; otherwise <see langword="false"/>.</returns>
-    public bool TryGet<V>([MaybeNullWhen(false)] out V component) where V : T
+    public bool TryGet<V>([MaybeNullWhen(false)] out V component) where V : IComponent
     {
         var contains = componentsByType.TryGetValue(typeof(V), out var result);
         if (!contains || result is null || result.Count < 1)
@@ -283,6 +301,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     {
         replaced = default;
 
+        replacement.Parent = parent;
         if (componentsByType.TryGetValue(typeof(V), out var components))
         {
             if (toReplace is null)
@@ -311,6 +330,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <param name="replacement">The value to replace with.</param>
     public virtual void ReplaceAllWith<V>(V replacement) where V : T
     {
+        replacement.Parent = parent;
         if (componentsByType.TryGetValue(typeof(V), out var components))
         {
             if (components.Count > 0)

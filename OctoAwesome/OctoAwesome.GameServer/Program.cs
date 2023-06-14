@@ -128,16 +128,25 @@ namespace OctoAwesome.GameServer
         {
             if (command is null)
                 return -1;
-
-            var commandResult = parser.Parse(command);
-
-            if (commandResult.Errors.Count > 0)
+            try
             {
-                //Write the fucking manual and then read it!
-                //TODO
-            }
 
-            return commandResult.Invoke();
+                var commandResult = parser.Parse(command);
+
+                if (commandResult.Errors.Count > 0)
+                {
+                    //Write the fucking manual and then read it!
+                    //TODO
+                }
+
+                return commandResult.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return -1;
+
+            }
         }
 
         private static Settings GetSettings(ILogger logger)
@@ -182,9 +191,9 @@ namespace OctoAwesome.GameServer
             };
             root.SetHandler(sh.Start, portOption);
 
-            var stopCommand = new Command("stop");
-            stopCommand.SetHandler(() => Console.WriteLine("Stopped"));
-            ingameRoot.Add(stopCommand);
+            //var stopCommand = new Command("stop");
+            //stopCommand.SetHandler(() => Console.WriteLine("Stopped"));
+            //ingameRoot.Add(stopCommand);
 
             root
                 .Add("start", "this starts the server immediately", sh.Start, portOption)

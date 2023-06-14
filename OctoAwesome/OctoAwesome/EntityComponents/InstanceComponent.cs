@@ -31,16 +31,6 @@ namespace OctoAwesome.EntityComponents
             private set => instance = NullabilityHelper.NotNullAssert(value, $"{nameof(Instance)} cannot be initialized with null!");
         }
 
-        /// <summary>
-        /// Gets the unique identifier for the <see cref="Instance"/>.
-        /// </summary>
-        public Guid InstanceId { get; set; }
-
-        /// <summary>
-        /// Gets the instance type id.
-        /// </summary>
-        /// <seealso cref="SerializationIdTypeProvider"/>
-        public ulong InstanceTypeId { get; protected set; }
 
         private ServerManagedComponent? managedComponent;
 
@@ -61,21 +51,6 @@ namespace OctoAwesome.EntityComponents
         /// <exception cref="NotSupportedException">Thrown if the <see cref="Instance"/> was already set.</exception>
         public void SetInstance(T value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-
-            if (instance?.Id == value.Id)
-                return;
-
-            var type = value.GetType();
-            if (instance != null)
-            {
-                throw new NotSupportedException("Can not change the " + type.Name);
-            }
-
-            InstanceTypeId = type.SerializationId();
-            InstanceId = value.Id;
-            Instance = value;
         }
 
 
@@ -84,9 +59,9 @@ namespace OctoAwesome.EntityComponents
         {
             if (obj is not EntityNotification entityNotification)
                 return;
-            if (InstanceId == Guid.Empty)
+            if (ParentId == Guid.Empty)
                 return;
-            if (entityNotification.EntityId != InstanceId)
+            if (entityNotification.EntityId != ParentId)
                 return;
 
             switch (entityNotification.Type)

@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Notifications;
 
 namespace OctoAwesome
 {
@@ -23,6 +24,7 @@ namespace OctoAwesome
         /// Gets the planet the global chunk cache manages the chunks for.
         /// </summary>
         IPlanet Planet { get; }
+        CacheService CacheService { get; }
 
         /// <summary>
         /// Subscribes to a chunk column.

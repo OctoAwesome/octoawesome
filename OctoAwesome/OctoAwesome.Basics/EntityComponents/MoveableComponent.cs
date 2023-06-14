@@ -28,5 +28,6 @@ namespace OctoAwesome.Basics.EntityComponents
         /// Gets or sets the external powers applied to the entity.
         /// </summary>
         public Vector3 ExternalPowers { get; set; }
+
     }
 }

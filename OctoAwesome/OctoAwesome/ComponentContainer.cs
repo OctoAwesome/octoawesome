@@ -17,7 +17,7 @@ namespace OctoAwesome
     /// <summary>
     /// Base class for classes containing components.
     /// </summary>
-    public abstract partial class ComponentContainer : IIdentification, IComponentContainer
+    public abstract partial class ComponentContainer : IIdentification, IComponentContainer, ISerializable
     {
         /// <summary>
         /// Gets the Id of the container.
@@ -29,6 +29,11 @@ namespace OctoAwesome
         /// </summary>
         [NoosonIgnore]
         public Simulation? Simulation { get; internal set; }
+
+        /// <summary>
+        /// Gets a list of all components this container holds.
+        /// </summary>
+        public ComponentList<IComponent> Components { get; protected set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContainer"/> class.
@@ -59,21 +64,6 @@ namespace OctoAwesome
             return ReferenceEquals(this, obj);
         }
 
-        /// <summary>
-        /// Used to interact with this component container
-        /// </summary>
-        /// <param name="gameTime">The current game time when the event happened</param>
-        /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
-        public void Interact(GameTime gameTime, Entity entity) => OnInteract(gameTime, entity);
-
-        /// <summary>
-        /// Called when this component container got interacted with
-        /// </summary>
-        /// <param name="gameTime">The current game time when the event happened</param>
-        /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
-        protected abstract void OnInteract(GameTime gameTime, Entity entity);
-
-
         ///// <inheritdoc />
         //public abstract void Serialize(BinaryWriter writer);
 
@@ -81,24 +71,103 @@ namespace OctoAwesome
         //public abstract void Deserialize(BinaryReader reader);
 
         /// <inheritdoc />
-        public abstract bool ContainsComponent<T>();
+        public bool ContainsComponent<T>()
+            => Components.Contains<T>();
+
         /// <inheritdoc />
-        public abstract T? GetComponent<T>();
+        public T? GetComponent<T>()
+            => Components.Get<T>();
+
+        /// <summary>
+        /// Tries to get the component of the component container
+        /// </summary>
+        /// <typeparam name="T">The Type of the component to search for</typeparam>
+        /// <param name="component">The component to be returned</param>
+        /// <returns>True if the component was found, otherwise false</returns>
+        public bool TryGetComponent<T>([MaybeNullWhen(false)] out T component) where T : IComponent
+            => Components.TryGet<T>(out component);
+
 
     }
+
+    partial class ComponentContainer
+    {
+        ///<summary>
+        ///Serializes the given <see cref="OctoAwesome.ComponentContainer"/> instance.
+        ///</summary>
+        ///<param name = "that">The instance to serialize.</param>
+        ///<param name = "writer">The <see cref="System.IO.BinaryWriter"/> to serialize to.</param>
+        public static void Serialize(OctoAwesome.ComponentContainer<IComponent> that, System.IO.BinaryWriter writer)
+        {
+            that.Serialize(writer);
+        }
+
+        ///<summary>
+        ///Serializes this instance.
+        ///</summary>
+        ///<param name = "writer">The <see cref="System.IO.BinaryWriter"/> to serialize to.</param>
+        public virtual void Serialize(System.IO.BinaryWriter writer)
+        {
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER)
+            var buffer = Id.ToByteArray();
+#else
+            var buffer = (System.Span<byte>)stackalloc byte[16];
+            _ = Id.TryWriteBytes(buffer);
+#endif
+            writer.Write(buffer);
+            Components.Serialize(writer);
+        }
+
+        ///<summary>
+        ///Deserializes the properties of a <see cref="OctoAwesome.ComponentContainer{TComponent}"/> type.
+        ///</summary>
+        ///<param name = "reader">The <see cref="System.IO.BinaryReader"/> to deserialize from.</param>
+        ///<param name = "id">The deserialized instance of the property <see cref="OctoAwesome.ComponentContainer.Id"/>.</param>
+        ///<param name = "components">The deserialized instance of the property <see cref="OctoAwesome.ComponentContainer.Components"/>.</param>
+        public static void DeserializeOut(System.IO.BinaryReader reader, out Guid id, out ComponentList<OctoAwesome.Components.IComponent> components)
+        {
+            id = default(System.Guid)!;
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER)
+            var buffer_id = reader.ReadBytes(16);
+#else
+            var buffer_id = (System.Span<byte>)stackalloc byte[16];
+            reader.ReadBytes(buffer_id);
+#endif
+            id = new System.Guid(buffer_id);
+            components = ComponentList<IComponent>.DeserializeStatic(reader);
+        }
+
+        ///<summary>
+        ///Deserializes into <see cref="OctoAwesome.ComponentContainer{TComponent}"/> instance.
+        ///</summary>
+        ///<param name = "that">The instance to deserialize into.</param>
+        ///<param name = "reader">The <see cref="System.IO.BinaryReader"/> to deserialize from.</param>
+        public static void Deserialize(OctoAwesome.ComponentContainer that, System.IO.BinaryReader reader)
+        {
+            DeserializeOut(reader, out var id, out var components);
+            that.Id = id;
+            that.Components = components;
+            components.Parent = that;
+        }
+
+        ///<summary>
+        ///Deserializes into <see cref="OctoAwesome.ComponentContainer{TComponent}"/> instance.
+        ///</summary>
+        ///<param name = "reader">The <see cref="System.IO.BinaryReader"/> to deserialize from.</param>
+        public virtual void Deserialize(System.IO.BinaryReader reader)
+        {
+            Deserialize(this, reader);
+        }
+    }
+
     /// <summary>
     /// Base class for classes containing components of a specific type.
     /// </summary>
     /// <typeparam name="TComponent">The type of the components to contain.</typeparam>
-    [Nooson]
     public abstract partial class ComponentContainer<TComponent> :
-        ComponentContainer, IUpdateable, ISerializable
+        ComponentContainer, IUpdateable
         where TComponent : IComponent, ISerializable
     {
-        /// <summary>
-        /// Gets a list of all components this container holds.
-        /// </summary>
-        public ComponentList<IComponent> Components { get; protected set; }
 
         private List<IUpdateable> updateables = new();
         /// <summary>
@@ -106,18 +175,14 @@ namespace OctoAwesome
         /// </summary>
         protected ComponentContainer()
         {
-            Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent);
+            Components = new(ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, OnRemoveComponent, this);
         }
 
         protected ComponentContainer(Guid id, ComponentList<IComponent> components)
         {
             Id = id;
             Components = components;
-            foreach (var component in components)
-            {
-                if (component is InstanceComponent<ComponentContainer> instanceComponent)
-                    instanceComponent.SetInstance(this);
-            }
+            Components.Parent = this;
         }
 
         /// <summary>
@@ -135,8 +200,7 @@ namespace OctoAwesome
         /// <param name="component">The component that was added.</param>
         protected virtual void OnAddComponent(IComponent component)
         {
-            if (component is InstanceComponent<ComponentContainer> instanceComponent)
-                instanceComponent.SetInstance(this);
+            component.Parent = this;
 
             //HACK: Remove PositionComponent Dependency
             //if (component is LocalChunkCacheComponent cacheComponent)
@@ -210,25 +274,6 @@ namespace OctoAwesome
 
             }
         }
-
-
-        /// <inheritdoc />
-        public override bool ContainsComponent<T>()
-            => Components.Contains<T>();
-
-        /// <inheritdoc />
-        public override T? GetComponent<T>() where T : default
-            => Components.Get<T>();
-
-        /// <summary>
-        /// Tries to get the component of the component container
-        /// </summary>
-        /// <typeparam name="T">The Type of the component to search for</typeparam>
-        /// <param name="component">The component to be returned</param>
-        /// <returns>True if the component was found, otherwise false</returns>
-        public bool TryGetComponent<T>([MaybeNullWhen(false)] out T component) where T : TComponent
-            => Components.TryGet<T>(out component);
-
 
         /// <inheritdoc />
         public virtual void Update(GameTime gameTime)

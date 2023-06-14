@@ -13,6 +13,7 @@ using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
+using OctoAwesome.Rx;
 
 namespace OctoAwesome.Runtime
 {
@@ -44,6 +45,8 @@ namespace OctoAwesome.Runtime
 
         /// <inheritdoc />
         public ConcurrentDictionary<int, IPlanet> Planets { get; }
+        /// <inheritdoc />
+        public bool LocalPersistance => PersistenceManager is DiskPersistenceManager;
 
         private readonly bool disablePersistence;
         private readonly ILogger logger;
@@ -77,6 +80,15 @@ namespace OctoAwesome.Runtime
             UpdateHub = updateHub;
             this.settings = settings;
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
+
+            updateHub.ListenOn(DefaultChannels.Planet).Subscribe(OnNewPlanet);
+        }
+
+        private void OnNewPlanet(object obj)
+        {
+            if (obj is not IPlanet planet)
+                return;
+            Planets[planet.Id] = planet;
         }
 
 
@@ -94,7 +106,7 @@ namespace OctoAwesome.Runtime
 
                 Guid guid = Guid.NewGuid();
                 CurrentUniverse = new Universe(guid, name, seed);
-                //PersistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
+                PersistenceManager ??= new DiskPersistenceManager(extensionService, settings, UpdateHub);
                 PersistenceManager.SaveUniverse(CurrentUniverse);
                
                 return guid;
@@ -421,7 +433,7 @@ namespace OctoAwesome.Runtime
                 {
                     foreach (var item in retValues)
                     {
-                        GenericCaster<T, PositionComponent>.Cast(item.Component).InstanceId = item.Id;
+                        GenericCaster<T, PositionComponent>.Cast(item.Component).ParentId = item.Id;
                     }
                 }
                 return retValues;
@@ -439,7 +451,7 @@ namespace OctoAwesome.Runtime
                 var component = PersistenceManager.GetComponent<T>(CurrentUniverse.Id, id);
 
                 if (component is PositionComponent posComponent)
-                    posComponent.InstanceId = id;
+                    posComponent.ParentId = id;
                 return component;
             }
         }

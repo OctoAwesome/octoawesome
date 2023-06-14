@@ -52,13 +52,13 @@ namespace OctoAwesome
         /// The size of a chunk as <see cref="Index3"/> in blocks.
         /// </summary>
         public static readonly Index3 CHUNKSIZE = new Index3(CHUNKSIZE_X, CHUNKSIZE_Y, CHUNKSIZE_Z);
-        private IChunkColumn? chunkColumnField;
+        private IChunkColumn? chunkColumn;
         private Index3 index;
 
         private IChunkColumn ChunkColumn
         {
-            get => NullabilityHelper.NotNullAssert(chunkColumnField, $"{nameof(ChunkColumn)} was not initialized!");
-            set => chunkColumnField = NullabilityHelper.NotNullAssert(value, $"{nameof(ChunkColumn)} cannot be initialized with null!");
+            get => NullabilityHelper.NotNullAssert(chunkColumn, $"{nameof(ChunkColumn)} was not initialized!");
+            set => chunkColumn = NullabilityHelper.NotNullAssert(value, $"{nameof(ChunkColumn)} cannot be initialized with null!");
         }
 
         /// <inheritdoc />
@@ -189,7 +189,7 @@ namespace OctoAwesome
 
         /// <inheritdoc />
         public void OnUpdate(SerializableNotification notification)
-            => chunkColumnField?.OnUpdate(notification);
+            => chunkColumn?.OnUpdate(notification);
 
         /// <inheritdoc />
         public void Update(SerializableNotification notification)

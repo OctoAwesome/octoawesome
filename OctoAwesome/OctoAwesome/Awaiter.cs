@@ -52,7 +52,7 @@ namespace OctoAwesome
             Debug.Assert(!isPooled, "Is released into pool!");
             Debug.WriteLine("Waiting for result");
             if (!alreadyDeserialized)
-                TimedOut = !manualReset.Wait(10000); //10000
+                TimedOut = !manualReset.Wait(-1); //10000
 
             return !TimedOut;
         }

@@ -13,6 +13,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     /// </summary>
     public class ChestItem : Item, IDisposable
     {
+        private readonly IUpdateHub updateHub;
         private readonly Relay<Notification> simulationRelay;
         private readonly IDisposable simulationSource;
 
@@ -24,7 +25,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         public ChestItem(ChestItemDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
-            var updateHub = TypeContainer.Get<IUpdateHub>();
+            updateHub = TypeContainer.Get<IUpdateHub>();
             simulationRelay = new Relay<Notification>();
 
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
@@ -43,6 +44,7 @@ namespace OctoAwesome.Basics.Definitions.Items
             };
 
             simulationRelay.OnNext(notification);
+
             return 0;
         }
 

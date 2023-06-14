@@ -48,6 +48,12 @@ namespace OctoAwesome.GameServer.Commands
 
             simulationChannel.OnNext(entityNotification);
             player.Components.Add(new ServerManagedComponent() { OnServer = true, Enabled = true });
+
+            if(player.TryGetComponent<PositionComponent>(out var posComp))
+            {
+                updateHub.PushNetwork(posComp.Planet, DefaultChannels.Planet);
+            }
+
             entityNotification.Release();
 
             var remotePlayer = new RemoteEntity(player);

@@ -14,6 +14,7 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        bool LocalPersistance { get; }
         /// <summary>
         /// Gets a manager for managing definitions.
         /// </summary>

@@ -20,7 +20,6 @@ namespace OctoAwesome.Components
         /// </summary>
         /// <param name="gameTime">The current game time.</param>
         public abstract void Update(GameTime gameTime);
-
     }
 
     /// <summary>

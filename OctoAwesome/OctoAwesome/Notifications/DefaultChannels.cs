@@ -24,5 +24,10 @@
         /// The chunk channel.
         /// </summary> 
         public const string Chunk = "chunk";
+
+        /// <summary>
+        /// The planet channel.
+        /// </summary> 
+        public const string Planet = "planet";
     }
 }

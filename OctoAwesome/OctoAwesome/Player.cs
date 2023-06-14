@@ -26,27 +26,18 @@ namespace OctoAwesome
         /// </summary>
         public const int SELECTIONRANGE = 8;
 
-        private readonly IPool<EntityNotification> entityNotificationPool;
-        private readonly IUpdateHub updateHub;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
         public Player()
         {
-            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
-            updateHub = TypeContainer.Get<IUpdateHub>();
         }
 
         public Player(Guid id, ComponentList<IComponent> components) : base(id, components)
         {
-            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
-            updateHub = TypeContainer.Get<IUpdateHub>();
         }
 
-
-        /// <inheritdoc/>
-        protected override void OnInteract(GameTime gameTime, Entity entity) => throw new System.NotImplementedException();
 
     }
 }

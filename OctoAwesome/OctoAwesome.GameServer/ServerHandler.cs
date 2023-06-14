@@ -47,6 +47,7 @@ namespace OctoAwesome.GameServer
         private readonly PackageActionHub packageActionHub;
         public readonly ConcurrentDictionary<OfficialCommand, Invocation> CommandFunctions;
         private readonly ITypeContainer typeContainer;
+        private readonly NotificationCommands notCommands;
 
         /*
          TODO:
@@ -109,6 +110,8 @@ namespace OctoAwesome.GameServer
                 }
             });
             this.typeContainer = typeContainer;
+
+            notCommands = new NotificationCommands(); //TODO Should not be needed, when a better structure is in place for these
         }
 
         private void Register<T>(OfficialCommand command, Func<ITypeContainer, CommandParameter, T, ISerializable> func)
@@ -187,18 +190,6 @@ namespace OctoAwesome.GameServer
         /// <param name="package">The received package.</param>
         public void OnNext(Package package)
         {
-            /*
-             1. Get Deserialization via reflection
-             2. Cache Reflection call method
-             3. Call Method to get deserialized object
-             4. (Optional) Unsafe cast to runtime type
-             5. Get Handler for this type (via hub) (done)
-             6. Call Method of hub so it can handle it all (Done)
-             7. Profit
-            
-             10. Implement solidly 
-             */
-
             logger.Trace($"Rec: Package with id:{package.UId} and Flags: {package.PackageFlags}");
             packageActionHub.Dispatch(package, package.BaseClient);
         }

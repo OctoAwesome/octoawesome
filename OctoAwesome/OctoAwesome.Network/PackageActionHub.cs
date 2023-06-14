@@ -167,8 +167,9 @@ namespace OctoAwesome.Network
             if (isNotification)
                 channel = br.ReadString();
             var startOfObjectPos = ms.Position;
-            logger.Trace($"Got {(isNotification ? "Notification" : "Package")} with des id {desId} {(isNotification ? $"for channel {channel}" : "")} package {packageId}");
-
+            logger.Trace($"Got {(isNotification ? "Notification" : "Package")} with des id (Mod:{desId>>32}, Type:{desId & 0xFFFFFFF}) {(isNotification ? $"for channel {channel}" : "")} package {packageId}");
+            if (channel == "planet")
+                ;
             var rc = new RequestContext(br, package);
             Action<RequestContext>? val = null;
             if ((package.PackageFlags & PackageFlags.Array) > 0 && registeredStuffDic.TryGetValue(desId, out val))
@@ -199,7 +200,15 @@ namespace OctoAwesome.Network
                                 var element = pool.RentElement();
                                 if (element is ISerializable des)
                                 {
-                                    des.Deserialize(reader);
+                                    try
+                                    {
+                                        des.Deserialize(reader);
+                                    }
+                                    catch (Exception ex)
+                                    {
+
+                                        throw;
+                                    }
                                     return des;
                                 }
                                 return default!;

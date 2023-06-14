@@ -14,6 +14,7 @@ namespace OctoAwesome.EntityComponents
     [Nooson]
     public partial class AnimationComponent : Component, IEntityComponent
     {
+
         /// <summary>
         /// Gets or sets the currently elapsed time for the animation.
         /// </summary>
@@ -29,12 +30,14 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public float AnimationSpeed { get; set; }
 
+        private readonly AbcSimulationComponent moreDirty;
         /// <summary>
         /// Initializes a new instance of the <see cref="AnimationComponent"/> class.
         /// </summary>
         public AnimationComponent()
         {
             Sendable = true;
+            moreDirty = TypeContainer.Get<AbcSimulationComponent>();
         }
 
         private float NextSmallerValue(float value)
@@ -56,7 +59,11 @@ namespace OctoAwesome.EntityComponents
             if (model.CurrentAnimation is null)
                 return;
 
+            var oldTime = CurrentTime;
+
             CurrentTime = Math.Clamp(CurrentTime + AnimationSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0, NextSmallerValue(MaxTime));
+            if (CurrentTime != oldTime)
+                moreDirty.Add(this);
 
             model.UpdateAnimation(CurrentTime);
         }

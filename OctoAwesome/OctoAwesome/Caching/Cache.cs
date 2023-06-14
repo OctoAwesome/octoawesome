@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Threading;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,6 +36,8 @@ namespace OctoAwesome.Caching
         /// <returns>The value from the cache.</returns>
         public abstract TValue? Get<TKey, TValue>(TKey key, LoadingMode loadingMode = LoadingMode.LoadIfNotExists)
             where TKey : notnull;
+
+        public abstract void AddOrUpdate<TKey, TValue>(TKey key, TValue value) where TKey : notnull;
 
         internal virtual void Start()
         {
@@ -99,9 +102,9 @@ namespace OctoAwesome.Caching
             }
 
             if (result
-                && cacheItem!.LastAccessTime.Add(ClearTime) < DateTime.Now)
+                && cacheItem!.LastAccessTime.Add(ClearTime) < DateTime.UtcNow)
             {
-                cacheItem.LastAccessTime = DateTime.Now;
+                cacheItem.LastAccessTime = DateTime.UtcNow;
             }
 
             if (result)
@@ -142,12 +145,21 @@ namespace OctoAwesome.Caching
         /// <param name="key">The key to identify the cache item by.</param>
         /// <param name="value">The new value to cache.</param>
         /// <returns>The cache item created for the cached value.</returns>
-        protected CacheItem AddOrUpdate(TKey key, TValue value)
+        protected virtual CacheItem AddOrUpdateInternal(TKey key, TValue value)
         {
             using var @lock = lockSemaphore.EnterExclusiveScope();
             return valueCache[key] = new(value);
         }
 
+        /// <summary>
+        /// Add or update a cache item identified by the given key.
+        /// </summary>
+        /// <param name="key">The key to identify the cache item by.</param>
+        /// <param name="value">The new value to cache.</param>
+        public override void AddOrUpdate<TK, TV>(TK key, TV value)
+        {
+            _ = AddOrUpdateInternal(GenericCaster<TK, TKey>.Cast(key), GenericCaster<TV, TValue>.Cast(value));
+        }
 
         internal override void CollectGarbage()
         {
@@ -156,7 +168,7 @@ namespace OctoAwesome.Caching
                 using var @lock = lockSemaphore.EnterExclusiveScope();
 
                 var element = valueCache.ElementAt(i);
-                if (element.Value.LastAccessTime.Add(ClearTime) < DateTime.Now)
+                if (element.Value.LastAccessTime.Add(ClearTime) < DateTime.UtcNow)
                     valueCache.Remove(element.Key, out _);
             }
         }
@@ -197,7 +209,7 @@ namespace OctoAwesome.Caching
             /// </summary>
             /// <param name="value">The cached value.</param>
             public CacheItem(TValue value)
-                : this(DateTime.Now, value)
+                : this(DateTime.UtcNow, value)
             {
             }
 

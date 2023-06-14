@@ -39,7 +39,7 @@ internal partial class ProductionInventoriesComponent : Component, IEntityCompon
 
 }
 
-internal partial class BurningComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IUpdateable
+internal partial class BurningComponent : Component, IEntityComponent, IUpdateable
 {
     private StateMachine stateMachine;
     private RecipeService recipeService;
@@ -97,7 +97,7 @@ internal partial class BurningComponent : InstanceComponent<ComponentContainer>,
         recipeService = TypeContainer.Get<RecipeService>();
         definitionManager = TypeContainer.Get<IDefinitionManager>();
         recipes = recipeService.GetByType(typename);
-        var ivComponent = Instance.GetComponent<ProductionInventoriesComponent>();
+        var ivComponent = Parent.GetComponent<ProductionInventoriesComponent>();
         Debug.Assert(ivComponent is not null,
             $"Entity for Burning component needs to have a not null {nameof(ProductionInventoriesComponent)}.");
         inventoryComponent = ivComponent;

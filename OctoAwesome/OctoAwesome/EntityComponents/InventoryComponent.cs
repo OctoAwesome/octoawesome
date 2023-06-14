@@ -1,4 +1,6 @@
-﻿using OctoAwesome.Components;
+﻿using NonSucking.Framework.Extension.Collections;
+
+using OctoAwesome.Components;
 using OctoAwesome.Database;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
@@ -90,10 +92,10 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         protected int maxVolume = int.MaxValue;
 
-        private readonly List<InventorySlot> inventory;
+        private readonly EnumerationModifiableConcurrentList<InventorySlot> inventory;
 
         private readonly IDefinitionManager definitionManager;
-
+        private readonly AbcSimulationComponent dirtyStuff;
         private int currentWeight = 0;
         private int currentVolume = 0;
 
@@ -103,8 +105,12 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public InventoryComponent()
         {
-            inventory = new List<InventorySlot>();
-            definitionManager = TypeContainer.Get<IDefinitionManager>();
+            inventory = new EnumerationModifiableConcurrentList<InventorySlot>();
+            var tc = TypeContainer.Get<ITypeContainer>();
+            definitionManager = tc.Get<IDefinitionManager>();
+
+            dirtyStuff = tc.Get<AbcSimulationComponent>();
+            Sendable = true;
         }
 
         /// <summary>
@@ -136,6 +142,7 @@ namespace OctoAwesome.EntityComponents
             maxVolume = reader.ReadInt32();
             isFixedSlotSize = reader.ReadBoolean();
             var count = reader.ReadInt32();
+            inventory.Clear();
             for (int i = 0; i < count; i++)
             {
                 var emptySlot = reader.ReadBoolean();
@@ -195,6 +202,7 @@ namespace OctoAwesome.EntityComponents
                 inventory.Add(slot);
             }
             CalcCurrentInventoryUsage();
+            Interlocked.Increment(ref version);
         }
 
         /// <inheritdoc />
@@ -290,7 +298,7 @@ namespace OctoAwesome.EntityComponents
                     break;
                 }
             }
-            Interlocked.Increment(ref version);
+            ChangeVersion();
             return quantity - left;
         }
 
@@ -325,13 +333,13 @@ namespace OctoAwesome.EntityComponents
             switch (invSlot.Amount)
             {
                 case 0 when isFixedSlotSize:
-                    Interlocked.Increment(ref version);
+                    ChangeVersion();
                     return quantity;
                 case 0:
                     inventory.Remove(invSlot);
                     break;
             }
-            Interlocked.Increment(ref version);
+            ChangeVersion();
             return quantity;
         }
 
@@ -418,7 +426,7 @@ namespace OctoAwesome.EntityComponents
             quantity = GetQuantityLimitFor(slot, quantity);
             slot.Amount += quantity;
 
-            Interlocked.Increment(ref version);
+            ChangeVersion();
 
             return quantity;
         }
@@ -514,7 +522,7 @@ namespace OctoAwesome.EntityComponents
             var slot = new InventorySlot(this);
             if (Add(slot))
             {
-                Interlocked.Increment(ref version);
+                ChangeVersion();
                 return slot;
             }
             return null;
@@ -530,7 +538,7 @@ namespace OctoAwesome.EntityComponents
             if (maxSlots <= inventory.Count || isFixedSlotSize)
                 return false;
 
-            Interlocked.Increment(ref version);
+            ChangeVersion();
             inventory.Add(slot);
             return true;
         }
@@ -573,7 +581,7 @@ namespace OctoAwesome.EntityComponents
         {
             if (index >= inventory.Count)
                 return null;
-            return inventory[index];
+            return inventory.ElementAt(index);
         }
 
         /// <summary>
@@ -610,6 +618,12 @@ namespace OctoAwesome.EntityComponents
                 return 0;
 
             return Remove(invSlot, definition.VolumePerUnit);
+        }
+
+        private void ChangeVersion()
+        {
+            Interlocked.Increment(ref version);
+            dirtyStuff.Add(this);
         }
 
         /// <inheritdoc />

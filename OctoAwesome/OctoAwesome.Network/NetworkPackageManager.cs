@@ -91,6 +91,10 @@ namespace OctoAwesome.Network
                     if (!awaiter.TrySetResult(package.Payload))
                         logger.Warn($"Awaiter can not set result package {package.UId}");
                 }
+                else
+                {
+                    logger.Error($"Got response for package without having a request with id {package.UId}");
+                }
             }
             else
             {

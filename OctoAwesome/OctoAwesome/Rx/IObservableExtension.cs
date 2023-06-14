@@ -20,6 +20,17 @@ namespace OctoAwesome.Rx
             => observable.Subscribe(new Observer<T>(onNext));
 
         /// <summary>
+        /// Subscribes an element handler to an observable sequence and disposes after once onNext.
+        /// </summary>
+        /// <param name="observable">The relay to subscribe to.</param>
+        /// <param name="onNext">Action to invoke for each element in the observable sequence.</param>
+        /// <typeparam name="T">The object type that provides notification information.</typeparam>
+
+        public static void SubscribeOnce<T>(this Relay<T> observable, Action<T> onNext)
+            => observable.SubscribeOnce(new Observer<T>(onNext));
+        
+
+        /// <summary>
         /// Subscribes an element handler and an exception handler handler to an observable sequence.
         /// </summary>
         /// <param name="observable">The observable to subscribe to.</param>

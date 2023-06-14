@@ -15,7 +15,7 @@ namespace OctoAwesome.EntityComponents
     /// </summary>
     //[NoosonCustom(SerializeMethodName = nameof(Serialize), DeserializeMethodName = nameof(Deserialize))]
     [Nooson]
-    public sealed partial class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent, ISerializable<PositionComponent>
+    public sealed partial class PositionComponent : Component, IEntityComponent, ISerializable<PositionComponent>
     {
         /// <summary>
         /// Gets or sets the position of the entity.

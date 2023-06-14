@@ -1,10 +1,17 @@
-﻿namespace OctoAwesome.Components
+﻿using System;
+
+namespace OctoAwesome.Components
 {
     /// <summary>
     /// Interface for component containers.
     /// </summary>
     public interface IComponentContainer
     {
+        /// <summary>
+        /// Gets the Id of the container.
+        /// </summary>
+        Guid Id { get; }
+
         /// <summary>
         /// Gets a value indicating whether a component of the given type exists in this container.
         /// </summary>

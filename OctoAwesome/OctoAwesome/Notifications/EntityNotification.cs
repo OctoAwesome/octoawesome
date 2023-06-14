@@ -82,7 +82,11 @@ namespace OctoAwesome.Notifications
             Type = (ActionType)reader.ReadInt32();
 
             if (Type == ActionType.Add)
-                Entity = Serializer.DeserializeSpecialCtor<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
+            {
+                //Entity = new RemoteEntity();
+                //Entity.Deserialize(reader);
+                Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
+            }
             else
                 EntityId = reader.ReadUnmanaged<Guid>();
 

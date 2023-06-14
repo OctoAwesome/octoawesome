@@ -11,18 +11,18 @@ namespace OctoAwesome
     /// <summary>
     /// The default implementation for planets.
     /// </summary>
-    [Nooson]
-    public partial class Planet : IPlanet, ISerializable<Planet>
+    [Nooson, SerializationId(1,5)]
+    public partial class Planet : IPlanet, IConstructionSerializable<Planet>
     {
         /// <summary>
         /// Backing field for <see cref="ClimateMap"/>.
         /// </summary>
         protected IClimateMap? climateMap;
         /// <inheritdoc />
-        public int Id { get; private set; }
+        public int Id { get; protected set; }
 
         /// <inheritdoc />
-        public Guid Universe { get; private set; }
+        public Guid Universe { get; protected set; }
 
         /// <inheritdoc />
         [NoosonIgnore]
@@ -36,10 +36,10 @@ namespace OctoAwesome
         }
 
         /// <inheritdoc />
-        public int Seed { get; private set; }
+        public int Seed { get; protected set; }
 
         /// <inheritdoc />
-        public Index3 Size { get; private set; }
+        public Index3 Size { get; protected set; }
 
         /// <inheritdoc />
         public float Gravity { get; protected set; }
@@ -85,8 +85,8 @@ namespace OctoAwesome
         public Planet(IMapGenerator generator)
         {
             Generator = generator;
-
-            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>(), TypeContainer.Get<SerializationIdTypeProvider>());
+            var tc = TypeContainer.Get<ITypeContainer>();
+            GlobalChunkCache = new GlobalChunkCache(this, tc.Get<IResourceManager>(), tc.Get<IUpdateHub>(), tc.Get<SerializationIdTypeProvider>());
         }
 
         private void SerializeMapGenerator(BinaryWriter bw)

@@ -76,7 +76,6 @@ namespace OctoAwesome.Client.Components
 
             Player player = resourceManager.LoadPlayer(playerName);
 
-            player.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
 
             simulationRelay.OnNext(new EntityNotification(EntityNotification.ActionType.Add, player) { OverwriteExisting = true });
 

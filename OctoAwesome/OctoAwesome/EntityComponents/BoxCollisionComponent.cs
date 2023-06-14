@@ -39,6 +39,7 @@ namespace OctoAwesome.EntityComponents
         public BoxCollisionComponent(BoundingBox[] boundingBoxes)
         {
             this.boundingBoxes = boundingBoxes;
+            Sendable = true;
         }
        
 

@@ -13,8 +13,7 @@ namespace OctoAwesome
     /// <summary>
     /// Entity that is simulated on a remote server.
     /// </summary>
-    [Nooson]
-    public partial class RemoteEntity : Entity, IConstructionSerializable<RemoteEntity>
+    public partial class RemoteEntity : Entity
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteEntity"/> class.
@@ -31,17 +30,20 @@ namespace OctoAwesome
         /// Initializes a new instance of the <see cref="RemoteEntity"/> class.
         /// </summary>
         /// <param name="originEntity">The origin entity that is controlled by the remote server.</param>
-        public RemoteEntity(Entity originEntity)
+        public RemoteEntity(Entity originEntity) : this()
         {
-            foreach (var component in Components)
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+            originEntity.Components.Serialize(bw);
+            ms.Position = 0;
+            using var br = new BinaryReader(ms);
+            var components = ComponentList<IEntityComponent>.DeserializeStatic(br);
+            foreach (var component in components)
             {
                 if (component.Sendable)
                     Components.AddIfTypeNotExists(component);
             }
             Id = originEntity.Id;
         }
-
-        /// <inheritdoc />
-        protected override void OnInteract(GameTime gameTime, Entity entity) => throw new System.NotImplementedException();
     }
 }

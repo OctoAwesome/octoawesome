@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Serialization;
+
 using System;
 using System.IO;
 
@@ -7,7 +9,7 @@ namespace OctoAwesome
     /// <summary>
     /// Interface for OctoAwesome map generators.
     /// </summary>
-    public interface IMapGenerator
+    public interface IMapGenerator 
     {
         /// <summary>
         /// Generates a new planet.

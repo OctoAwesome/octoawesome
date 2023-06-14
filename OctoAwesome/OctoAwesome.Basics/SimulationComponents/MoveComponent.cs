@@ -9,6 +9,7 @@ using OctoAwesome.Serialization;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using System.Linq;
+using NonSucking.Framework.Extension.IoC;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -24,6 +25,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly IUpdateHub updateHub;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
+        private readonly AbcSimulationComponent dirtyStuff;
 
         public MoveComponent()
         {
@@ -32,7 +34,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             updateHub = tc.Get<IUpdateHub>();
 
             propertyChangedNotificationPool = tc.Get<IPool<PropertyChangedNotification>>();
-
+            dirtyStuff =  tc.Get<AbcSimulationComponent>();
         }
 
         /// <inheritdoc />
@@ -70,10 +72,20 @@ namespace OctoAwesome.Basics.SimulationComponents
             {
                 CheckBoxCollision(gameTime, entity, movecomp, poscomp);
             }
+            var tmp = movecomp.PositionMove;
+            if (Math.Abs(tmp.X) < 0.02)
+            {
+                tmp.X = 0;
+            }
+            if (Math.Abs(tmp.Y) < 0.02)
+            {
+                tmp.Y = 0;
+            }
 
-
-            var newposition = poscomp.Position + movecomp.PositionMove;
+            var newposition = poscomp.Position + tmp;
             bool send = newposition != poscomp.Position;
+            if (send)
+                dirtyStuff.Add(poscomp);
 
             var cacheComp = entity.Components.Get<LocalChunkCacheComponent>();
 
@@ -92,42 +104,12 @@ namespace OctoAwesome.Basics.SimulationComponents
                 poscomp.Position = newposition;
             }
 
-            // Fix fluctuations for direction because of external forces
-            var tmp = movecomp.PositionMove;
-            if (Math.Abs(tmp.X) < 0.01)
-            {
-                tmp.X = 0;
-            }
-            if (Math.Abs(tmp.Y) < 0.01)
-            {
-                tmp.Y = 0;
-            }
-            movecomp.PositionMove = tmp;
 
             //Direction
-            if (movecomp.PositionMove.LengthSquared != 0)
+            if (tmp.LengthSquared != 0)
             {
                 poscomp.Direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
             }
-            if (send)
-                PositionChanged(entity, poscomp, movecomp);
-        }
-
-        private void PositionChanged(Entity entity, PositionComponent pos, MoveableComponent move)
-        {
-            var updateNotification = propertyChangedNotificationPool.Rent();
-
-            updateNotification.Issuer = nameof(PositionComponent);
-            updateNotification.Value = Serializer.Serialize(pos).Concat(Serializer.Serialize(move)).ToArray();
-
-            var entityNotification = entityNotificationPool.Rent();
-            entityNotification.Entity = entity;
-            entityNotification.Type = EntityNotification.ActionType.Update;
-            entityNotification.Notification = updateNotification;
-
-            updateHub.PushNetwork(entityNotification, DefaultChannels.Simulation);
-            entityNotification.Release();
-
         }
 
         private static void CheckBoxCollision(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)

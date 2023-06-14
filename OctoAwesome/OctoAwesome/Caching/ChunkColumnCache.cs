@@ -30,7 +30,7 @@ namespace OctoAwesome.Caching
                 using var @lock = lockSemaphore.EnterExclusiveScope();
 
                 var element = valueCache.ElementAt(i);
-                if (element.Value.LastAccessTime.Add(ClearTime) < DateTime.Now)
+                if (element.Value.LastAccessTime.Add(ClearTime) < DateTime.UtcNow)
                 {
                     valueCache.Remove(element.Key, out _);
                 }

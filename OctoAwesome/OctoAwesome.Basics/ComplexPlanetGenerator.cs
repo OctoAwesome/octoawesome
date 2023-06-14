@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Basics.Definitions.Blocks;
 using OctoAwesome.Definitions;
 using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Buffers;
@@ -11,7 +12,7 @@ namespace OctoAwesome.Basics
     /// <summary>
     /// Map generator used for generating a <see cref="ComplexPlanet"/>.
     /// </summary>
-    public class ComplexPlanetGenerator : IMapGenerator
+    public partial class ComplexPlanetGenerator : IMapGenerator
     {
         private readonly ChunkPool chunkPool;
 

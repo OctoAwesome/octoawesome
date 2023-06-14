@@ -32,6 +32,7 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public BodyComponent()
         {
+            Sendable = true;
             Mass = 1; //1kg
             Radius = 1;
             Height = 1;

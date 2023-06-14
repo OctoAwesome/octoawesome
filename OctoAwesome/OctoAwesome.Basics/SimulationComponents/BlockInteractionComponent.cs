@@ -20,19 +20,21 @@ namespace OctoAwesome.Basics.SimulationComponents
     {
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
+        private readonly InteractService interactService;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockInteractionComponent"/> class.
         /// </summary>
         /// <param name="simulation">The simulation the block interactions should happen in.</param>
-        /// <param name="interactionService">
+        /// <param name="blockInteractionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public BlockInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
+        public BlockInteractionComponent(Simulation simulation, BlockCollectionService blockInteractionService, InteractService interactService)
         {
             this.simulation = simulation;
-            service = interactionService;
+            service = blockInteractionService;
+            this.interactService = interactService;
         }
 
         /// <inheritdoc />
@@ -54,7 +56,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
                         InteractWith(blockInfo, inventory, toolbar, cache);
                     },
-                    componentContainer => componentContainer?.Interact(gameTime, entity)
+                    componentContainer =>
+                    {
+                        if (componentContainer.TryGetComponent<InteractKeyComponent>(out var keyComp))
+                        {
+                            interactService.Interact(keyComp.Key, gameTime, entity, componentContainer);
+                        }
+                    }
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)

@@ -46,6 +46,9 @@ namespace OctoAwesome
             typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehaviour.Singleton);
             typeContainer.Register<BlockCollectionService>(InstanceBehaviour.Singleton);
             typeContainer.Register<ComponentChangedNotificationHandler>(InstanceBehaviour.Singleton);
+
+            typeContainer.Register<AbcSimulationComponent>(InstanceBehaviour.Singleton);
+            typeContainer.Register<InteractService>(InstanceBehaviour.Singleton);
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace OctoAwesome
                     });
                     break;
                 case ClientType.GameServer:
-                    config.AddRule(LogLevel.Trace, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
+                    config.AddRule(LogLevel.Debug, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
                         FileName = $"./logs/server-{DateTime.Now:dd_MM_yyyy}.log"

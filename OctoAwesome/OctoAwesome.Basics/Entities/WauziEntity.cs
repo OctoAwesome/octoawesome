@@ -40,31 +40,31 @@ namespace OctoAwesome.Basics.Entities
         }
 
         ///<inheritdoc/>
-        protected override void OnInteract(GameTime gameTime, Entity entity)
-        {
-            if (!entity.Components.TryGet<ToolBarComponent>(out var toolbar)
-                || !entity.Components.TryGet<InventoryComponent>(out var inventory)
-                || !entity.Components.TryGet<PositionComponent>(out var position)
-                || toolbar.ActiveTool?.Item is not MeatRaw
-                || !Components.TryGet<ControllableComponent>(out var controller))
-                return;
+        //protected override void OnInteract(GameTime gameTime, Entity entity)
+        //{
+        //    if (!entity.Components.TryGet<ToolBarComponent>(out var toolbar)
+        //        || !entity.Components.TryGet<InventoryComponent>(out var inventory)
+        //        || !entity.Components.TryGet<PositionComponent>(out var position)
+        //        || toolbar.ActiveTool?.Item is not MeatRaw
+        //        || !Components.TryGet<ControllableComponent>(out var controller))
+        //        return;
 
-            controller.JumpInput = true;
-            if (!Components.Contains<RelatedEntityComponent>())
-            {
-                var relEntity = new RelatedEntityComponent();
-                relEntity.RelatedEntityId = entity.Id;
-                Components.AddIfTypeNotExists(relEntity);
-                followEntity = entity;
-            }
+        //    controller.JumpInput = true;
+        //    if (!Components.Contains<RelatedEntityComponent>())
+        //    {
+        //        var relEntity = new RelatedEntityComponent();
+        //        relEntity.RelatedEntityId = entity.Id;
+        //        Components.AddIfTypeNotExists(relEntity);
+        //        followEntity = entity;
+        //    }
 
-            inventory.RemoveUnit(toolbar.ActiveTool);
-            if (toolbar.ActiveTool.Amount < 1)
-            {
-                inventory.Remove(toolbar.ActiveTool);
-                toolbar.RemoveSlot(toolbar.ActiveTool);
-            }
-        }
+        //    inventory.RemoveUnit(toolbar.ActiveTool);
+        //    if (toolbar.ActiveTool.Amount < 1)
+        //    {
+        //        inventory.Remove(toolbar.ActiveTool);
+        //        toolbar.RemoveSlot(toolbar.ActiveTool);
+        //    }
+        //}
 
         /// <inheritdoc />
         public override void Update(GameTime gameTime)

@@ -71,7 +71,7 @@ namespace OctoAwesome.Network
 
             typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehaviour.Singleton);
-
+            
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
             extensionLoader.RegisterExtensions();

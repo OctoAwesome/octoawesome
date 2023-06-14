@@ -64,21 +64,4 @@ public partial class Furnace : Entity, IConstructionSerializable<Furnace>
     }
 
 
-    /// <inheritdoc/>
-    protected override void OnInteract(GameTime gameTime, Entity entity)
-    {
-        if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
-           && entity.TryGetComponent<TransferComponent>(out var transferComponent)
-           && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
-        {
-            transferComponent.Targets.Clear();
-            transferComponent.Targets.Add(ProductionInventoriesComponent.InputInventory);
-            transferComponent.Targets.Add(ProductionInventoriesComponent.OutputInventory);
-            transferComponent.Targets.Add(ProductionInventoriesComponent.ProductionInventory);
-            uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
-
-            AnimationComponent.CurrentTime = 0f;
-            AnimationComponent.AnimationSpeed = 60f;
-        }
-    }
 }
