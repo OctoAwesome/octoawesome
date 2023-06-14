@@ -4,14 +4,14 @@ using OctoAwesome.Caching;
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// The class for simulation instance extender
     /// </summary>
     public class SimulationExtensionExtender : BaseExtensionExtender<Simulation>
     {
-        private readonly List<Action<Simulation>> simulationExtender;        
+        private readonly List<Action<Simulation>> simulationExtender;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="SimulationExtensionExtender" /> class

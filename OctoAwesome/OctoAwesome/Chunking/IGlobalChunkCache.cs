@@ -1,6 +1,7 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Location;
+using OctoAwesome.Notifications;
 
-namespace OctoAwesome
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Interface for global chunk caches.

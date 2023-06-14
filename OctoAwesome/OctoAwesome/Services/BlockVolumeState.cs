@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Information;
 using OctoAwesome.Pooling;
+
 using System;
 using OctoAwesome.Extension;
 
@@ -11,9 +13,13 @@ namespace OctoAwesome.Services
     public sealed class BlockVolumeState : IPoolElement
     {
         /// <summary>
-        /// Gets the block info for the block that is associated with this volume state.
+        /// Gets the interaction info for the block that is associated with this volume state.
         /// </summary>
-        public BlockInfo BlockInfo { get; private set; }
+        public IBlockInteraction BlockInfo
+        {
+            get => NullabilityHelper.NotNullAssert(blockInfo, $"{nameof(BlockInfo)} was not initialized!");
+            private set => blockInfo = NullabilityHelper.NotNullAssert(value, $"{nameof(BlockInfo)} cannot be initialized with null!");
+        }
 
         /// <summary>
         /// Gets the block definition for the block type this volume state is associated to.
@@ -37,6 +43,7 @@ namespace OctoAwesome.Services
 
         private IPool? pool;
         private IBlockDefinition? blockDefinition;
+        private IBlockInteraction? blockInfo;
 
         private IPool Pool
         {
@@ -52,7 +59,7 @@ namespace OctoAwesome.Services
         /// <param name="validUntil">
         /// The time offset until when the volume state is still valid and does not need to be updated.
         /// </param>
-        public void Initialize(BlockInfo info, IBlockDefinition blockDefinition, DateTimeOffset validUntil)
+        public void Initialize(IBlockInteraction info, IBlockDefinition blockDefinition, DateTimeOffset validUntil)
         {
             BlockInfo = info;
             BlockDefinition = blockDefinition;

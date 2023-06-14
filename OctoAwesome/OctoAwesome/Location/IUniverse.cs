@@ -1,7 +1,8 @@
 ﻿using OctoAwesome.Serialization;
+
 using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Interface for universe implementations of OctoAwesome. A universe contains multiple planets and is a save state.

@@ -1,9 +1,11 @@
-﻿using OctoAwesome.Pooling;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
+using OctoAwesome.Pooling;
 
 using System;
 using OctoAwesome.Notifications;
 
-namespace OctoAwesome
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Interface for chunks.

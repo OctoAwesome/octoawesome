@@ -1,10 +1,13 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
+using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+
 using System;
 using System.Diagnostics;
 using OctoAwesome.Extension;
 
-namespace OctoAwesome
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// A chunk implementation for a planet.
@@ -252,9 +255,9 @@ namespace OctoAwesome
         /// <remarks>If the coordinate references a block outside of chunk size it is wrapped to be local to the chunk.</remarks>
         public static int GetFlatIndex(int x, int y, int z)
         {
-            return ((z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
-                   | ((y & (CHUNKSIZE_Y - 1)) << LimitX)
-                   | (x & (CHUNKSIZE_X - 1));
+            return (z & CHUNKSIZE_Z - 1) << LimitX + LimitY
+                   | (y & CHUNKSIZE_Y - 1) << LimitX
+                   | x & CHUNKSIZE_X - 1;
         }
         /// <summary>
         /// Calculates the flat index for accessing blocks in the <see cref="Blocks"/> array from a 3D index.
@@ -264,9 +267,9 @@ namespace OctoAwesome
         /// <remarks>If the coordinate references a block outside of chunk size it is wrapped to be local to the chunk.</remarks>
         public static int GetFlatIndex(Index3 position)
         {
-            return ((position.Z & (CHUNKSIZE_Z - 1)) << (LimitX + LimitY))
-                   | ((position.Y & (CHUNKSIZE_Y - 1)) << LimitX)
-                   | (position.X & (CHUNKSIZE_X - 1));
+            return (position.Z & CHUNKSIZE_Z - 1) << LimitX + LimitY
+                   | (position.Y & CHUNKSIZE_Y - 1) << LimitX
+                   | position.X & CHUNKSIZE_X - 1;
         }
 
         internal void Init(Index3 position, IPlanet planet)

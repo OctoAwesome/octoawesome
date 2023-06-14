@@ -8,6 +8,7 @@ using engenious.Input;
 using engenious.UI.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Screens;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Client.Screens
 {

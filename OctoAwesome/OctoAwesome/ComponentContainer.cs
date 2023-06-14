@@ -1,5 +1,6 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;
@@ -80,6 +81,7 @@ namespace OctoAwesome
         /// <param name="gameTime">The current game time when the event happened</param>
         /// <param name="entity">The <see cref="Entity"/> that interacted with us</param>
         protected abstract void OnInteract(GameTime gameTime, Entity entity);
+
         /// <inheritdoc />
         public virtual void Push(SerializableNotification notification)
         {

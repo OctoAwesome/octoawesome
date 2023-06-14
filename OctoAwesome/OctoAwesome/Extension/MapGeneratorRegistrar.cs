@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace OctoAwesome
-{
+using OctoAwesome.Location;
 
+
+namespace OctoAwesome.Extension
+{
     /// <summary>
     /// Registrar for map generator extension loading
     /// </summary>
-
     public class MapGeneratorRegistrar : BaseRegistrar<IMapGenerator>
     {
-        private readonly List<IMapGenerator> mapGenerators;        
+        private readonly List<IMapGenerator> mapGenerators;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="MapGeneratorRegistrar" /> class

@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Caching;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
@@ -11,7 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace OctoAwesome
+namespace OctoAwesome.Chunking
 {
     /// <summary>
     /// Global cache for chunks.

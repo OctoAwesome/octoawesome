@@ -111,6 +111,7 @@ public class ExtensionService
         }
     }
 
+
     private IEnumerable<Type> GetAllBaseTypesAndInterfaces(Type t)
     {
         yield return t;
@@ -258,5 +259,4 @@ public class ExtensionService
 
         }
     }
-
 }

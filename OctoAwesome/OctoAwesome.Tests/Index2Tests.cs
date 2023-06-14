@@ -1,7 +1,10 @@
 ﻿using System;
+
 using NUnit.Framework;
 
-namespace OctoAwesome.Model.Tests
+using OctoAwesome.Location;
+
+namespace OctoAwesome.Tests
 {
     public class Index2Tests
     {
@@ -115,10 +118,10 @@ namespace OctoAwesome.Model.Tests
         [Test]
         public void Index2ComparerTest()
         {
-            Index2 i1 = new Index2(12, 13);
-            Index2 i2 = new Index2(12, 15);
-            Index2 i3 = new Index2(22, 13);
-            Index2 i4 = new Index2(12, 13);
+            var i1 = new Index2(12, 13);
+            var i2 = new Index2(12, 15);
+            var i3 = new Index2(22, 13);
+            var i4 = new Index2(12, 13);
 
             Assert.AreEqual(i1, i1);
             Assert.AreEqual(i1, i4);

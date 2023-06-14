@@ -1,6 +1,8 @@
 ﻿
 using OctoAwesome.Caching;
+using OctoAwesome.Extension;
 using OctoAwesome.UI.Components;
+
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +13,7 @@ namespace OctoAwesome.UI.Extender
     /// </summary>
     public class ScreenComponentExtensionExtender : BaseExtensionExtender<IScreenComponent>
     {
-        private readonly List<Action<IScreenComponent>> simulationExtender;        
+        private readonly List<Action<IScreenComponent>> simulationExtender;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="ScreenComponentExtensionExtender" /> class

@@ -3,8 +3,11 @@
 using OctoAwesome.Basics.FunctionBlocks;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Rx;
+using OctoAwesome.Services;
 
 using System;
 
@@ -37,15 +40,15 @@ namespace OctoAwesome.Basics.Definitions.Items
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
-        /// <inheritdoc/>
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        /// <inheritdoc />
+        public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
-            //TODO: Implement Place Chest and remove this item
-            var position = blockInfo.Position;
-            Furnace chest = new(new Coordinate(0, new(position.X, position.Y, position.Z + 1), new Vector3(0.5f, 0.5f, 0.5f)));
+            BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var facingDirection, out var rot);
+
+            Furnace furnace = new(new Coordinate(0, facingDirection, new Vector3(0.5f, 0.5f, 0.5f)), rot);
             var notification = new EntityNotification
             {
-                Entity = chest,
+                Entity = furnace,
                 Type = EntityNotification.ActionType.Add
             };
 

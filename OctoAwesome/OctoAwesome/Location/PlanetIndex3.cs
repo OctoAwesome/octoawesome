@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// A position of a chunk on a planet.

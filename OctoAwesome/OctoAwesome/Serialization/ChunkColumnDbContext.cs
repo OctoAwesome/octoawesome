@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Database;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Database;
+using OctoAwesome.Location;
+
 using System.IO;
 using System.IO.Compression;
 

@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome
+﻿using OctoAwesome.Chunking;
+
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Interface for map populators to populate the world with structures.

@@ -1,8 +1,10 @@
-﻿using OctoAwesome.Definitions;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Definitions;
+
 using System;
 using System.IO;
 
-namespace OctoAwesome
+namespace OctoAwesome.Location
 {
     /// <summary>
     /// Interface for OctoAwesome map generators.

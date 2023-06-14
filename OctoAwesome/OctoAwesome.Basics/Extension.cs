@@ -8,11 +8,13 @@ using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using System.Reflection;
-using System;
 using OctoAwesome.Extension;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
+
+using System;
+using System.Reflection;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics
 {
@@ -161,7 +163,7 @@ namespace OctoAwesome.Basics
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
                 f.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
                 f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
-                f.Components.AddIfTypeNotExists(new UniquePositionComponent() );
+                f.Components.AddIfTypeNotExists(new UniquePositionComponent());
 
             });
 
@@ -174,7 +176,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?
