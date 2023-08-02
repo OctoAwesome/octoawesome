@@ -1,4 +1,5 @@
 ﻿using System.IO;
+
 using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
 
@@ -12,6 +13,7 @@ namespace OctoAwesome.Notifications
     {
         private string? issuer;
         private byte[]? value;
+        private int componentId;
 
         /// <summary>
         /// Gets or sets the name of the issuer that caused the property change.
@@ -32,12 +34,22 @@ namespace OctoAwesome.Notifications
             set => this.value = NullabilityHelper.NotNullAssert(value, $"{nameof(Value)} cannot be initialized with null!");
         }
 
+        /// <summary>
+        /// Gets or sets the raw data of the new property value.
+        /// </summary>
+        public int ComponentId
+        {
+            get => componentId;
+            set => this.componentId = value;
+        }
+
 
         /// <inheritdoc />
         protected override void OnRelease()
         {
             issuer = default;
             value = default;
+            componentId = default;
 
             base.OnRelease();
         }

@@ -14,16 +14,14 @@ namespace OctoAwesome
         /// <inheritdoc />
         public override string ChannelName => ChannelNames.Serialization;
 
-        private readonly SerializationIdTypeProvider serializationIdTypeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializationRegistrar"/> class.
         /// </summary>
         /// <param name="serializationIdTypeProvider">
         /// The <see cref="SerializationIdTypeProvider"/> used for registering serialization types.</param>
-        public SerializationRegistrar(SerializationIdTypeProvider serializationIdTypeProvider)
+        public SerializationRegistrar()
         {
-            this.serializationIdTypeProvider = serializationIdTypeProvider;
         }
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace OctoAwesome
             if (serId == 0)
                 throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Name}, so it cant be registered.");
 
-            serializationIdTypeProvider.Register(serId, type);
+            SerializationIdTypeProvider.Register(serId, type);
         }
 
         /// <summary>
@@ -51,7 +49,7 @@ namespace OctoAwesome
             if (serializationId == 0)
                 throw new ArgumentException($"0 is not allowed for a serialization id, because it indicates a missing attribute of {nameof(SerializationIdAttribute)}.");
 
-            serializationIdTypeProvider.Register(serializationId, type);
+            SerializationIdTypeProvider.Register(serializationId, type);
         }
 
         /// <summary>

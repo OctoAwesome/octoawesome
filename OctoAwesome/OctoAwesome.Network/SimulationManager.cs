@@ -5,7 +5,9 @@ using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
+
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,6 +47,7 @@ namespace OctoAwesome.Network
         private readonly ISettings settings;
         private readonly UpdateHub updateHub;
         private readonly object mainLock;
+        private readonly Stopwatch watchUpdate = new Stopwatch();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulationManager"/> class.
@@ -69,9 +72,8 @@ namespace OctoAwesome.Network
             typeContainer.Register<ResourceManager>(InstanceBehaviour.Singleton);
             typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehaviour.Singleton);
 
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehaviour.Singleton);
-            
+
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
             extensionLoader.RegisterExtensions();
@@ -81,6 +83,7 @@ namespace OctoAwesome.Network
 
             ResourceManager = typeContainer.Get<ResourceManager>();
             ResourceManager.PersistenceManager = typeContainer.Get<IPersistenceManager>();
+            ResourceManager.IdManager = new LocalIdManager();
 
             simulation = new Simulation(ResourceManager, extensionService)
             {
@@ -98,6 +101,7 @@ namespace OctoAwesome.Network
         public void Start()
         {
             IsRunning = true;
+            watchUpdate.Restart();
             GameTime = new GameTime();
 
             //TODO: Load and Save logic for Server (Multiple games etc.....)
@@ -129,6 +133,7 @@ namespace OctoAwesome.Network
             Simulation.ExitGame();
             cancellationTokenSource.Cancel();
             cancellationTokenSource.Dispose();
+            watchUpdate.Stop();
         }
 
         /// <summary>
@@ -179,10 +184,15 @@ namespace OctoAwesome.Network
         {
             var token = state is CancellationToken stateToken ? stateToken : CancellationToken.None;
 
+            TimeSpan lastUpdate = watchUpdate.Elapsed;
             while (true)
             {
+
                 token.ThrowIfCancellationRequested();
-                Simulation.Update(GameTime);
+                var total = watchUpdate.Elapsed;
+                Simulation.Update(new GameTime(total, total - lastUpdate));
+                lastUpdate = total;
+
             }
         }
     }

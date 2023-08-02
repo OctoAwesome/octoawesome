@@ -11,6 +11,7 @@ namespace OctoAwesome.Basics.UI.Components;
 /// <summary>
 /// Component to provide an UI for transferring items from one inventory to another.
 /// </summary>
+[SerializationId(2, 26)]
 public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
     /// <summary>
@@ -26,7 +27,7 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     /// Gets a value indicating the version of the <see cref="InventoryA"/> value,
     /// which is changed when <see cref="InventoryA"/> has changed.
     /// </summary>
-    public int VersionA { get; private set; }
+    public uint VersionA { get; private set; }
 
     /// <summary>
     /// Gets the second inventory to transfer to and from.
@@ -41,7 +42,7 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     /// Gets a value indicating the version of the <see cref="InventoryB"/> value,
     /// which is changed when <see cref="InventoryB"/> has changed.
     /// </summary>
-    public int VersionB { get; private set; }
+    public uint VersionB { get; private set; }
 
     private bool show = false;
     private InventoryComponent? inventoryA;
@@ -52,8 +53,8 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     {
         if (show == Show
             && (component2.Targets.Count == 0
-                || ((inventoryA?.Version ?? -1) == VersionA
-                    && (inventoryB?.Version ?? -1) == VersionB))
+                || ((inventoryA?.Version ?? 0) == VersionA
+                    && (inventoryB?.Version ?? 0) == VersionB))
             || PrimaryUiKey != "Transfer")
                 
         {

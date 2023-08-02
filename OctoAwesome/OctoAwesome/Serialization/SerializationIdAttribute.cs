@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OctoAwesome.Serialization
+namespace OctoAwesome
 {
     /// <summary>
     /// Attribute for associating serialization ids to types for generic serialization across multiple mods.

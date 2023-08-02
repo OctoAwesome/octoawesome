@@ -8,6 +8,10 @@ namespace OctoAwesome.Components
     public interface IComponent : ISerializable
     {
         /// <summary>
+        /// Gets the globally unique identifier of this component. -1 means unset id
+        /// </summary>
+        int Id { get; set; }
+        /// <summary>
         /// Gets or sets a value indicating whether this component can be sent.
         /// </summary>
         bool Sendable { get; set; }
@@ -17,6 +21,9 @@ namespace OctoAwesome.Components
         /// </summary>
         bool Enabled { get; set; }
 
+        /// <summary>
+        /// Gets or  sets the parent that owns this component
+        /// </summary>
         IComponentContainer Parent { get; set; }
     }
 }

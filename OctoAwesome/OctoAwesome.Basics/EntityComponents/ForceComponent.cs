@@ -6,6 +6,7 @@ namespace OctoAwesome.Basics.EntityComponents
     /// <summary>
     /// Base class for forces to be applied to the entity.
     /// </summary>
+    [SerializationId(2, 9)]
     public abstract class ForceComponent : Component, IEntityComponent
     {
         /// <summary>

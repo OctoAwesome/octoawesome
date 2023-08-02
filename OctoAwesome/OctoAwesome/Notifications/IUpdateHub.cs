@@ -32,5 +32,5 @@ namespace OctoAwesome.Notifications
         IObservable<PushInfo> ListenOnNetwork();
         void Push(object notification, string channel);
         void PushNetwork(object notification, string channel);
-    }
+     }
 }

@@ -19,67 +19,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OctoAwesome
 {
-    public class AbcSimulationComponent
-    {
-        List<IComponent> cleans = new();
-        EnumerationModifiableList<IComponent> dirties = new();
-        private readonly IPool<EntityNotification> entityNotificationPool;
-        private readonly IUpdateHub updateHub;
-        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
-
-        public AbcSimulationComponent(IUpdateHub uh, IPool<EntityNotification> poolEn, IPool<PropertyChangedNotification> poolPcn)
-        {
-            entityNotificationPool = poolEn;
-            updateHub = uh;
-            propertyChangedNotificationPool = poolPcn;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            foreach (var item in dirties)
-            {
-                if (item.Sendable
-                    && item.Parent is Entity e)
-                {
-                    SendComponent(e, item);
-                }
-                dirties.Remove(item);
-                cleans.Add(item);
-            }
-        }
-
-        public void Add(IComponent clean)
-        {
-            cleans.Remove(clean);
-            dirties.Add(clean);
-        }
-
-        public void Remove(IComponent cleanOrDirty)
-        {
-            dirties.Remove(cleanOrDirty);
-            cleans.Remove(cleanOrDirty);
-        }
-
-        private void SendComponent(Entity entity, IComponent component)
-        {
-            var updateNotification = propertyChangedNotificationPool.Rent();
-
-            updateNotification.Issuer = component.GetType().Name; //TODO SerializationId()
-            updateNotification.Value = Serializer.Serialize(component).ToArray();
-
-            var entityNotification = entityNotificationPool.Rent();
-            entityNotification.Entity = entity;
-            entityNotification.Type = EntityNotification.ActionType.Update;
-            entityNotification.Notification = updateNotification;
-
-            updateHub.PushNetwork(entityNotification, DefaultChannels.Simulation);
-            entityNotification.Release();
-        }
-    }
-
     /// <summary>
     /// Interface between application and world model.
     /// </summary>
@@ -91,9 +34,13 @@ namespace OctoAwesome
         public IResourceManager ResourceManager { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the simulation is server side or client side.
+        /// Gets or sets a value indicating whether the simulation is server side.
         /// </summary>
         public bool IsServerSide { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the simulation is client side.
+        /// </summary>
         public bool IsClientSide => !IsServerSide;
 
         /// <summary>
@@ -101,25 +48,31 @@ namespace OctoAwesome
         /// </summary>
         public ComponentList<SimulationComponent> Components { get; }
 
+        public ComponentList<IComponent> GlobalComponentList { get; }
+
         /// <summary>
         /// Gets the current state of the simulation.
         /// </summary>
         public SimulationState State { get; private set; }
 
         /// <summary>
-        ///Gets the <see cref="Guid"/> of the currently loaded universe.
+        /// Gets the <see cref="Guid"/> of the currently loaded universe.
         /// </summary>
         public Guid UniverseId { get; }
+
+        /// <summary>
+        /// Gets the <see cref="FooBbqSimulationComponent"/> of the current universe for sending components via Network
+        /// </summary>
+        public NetworkingSimulationComponent FooBbqSimulationComponent { get; }
 
         private readonly Logger logger;
         private readonly ExtensionService extensionService;
 
-        private readonly List<Entity> entities = new();
+        private readonly EnumerationModifiableConcurrentList<Entity> entities = new();
         private readonly CountedScopeSemaphore entitiesSemaphore = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly ComponentChangedNotificationHandler componentChangedHandler;
-        private readonly AbcSimulationComponent dirtyComponents;
         private IDisposable? simulationSubscription;
 
         /// <summary>
@@ -133,30 +86,35 @@ namespace OctoAwesome
             var typeContainer = TypeContainer.Get<ITypeContainer>();
             entityNotificationPool = typeContainer.Get<IPool<EntityNotification>>();
             componentChangedHandler = typeContainer.Get<ComponentChangedNotificationHandler>();
-            dirtyComponents = typeContainer.Get<AbcSimulationComponent>();
+            componentChangedHandler.AssociatedSimulation = this;
+            FooBbqSimulationComponent = new NetworkingSimulationComponent(
+                typeContainer.Get<IUpdateHub>(),
+                entityNotificationPool,
+                typeContainer.Get<IPool<PropertyChangedNotification>>());
             this.extensionService = extensionService;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
             logger = NLog.LogManager.GetCurrentClassLogger();
+            GlobalComponentList = new();
 
             Components = new ComponentList<SimulationComponent>(
                 ValidateAddComponent, ValidateRemoveComponent, null, null, this);
 
             extensionService.ExecuteExtender(this);
-
-
         }
 
         private void ValidateAddComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)
                 throw new NotSupportedException("Simulation needs to be in Ready mode to add Components");
+            GlobalComponentList.Add(component);
         }
 
         private void ValidateRemoveComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)
                 throw new NotSupportedException("Simulation needs to be in Ready mode to remove Components");
+            GlobalComponentList.Remove(component);
         }
 
         /// <summary>
@@ -243,7 +201,7 @@ namespace OctoAwesome
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
 
-            dirtyComponents.Update(gameTime);
+            FooBbqSimulationComponent.Update(gameTime);
         }
 
         /// <summary>
@@ -259,9 +217,8 @@ namespace OctoAwesome
 
             //TODO: unschön, Dispose Entity's, Reset Extensions
 
-            for (int i = entities.Count - 1; i >= 0; i--)
+            foreach (var entity in entities)
             {
-                Entity? entity = entities[i];
                 Remove(entity);
             }
 
@@ -321,9 +278,10 @@ namespace OctoAwesome
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
-            extensionService.ExecuteExtender(entity);
-            entity.Initialize(ResourceManager);
+            entity.ResourceManager = ResourceManager;
             entity.Simulation = this;
+            extensionService.ExecuteExtender(entity);
+            entity.Initialize();
 
             if (!hasPosComponent)
                 hasPosComponent = entity.Components.TryGet<PositionComponent>(out newPosComponent);
@@ -347,6 +305,11 @@ namespace OctoAwesome
                 var gcc = newPosComponent.Planet.GlobalChunkCache;
                 gcc.CacheService.AddOrUpdate(entity.Id, newPosComponent);
                 gcc.CacheService.AddOrUpdate(entity.Id, entity);
+            }
+
+            foreach (var comp in entity.Components)
+            {
+                GlobalComponentList.AddIfNotExists(comp);
             }
 
             SendToClientIfRequired(entity, false);
@@ -394,6 +357,12 @@ namespace OctoAwesome
                 throw new NotSupportedException("Removing Entities only allowed in running or paused state");
 
             ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
+
+
+            foreach (var comp in entity.Components)
+            {
+                GlobalComponentList.Remove(comp);
+            }
 
             foreach (var component in Components)
             {

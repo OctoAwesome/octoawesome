@@ -25,7 +25,6 @@ namespace OctoAwesome
         private readonly CancellationTokenSource tokenSource;
         private readonly IResourceManager resourceManager;
         private readonly IUpdateHub updateHub;
-        private readonly SerializationIdTypeProvider typeProvider;
         private readonly LockSemaphore semaphore = new LockSemaphore(1, 1);
         private readonly LockSemaphore updateSemaphore = new LockSemaphore(1, 1);
 
@@ -68,7 +67,7 @@ namespace OctoAwesome
         /// <param name="resourceManager">The current <see cref="IResourceManager"/> to load resources.</param>
         /// <param name="updateHub">The update hub to propagate updates.</param>
         /// <param name="serIdProvider">The type provider used to manage serialization types..</param>
-        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub, SerializationIdTypeProvider serIdProvider)
+        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub)
         {
             cacheService = new CacheService(planet, resourceManager, updateHub);
             cacheService.Start();
@@ -76,7 +75,6 @@ namespace OctoAwesome
             Planet = planet ?? throw new ArgumentNullException(nameof(planet));
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
             this.updateHub = updateHub;
-            this.typeProvider = serIdProvider;
             chunkRelay = new Relay<Notification>();
             simulationRelay = new Relay<Notification>();
 
@@ -104,7 +102,7 @@ namespace OctoAwesome
             {
                 foreach (var positionComponent in positionComponents)
                 {
-                    if (!typeProvider.TryGet(positionComponent.ParentTypeId, out var type))
+                    if (!SerializationIdTypeProvider.TryGet(positionComponent.ParentTypeId, out var type))
                     {
                         continue;
                     }

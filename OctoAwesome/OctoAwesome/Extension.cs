@@ -1,6 +1,8 @@
 ﻿using engenious;
+
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
@@ -36,7 +38,10 @@ namespace OctoAwesome
         }
 
         /// <inheritdoc />
-        public void Register(ITypeContainer typeContainer) { }
+        public void Register(ITypeContainer typeContainer)
+        {
+            var changedHandler = typeContainer.Get<ComponentChangedNotificationHandler>();
+        }
 
         /// <inheritdoc />
         public void RegisterTypes(ExtensionService extensionLoader)

@@ -9,6 +9,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation aggregated power application to entities.
     /// </summary>
+    [SerializationId(2, 23)]
     public sealed class PowerAggregatorComponent : SimulationComponent<
         Entity,
         PowerAggregatorComponent.PoweredEntity,

@@ -93,6 +93,16 @@ namespace OctoAwesome
         Player CurrentPlayer { get; }
 
         /// <summary>
+        /// Gets the current id manager for managing globally unique <see cref="int"/> ids
+        /// </summary>
+        IIdManager IdManager { get; }
+
+        /// <summary>
+        /// Manager for game world persistance.
+        /// </summary>
+        IPersistenceManager PersistenceManager { get; set; }
+
+        /// <summary>
         /// Saves the given component container.
         /// </summary>
         /// <param name="componentContainer">The component container to save.</param>

@@ -7,6 +7,7 @@ namespace OctoAwesome.Serialization
     /// </summary>
     public interface ISerializable
     {
+
         /// <summary>
         /// Serialize this instance to a <see cref="BinaryWriter"/>.
         /// </summary>

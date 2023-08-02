@@ -31,7 +31,7 @@ namespace OctoAwesome.Client
         private readonly ITypeContainer typeContainer;
 
         internal ResourceManager ResourceManager { get; private set; }
-        private NetworkPackageManager? networkUpdateManager;
+        private NetworkPackageManager? networkPackageManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameService"/> class.
@@ -102,26 +102,28 @@ namespace OctoAwesome.Client
             }
 
             var client = new Network.Client(host, port > 0 ? (ushort)port : (ushort)8888);
-            networkUpdateManager = new NetworkPackageManager(client, UpdateHub, typeContainer);
-            var persistenceManager = new NetworkPersistenceManager(typeContainer, networkUpdateManager);
+            networkPackageManager = new NetworkPackageManager(client, UpdateHub, typeContainer);
+            var persistenceManager = new NetworkPersistenceManager(typeContainer, networkPackageManager);
 
-            StartGame(persistenceManager, Guid.Empty, playerName);
+            StartGame(persistenceManager, new NetworkIdManager(networkPackageManager), Guid.Empty, playerName);
+            
         }
 
         public void StartSinglePlayer(Guid gameId)
         {
             settings.Set("LastUniverse", gameId.ToString());
             var persistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
-            StartGame(persistenceManager, gameId, "");
+            StartGame(persistenceManager, new LocalIdManager(), gameId, "");
         }
 
-        public void StartGame(IPersistenceManager persistenceManager, Guid gameId, string playerName)
+        public void StartGame(IPersistenceManager persistenceManager, IIdManager idManager, Guid gameId, string playerName)
         {
             if (ResourceManager.CurrentUniverse != null)
                 ResourceManager.UnloadUniverse();
 
             game.Player.Unload();
             ResourceManager.PersistenceManager = persistenceManager;
+            ResourceManager.IdManager = idManager;
             game.Simulation.LoadGame(gameId);
             var player = game.Simulation.LoginPlayer(playerName);
             game.Player.Load(player);

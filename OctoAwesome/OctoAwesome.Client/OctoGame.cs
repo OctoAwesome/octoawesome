@@ -179,7 +179,6 @@ namespace OctoAwesome.Client
         {
             typeContainer.Register<Settings>(InstanceBehaviour.Singleton);
             typeContainer.Register<ISettings, Settings>(InstanceBehaviour.Singleton);
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehaviour.Singleton);
             typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
             typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
             typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);

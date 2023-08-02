@@ -105,20 +105,33 @@ namespace OctoAwesome.Network
         private void OnNext(PushInfo value)
         {
             if (value.Notification is not SerializableNotification notification)
+            {
+                SendGeneric(value);
+                return;
+            }
+
+            if (notification.SenderId == client.Id)
+                return;
+            SendGeneric(value);
+        }
+
+        private void SendGeneric(PushInfo value)
+        {
+            if (value.Notification is not ISerializable ser)
                 return;
 
             var package = packagePool.Rent();
 
             using (var memoryStream = Serializer.Manager.GetStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream, System.Text.Encoding.Default, leaveOpen: true))
+            using (var binaryWriter = new BinaryWriter(memoryStream))
             {
-                binaryWriter.Write(notification.GetType().SerializationId());
+                binaryWriter.Write(ser.GetType().SerializationId());
                 binaryWriter.Write(value.Channel);
-                notification.Serialize(binaryWriter);
+                ser.Serialize(binaryWriter);
 
                 package.PackageFlags = PackageFlags.Notification;
                 package.Payload = memoryStream.ToArray();
-                client.SendPackageAndRelease(package);
+                _ = client.SendPackageAndRelease(package);
             }
         }
 
@@ -154,7 +167,8 @@ namespace OctoAwesome.Network
             package.PackageFlags = flags;
 
             var awaiter = GetAwaiter(package.UId);
-            client.SendPackageAndRelease(package);
+
+            _ = client.SendPackageAndRelease(package);
             return awaiter;
         }
 
@@ -165,8 +179,18 @@ namespace OctoAwesome.Network
             package.PackageFlags = flags;
 
             var awaiter = GetAwaiter(package.UId);
-            client.SendPackageAndRelease(package);
+            _ = client.SendPackageAndRelease(package);
             return awaiter;
+        }
+        /// <summary>
+        /// Serializes the serializable with see <see cref="Serializer.SerializeNetwork(ISerializable)"/> method and therefore write the SerializationId itself
+        /// </summary>
+        /// <param name="serializable"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        public Awaiter SendAndAwait(ISerializable serializable, PackageFlags flags = PackageFlags.None)
+        {
+            return SendAndAwait(Serializer.SerializeNetwork(serializable), flags);
         }
 
         private Awaiter GetAwaiter(uint packageUId)

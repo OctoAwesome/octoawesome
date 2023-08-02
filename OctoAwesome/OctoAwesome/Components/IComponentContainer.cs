@@ -13,6 +13,11 @@ namespace OctoAwesome.Components
         Guid Id { get; }
 
         /// <summary>
+        /// Gets the reference to the active simulation; or <c>null</c> when no simulation is active.
+        /// </summary>
+        Simulation? Simulation { get; }
+
+        /// <summary>
         /// Gets a value indicating whether a component of the given type exists in this container.
         /// </summary>
         /// <typeparam name="T">The type of the component to check for.</typeparam>
@@ -25,5 +30,12 @@ namespace OctoAwesome.Components
         /// <typeparam name="T">The type of the component to get.</typeparam>
         /// <returns>The matching component; or <c>null</c> when no matching component was found.</returns>
         T? GetComponent<T>();
+        /// <summary>
+        /// Gets a component of the specified type with a known id.
+        /// </summary>
+        /// <param name="id">The unique identifier for the component</param>
+        /// <typeparam name="T">The type of the component to get.</typeparam>
+        /// <returns>The matching component; or <c>null</c> when no matching component was found.</returns>
+        T? GetComponent<T>(int id);
     }
 }

@@ -16,6 +16,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with moveable entities.
     /// </summary>
+    [SerializationId(2, 21)]
     public sealed class MoveComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
@@ -25,7 +26,6 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly IPool<EntityNotification> entityNotificationPool;
         private readonly IUpdateHub updateHub;
         private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
-        private readonly AbcSimulationComponent dirtyStuff;
 
         public MoveComponent()
         {
@@ -34,7 +34,6 @@ namespace OctoAwesome.Basics.SimulationComponents
             updateHub = tc.Get<IUpdateHub>();
 
             propertyChangedNotificationPool = tc.Get<IPool<PropertyChangedNotification>>();
-            dirtyStuff =  tc.Get<AbcSimulationComponent>();
         }
 
         /// <inheritdoc />
@@ -84,8 +83,6 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             var newposition = poscomp.Position + tmp;
             bool send = newposition != poscomp.Position;
-            if (send)
-                dirtyStuff.Add(poscomp);
 
             var cacheComp = entity.Components.Get<LocalChunkCacheComponent>();
 
@@ -104,12 +101,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                 poscomp.Position = newposition;
             }
 
-
             //Direction
             if (tmp.LengthSquared != 0)
             {
                 poscomp.Direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
             }
+            if (send)
+                poscomp.IncrementVersion();
         }
 
         private static void CheckBoxCollision(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)

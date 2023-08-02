@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents;
 [Nooson]
+[SerializationId(1, 16)]
 public partial class ServerManagedComponent : Component, IEntityComponent
 {
     [NoosonIgnore]

@@ -28,13 +28,28 @@ namespace OctoAwesome
         /// Gets the reference to the active simulation; or <c>null</c> when no simulation is active.
         /// </summary>
         [NoosonIgnore]
-        public Simulation? Simulation { get; internal set; }
+        public Simulation? Simulation
+        {
+            get => simulation;
+            internal set
+            {
+                if (value is null)
+                    return;
+                simulation = value;
+                foreach (var item in Components)
+                {
+                    if (item is Component c)
+                        c.OnParentSetting(this);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a list of all components this container holds.
         /// </summary>
         public ComponentList<IComponent> Components { get; protected set; }
 
+        private Simulation? simulation;
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContainer"/> class.
         /// </summary>
@@ -77,6 +92,10 @@ namespace OctoAwesome
         /// <inheritdoc />
         public T? GetComponent<T>()
             => Components.Get<T>();
+
+        /// <inheritdoc />
+        public T? GetComponent<T>(int id)
+            => Components.Get<T>(id);
 
         /// <summary>
         /// Tries to get the component of the component container
@@ -168,6 +187,10 @@ namespace OctoAwesome
         ComponentContainer, IUpdateable
         where TComponent : IComponent, ISerializable
     {
+        /// <summary>
+        /// The resource manager for loading resource assets.
+        /// </summary>
+        public IResourceManager? ResourceManager { get; internal set; }
 
         private List<IUpdateable> updateables = new();
         /// <summary>
@@ -201,7 +224,6 @@ namespace OctoAwesome
         protected virtual void OnAddComponent(IComponent component)
         {
             component.Parent = this;
-
             //HACK: Remove PositionComponent Dependency
             //if (component is LocalChunkCacheComponent cacheComponent)
             //{
@@ -245,20 +267,19 @@ namespace OctoAwesome
         /// <summary>
         /// Initializes the component container.
         /// </summary>
-        /// <param name="manager">The resource manager for loading resource assets.</param>
-        public void Initialize(IResourceManager manager)
+        public void Initialize()
         {
-            OnInitialize(manager);
+            OnInitialize();
         }
 
         /// <summary>
         /// Gets called when the component container is initializes.
         /// </summary>
-        /// <param name="manager">The resource manager for loading resource assets.</param>
-        protected virtual void OnInitialize(IResourceManager manager)
+        protected virtual void OnInitialize()
         {
             foreach (var component in Components)
             {
+
                 if (component is LocalChunkCacheComponent localChunkCache)
                 {
                     if (!localChunkCache.Enabled)

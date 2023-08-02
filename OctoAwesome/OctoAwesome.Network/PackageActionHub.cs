@@ -17,7 +17,6 @@ namespace OctoAwesome.Network
     {
         private readonly ILogger logger;
         private readonly ITypeContainer typeContainer;
-        private readonly SerializationIdTypeProvider typeRegistrar;
         private readonly IUpdateHub updateHub;
         private readonly Dictionary<ulong, Func<BinaryReader, object>> notificationDeserializationMethodCache;
 
@@ -29,7 +28,6 @@ namespace OctoAwesome.Network
         {
             this.logger = logger.As(nameof(PackageActionHub));
             typeContainer = tc;
-            typeRegistrar = tc.Get<SerializationIdTypeProvider>();
             updateHub = tc.Get<IUpdateHub>();
             notificationDeserializationMethodCache = new();
         }
@@ -185,7 +183,7 @@ namespace OctoAwesome.Network
 
                 if (!notificationDeserializationMethodCache.TryGetValue(desId, out var expression))
                 {
-                    var notificationType = typeRegistrar.Get(desId);
+                    var notificationType = SerializationIdTypeProvider.Get(desId);
                     if (notificationType.IsAssignableTo(typeof(IPoolElement)))
                     {
                         var type = typeof(IPool<>).MakeGenericType(notificationType);
@@ -244,7 +242,7 @@ namespace OctoAwesome.Network
 
             if (val is null && !isNotification)
             {
-                logger.Trace($"Received invalid desId ({desId}) with flags: {package.PackageFlags}, send help");
+                logger.Warn($"Received invalid desId ({desId}) with flags: {package.PackageFlags}, send help");
             }
 
             logger.Trace($"Finished Dispatch logic for {packageId}");

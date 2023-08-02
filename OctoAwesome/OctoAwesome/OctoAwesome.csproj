@@ -6,7 +6,6 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<WarningsAsErrors>CS0109</WarningsAsErrors>
 		
-		
 	</PropertyGroup>
 	
 

@@ -47,7 +47,6 @@ namespace OctoAwesome
             typeContainer.Register<BlockCollectionService>(InstanceBehaviour.Singleton);
             typeContainer.Register<ComponentChangedNotificationHandler>(InstanceBehaviour.Singleton);
 
-            typeContainer.Register<AbcSimulationComponent>(InstanceBehaviour.Singleton);
             typeContainer.Register<InteractService>(InstanceBehaviour.Singleton);
         }
 

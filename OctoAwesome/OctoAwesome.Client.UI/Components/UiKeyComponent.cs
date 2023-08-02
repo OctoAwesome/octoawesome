@@ -11,6 +11,7 @@ namespace OctoAwesome.UI.Components;
 /// Component to identify which UIComponent to use for an entity interaction.
 /// </summary>
 [Nooson]
+[SerializationId(3, 1)]
 public partial class UiKeyComponent : Component, IEntityComponent, IEquatable<UiKeyComponent>
 {
     /// <summary>

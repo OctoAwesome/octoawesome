@@ -62,14 +62,16 @@ namespace OctoAwesome.Runtime
             if (!string.IsNullOrEmpty(appConfig))
             {
                 root = new DirectoryInfo(appConfig);
-                if (!root.Exists) root.Create();
+                if (!root.Exists)
+                    root.Create();
                 return root.FullName;
             }
             else
             {
                 var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
-                if (!root.Exists) root.Create();
+                if (!root.Exists)
+                    root.Create();
                 return root.FullName;
             }
         }
@@ -362,6 +364,24 @@ namespace OctoAwesome.Runtime
                     SaveChunk(blocksChanged);
                     break;
             }
+        }
+
+        public void SaveGlobally<T>(T tag, ISerializable value, bool fixedSize) where T : ITag, new()
+        {
+            var provider = databaseProvider.GetDatabase<T>( fixedSize);
+            provider.AddOrUpdate(tag, new Value(Serializer.Serialize(value)));
+        }
+
+        public TSerializeable? LoadGlobally<TTag, TSerializeable>(TTag tag, bool fixedSize)
+            where TTag : ITag, new()
+            where TSerializeable : ISerializable, new()
+        {
+            var provider = databaseProvider.GetDatabase<TTag>(fixedSize);
+            if (!provider.ContainsKey(tag))
+                return default;
+
+            var value = provider.GetValue(tag);
+            return Serializer.Deserialize<TSerializeable>(value.Content);
         }
 
         private void SaveChunk(BlockChangedNotification chunkNotification)

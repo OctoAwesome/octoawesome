@@ -32,6 +32,7 @@ namespace OctoAwesome
         /// <param name="originEntity">The origin entity that is controlled by the remote server.</param>
         public RemoteEntity(Entity originEntity) : this()
         {
+            Simulation = originEntity.Simulation;
             using var ms = new MemoryStream();
             using var bw = new BinaryWriter(ms);
             originEntity.Components.Serialize(bw);
@@ -41,7 +42,7 @@ namespace OctoAwesome
             foreach (var component in components)
             {
                 if (component.Sendable)
-                    Components.AddIfTypeNotExists(component);
+                    Components.Add(component);
             }
             Id = originEntity.Id;
         }

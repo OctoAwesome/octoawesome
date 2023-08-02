@@ -2,6 +2,7 @@
 using engenious.Graphics;
 
 using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 
 using System;
 using System.IO;
@@ -11,7 +12,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for animated models.
     /// </summary>
-    [Nooson]
+    [Nooson, SerializationId(1,6)]
     public partial class AnimationComponent : Component, IEntityComponent
     {
 
@@ -30,14 +31,12 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         public float AnimationSpeed { get; set; }
 
-        private readonly AbcSimulationComponent moreDirty;
         /// <summary>
         /// Initializes a new instance of the <see cref="AnimationComponent"/> class.
         /// </summary>
         public AnimationComponent()
         {
             Sendable = true;
-            moreDirty = TypeContainer.Get<AbcSimulationComponent>();
         }
 
         private float NextSmallerValue(float value)
@@ -62,8 +61,6 @@ namespace OctoAwesome.EntityComponents
             var oldTime = CurrentTime;
 
             CurrentTime = Math.Clamp(CurrentTime + AnimationSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0, NextSmallerValue(MaxTime));
-            if (CurrentTime != oldTime)
-                moreDirty.Add(this);
 
             model.UpdateAnimation(CurrentTime);
         }

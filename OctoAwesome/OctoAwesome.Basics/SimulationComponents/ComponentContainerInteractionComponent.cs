@@ -9,6 +9,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with block interactions with entities.
     /// </summary>
+    [SerializationId(2, 19)]
     public class ComponentContainerInteractionComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,

@@ -12,6 +12,7 @@ namespace OctoAwesome.EntityComponents
     /// Component for rendering entities.
     /// </summary>
     [Nooson]
+    [SerializationId(1, 15)]
     public partial class RenderComponent : Component, IEntityComponent, IEquatable<RenderComponent?>
     {
         private string? name, modelName, textureName;

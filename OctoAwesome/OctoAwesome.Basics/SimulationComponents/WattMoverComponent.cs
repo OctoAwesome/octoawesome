@@ -11,6 +11,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with watt energy system.
     /// </summary>
+    [SerializationId(2, 24)]
     public class WattMoverComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, BodyPowerComponent>,

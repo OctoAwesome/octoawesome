@@ -1,5 +1,6 @@
 ﻿using engenious;
 using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 using OctoAwesome.SumTypes;
 
 namespace OctoAwesome.EntityComponents
@@ -7,6 +8,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for a controllable entity.
     /// </summary>
+    [SerializationId(1, 9)]
     public class ControllableComponent : Component, IEntityComponent
     {
         /// <summary>

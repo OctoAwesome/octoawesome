@@ -1,13 +1,14 @@
 ﻿using engenious;
 using System.IO;
 using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.EntityComponents
 {
     /// <summary>
     /// Component describing the head properties of an entity.
     /// </summary>
-    [Nooson]
+    [Nooson, SerializationId(1, 10)]
     public sealed partial class HeadComponent : Component, IEntityComponent
     {
         /// <summary>

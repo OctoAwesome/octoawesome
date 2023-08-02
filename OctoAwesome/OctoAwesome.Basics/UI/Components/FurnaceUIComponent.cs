@@ -11,6 +11,7 @@ namespace OctoAwesome.Basics.UI.Components;
 /// <summary>
 /// Component to provide an UI for transferring items from and to a furnace from a different inventory.
 /// </summary>
+[SerializationId(2, 25)]
 public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
     /// <summary>
@@ -26,7 +27,7 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     /// Gets a value indicating the version of the <see cref="InventoryA"/> value,
     /// which is changed when <see cref="InventoryA"/> has changed.
     /// </summary>
-    public int VersionA { get; private set; }
+    public uint VersionA { get; private set; }
 
     /// <summary>
     /// Gets the input inventory of the furnace.
@@ -41,7 +42,7 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     /// Gets a value indicating the version of the <see cref="InputInventory"/> value,
     /// which is changed when <see cref="InputInventory"/> has changed.
     /// </summary>
-    public int InputVersion { get; private set; }
+    public uint InputVersion { get; private set; }
 
     /// <summary>
     /// Gets the output inventory of the furnace.
@@ -56,7 +57,7 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     /// Gets a value indicating the version of the <see cref="OutputInventory"/> value,
     /// which is changed when <see cref="OutputInventory"/> has changed.
     /// </summary>
-    public int OutputVersion { get; private set; }
+    public uint OutputVersion { get; private set; }
 
     /// <summary>
     /// Gets the production inventory of the furnace(e.g. fuel).
@@ -71,7 +72,7 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     /// Gets a value indicating the version of the <see cref="ProductionResourceInventory"/> value,
     /// which is changed when <see cref="ProductionResourceInventory"/> has changed.
     /// </summary>
-    public int ProductionResourceVersion { get; private set; }
+    public uint ProductionResourceVersion { get; private set; }
     private bool show = false;
     private InventoryComponent? inventoryA, inputInventory, outputInventory, productionResourceInventory;
 
@@ -80,10 +81,10 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
     {
         if (show == Show
             && (component2.Targets.Count == 0
-                || ((inventoryA?.Version ?? -1) == VersionA
-                    && (inputInventory?.Version ?? -1) == InputVersion
-                    && (productionResourceInventory?.Version ?? -1) == ProductionResourceVersion
-                    && (outputInventory?.Version ?? -1) == OutputVersion)
+                || ((inventoryA?.Version ?? 0) == VersionA
+                    && (inputInventory?.Version ?? 0) == InputVersion
+                    && (productionResourceInventory?.Version ?? 0) == ProductionResourceVersion
+                    && (outputInventory?.Version ?? 0) == OutputVersion)
                     )
             || PrimaryUiKey != "Furnace")
 

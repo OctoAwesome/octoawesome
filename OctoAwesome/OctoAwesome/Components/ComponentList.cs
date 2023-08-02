@@ -9,6 +9,8 @@ using System.Linq;
 using OctoAwesome.Caching;
 using NonSucking.Framework.Serialization;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace OctoAwesome.Components;
 
@@ -37,18 +39,19 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             parent = value;
             foreach (var item in flatComponents)
             {
-                item.Parent = value;
+                item.Value.Parent = value;
             }
         }
     }
 
-    private IComponentContainer parent;
+    private IComponentContainer? parent;
+    private readonly IResourceManager resourceManager;
     private readonly Action<T>? insertValidator;
     private readonly Action<T>? removeValidator;
     private readonly Action<T>? onInserter;
     private readonly Action<T>? onRemover;
 
-    private readonly HashSet<T> flatComponents = new();
+    private readonly Dictionary<int, T> flatComponents = new();
     private readonly Dictionary<Type, List<T>> componentsByType = new();
 
     /// <summary>
@@ -57,6 +60,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     public ComponentList()
     {
         parent = default;
+        resourceManager = TypeContainer.Get<IResourceManager>();
     }
 
     /// <summary>
@@ -66,7 +70,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <param name="removeValidator">The validator for removals.</param>
     /// <param name="onInserter">The method to call on insertion.</param>
     /// <param name="onRemover">The method to call on removal.</param>
-    public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover, IComponentContainer parent)
+    public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover, IComponentContainer parent) : this()
     {
         this.insertValidator = insertValidator;
         this.removeValidator = removeValidator;
@@ -77,10 +81,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
 
     /// <inheritdoc />
     public IEnumerator<T> GetEnumerator()
-        => flatComponents.GetEnumerator();
+        => flatComponents.Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator()
-        => flatComponents.GetEnumerator();
+        => flatComponents.Values.GetEnumerator();
 
     /// <summary>
     /// Adds a component if the type is not already present.
@@ -90,9 +94,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     public void AddIfTypeNotExists<V>(V component) where V : T
     {
         Type type = component.GetType();
-
-        if (flatComponents.Contains(component))
-            return;
+        AssignId(component);
 
         if (!componentsByType.TryGetValue(type, out var existing))
         {
@@ -104,9 +106,11 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             return;
         }
 
+        flatComponents[component.Id] = component;
+
         existing.Add(component);
-        component.Parent = parent;
-        flatComponents.Add(component);
+        if (parent is not null)
+            component.Parent = parent;
         insertValidator?.Invoke(component);
         onInserter?.Invoke(component);
     }
@@ -119,8 +123,10 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     public void Add<V>(V component) where V : T
     {
         Type type = component.GetType();
+        AssignId(component);
 
-        if (flatComponents.Contains(component))
+        ref var comp = ref CollectionsMarshal.GetValueRefOrAddDefault(flatComponents, component.Id, out var exists);
+        if (exists)
             return;
 
 
@@ -133,23 +139,25 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
             componentsByType[type] = new() { component };
         }
 
-        component.Parent = parent;
-        flatComponents.Add(component);
+        if (parent is not null)
+            component.Parent = parent;
+        comp = component;
         insertValidator?.Invoke(component);
         onInserter?.Invoke(component);
     }
 
 
     /// <summary>
-    /// Adds a component.
+    /// Adds a component, if the id of the component is not already contained in this component list.
     /// </summary>
-    /// <param name="component">The component to add if no component of same type is already present.</param>
+    /// <param name="component">The component to add if no component of same id is already present.</param>
     /// <typeparam name="V">The type of the component to add.</typeparam>
     public void AddIfNotExists<V>(V component) where V : T
     {
         Type type = component.GetType();
-
-        if (flatComponents.Contains(component))
+        AssignId(component);
+        ref var comp = ref CollectionsMarshal.GetValueRefOrAddDefault(flatComponents, component.Id, out var exists);
+        if (exists)
             return;
 
 
@@ -157,19 +165,24 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
         {
             if (!existing.Contains(component))
                 existing.Add(component);
-
         }
         else
         {
             componentsByType[type] = new() { component };
         }
 
-        component.Parent = parent;
-        flatComponents.Add(component);
+        if (parent is not null)
+            component.Parent = parent;
+        comp = component;
         insertValidator?.Invoke(component);
         onInserter?.Invoke(component);
     }
 
+    private void AssignId(IComponent component)
+    {
+        if (component.Id == -1)
+            component.Id = resourceManager.IdManager.GetNextId();
+    }
 
     /// <summary>
     /// Checks whether the component of <typeparamref name="V"/> is present.
@@ -191,6 +204,19 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
         }
         return false;
     }
+
+    /// <summary>
+    /// Checks whether the component with <paramref name="id"/> is present.
+    /// </summary>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item><see langword="true"/> if the component was found</item>
+    ///     <item><see langword="false"/> if the component was not found</item>
+    /// </list>
+    /// </returns>
+    public bool Contains(int id)
+        => flatComponents.ContainsKey(id);
+
 
     /// <summary>
     /// Tries to get the component of the given type.
@@ -224,6 +250,30 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     }
 
     /// <summary>
+    /// Get the component of the given type and id.
+    /// </summary>
+    /// <param name="id">The unique identifier for the component</param>
+    /// <typeparam name="V">The component type to search for.</typeparam>
+    /// <returns>The component if found; otherwise <c>null</c>.</returns>
+    public V? Get<V>(int id)
+    {
+        if (flatComponents.TryGetValue(id, out var result))
+        {
+            return GenericCaster<T, V>.Cast(result);
+        }
+
+        return default;
+    }
+
+    /// <summary>
+    /// Get the component of the given type and id.
+    /// </summary>
+    /// <param name="id">The unique identifier for the component</param>
+    /// <returns>The component if found; otherwise <c>null</c>.</returns>
+    public IComponent? Get(int id) => flatComponents.TryGetValue(id, out T? result) ? result : (IComponent?)default;
+
+
+    /// <summary>
     /// Gets a list of components of the given type.
     /// </summary>
     /// <typeparam name="V">The component type to search for.</typeparam>
@@ -243,11 +293,11 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <returns>A value indicating whether the remove was successful or not.</returns>
     public bool Remove<V>(V component) where V : T
     {
-        if (!flatComponents.Contains(component))
+        if (!flatComponents.ContainsKey(component.Id))
             return false;
 
         removeValidator?.Invoke(component);
-        if (flatComponents.Remove(component))
+        if (flatComponents.Remove(component.Id))
         {
             onRemover?.Invoke(component);
 
@@ -270,6 +320,15 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <returns><see langword="true"/> if <paramref name="toReplace"/> was found, otherwise <see langword="false"/></returns>
     public virtual bool Replace<V>(V toReplace, V replacement, [MaybeNullWhen(false)] out V replaced) where V : T
     {
+        AssignId(replacement);
+
+        ref var comp = ref CollectionsMarshal.GetValueRefOrNullRef(flatComponents, toReplace.Id);
+        if (Unsafe.IsNullRef(ref comp))
+        {
+            replaced = default;
+            return false;
+        }
+
 
         if (!componentsByType.TryGetValue(typeof(V), out var components))
         {
@@ -286,6 +345,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
 
         replaced = GenericCaster<T, V>.Cast(components[index])!;
         components[index] = replacement;
+        comp = replacement;
         return true;
     }
 
@@ -300,8 +360,15 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     public virtual bool ReplaceOrAdd<V>(V? toReplace, V replacement, [MaybeNullWhen(false)] out V replaced) where V : T
     {
         replaced = default;
+        AssignId(replacement);
 
         replacement.Parent = parent;
+
+        if (toReplace is not null)
+            flatComponents.Remove(toReplace.Id);
+        flatComponents[replacement.Id] = replacement;
+
+
         if (componentsByType.TryGetValue(typeof(V), out var components))
         {
             if (toReplace is null)
@@ -330,24 +397,26 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <param name="replacement">The value to replace with.</param>
     public virtual void ReplaceAllWith<V>(V replacement) where V : T
     {
+        AssignId(replacement);
         replacement.Parent = parent;
         if (componentsByType.TryGetValue(typeof(V), out var components))
         {
             if (components.Count > 0)
             {
-                components[0] = replacement;
-                for (int i = components.Count - 1; i >= 1; i--)
+                for (int i = components.Count - 1; i >= 0; i--)
                 {
+                    var comp = components[i];
+                    flatComponents.Remove(comp.Id);
                     components.RemoveAt(i);
                 }
             }
-            else
-                components.Add(replacement);
+            components.Add(replacement);
         }
         else
         {
             componentsByType[typeof(V)] = new List<T> { replacement };
         }
+        flatComponents[replacement.Id] = replacement;
     }
 
 
@@ -361,16 +430,20 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
         for (int i = 0; i < count; i++)
         {
             var name = reader.ReadString();
-            var type = Type.GetType(name);
+            var serId = reader.ReadUInt64();
 
-            Debug.Assert(type != null, nameof(type) + " != null");
+            var type = SerializationIdTypeProvider.Get(serId);
 
-            if (!componentsByType.TryGetValue(type, out var _))
-                componentsByType[type] = new();
+            Debug.Assert(type != null, $"{nameof(type)} is null for serid: {serId}");
+
+            ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(componentsByType, type, out var exists);
+            if (!exists || list is null)
+                list = new();
 
             var component = (T)TypeContainer.GetUnregistered(type);
             component.Deserialize(reader);
-            AddIfTypeNotExists(component);
+            list.Add(component);
+            flatComponents[component.Id] = component;
         }
     }
 
@@ -382,10 +455,12 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     public virtual void Serialize(BinaryWriter writer)
     {
         writer.Write(flatComponents.Count);
-        foreach (var component in flatComponents)
+        foreach (var keyValuePair in flatComponents)
         {
-            writer.Write(component.GetType().AssemblyQualifiedName!);
-            component.Serialize(writer);
+            var comp = keyValuePair.Value;
+            writer.Write(comp.GetType().Name);
+            writer.Write(comp.GetType().SerializationId());
+            comp.Serialize(writer);
         }
     }
 
@@ -400,4 +475,5 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
         ret.Deserialize(reader);
         return ret;
     }
+
 }

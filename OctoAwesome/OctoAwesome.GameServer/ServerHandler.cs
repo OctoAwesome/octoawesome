@@ -14,6 +14,7 @@ using OctoAwesome.Database;
 using System;
 using OctoAwesome.Serialization;
 using dotVariant;
+using OctoAwesome.Runtime;
 
 namespace OctoAwesome.GameServer
 {
@@ -21,7 +22,7 @@ namespace OctoAwesome.GameServer
     public partial class Invocation
     {
         static partial void VariantOf(
-            Func<CommandParameter, ISerializable> WithReturn, 
+            Func<CommandParameter, ISerializable> WithReturn,
             Action<CommandParameter> VoidReturn);
     }
 
@@ -43,7 +44,6 @@ namespace OctoAwesome.GameServer
 
         private readonly ILogger logger;
         private readonly Server server;
-        private readonly SerializationIdTypeProvider serializationTypeProvider;
         private readonly PackageActionHub packageActionHub;
         public readonly ConcurrentDictionary<OfficialCommand, Invocation> CommandFunctions;
         private readonly ITypeContainer typeContainer;
@@ -75,7 +75,6 @@ namespace OctoAwesome.GameServer
             SimulationManager = typeContainer.Get<SimulationManager>();
             UpdateHub = typeContainer.Get<IUpdateHub>();
             server = typeContainer.Get<Server>();
-            serializationTypeProvider = typeContainer.Get<SerializationIdTypeProvider>();
             packageActionHub = new PackageActionHub(logger, typeContainer);
             typeContainer.Register(packageActionHub);
             var pool = new Pool<OfficialCommandDTO>();
@@ -108,6 +107,11 @@ namespace OctoAwesome.GameServer
                     req.Data = Serializer.Serialize(res);
                     cont.SetResult(req);
                 }
+            });
+            packageActionHub.Register((RangeRequest range, RequestContext cont) =>
+            {
+                range.Response = IdRangeProvider.Provide();
+                cont.SetResult(range);
             });
             this.typeContainer = typeContainer;
 

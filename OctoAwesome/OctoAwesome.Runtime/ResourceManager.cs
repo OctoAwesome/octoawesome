@@ -29,10 +29,8 @@ namespace OctoAwesome.Runtime
         public IUpdateHub UpdateHub { get; }
 
         private readonly ISettings settings;
-
-        /// <summary>
-        /// Manager for game world persistance.
-        /// </summary>
+        
+        /// <inheritdoc/>
         public IPersistenceManager PersistenceManager { get; set; }
 
         /// <summary>
@@ -47,6 +45,9 @@ namespace OctoAwesome.Runtime
         public ConcurrentDictionary<int, IPlanet> Planets { get; }
         /// <inheritdoc />
         public bool LocalPersistance => PersistenceManager is DiskPersistenceManager;
+
+        /// <inheritdoc/>
+        public IIdManager IdManager { get; set; }
 
         private readonly bool disablePersistence;
         private readonly ILogger logger;

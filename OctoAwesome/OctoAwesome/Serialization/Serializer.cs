@@ -71,6 +71,25 @@ namespace OctoAwesome.Serialization
             return stream.ToArray();
         }
 
+
+
+        /// <summary>
+        /// Serializes a generic serializable instance to an array of bytes to send over network by included the <see cref="SerializationIdAttribute
+        /// "/> value.
+        /// </summary>
+        /// <param name="obj">The object to serialize.</param>
+        /// <typeparam name="T">The type of the object to serialize.</typeparam>
+        /// <returns>The serialized byte array data.</returns>
+        public static byte[] SerializeNetwork<T>(T obj) where T : ISerializable
+        {
+            using var stream = Manager.GetStream(nameof(Serialize));
+            using var writer = new BinaryWriter(stream);
+            writer.Write(obj.GetType().SerializationId());
+            obj.Serialize(writer);
+            return stream.ToArray();
+        }
+
+
         /// <summary>
         /// Deserializes a generic deserializable instance from an array of bytes.
         /// </summary>
@@ -81,6 +100,20 @@ namespace OctoAwesome.Serialization
         {
             var obj = new T();
             InternalDeserialize(ref obj, data);
+            return obj;
+        }
+
+        /// <summary>
+        /// Deserializes a response from network into a deserializable instance from an array of bytes while reading the <see cref="SerializationIdAttribute"/>.
+        /// </summary>
+        /// <param name="data">The data to deserialize the instance from.</param>
+        /// <typeparam name="T">The type of the object to deserialize.</typeparam>
+        /// <returns>The deserialized object.</returns>
+        public static T DeserializeNetwork<T>(Span<byte> data) where T : ISerializable, new()
+        {
+            var obj = new T();
+            //TODO Read the id instead of skipping it. Maybe even check the type in the ser id type provider
+            InternalDeserialize(ref obj, data[sizeof(long)..]);
             return obj;
         }
 

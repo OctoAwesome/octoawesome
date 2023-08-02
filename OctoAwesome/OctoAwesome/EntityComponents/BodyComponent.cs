@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component describing the body properties of an entity.
     /// </summary>
-    [Nooson]
+    [Nooson, SerializationId(1, 7)]
     public sealed partial class BodyComponent : Component, IEntityComponent, IEquatable<BodyComponent?>
     {
         /// <summary>

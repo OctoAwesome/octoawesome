@@ -95,6 +95,21 @@ namespace OctoAwesome.Basics
                     animationComponent.AnimationSpeed = 60f;
                 }
             });
+
+            interactService.Register(nameof(Furnace), (gt, interactor, target) =>
+            {
+                if (target.TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+                    && interactor.TryGetComponent<TransferComponent>(out var transferComponent)
+                    && interactor.TryGetComponent<UiMappingComponent>(out var uiMappingComponent)
+                    && target.TryGetComponent<ProductionInventoriesComponent>(out var productionInventoryCompopnents))
+                {
+                    transferComponent.Targets.Clear();
+                    transferComponent.Targets.Add(productionInventoryCompopnents.InputInventory);
+                    transferComponent.Targets.Add(productionInventoryCompopnents.OutputInventory);
+                    transferComponent.Targets.Add(productionInventoryCompopnents.ProductionInventory);
+                    uiMappingComponent.Changed.OnNext((interactor, ownUiKeyComponent.PrimaryKey, true));
+                }
+            });
         }
 
         private void Extend(ExtensionService extensionLoader)
@@ -203,25 +218,7 @@ namespace OctoAwesome.Basics
                 f.Components.AddIfTypeNotExists(new UniquePositionComponent());
                 f.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Furnace) });
 
-                /*
-                 
-    /// <inheritdoc/>
-    protected override void OnInteract(GameTime gameTime, Entity entity)
-    {
-        if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
-           && entity.TryGetComponent<TransferComponent>(out var transferComponent)
-           && entity.TryGetComponent<UiMappingComponent>(out var uiMappingComponent))
-        {
-            transferComponent.Targets.Clear();
-            transferComponent.Targets.Add(ProductionInventoriesComponent.InputInventory);
-            transferComponent.Targets.Add(ProductionInventoriesComponent.OutputInventory);
-            transferComponent.Targets.Add(ProductionInventoriesComponent.ProductionInventory);
-            uiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
 
-            AnimationComponent.CurrentTime = 0f;
-            AnimationComponent.AnimationSpeed = 60f;
-        }
-    }*/
 
             });
 

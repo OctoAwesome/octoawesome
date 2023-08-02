@@ -8,6 +8,7 @@ namespace OctoAwesome.UI.Components;
 /// <summary>
 /// Class for mapping a <see cref="Component"/> to an <see cref="IEntityComponent"/>
 /// </summary>
+[SerializationId(3, 2)]
 public class UiMappingComponent : Component, IEntityComponent, IDisposable
 {
     /// <summary>

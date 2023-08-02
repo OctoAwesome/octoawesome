@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using OctoAwesome.Database;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -12,7 +13,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with box collision.
     /// </summary>
-    [Nooson]
+    [Nooson, SerializationId(1, 8)]
     public sealed partial class BoxCollisionComponent : CollisionComponent, IEquatable<BoxCollisionComponent?>
     {
         /// <summary>

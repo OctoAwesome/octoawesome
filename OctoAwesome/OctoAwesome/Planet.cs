@@ -86,7 +86,7 @@ namespace OctoAwesome
         {
             Generator = generator;
             var tc = TypeContainer.Get<ITypeContainer>();
-            GlobalChunkCache = new GlobalChunkCache(this, tc.Get<IResourceManager>(), tc.Get<IUpdateHub>(), tc.Get<SerializationIdTypeProvider>());
+            GlobalChunkCache = new GlobalChunkCache(this, tc.Get<IResourceManager>(), tc.Get<IUpdateHub>());
         }
 
         private void SerializeMapGenerator(BinaryWriter bw)

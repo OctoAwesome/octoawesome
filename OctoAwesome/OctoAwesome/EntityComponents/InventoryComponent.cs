@@ -1,4 +1,5 @@
 ﻿using NonSucking.Framework.Extension.Collections;
+using NonSucking.Framework.Extension.Threading;
 
 using OctoAwesome.Components;
 using OctoAwesome.Database;
@@ -19,6 +20,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for inventories of entities/functional blocks.
     /// </summary>
+    [SerializationId(1, 12)]
     public partial class InventoryComponent : Component, IEntityComponent, IConstructionSerializable<InventoryComponent>
     {
         /// <summary>
@@ -67,12 +69,6 @@ namespace OctoAwesome.EntityComponents
 
         protected bool HasLimitedVolume => maxVolume != int.MaxValue;
 
-        /// <summary>
-        /// Get the current version of the inventory, which increases with every update of any slot
-        /// </summary>
-        public int Version => version;
-
-        private int version;
 
         /// <summary>
         /// Gets or sets if the inventory should be allowed to resize dynamically
@@ -95,10 +91,9 @@ namespace OctoAwesome.EntityComponents
         private readonly EnumerationModifiableConcurrentList<InventorySlot> inventory;
 
         private readonly IDefinitionManager definitionManager;
-        private readonly AbcSimulationComponent dirtyStuff;
         private int currentWeight = 0;
         private int currentVolume = 0;
-
+        private ScopedSemaphore serializeSemaphore = new(1, 1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InventoryComponent"/> class.
@@ -109,7 +104,6 @@ namespace OctoAwesome.EntityComponents
             var tc = TypeContainer.Get<ITypeContainer>();
             definitionManager = tc.Get<IDefinitionManager>();
 
-            dirtyStuff = tc.Get<AbcSimulationComponent>();
             Sendable = true;
         }
 
@@ -135,8 +129,8 @@ namespace OctoAwesome.EntityComponents
         /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
+            using var l = serializeSemaphore.Wait();
             base.Deserialize(reader);
-
             maxWeight = reader.ReadInt32();
             maxSlots = reader.ReadInt32();
             maxVolume = reader.ReadInt32();
@@ -187,7 +181,6 @@ namespace OctoAwesome.EntityComponents
                         }
                     }
 
-
                     if (instance is IInventoryable inventoryObject)
                     {
                         inventoryItem = inventoryObject;
@@ -202,12 +195,13 @@ namespace OctoAwesome.EntityComponents
                 inventory.Add(slot);
             }
             CalcCurrentInventoryUsage();
-            Interlocked.Increment(ref version);
+            IncrementVersion(true);
         }
 
         /// <inheritdoc />
         public override void Serialize(BinaryWriter writer)
         {
+            using var l = serializeSemaphore.Wait();
             base.Serialize(writer);
             writer.Write(maxWeight);
             writer.Write(maxSlots);
@@ -298,7 +292,7 @@ namespace OctoAwesome.EntityComponents
                     break;
                 }
             }
-            ChangeVersion();
+            IncrementVersion();
             return quantity - left;
         }
 
@@ -333,13 +327,13 @@ namespace OctoAwesome.EntityComponents
             switch (invSlot.Amount)
             {
                 case 0 when isFixedSlotSize:
-                    ChangeVersion();
+                    IncrementVersion();
                     return quantity;
                 case 0:
                     inventory.Remove(invSlot);
                     break;
             }
-            ChangeVersion();
+            IncrementVersion();
             return quantity;
         }
 
@@ -426,7 +420,7 @@ namespace OctoAwesome.EntityComponents
             quantity = GetQuantityLimitFor(slot, quantity);
             slot.Amount += quantity;
 
-            ChangeVersion();
+            IncrementVersion();
 
             return quantity;
         }
@@ -522,7 +516,7 @@ namespace OctoAwesome.EntityComponents
             var slot = new InventorySlot(this);
             if (Add(slot))
             {
-                ChangeVersion();
+                IncrementVersion();
                 return slot;
             }
             return null;
@@ -538,7 +532,7 @@ namespace OctoAwesome.EntityComponents
             if (maxSlots <= inventory.Count || isFixedSlotSize)
                 return false;
 
-            ChangeVersion();
+            IncrementVersion();
             inventory.Add(slot);
             return true;
         }
@@ -618,12 +612,6 @@ namespace OctoAwesome.EntityComponents
                 return 0;
 
             return Remove(invSlot, definition.VolumePerUnit);
-        }
-
-        private void ChangeVersion()
-        {
-            Interlocked.Increment(ref version);
-            dirtyStuff.Add(this);
         }
 
         /// <inheritdoc />

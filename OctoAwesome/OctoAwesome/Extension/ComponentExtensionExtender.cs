@@ -12,7 +12,7 @@ namespace OctoAwesome
     /// </summary>
     public class ComponentExtensionExtender : BaseExtensionExtender<ComponentContainer>
     {
-        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;        
+        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="ComponentExtensionExtender" /> class

@@ -45,9 +45,9 @@ public partial class Furnace : Entity, IConstructionSerializable<Furnace>
     }
 
     /// <inheritdoc />
-    protected override void OnInitialize(IResourceManager manager)
+    protected override void OnInitialize()
     {
-        base.OnInitialize(manager);
+        base.OnInitialize();
         GetComponent<BurningComponent>()?.Initialize("furnace");
     }
 

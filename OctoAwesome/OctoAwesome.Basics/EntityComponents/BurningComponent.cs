@@ -13,12 +13,15 @@ using System.Linq;
 using OctoAwesome.Extension;
 using static OctoAwesome.StateMachine;
 using OctoAwesome.Serialization;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome.Basics.EntityComponents;
 
 [Nooson]
+[SerializationId(2, 6)]
 internal partial class ProductionInventoriesComponent : Component, IEntityComponent, IConstructionSerializable<ProductionInventoriesComponent>
 {
+    //TODO Check if Inventory Components have parent
     public InventoryComponent InputInventory { get; set; }
     public InventoryComponent OutputInventory { get; set; }
     public InventoryComponent ProductionInventory { get; set; }
@@ -28,6 +31,7 @@ internal partial class ProductionInventoriesComponent : Component, IEntityCompon
         InputInventory = new();
         OutputInventory = new();
         ProductionInventory = new();
+        Sendable = true;
     }
 
     public ProductionInventoriesComponent(bool fixedSlot, int slotCountProduction) : this()
@@ -35,10 +39,23 @@ internal partial class ProductionInventoriesComponent : Component, IEntityCompon
         InputInventory = new();
         OutputInventory = new();
         ProductionInventory = new(fixedSlot, slotCountProduction);
+        Sendable = true;
     }
 
+    protected override void OnParentSetting(IComponentContainer newParent)
+    {
+        if (newParent.Simulation is null)
+            return;
+        InputInventory.Parent = newParent;
+        OutputInventory.Parent = newParent; 
+        ProductionInventory.Parent = newParent;
+        newParent.Simulation.GlobalComponentList.Add(InputInventory);
+        newParent.Simulation.GlobalComponentList.Add(OutputInventory);
+        newParent.Simulation.GlobalComponentList.Add(ProductionInventory);
+    }
 }
 
+[SerializationId(2, 7)]
 internal partial class BurningComponent : Component, IEntityComponent, IUpdateable
 {
     private StateMachine stateMachine;

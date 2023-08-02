@@ -74,7 +74,9 @@ namespace OctoAwesome.Network
 
                 package.PackageFlags = PackageFlags.Notification;
                 package.Payload = memoryStream.ToArray();
-                SendPackageAndRelease(package);
+
+
+                _ = SendPackageAndRelease(package);
             }
         }
 

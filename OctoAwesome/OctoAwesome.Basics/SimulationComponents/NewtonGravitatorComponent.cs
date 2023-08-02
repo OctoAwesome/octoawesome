@@ -13,6 +13,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with newtonian gravity.
     /// </summary>
+    [SerializationId(2, 22)]
     public class NewtonGravitatorComponent : SimulationComponent<
         Entity,
         NewtonGravitatorComponent.GravityEntity,
