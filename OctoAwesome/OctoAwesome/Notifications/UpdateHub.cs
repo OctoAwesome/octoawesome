@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OctoAwesome.Notifications
 {
-    public record struct PushInfo(object Notification, string Channel, uint? ClientId);
+    public record struct PushInfo(object Notification, string Channel);
 
     /// <summary>
     /// Update hub implementation for managing observers and observables in a thread safe manner.
@@ -41,12 +41,11 @@ namespace OctoAwesome.Notifications
             {
                 return StableCompositeDisposable.Create(
                     notification.Subscribe(GetChannelRelay(channel)),
-                    notification.Subscribe(x => networkChannel.OnNext(new(x, channel, null))));
+                    notification.Subscribe(x => networkChannel.OnNext(new(x, channel))));
             }
             else
             {
                 return notification.Subscribe(GetChannelRelay(channel));
-
             }
         }
 

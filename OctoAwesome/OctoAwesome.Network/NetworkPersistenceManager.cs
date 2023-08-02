@@ -31,7 +31,7 @@ namespace OctoAwesome.Network
         /// Initializes a new instance of the <see cref="NetworkPersistenceManager"/> class.
         /// </summary>
         /// <param name="typeContainer">The type container to manage types.</param>
-        /// <param name="client">The network client that is connected to the remote server.</param>
+        /// <param name="networkPackageManager">The network package manager.</param>
         public NetworkPersistenceManager(ITypeContainer typeContainer, NetworkPackageManager networkPackageManager)
         {
             this.typeContainer = typeContainer;
@@ -94,13 +94,13 @@ namespace OctoAwesome.Network
 
                 var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
                 awaiter.SetDesializeFunc(
-                     (Func<byte[], object>)((b) =>
+                     (b) =>
                      {
                          using var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..));
                          using var binaryReader = new BinaryReader(memoryStream);
                          var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
-                         return (object)Serializer.Deserialize<IPlanet>(planetInstance, dto.Data);
-                     }));
+                         return Serializer.Deserialize(planetInstance, dto.Data);
+                     });
                 request.Release();
                 return awaiter;
             }

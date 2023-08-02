@@ -168,7 +168,7 @@ namespace OctoAwesome.Network
         /// <seealso cref="SendPackageAndReleaseAsync"/>
         public async Task SendPackageAndRelease(Package package)
         {
-            await SendPackageAsync(package).ConfigureAwait(false);//.GetAwaiter().GetResult();
+            await SendPackageAsync(package).ConfigureAwait(false);
             package.Release();
         }
 

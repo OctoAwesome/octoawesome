@@ -40,8 +40,7 @@ public class NetworkIdManager : IIdManager
     {
         var first = networkPackageManager.SendAndAwait(new RangeRequest { FirstIds = true }, PackageFlags.Request);
         var second = networkPackageManager.SendAndAwait(new RangeRequest { FirstIds = false }, PackageFlags.Request);
-        first.SetDesializeFunc((bytes) => Serializer.DeserializeNetwork<RangeRequest>(bytes));
-        second.SetDesializeFunc((bytes) => Serializer.DeserializeNetwork<RangeRequest>(bytes));
+        first.Network = second.Network = true;
 
         NewRangeGotten(first.WaitOnAndRelease<RangeRequest>());
         NewRangeGotten(second.WaitOnAndRelease<RangeRequest>());
@@ -76,7 +75,7 @@ public class NetworkIdManager : IIdManager
         await Task.Yield();
 
         var second = networkPackageManager.SendAndAwait(new RangeRequest { FirstIds = first }, PackageFlags.Request);
-        second.SetDesializeFunc((bytes) => Serializer.DeserializeNetwork<RangeRequest>(bytes));
+        second.Network = true;
         NewRangeGotten(second.WaitOnAndRelease<RangeRequest>());
     }
 }

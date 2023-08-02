@@ -2,6 +2,7 @@
 
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 
 using System;
@@ -41,6 +42,12 @@ namespace OctoAwesome
         public void Register(ITypeContainer typeContainer)
         {
             var changedHandler = typeContainer.Get<ComponentChangedNotificationHandler>();
+            var uh = typeContainer.Get<IUpdateHub>();
+            var cc = new ComponentChangeContainer(uh);
+
+            changedHandler.Register("PositionComponent", cc.PositionChanged);
+            changedHandler.Register("AnimationComponent", cc.AnimationChanged);
+            changedHandler.Register("InventoryComponent", cc.InventoryChanged);
         }
 
         /// <inheritdoc />

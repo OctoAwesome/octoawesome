@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,15 +21,12 @@ internal class ComponentChangedNotificationHandler
 
     private readonly IUpdateHub updateHub;
     private readonly ILogger logger;
-    private readonly Dictionary<string, Action<Entity, EntityNotification, PropertyChangedNotification>> actionHandlers;
+    private readonly Dictionary<string, Action<ComponentChangedNotificationHandler, Entity, EntityNotification, PropertyChangedNotification>> actionHandlers;
 
     public ComponentChangedNotificationHandler(IUpdateHub updatehub, ILogger logger)
     {
         actionHandlers = new()
         {
-            { "PositionComponent", PositionChanged }, //TODO Move into own sth.
-            { "AnimationComponent", AnimationChanged },
-            { "InventoryComponent", InventoryChanged },
         };
         updateHub = updatehub;
         this.logger = logger.As(typeof(ComponentChangedNotificationHandler));
@@ -44,7 +42,7 @@ internal class ComponentChangedNotificationHandler
         logger.Trace($"Rec {nameof(EntityNotification)} of entity {entity.Id} with type {propChanged.Issuer}");
         if (actionHandlers.TryGetValue(propChanged.Issuer, out var handler))
         {
-            handler.Invoke(entity, entityNotitification, propChanged);
+            handler.Invoke(this, entity, entityNotitification, propChanged);
         }
     }
 
@@ -53,12 +51,12 @@ internal class ComponentChangedNotificationHandler
     /// </summary>
     /// <param name="key"></param>
     /// <param name="action">Name of the Class to interact with, first component container is the interactor and second component container the target</param>
-    public void Register(string key, Action<Entity, EntityNotification, PropertyChangedNotification> action)
+    public void Register(string key, Action<ComponentChangedNotificationHandler, Entity, EntityNotification, PropertyChangedNotification> action)
     {
         ref var val = ref CollectionsMarshal.GetValueRefOrNullRef(actionHandlers, key);
-        if (val is null)
+        if (Unsafe.IsNullRef(ref val))
         {
-            val = action;
+            actionHandlers[key] = action;
         }
         else
         {
@@ -70,18 +68,42 @@ internal class ComponentChangedNotificationHandler
     /// </summary>
     /// <param name="key"></param>
     /// <param name="action">Name of the Class to interact with, first component container is the interactor and second component container the target</param>
-    public void Unregister(string key, Action<Entity, EntityNotification, PropertyChangedNotification> action)
+    public void Unregister(string key, Action<ComponentChangedNotificationHandler, Entity, EntityNotification, PropertyChangedNotification> action)
     {
         ref var val = ref CollectionsMarshal.GetValueRefOrNullRef(actionHandlers, key);
-        if (val is not null)
+        if (!Unsafe.IsNullRef(ref val))
         {
             val -= action;
         }
     }
 
-    private void AnimationChanged(Entity entity, EntityNotification notification, PropertyChangedNotification propertyChangedNotification)
+    /// <summary>
+    /// Gets the component from the <see cref="AssociatedSimulation"/> or the <see cref="Entity"/> if <see cref="AssociatedSimulation"/> is null
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="e"></param>
+    /// <param name="componentId"></param>
+    /// <returns></returns>
+    public T? GetComponent<T>(Entity e, int componentId) where T : IComponent
     {
-        var comp = GetComponent<AnimationComponent>(entity, propertyChangedNotification.ComponentId);
+        return AssociatedSimulation is not null
+            ? AssociatedSimulation.GlobalComponentList.Get<T>(componentId)
+            : e.GetComponent<T>(componentId);
+    }
+}
+
+internal class ComponentChangeContainer
+{
+    private readonly IUpdateHub updateHub;
+
+    public ComponentChangeContainer(IUpdateHub updateHub)
+    {
+        this.updateHub = updateHub;
+    }
+
+    internal void AnimationChanged(ComponentChangedNotificationHandler handler, Entity entity, EntityNotification notification, PropertyChangedNotification propertyChangedNotification)
+    {
+        var comp = handler.GetComponent<AnimationComponent>(entity, propertyChangedNotification.ComponentId);
         if (comp is null)
             return;
 
@@ -89,10 +111,10 @@ internal class ComponentChangedNotificationHandler
     }
 
 
-    private void InventoryChanged(Entity entity, EntityNotification notification, PropertyChangedNotification propertyChangedNotification)
+    internal void InventoryChanged(ComponentChangedNotificationHandler handler, Entity entity, EntityNotification notification, PropertyChangedNotification propertyChangedNotification)
     {
         var servcomp = entity.GetComponent<ServerManagedComponent>();
-        var comp = GetComponent<InventoryComponent>(entity, propertyChangedNotification.ComponentId);
+        var comp = handler.GetComponent<InventoryComponent>(entity, propertyChangedNotification.ComponentId);
         if (comp is null)
             return;
 
@@ -103,10 +125,10 @@ internal class ComponentChangedNotificationHandler
         }
     }
 
-    private void PositionChanged(Entity entity, EntityNotification notification, PropertyChangedNotification propertyChangedNotification)
+    internal void PositionChanged(ComponentChangedNotificationHandler handler, Entity entity, EntityNotification notification, PropertyChangedNotification propertyChangedNotification)
     {
         var comp = entity.GetComponent<ServerManagedComponent>();
-        var posComp = GetComponent<PositionComponent>(entity, propertyChangedNotification.ComponentId);
+        var posComp = handler.GetComponent<PositionComponent>(entity, propertyChangedNotification.ComponentId);
         if (posComp is null)
             return;
 
@@ -116,11 +138,5 @@ internal class ComponentChangedNotificationHandler
         {
             updateHub.PushNetwork(notification, DefaultChannels.Simulation);
         }
-    }
-    private T? GetComponent<T>(Entity e, int componentId) where T : IComponent
-    {
-        return AssociatedSimulation is not null
-            ? AssociatedSimulation.GlobalComponentList.Get<T>(componentId)
-            : e.GetComponent<T>(componentId);
     }
 }

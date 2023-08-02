@@ -15,12 +15,14 @@ namespace OctoAwesome
     /// </summary>
     public class Awaiter : IPoolElement, IDisposable
     {
-        private ISerializable? knownResult;
-        private byte[]? result;
         /// <summary>
         /// Gets a value indicating whether awaiting has timed out.
         /// </summary>
         public bool TimedOut { get; private set; }
+        public bool Network { get; set; }
+
+        private ISerializable? knownResult;
+        private byte[]? result;
         private readonly ManualResetEventSlim manualReset;
         private readonly LockSemaphore semaphore;
         private bool alreadyDeserialized;
@@ -73,15 +75,29 @@ namespace OctoAwesome
 
             T? ret;
             if (deserializeFunc is not null)
+            {
                 ret = GenericCaster<object, T>.Cast(deserializeFunc(result));
+            }
             else if (knownResult != default && result is null)
+            {
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
+            }
             else if (knownResult is T instance && result is not null)
-                ret = Serializer.Deserialize(instance, result);
+            {
+                ret = Network 
+                    ? Serializer.DeserializeNetwork(instance, result) 
+                    : Serializer.Deserialize(instance, result);
+            }
             else if (result is not null)
-                ret = Serializer.DeserializeSpecialCtor<T>(result);
+            {
+                ret = Network 
+                    ? Serializer.DeserializeSpecialCtorNetwork<T>(result) 
+                    : Serializer.DeserializeSpecialCtor<T>(result);
+            }
             else
+            {
                 ret = default;
+            }
 
 
             Release();
@@ -103,7 +119,7 @@ namespace OctoAwesome
             }
 
             T? ret;
-            if(deserializeFunc is not null)
+            if (deserializeFunc is not null)
                 ret = GenericCaster<object, T>.Cast(deserializeFunc(result));
             else if (knownResult is not null && result is null)
                 ret = GenericCaster<ISerializable, T>.Cast(knownResult);
@@ -177,6 +193,7 @@ namespace OctoAwesome
             result = null;
             knownResult = null;
             deserializeFunc = null;
+            Network = false;
             manualReset.Reset();
         }
 
