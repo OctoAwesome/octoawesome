@@ -43,10 +43,7 @@ namespace OctoAwesome.Client.Components
         public Guid NewGame(string name, string seed)
         {
             ExitSimulation();
-
-            simulation = new Simulation(resourceManager, extensionService);
-            var newGame = Simulation.NewGame(name, seed);
-            Enabled = true;
+            var newGame = Simulation.NewGame(resourceManager, name, seed);
             return newGame;
         }
 

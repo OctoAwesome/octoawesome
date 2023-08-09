@@ -33,6 +33,15 @@ namespace OctoAwesome.Client.Screens
             };
             stack.Controls.Add(resumeButton);
 
+            Button openToLanButton = new TextButton(UI.Languages.OctoClient.OpenToNetwork);
+            openToLanButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+            openToLanButton.Margin = new Border(0, 0, 0, 10);
+            openToLanButton.LeftMouseClick += (s, e) =>
+            {
+
+            };
+            //stack.Controls.Add(openToLanButton);
+
             Button optionButton = new TextButton(UI.Languages.OctoClient.Options);
             optionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             optionButton.Margin = new Border(0, 0, 0, 10);

@@ -5,7 +5,7 @@ using OctoAwesome.Serialization;
 using System;
 using System.IO;
 
-namespace OctoAwesome.GameServer.Commands
+namespace OctoAwesome.Network.Commands
 {
     /// <summary>
     /// Contains commands for chunk loading and saving remotely.

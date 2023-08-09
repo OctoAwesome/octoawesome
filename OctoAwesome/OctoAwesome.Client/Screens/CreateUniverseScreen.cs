@@ -77,10 +77,7 @@ namespace OctoAwesome.Client.Screens
                 ScreenManager.Player.Unload();
 
                 Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
-                settings.Set("LastUniverse", guid.ToString());
-
-                Player player = ScreenManager.Game.Simulation.LoginPlayer("");
-                ScreenManager.Game.Player.Load(player);
+                ScreenManager.Game.GameService.StartSinglePlayer(guid);
 
                 ScreenManager.NavigateToScreen(new LoadingScreen(assets));
             };

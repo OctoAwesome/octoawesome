@@ -5,7 +5,7 @@ using System.Net;
 using OctoAwesome.Rx;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using OctoAwesome.GameServer.Commands;
+using OctoAwesome.Network.Commands;
 using System.Linq;
 using OctoAwesome.Pooling;
 using OctoAwesome.Network.Request;
@@ -16,7 +16,7 @@ using OctoAwesome.Serialization;
 using dotVariant;
 using OctoAwesome.Runtime;
 
-namespace OctoAwesome.GameServer
+namespace OctoAwesome.Network
 {
     [Variant]
     public partial class Invocation
@@ -48,17 +48,6 @@ namespace OctoAwesome.GameServer
         public readonly ConcurrentDictionary<OfficialCommand, Invocation> CommandFunctions;
         private readonly ITypeContainer typeContainer;
         private readonly NotificationCommands notCommands;
-
-        /*
-         TODO:
-            - Try to get typed parameters into func, so deserialize can be done outside
-            - Return Something (Sascha wants typeof(ISerializable?))
-
-            - Split Notifications and Requests (No Notification via OfficialCommandDTO)
-            - Client centralized react on server responses and notifications (Needs a solution)
-        
-            - Try to Get rid of the switch cases / on nextes somehow somewhere somewhat
-         */
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerHandler"/> class.

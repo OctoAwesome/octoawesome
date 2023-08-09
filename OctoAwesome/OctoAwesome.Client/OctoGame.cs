@@ -187,6 +187,7 @@ namespace OctoAwesome.Client
             typeContainer.Register<UpdateHub>(InstanceBehaviour.Singleton);
             typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DiskPersistenceManager>(InstanceBehaviour.Singleton);
 
         }
 

@@ -123,7 +123,7 @@ namespace OctoAwesome
         /// <param name="name">The name of the universe.</param>
         /// <param name="rawSeed">The seed used for creating the universe.</param>
         /// <returns>The <see cref="Guid"/> of the created universe.</returns>
-        public Guid NewGame(string name, string rawSeed)
+        public static Guid NewGame(IResourceManager resourceManager, string  name, string rawSeed)
         {
             int numericSeed;
 
@@ -142,9 +142,7 @@ namespace OctoAwesome
             }
 
 
-            Guid guid = ResourceManager.NewUniverse(name, numericSeed);
-
-            Start();
+            Guid guid = resourceManager.NewUniverse(name, numericSeed);
 
             return guid;
         }
@@ -189,9 +187,10 @@ namespace OctoAwesome
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
             //Update all Entities
-            foreach (Entity entity in entities)
-                if (entity is IUpdateable updateable)
-                    updateable.Update(gameTime);
+            if (entities.Count > 0)
+                foreach (Entity entity in entities)
+                    if (entity is IUpdateable updateable)
+                        updateable.Update(gameTime);
 
             // Update all Components
             foreach (var component in Components)
@@ -256,7 +255,7 @@ namespace OctoAwesome
                             && fb.Components.TryGet<PositionComponent>(out var existingPosition)
                             && (!hasPosComponent || existingPosition.Position == newPosComponent!.Position)))
                     {
-                        SendToClientIfRequired(entity, true);
+                        SendToClientIfRequired(entity, true, EntityNotification.ActionType.Add);
                         return;
                     }
                 }
@@ -267,7 +266,7 @@ namespace OctoAwesome
                 existing = entities.FirstOrDefault(x => x.Id == entity.Id);
                 if (existing != default && !overwriteExisting)
                 {
-                    SendToClientIfRequired(entity, true);
+                    SendToClientIfRequired(entity, true, EntityNotification.ActionType.Add);
                     return;
                 }
             }
@@ -286,9 +285,9 @@ namespace OctoAwesome
             if (!hasPosComponent)
                 hasPosComponent = entity.Components.TryGet<PositionComponent>(out newPosComponent);
 
-            using (var _ = entitiesSemaphore.EnterExclusiveScope())
-                entities.Add(entity);
-
+            //using (var _ = entitiesSemaphore.EnterExclusiveScope())
+            entities.Add(entity);
+            
             foreach (var component in Components)
             {
                 if (component is IHoldComponent<Entity> holdComponent)
@@ -312,10 +311,10 @@ namespace OctoAwesome
                 GlobalComponentList.AddIfNotExists(comp);
             }
 
-            SendToClientIfRequired(entity, false);
+            SendToClientIfRequired(entity, false, EntityNotification.ActionType.Add);
         }
 
-        private void SendToClientIfRequired(Entity entity, bool existsAlready)
+        private void SendToClientIfRequired(Entity entity, bool existsAlready, EntityNotification.ActionType type)
         {
             if ((entity is RemoteEntity && IsClientSide)
                     || (!existsAlready && entity is Player && IsServerSide))
@@ -328,7 +327,7 @@ namespace OctoAwesome
             var remoteNotification = new EntityNotification
             {
                 Entity = entity,
-                Type = EntityNotification.ActionType.Add
+                Type = type
             };
 
             ResourceManager.UpdateHub.PushNetwork(remoteNotification, DefaultChannels.Simulation);
@@ -370,8 +369,9 @@ namespace OctoAwesome
                     holdComponent.Remove(entity);
             }
 
-            using (var _ = entitiesSemaphore.EnterExclusiveScope())
-                entities.Remove(entity);
+            //using (var _ = entitiesSemaphore.EnterExclusiveScope())
+            entities.Remove(entity);
+            SendToClientIfRequired(entity, true, EntityNotification.ActionType.Remove);
             entity.Id = Guid.Empty;
             entity.Simulation = null;
         }
@@ -476,8 +476,6 @@ namespace OctoAwesome
         /// <param name="entityId">The <see cref="Guid"/> of the entity to remove.</param>
         public void RemoveEntity(Guid entityId)
         {
-
-            var _ = entitiesSemaphore.EnterExclusiveScope();
             Remove(entities.First(e => e.Id == entityId));
         }
 

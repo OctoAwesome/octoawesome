@@ -6,7 +6,7 @@ using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using System;
 
-namespace OctoAwesome.GameServer.Commands
+namespace OctoAwesome.Network.Commands
 {
     /// <summary>
     /// Contains remote notification commands.

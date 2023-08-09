@@ -109,14 +109,16 @@ namespace OctoAwesome.Network
 
             if (string.IsNullOrWhiteSpace(universe))
             {
-                var guid = Simulation.NewGame("melmack", new Random().Next().ToString());
+                var guid = Simulation.NewGame(ResourceManager, "melmack", new Random().Next().ToString());
+                simulation.TryLoadGame(guid);
                 settings.Set("LastUniverse", guid.ToString());
             }
             else
             {
                 if (!Simulation.TryLoadGame(new Guid(universe)))
                 {
-                    var guid = Simulation.NewGame("melmack", new Random().Next().ToString());
+                    var guid = Simulation.NewGame(ResourceManager, "melmack", new Random().Next().ToString());
+                    simulation.TryLoadGame(guid);
                     settings.Set("LastUniverse", guid.ToString());
                 }
             }

@@ -11,7 +11,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace OctoAwesome.GameServer.Commands
+namespace OctoAwesome.Network.Commands
 {
     /// <summary>
     /// Contains remote player commands.
