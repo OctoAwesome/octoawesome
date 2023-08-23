@@ -219,4 +219,7 @@
   <data name="toggleWireFrame" xml:space="preserve">
     <value>Toggle Wireframe</value>
   </data>
+  <data name="toggle_chat" xml:space="preserve">
+    <value>Toggle Chat</value>
+  </data>
 </root>

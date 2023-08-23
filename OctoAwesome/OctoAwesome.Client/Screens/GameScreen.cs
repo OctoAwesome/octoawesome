@@ -1,13 +1,12 @@
-﻿using engenious.UI;
-using OctoAwesome.Client.Components;
-using System;
-using engenious;
+﻿using engenious;
 using engenious.Input;
-using engenious.UI.Controls;
-using OctoAwesome.Definitions;
-using OctoAwesome.Client.UI.Controls;
-using OctoAwesome.Client.UI.Components;
+using engenious.UI;
+using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
+using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.UI.Controls;
+using OctoAwesome.Definitions;
+using System;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -27,6 +26,7 @@ namespace OctoAwesome.Client.Screens
         private readonly ToolbarControl toolbar;
         private readonly MinimapControl minimap;
         private readonly CrosshairControl crosshair;
+        private readonly ChatControl chat;
         private readonly HealthBarControl healthbar;
         private readonly PlayerComponent playerComponent;
         private readonly IDefinitionManager definitionManager;
@@ -86,6 +86,16 @@ namespace OctoAwesome.Client.Screens
             crosshair.HorizontalAlignment = HorizontalAlignment.Center;
             crosshair.VerticalAlignment = VerticalAlignment.Center;
             Controls.Add(crosshair);
+
+            chat = new ChatControl()
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 200,
+                Width = 500,
+                Visible = false
+            };
+            Controls.Add(chat);
 
             Title = UI.Languages.OctoClient.Game;
 
@@ -388,6 +398,13 @@ namespace OctoAwesome.Client.Screens
                     return;
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
+            });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggle_chat", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+
+                chat.Activate();
             });
         }
 

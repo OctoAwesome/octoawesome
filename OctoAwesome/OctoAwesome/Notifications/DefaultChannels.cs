@@ -29,5 +29,10 @@
         /// The planet channel.
         /// </summary> 
         public const string Planet = "planet";
+
+        /// <summary>
+        /// The channel for all chat messages
+        /// </summary>
+        public const string Chat = "chat";
     }
 }
