@@ -10,7 +10,7 @@ using System;
 namespace OctoAwesome.Client.Controls;
 
 
-internal class ChatControl : ContainerControl
+internal class ChatControl : ContainerControl, IDisposable
 {
     private readonly Textbox textBox;
     private readonly StackPanel textStack;
@@ -108,7 +108,10 @@ internal class ChatControl : ContainerControl
         {
             Text = message,
             HorizontalAlignment = HorizontalAlignment.Left,
-            TextColor = Color.White
+            TextColor = Color.White,
+            LineWrap = true,
+            WordWrap = true,
+            
         };
         textStack.Controls.Add(label);
         shouldScrollDown = true;
@@ -116,17 +119,12 @@ internal class ChatControl : ContainerControl
 
     public void Activate()
     {
-        if (!Visible)
-        {
-            Visible = true;
-            textBox.Visible = true;
-        }
-        else
-        {
-            textBox.Visible = true;
-            ScreenManager.FreeMouse();
-            textBox.Focus();
-        }
+        Visible = true;
+
+        textBox.Visible = true;
+        ScreenManager.FreeMouse();
+        textBox.Focus();
+        shouldScrollDown = true;
     }
 
     protected override void OnUpdate(GameTime gameTime)
@@ -147,11 +145,11 @@ internal class ChatControl : ContainerControl
     }
     private void TextBox_KeyDown(Control sender, KeyEventArgs args)
     {
-        if (args.Key == Keys.Enter && Visible && !string.IsNullOrWhiteSpace(textBox.Text))
+        if ((args.Key == Keys.Enter || args.Key == Keys.KeypadEnter) && Visible && !string.IsNullOrWhiteSpace(textBox.Text))
         {
             var notification = chatMessagePool.Rent();
             notification.Text = textBox.Text;
-            notification.Username = "jvbsl";
+            notification.Username = ((OctoGame)ScreenManager.Game).Player.CurrentPlayer.Name;
             notification.TimeStamp = DateTimeOffset.Now;
 
             updateHub.PushNetwork(notification, DefaultChannels.Chat);
@@ -188,5 +186,10 @@ internal class ChatControl : ContainerControl
             }
         }
         base.OnKeyDown(args);
+    }
+
+    public void Dispose()
+    {
+        messageSubscription.Dispose();
     }
 }

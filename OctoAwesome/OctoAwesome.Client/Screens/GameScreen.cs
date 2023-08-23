@@ -91,9 +91,11 @@ namespace OctoAwesome.Client.Screens
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                Height = 200,
+                Height = 400,
+                MaxHeight = 400,
                 Width = 500,
-                Visible = false
+                Visible = false,
+                Margin = Border.All(20, 0, 0, 80),
             };
             Controls.Add(chat);
 
@@ -129,6 +131,7 @@ namespace OctoAwesome.Client.Screens
         public void Unload()
         {
             scene.Dispose();
+            chat.Dispose();
         }
 
         #region Mouse Input
@@ -387,14 +390,14 @@ namespace OctoAwesome.Client.Screens
             });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
 
                 ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
             });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;

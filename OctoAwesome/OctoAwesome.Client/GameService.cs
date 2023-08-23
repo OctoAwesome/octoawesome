@@ -1,4 +1,6 @@
 ﻿
+using engenious;
+
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
@@ -127,8 +129,17 @@ namespace OctoAwesome.Client
             ResourceManager.IdManager = idManager;
             game.Simulation.LoadGame(gameId);
             var player = game.Simulation.LoginPlayer(playerName);
+            player.Name = playerName;
             game.Player.Load(player);
 
+        }
+
+        public void ExitGame()
+        {
+            game.Player.Unload();
+            game.Simulation.ExitGame();
+            networkPackageManager?.Dispose();
+            
         }
 
         /// <inheritdoc />

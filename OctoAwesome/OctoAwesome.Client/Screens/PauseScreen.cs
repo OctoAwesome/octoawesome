@@ -66,9 +66,7 @@ namespace OctoAwesome.Client.Screens
             mainMenuButton.Margin = new Border(0, 0, 0, 10);
             mainMenuButton.LeftMouseClick += (s, e) =>
             {
-                ScreenManager.Player.Unload();
-                ScreenManager.Game.Simulation.ExitGame();
-
+                ScreenManager.Game.GameService.ExitGame();
                 foreach (var gameScreen in ScreenManager.History.OfType<GameScreen>())
                 {
                     gameScreen.Unload();

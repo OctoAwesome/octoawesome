@@ -148,6 +148,7 @@ namespace OctoAwesome.Network
         /// <inheritdoc />
         public void Dispose()
         {
+            client.Dispose();
             hubSubscription.Dispose();
             simulationSource.Dispose();
             chunkSource.Dispose();

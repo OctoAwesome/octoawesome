@@ -26,6 +26,11 @@ namespace OctoAwesome
         /// </summary>
         public const int SELECTIONRANGE = 8;
 
+        /// <summary>
+        /// Gets or Sets the Name of this player
+        /// </summary>
+        [NoosonIgnore]
+        public string Name { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.

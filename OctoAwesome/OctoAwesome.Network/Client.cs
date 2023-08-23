@@ -13,16 +13,14 @@ namespace OctoAwesome.Network
         public Client(string host, ushort port) : base(new TcpClient())
         {
             var address = Dns.GetHostAddresses(host).FirstOrDefault();
-       
+
             TcpClient.BeginConnect(address, port, OnConnected, null);
         }
-
-       
 
         private void OnConnected(IAsyncResult ar)
         {
             TcpClient.EndConnect(ar);
-            Start();
+            _ = Start();
         }
     }
 }
