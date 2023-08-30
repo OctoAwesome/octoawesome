@@ -54,7 +54,8 @@ namespace OctoAwesome.Network
         private readonly ConcurrentRelay<Package> packages;
         private TcpClient? tcpClient;
         private NetworkStream stream;
-
+        private ConcurrentQueue<Memory<byte>> toSend = new();
+        private bool disposed;
 
         static BaseClient()
         {
@@ -75,45 +76,85 @@ namespace OctoAwesome.Network
             Id = NextId;
             TcpClient = socket;
             TcpClient.NoDelay = true;
+            TcpClient.SendTimeout = 2000;
         }
 
         /// <summary>
         /// Starts receiving data for this client asynchronously.
         /// </summary>
         /// <returns>The created receiving task.</returns>
-        public async ValueTask Start()
+        public void Start()
         {
             logger.Debug($"Starting connection to {TcpClient.Client.RemoteEndPoint}");
             stream = TcpClient.GetStream();
-
-            var buffer = new byte[1024 * 1024];
-            try
+            CancellationToken token = cancellationTokenSource.Token;
+            _ = Task.Run(() =>
             {
-                do
+                try
                 {
-                    var readBytes = await stream.ReadAsync(buffer, cancellationTokenSource.Token);
-
-                    if (readBytes < 1)
-                    {
-                        //abort!
-                        Stop();
-                        return;
-                    }
-
-                    int offset = 0;
                     do
                     {
-                        offset += DataReceived(buffer, readBytes, offset);
-                        logger.Trace($"Recveided bytes new offest: {offset}");
-                    } while (offset < readBytes);
+                        if (token.IsCancellationRequested)
+                            return;
 
-                } while (true);
-            }
-            catch (IOException)
+                        if (!toSend.TryDequeue(out var bytes))
+                        {
+                            Thread.Sleep(1);
+                            continue;
+                        }
+                        stream.Write(bytes.Span);
+                        stream.Flush();
+                        logger.Trace($"Did send the data with len {bytes.Length}");
+
+                    } while (true);
+                }
+                catch (IOException ex)
+                {
+                    logger.Error(ex);
+                    Stop();
+                }
+            });
+
+            Task.Run(async () =>
             {
-                Stop();
-                throw;
-            }
+                var buffer = new byte[1024 * 1024];
+                try
+                {
+                    do
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        var readBytes = await stream.ReadAsync(buffer, token);
+
+                        logger.Trace($"Recieved bytes amount: {readBytes}");
+                        if (readBytes < 1)
+                        {
+                            //abort!
+                            if (!token.IsCancellationRequested)
+                                Stop();
+                            return;
+                        }
+
+                        int offset = 0;
+                        do
+                        {
+                            offset += DataReceived(buffer, readBytes, offset);
+                            logger.Trace($"Recieved bytes new offest: {offset}");
+                        } while (offset < readBytes);
+
+                    } while (true);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Stop();
+                    logger.Error("Got exception during stream read", ex);
+                    throw;
+                }
+            });
 
         }
 
@@ -123,8 +164,9 @@ namespace OctoAwesome.Network
         public void Stop()
         {
             logger.Debug($"Stopping connection {TcpClient.Client.RemoteEndPoint}");
+            if (!disposed)
+                cancellationTokenSource.Cancel();
             ClientDisconnected?.Invoke(this, EventArgs.Empty);
-            cancellationTokenSource.Cancel();
         }
 
         /// <summary>
@@ -174,16 +216,8 @@ namespace OctoAwesome.Network
 
         private async ValueTask SendInternal(byte[] data, int len)
         {
-            try
-            {
-                await stream.WriteAsync(data.AsMemory(0, len));
-                logger.Trace($"Did send the data with len {len}");
-            }
-            catch (IOException ex)
-            {
-                logger.Error(ex);
-                Stop();
-            }
+            toSend.Enqueue(data.AsMemory(0, len));
+
         }
 
 
@@ -240,6 +274,8 @@ namespace OctoAwesome.Network
 
         public virtual void Dispose()
         {
+            disposed = true;
+            cancellationTokenSource.Cancel();
             packages.Dispose();
             cancellationTokenSource.Dispose();
             stream?.Dispose();

@@ -86,19 +86,26 @@ namespace OctoAwesome.Network
             Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");
             var listener = (TcpListener)ar.AsyncState;
 
-            var tmpClient = listener.EndAcceptTcpClient(ar);
+            try
+            {
+                var tmpClient = listener.EndAcceptTcpClient(ar);
+                tmpClient.NoDelay = true;
 
-            tmpClient.NoDelay = true;
+                var client = new ConnectedClient(tmpClient);
+                client.ClientDisconnected += Client_ClientDisconnected;
+                OnClientConnecting?.Invoke(this, client);
+                client.Start();
+                OnClientConnected?.Invoke(this, client);
 
-            var client = new ConnectedClient(tmpClient);
-            client.ClientDisconnected += Client_ClientDisconnected;
-            OnClientConnecting?.Invoke(this, client);
-            _ = client.Start();
-            OnClientConnected?.Invoke(this, client);
-
-
-            lock (lockObj)
-                connectedClients.Add(client);
+                lock (lockObj)
+                    connectedClients.Add(client);
+            }
+            catch (Exception)
+            {
+                if (listener.Server.IsBound)
+                    listener.BeginAcceptTcpClient(OnClientAccepted, listener);
+                return;
+            }
 
             listener.BeginAcceptTcpClient(OnClientAccepted, listener);
         }
@@ -113,5 +120,6 @@ namespace OctoAwesome.Network
                 //Socket.Select()
             }
         }
+
     }
 }

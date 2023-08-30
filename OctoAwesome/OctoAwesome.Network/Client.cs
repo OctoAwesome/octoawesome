@@ -20,7 +20,7 @@ namespace OctoAwesome.Network
         private void OnConnected(IAsyncResult ar)
         {
             TcpClient.EndConnect(ar);
-            _ = Start();
+            Start();
         }
     }
 }

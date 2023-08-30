@@ -122,7 +122,7 @@ namespace OctoAwesome.Network
         /// <param name="data">The package payload.</param>
         public Package(byte[] data) : this(true)
         {
-            payload = data;
+            Payload = data;
         }
 
         /// <summary>
