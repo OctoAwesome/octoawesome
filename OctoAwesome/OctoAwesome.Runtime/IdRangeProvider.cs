@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Runtime;
 
-[Nooson, SerializationId(4, 1)]
+[Nooson, SerializationId()]
 public partial class RangeRequest : IConstructionSerializable<RangeRequest>
 {
     public Range Response { get; set; }

@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Client.UI
 {
-    //TODO: Perhaps outsource
-
     /// <summary>
     /// The base extension implementation.
     /// </summary>

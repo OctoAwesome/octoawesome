@@ -111,8 +111,11 @@ namespace OctoAwesome.Serialization
         /// <returns>The deserialized object.</returns>
         public static T DeserializeNetwork<T>(Span<byte> data) where T : ISerializable, new()
         {
+            var typeId = BitConverter.ToUInt64(data);
+            if (typeof(T).SerializationId() != typeId)
+                throw new ArgumentException($"The provided data contained the type id {typeId} which doesn't match with the provided generic types type id {typeof(T).SerializationId()}", nameof(data));
+            
             var obj = new T();
-            //TODO Read the id instead of skipping it. Maybe even check the type in the ser id type provider
             InternalDeserialize(ref obj, data[sizeof(long)..]);
             return obj;
         }
@@ -139,7 +142,10 @@ namespace OctoAwesome.Serialization
         /// <returns>The deserialized object.</returns>
         public static T DeserializeSpecialCtorNetwork<T>(Span<byte> data) where T : IConstructionSerializable<T>
         {
-            //TODO Read the id instead of skipping it. Maybe even check the type in the ser id type provider
+            var typeId = BitConverter.ToUInt64(data);
+            if (typeof(T).SerializationId() != typeId)
+                throw new ArgumentException($"The provided data contained the type id {typeId} which doesn't match with the provided generic types type id {typeof(T).SerializationId()}", nameof(data));
+
             return DeserializeSpecialCtor<T>(data[sizeof(long)..]);
         }
 
@@ -166,7 +172,10 @@ namespace OctoAwesome.Serialization
         /// <returns>The deserialized object.</returns>
         public static T DeserializeNetwork<T>(T instance, Span<byte> data) where T : ISerializable
         {
-            //TODO Read the id instead of skipping it. Maybe even check the type in the ser id type provider
+            var typeId = BitConverter.ToUInt64(data);
+            if (typeof(T).SerializationId() != typeId)
+                throw new ArgumentException($"The provided data contained the type id {typeId} which doesn't match with the provided generic types type id {typeof(T).SerializationId()}", nameof(data));
+
             InternalDeserialize(ref instance, data[sizeof(long)..]);
             return instance;
         }

@@ -13,7 +13,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with box collision.
     /// </summary>
-    [Nooson, SerializationId(1, 8)]
+    [Nooson, SerializationId()]
     public sealed partial class BoxCollisionComponent : CollisionComponent, IEquatable<BoxCollisionComponent?>
     {
         /// <summary>

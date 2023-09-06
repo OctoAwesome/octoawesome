@@ -10,7 +10,7 @@ namespace OctoAwesome.Basics
     /// <summary>
     /// A complex planet implementation with complex features.
     /// </summary>
-    [SerializationId(2, 4), Nooson]
+    [SerializationId(), Nooson]
     public partial class ComplexPlanet : Planet, IConstructionSerializable<ComplexPlanet>
     {
         // The gravitational constant was chosen on purpose to be that "big", see Issue #220

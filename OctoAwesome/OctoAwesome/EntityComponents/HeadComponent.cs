@@ -8,7 +8,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component describing the head properties of an entity.
     /// </summary>
-    [Nooson, SerializationId(1, 10)]
+    [Nooson, SerializationId()]
     public sealed partial class HeadComponent : Component, IEntityComponent
     {
         /// <summary>

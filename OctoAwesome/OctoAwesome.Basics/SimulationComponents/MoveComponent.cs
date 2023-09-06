@@ -16,7 +16,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with moveable entities.
     /// </summary>
-    [SerializationId(2, 21)]
+    [SerializationId()]
     public sealed class MoveComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,

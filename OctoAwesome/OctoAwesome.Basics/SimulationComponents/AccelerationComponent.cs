@@ -14,7 +14,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with accelerations.
     /// </summary>
-    [SerializationId(2, 16)]
+    [SerializationId()]
     public sealed class AccelerationComponent : SimulationComponent<
         Entity,
         AccelerationComponent.AcceleratedEntity,

@@ -224,19 +224,6 @@ namespace OctoAwesome
         protected virtual void OnAddComponent(IComponent component)
         {
             component.Parent = this;
-            //HACK: Remove PositionComponent Dependency
-            //if (component is LocalChunkCacheComponent cacheComponent)
-            //{
-            //    if (cacheComponent.LocalChunkCache != null)
-            //        return;
-
-            //    var positionComponent = Components.GetComponent<PositionComponent>();
-
-            //    if (positionComponent == null)
-            //        return;
-
-            //cacheComponent.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
-            //}
 
             if (component is IUpdateable updateable)
                 updateables.Add(updateable);

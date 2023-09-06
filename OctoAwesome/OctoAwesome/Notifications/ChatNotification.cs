@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OctoAwesome.Notifications;
 
-[Nooson, SerializationId(1, 19)]
+[Nooson, SerializationId()]
 public partial class ChatNotification : SerializableNotification, IConstructionSerializable<ChatNotification>
 {
     public string Text { get; set; }

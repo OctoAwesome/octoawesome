@@ -12,7 +12,7 @@ namespace OctoAwesome.Basics.Entities
     /// <summary>
     /// An entity used for dogs in the game.
     /// </summary>
-    [SerializationId(2, 1)]
+    [SerializationId()]
     [Nooson]
     public partial class WauziEntity : Entity, ISerializable<WauziEntity>
     {

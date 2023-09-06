@@ -17,7 +17,7 @@ namespace OctoAwesome
     /// <summary>
     /// Entity, that the user can control using input devices.
     /// </summary>
-    [SerializationId(1, 1)]
+    [SerializationId()]
     [Nooson]
     public partial class Player : Entity, IConstructionSerializable<Player>
     {

@@ -10,7 +10,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component describing the body properties of an entity.
     /// </summary>
-    [Nooson, SerializationId(1, 7)]
+    [Nooson, SerializationId()]
     public sealed partial class BodyComponent : Component, IEntityComponent, IEquatable<BodyComponent?>
     {
         /// <summary>

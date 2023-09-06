@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics.FunctionBlocks;
 /// <summary>
 /// Represents the furnace object in the world
 /// </summary>
-[SerializationId(2, 3)]
+[SerializationId()]
 [Nooson]
 public partial class Furnace : Entity, IConstructionSerializable<Furnace>
 {

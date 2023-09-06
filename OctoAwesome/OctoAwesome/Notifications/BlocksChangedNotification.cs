@@ -9,7 +9,7 @@ namespace OctoAwesome.Notifications
     /// <summary>
     /// Notification for changed blocks.
     /// </summary>
-    [Nooson, SerializationId(1,2)]
+    [Nooson, SerializationId()]
     public sealed partial class BlocksChangedNotification : SerializableNotification, IChunkNotification, IConstructionSerializable<BlocksChangedNotification>
     {
         private BlockInfo[]? blockInfos;

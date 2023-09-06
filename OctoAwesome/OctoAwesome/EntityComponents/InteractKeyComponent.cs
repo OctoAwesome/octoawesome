@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.EntityComponents;
-[Nooson, SerializationId(1, 11)]
+[Nooson, SerializationId()]
 public partial class InteractKeyComponent : Component, IEntityComponent
 {
     public string Key { get; set; }

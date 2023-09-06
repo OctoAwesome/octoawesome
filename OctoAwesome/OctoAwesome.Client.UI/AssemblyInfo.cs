@@ -1,4 +1,7 @@
-﻿using System;
+﻿using OctoAwesome;
+using OctoAwesome.UI.Components;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,3 +18,6 @@ using System.Threading.Tasks;
     NameOfDeserializeOnInstance = "Deserialize",
     NameOfStaticDeserializeIntoInstance = "Deserialize",
     NameOfStaticDeserializeWithOutParams = "DeserializeOut")]
+
+[assembly: SerializationId<UiKeyComponent>(3, 1)]
+[assembly: SerializationId<UiMappingComponent>(3, 2)]

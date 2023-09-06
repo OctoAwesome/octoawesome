@@ -8,7 +8,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for a controllable entity.
     /// </summary>
-    [SerializationId(1, 9)]
+    [SerializationId()]
     public class ControllableComponent : Component, IEntityComponent
     {
         /// <summary>

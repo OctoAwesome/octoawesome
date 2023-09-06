@@ -12,7 +12,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for animated models.
     /// </summary>
-    [Nooson, SerializationId(1,6)]
+    [Nooson, SerializationId()]
     public partial class AnimationComponent : Component, IEntityComponent
     {
 

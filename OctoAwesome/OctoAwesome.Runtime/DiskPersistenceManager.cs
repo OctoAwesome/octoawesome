@@ -133,8 +133,7 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
             Directory.CreateDirectory(path);
 
-            // TODO: consider player name
-            string file = Path.Combine(path, "player.info");
+            string file = Path.Combine(path, $"player_{player.Name}.info");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
@@ -282,8 +281,7 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public Awaiter? Load(out Player player, Guid universeGuid, string playerName)
         {
-            //TODO: Replace with player name later on.
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), "player.info");
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), $"player_{playerName}.info");
             player = new Player();
             if (!File.Exists(file))
                 return null;
@@ -301,6 +299,7 @@ namespace OctoAwesome.Runtime
                     }
                     catch (Exception)
                     {
+                        //TODO Should we delete the File if the data is invalid?
                         // File.Delete(file);
                     }
                 }

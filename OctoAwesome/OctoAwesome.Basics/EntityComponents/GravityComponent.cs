@@ -3,7 +3,7 @@
     /// <summary>
     /// Component for applying gravity force to the entity.
     /// </summary>
-    [SerializationId(2, 10)]
+    [SerializationId()]
     public sealed class GravityComponent : ForceComponent
     {
     }

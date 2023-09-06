@@ -9,7 +9,7 @@ namespace OctoAwesome
     /// <summary>
     /// Registrar class for handling types annotated with the <see cref="SerializationIdAttribute"/>.
     /// </summary>
-    public class SerializationRegistrar : BaseRegistrar<Type>
+    public class SerializationRegistrar : BaseRegistrar<BaseSerializationIdAttribute>
     {
         /// <inheritdoc />
         public override string ChannelName => ChannelNames.Serialization;
@@ -28,14 +28,14 @@ namespace OctoAwesome
         /// Registers a Type with the required <see cref="SerializationIdAttribute"/>.
         /// </summary>
         /// <param name="type">Type with <see cref="SerializationIdAttribute"/></param>
-        public override void Register(Type type)
+        public override void Register(BaseSerializationIdAttribute type)
         {
-            var serId = type.SerializationId();
+            var serId = type.CombinedId;
 
             if (serId == 0)
-                throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Name}, so it cant be registered.");
+                throw new ArgumentException($"Missing {nameof(SerializationIdAttribute)} on type {type.Type.Name}, so it cant be registered.");
 
-            SerializationIdTypeProvider.Register(serId, type);
+            SerializationIdTypeProvider.Register(serId, type.Type);
         }
 
         /// <summary>
@@ -43,25 +43,25 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="type">Type without <see cref="SerializationIdAttribute"/></param>
         /// <param name="serializationId">The serialization id which normally would be given via <see cref="SerializationIdAttribute"/></param>
-        public void Register(Type type, ulong serializationId)
-        {
+        //public void Register(Type type, ulong serializationId)
+        //{
 
-            if (serializationId == 0)
-                throw new ArgumentException($"0 is not allowed for a serialization id, because it indicates a missing attribute of {nameof(SerializationIdAttribute)}.");
+        //    if (serializationId == 0)
+        //        throw new ArgumentException($"0 is not allowed for a serialization id, because it indicates a missing attribute of {nameof(SerializationIdAttribute)}.");
 
-            SerializationIdTypeProvider.Register(serializationId, type);
-        }
+        //    SerializationIdTypeProvider.Register(serializationId, type);
+        //}
 
         /// <summary>
         /// Not supported
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public override void Unregister(Type value) => throw new NotSupportedException();
+        public override void Unregister(BaseSerializationIdAttribute value) => throw new NotSupportedException();
 
         /// <summary>
         /// Not supported, use <see cref="SerializationIdTypeProvider"/> instead
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public override IReadOnlyCollection<Type> Get() => throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
+        public override IReadOnlyCollection<BaseSerializationIdAttribute> Get() => throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
     }
 }

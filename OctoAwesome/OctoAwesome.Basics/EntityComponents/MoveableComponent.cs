@@ -7,7 +7,7 @@ namespace OctoAwesome.Basics.EntityComponents
     /// Component for entities that can be moved.
     /// </summary>
     [Nooson]
-    [SerializationId(2, 12)]
+    [SerializationId()]
     public sealed partial class MoveableComponent : Component, IEntityComponent
     {
         /// <summary>

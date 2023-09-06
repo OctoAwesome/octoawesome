@@ -15,7 +15,7 @@ namespace OctoAwesome.EntityComponents
     /// </summary>
     //[NoosonCustom(SerializeMethodName = nameof(Serialize), DeserializeMethodName = nameof(Deserialize))]
     [Nooson]
-    [SerializationId(1, 14)]
+    [SerializationId()]
     public sealed partial class PositionComponent : Component, IEntityComponent, ISerializable<PositionComponent>
     {
         /// <summary>

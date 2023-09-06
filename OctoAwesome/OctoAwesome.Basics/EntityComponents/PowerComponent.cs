@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics.EntityComponents
     /// Base component to apply power to an entity.
     /// </summary>
     [Nooson]
-    [SerializationId(2, 13)]
+    [SerializationId()]
     public abstract partial class PowerComponent : Component, IEntityComponent
     {
         /// <summary>

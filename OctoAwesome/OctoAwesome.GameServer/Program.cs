@@ -135,8 +135,7 @@ namespace OctoAwesome.GameServer
 
                 if (commandResult.Errors.Count > 0)
                 {
-                    //Write the fucking manual and then read it!
-                    //TODO
+                    //TODO Write the fucking manual and then read it!
                 }
 
                 return commandResult.Invoke();

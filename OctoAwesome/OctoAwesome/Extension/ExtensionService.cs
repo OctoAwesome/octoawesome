@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+
 using OctoAwesome.Database;
 using OctoAwesome.Serialization;
 
@@ -264,21 +265,16 @@ public class ExtensionService
 
     public void RegisterTypesWithSerializationId(Assembly assembly)
     {
-        var types = assembly
-                  .GetTypes();
+        var types = assembly.GetCustomAttributes<BaseSerializationIdAttribute>();
 
-        foreach (var type in types)
+        foreach (var serIdAttribute in types)
         {
-            if (type.IsInterface || type.IsAbstract)
-            {
-                continue;
-            }
 
-            var serId = type.SerializationId();
+            var serId = serIdAttribute.CombinedId;
 
-            if(serId > 0)
+            if (serId > 0)
             {
-                Register(type, ChannelNames.Serialization);
+                Register(serIdAttribute, ChannelNames.Serialization);
             }
         }
     }

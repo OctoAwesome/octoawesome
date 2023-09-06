@@ -75,7 +75,7 @@ namespace OctoAwesome.EntityComponents
         {
             if (notification.Notification is PropertyChangedNotification changedNotification)
             {
-                if (changedNotification.Issuer == GetType().Name)
+                if (changedNotification.Issuer == GetType().SerializationId())
                 {
                     managedComponent ??= Instance.GetComponent<ServerManagedComponent>() ?? new();
                     if (!managedComponent.OnServer && Instance is not Player)

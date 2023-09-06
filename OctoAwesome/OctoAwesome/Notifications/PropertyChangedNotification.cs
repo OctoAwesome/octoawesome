@@ -11,18 +11,13 @@ namespace OctoAwesome.Notifications
     [Nooson]
     public partial class PropertyChangedNotification : SerializableNotification, IConstructionSerializable<PropertyChangedNotification>
     {
-        private string? issuer;
         private byte[]? value;
         private int componentId;
 
         /// <summary>
         /// Gets or sets the name of the issuer that caused the property change.
         /// </summary>
-        public string Issuer
-        {
-            get => NullabilityHelper.NotNullAssert(issuer, $"{nameof(Issuer)} was not initialized!");
-            set => issuer = NullabilityHelper.NotNullAssert(value, $"{nameof(Issuer)} cannot be initialized with null!");
-        }
+        public ulong Issuer { get; set; }
 
 
         /// <summary>
@@ -47,7 +42,7 @@ namespace OctoAwesome.Notifications
         /// <inheritdoc />
         protected override void OnRelease()
         {
-            issuer = default;
+            Issuer = 0;
             value = default;
             componentId = default;
 

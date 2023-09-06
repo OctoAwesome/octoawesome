@@ -10,7 +10,7 @@ namespace OctoAwesome.Notifications
     /// <summary>
     /// Notifications caused by entities.
     /// </summary>
-    [SerializationId(1, 4)]
+    [SerializationId()]
     public sealed partial class EntityNotification : SerializableNotification, IConstructionSerializable<EntityNotification>
     {
         /// <summary>

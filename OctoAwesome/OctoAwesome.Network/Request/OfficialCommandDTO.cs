@@ -11,7 +11,7 @@ using NonSucking.Framework.Serialization;
 
 namespace OctoAwesome.Network.Request;
 
-[SerializationId(1, uint.MaxValue - 1)]
+[SerializationId()]
 [Nooson]
 public partial class OfficialCommandDTO : IPoolElement, IConstructionSerializable<OfficialCommandDTO>
 {

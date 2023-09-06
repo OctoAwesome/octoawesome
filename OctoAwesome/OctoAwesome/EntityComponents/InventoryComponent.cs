@@ -20,9 +20,12 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for inventories of entities/functional blocks.
     /// </summary>
-    [SerializationId(1, 12)]
+    [SerializationId()]
     public partial class InventoryComponent : Component, IEntityComponent, IConstructionSerializable<InventoryComponent>
     {
+        /*
+        TODO Threadsafety?
+        */
         /// <summary>
         /// Gets a list of inventory slots this inventory consists of.
         /// </summary>
@@ -233,12 +236,6 @@ namespace OctoAwesome.EntityComponents
             }
         }
 
-        /*
-        TODO Can a slot be in multiple inventories at the same time? Complicated limits, threadsafe and and and
-            Add some of these methods as a wrapper on the IInventorySlot itself
-        ✓ TODO Remove all occurences of item? <see Line 162>
-        TODO Threadsafety?
-        */
 
         /// <summary>
         /// Removes all occurences of the item

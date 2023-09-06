@@ -14,7 +14,7 @@ namespace OctoAwesome.Basics.FunctionBlocks
     /// <summary>
     /// Chest entity implementation.
     /// </summary>
-    [SerializationId(2, 2)]
+    [SerializationId()]
     [Nooson]
     public partial class Chest : Entity, ISerializable<Chest>
     {

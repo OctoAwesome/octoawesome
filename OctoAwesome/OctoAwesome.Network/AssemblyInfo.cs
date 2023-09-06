@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using NonSucking.Framework.Serialization;
 
+using OctoAwesome;
+using OctoAwesome.Network.Request;
+
 [assembly: NoosonConfiguration(
     GenerateDeserializeExtension = false,
     DisableWarnings = true,
@@ -17,3 +20,5 @@ using NonSucking.Framework.Serialization;
     NameOfDeserializeOnInstance = "Deserialize",
     NameOfStaticDeserializeIntoInstance = "Deserialize",
     NameOfStaticDeserializeWithOutParams = "DeserializeOut")]
+
+[assembly: SerializationId<OfficialCommandDTO>(1, uint.MaxValue - 1)]

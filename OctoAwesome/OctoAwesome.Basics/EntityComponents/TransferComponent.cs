@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics.EntityComponents;
 /// <summary>
 /// Used for transfering items from one entity to another
 /// </summary>
-[SerializationId(2, 15)]
+[SerializationId()]
 public class TransferComponent : Component, IEntityComponent
 {
     /// <summary>

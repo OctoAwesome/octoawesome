@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics.UI.Components;
 /// <summary>
 /// Component to provide an UI for transferring items from one inventory to another.
 /// </summary>
-[SerializationId(2, 26)]
+[SerializationId()]
 public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
     /// <summary>

@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics.UI.Components;
 /// <summary>
 /// Component to provide an UI for transferring items from and to a furnace from a different inventory.
 /// </summary>
-[SerializationId(2, 25)]
+[SerializationId()]
 public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryComponent, TransferComponent>, InventoryComponent, TransferComponent>
 {
     /// <summary>

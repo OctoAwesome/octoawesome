@@ -64,8 +64,8 @@ namespace OctoAwesome
         {
             var updateNotification = propertyChangedNotificationPool.Rent();
 
-            updateNotification.Issuer = component.GetType().Name; //TODO SerializationId()
-            updateNotification.ComponentId = component.Id; //TODO WTF Burning Component is a Component Container
+            updateNotification.Issuer = component.GetType().SerializationId();
+            updateNotification.ComponentId = component.Id;
             updateNotification.Value = Serializer.Serialize(component).ToArray();
 
             var entityNotification = entityNotificationPool.Rent();

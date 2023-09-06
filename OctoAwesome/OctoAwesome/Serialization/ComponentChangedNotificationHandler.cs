@@ -40,7 +40,7 @@ internal class ComponentChangedNotificationHandler
             return;
         }
         logger.Trace($"Rec {nameof(EntityNotification)} of entity {entity.Id} with type {propChanged.Issuer}");
-        if (actionHandlers.TryGetValue(propChanged.Issuer, out var handler))
+        if (actionHandlers.TryGetValue(SerializationIdTypeProvider.Get(propChanged.Issuer).Name, out var handler))
         {
             handler.Invoke(this, entity, entityNotitification, propChanged);
         }

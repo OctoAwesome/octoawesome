@@ -250,7 +250,6 @@ namespace OctoAwesome.Components
         /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            //TODO: Change (Collection was modified in Multiplayer)
             foreach (var value in values)
                 UpdateValue(gameTime, value);
         }

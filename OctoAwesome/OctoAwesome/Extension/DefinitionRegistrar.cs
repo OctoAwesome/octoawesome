@@ -31,10 +31,10 @@ namespace OctoAwesome
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
+            if (!type.IsAssignableTo(typeof(IDefinition)))
+                throw new ArgumentException($"Only types which implement the interface {nameof(IDefinition)} are supported", nameof(type));
 
             var interfaceTypes = type.GetInterfaces();
-
-            //TODO: Check type for idefinition, otherwise throw exception
 
             foreach (var interfaceType in interfaceTypes)
             {

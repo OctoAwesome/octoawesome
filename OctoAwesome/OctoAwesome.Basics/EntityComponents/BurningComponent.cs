@@ -18,10 +18,9 @@ using OctoAwesome.Caching;
 namespace OctoAwesome.Basics.EntityComponents;
 
 [Nooson]
-[SerializationId(2, 6)]
+[SerializationId()]
 internal partial class ProductionInventoriesComponent : Component, IEntityComponent, IConstructionSerializable<ProductionInventoriesComponent>
 {
-    //TODO Check if Inventory Components have parent
     public InventoryComponent InputInventory { get; set; }
     public InventoryComponent OutputInventory { get; set; }
     public InventoryComponent ProductionInventory { get; set; }
@@ -55,7 +54,7 @@ internal partial class ProductionInventoriesComponent : Component, IEntityCompon
     }
 }
 
-[SerializationId(2, 7)]
+[SerializationId()]
 internal partial class BurningComponent : Component, IEntityComponent, IUpdateable
 {
     private StateMachine stateMachine;

@@ -4,7 +4,7 @@
     /// Component to apply power to the body of an entity.
     /// </summary>
     [Nooson]
-    [SerializationId(2, 5)]
+    [SerializationId()]
     public sealed partial class BodyPowerComponent : PowerComponent
     {
         /// <summary>

@@ -485,7 +485,6 @@ namespace OctoAwesome
         /// <param name="value">The new notification.</param>
         public void OnNext(object value)
         {
-            //TODO: Ist das hier noch der Richtige Platz?
             switch (value)
             {
                 case EntityNotification entityNotification:
@@ -496,13 +495,6 @@ namespace OctoAwesome
                             break;
                         case EntityNotification.ActionType.Add:
                             Add(entityNotification.Entity, entityNotification.OverwriteExisting);
-                            //if (IsServerSide)
-                            //{
-                            //    foreach (var item in entities)
-                            //    {
-                            //        RequestEntity(item.Id);
-                            //    }
-                            //}
                             break;
                         case EntityNotification.ActionType.Request:
                             RequestEntity(entityNotification.EntityId);
@@ -511,7 +503,6 @@ namespace OctoAwesome
                             EntityUpdate(entityNotification);
                             break;
                     }
-
                     break;
                 default:
                     break;

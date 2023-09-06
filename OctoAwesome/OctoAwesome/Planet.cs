@@ -11,7 +11,7 @@ namespace OctoAwesome
     /// <summary>
     /// The default implementation for planets.
     /// </summary>
-    [Nooson, SerializationId(1,5)]
+    [Nooson, SerializationId()]
     public partial class Planet : IPlanet, IConstructionSerializable<Planet>
     {
         /// <summary>

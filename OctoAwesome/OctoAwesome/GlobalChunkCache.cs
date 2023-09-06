@@ -20,7 +20,7 @@ namespace OctoAwesome
     {
         //public event EventHandler<IChunkColumn> ChunkColumnChanged;
 
-        private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent autoResetEvent = new AutoResetEvent(false);
 
         private readonly CancellationTokenSource tokenSource;
         private readonly IResourceManager resourceManager;
@@ -217,7 +217,7 @@ namespace OctoAwesome
         {
             semaphore.Dispose();
             updateSemaphore.Dispose();
-            _autoResetEvent.Dispose();
+            autoResetEvent.Dispose();
             chunkSubscription.Dispose();
             chunkSource.Dispose();
             tokenSource.Dispose();
