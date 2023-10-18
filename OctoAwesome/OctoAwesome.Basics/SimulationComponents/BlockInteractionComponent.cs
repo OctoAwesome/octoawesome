@@ -6,6 +6,11 @@ using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using System.Diagnostics;
 using OctoAwesome.Services;
+using OctoAwesome.Graph;
+using System.Collections.Generic;
+using OctoAwesome.Caching;
+using System.Linq;
+using OpenTK.Graphics.ES11;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -23,6 +28,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly BlockCollectionService service;
         private readonly InteractService interactService;
 
+        private readonly Pencil pencil;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockInteractionComponent"/> class.
@@ -36,7 +42,9 @@ namespace OctoAwesome.Basics.SimulationComponents
             this.simulation = simulation;
             service = blockInteractionService;
             this.interactService = interactService;
+            pencil = new();
         }
+
 
         /// <inheritdoc />
         protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
@@ -124,12 +132,86 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 cache.SetBlockMeta(idx, (int)controller.ApplySide);
                                 if (toolbar.ActiveTool.Amount <= 0)
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
+
+                                if (definition is INetworkBlock nb)
+                                {
+                                    Graph.Graph? graph = null;
+                                    var ourInfo = cache.GetBlockInfo(idx);
+
+                                    MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z);
+                                    MaybeAddToGraph(idx.X - 1, idx.Y, idx.Z);
+                                    MaybeAddToGraph(idx.X, idx.Y + 1, idx.Z);
+                                    MaybeAddToGraph(idx.X, idx.Y - 1, idx.Z);
+                                    MaybeAddToGraph(idx.X, idx.Y, idx.Z + 1);
+                                    MaybeAddToGraph(idx.X, idx.Y, idx.Z - 1);
+
+                                    void MaybeAddToGraph(int x, int y, int z)
+                                    {
+                                        var index3 = new Index3(x, y, z);
+                                        var id = cache.GetBlock(index3);
+                                        if (id == 0)
+                                            return;
+                                        var definition = simulation.ResourceManager.DefinitionManager.GetBlockDefinitionByIndex(id);
+                                        if (definition is not INetworkBlock networkBlock)
+                                            return;
+
+                                        var info = cache.GetBlockInfo(index3);
+                                        foreach (var item in pencil.Graphs)
+                                        {
+                                            if (item.Nodes.ContainsKey(info.Position))
+                                            {
+                                                if (graph is null)
+                                                {
+                                                    item.AddBlock(ourInfo, (a, idx) => TargetNodeChanged(a, cache, idx));
+                                                    graph = item;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    if (item == graph)
+                                                        continue;
+                                                    graph.MergeWith(item, ourInfo);
+                                                    pencil.RemoveGraph(item);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (graph is null)
+                                    {
+                                        var newGraph = new Graph.Graph(simulation.ResourceManager.DefinitionManager, "Signal", pencil);
+                                        pencil.AddGraph(newGraph);
+                                        newGraph.AddBlock(ourInfo, (a, idx) => TargetNodeChanged(a, cache, idx));
+                                    }
+                                }
                             }
                         }
                     }
                 }
                 controller.ApplyBlock = null;
             }
+        }
+
+        private void TargetNodeChanged(bool isOn, ILocalChunkCache cache, BlockInfo idx)
+        {
+            IBlockDefinition definition;
+            if (isOn)
+            {
+                definition = simulation.ResourceManager.DefinitionManager.BlockDefinitions.FirstOrDefault(x => x.Icon == "light_on");
+            }
+            else
+            {
+                definition = simulation.ResourceManager.DefinitionManager.BlockDefinitions.FirstOrDefault(x => x.Icon == "light_off");
+
+            }
+            cache.SetBlock(idx.Position, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            pencil.Update();
         }
 
         private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
@@ -158,7 +240,19 @@ namespace OctoAwesome.Basics.SimulationComponents
                         {
                             inventory.Add(invDef, quantity);
                         }
+                        //TODO RemoveNode of Graph
 
+                        if (definition is INetworkBlock nb)
+                        {
+                            foreach (var graph in pencil.Graphs)
+                            {
+                                if (graph.Nodes.ContainsKey(lastBlock.Position))
+                                {
+                                    graph.RemoveNode(lastBlock);
+                                    break;
+                                }
+                            } 
+                        }
                     }
 
             }

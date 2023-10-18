@@ -114,7 +114,7 @@ namespace OctoAwesome.Client
         public void StartSinglePlayer(Guid gameId)
         {
             settings.Set("LastUniverse", gameId.ToString());
-            var persistenceManager = new DiskPersistenceManager(extensionService, settings, UpdateHub);
+            var persistenceManager = TypeContainer.Get<DiskPersistenceManager>();
 
             StartGame(persistenceManager, new LocalIdManager(), gameId, "");
         }

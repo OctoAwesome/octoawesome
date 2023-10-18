@@ -1,12 +1,13 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Definitions;
+using OctoAwesome.Graph;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
     /// <summary>
     /// Block definition for cactus blocks.
     /// </summary>
-    public class CactusBlockDefinition : BlockDefinition
+    public class CactusBlockDefinition : BlockDefinition, INetworkBlock
     {
         /// <inheritdoc />
         public override string Icon => "cactus_inside";
@@ -19,6 +20,8 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
+        public NetworkBlockType BlockType => NetworkBlockType.Source;
+        public string TransferType => "Signal";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.

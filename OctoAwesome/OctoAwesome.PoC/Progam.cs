@@ -13,306 +13,420 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
-
-using static OctoAwesome.PoC.StateMachine;
+using System.Threading.Tasks;
 
 namespace OctoAwesome.PoC;
 
 public static class Program
 {
-    class Workbench
+    /*
+     "Redstone", Energy, ItemTransport or Whatever Concept:
+    Phase 1:
+    - Als Übertragungsmedium ganzer Block
+     => Todo Neuer Block der irgendwie Aussieht
+    - Source => Cable => Verbraucher
+     => "Generator", Lampe aus, Lampe an
+    - Mehrproduktion nicht böse
+    - Aktuell austausch des Lampenblock bei "An" und "Aus"
+    - Graph bauen/ändern bei jeder Änderung
+    Phase 2:
+    - Switch / Lever
+    - U = R*I (Very Low Prio)
+    - Storage (Batterien / Kondensatoren)
+    Phase 3:
+    - Adapt to Redstone und ItemTransport
+        - Mehr Kabeltypen
+     */
+
+    // G => Generator / Source
+    // K => Kabel / Cable
+    // L => Last 
+    //
+    //  K-K-L-K-K   K-K-L-K                                  4 1 2 3
+    //  |   |         |   |                                    G-K-K-G   
+    //  K   K     L   K   K                                    G-L-G
+    //  |   |     |   |   |
+    //  G-K-K     G-K-G-K-K-K-G
+    //  |   |         |   |
+    //  G-K-K-L-K   K-G-K-K-L
+
+    class Graph
     {
-        private readonly RecipeService recipeService;
-        private IReadOnlyCollection<Recipe> recipes;
+        public HashSet<Node> Nodes { get; set; }
+        public Dictionary<Node, HashSet<Node>> Edges { get; set; }
+        public HashSet<Node> Sources { get; set; }
+        public HashSet<Node> Targets { get; set; }
 
-        public List<RecipeItem> Inputs { get; } = new();
-        public List<RecipeItem> Outputs { get; } = new();
-
-        public Workbench(RecipeService recipeService)
+        public Graph()
         {
-            this.recipeService = recipeService;
+            Nodes = new();
+            Sources = new();
+            Targets = new();
+            Edges = new();
         }
 
-        public void Initialize()
+        public void AddNode(Node node)
         {
-            recipes = recipeService.GetByType("workbench");
+            var newEdgesSet = new HashSet<Node>();
+            Edges[node] = newEdgesSet;
+            foreach (var item in Nodes)
+            {
+
+                if ((item.Position.Y == node.Position.Y
+                        && item.Position.X - node.Position.X is 1 or -1)
+                    || (item.Position.X == node.Position.X
+                        && item.Position.Y - node.Position.Y is 1 or -1))
+                {
+                    if (Edges.TryGetValue(item, out var existing))
+                    {
+                        existing.Add(node);
+                    }
+                    else
+                    {
+                        Edges[item] = new HashSet<Node> { node };
+                    }
+
+                    newEdgesSet.Add(item);
+                }
+            }
+            if (newEdgesSet.Count == 0 && Nodes.Count > 0)
+            {
+                Edges.Remove(node);
+                return;
+            }
+
+            Nodes.Add(node);
+            if (node is SourceNode)
+                Sources.Add(node);
+            else if (node is TargetNode)
+                Targets.Add(node);
+
+        }
+
+        //TODO Remove Node, Split / Slice into two graphs
+
+        public void RemoveNode(Node node)
+        {
+            if (!Nodes.Contains(node))
+                return;
+
+            Sources.Remove(node);
+            Targets.Remove(node);
+            Nodes.Remove(node);
+
+            var edges = Edges[node];
+
+            Edges.Remove(node);
+
+            foreach (var item in edges)
+            {
+                Edges[item].Remove(node);
+            }
+
+            Update();
+            if (edges.Count > 1)
+            {
+
+                var stillOneGraph = FindPathBetweenNodes(edges.First(), edges.Last());
+                if (!stillOneGraph)
+                {
+                    Console.WriteLine("We need to split");
+                }
+            }
+
+        }
+
+        public bool FindPathBetweenNodes(Node a, Node b)
+        {
+            if ((Math.Abs(a.Position.X - b.Position.X) == 1
+                    && a.Position.Y == b.Position.Y)
+                || (Math.Abs(a.Position.Y - b.Position.Y) == 1
+                    && a.Position.X == b.Position.X))
+            {
+                return true;
+                //Neighbors
+            }
+
+
+            Dictionary<Index2, HashSet<Node>> nodePositions = Nodes.ToDictionary(x => x.Position, x => Edges[x]);
+            HashSet<Index2> alreadyVisited = new() { };
+
+            List<Index2> branches = new();
+
+            Index2 currentAPos = a.Position;
+            Index2 currentBPos = b.Position;
+
+            var starterNode = nodePositions[currentAPos];
+
+            Index2? GetLastBranchPos()
+            {
+                if (branches.Count > 0)
+                {
+                    var last = branches.Last();
+                    branches.Remove(last);
+                    return last;
+                }
+                return null;
+            }
+
+            Index2? GetNextPosition(Index2 pos, Index2 target, bool starterNode)
+            {
+                var edges = nodePositions[pos];
+                alreadyVisited.Add(pos);
+                if (edges.Count > 2 || (starterNode && edges.Count > 1))
+                {
+                    Index2 maxIndex = new(int.MaxValue, int.MaxValue);
+                    Index2 nextPos = maxIndex;
+                    int possibleEdges = 0;
+                    foreach (var item in edges)
+                    {
+                        if (!alreadyVisited.Contains(item.Position))
+                        {
+                            if (nextPos == maxIndex
+                                || nextPos.ShortestDistanceXY(target, maxIndex).Length() > item.Position.ShortestDistanceXY(target, maxIndex).Length())
+                            {
+                                nextPos = item.Position;
+                            }
+
+                            possibleEdges++;
+                        }
+                    }
+
+                    if (possibleEdges > 1)
+                        branches.Add(pos);
+
+                    if (nextPos == maxIndex)
+                        return GetLastBranchPos();
+
+                    return nextPos;
+                }
+                else if (edges.Count == 1 && branches.Count > 0)
+                {
+                    return GetLastBranchPos();
+                }
+                else
+                {
+                    foreach (var node in edges)
+                    {
+                        if (!alreadyVisited.Contains(node.Position))
+                        {
+                            return node.Position;
+                        }
+                    }
+                    return GetLastBranchPos();
+                }
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            bool start = true;
+            while (true)
+            {
+                var nextStep = GetNextPosition(currentAPos, currentBPos, start);
+                start = false;
+
+                if (nextStep is not null)
+                {
+                    var val = nextStep.Value;
+
+                    Console.SetCursorPosition(nextStep.Value.Y, nextStep.Value.X);
+                    Console.Write("X");
+                    currentAPos = nextStep.Value;
+                    if ((Math.Abs(currentAPos.X - currentBPos.X) == 1
+                            && currentAPos.Y == currentBPos.Y)
+                        || (Math.Abs(currentAPos.Y - currentBPos.Y) == 1
+                            && currentAPos.X == currentBPos.X))
+                    {
+                        //Neighbors
+                        ;
+                        Console.SetCursorPosition(0, 10);
+                        Console.WriteLine("Connection found");
+                        return true;
+                    }
+                }
+                else
+                {
+                    Update();
+                    Console.SetCursorPosition(0, 10);
+                    Console.WriteLine("No connection found");
+                    return false;
+                }
+                Thread.Sleep(250);
+            }
+        }
+
+        public void MergeWith(Graph otherGraph, Node connector)
+        {
+            otherGraph.AddNode(connector);
+
+            foreach (var node in otherGraph.Edges)
+            {
+                if (node.Key == connector)
+                {
+                    foreach (var item in node.Value)
+                    {
+                        Edges[connector].Add(item);
+                    }
+                }
+                else
+                {
+                    Edges[node.Key] = node.Value;
+                }
+            }
+            foreach (var item in otherGraph.Sources)
+            {
+                Sources.Add(item);
+            }
+            foreach (var item in otherGraph.Targets)
+            {
+                Targets.Add(item);
+            }
+            foreach (var item in otherGraph.Nodes)
+            {
+                Nodes.Add(item);
+            }
         }
 
         public void Update()
         {
-            if (!Inputs.Any())
-                return;
+            Console.Clear();
+            int currentPower = 0;
+            foreach (var source in Sources)
+            {
+                if (!Edges.TryGetValue(source, out var sourceEdges) || sourceEdges.Count == 0)
+                    continue; // Why is this part of this graph?
+                currentPower = source.Update(currentPower);
+            }
 
-            recipeService.GetByInputs(Inputs, recipes);
+            foreach (var target in Targets)
+            {
+                if (!Edges.TryGetValue(target, out var targetEdges) || targetEdges.Count == 0)
+                    continue; // Why is this part of this graph?
+                currentPower = target.Update(currentPower);
+            }
+            Console.ForegroundColor = ConsoleColor.White;
+            foreach (var item in Nodes)
+            {
+                Console.SetCursorPosition(item.Position.Y, item.Position.X);
+                if (item is SourceNode)
+                {
+                    Console.Write("G");
+                }
+                else if (item is TargetNode tn)
+                {
+
+                    Console.Write(tn.IsOn ? "X" : 'O');
+                }
+                else if (item is TransferNode)
+                {
+                    Console.Write("+");
+                }
+
+            }
         }
     }
 
-
-    class Furnace
+    public abstract class Node
     {
-        private readonly RecipeService recipeService;
-        private readonly IDefinitionManager manager;
-        private IReadOnlyCollection<Recipe> recipes;
-        private Recipe? currentRecipe;
-        private int requiredMillisecondsForRecipe;
-        private int whEnergyUsage = 2000;
+        public Index2 Position { get; set; }
+        public string Name { get; set; } = "";
 
-        private StateMachine stateMachine;
+        public abstract int Update(int state);
 
-        public InventoryComponent Input { get; set; } = new();
-        public InventoryComponent Outputs { get; } = new();
-
-        public Furnace(RecipeService recipeService, IDefinitionManager manager)
+        public override string ToString()
         {
-            this.recipeService = recipeService;
-            this.manager = manager;
+            return $"{Name} {Position}";
         }
+    }
 
-        public void Initialize()
+    public class SourceNode : Node
+    {
+
+        public override int Update(int state)
         {
-            recipes = recipeService.GetByType("furnace");
-
-            //Idle => Recipe => Running => Output => Recipe / Idle
-
-            var idleState = new GenericNode("idle", (elapsed, total) => OnInputSlotUpdate());
-            var running = new GenericNode("running", HasRecipeFinished);
-            var recipe = new GenericNode("recipe", (elapsed, total) => true);
-            var output = new GenericNode("output", GenerateOutput);
-
-            stateMachine = new StateMachine(idleState);
-            stateMachine.AddNodes(running, recipe, output);
-
-            stateMachine.AddTransition(idleState, recipe, () => currentRecipe is not null);
-            stateMachine.AddTransition(recipe, running, () => true);
-            stateMachine.AddTransition(running, output, () => true);
-            stateMachine.AddTransition(output, recipe, () => currentRecipe is not null);
-            stateMachine.AddTransition(output, idleState, () => currentRecipe is null);
+            return 100;
         }
-
-        private bool GenerateOutput(TimeSpan elapsed, TimeSpan total)
+    }
+    public class TransferNode : Node
+    {
+        public override int Update(int state)
         {
-            if (currentRecipe.Inputs.Length == 1) 
-            {
-                var inputItem = currentRecipe.Inputs[0];
-                var inputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == inputItem.ItemName);
-
-                var inputSlot = Input.GetSlot(inputDef);
-
-                foreach (var outputItem in currentRecipe.Outputs)
-                {
-                    var outputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
-                    if (outputDef is IItemDefinition itemDef)
-                    {
-                        IMaterialDefinition? mat;
-
-                        if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
-                            mat = inputSlot.Item.Material;
-                        else
-                            mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
-
-                        if (mat is null)
-                            return false;
-                        Outputs.Add(itemDef.Create(mat), outputItem.Count);
-                    }
-                    else if (outputDef is IBlockDefinition blockDefinition)
-                    {
-                        Outputs.Add(blockDefinition, outputItem.Count);
-                    }
-                }
-                inputSlot.Remove(currentRecipe.Inputs[0].Count);
-            }
-            else if (currentRecipe.Inputs.Length > 1)
-            {
-                foreach (var inputItem in currentRecipe.Inputs)
-                {
-                    var inputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == inputItem.ItemName);
-
-                    var inputSlot = Input.GetSlot(inputDef);
-
-                    foreach (var outputItem in currentRecipe.Outputs)
-                    {
-
-                        var outputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
-                        if (outputDef is IItemDefinition itemDef)
-                        {
-                            IMaterialDefinition? mat;
-
-                            if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
-                            {
-                                if (outputItem.MaterialId != inputItem.MaterialId)
-                                    continue;
-                                mat = inputSlot.Item.Material;
-                            }
-                            else
-                                mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
-
-                            if (mat is null)
-                                return false;
-                            Outputs.Add(itemDef.Create(mat), outputItem.Count);
-                        }
-                        else if (outputDef is IBlockDefinition blockDefinition)
-                        {
-                            Outputs.Add(blockDefinition, outputItem.Count);
-                        }
-                    }
-                    inputSlot.Remove(currentRecipe.Inputs[0].Count);
-                }
-            }
-            else
-            {
-                foreach (var outputItem in currentRecipe.Outputs)
-                {
-                    if (string.IsNullOrWhiteSpace(outputItem.MaterialName))
-                        continue;
-                    var outputDef = manager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
-                    if (outputDef is IItemDefinition itemDef)
-                    {
-                        IMaterialDefinition? mat;
-
-                        mat = manager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
-
-                        if (mat is null)
-                            return false;
-                        Outputs.Add(itemDef.Create(mat), outputItem.Count);
-                    }
-                    else if (outputDef is IBlockDefinition blockDefinition)
-                    {
-                        Outputs.Add(blockDefinition, outputItem.Count);
-                    }
-                }
-            }
-
-            OnInputSlotUpdate();
-
-            return true; //We should never be two updates in this state! That would be mist
+            return state;
         }
+    }
+    public class TargetNode : Node
+    {
+        public bool IsOn { get; private set; }
 
-        private Recipe? GetRecipe()
+        public override int Update(int state)
         {
-            if (Input is null)
-                return null; //Reset recipe, time etc. pp.
-            //var inputSlot = Input.Inventory.FirstOrDefault();
-            var inputs = Input.Inventory.GroupBy(x => x.Definition.DisplayName).Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item.Material.DisplayName /*TODO Name not Displayname*/)).ToArray();
-            if (inputs.Length == 0)
-                return null; //Reset recipe, time etc. pp.
-            var recipe = recipeService.GetByInputs(inputs, recipes);
-            if (recipe is null)
-                return null; //Reset recipe, time etc. pp.
-            return recipe;
-        }
-
-        public bool OnInputSlotUpdate()
-        {
-            currentRecipe = GetRecipe();
-            if (currentRecipe is null)
-                return false; //Reset recipe, time etc. pp.
-
-            requiredMillisecondsForRecipe = currentRecipe.Time ?? currentRecipe.Energy!.Value * 40;
-
-            if (currentRecipe.MinTime is not null && requiredMillisecondsForRecipe < currentRecipe.MinTime)
-                requiredMillisecondsForRecipe = currentRecipe.MinTime!.Value;
-
-            if (requiredMillisecondsForRecipe < 0)
-                return false;
-
-            return true;
-        }
-
-        public bool HasRecipeFinished(TimeSpan elapsed, TimeSpan total)
-        {
-            return requiredMillisecondsForRecipe <= total.TotalMilliseconds;
-            //recipeEnd.TotalGameTime < currentGameTime.TotalGameTime
-            //&& recipeEnd.TotalGameTime.Add(currentGameTime.ElapsedGameTime) > currentGameTime.TotalGameTime
-
-            //Has just finished, Input => Output
-            //Check if next recipe can start => OnInputSlotUpdating, after Input => Output
-            //or go to idle
-        }
-
-        public void Update(GameTime currentGameTime)
-        {
-            stateMachine.Update(currentGameTime.ElapsedGameTime);
-
-
-            //Idle to running
-            //or Running to running Fuel Consumption
-
-            if (requiredMillisecondsForRecipe <= 0)
-            {
-                //TODO Fragen die sich Maxi stellen tut:
-                /*
-                    - ✓ Wie also klar Zeitberechnung im Update? => GameTime when finished, etc. => State Machine from jvbsl + Energyrequirement xor Zeitrequirement
-                    - ✓ Auch die Energieberchnung? Theoretisch => Done
-                    - ✓ Output vom Input aus Berechnen / generieren / ...? => Teil vom Rezeptdefinition
-                    - Betriebsmittel (Kleber, Rohöl, Schrauben, andere Öle, Brennmittel ...), was braucht die Maschine um ihre Arbeit zu verrichten?
-                        - Seperate(r) Slot für Input
-                        - Teil vom Block
-                        -> Definition von Betriebsmittelmenge (ZB energie in Holz)
-                        -> Betriebsmitteldefinition auf Rezept und Maschine
-                    - Für den Rezeptservice:
-                        - Wie wird das relevanteste Rezept selektiert? (Kriterien, Demokratie? Ja!)
-                        - Priorisierung von kollidierenden Rezepten => Aktuell ungelöst, für den Anfang FirstOrDefault (Future: UI für Priorisierung / Sortierung, etc) => Erstmal Only Match => Start, ansonsten Auswahl für Player geben bzw. Informieren was noch fehlt, damit das Rezept erfüllt ist
-                        - Pay to Prioritize (Betterplace donations oder sowas), Abomodell
-                
-                    - ✓ Inventory überarbeiten, weil Slot hinzufügen / entfernen doof, wenn es fixe Slots geben sollte
-
-                    - ✓ Placeholder für InputMaterial = Output Material
-                    - Rezept als optionalen Input für Item (Autocrafting) => Dann können Rezepte von außen überschrieben werden vor der Verarbeitung des Inputs
-
-                 */
-
-                /*
-                 Notes:
-                    - Output Material = Input Material, when no explicit material is supplied
-                 */
-
-                //Input = null;
-                //Outputs.AddSlot(currentRecipe!.Outputs);
-            }
+            IsOn = state >= 50;
+            //if (IsOn)
+            //    Console.WriteLine("Lamp is now on");
+            return IsOn ? state - 50 : state;
         }
     }
 
     public static void Main()
     {
-        var rs = new RecipeService();
-        rs.Load(@"C:\Users\susch\source\repos\OctoAwesome\octoawesome\OctoAwesome\OctoAwesome.PoC\Recipes");
-        //var dfm = new DefinitionManager(new Extension.ExtensionService());
-        //TypeContainer.Register<IDefinitionManager, DefinitionManager>(dfm);
-        //TypeContainer.Register<DefinitionManager, DefinitionManager>(dfm);
-        var dfm = TypeContainer.Get<IDefinitionManager>();
-        var furnace = new Furnace(rs, dfm);
-        furnace.Initialize();
-        GameTime gameTime;
-        var swTotal = new Stopwatch();
-        swTotal.Start();
-        var swLast = new Stopwatch();
-        int i = 0;
-        while (true)
-        {
-            gameTime = new GameTime(swTotal.Elapsed, swLast.Elapsed);
-            furnace.Update(gameTime);
-            swLast.Restart();
-            Thread.Sleep(10);
-            i++;
-            if (i % 50 == 0)
-            {
-                var meatDefinition = dfm.ItemDefinitions.First(x => x.DisplayName == "MeatRawDefinition");
-                var foodMaterial = dfm.FoodDefinitions.FirstOrDefault(x => x.DisplayName == "Wauzi Meat");
-                var fooditem = meatDefinition.Create(foodMaterial);
-                if (fooditem is not null)
-                    furnace.Input.Add(fooditem, fooditem.VolumePerUnit);
+        Console.OutputEncoding = Encoding.UTF8;
 
-            }
-            if (i % 100 == 0)
-            {
-                var meatDefinition = dfm.ItemDefinitions.First(x => x.DisplayName == "MeatCookedDefinition");
-                var foodMaterial = dfm.FoodDefinitions.FirstOrDefault(x=>x.DisplayName == "Player Meat");
-                var fooditem = meatDefinition.Create(foodMaterial);
-                if (fooditem is not null)
-                    furnace.Input.Add(fooditem, fooditem.VolumePerUnit);
-            }
+        var graph = new Graph();
+        var aNode = new SourceNode() { Position = new(0, 0) };
+        var bNode = new TargetNode() { Position = new(2, 3) };
+
+        var noConnectionRelevant = new TransferNode() { Position = new(1, 6) };
+        var node27 = new TransferNode() { Position = new(2, 7) };
+        var node06 = new TransferNode() { Position = new(0, 6) };
+        graph.AddNode(aNode);
+        graph.AddNode(new TransferNode() { Position = new(0, 1) });
+        graph.AddNode(new TransferNode() { Position = new(0, 2) });
+        graph.AddNode(new TransferNode() { Position = new(0, 3) });
+        graph.AddNode(new TargetNode() { Position = new(0, 4) });
+        graph.AddNode(new TransferNode() { Position = new(0, 5) });
+        graph.AddNode(node06);
+        graph.AddNode(new TransferNode() { Position = new(0, 7) });
+        graph.AddNode(new TransferNode() { Position = new(1, 7) });
+        graph.AddNode(node27);
+        graph.AddNode(new TransferNode() { Position = new(2, 6) });
+        graph.AddNode(new TransferNode() { Position = new(2, 5) });
+        //graph.AddNode(noConnectionRelevant);
+        graph.Update();
+
+        var graph2 = new Graph();
+        graph2.AddNode(new SourceNode() { Position = new(2, 0) });
+        graph2.AddNode(new TransferNode() { Position = new(2, 1) });
+        graph2.AddNode(new TransferNode() { Position = new(2, 2) });
+        graph2.AddNode(bNode);
+        graph2.Update();
+
+        Console.Clear();
+        var connectorCable = new TransferNode() { Position = new(1, 1), Name = "Connector" };
+        if (graph.Nodes.Count >= graph2.Nodes.Count)
+        {
+            graph.AddNode(connectorCable);
+            graph.MergeWith(graph2, connectorCable);
         }
+        else
+        {
+            graph2.AddNode(connectorCable);
+            graph2.MergeWith(graph, connectorCable);
+            graph = graph2;
+        }
+        graph.Update();
+        Thread.Sleep(1000);
+        //graph.RemoveNode(connectorCable);
+        //graph.RemoveNode(noConnectionRelevant);
+        graph.FindPathBetweenNodes(aNode, bNode);
+        //graph.Update();
+
+        //graph.FindPathBetweenNodes(aNode, bNode);
+
+        /*
+         
+         
+         */
+
         Console.ReadLine();
     }
 }
