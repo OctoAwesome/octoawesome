@@ -281,6 +281,16 @@ namespace OctoAwesome.Location
             => X * X + Y * Y + Z * Z;
 
         /// <summary>
+        /// Calculates the componentwise factorization with -1.
+        /// </summary>
+        /// <param name="val">The calculated factorization with -1.</param>
+        /// <returns>The componentwise factorized result.</returns>
+        public static Index3 operator -(Index3 val)
+        {
+            return new Index3(-val.X, -val.Y, -val.Z);
+        }
+
+        /// <summary>
         /// Calculates the sum of two <see cref="Index3"/> componentwise.
         /// </summary>
         /// <param name="i1">The first operand.</param>
