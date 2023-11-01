@@ -2,7 +2,8 @@
 
 namespace OctoAwesome.Graph;
 
-public class TargetNode : Node
+[Nooson]
+public partial class TargetNode : Node
 {
     public bool IsOn
     {
@@ -12,7 +13,7 @@ public class TargetNode : Node
                 return;
             isOn = value;
 
-            StateHasChanged.Invoke(isOn, this.BlockInfo);
+            StateHasChanged?.Invoke(isOn, this.BlockInfo);
         }
     }
 

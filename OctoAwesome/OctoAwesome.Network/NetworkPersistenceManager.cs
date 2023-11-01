@@ -7,6 +7,7 @@ using System.Text;
 
 using OctoAwesome.Caching;
 using OctoAwesome.Components;
+using OctoAwesome.Graph;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Network.Request;
@@ -217,6 +218,14 @@ namespace OctoAwesome.Network
              where TContainer : ComponentContainer<TComponent>
              where TComponent : IComponent
         {
+        }
+
+        public void SavePencil(Pencil pencil)
+        {
+        }
+        public Pencil LoadPencil(int planetId)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />

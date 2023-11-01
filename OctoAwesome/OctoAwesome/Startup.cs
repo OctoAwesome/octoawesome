@@ -4,6 +4,7 @@ using NLog.Targets;
 
 using NonSucking.Framework.Extension.IoC;
 
+using OctoAwesome.Graph;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;

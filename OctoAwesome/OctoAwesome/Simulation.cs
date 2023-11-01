@@ -186,6 +186,9 @@ namespace OctoAwesome
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
+            foreach (var item in ResourceManager.Pencils)
+                item.Value.Update();
+
             //Update all Entities
             if (entities.Count > 0)
                 foreach (Entity entity in entities)
@@ -199,6 +202,7 @@ namespace OctoAwesome
 
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
+            
 
             FooBbqSimulationComponent.Update(gameTime);
         }

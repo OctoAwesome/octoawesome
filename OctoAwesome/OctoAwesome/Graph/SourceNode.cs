@@ -1,6 +1,7 @@
 ﻿namespace OctoAwesome.Graph;
 
-public class SourceNode : Node
+[Nooson]
+public partial class SourceNode : Node
 {
     public bool IsOn { get; set; } = true;
 

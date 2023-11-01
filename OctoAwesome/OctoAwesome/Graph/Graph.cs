@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Generic;
@@ -8,58 +9,30 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Graph;
-public class Pencil
+
+[Nooson]
+public partial class Graph : IConstructionSerializable<Graph>
 {
-    public int PlanetId { get; set; }
-    public IReadOnlyCollection<Graph> Graphs => graphs;
-    private HashSet<Graph> graphs;
-
-    public Pencil()
-    {
-        graphs = new HashSet<Graph>();
-    }
-
-    public void AddGraph(Graph graph)
-    {
-        graphs.Add(graph);
-    }
-    public void RemoveGraph(Graph graph)
-    {
-        graphs.Remove(graph);
-    }
-
-
-    public void Update()
-    {
-        foreach (var item in Graphs)
-        {
-            item.Update();
-        }
-    }
-}
-
-
-public class Graph
-{
-    public string TransferType { get; }
+    public string TransferType { get;  }
+    public int PlanetId { get; private set; }
     public Dictionary<Index3, Node> Nodes { get; set; }
     public Dictionary<Node, HashSet<Node>> Edges { get; set; }
     public HashSet<Node> Sources { get; set; }
     public HashSet<Node> Targets { get; set; }
+    
+    private IDefinitionManager definitionManager;
+    [NoosonIgnore]
+    private Pencil Parent => parent ??= TypeContainer.Get<IResourceManager>().Pencils[PlanetId];
+    private Pencil parent;
 
-
-    private readonly IDefinitionManager definitionManager;
-    private readonly Pencil parent;
-
-    public Graph(IDefinitionManager definitionManager, string transferType, Pencil parent)
+    public Graph(string transferType)
     {
+        definitionManager = TypeContainer.Get<IDefinitionManager>();
         Nodes = new();
         Sources = new();
         Targets = new();
         Edges = new();
         TransferType = transferType;
-        this.parent = parent;
-        this.definitionManager = definitionManager;
     }
 
     private void AddBlock(Node node)
@@ -167,19 +140,19 @@ public class Graph
                     continue;
 
                 graphEndpoints[item] = new() { item };
-                foreach (var edge in edges.Skip(i+1))
+                for (int i1 = i+1; i1 < edges.Length; i1++)
                 {
-
-                    if(FindPathBetweenNodes(item, edge))
+                    Node? edge = edges[i1];
+                    if (FindPathBetweenNodes(item, edge))
                         graphEndpoints[item].Add(edge);
                 }
             }
 
-            parent.RemoveGraph(this);
+            Parent.RemoveGraph(this);
             foreach (var item in graphEndpoints)
             {
-                Graph graph = new(definitionManager, TransferType, parent);
-                parent.AddGraph(graph);
+                Graph graph = new(TransferType);
+                Parent.AddGraph(graph);
                 void WanderNode(Node node, Node? source)
                 {
                     graph.AddBlock(item.Key);

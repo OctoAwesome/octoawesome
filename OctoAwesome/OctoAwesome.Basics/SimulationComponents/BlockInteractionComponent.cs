@@ -20,15 +20,15 @@ namespace OctoAwesome.Basics.SimulationComponents
     [SerializationId()]
     public class BlockInteractionComponent : SimulationComponent<
         Entity,
-        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent, PositionComponent>,
         ControllableComponent,
-        InventoryComponent>
+        InventoryComponent,
+        PositionComponent>
     {
         private readonly Simulation simulation;
         private readonly BlockCollectionService service;
         private readonly InteractService interactService;
 
-        private readonly Pencil pencil;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockInteractionComponent"/> class.
@@ -42,16 +42,16 @@ namespace OctoAwesome.Basics.SimulationComponents
             this.simulation = simulation;
             service = blockInteractionService;
             this.interactService = interactService;
-            pencil = new();
         }
 
 
         /// <inheritdoc />
-        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent, PositionComponent> value)
         {
             var entity = value.Value;
             var controller = value.Component1;
             var inventory = value.Component2;
+            var positioncomponent = value.Component3;
 
             var toolbar = entity.Components.Get<ToolBarComponent>();
             var cache = entity.Components.Get<LocalChunkCacheComponent>()?.LocalChunkCache;
@@ -63,7 +63,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                     blockInfo =>
                     {
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
-                        InteractWith(blockInfo, inventory, toolbar, cache);
+                        InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
                     },
                     componentContainer =>
                     {
@@ -95,7 +95,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                         var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
                         bool intersects = false;
-                        var positioncomponent = entity.Components.Get<PositionComponent>();
                         var bodycomponent = entity.Components.Get<BodyComponent>();
 
                         if (positioncomponent != null && bodycomponent != null)
@@ -135,6 +134,8 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                                 if (definition is INetworkBlock nb)
                                 {
+
+                                   var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
                                     Graph.Graph? graph = null;
                                     var ourInfo = cache.GetBlockInfo(idx);
 
@@ -180,7 +181,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                                     if (graph is null)
                                     {
-                                        var newGraph = new Graph.Graph(simulation.ResourceManager.DefinitionManager, "Signal", pencil);
+                                        var newGraph = new Graph.Graph("Signal");
                                         pencil.AddGraph(newGraph);
                                         newGraph.AddBlock(ourInfo, (a, idx) => TargetNodeChanged(a, cache, idx));
                                     }
@@ -211,10 +212,9 @@ namespace OctoAwesome.Basics.SimulationComponents
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            pencil.Update();
         }
 
-        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
@@ -244,6 +244,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                         if (definition is INetworkBlock nb)
                         {
+                            var pencil = simulation.ResourceManager.Pencils[posComponent.Position.Planet];
                             foreach (var graph in pencil.Graphs)
                             {
                                 if (graph.Nodes.ContainsKey(lastBlock.Position))

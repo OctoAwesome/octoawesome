@@ -2,17 +2,21 @@
 using engenious.Graphics;
 using engenious.Input;
 using engenious.UI;
+
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
+using OctoAwesome.Graph;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using EventArgs = System.EventArgs;
 
 namespace OctoAwesome.Client
@@ -187,7 +191,6 @@ namespace OctoAwesome.Client
             typeContainer.Register<IUpdateHub, UpdateHub>(InstanceBehaviour.Singleton);
             typeContainer.Register<RecipeService, RecipeService>(InstanceBehaviour.Singleton);
             typeContainer.Register<DiskPersistenceManager>(InstanceBehaviour.Singleton);
-
         }
 
         private void SetKeyBindings()
