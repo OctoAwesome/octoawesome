@@ -269,9 +269,41 @@ namespace OctoAwesome.Chunking
         /// <inheritdoc />
         public void SetBlock(int x, int y, int z, ushort block)
         {
+            UpdateAdjacentChunks(x, y, z);
             var chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
 
             chunk?.SetBlock(x, y, z, block);
+        }
+
+        private void UpdateAdjacentChunks(int x, int y, int z)
+        {
+            var xBorder = x & (Chunk.CHUNKSIZE_X - 1);
+            var yBorder = y & (Chunk.CHUNKSIZE_Y - 1);
+            var zBorder = z & (Chunk.CHUNKSIZE_Z - 1);
+
+            static int CalcDir(int v, int chunkLimit)
+            {
+                return ((v + 1) >> (chunkLimit - 1)) - 1;
+            }
+            
+            if (xBorder is 0 or Chunk.CHUNKSIZE_X - 1)
+            {
+                var xDir = CalcDir(xBorder, Chunk.LimitX);
+                // TODO: do not update if on border of chunk cache.
+                GetChunk((x >> Chunk.LimitX) + xDir, y >> Chunk.LimitY, z >> Chunk.LimitZ)?.FlagDirty();
+            }
+            if (yBorder is 0 or Chunk.CHUNKSIZE_Y - 1)
+            {
+                var yDir = CalcDir(yBorder, Chunk.LimitX);
+                // TODO: do not update if on border of chunk cache.
+                GetChunk(x >> Chunk.LimitX, (y >> Chunk.LimitY) + yDir, z >> Chunk.LimitZ)?.FlagDirty();
+            }
+            if (zBorder is 0 or Chunk.CHUNKSIZE_Z - 1)
+            {
+                var zDir = CalcDir(zBorder, Chunk.LimitX);
+                // TODO: do not update if on border of chunk cache.
+                GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, (z >> Chunk.LimitZ) + zDir)?.FlagDirty();
+            }
         }
 
         /// <inheritdoc />
@@ -292,6 +324,7 @@ namespace OctoAwesome.Chunking
         /// <inheritdoc />
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
+            UpdateAdjacentChunks(x, y, z);
             var chunk = GetChunk(x >> Chunk.LimitX, y >> Chunk.LimitY, z >> Chunk.LimitZ);
 
             chunk?.SetBlockMeta(x, y, z, meta);
