@@ -19,16 +19,22 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Imaging;
 using System.Threading;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Linq;
 
 namespace OctoAwesome.Client.Controls
 {
     internal sealed class SceneControl : Control, IDisposable
     {
-        public static int VIEWRANGE = 4; // Range of visible chunks in 2^VIEWRANGE (complete view range)
         public const int TEXTURESIZE = 64;
+        public static int VIEWRANGE = 4; // Range of visible chunks in 2^VIEWRANGE (complete view range)
         public static int Mask;
         public static int Span;
         public static int SpanOver2;
+
+        public RenderTarget2D MiniMapTexture { get; set; }
+        public RenderTarget2D? ControlTexture { get; set; }
+        public Texture2DArray ShadowMaps { get; private set; }
+        private ScreenComponent Manager { get; set; }
 
         private readonly PlayerComponent player;
         private CameraComponent camera;
@@ -64,10 +70,13 @@ namespace OctoAwesome.Client.Controls
         private RenderTargetBinding _shadowMapsRenderTarget;
 
         private readonly Task[] _additionalRegenerationThreads;
+        private readonly AutoResetEvent fillResetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent[] additionalFillResetEvents;
+        private readonly AutoResetEvent forceResetEvent = new AutoResetEvent(false);
 
-        public RenderTarget2D MiniMapTexture { get; set; }
-        public RenderTarget2D? ControlTexture { get; set; }
-        public Texture2DArray ShadowMaps { get; private set; }
+        private readonly ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
+        private bool disposed;
+
 
         private float sunPosition = 0f;
 
@@ -97,7 +106,6 @@ namespace OctoAwesome.Client.Controls
         private readonly float sphereRadius;
         private readonly float sphereRadiusSquared;
 
-        private ScreenComponent Manager { get; set; }
 
         private readonly int _fillIncrement;
         private readonly CancellationTokenSource cancellationTokenSource;
@@ -499,10 +507,6 @@ namespace OctoAwesome.Client.Controls
                 }
             }
         }
-
-        private readonly AutoResetEvent fillResetEvent = new AutoResetEvent(false);
-        private readonly AutoResetEvent[] additionalFillResetEvents;
-        private readonly AutoResetEvent forceResetEvent = new AutoResetEvent(false);
 
         protected override void OnPreDraw(GameTime gameTime)
         {
@@ -975,14 +979,17 @@ namespace OctoAwesome.Client.Controls
             while (!token.IsCancellationRequested)
             {
                 forceResetEvent.WaitOne();
-                while (!token.IsCancellationRequested && !forcedRenders.IsEmpty)
+
+                while (!token.IsCancellationRequested
+                    && !forcedRenders.IsEmpty
+                    && forcedRenders.TryDequeue(out var r))
                 {
-                    while (forcedRenders.TryDequeue(out var r))
-                    {
-                        r.RegenerateVertexBuffer();
-                    }
+                    r.RegenerateVertexBuffer();
                 }
             }
+
+            if (token.IsCancellationRequested)
+                forcedRenders.Clear();
         }
 
         #region Converter
@@ -1025,11 +1032,11 @@ namespace OctoAwesome.Client.Controls
 
         #endregion
 
-        private readonly ConcurrentQueue<ChunkRenderer> forcedRenders = new ConcurrentQueue<ChunkRenderer>();
-        private bool disposed;
 
         public void Enqueue(ChunkRenderer chunkRenderer1)
         {
+            if (forcedRenders.Contains(chunkRenderer1))
+                return;
             forcedRenders.Enqueue(chunkRenderer1);
             forceResetEvent.Set();
         }

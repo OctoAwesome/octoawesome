@@ -2,29 +2,17 @@
 
 namespace OctoAwesome.Graph;
 
-[Nooson]
-public partial class TargetNode : Node
+//public abstract partial class TargetNode<T> : Node<T>
+//{
+
+//}
+public interface ITargetNode<T>
 {
-    public bool IsOn
-    {
-        get => isOn; private set
-        {
-            if (isOn == value)
-                return;
-            isOn = value;
+    int Priority { get; }
+    Index3 Position { get; }
 
-            StateHasChanged?.Invoke(isOn, this.BlockInfo);
-        }
-    }
+    void Execute(TargetInfo<T> targetInfo, IChunkColumn? column);
 
-    public Action<bool, BlockInfo> StateHasChanged;
-    private bool isOn;
+   TargetInfo<T> GetRequired();
 
-    public override int Update(int state)
-    {
-        IsOn = state >= 50;
-        //if (IsOn)
-        //    Console.WriteLine("Lamp is now on");
-        return IsOn ? state - 50 : state;
-    }
 }

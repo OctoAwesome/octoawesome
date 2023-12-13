@@ -1,13 +1,16 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
 using OctoAwesome.Graph;
+
+using System.Resources;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
     /// <summary>
     /// Block definition for ice blocks.
     /// </summary>
-    public sealed class IceBlockDefinition : BlockDefinition, INetworkBlock
+    public sealed class IceBlockDefinition : BlockDefinition, INetworkBlock<int>
     {
         /// <inheritdoc />
         public override string DisplayName => Languages.OctoBasics.Ice;
@@ -20,8 +23,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
-        public NetworkBlockType BlockType => NetworkBlockType.Transfer;
-        public string TransferType => "Signal";
+        public string TransferType => "Energy";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IceBlockDefinition"/> class.
@@ -32,5 +34,16 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             Material = material;
         }
 
+        public Node<int> CreateNode()
+        {
+            return new IceBlockNode();
+        }
     }
+
+    internal partial class IceBlockNode : EmptyTransferNode<int>
+    {
+        
+    }
+
+
 }

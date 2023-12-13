@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Graph;
-[NoosonDynamicType(typeof(SourceNode), typeof(TransferNode), typeof(TargetNode))]
-public abstract class Node : IEquatable<Node?>
-{
-    public BlockInfo BlockInfo { get; set; }
-    public Index3 Position => BlockInfo.Position;
 
-    public abstract int Update(int state);
+public abstract class Node<T> : NodeBase, IEquatable<Node<T>?>
+{
+
+
+
+    public static Node<T> DeserializeAndCreate(BinaryReader reader)
+    {
+        var str = reader.ReadString();
+        var type = Type.GetType(str);
+        var node = (Node<T>)Activator.CreateInstance(type);
+
+        node.Deserialize(reader);
+        return node;
+    }
 
     public override string ToString()
     {
@@ -20,10 +29,10 @@ public abstract class Node : IEquatable<Node?>
 
     public override bool Equals(object? obj)
     {
-        return Equals(obj as Node);
+        return Equals(obj as Node<T>);
     }
 
-    public bool Equals(Node? other)
+    public bool Equals(Node<T>? other)
     {
         return other is not null &&
                BlockInfo.Equals(other.BlockInfo);
@@ -34,12 +43,13 @@ public abstract class Node : IEquatable<Node?>
         return HashCode.Combine(BlockInfo);
     }
 
-    public static bool operator ==(Node? left, Node? right)
+
+    public static bool operator ==(Node<T>? left, Node<T>? right)
     {
-        return EqualityComparer<Node>.Default.Equals(left, right);
+        return EqualityComparer<Node<T>>.Default.Equals(left, right);
     }
 
-    public static bool operator !=(Node? left, Node? right)
+    public static bool operator !=(Node<T>? left, Node<T>? right)
     {
         return !(left == right);
     }

@@ -1,59 +1,178 @@
-﻿using OctoAwesome.Definitions;
+﻿using engenious.Graphics;
+
+using OctoAwesome.Caching;
+using OctoAwesome.Definitions;
 using OctoAwesome.Serialization;
+
+using OpenTK.Windowing.Common.Input;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace OctoAwesome.Graph;
 
-[Nooson]
-public partial class Graph : IConstructionSerializable<Graph>
+public abstract class Graph : IConstructionSerializable<Graph>
 {
-    public string TransferType { get;  }
-    public int PlanetId { get; private set; }
-    public Dictionary<Index3, Node> Nodes { get; set; }
-    public Dictionary<Node, HashSet<Node>> Edges { get; set; }
-    public HashSet<Node> Sources { get; set; }
-    public HashSet<Node> Targets { get; set; }
-    
-    private IDefinitionManager definitionManager;
+    public virtual string TransferType { get; protected set; }
+    public virtual int PlanetId { get; protected set; }
+
     [NoosonIgnore]
-    private Pencil Parent => parent ??= TypeContainer.Get<IResourceManager>().Pencils[PlanetId];
+    protected IDefinitionManager DefinitionManager { get; }
+    [NoosonIgnore]
+    protected Pencil Parent => parent ??= TypeContainer.Get<IResourceManager>().Pencils[PlanetId];
     private Pencil parent;
 
-    public Graph(string transferType)
+
+    public Graph(string transferType, int planetId) : this()
     {
-        definitionManager = TypeContainer.Get<IDefinitionManager>();
+        TransferType = transferType;
+        PlanetId = planetId;
+    }
+
+    public Graph()
+    {
+        DefinitionManager = TypeContainer.Get<IDefinitionManager>();
+    }
+
+    public static Graph DeserializeAndCreate(BinaryReader reader)
+    {
+        var str = reader.ReadString();
+        var type = Type.GetType(str);
+        var graph = (Graph)Activator.CreateInstance(type);
+
+        graph.Deserialize(reader);
+        return graph;
+    }
+
+    public abstract bool TryGetNode(Index3 position, out NodeBase node);
+
+    public abstract void Update(IGlobalChunkCache? globalChunkCache);
+
+    public abstract void Serialize(BinaryWriter writer);
+    public abstract void Deserialize(BinaryReader reader);
+
+    public void SerializeWithType(BinaryWriter writer)
+    {
+        writer.Write(GetType().FullName);
+        writer.Write(TransferType);
+        writer.Write(PlanetId);
+        Serialize(writer);
+    }
+
+    void ISerializable.Serialize(BinaryWriter writer)
+    {
+        SerializeWithType(writer);
+    }
+
+
+    static void ISerializable<Graph>.Serialize(Graph that, BinaryWriter writer)
+    {
+        that.SerializeWithType(writer);
+    }
+
+    static void ISerializable<Graph>.Deserialize(Graph that, BinaryReader reader)
+    {
+        that.TransferType = reader.ReadString();
+        that.PlanetId = reader.ReadInt32();
+        that.Deserialize(reader);
+    }
+}
+
+public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
+{
+    public Dictionary<Index3, Node<T>> Nodes { get; set; }
+    public Dictionary<Node<T>, HashSet<Node<T>>> Edges { get; set; }
+    public HashSet<Node<T>> Sources { get; set; }
+    public HashSet<Node<T>> Targets { get; set; }
+
+
+    public Graph(string transferType, int planetId) : base(transferType, planetId)
+    {
         Nodes = new();
         Sources = new();
         Targets = new();
         Edges = new();
-        TransferType = transferType;
     }
 
-    private void AddBlock(Node node)
+    public Graph() : base()
+    {
+        Nodes = new();
+        Sources = new();
+        Targets = new();
+        Edges = new();
+    }
+
+    public override void Serialize(BinaryWriter writer)
+    {
+        writer.Write(Nodes.Count);
+
+        foreach ((var _, var node) in Nodes)
+        {
+            node.Serialize(writer);
+        }
+
+        writer.Write(Edges.Count);
+        foreach ((var node, var edges) in Edges)
+        {
+            writer.Write(edges.Count);
+            writer.WriteUnmanaged(node.Position);
+            foreach (var item in edges)
+            {
+                writer.WriteUnmanaged(item.Position);
+            }
+        }
+    }
+
+    public override void Deserialize(BinaryReader reader)
+    {
+        TransferType = reader.ReadString();
+        PlanetId = reader.ReadInt32();
+        var nodeCount = reader.ReadInt32();
+
+        for (int i = 0; i < nodeCount; i++)
+        {
+
+            var node = NodeBase.DeserializeAndCreate(reader);
+
+            if (node is ISourceNode<T> and Node<T> n)
+                Sources.Add(n);
+            if (node is ITargetNode<T> and Node<T> t)
+                Targets.Add(t);
+
+            Nodes.Add(node.Position, GenericCaster<NodeBase, Node<T>>.Cast(node));
+        }
+
+        var edgesCount = reader.ReadInt32();
+        for (int i = 0; i < edgesCount; i++)
+        {
+            var nodeEdgesCount = reader.ReadInt32();
+            var nodePosition = reader.ReadUnmanaged<Index3>();
+            var node = Nodes[nodePosition];
+            Edges[node] = new HashSet<Node<T>>(nodeEdgesCount);
+            for (int o = 0; o < nodeEdgesCount; o++)
+            {
+                var edgePosition = reader.ReadUnmanaged<Index3>();
+                Edges[node].Add(Nodes[edgePosition]);
+            }
+        }
+    }
+
+    private void AddBlock(Node<T> node)
     {
         if (Nodes.ContainsKey(node.BlockInfo.Position))
             return;
 
-        var newEdgesSet = new HashSet<Node>();
+        var newEdgesSet = new HashSet<Node<T>>();
         Edges[node] = newEdgesSet;
         foreach (var item in Nodes.Values)
         {
-
-            if ((item.Position.Y == node.Position.Y
-                    && item.Position.Z == node.Position.Z
-                    && item.Position.X - node.Position.X is 1 or -1)
-                || (item.Position.X == node.Position.X
-                    && item.Position.Z == node.Position.Z
-                    && item.Position.Y - node.Position.Y is 1 or -1)
-                || (item.Position.X == node.Position.X
-                    && item.Position.Y == node.Position.Y
-                    && item.Position.Z - node.Position.Z is 1 or -1))
+            if (IsNeighbour(node.Position, item.Position))
             {
                 if (Edges.TryGetValue(item, out var existing))
                 {
@@ -61,7 +180,7 @@ public partial class Graph : IConstructionSerializable<Graph>
                 }
                 else
                 {
-                    Edges[item] = new HashSet<Node> { node };
+                    Edges[item] = new HashSet<Node<T>> { node };
                 }
 
                 newEdgesSet.Add(item);
@@ -74,41 +193,25 @@ public partial class Graph : IConstructionSerializable<Graph>
         }
 
         Nodes.Add(node.BlockInfo.Position, node);
-        if (node is SourceNode)
+        if (node is ISourceNode<T>)
             Sources.Add(node);
-        else if (node is TargetNode tn)
-        {
+        if (node is ITargetNode<T>)
             Targets.Add(node);
-        }
     }
 
-    public void AddBlock(BlockInfo info, Action<bool, BlockInfo> stateChangedCallback)
+    public void AddBlock(BlockInfo info)
     {
-        var definition = definitionManager.GetBlockDefinitionByIndex(info.Block);
+        var definition = DefinitionManager.GetBlockDefinitionByIndex(info.Block);
 
-        if (definition is not INetworkBlock nb || nb.TransferType != TransferType)
+        if (definition is not INetworkBlock<T> nb || nb.TransferType != TransferType)
             return;
 
-        Node node;
-        switch (nb.BlockType)
-        {
-            case NetworkBlockType.Source:
-                node = new SourceNode();
-                break;
-            case NetworkBlockType.Target:
-                node = new TargetNode() { StateHasChanged = stateChangedCallback };
-                break;
-            case NetworkBlockType.Transfer:
-                node = new TransferNode();
-                break;
-            case NetworkBlockType.None:
-            default:
-                return;
-        }
+        Node<T> node = nb.CreateNode();
         node.BlockInfo = info;
 
         AddBlock(node);
     }
+
 
     public void RemoveNode(BlockInfo info)
     {
@@ -128,21 +231,20 @@ public partial class Graph : IConstructionSerializable<Graph>
             Edges[item].Remove(node);
         }
 
-        Update();
         if (edges.Length > 1)
         {
-            Dictionary<Node, List<Node>> graphEndpoints = new();
+            Dictionary<Node<T>, List<Node<T>>> graphEndpoints = new();
             for (int i = 0; i < edges.Length; i++)
             {
-                Node? item = edges[i];
-                if (graphEndpoints.Count > 0 
+                Node<T>? item = edges[i];
+                if (graphEndpoints.Count > 0
                     && graphEndpoints.Any(x => x.Value.Any(x => x == item)))
                     continue;
 
                 graphEndpoints[item] = new() { item };
-                for (int i1 = i+1; i1 < edges.Length; i1++)
+                for (int i1 = i + 1; i1 < edges.Length; i1++)
                 {
-                    Node? edge = edges[i1];
+                    Node<T>? edge = edges[i1];
                     if (FindPathBetweenNodes(item, edge))
                         graphEndpoints[item].Add(edge);
                 }
@@ -151,40 +253,34 @@ public partial class Graph : IConstructionSerializable<Graph>
             Parent.RemoveGraph(this);
             foreach (var item in graphEndpoints)
             {
-                Graph graph = new(TransferType);
+                Graph<T> graph = new(TransferType, this.PlanetId);
                 Parent.AddGraph(graph);
-                void WanderNode(Node node, Node? source)
+                void WanderNode(Node<T> node, Node<T>? source)
                 {
                     graph.AddBlock(item.Key);
                     foreach (var item in Edges[node])
                     {
                         if (item == source)
                             continue;
+                        if (graph.Edges.ContainsKey(item))
+                            continue;
                         graph.AddBlock(item);
                         WanderNode(item, node);
-                    } 
+                    }
                 }
                 WanderNode(item.Key, null);
             }
         }
     }
 
-    protected bool FindPathBetweenNodes(Node a, Node b)
+    protected bool FindPathBetweenNodes(Node<T> a, Node<T> b)
     {
-        if ((Math.Abs(a.Position.X - b.Position.X) == 1
-                && a.Position.Y == b.Position.Y
-                && a.Position.Z == b.Position.Z)
-            || (Math.Abs(a.Position.Y - b.Position.Y) == 1
-                && a.Position.X == b.Position.X
-                && a.Position.Z == b.Position.Z)
-            || (Math.Abs(a.Position.Z - b.Position.Z) == 1
-                && a.Position.X == b.Position.X
-                && a.Position.Y == b.Position.Y))
+        if (IsNeighbour(a.Position, b.Position))
         {
             return true;
         }
 
-        Dictionary<Index3, HashSet<Node>> nodePositions = Nodes.ToDictionary(x => x.Key, x => Edges[x.Value]);
+        Dictionary<Index3, HashSet<Node<T>>> nodePositions = Nodes.ToDictionary(x => x.Key, x => Edges[x.Value]);
         HashSet<Index3> alreadyVisited = new() { };
 
         List<Index3> branches = new();
@@ -263,15 +359,7 @@ public partial class Graph : IConstructionSerializable<Graph>
                 var val = nextStep.Value;
 
                 currentAPos = nextStep.Value;
-                if ((Math.Abs(currentAPos.X - currentBPos.X) == 1
-                        && currentAPos.Y == currentBPos.Y
-                        && currentAPos.Z == currentBPos.Z)
-                    || (Math.Abs(currentAPos.Y - currentBPos.Y) == 1
-                        && currentAPos.X == currentBPos.X
-                        && currentAPos.Z == currentBPos.Z)
-                    || (Math.Abs(currentAPos.Z - currentBPos.Z) == 1
-                        && currentAPos.X == currentBPos.X
-                        && currentAPos.Y == currentBPos.Y))
+                if (IsNeighbour(currentAPos, currentBPos))
                 {
                     return true;
                 }
@@ -283,7 +371,7 @@ public partial class Graph : IConstructionSerializable<Graph>
         }
     }
 
-    public void MergeWith(Graph otherGraph, BlockInfo block)
+    public void MergeWith(Graph<T> otherGraph, BlockInfo block)
     {
         if (!Nodes.TryGetValue(block.Position, out var connector))
             return;
@@ -319,22 +407,92 @@ public partial class Graph : IConstructionSerializable<Graph>
         }
     }
 
-    public void Update()
+    public override void Update(IGlobalChunkCache? globalChunkCache)
     {
-        int currentPower = 0;
-        foreach (var source in Sources)
-        {
-            if (!Edges.TryGetValue(source, out var sourceEdges) || sourceEdges.Count == 0)
-                continue; // Why is this part of this graph?
-            currentPower = source.Update(currentPower);
-        }
+        GraphCleanup(globalChunkCache);
 
-        foreach (var target in Targets)
-        {
-            if (!Edges.TryGetValue(target, out var targetEdges) || targetEdges.Count == 0)
-                continue; // Why is this part of this graph?
-            currentPower = target.Update(currentPower);
-        }
+        //foreach (var source in Sources.OrderBy(x => ((ISourceNode<int>)x).Priority))
+        //{
+        //    currentPower = Update(globalChunkCache, currentPower, source, ProcessingState.Generation);
+        //}
 
+        //foreach (var target in Targets.OrderBy(x => ((ITargetNode<int>)x).Priority))
+        //{
+        //    currentPower = Update(globalChunkCache, currentPower, target, ProcessingState.Consumption);
+        //}
+
+    }
+
+    protected void GraphCleanup(IGlobalChunkCache? globalChunkCache)
+    {
+        Span<BlockInfo> nodesToRemove = stackalloc BlockInfo[Nodes.Count];
+        if (globalChunkCache is not null)
+        {
+            int index = 0;
+            foreach (var item in Nodes)
+            {
+                var copyKey = item.Key.XY;
+                copyKey.NormalizeXY(Parent.Planet.Size.XY * Chunk.CHUNKSIZE.XY);
+                var columnIndex = copyKey / Chunk.CHUNKSIZE.XY;
+                var chunkColumn = globalChunkCache.Peek(columnIndex);
+                if (chunkColumn is null)
+                    continue;
+                var blockId = chunkColumn.GetBlock(item.Key);
+
+                if (blockId != item.Value.BlockInfo.Block)
+                {
+                    nodesToRemove[index++] = item.Value.BlockInfo;
+                }
+            }
+            if (index == Nodes.Count)
+            {
+                Parent.RemoveGraph(this);
+                Nodes.Clear();
+                Edges.Clear();
+                Sources.Clear();
+                Targets.Clear();
+            }
+            else
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    RemoveNode(nodesToRemove[i]);
+                }
+            }
+        }
+    }
+
+    protected bool IsNeighbour(Index3 self, Index3 other)
+    {
+        var normalized = self.ShortestDistanceXY(other, Parent.Planet.Size.XY * Chunk.CHUNKSIZE.XY);
+        var doubled = normalized * normalized;
+        return doubled.X + doubled.Y + doubled.Z == 1;
+    }
+
+    public override bool TryGetNode(Index3 position, out NodeBase node)
+    {
+        var success = Nodes.TryGetValue(position, out var node2);
+        node = node2;
+        return success;
+    }
+
+    static Graph<T> IConstructionSerializable<Graph<T>>.DeserializeAndCreate(BinaryReader reader)
+    {
+        var str = reader.ReadString();
+        var type = Type.GetType(str);
+        var graph = (Graph<T>)Activator.CreateInstance(type);
+
+        graph.Deserialize(reader);
+        return graph;
+    }
+
+    public static void Serialize(Graph<T> that, BinaryWriter writer)
+    {
+        that.Serialize(writer);
+    }
+
+    public static void Deserialize(Graph<T> that, BinaryReader reader)
+    {
+        that.Deserialize(reader);
     }
 }

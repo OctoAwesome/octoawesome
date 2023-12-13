@@ -1,10 +1,15 @@
-﻿namespace OctoAwesome.Graph;
+﻿using engenious.Content.Serialization;
 
-[Nooson]
-public partial class TransferNode : Node
+using System.IO;
+
+namespace OctoAwesome.Graph;
+
+public abstract class EmptyTransferNode<T> : Node<T>, ITransferNode<T>
 {
-    public override int Update(int state)
-    {
-        return state;
-    }
+    
+}
+
+public interface ITransferNode<T>
+{
+
 }

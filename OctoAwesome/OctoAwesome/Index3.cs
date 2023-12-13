@@ -1,4 +1,5 @@
 ﻿using System;
+
 using engenious;
 
 namespace OctoAwesome
@@ -341,6 +342,15 @@ namespace OctoAwesome
         /// <returns>The componentwise inverse scaled result.</returns>
         public static Index3 operator /(Index3 i1, int scale)
             => new Index3(i1.X / scale, i1.Y / scale, i1.Z / scale);
+
+        /// <summary>
+        /// Calculates the modulo of two <see cref="Index3"/>.
+        /// </summary>
+        /// <param name="i1">The first operand.</param>
+        /// <param name="i2">The second operand.</param>
+        /// <returns>The componentwise modulo result.</returns>
+        public static Index3 operator %(Index3 i1, Index3 i2)
+            => new Index3(i1.X % i2.X, i1.Y % i2.Y, i1.Z % i2.Z);
 
         /// <summary>
         /// Returns a value indicating whether all components of the two <see cref="Index3"/> respectively are equal.

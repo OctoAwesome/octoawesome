@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
@@ -14,10 +14,10 @@
 
   <ItemGroup>
     <!--<ProjectReference Include="..\OctoAwesome.Client\OctoAwesome.Client.csproj"  />-->
-	  <ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
+	  <!--<ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
 	  <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
 	  <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
-	  <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
+	  <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />-->
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties recipes_4ourfirstrecipe_1json__JsonSchema="" recipes_4oursecondrecipe_1json__JsonSchema="https://carafe.fm/schema/draft-02/bundle.schema.json" /></VisualStudio></ProjectExtensions>

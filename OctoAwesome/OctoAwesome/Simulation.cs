@@ -184,10 +184,15 @@ namespace OctoAwesome
                 return;
 
             foreach (var planet in ResourceManager.Planets)
+            {
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
+            }
 
             foreach (var item in ResourceManager.Pencils)
-                item.Value.Update();
+            {
+                ResourceManager.Planets.TryGetValue(item.Key, out var planet);
+                item.Value.Update(planet?.GlobalChunkCache);
+            }
 
             //Update all Entities
             if (entities.Count > 0)

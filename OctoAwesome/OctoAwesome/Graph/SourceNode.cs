@@ -1,12 +1,16 @@
 ﻿namespace OctoAwesome.Graph;
 
-[Nooson]
-public partial class SourceNode : Node
-{
-    public bool IsOn { get; set; } = true;
+//public abstract class SourceNode<T> : Node<T>
+//{
 
-    public override int Update(int state)
-    {
-        return IsOn ? state + 100 : state;
-    }
+//}
+
+public interface ISourceNode<T>
+{
+    int Priority { get; }
+    Index3 Position { get; }
+
+    SourceInfo<T> GetCapacity();
+
+    void Use(SourceInfo<T> targetInfo, IChunkColumn? column);
 }

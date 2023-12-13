@@ -17,6 +17,12 @@ public enum NetworkBlockType
 
 public interface INetworkBlock
 {
-    NetworkBlockType BlockType { get; }
     string TransferType { get; }
+
+}
+
+public interface INetworkBlock<T> : INetworkBlock
+{
+
+    Node<T> CreateNode();
 }

@@ -90,6 +90,13 @@ namespace OctoAwesome
         void SetBlockMeta(int x, int y, int z, int meta);
 
         /// <summary>
+        /// Sets the block meta data for a given block index coordinate.
+        /// </summary>
+        /// <param name="index">The block index to set the new block meta data for.</param>
+        /// <param name="meta">The new block meta data to set the block to.</param>
+        /// <remarks>Wraps around if block index is out of range.</remarks>
+        void SetBlockMeta(Index3 index, int meta);
+        /// <summary>
         /// Gets the block resources for a given block index coordinate local to the chunk column
         /// </summary>
         /// <param name="x">The block index x-component to retrieve the block resources for(in local block coordinates).</param>

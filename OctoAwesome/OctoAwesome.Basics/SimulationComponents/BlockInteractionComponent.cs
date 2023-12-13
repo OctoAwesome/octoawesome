@@ -135,8 +135,8 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 if (definition is INetworkBlock nb)
                                 {
 
-                                   var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
-                                    Graph.Graph? graph = null;
+                                    var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
+                                    EnergyGraph? graph = null;
                                     var ourInfo = cache.GetBlockInfo(idx);
 
                                     MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z);
@@ -149,6 +149,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                                     void MaybeAddToGraph(int x, int y, int z)
                                     {
                                         var index3 = new Index3(x, y, z);
+                                        index3.NormalizeXY(pencil.Planet.Size.XY * new Index2(Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y));
                                         var id = cache.GetBlock(index3);
                                         if (id == 0)
                                             return;
@@ -157,13 +158,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                                             return;
 
                                         var info = cache.GetBlockInfo(index3);
-                                        foreach (var item in pencil.Graphs)
+                                        foreach (var item in pencil.Graphs.OfType<EnergyGraph>())
                                         {
                                             if (item.Nodes.ContainsKey(info.Position))
                                             {
                                                 if (graph is null)
                                                 {
-                                                    item.AddBlock(ourInfo, (a, idx) => TargetNodeChanged(a, cache, idx));
+                                                    item.AddBlock(ourInfo);
                                                     graph = item;
                                                     break;
                                                 }
@@ -181,9 +182,9 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                                     if (graph is null)
                                     {
-                                        var newGraph = new Graph.Graph("Signal");
+                                        var newGraph = new EnergyGraph(pencil.PlanetId);
                                         pencil.AddGraph(newGraph);
-                                        newGraph.AddBlock(ourInfo, (a, idx) => TargetNodeChanged(a, cache, idx));
+                                        newGraph.AddBlock(ourInfo);
                                     }
                                 }
                             }
@@ -194,20 +195,6 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
         }
 
-        private void TargetNodeChanged(bool isOn, ILocalChunkCache cache, BlockInfo idx)
-        {
-            IBlockDefinition definition;
-            if (isOn)
-            {
-                definition = simulation.ResourceManager.DefinitionManager.BlockDefinitions.FirstOrDefault(x => x.Icon == "light_on");
-            }
-            else
-            {
-                definition = simulation.ResourceManager.DefinitionManager.BlockDefinitions.FirstOrDefault(x => x.Icon == "light_off");
-
-            }
-            cache.SetBlock(idx.Position, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-        }
 
         public override void Update(GameTime gameTime)
         {
@@ -229,6 +216,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
 
                 if (blockHitInformation.Valid && blockHitInformation.List != null)
+                {
                     foreach (var (quantity, definition) in blockHitInformation.List)
                     {
                         if (activeItem is IFluidInventory fluidInventory
@@ -245,17 +233,30 @@ namespace OctoAwesome.Basics.SimulationComponents
                         if (definition is INetworkBlock nb)
                         {
                             var pencil = simulation.ResourceManager.Pencils[posComponent.Position.Planet];
-                            foreach (var graph in pencil.Graphs)
+                            foreach (var graph in pencil.Graphs.OfType<Graph<int>>())
                             {
                                 if (graph.Nodes.ContainsKey(lastBlock.Position))
                                 {
                                     graph.RemoveNode(lastBlock);
                                     break;
                                 }
-                            } 
+                            }
                         }
                     }
+                }
 
+                {
+                    if (simulation.ResourceManager.Pencils.TryGetValue(posComponent.Position.Planet, out var pencil))
+                    {
+                        foreach (var graph in pencil.Graphs)
+                        {
+                            if (graph.TryGetNode(lastBlock.Position, out var node))
+                            {
+                                node.Interact();
+                            }
+                        }
+                    }
+                }
             }
         }
     }
