@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
 //public abstract partial class TargetNode<T> : Node<T>
 //{

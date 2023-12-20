@@ -3,7 +3,7 @@
 using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 
 using System.Data.Common;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     /// <summary>
     /// Block definition for cactus blocks.
     /// </summary>
-    public class CactusBlockDefinition : BlockDefinition, INetworkBlock<int>
+    public class CactusBlockDefinition : BlockDefinition, INetworkBlock<int>, INetworkBlock<Signal>
     {
         /// <inheritdoc />
         public override string Icon => "cactus_inside";
@@ -23,11 +23,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => Languages.OctoBasics.Cactus;
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "cactus_inside", "cactus_side", "cactus_top" };
+        public override string[] Textures { get; } = ["cactus_inside", "cactus_side", "cactus_top"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
-        public string TransferType => "Energy";
+        public string[] TransferTypes { get; } = ["Energy", "Signal"];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.
@@ -224,13 +224,14 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             }
         }
 
-        public Node<int> CreateNode()
+        public NodeBase CreateNode()
         {
             return new CactusBlockNode();
         }
+
     }
 
-    internal partial class CactusBlockNode : Node<int>, ISourceNode<int>
+    internal partial class CactusBlockNode : Node<int>, ISourceNode<int>, ITargetNode<Signal>
     {
         bool isOn = false;
 
@@ -259,6 +260,18 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             oldMeta = ((isOn ? rotData : 0) << 7) | (oldMeta & 0xFF);
 
             column.SetBlockMeta(Position, oldMeta);
+        }
+
+
+        public void Execute(TargetInfo<Signal> targetInfo, IChunkColumn? column)
+        {
+            if (targetInfo.Data.Enabled)
+                isOn = true;
+        }
+
+        public TargetInfo<Signal> GetRequired()
+        {
+            return new TargetInfo<Signal>(this, new Signal { Channel = "Green" });
         }
     }
 }

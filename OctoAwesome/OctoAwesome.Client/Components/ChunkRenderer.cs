@@ -75,13 +75,13 @@ namespace OctoAwesome.Client.Components
             wireFrameState = new RasterizerState() { FillMode = PolygonMode.Line, CullMode = CullMode.CounterClockwise };
             OverrideLightLevel = 0;
             WireFrame = false;
-            uvOffsets = new[]
-                {
+            uvOffsets =
+                [
                     new Vector2(0, 0),
                     new Vector2(1, 0),
                     new Vector2(1, 1),
                     new Vector2(0, 1)
-                };
+                ];
         }
 
         public void ReloadShader(chunkEffect simpleShader)

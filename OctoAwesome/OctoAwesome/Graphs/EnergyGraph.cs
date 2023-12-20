@@ -1,7 +1,11 @@
-﻿using System;
+﻿using OctoAwesome.Caching;
+
+using System;
 using System.Linq;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
+
+public record EnergyTargetInfo(ITargetNode<int> Node, int Data, int MaxRepeated, int RepeatedTimes = 0) : TargetInfo<int>(Node, Data);
 
 /// <summary>
 /// Specialisation for energy graphs
@@ -22,12 +26,12 @@ public class EnergyGraph : Graph<int>
         GraphCleanup(globalChunkCache);
 
         var sourceDatas = new SourceInfo<int>[Sources.Count];
-        var targetDatas = new TargetInfo<int>[Targets.Count];
+        var targetDatas = new EnergyTargetInfo[Targets.Count];
 
         int index = 0;
         int powerCap = 0;
 
-        foreach (var source in Sources.OfType<ISourceNode<int>>().OrderBy(x => x.Priority))
+        foreach (var source in Sources.OrderBy(x => x.Priority))
         {
             var cap = source.GetCapacity();
             sourceDatas[index++] = cap;
@@ -35,24 +39,24 @@ public class EnergyGraph : Graph<int>
         }
 
         index = 0;
-        foreach (var target in Targets.OfType<ITargetNode<int>>().OrderBy(x => x.Priority))
+        foreach (var target in Targets.OrderBy(x => x.Priority))
         {
-            targetDatas[index++] = target.GetRequired();
+            targetDatas[index++] = GenericCaster<TargetInfo<int>, EnergyTargetInfo>.Cast(target.GetRequired());
         }
 
         int i = targetDatas.Length - 1;
         for (int o = 0; o < sourceDatas.Length; o++)
         {
             var source = sourceDatas[o];
-            TargetInfo<int>? alreadyDone = null;
+            EnergyTargetInfo? alreadyDone = null;
             while (powerCap > 0 && source.Data > 0)
             {
                 i = (i + 1) % targetDatas.Length;
-                TargetInfo<int> target = targetDatas[i];
+                EnergyTargetInfo target = targetDatas[i];
 
                 if (alreadyDone is null)
                     alreadyDone = target;
-                else if (alreadyDone.Value.Node == target.Node)
+                else if (alreadyDone.Node == target.Node)
                     break;
 
                 if (powerCap < target.Data || target.MaxRepeated <= target.RepeatedTimes || source.Node == target.Node)

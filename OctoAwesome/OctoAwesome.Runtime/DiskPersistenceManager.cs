@@ -1,6 +1,6 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Database;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 using OctoAwesome.Logging;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;

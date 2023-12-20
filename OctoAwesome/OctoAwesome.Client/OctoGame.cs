@@ -9,7 +9,7 @@ using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 

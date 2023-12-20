@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
+//TODO Remove this and check on the interfaces instead
 public abstract class Node<T> : NodeBase, IEquatable<Node<T>?>
 {
 

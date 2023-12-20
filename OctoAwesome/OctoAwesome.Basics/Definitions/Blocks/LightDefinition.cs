@@ -1,7 +1,7 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 
 using System.Data.Common;
 
@@ -19,11 +19,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => "Licht";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "light_off", "light_on" };
+        public override string[] Textures { get; } = ["light_off", "light_on"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
-        public string TransferType => "Energy";
+        public string[] TransferTypes { get; } = ["Energy"];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.
@@ -43,7 +43,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             return 0;
         }
 
-        public Node<int> CreateNode()
+        public NodeBase CreateNode()
         {
             return new LightNode();
         }
@@ -57,12 +57,15 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public void Execute(TargetInfo<int> targetInfo, IChunkColumn? chunk)
         {
-            chunk.SetBlockMeta(Position, targetInfo.RepeatedTimes > 0 ? 1 : 0);
+            if (targetInfo is not EnergyTargetInfo energyInfo)
+                return;
+
+            chunk.SetBlockMeta(Position, energyInfo.RepeatedTimes > 0 ? 1 : 0);
         }
 
         public TargetInfo<int> GetRequired()
         {
-            return new TargetInfo<int>(this, 50, 1, 0);
+            return new EnergyTargetInfo(this, 50, 1, 0);
         }
     }
 }

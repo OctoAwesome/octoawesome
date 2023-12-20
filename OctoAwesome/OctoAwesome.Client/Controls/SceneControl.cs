@@ -83,7 +83,7 @@ namespace OctoAwesome.Client.Controls
         public event EventHandler? OnCenterChanged;
 
         private readonly VertexPositionColor[] selectionVertices =
-        {
+        [
                 new(new Vector3(-0.001f, +1.001f, +1.001f), Color.Black * 0.5f),
                 new(new Vector3(+1.001f, +1.001f, +1.001f), Color.Black * 0.5f),
                 new(new Vector3(-0.001f, -0.001f, +1.001f), Color.Black * 0.5f),
@@ -92,16 +92,16 @@ namespace OctoAwesome.Client.Controls
                 new(new Vector3(+1.001f, +1.001f, -0.001f), Color.Black * 0.5f),
                 new(new Vector3(-0.001f, -0.001f, -0.001f), Color.Black * 0.5f),
                 new(new Vector3(+1.001f, -0.001f, -0.001f), Color.Black * 0.5f),
-        };
+        ];
         private readonly VertexPositionTexture[] billboardVertices =
-        {
+        [
                 new(new Vector3(-0.5f, 0.5f, 0), new Vector2(0, 0)),
                 new(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
                 new(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
                 new(new Vector3(0.5f, 0.5f, 0), new Vector2(1, 0)),
                 new(new Vector3(0.5f, -0.5f, 0), new Vector2(1, 1)),
                 new(new Vector3(-0.5f, -0.5f, 0), new Vector2(0, 1)),
-        };
+        ];
 
         private readonly float sphereRadius;
         private readonly float sphereRadiusSquared;

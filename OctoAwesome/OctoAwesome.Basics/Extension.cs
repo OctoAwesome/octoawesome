@@ -166,7 +166,7 @@ namespace OctoAwesome.Basics
                 c.Components.AddIfNotExists(uiKeyComp);
 
                 c.Components.AddIfNotExists(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
-                c.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
+                c.Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1))]));
                 c.Components.AddIfNotExists(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
                 c.Components.AddIfTypeNotExists(new UniquePositionComponent());
                 c.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Chest) });
@@ -213,7 +213,7 @@ namespace OctoAwesome.Basics
 
                 f.Components.AddIfNotExists(new UiKeyComponent("Furnace"));
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
-                f.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
+                f.Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))]));
                 f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
                 f.Components.AddIfTypeNotExists(new UniquePositionComponent());
                 f.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Furnace) });

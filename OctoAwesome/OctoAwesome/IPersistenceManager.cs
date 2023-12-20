@@ -1,5 +1,5 @@
 ﻿using OctoAwesome.Components;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;

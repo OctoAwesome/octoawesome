@@ -1,4 +1,4 @@
-﻿namespace OctoAwesome.Graph;
+﻿namespace OctoAwesome.Graphs;
 
 //public abstract class SourceNode<T> : Node<T>
 //{

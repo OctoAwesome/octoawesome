@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
 [Flags]
 public enum NetworkBlockType
@@ -17,12 +17,12 @@ public enum NetworkBlockType
 
 public interface INetworkBlock
 {
-    string TransferType { get; }
 
+    string[] TransferTypes { get; }
+    NodeBase CreateNode();
 }
 
 public interface INetworkBlock<T> : INetworkBlock
 {
 
-    Node<T> CreateNode();
 }

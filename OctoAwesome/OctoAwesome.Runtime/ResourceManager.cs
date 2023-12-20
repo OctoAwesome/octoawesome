@@ -14,7 +14,7 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 using OctoAwesome.Rx;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 
 namespace OctoAwesome.Runtime
 {

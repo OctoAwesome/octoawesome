@@ -6,11 +6,13 @@ using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using System.Diagnostics;
 using OctoAwesome.Services;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 using System.Collections.Generic;
 using OctoAwesome.Caching;
 using System.Linq;
 using OpenTK.Graphics.ES11;
+using System;
+using NLog.Layouts;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -132,66 +134,88 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 if (toolbar.ActiveTool.Amount <= 0)
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
 
-                                if (definition is INetworkBlock nb)
-                                {
-
-                                    var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
-                                    EnergyGraph? graph = null;
-                                    var ourInfo = cache.GetBlockInfo(idx);
-
-                                    MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z);
-                                    MaybeAddToGraph(idx.X - 1, idx.Y, idx.Z);
-                                    MaybeAddToGraph(idx.X, idx.Y + 1, idx.Z);
-                                    MaybeAddToGraph(idx.X, idx.Y - 1, idx.Z);
-                                    MaybeAddToGraph(idx.X, idx.Y, idx.Z + 1);
-                                    MaybeAddToGraph(idx.X, idx.Y, idx.Z - 1);
-
-                                    void MaybeAddToGraph(int x, int y, int z)
-                                    {
-                                        var index3 = new Index3(x, y, z);
-                                        index3.NormalizeXY(pencil.Planet.Size.XY * new Index2(Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y));
-                                        var id = cache.GetBlock(index3);
-                                        if (id == 0)
-                                            return;
-                                        var definition = simulation.ResourceManager.DefinitionManager.GetBlockDefinitionByIndex(id);
-                                        if (definition is not INetworkBlock networkBlock)
-                                            return;
-
-                                        var info = cache.GetBlockInfo(index3);
-                                        foreach (var item in pencil.Graphs.OfType<EnergyGraph>())
-                                        {
-                                            if (item.Nodes.ContainsKey(info.Position))
-                                            {
-                                                if (graph is null)
-                                                {
-                                                    item.AddBlock(ourInfo);
-                                                    graph = item;
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    if (item == graph)
-                                                        continue;
-                                                    graph.MergeWith(item, ourInfo);
-                                                    pencil.RemoveGraph(item);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (graph is null)
-                                    {
-                                        var newGraph = new EnergyGraph(pencil.PlanetId);
-                                        pencil.AddGraph(newGraph);
-                                        newGraph.AddBlock(ourInfo);
-                                    }
-                                }
+                                DoNetworkBlockStuff(positioncomponent, cache, definition, idx);
                             }
                         }
                     }
                 }
                 controller.ApplyBlock = null;
+            }
+        }
+
+        private void DoNetworkBlockStuff(PositionComponent? positioncomponent, ILocalChunkCache? cache, IBlockDefinition definition, Index3 idx)
+        {
+            if (definition is INetworkBlock nb)
+            {
+                var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
+                var ourInfo = cache.GetBlockInfo(idx);
+                
+                
+                var node = nb.CreateNode();
+                node.BlockInfo = ourInfo;
+
+
+                foreach (var transferType in nb.TransferTypes)
+                {
+                    Graph? graph = null;
+
+                    MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
+                    MaybeAddToGraph(idx.X - 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y + 1, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y - 1, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y, idx.Z + 1, cache, pencil, ourInfo, transferType,node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y, idx.Z - 1, cache, pencil, ourInfo, transferType,node, ref graph);
+
+                    if (graph is null)
+                    {
+                        if (!Pencil.GraphTypes.TryGetValue(transferType, out var type))
+                        {
+                            return;
+                        }
+
+                        var newGraph = GenericCaster<object, Graph>.Cast(Activator.CreateInstance(type, pencil.PlanetId))!;
+                        pencil.AddGraph(newGraph);
+                        newGraph.AddBlock(node);
+                    }
+                }
+
+            }
+        }
+
+        private void MaybeAddToGraph(int x, int y, int z, ILocalChunkCache? cache, Pencil? pencil, BlockInfo ourInfo, string transferType, NodeBase node, ref Graph? graph)
+        {
+            var index3 = new Index3(x, y, z);
+            index3.NormalizeXY(pencil.Planet.Size.XY * new Index2(Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y));
+            var id = cache.GetBlock(index3);
+            if (id == 0)
+                return;
+            var definition = simulation.ResourceManager.DefinitionManager.GetBlockDefinitionByIndex(id);
+            if (definition is not INetworkBlock networkBlock)
+                return;
+
+            var info = cache.GetBlockInfo(index3);
+            foreach (var item in pencil.Graphs)
+            {
+                if (item.TransferType != transferType)
+                    continue;
+
+                if (item.ContainsPosition(info.Position))
+                {
+                    if (graph is null)
+                    {
+                        item.AddBlock(node);
+                        graph = item;
+                        break;
+                    }
+                    else
+                    {
+                        if (item == graph)
+                            continue;
+                        graph.MergeWith(item, ourInfo);
+                        pencil.RemoveGraph(item);
+                        break;
+                    }
+                }
             }
         }
 

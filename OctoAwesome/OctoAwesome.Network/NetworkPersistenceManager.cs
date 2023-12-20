@@ -7,7 +7,7 @@ using System.Text;
 
 using OctoAwesome.Caching;
 using OctoAwesome.Components;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
 using OctoAwesome.Network.Request;

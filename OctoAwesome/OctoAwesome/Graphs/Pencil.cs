@@ -1,13 +1,20 @@
 ﻿using OctoAwesome.Serialization;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
 public partial class Pencil : IConstructionSerializable<Pencil>
 {
+    public static Dictionary<string, Type> GraphTypes { get; } = new Dictionary<string, Type> 
+        { 
+            {"Signal", typeof(SignalGraph) }, 
+            {"Energy", typeof(EnergyGraph) } 
+        };
+
     public int PlanetId { get; set; }
     public IReadOnlyCollection<Graph> Graphs => graphs;
     private List<Graph> graphs;

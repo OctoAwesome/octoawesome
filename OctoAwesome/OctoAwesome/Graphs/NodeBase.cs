@@ -2,7 +2,7 @@
 using System.IO;
 using System;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
 public abstract class NodeBase : IConstructionSerializable<NodeBase>
 {
@@ -57,6 +57,7 @@ public abstract class NodeBase : IConstructionSerializable<NodeBase>
     
 
 }
-public record struct SourceInfo<T>(ISourceNode<T> Node, T Data, T UseInfo = default);
+public record SourceInfo<T>(ISourceNode<T> Node, T Data, T UseInfo = default);
 
-public record struct TargetInfo<T>(ITargetNode<T> Node, T Data, int MaxRepeated, int RepeatedTimes = 0);
+public record TargetInfo<T>(ITargetNode<T> Node, T Data);
+

@@ -1,5 +1,5 @@
 ﻿using OctoAwesome.Database;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 
 using System;
 using System.Collections.Generic;

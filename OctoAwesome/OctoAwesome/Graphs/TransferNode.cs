@@ -2,7 +2,7 @@
 
 using System.IO;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
 public abstract class EmptyTransferNode<T> : Node<T>, ITransferNode<T>
 {

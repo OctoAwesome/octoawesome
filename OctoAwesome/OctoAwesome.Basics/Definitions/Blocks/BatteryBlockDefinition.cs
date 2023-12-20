@@ -3,7 +3,7 @@
 using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 
 using System;
 using System.Collections.Generic;
@@ -25,11 +25,11 @@ public class BatteryBlockDefinition : BlockDefinition, INetworkBlock<int>
     public override string DisplayName => "Akku";
 
     /// <inheritdoc />
-    public override string[] Textures { get; } = { "light_off", "light_on", "light_off", "light_on", "light_off", "light_on", "light_off", "light_on" };
+    public override string[] Textures { get; } = ["light_off", "light_on", "light_off", "light_on", "light_off", "light_on", "light_off", "light_on"];
 
     /// <inheritdoc />
     public override IMaterialDefinition Material { get; }
-    public string TransferType => "Energy";
+    public string[] TransferTypes { get; } =  ["Energy"];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.
@@ -47,7 +47,7 @@ public class BatteryBlockDefinition : BlockDefinition, INetworkBlock<int>
         return meta & 7;
     }
 
-    public Node<int> CreateNode()
+    public NodeBase CreateNode()
     {
         return new BatteryNode();
     }
@@ -80,7 +80,7 @@ internal partial class BatteryNode : Node<int>, ITargetNode<int>, ISourceNode<in
     {
         canChargeThisRound = Math.Max(0, Math.Min(MaxCharge - currentCharge, MaxChargeRate));
 
-        return new(this, 1, canChargeThisRound, 0);
+        return new EnergyTargetInfo(this, 1, canChargeThisRound, 0);
     }
 
     public void Use(SourceInfo<int> sourceInfo, IChunkColumn column)
@@ -91,7 +91,9 @@ internal partial class BatteryNode : Node<int>, ITargetNode<int>, ISourceNode<in
 
     public void Execute(TargetInfo<int> targetInfo, IChunkColumn column)
     {
-        currentCharge += targetInfo.RepeatedTimes;
+        if (targetInfo is not EnergyTargetInfo energyInfo)
+            return;
+        currentCharge += energyInfo.RepeatedTimes;
         column.SetBlockMeta(Position, currentCharge / 3750);
 
     }

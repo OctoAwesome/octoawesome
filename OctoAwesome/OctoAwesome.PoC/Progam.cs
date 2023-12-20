@@ -32,7 +32,7 @@ public static class Program
     - Aktuell austausch des Lampenblock bei "An" und "Aus" ✓ (Inzwischen sogar besser)
     - Graph bauen/ändern bei jeder Änderung ✓
     Phase 2:
-    - Switch / Lever (50%)
+    - Switch / Lever (50%) 
     - U = R*I (Very Low Prio), (Aktuell zu komplex in der aktuellen Logik zu implementieren)
     - Storage (Batterien ✓ / Kondensatoren (✓))
     Phase 3:

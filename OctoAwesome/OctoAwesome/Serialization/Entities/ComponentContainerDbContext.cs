@@ -37,7 +37,7 @@ namespace OctoAwesome.Serialization.Entities
             entityDefinitionContext = new ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext(database);
             componentsDbContext = new ComponentContainerComponentDbContext<TComponent>(databaseProvider, universe);
 
-            var componentGetter = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), new[] { typeof(TContainer) });
+            var componentGetter = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Get), [typeof(TContainer)]);
 
             Debug.Assert(componentGetter != null, nameof(getComponentMethod) + " != null");
             getComponentMethod = componentGetter;
@@ -61,7 +61,7 @@ namespace OctoAwesome.Serialization.Entities
             foreach (var component in value.Components)
             {
                 MethodInfo genericMethod = addOrUpdateComponentMethod.MakeGenericMethod(component.GetType());
-                genericMethod.Invoke(componentsDbContext, new object[] { component, value });
+                genericMethod.Invoke(componentsDbContext, [component, value]);
 
             }
         }
@@ -78,7 +78,7 @@ namespace OctoAwesome.Serialization.Entities
                 try
                 {
                     MethodInfo genericMethod = getComponentMethod.MakeGenericMethod(componentType);
-                    var component = (TComponent?)genericMethod.Invoke(componentsDbContext, new object[] { entity });
+                    var component = (TComponent?)genericMethod.Invoke(componentsDbContext, [entity]);
                     Debug.Assert(component != null, nameof(component) + " != null");
                     entity.Components.Add(component);
                 }
@@ -107,7 +107,7 @@ namespace OctoAwesome.Serialization.Entities
             foreach (Type component in definition.Components)
             {
                 MethodInfo genericMethod = removeComponentMethod.MakeGenericMethod(component);
-                genericMethod.Invoke(componentsDbContext, new object[] { value });
+                genericMethod.Invoke(componentsDbContext, [value]);
             }
         }
     }

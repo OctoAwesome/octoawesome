@@ -1,6 +1,6 @@
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
-using OctoAwesome.Graph;
+using OctoAwesome.Graphs;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 

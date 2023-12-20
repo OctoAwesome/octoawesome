@@ -1,5 +1,4 @@
-﻿using engenious.Graphics;
-
+﻿
 using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
 using OctoAwesome.Serialization;
@@ -15,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace OctoAwesome.Graph;
+namespace OctoAwesome.Graphs;
 
 public abstract class Graph : IConstructionSerializable<Graph>
 {
@@ -82,15 +81,19 @@ public abstract class Graph : IConstructionSerializable<Graph>
         that.PlanetId = reader.ReadInt32();
         that.Deserialize(reader);
     }
+
+    public abstract void MergeWith(Graph item, BlockInfo ourInfo);
+
+    public abstract bool ContainsPosition(Index3 position);
+    public abstract void AddBlock(NodeBase node);
 }
 
 public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
 {
     public Dictionary<Index3, Node<T>> Nodes { get; set; }
     public Dictionary<Node<T>, HashSet<Node<T>>> Edges { get; set; }
-    public HashSet<Node<T>> Sources { get; set; }
-    public HashSet<Node<T>> Targets { get; set; }
-
+    public HashSet<ISourceNode<T>> Sources { get; set; }
+    public HashSet<ITargetNode<T>> Targets { get; set; }
 
     public Graph(string transferType, int planetId) : base(transferType, planetId)
     {
@@ -140,9 +143,9 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
 
             var node = NodeBase.DeserializeAndCreate(reader);
 
-            if (node is ISourceNode<T> and Node<T> n)
+            if (node is ISourceNode<T> n)
                 Sources.Add(n);
-            if (node is ITargetNode<T> and Node<T> t)
+            if (node is ITargetNode<T> t)
                 Targets.Add(t);
 
             Nodes.Add(node.Position, GenericCaster<NodeBase, Node<T>>.Cast(node));
@@ -163,24 +166,27 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         }
     }
 
-    private void AddBlock(Node<T> node)
+    public override void AddBlock(NodeBase node)
     {
-        if (Nodes.ContainsKey(node.BlockInfo.Position))
+        if (node is not Node<T> nodeT)
+            return;
+
+        if (Nodes.ContainsKey(nodeT.BlockInfo.Position))
             return;
 
         var newEdgesSet = new HashSet<Node<T>>();
-        Edges[node] = newEdgesSet;
+        Edges[nodeT] = newEdgesSet;
         foreach (var item in Nodes.Values)
         {
-            if (IsNeighbour(node.Position, item.Position))
+            if (IsNeighbour(nodeT.Position, item.Position))
             {
                 if (Edges.TryGetValue(item, out var existing))
                 {
-                    existing.Add(node);
+                    existing.Add(nodeT);
                 }
                 else
                 {
-                    Edges[item] = new HashSet<Node<T>> { node };
+                    Edges[item] = new HashSet<Node<T>> { nodeT };
                 }
 
                 newEdgesSet.Add(item);
@@ -188,28 +194,15 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         }
         if (newEdgesSet.Count == 0 && Nodes.Count > 0)
         {
-            Edges.Remove(node);
+            Edges.Remove(nodeT);
             return;
         }
 
-        Nodes.Add(node.BlockInfo.Position, node);
-        if (node is ISourceNode<T>)
-            Sources.Add(node);
-        if (node is ITargetNode<T>)
-            Targets.Add(node);
-    }
-
-    public void AddBlock(BlockInfo info)
-    {
-        var definition = DefinitionManager.GetBlockDefinitionByIndex(info.Block);
-
-        if (definition is not INetworkBlock<T> nb || nb.TransferType != TransferType)
-            return;
-
-        Node<T> node = nb.CreateNode();
-        node.BlockInfo = info;
-
-        AddBlock(node);
+        Nodes.Add(nodeT.BlockInfo.Position, nodeT);
+        if (nodeT is ISourceNode<T> sn)
+            Sources.Add(sn);
+        if (nodeT is ITargetNode<T> tn)
+            Targets.Add(tn);
     }
 
 
@@ -475,6 +468,24 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         node = node2;
         return success;
     }
+    public override void MergeWith(Graph item, BlockInfo ourInfo)
+    {
+        if (item is Graph<T> graph)
+            MergeWith(graph, ourInfo);
+    }
+
+    public override bool ContainsPosition(Index3 position)
+        => Nodes.ContainsKey(position);
+
+    public static void Serialize(Graph<T> that, BinaryWriter writer)
+    {
+        that.Serialize(writer);
+    }
+
+    public static void Deserialize(Graph<T> that, BinaryReader reader)
+    {
+        that.Deserialize(reader);
+    }
 
     static Graph<T> IConstructionSerializable<Graph<T>>.DeserializeAndCreate(BinaryReader reader)
     {
@@ -486,13 +497,4 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         return graph;
     }
 
-    public static void Serialize(Graph<T> that, BinaryWriter writer)
-    {
-        that.Serialize(writer);
-    }
-
-    public static void Deserialize(Graph<T> that, BinaryReader reader)
-    {
-        that.Deserialize(reader);
-    }
 }

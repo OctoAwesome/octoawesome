@@ -42,7 +42,7 @@ namespace OctoAwesome.Definitions
         /// <inheritdoc />
         public int Density => Material.Density;
 
-        private readonly BoundingBox[] defaultCollisionBoxes = new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) };
+        private readonly BoundingBox[] defaultCollisionBoxes = [new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))];
 
         /// <inheritdoc />
         public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem item)

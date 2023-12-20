@@ -36,7 +36,7 @@ namespace OctoAwesome.Client.UI.Components
         public const string RESOURCEPATH = "Resources";
         readonly Dictionary<string, Texture2D> textures;
         readonly Dictionary<string, Image> bitmaps;
-        readonly string[] textureTypes = new string[] { "png", "jpg", "jpeg", "bmp" };
+        readonly string[] textureTypes = ["png", "jpg", "jpeg", "bmp"];
         readonly List<ResourcePack> loadedPacks = new();
         readonly List<ResourcePack> activePacks = new();
 
