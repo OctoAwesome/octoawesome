@@ -27,8 +27,9 @@ public class SignalGraph : Graph<Signal>
     {
     }
 
-    public override void Update(IGlobalChunkCache? globalChunkCache)
+    public override void Update(Simulation simulation)
     {
+        var globalChunkCache = Parent.Planet.GlobalChunkCache;
         GraphCleanup(globalChunkCache);
 
         //var sourceDatas = new SourceInfo<Signal>[Sources.Count];
@@ -39,7 +40,7 @@ public class SignalGraph : Graph<Signal>
 
         foreach (var source in Sources.OrderBy(x => x.Priority))
         {
-            var cap = source.GetCapacity();
+            var cap = source.GetCapacity(simulation);
             if (cap.Data.Enabled)
                 activatedChannels.Add(cap.Data.Channel);
         }
@@ -52,8 +53,9 @@ public class SignalGraph : Graph<Signal>
 
         foreach (var item in targetDatas)
         {
-            if (activatedChannels.Contains(item.Data.Channel))
-                item.Node.Execute(item, globalChunkCache?.Peek(item.Node.Position.XY / Chunk.CHUNKSIZE.XY));
+            var state = activatedChannels.Contains(item.Data.Channel);
+
+            item.Node.Execute(new TargetInfo<Signal>(item.Node, new Signal { Channel = item.Data.Channel, Enabled = state }), globalChunkCache?.Peek(item.Node.Position.XY / Chunk.CHUNKSIZE.XY));
         }
     }
 

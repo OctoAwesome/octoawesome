@@ -61,15 +61,6 @@ namespace OctoAwesome.Client.UI.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply.
-        /// </summary>
-        public static string apply {
-            get {
-                return ResourceManager.GetString("apply", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Move Backward.
         /// </summary>
         public static string backward {
@@ -201,6 +192,15 @@ namespace OctoAwesome.Client.UI.Languages {
         public static string hidecontrols {
             get {
                 return ResourceManager.GetString("hidecontrols", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hit.
+        /// </summary>
+        public static string hit {
+            get {
+                return ResourceManager.GetString("hit", resourceCulture);
             }
         }
         

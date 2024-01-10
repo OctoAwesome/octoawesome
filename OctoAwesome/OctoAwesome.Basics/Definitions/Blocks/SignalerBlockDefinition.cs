@@ -60,7 +60,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             IsOn = !IsOn;
         }
 
-        public SourceInfo<Signal> GetCapacity()
+        public SourceInfo<Signal> GetCapacity(Simulation simulation)
         {
             return new SourceInfo<Signal>(this, new Signal { Channel = Channel, Enabled = IsOn });
         }

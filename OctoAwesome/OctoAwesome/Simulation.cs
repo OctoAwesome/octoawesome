@@ -190,8 +190,7 @@ namespace OctoAwesome
 
             foreach (var item in ResourceManager.Pencils)
             {
-                ResourceManager.Planets.TryGetValue(item.Key, out var planet);
-                item.Value.Update(planet?.GlobalChunkCache);
+                item.Value.Update(this);
             }
 
             //Update all Entities

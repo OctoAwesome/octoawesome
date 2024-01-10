@@ -15,13 +15,14 @@ public partial class Pencil : IConstructionSerializable<Pencil>
             {"Energy", typeof(EnergyGraph) } 
         };
 
+    [NoosonIgnore]
+    public IPlanet Planet => planet ??= TypeContainer.Get<IResourceManager>().Planets[PlanetId];
     public int PlanetId { get; set; }
     public IReadOnlyCollection<Graph> Graphs => graphs;
     private List<Graph> graphs;
+    private Dictionary<Index3, NodeBase> nodes = new();
 
 
-    [NoosonIgnore]
-    public IPlanet Planet => planet ??= TypeContainer.Get<IResourceManager>().Planets[PlanetId];
     private IPlanet planet;
 
     public Pencil()
@@ -29,11 +30,6 @@ public partial class Pencil : IConstructionSerializable<Pencil>
         graphs = new List<Graph>();
     }
 
-    [NoosonPreferredCtor]
-    private Pencil(List<Graph> graphs)
-    {
-        this.graphs = graphs.ToList();
-    }
 
     public void AddGraph(Graph graph)
     {
@@ -44,12 +40,12 @@ public partial class Pencil : IConstructionSerializable<Pencil>
         graphs.Remove(graph);
     }
 
-    public void Update(IGlobalChunkCache? globalChunkCache)
+    public void Update(Simulation simulation)
     {
         for (int i = graphs.Count - 1; i >= 0; i--)
         {
             Graph? item = graphs[i];
-            item.Update(globalChunkCache);
+            item.Update(simulation);
         }
     }
 
@@ -73,6 +69,10 @@ public partial class Pencil : IConstructionSerializable<Pencil>
     public void Serialize(BinaryWriter writer)
     {
         writer.Write(PlanetId);
+        writer.Write(nodes.Count);
+        foreach ((var _, var node) in nodes)
+            node.Serialize(writer);
+        
         writer.Write(graphs.Count);
         foreach (var graph in graphs)
             graph.SerializeWithType(writer);
@@ -82,8 +82,28 @@ public partial class Pencil : IConstructionSerializable<Pencil>
     public void Deserialize(BinaryReader reader)
     {
         PlanetId = reader.ReadInt32();
+        var nodeCount = reader.ReadInt32();
+        for (int i = 0; i < nodeCount; i++)
+        {
+            var node = NodeBase.DeserializeAndCreate(reader);
+            nodes[node.Position] = node;
+        }
+
         var graphCount = reader.ReadInt32();
         for (int i = 0; i < graphCount; i++)
-            graphs.Add(Graph.DeserializeAndCreate(reader));
+            graphs.Add(Graph.DeserializeAndCreateWithParent(reader, this));
+    }
+
+    public bool TryGetNode(Index3 position, out NodeBase node)
+    {
+        return nodes.TryGetValue(position, out node);
+    }
+
+    public void AddNode(NodeBase node) => nodes[node.Position] = node;
+
+    public void InteractNode(Index3 position)
+    {
+        if(nodes.TryGetValue(position, out var node))
+            node.Interact();
     }
 }

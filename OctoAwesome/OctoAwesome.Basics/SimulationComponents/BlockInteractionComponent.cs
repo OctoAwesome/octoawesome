@@ -59,28 +59,40 @@ namespace OctoAwesome.Basics.SimulationComponents
             var cache = entity.Components.Get<LocalChunkCacheComponent>()?.LocalChunkCache;
             Debug.Assert(cache != null, nameof(cache) + " != null");
 
+            var selectionType = controller.Selection?.SelectionType;
+
             controller
                 .Selection?
                 .Visit(
                     blockInfo =>
                     {
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
-                        InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                        switch (selectionType)
+                        {
+                            case SumTypes.SelectionType.Hit:
+                                HitWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                                break;
+                            case SumTypes.SelectionType.Interact:
+                                InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                                break;
+                            case null:
+                                break;
+                        }
                     },
                     componentContainer =>
                     {
-                        if (componentContainer.TryGetComponent<InteractKeyComponent>(out var keyComp))
+                        if (selectionType == SumTypes.SelectionType.Interact && componentContainer.TryGetComponent<InteractKeyComponent>(out var keyComp))
                         {
                             interactService.Interact(keyComp.Key, gameTime, entity, componentContainer);
                         }
                     }
                 );
 
-            if (toolbar != null && controller.ApplyBlock.HasValue)
+            if (toolbar != null && controller.InteractBlock.HasValue)
             {
                 if (toolbar.ActiveTool != null)
                 {
-                    Index3 add = controller.ApplySide switch
+                    Index3 add = controller.InteractSide switch
                     {
                         OrientationFlags.SideWest => new Index3(-1, 0, 0),
                         OrientationFlags.SideEast => new Index3(1, 0, 0),
@@ -93,7 +105,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                     if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
-                        Index3 idx = controller.ApplyBlock.Value + add;
+                        Index3 idx = controller.InteractBlock.Value + add;
                         var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
                         bool intersects = false;
@@ -130,7 +142,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
                             {
                                 cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-                                cache.SetBlockMeta(idx, (int)controller.ApplySide);
+                                cache.SetBlockMeta(idx, (int)controller.InteractSide);
                                 if (toolbar.ActiveTool.Amount <= 0)
                                     toolbar.RemoveSlot(toolbar.ActiveTool);
 
@@ -139,7 +151,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         }
                     }
                 }
-                controller.ApplyBlock = null;
+                controller.InteractBlock = null;
             }
         }
 
@@ -149,8 +161,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             {
                 var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
                 var ourInfo = cache.GetBlockInfo(idx);
-                
-                
+
+
                 var node = nb.CreateNode();
                 node.BlockInfo = ourInfo;
 
@@ -159,12 +171,12 @@ namespace OctoAwesome.Basics.SimulationComponents
                 {
                     Graph? graph = null;
 
-                    MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
-                    MaybeAddToGraph(idx.X - 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
-                    MaybeAddToGraph(idx.X, idx.Y + 1, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
-                    MaybeAddToGraph(idx.X, idx.Y - 1, idx.Z, cache, pencil, ourInfo, transferType,node, ref graph);
-                    MaybeAddToGraph(idx.X, idx.Y, idx.Z + 1, cache, pencil, ourInfo, transferType,node, ref graph);
-                    MaybeAddToGraph(idx.X, idx.Y, idx.Z - 1, cache, pencil, ourInfo, transferType,node, ref graph);
+                    MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X - 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y + 1, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y - 1, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y, idx.Z + 1, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y, idx.Z - 1, cache, pencil, ourInfo, transferType, node, ref graph);
 
                     if (graph is null)
                     {
@@ -225,7 +237,28 @@ namespace OctoAwesome.Basics.SimulationComponents
             base.Update(gameTime);
         }
 
+
         private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool?.Item is IItem item)
+                    activeItem = item;
+                else
+                    activeItem = Hand.Instance;
+
+                Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
+
+                if (simulation.ResourceManager.Pencils.TryGetValue(posComponent.Position.Planet, out var pencil))
+                {
+                    pencil.InteractNode(lastBlock.Position);
+                 
+                }
+            }
+        }
+
+        private void HitWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
@@ -276,7 +309,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         {
                             if (graph.TryGetNode(lastBlock.Position, out var node))
                             {
-                                node.Interact();
+                                node.Hit();
                             }
                         }
                     }

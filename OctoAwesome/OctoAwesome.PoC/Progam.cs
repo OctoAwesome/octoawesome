@@ -36,8 +36,8 @@ public static class Program
     - U = R*I (Very Low Prio), (Aktuell zu komplex in der aktuellen Logik zu implementieren)
     - Storage (Batterien ✓ / Kondensatoren (✓))
     Phase 3:
-    - Adapt to Redstone und ItemTransport
-        - Mehr Kabeltype+
+    - Adapt to Redstone (✓) und ItemTransport
+        - Mehr Kabeltype+ 
     Phase 4:
     - Clenaup Block Types and implement real blocks
      */

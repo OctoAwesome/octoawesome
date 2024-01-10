@@ -10,7 +10,7 @@ public interface ISourceNode<T>
     int Priority { get; }
     Index3 Position { get; }
 
-    SourceInfo<T> GetCapacity();
+    SourceInfo<T> GetCapacity(Simulation simulation);
 
     void Use(SourceInfo<T> targetInfo, IChunkColumn? column);
 }

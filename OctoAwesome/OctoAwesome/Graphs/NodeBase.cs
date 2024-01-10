@@ -10,6 +10,9 @@ public abstract class NodeBase : IConstructionSerializable<NodeBase>
     public Index3 Position => BlockInfo.Position;
 
 
+    public virtual void Hit()
+    {
+    }
     public virtual void Interact()
     {
     }
@@ -54,7 +57,6 @@ public abstract class NodeBase : IConstructionSerializable<NodeBase>
     {
         that.Deserialize(reader);
     }
-    
 
 }
 public record SourceInfo<T>(ISourceNode<T> Node, T Data, T UseInfo = default);

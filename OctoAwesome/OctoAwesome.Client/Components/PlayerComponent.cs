@@ -21,9 +21,9 @@ namespace OctoAwesome.Client.Components
 
         public Vector2 MoveInput { get; set; }
 
-        public bool InteractInput { get; set; }
+        public bool HitInput { get; set; }
 
-        public bool ApplyInput { get; set; }
+        public bool Interact { get; set; }
 
         public bool JumpInput { get; set; }
 
@@ -118,8 +118,8 @@ namespace OctoAwesome.Client.Components
             position = entity.Components.Get<PositionComponent>();
             if (position is null)
                 position = new() { Position = new Coordinate(0, new Index3(0, 0, 0), new Vector3(0, 0, 0)) };
-            
-            
+
+
             Enabled = true;
         }
 
@@ -136,23 +136,32 @@ namespace OctoAwesome.Client.Components
             CurrentController.JumpInput = JumpInput;
             JumpInput = false;
 
-            if (InteractInput && SelectedBox.HasValue )
-                CurrentController.Selection = Selection;
-            else
-                CurrentController.Selection = null;
 
-            if (InteractInput && SelectedBox.HasValue)
-                CurrentController.InteractBlock = SelectedBox.Value;
-            else
-                CurrentController.InteractBlock = null;
-
-            if (ApplyInput && SelectedBox.HasValue)
+            if (SelectedBox is not null && Selection is not null && (HitInput || Interact))
             {
-                CurrentController.ApplyBlock = SelectedBox.Value;
-                CurrentController.ApplySide = SelectedSide;
+                CurrentController.Selection = Selection;
+
+                if (HitInput)
+                {
+                    CurrentController.Selection.SelectionType = SelectionType.Hit;
+                    CurrentController.HitBlock = SelectedBox.Value;
+                }
+
+                if (Interact)
+                {
+                    CurrentController.InteractBlock = SelectedBox.Value;
+                    CurrentController.InteractSide = SelectedSide;
+                    CurrentController.Selection.SelectionType = SelectionType.Interact;
+                }
+            }
+            else
+            {
+                CurrentController.Selection = null;
+                CurrentController.HitBlock = null;
             }
 
-            ApplyInput = false;
+
+            Interact = false;
             //if (FlymodeInput)
             //    ActorHost.Player.FlyMode = !ActorHost.Player.FlyMode;
             //FlymodeInput = false;
@@ -230,7 +239,7 @@ namespace OctoAwesome.Client.Components
             {
                 if (wood is not null && itemDefinition.Create(wood) is { } woodItem)
                     inventory.Add(woodItem, woodItem.VolumePerUnit);
-                
+
                 if (stone is not null && itemDefinition.Create(stone) is { } stoneItem)
                     inventory.Add(stoneItem, stoneItem.VolumePerUnit);
 

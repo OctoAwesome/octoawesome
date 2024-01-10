@@ -51,7 +51,7 @@ public abstract class Graph : IConstructionSerializable<Graph>
 
     public abstract bool TryGetNode(Index3 position, out NodeBase node);
 
-    public abstract void Update(IGlobalChunkCache? globalChunkCache);
+    public abstract void Update(Simulation simulation);
 
     public abstract void Serialize(BinaryWriter writer);
     public abstract void Deserialize(BinaryReader reader);
@@ -86,12 +86,22 @@ public abstract class Graph : IConstructionSerializable<Graph>
 
     public abstract bool ContainsPosition(Index3 position);
     public abstract void AddBlock(NodeBase node);
+
+    internal static Graph DeserializeAndCreateWithParent(BinaryReader reader, Pencil pencil)
+    {
+        var str = reader.ReadString();
+        var type = Type.GetType(str);
+        var graph = (Graph)Activator.CreateInstance(type);
+        graph.parent = pencil;
+        graph.Deserialize(reader);
+        return graph;
+    }
 }
 
 public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
 {
-    public Dictionary<Index3, Node<T>> Nodes { get; set; }
-    public Dictionary<Node<T>, HashSet<Node<T>>> Edges { get; set; }
+    public Dictionary<Index3, NodeBase> Nodes { get; set; }
+    public Dictionary<NodeBase, HashSet<NodeBase>> Edges { get; set; }
     public HashSet<ISourceNode<T>> Sources { get; set; }
     public HashSet<ITargetNode<T>> Targets { get; set; }
 
@@ -115,9 +125,9 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
     {
         writer.Write(Nodes.Count);
 
-        foreach ((var _, var node) in Nodes)
+        foreach ((var pos, var _) in Nodes)
         {
-            node.Serialize(writer);
+            writer.WriteUnmanaged(pos);
         }
 
         writer.Write(Edges.Count);
@@ -140,15 +150,16 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
 
         for (int i = 0; i < nodeCount; i++)
         {
-
-            var node = NodeBase.DeserializeAndCreate(reader);
+            var position = reader.ReadUnmanaged<Index3>();
+            if (!Parent.TryGetNode(position, out var node))
+                continue; //TODO Error or fallback own serialize?
 
             if (node is ISourceNode<T> n)
                 Sources.Add(n);
             if (node is ITargetNode<T> t)
                 Targets.Add(t);
 
-            Nodes.Add(node.Position, GenericCaster<NodeBase, Node<T>>.Cast(node));
+            Nodes.Add(node.Position, node);
         }
 
         var edgesCount = reader.ReadInt32();
@@ -157,7 +168,8 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
             var nodeEdgesCount = reader.ReadInt32();
             var nodePosition = reader.ReadUnmanaged<Index3>();
             var node = Nodes[nodePosition];
-            Edges[node] = new HashSet<Node<T>>(nodeEdgesCount);
+
+            Edges[node] = new HashSet<NodeBase>(nodeEdgesCount);
             for (int o = 0; o < nodeEdgesCount; o++)
             {
                 var edgePosition = reader.ReadUnmanaged<Index3>();
@@ -168,25 +180,29 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
 
     public override void AddBlock(NodeBase node)
     {
-        if (node is not Node<T> nodeT)
+        if (node is not ISourceNode<T> 
+            && node is not ITransferNode<T>
+            && node is not ITargetNode<T>)
             return;
 
-        if (Nodes.ContainsKey(nodeT.BlockInfo.Position))
+        if (Nodes.ContainsKey(node.BlockInfo.Position))
             return;
 
-        var newEdgesSet = new HashSet<Node<T>>();
-        Edges[nodeT] = newEdgesSet;
+        Parent.AddNode(node);
+
+        var newEdgesSet = new HashSet<NodeBase>();
+        Edges[node] = newEdgesSet;
         foreach (var item in Nodes.Values)
         {
-            if (IsNeighbour(nodeT.Position, item.Position))
+            if (IsNeighbour(node.Position, item.Position))
             {
                 if (Edges.TryGetValue(item, out var existing))
                 {
-                    existing.Add(nodeT);
+                    existing.Add(node);
                 }
                 else
                 {
-                    Edges[item] = new HashSet<Node<T>> { nodeT };
+                    Edges[item] = new HashSet<NodeBase> { node };
                 }
 
                 newEdgesSet.Add(item);
@@ -194,14 +210,14 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         }
         if (newEdgesSet.Count == 0 && Nodes.Count > 0)
         {
-            Edges.Remove(nodeT);
+            Edges.Remove(node);
             return;
         }
 
-        Nodes.Add(nodeT.BlockInfo.Position, nodeT);
-        if (nodeT is ISourceNode<T> sn)
+        Nodes.Add(node.BlockInfo.Position, node);
+        if (node is ISourceNode<T> sn)
             Sources.Add(sn);
-        if (nodeT is ITargetNode<T> tn)
+        if (node is ITargetNode<T> tn)
             Targets.Add(tn);
     }
 
@@ -211,8 +227,10 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         if (!Nodes.TryGetValue(info.Position, out var node))
             return;
 
-        Sources.Remove(node);
-        Targets.Remove(node);
+        if (node is ISourceNode<T> sn)
+            Sources.Remove(sn);
+        if (node is ITargetNode<T> tn)
+            Targets.Remove(tn);
         Nodes.Remove(info.Position);
 
         var edges = Edges[node].ToArray();
@@ -226,10 +244,10 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
 
         if (edges.Length > 1)
         {
-            Dictionary<Node<T>, List<Node<T>>> graphEndpoints = new();
+            Dictionary<NodeBase, List<NodeBase>> graphEndpoints = new();
             for (int i = 0; i < edges.Length; i++)
             {
-                Node<T>? item = edges[i];
+                NodeBase? item = edges[i];
                 if (graphEndpoints.Count > 0
                     && graphEndpoints.Any(x => x.Value.Any(x => x == item)))
                     continue;
@@ -237,7 +255,7 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
                 graphEndpoints[item] = new() { item };
                 for (int i1 = i + 1; i1 < edges.Length; i1++)
                 {
-                    Node<T>? edge = edges[i1];
+                    NodeBase? edge = edges[i1];
                     if (FindPathBetweenNodes(item, edge))
                         graphEndpoints[item].Add(edge);
                 }
@@ -248,7 +266,7 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
             {
                 Graph<T> graph = new(TransferType, this.PlanetId);
                 Parent.AddGraph(graph);
-                void WanderNode(Node<T> node, Node<T>? source)
+                void WanderNode(NodeBase node, NodeBase? source)
                 {
                     graph.AddBlock(item.Key);
                     foreach (var item in Edges[node])
@@ -266,14 +284,14 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         }
     }
 
-    protected bool FindPathBetweenNodes(Node<T> a, Node<T> b)
+    protected bool FindPathBetweenNodes(NodeBase a, NodeBase b)
     {
         if (IsNeighbour(a.Position, b.Position))
         {
             return true;
         }
 
-        Dictionary<Index3, HashSet<Node<T>>> nodePositions = Nodes.ToDictionary(x => x.Key, x => Edges[x.Value]);
+        Dictionary<Index3, HashSet<NodeBase>> nodePositions = Nodes.ToDictionary(x => x.Key, x => Edges[x.Value]);
         HashSet<Index3> alreadyVisited = new() { };
 
         List<Index3> branches = new();
@@ -400,9 +418,9 @@ public partial class Graph<T> : Graph, IConstructionSerializable<Graph<T>>
         }
     }
 
-    public override void Update(IGlobalChunkCache? globalChunkCache)
+    public override void Update(Simulation simulation)
     {
-        GraphCleanup(globalChunkCache);
+        GraphCleanup(Parent.Planet.GlobalChunkCache);
 
         //foreach (var source in Sources.OrderBy(x => ((ISourceNode<int>)x).Priority))
         //{

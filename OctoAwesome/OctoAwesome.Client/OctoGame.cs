@@ -203,8 +203,8 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:headdown", UI.Languages.OctoKeys.headdown);
             KeyMapper.RegisterBinding("octoawesome:headleft", UI.Languages.OctoKeys.headleft);
             KeyMapper.RegisterBinding("octoawesome:headright", UI.Languages.OctoKeys.headright);
+            KeyMapper.RegisterBinding("octoawesome:hit", UI.Languages.OctoKeys.hit);
             KeyMapper.RegisterBinding("octoawesome:interact", UI.Languages.OctoKeys.interact);
-            KeyMapper.RegisterBinding("octoawesome:apply", UI.Languages.OctoKeys.apply);
             KeyMapper.RegisterBinding("octoawesome:flymode", UI.Languages.OctoKeys.flymode);
             KeyMapper.RegisterBinding("octoawesome:jump", UI.Languages.OctoKeys.jump);
             for (int i = 0; i < 10; i++)
@@ -238,8 +238,8 @@ namespace OctoAwesome.Client
                 { "octoawesome:headdown", Keys.Down },
                 { "octoawesome:headleft", Keys.Left },
                 { "octoawesome:headright", Keys.Right },
-                { "octoawesome:interact", Keys.E },
-                { "octoawesome:apply", Keys.Q },
+                { "octoawesome:hit", Keys.E },
+                { "octoawesome:interact", Keys.F },
                 { "octoawesome:flymode", Keys.ScrollLock },
                 { "octoawesome:jump", Keys.Space },
                 { "octoawesome:slot0", Keys.D1 },

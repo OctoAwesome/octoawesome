@@ -21,8 +21,9 @@ public class EnergyGraph : Graph<int>
     {
     }
 
-    public override void Update(IGlobalChunkCache? globalChunkCache)
+    public override void Update(Simulation simulation)
     {
+        var globalChunkCache = Parent.Planet.GlobalChunkCache;
         GraphCleanup(globalChunkCache);
 
         var sourceDatas = new SourceInfo<int>[Sources.Count];
@@ -33,7 +34,7 @@ public class EnergyGraph : Graph<int>
 
         foreach (var source in Sources.OrderBy(x => x.Priority))
         {
-            var cap = source.GetCapacity();
+            var cap = source.GetCapacity(simulation);
             sourceDatas[index++] = cap;
             powerCap += cap.Data;
         }
@@ -43,6 +44,9 @@ public class EnergyGraph : Graph<int>
         {
             targetDatas[index++] = GenericCaster<TargetInfo<int>, EnergyTargetInfo>.Cast(target.GetRequired());
         }
+
+        if (targetDatas.Length == 0)
+            return;
 
         int i = targetDatas.Length - 1;
         for (int o = 0; o < sourceDatas.Length; o++)

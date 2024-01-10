@@ -69,7 +69,7 @@ internal partial class BatteryNode : Node<int>, ITargetNode<int>, ISourceNode<in
     int ITargetNode<int>.Priority { get; } = int.MaxValue;
     int ISourceNode<int>.Priority { get; } = int.MaxValue;
 
-    public SourceInfo<int> GetCapacity()
+    public SourceInfo<int> GetCapacity(Simulation simulation)
     {
         currentCharge = Math.Min(MaxCharge, Math.Max(0, currentCharge));
 

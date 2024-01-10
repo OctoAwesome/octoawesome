@@ -234,6 +234,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     internal partial class CactusBlockNode : Node<int>, ISourceNode<int>, ITargetNode<Signal>
     {
         bool isOn = false;
+        bool signalEnabled = false;
 
         public int Priority { get; } = 1;
 
@@ -242,7 +243,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             isOn = !isOn;
         }
 
-        public SourceInfo<int> GetCapacity()
+        public SourceInfo<int> GetCapacity(Simulation simulation)
         {
             return new SourceInfo<int>(this, isOn ? 100 : 0);
         }
@@ -265,8 +266,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public void Execute(TargetInfo<Signal> targetInfo, IChunkColumn? column)
         {
-            if (targetInfo.Data.Enabled)
-                isOn = true;
+            if(signalEnabled != targetInfo.Data.Enabled)
+            {
+                signalEnabled = !signalEnabled;
+                isOn = signalEnabled;
+            }
         }
 
         public TargetInfo<Signal> GetRequired()
