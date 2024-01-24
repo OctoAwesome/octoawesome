@@ -242,7 +242,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         {
             isOn = !isOn;
         }
-
+        
         public SourceInfo<int> GetCapacity(Simulation simulation)
         {
             return new SourceInfo<int>(this, isOn ? 100 : 0);
