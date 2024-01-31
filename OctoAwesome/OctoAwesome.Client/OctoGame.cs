@@ -12,6 +12,7 @@ using OctoAwesome.Extension;
 using OctoAwesome.Graphs;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
+using OctoAwesome.UI.Components;
 
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,7 @@ namespace OctoAwesome.Client
 
             typeContainer.Register<BaseScreenComponent>(Screen);
             typeContainer.Register<ScreenComponent>(Screen);
+            typeContainer.Register<IScreenComponent>(Screen);
             ExtensionLoader.InstantiateExtensions();
 
             typeContainer.Register(Assets);

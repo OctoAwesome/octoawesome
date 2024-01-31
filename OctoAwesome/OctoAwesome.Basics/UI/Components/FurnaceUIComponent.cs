@@ -132,13 +132,10 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
 
     }
 
-    internal void OnClose(string key)
+    public override void OnClose(string key)
     {
-        var interactingComponentContainer = componentContainers.FirstOrDefault();
-        var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
-        if (components is not null)
-            components.Changed.OnNext((interactingComponentContainer!, key, false));
-        
+        base.OnClose(key);
+
         VersionA = InputVersion = ProductionResourceVersion = 0;
         inventoryA = inputInventory = outputInventory = productionResourceInventory = null;
         

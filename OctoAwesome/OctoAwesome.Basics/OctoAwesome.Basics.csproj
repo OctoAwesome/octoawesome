@@ -19,6 +19,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Assets\Definitions\Items\storageinterface.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
 		<ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
 	</ItemGroup>

@@ -12,7 +12,8 @@ public partial class Pencil : IConstructionSerializable<Pencil>
     public static Dictionary<string, Type> GraphTypes { get; } = new Dictionary<string, Type> 
         { 
             {"Signal", typeof(SignalGraph) }, 
-            {"Energy", typeof(EnergyGraph) } 
+            {"Energy", typeof(EnergyGraph) } ,
+            {"ItemTransfer", typeof(ItemGraph) } ,
         };
 
     [NoosonIgnore]

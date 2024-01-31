@@ -165,6 +165,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 var node = nb.CreateNode();
                 node.BlockInfo = ourInfo;
+                node.PlanetId = positioncomponent.Position.Planet;
 
 
                 foreach (var transferType in nb.TransferTypes)

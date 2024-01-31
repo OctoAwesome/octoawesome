@@ -13,7 +13,7 @@ public class Signal
 }
 
 /// <summary>
-/// Specialisation for energy graphs
+/// Specialisation for signal graphs
 /// </summary>
 public class SignalGraph : Graph<Signal>
 {

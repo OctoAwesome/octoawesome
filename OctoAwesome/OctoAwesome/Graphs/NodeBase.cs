@@ -8,7 +8,7 @@ public abstract class NodeBase : IConstructionSerializable<NodeBase>
 {
     public BlockInfo BlockInfo { get; set; }
     public Index3 Position => BlockInfo.Position;
-
+    public int PlanetId { get; set; }
 
     public virtual void Hit()
     {

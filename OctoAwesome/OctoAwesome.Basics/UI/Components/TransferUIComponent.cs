@@ -20,14 +20,14 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     public InventoryComponent InventoryA
     {
         get => NullabilityHelper.NotNullAssert(inventoryA, $"{nameof(InventoryA)} was not initialized!");
-        private set => inventoryA = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryA)} cannot be initialized with null!");
+        protected set => inventoryA = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryA)} cannot be initialized with null!");
     }
 
     /// <summary>
     /// Gets a value indicating the version of the <see cref="InventoryA"/> value,
     /// which is changed when <see cref="InventoryA"/> has changed.
     /// </summary>
-    public uint VersionA { get; private set; }
+    public uint VersionA { get; protected set; }
 
     /// <summary>
     /// Gets the second inventory to transfer to and from.
@@ -35,14 +35,14 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     public InventoryComponent InventoryB
     {
         get => NullabilityHelper.NotNullAssert(inventoryB, $"{nameof(InventoryB)} was not initialized!");
-        private set => inventoryB = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryB)} cannot be initialized with null!");
+        protected set => inventoryB = NullabilityHelper.NotNullAssert(value, $"{nameof(InventoryB)} cannot be initialized with null!");
     }
 
     /// <summary>
     /// Gets a value indicating the version of the <see cref="InventoryB"/> value,
     /// which is changed when <see cref="InventoryB"/> has changed.
     /// </summary>
-    public uint VersionB { get; private set; }
+    public uint VersionB { get; protected set; }
 
     private bool show = false;
     private InventoryComponent? inventoryA;
@@ -56,7 +56,7 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
                 || ((inventoryA?.Version ?? 0) == VersionA
                     && (inventoryB?.Version ?? 0) == VersionB))
             || PrimaryUiKey != "Transfer")
-                
+
         {
             return false;
         }
@@ -91,12 +91,9 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
         Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
     }
 
-    internal void OnClose(string key)
+    public override void OnClose(string key)
     {
-        var interactingComponentContainer = componentContainers.FirstOrDefault();
-        var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
-        if (components is not null)
-            components.Changed.OnNext((interactingComponentContainer!, key, false));
+        base.OnClose(key);
 
         VersionA = VersionB = 0;
         inventoryA = inventoryB = null;

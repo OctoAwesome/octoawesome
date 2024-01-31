@@ -69,6 +69,8 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             {
                 foreach (var item in positions)
                 {
+                    if (item.Planet.Id != PlanetId)
+                        continue;
                     var bc = item.Parent.GetComponent<BodyComponent>();
                     if (bc is null)
                         continue;
