@@ -14,6 +14,9 @@ using OctoAwesome.Extension;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Rx;
+using OctoAwesome.Basics.Definitions.Items;
+using System.Linq;
+using OctoAwesome.Graphs;
 
 namespace OctoAwesome.Basics
 {
@@ -108,6 +111,63 @@ namespace OctoAwesome.Basics
                     transferComponent.Targets.Add(productionInventoryCompopnents.OutputInventory);
                     transferComponent.Targets.Add(productionInventoryCompopnents.ProductionInventory);
                     uiMappingComponent.Changed.OnNext((interactor, ownUiKeyComponent.PrimaryKey, true));
+                }
+            });
+
+            interactService.Register("", (gt, interactor, target) =>
+            {
+                if (target.IsEmpty || target.Block != 0)
+                    return;
+                var sim = interactor.Simulation;
+                if (sim is null)
+                    return;
+                var posComp = interactor.GetComponent<PositionComponent>();
+
+                if (sim.ResourceManager.Pencils.TryGetValue(posComp.Position.Planet, out var pencil))
+                {
+                    pencil.InteractNode(target.Position);
+
+                }
+            });
+
+            interactService.Register("Storage Interface", (gt, interactor, target) =>
+            {
+                if (target.IsEmpty || target.Block == 0)
+                    return;
+                var sim = interactor.Simulation;
+                if (sim is null)
+                    return;
+                var posComp = interactor.GetComponent<PositionComponent>();
+
+                if (sim.ResourceManager.Pencils.TryGetValue(posComp.Position.Planet, out var pencil))
+                {
+                    if (//target.TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent) &&
+
+                         interactor.TryGetComponent<TransferComponent>(out var transferComponent)
+                         && interactor.TryGetComponent<UiMappingComponent>(out var uiMappingComponent)
+                        // && target.TryGetComponent<ProductionInventoriesComponent>(out var productionInventoryCompopnents)
+                        )
+                    {
+                        transferComponent.Targets.Clear();
+                        foreach (var item in pencil.Graphs.OfType<ItemGraph>())
+                        {
+                            if (!item.TryGetNode(target.Position, out _))
+                                continue;
+
+                            foreach (var source in item.Sources.OrderBy(x => x.Priority))
+                            {
+                                var cap = source.GetCapacity(sim);
+                                if (cap.Data.IsEmpty)
+                                    continue;
+                                cap.Data.Visit(single => transferComponent.Targets.Add(single), multi => multi.ForEach(x => transferComponent.Targets.Add(x)));
+
+                            }
+
+                            break;
+
+                        }
+                        uiMappingComponent.Changed.OnNext((interactor, "StorageInterface", true));
+                    }
                 }
             });
         }
@@ -243,6 +303,9 @@ namespace OctoAwesome.Basics
 
                 s.Components.AddIfTypeNotExists(new FurnaceUIComponent());
                 s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
+
+                s.Components.AddIfTypeNotExists(new StorageInterfaceUIComponent());
+                s.Add(TypeContainer.GetUnregistered<StorageInterfaceScreen>());
             });
         }
     }

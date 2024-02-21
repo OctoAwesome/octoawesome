@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.Definitions.Items
     public class StorageInterfaceItem : Item
     {
         private readonly Entity storageInterfaceComponentContainer;
-        private readonly InventoriesManagemendComponent inventoriesManagemendComponent;
+        private readonly TransferComponent inventoriesManagemendComponent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StorageInterfaceItem"/> class.
@@ -32,19 +32,13 @@ namespace OctoAwesome.Basics.Definitions.Items
             var screenComponent = TypeContainer.Get<IScreenComponent>();
 
             storageInterfaceComponentContainer = new Entity();
-            inventoriesManagemendComponent = new InventoriesManagemendComponent();
+            inventoriesManagemendComponent = new TransferComponent();
             storageInterfaceComponentContainer.Components.Add(inventoriesManagemendComponent);
             storageInterfaceComponentContainer.Components.Add(new UiKeyComponent("StorageInterface"));
 
             screenComponent.Add(storageInterfaceComponentContainer);
         }
 
-        /// <inheritdoc />
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
-        {
-            //TODO How to open screen / have access to the interactor
-
-        }
 
     }
 

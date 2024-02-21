@@ -15,6 +15,7 @@ using OctoAwesome.UI.Screens;
 using System;
 using System.Diagnostics;
 using OctoAwesome.Extension;
+using System.Linq;
 
 namespace OctoAwesome.Basics.UI.Screens
 {
@@ -43,12 +44,38 @@ namespace OctoAwesome.Basics.UI.Screens
             Rebuild(TransferComponent.InventoryA, TransferComponent.InventoryB);
         }
 
+        /// <inheritdoc/>
+        public override void AddUiComponent(UIComponent uiComponent)
+        {
+            if (uiComponent is not StorageInterfaceUIComponent transferComponent)
+                return;
+
+            subscription?.Dispose();
+
+            TransferComponent = transferComponent;
+            subscription = transferComponent.Changes.Subscribe(InventoryChanged);
+        }
+
+
+        protected override void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
+        {
+            if (transferComponent is StorageInterfaceUIComponent tc && e.Content is InventorySlot slot)
+            {
+
+
+                var source = slot.GetParentInventory();
+                e.Handled = true;
+                tc.Transfer(source, target, slot);
+            }
+        }
+
         /// <inheritdoc />
         protected override void OnNavigatedFrom(NavigationEventArgs args)
         {
             TransferComponent.OnClose(ScreenKey);
-            base.OnNavigatedFrom(args);
+            //base.OnNavigatedFrom(args);
             //Closed?.Invoke(this, args);
         }
+
     }
 }

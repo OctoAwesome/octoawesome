@@ -53,6 +53,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
     internal partial class ItemTargetBlockNode : Node<ItemTransfer>, ITargetNode<ItemTransfer>
     {
         public int Priority { get; }
+        public bool IsOn {  get; set; }
+
+        public override void Interact()
+        {
+            IsOn = true;
+        }
 
         public void Use(TargetInfo<ItemTransfer> targetInfo, IChunkColumn? column)
         {
@@ -60,6 +66,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
         public void Execute(TargetInfo<ItemTransfer> targetInfo, IChunkColumn? column)
         {
+            if (!IsOn)
+                return;
+            IsOn = false;
+
             var simulation = targetInfo.Data.Simulation;
             var positions = simulation.GlobalComponentList.GetAll<PositionComponent>();
 

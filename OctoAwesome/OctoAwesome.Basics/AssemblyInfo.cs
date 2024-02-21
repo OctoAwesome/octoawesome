@@ -50,4 +50,3 @@ using System.Threading.Tasks;
 [assembly: SerializationId<WattMoverComponent>(2, 24)]
 [assembly: SerializationId<FurnaceUIComponent>(2, 25)]
 [assembly: SerializationId<TransferUIComponent>(2, 26)]
-[assembly: SerializationId<InventoriesManagemendComponent>(2, 27)]

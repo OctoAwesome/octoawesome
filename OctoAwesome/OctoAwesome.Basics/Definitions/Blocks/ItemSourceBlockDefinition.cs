@@ -52,19 +52,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
     internal partial class ItemSourceBlockNode : Node<ItemTransfer>, ISourceNode<ItemTransfer>
     {
-        public bool IsOn { get; set; } = false;
         public int Priority { get; }
 
-        public override void Interact()
-        {
-            IsOn = true;
-        }
 
         public SourceInfo<ItemTransfer> GetCapacity(Simulation simulation)
         {
-            if (!IsOn)
-                return new SourceInfo<ItemTransfer>(this, default);
-            IsOn = false;
 
             var positions = simulation.GlobalComponentList.GetAll<PositionComponent>();
 
@@ -86,7 +78,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
 
                 var bc = item.Parent.GetComponent<BodyComponent>();
                 var initialitationVector = item.Parent.GetComponent<InventoryComponent>();
-                if (bc is null || initialitationVector is null || initialitationVector.CurrentVolume == 0)
+                if (bc is null || initialitationVector is null || initialitationVector.CurrentSlots == 0)
                     continue;
 
                 var entityPos = item.Position.GlobalBlockIndex;

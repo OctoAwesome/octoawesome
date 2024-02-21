@@ -55,8 +55,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             var inventory = value.Component2;
             var positioncomponent = value.Component3;
 
-            var toolbar = entity.Components.Get<ToolBarComponent>();
-            var cache = entity.Components.Get<LocalChunkCacheComponent>()?.LocalChunkCache;
+            var toolbar = entity.GetComponent<ToolBarComponent>();
+            var cache = entity.GetComponent<LocalChunkCacheComponent>()?.LocalChunkCache;
             Debug.Assert(cache != null, nameof(cache) + " != null");
 
             var selectionType = controller.Selection?.SelectionType;
@@ -73,8 +73,19 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 HitWith(blockInfo, inventory, toolbar, cache, positioncomponent);
                                 break;
                             case SumTypes.SelectionType.Interact:
-                                InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                                {
+
+                                    IItem activeItem;
+                                    if (toolbar.ActiveTool?.Item is IItem item)
+                                        activeItem = item;
+                                    else
+                                        activeItem = Hand.Instance;
+
+                                    interactService.Interact(activeItem.Definition.DisplayName, gameTime, entity, blockInfo);
+                                    interactService.Interact("", gameTime, entity, blockInfo);
+                                //InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
                                 break;
+                                }
                             case null:
                                 break;
                         }
@@ -239,25 +250,6 @@ namespace OctoAwesome.Basics.SimulationComponents
         }
 
 
-        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
-        {
-            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
-            {
-                IItem activeItem;
-                if (toolbar.ActiveTool?.Item is IItem item)
-                    activeItem = item;
-                else
-                    activeItem = Hand.Instance;
-
-                Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
-
-                if (simulation.ResourceManager.Pencils.TryGetValue(posComponent.Position.Planet, out var pencil))
-                {
-                    pencil.InteractNode(lastBlock.Position);
-                 
-                }
-            }
-        }
 
         private void HitWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
         {
@@ -286,7 +278,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                         {
                             inventory.Add(invDef, quantity);
                         }
-                        //TODO RemoveNode of Graph
+
 
                         if (definition is INetworkBlock nb)
                         {

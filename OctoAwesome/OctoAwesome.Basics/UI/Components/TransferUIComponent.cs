@@ -51,17 +51,18 @@ public class TransferUIComponent : UIComponent<UiComponentRecord<InventoryCompon
     /// <inheritdoc/>
     protected override bool TryUpdate(ComponentContainer value, InventoryComponent component, TransferComponent component2)
     {
-        if (show == Show
+        if (show == Show 
             && (component2.Targets.Count == 0
                 || ((inventoryA?.Version ?? 0) == VersionA
                     && (inventoryB?.Version ?? 0) == VersionB))
             || PrimaryUiKey != "Transfer")
-
         {
             return false;
         }
 
         show = Show;
+        if (!show)
+            return false;
         InventoryA = component;
         InventoryB = component2.Targets.First();
         VersionA = InventoryA.Version;

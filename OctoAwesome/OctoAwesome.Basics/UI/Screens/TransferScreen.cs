@@ -127,7 +127,7 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <inheritdoc/>
         public override void AddUiComponent(UIComponent uiComponent)
         {
-            if (uiComponent is not TransferUIComponent transferComponent)
+            if (uiComponent.GetType() != typeof(TransferUIComponent) || uiComponent is not TransferUIComponent transferComponent)
                 return;
 
             subscription?.Dispose();
@@ -192,7 +192,7 @@ namespace OctoAwesome.Basics.UI.Screens
             base.OnUpdate(gameTime);
         }
 
-        private void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
+        protected virtual void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
         {
             if (transferComponent is not null && e.Content is InventorySlot slot)
             {
@@ -216,7 +216,7 @@ namespace OctoAwesome.Basics.UI.Screens
             Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
         }
 
-        internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
+        internal virtual void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
         {
             inventoryA.Rebuild(inventoryComponentA.Inventory);
             inventoryB.Rebuild(inventoryComponentB.Inventory);
