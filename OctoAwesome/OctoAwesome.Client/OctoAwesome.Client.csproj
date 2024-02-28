@@ -5,15 +5,11 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<LangVersion>11</LangVersion>
 
 		<ApplicationIcon>octoawesome.ico</ApplicationIcon>
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(MSBuildThisFileDirectory)\Generated</CompilerGeneratedFilesOutputPath>
-
-
+		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -68,8 +64,9 @@
 
 	<ItemGroup>
 		<EngeniousContentReference Include="Content\Content.ecp" />
-		<Compile Remove="Generated\**" />
-		<None Include="Generated\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
 	</ItemGroup>
 
 </Project>

@@ -10,7 +10,7 @@ namespace OctoAwesome.Serialization.Entities
     /// Database context for components in component containers.
     /// </summary>
     /// <typeparam name="TComponent">The component type of the values in the database.</typeparam>
-    public sealed class ComponentContainerComponentDbContext<TComponent> where TComponent : IComponent
+    public sealed class ComponentContainerComponentDbContext<TComponent> where TComponent : IComponent, ISerializable
     {
         private readonly IDatabaseProvider databaseProvider;
         private readonly Guid universeGuid;
@@ -34,7 +34,7 @@ namespace OctoAwesome.Serialization.Entities
         /// <param name="value">The component to add or update.</param>
         /// <param name="entity">The component container to add or update the component in.</param>
         /// <typeparam name="T">The type of the component to add or update.</typeparam>
-        public void AddOrUpdate<T>(T value, ComponentContainer<TComponent> entity) where T : IComponent
+        public void AddOrUpdate<T>(T value, ComponentContainer<TComponent> entity) where T : IComponent, ISerializable
         {
             Database<GuidTag<T>> database = databaseProvider.GetDatabase<GuidTag<T>>(universeGuid, false);
             var tag = new GuidTag<T>(entity.Id);

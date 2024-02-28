@@ -3,6 +3,7 @@ using OctoAwesome.Database;
 using OctoAwesome.Information;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace OctoAwesome.Serialization
 
         private void InternalAddOrUpdate(ChunkDiffTag tag, BlockInfo blockInfo)
         {
-            using (var memory = new MemoryStream())
+            using (var memory = Serializer.Manager.GetStream())
             using (var writer = new BinaryWriter(memory))
             {
                 BlockInfo.Serialize(writer, blockInfo);
@@ -100,7 +101,8 @@ namespace OctoAwesome.Serialization
         private BlockInfo InternalGet(ChunkDiffTag tag)
         {
             Value value = Database.GetValue(tag);
-            using (var memory = new MemoryStream(value.Content))
+
+            using (var memory = Serializer.Manager.GetStream(value.Content))
             using (var reader = new BinaryReader(memory))
             {
                 return BlockInfo.Deserialize(reader);

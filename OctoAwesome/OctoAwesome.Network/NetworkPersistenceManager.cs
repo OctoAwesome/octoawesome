@@ -5,12 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using OctoAwesome.Caching;
+
 using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Database;
 using OctoAwesome.Location;
 using OctoAwesome.Logging;
 using OctoAwesome.Network.Pooling;
+using OctoAwesome.Network.Request;
+using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
@@ -22,32 +26,24 @@ namespace OctoAwesome.Network
     /// <summary>
     /// Persists game data to a remote server.
     /// </summary>
-    public class NetworkPersistenceManager : IPersistenceManager, IDisposable
+    public class NetworkPersistenceManager : IPersistenceManager
     {
-        private readonly Client client;
-        private readonly IDisposable subscription;
 
-        private readonly ConcurrentDictionary<uint, Awaiter> packages;
-        private readonly ILogger logger;
-        private readonly IPool<Awaiter> awaiterPool;
-        private readonly PackagePool packagePool;
         private readonly ITypeContainer typeContainer;
+        private readonly NetworkPackageManager networkPackageManager;
+        private readonly Pool<OfficialCommandDTO> requestPool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkPersistenceManager"/> class.
         /// </summary>
         /// <param name="typeContainer">The type container to manage types.</param>
-        /// <param name="client">The network client that is connected to the remote server.</param>
-        public NetworkPersistenceManager(ITypeContainer typeContainer, Client client)
+        /// <param name="networkPackageManager">The network package manager.</param>
+        public NetworkPersistenceManager(ITypeContainer typeContainer, NetworkPackageManager networkPackageManager)
         {
-            this.client = client;
-            subscription = client.Packages.Subscribe(OnNext, OnError);
             this.typeContainer = typeContainer;
+            this.networkPackageManager = networkPackageManager;
+            requestPool = new();
 
-            packages = new ConcurrentDictionary<uint, Awaiter>();
-            logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(NetworkPersistenceManager));
-            awaiterPool = TypeContainer.Get<IPool<Awaiter>>();
-            packagePool = TypeContainer.Get<PackagePool>();
         }
 
         /// <inheritdoc />
@@ -62,66 +58,111 @@ namespace OctoAwesome.Network
         /// <inheritdoc />
         public Awaiter Load(out IChunkColumn column, Guid universeGuid, IPlanet planet, Index2 columnIndex)
         {
-            var package = packagePool.Rent();
-            package.Command = (ushort)OfficialCommand.LoadColumn;
+            column = null;
 
-            using (var memoryStream = new MemoryStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream))
-            {
-                binaryWriter.Write(universeGuid.ToByteArray());
-                binaryWriter.Write(planet.Id);
-                binaryWriter.Write(columnIndex.X);
-                binaryWriter.Write(columnIndex.Y);
+            using var memoryStream = Serializer.Manager.GetStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
 
-                package.Payload = memoryStream.ToArray();
-            }
-            column = new ChunkColumn(planet);
-            var awaiter = GetAwaiter(column, package.UId);
+            binaryWriter.Write(universeGuid.ToByteArray());
+            binaryWriter.Write(planet.Id);
+            binaryWriter.Write(columnIndex.X);
+            binaryWriter.Write(columnIndex.Y);
 
-            client.SendPackageAndRelease(package);
+            var request = requestPool.Rent();
+            request.Data = memoryStream.ToArray();
+            request.Command = OfficialCommand.LoadColumn;
 
+            var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+
+            awaiter.SetDesializeFunc(GetDesializerFunc<ChunkColumn>());
+            request.Release();
             return awaiter;
         }
 
         /// <inheritdoc />
         public Awaiter Load(out IPlanet planet, Guid universeGuid, int planetId)
         {
-            var package = packagePool.Rent();
-            package.Command = (ushort)OfficialCommand.GetPlanet;
-            planet = typeContainer.Get<IPlanet>();
-            var awaiter = GetAwaiter(planet, package.UId);
-            client.SendPackageAndRelease(package);
+            var planetInstance = planet = typeContainer.Get<IPlanet>();
 
-            return awaiter;
+            using (var memoryStream = Serializer.Manager.GetStream())
+            using (var binaryWriter = new BinaryWriter(memoryStream))
+            {
+                Span<byte> guid = stackalloc byte[16];
+                universeGuid.TryWriteBytes(guid);
+
+                binaryWriter.Write(guid);
+                binaryWriter.Write(planetId);
+
+                var request = requestPool.Rent();
+
+                request.Data = memoryStream.ToArray();
+                request.Command = OfficialCommand.GetPlanet;
+
+                var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+                awaiter.SetDesializeFunc(
+                     (b) =>
+                     {
+                         using var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..));
+                         using var binaryReader = new BinaryReader(memoryStream);
+                         var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
+                         return Serializer.Deserialize(planetInstance, dto.Data);
+                     });
+                request.Release();
+                return awaiter;
+            }
         }
 
         /// <inheritdoc />
         public Awaiter? Load(out Player player, Guid universeGuid, string playerName)
         {
-            var playerNameBytes = Encoding.UTF8.GetBytes(playerName);
+            player = null;
+            using var memoryStream = Serializer.Manager.GetStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
+            binaryWriter.Write(playerName);
 
-            var package = packagePool.Rent();
-            package.Command = (ushort)OfficialCommand.Whoami;
-            package.Payload = playerNameBytes;
+            var request = requestPool.Rent();
 
-            player = new Player();
-            var awaiter = GetAwaiter(player, package.UId);
-            client.SendPackageAndRelease(package);
+            request.Data = memoryStream.ToArray();
+            request.Command = OfficialCommand.Whoami;
 
+            var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+            awaiter.SetDesializeFunc(GetDesializerFunc<Player>());
+
+            request.Release();
             return awaiter;
         }
 
         /// <inheritdoc />
         public Awaiter Load(out IUniverse universe, Guid universeGuid)
         {
-            var package = packagePool.Rent();
-            package.Command = (ushort)OfficialCommand.GetUniverse;
+            universe = null;
+            using var memoryStream = Serializer.Manager.GetStream();
+            using var binaryWriter = new BinaryWriter(memoryStream);
+            Span<byte> guid = stackalloc byte[16];
+            universeGuid.TryWriteBytes(guid);
 
-            universe = new Universe();
-            var awaiter = GetAwaiter(universe, package.UId);
-            client.SendPackageAndRelease(package);
+            binaryWriter.Write(guid);
 
+            var request = requestPool.Rent();
+
+            request.Data = memoryStream.ToArray();
+            request.Command = OfficialCommand.GetUniverse;
+
+            var awaiter = networkPackageManager.SendAndAwait(Serializer.Serialize(request), PackageFlags.Request);
+            awaiter.SetDesializeFunc(GetDesializerFunc<Universe>());
+            request.Release();
             return awaiter;
+        }
+
+        private static Func<byte[], object> GetDesializerFunc<T>() where T : IConstructionSerializable<T>
+        {
+            return (b) =>
+            {
+                using var memoryStream = Serializer.Manager.GetStream(b.AsSpan(sizeof(long)..));
+                using var binaryReader = new BinaryReader(memoryStream);
+                var dto = OfficialCommandDTO.DeserializeAndCreate(binaryReader);
+                return Serializer.DeserializeSpecialCtor<T>(dto.Data);
+            };
         }
 
         /// <inheritdoc />
@@ -136,13 +177,7 @@ namespace OctoAwesome.Network
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent
         {
-            var package = packagePool.Rent();
-            package.Command = (ushort)OfficialCommand.GetUniverse;
-
             componentContainer = null;
-            //var awaiter = GetAwaiter(universe, package.UId);
-            client.SendPackageAndRelease(package);
-
             return null;
         }
 
@@ -158,18 +193,6 @@ namespace OctoAwesome.Network
         public IEnumerable<(Guid Id, T Component)> GetAllComponents<T>(Guid universeGuid) where T : IComponent, new()
             => Enumerable.Empty<(Guid Id, T Component)>();
 
-        private Awaiter GetAwaiter(ISerializable serializable, uint packageUId)
-        {
-            var awaiter = awaiterPool.Rent();
-            awaiter.Result = serializable;
-
-            if (!packages.TryAdd(packageUId, awaiter))
-            {
-                logger.Error($"Awaiter for package {packageUId} could not be added");
-            }
-
-            return awaiter;
-        }
 
         /// <inheritdoc />
         public void SaveColumn(Guid universeGuid, IPlanet planet, IChunkColumn column)
@@ -200,71 +223,6 @@ namespace OctoAwesome.Network
              where TContainer : ComponentContainer<TComponent>
              where TComponent : IComponent
         {
-        }
-
-        /// <summary>
-        /// Sends a changed chunk column to the remote server.
-        /// </summary>
-        /// <param name="chunkColumn">The changed chunk column.</param>
-        public void SendChangedChunkColumn(IChunkColumn chunkColumn)
-        {
-            //var package = new Package((ushort)OfficialCommand.SaveColumn, 0);
-
-            //using (var ms = new MemoryStream())
-            //using (var bw = new BinaryWriter(ms))
-            //{
-            //    chunkColumn.Serialize(bw, definitionManager);
-            //    package.Payload = ms.ToArray();
-            //}
-
-
-            //client.SendPackage(package);
-        }
-
-        /// <summary>
-        /// Gets called when a package is received.
-        /// </summary>
-        /// <param name="package">The received package.</param>
-        public void OnNext(Package package)
-        {
-            logger.Trace($"Package with id:{package.UId} for Command: {package.OfficialCommand}");
-
-            switch (package.OfficialCommand)
-            {
-                case OfficialCommand.Whoami:
-                case OfficialCommand.GetUniverse:
-                case OfficialCommand.GetPlanet:
-                case OfficialCommand.LoadColumn:
-                case OfficialCommand.SaveColumn:
-                    if (packages.TryRemove(package.UId, out var awaiter))
-                    {
-                        if (!awaiter.TrySetResult(package.Payload))
-                            logger.Warn($"Awaiter can not set result package {package.UId}");
-                    }
-                    else
-                    {
-                        logger.Error($"No Awaiter found for Package: {package.UId}[{package.OfficialCommand}]");
-                    }
-                    break;
-                default:
-                    logger.Warn($"Cant handle Command: {package.OfficialCommand}");
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Gets called when an error occured while receiving.
-        /// </summary>
-        /// <param name="error">The error that occured.</param>
-        public void OnError(Exception error)
-        {
-            logger.Error(error.Message, error);
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            subscription.Dispose();
         }
 
         /// <inheritdoc />

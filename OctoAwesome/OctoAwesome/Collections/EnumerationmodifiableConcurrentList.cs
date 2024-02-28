@@ -278,6 +278,10 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
             gottem.Add(e);
             return e;
         }
+        public IPoolElement RentElement()
+        {
+            return Rent();
+        }
 
         public void Return(Enumerator obj)
         {
@@ -293,6 +297,7 @@ public class EnumerationmodifiableConcurrentList<T> : IList<T>, IReadOnlyCollect
             else
                 throw new ArgumentException(nameof(obj));
         }
+
     }
 }
 

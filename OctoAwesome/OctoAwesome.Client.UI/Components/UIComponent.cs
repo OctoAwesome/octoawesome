@@ -14,6 +14,9 @@ namespace OctoAwesome.UI.Components
     /// </summary>
     public abstract class UIComponent : Component, IHoldComponent<ComponentContainer>
     {
+        static int NextId => nextId--;
+        static int nextId = -2;
+
         /// <summary>
         /// Gets or sets if this component should be shown
         /// </summary>
@@ -46,6 +49,7 @@ namespace OctoAwesome.UI.Components
         public UIComponent()
         {
             Changes = new Relay<Unit>();
+            Id = NextId;
         }
 
         /// <summary>

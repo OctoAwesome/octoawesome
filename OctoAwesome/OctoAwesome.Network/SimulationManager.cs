@@ -10,23 +10,24 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Network
 {
     /// <summary>
-    /// Manager for an OctoAwesome game simulation.
+    /// Manager for an OctoAwesome game simulationRelay.
     /// </summary>
     public class SimulationManager
     {
         /// <summary>
-        /// Gets a value indicating whether the simulation is currently running.
+        /// Gets a value indicating whether the simulationRelay is currently running.
         /// </summary>
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// Gets the simulation.
+        /// Gets the simulationRelay.
         /// </summary>
         public Simulation Simulation => simulation;
 
@@ -40,10 +41,6 @@ namespace OctoAwesome.Network
         /// </summary>
         public ResourceManager ResourceManager { get; }
 
-        /// <summary>
-        /// Gets the game service.
-        /// </summary>
-        public GameService Service { get; }
 
         private Simulation simulation;
 
@@ -53,11 +50,12 @@ namespace OctoAwesome.Network
         private readonly ISettings settings;
         private readonly UpdateHub updateHub;
         private readonly object mainLock;
+        private readonly Stopwatch watchUpdate = new Stopwatch();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulationManager"/> class.
         /// </summary>
-        /// <param name="settings">The game settings for the simulation.</param>
+        /// <param name="settings">The game settings for the simulationRelay.</param>
         /// <param name="updateHub">The update hub.</param>
         public SimulationManager(ISettings settings, UpdateHub updateHub)
         {
@@ -68,28 +66,29 @@ namespace OctoAwesome.Network
 
             var typeContainer = TypeContainer.Get<ITypeContainer>();
 
-            typeContainer.Register<ExtensionLoader>(InstanceBehavior.Singleton);
-            typeContainer.Register<ExtensionService>(InstanceBehavior.Singleton);
-            typeContainer.Register<DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<DiskPersistenceManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<ResourceManager>(InstanceBehavior.Singleton);
-            typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehavior.Singleton);
+            typeContainer.Register<ExtensionLoader>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ExtensionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IDefinitionManager, DefinitionManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DiskPersistenceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPersistenceManager, DiskPersistenceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ResourceManager>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IResourceManager, ResourceManager>(InstanceBehaviour.Singleton);
 
-            typeContainer.Register<SerializationIdTypeProvider>(InstanceBehavior.Singleton);
-            typeContainer.Register<GameService>(InstanceBehavior.Singleton);
-            typeContainer.Register<RecipeService, RecipeService>(InstanceBehavior.Singleton);
+            typeContainer.Register<RecipeService, RecipeService>(InstanceBehaviour.Singleton);
 
             var extensionLoader = typeContainer.Get<ExtensionLoader>();
             extensionLoader.LoadExtensions();
+            extensionLoader.RegisterExtensions();
+            extensionLoader.InstantiateExtensions();
 
             var extensionService = typeContainer.Get<ExtensionService>();
 
             ResourceManager = typeContainer.Get<ResourceManager>();
+            ResourceManager.PersistenceManager = typeContainer.Get<IPersistenceManager>();
+            ResourceManager.IdManager = new LocalIdManager();
 
-            Service = typeContainer.Get<GameService>();
-            simulation = new Simulation(ResourceManager, extensionService, Service)
+            simulation = new Simulation(ResourceManager, extensionService)
             {
                 IsServerSide = true
             };
@@ -100,11 +99,12 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// Start the game simulation.
+        /// Start the game simulationRelay.
         /// </summary>
         public void Start()
         {
             IsRunning = true;
+            watchUpdate.Restart();
             GameTime = new GameTime();
 
             //TODO: Load and Save logic for Server (Multiple games etc.....)
@@ -112,14 +112,16 @@ namespace OctoAwesome.Network
 
             if (string.IsNullOrWhiteSpace(universe))
             {
-                var guid = Simulation.NewGame("melmack", new Random().Next().ToString());
+                var guid = Simulation.NewGame(ResourceManager, "melmack", new Random().Next().ToString());
+                simulation.TryLoadGame(guid);
                 settings.Set("LastUniverse", guid.ToString());
             }
             else
             {
                 if (!Simulation.TryLoadGame(new Guid(universe)))
                 {
-                    var guid = Simulation.NewGame("melmack", new Random().Next().ToString());
+                    var guid = Simulation.NewGame(ResourceManager, "melmack", new Random().Next().ToString());
+                    simulation.TryLoadGame(guid);
                     settings.Set("LastUniverse", guid.ToString());
                 }
             }
@@ -128,7 +130,7 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// Stop the game simulation.
+        /// Stop the game simulationRelay.
         /// </summary>
         public void Stop()
         {
@@ -136,6 +138,7 @@ namespace OctoAwesome.Network
             Simulation.ExitGame();
             cancellationTokenSource.Cancel();
             cancellationTokenSource.Dispose();
+            watchUpdate.Stop();
         }
 
         /// <summary>
@@ -163,7 +166,7 @@ namespace OctoAwesome.Network
         public IPlanet GetPlanet(int planetId) => ResourceManager.GetPlanet(planetId);
 
         /// <summary>
-        /// Loads a chunk column at a given location for a specified planet.
+        /// Loads a chunkChannel column at a given location for a specified planet.
         /// </summary>
         /// <param name="planet">The planet to load the chunk column from.</param>
         /// <param name="index2">The location to load the chunk column at.</param>
@@ -173,7 +176,7 @@ namespace OctoAwesome.Network
             => planet.GlobalChunkCache.Subscribe(index2);
 
         /// <summary>
-        /// Loads a chunk column at a given location for a specified planet.
+        /// Loads a chunkChannel column at a given location for a specified planet.
         /// </summary>
         /// <param name="planetId">The id of the planet to load the chunk column from.</param>
         /// <param name="index2">The location to load the chunk column at.</param>
@@ -186,10 +189,15 @@ namespace OctoAwesome.Network
         {
             var token = state is CancellationToken stateToken ? stateToken : CancellationToken.None;
 
+            TimeSpan lastUpdate = watchUpdate.Elapsed;
             while (true)
             {
+
                 token.ThrowIfCancellationRequested();
-                Simulation.Update(GameTime);
+                var total = watchUpdate.Elapsed;
+                Simulation.Update(new GameTime(total, total - lastUpdate));
+                lastUpdate = total;
+
             }
         }
     }

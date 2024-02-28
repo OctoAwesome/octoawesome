@@ -9,21 +9,19 @@ namespace OctoAwesome.Serialization
     public static class TypeExtension
     {
         /// <summary>
-        /// Gets the <see cref="SerializationIdAttribute.CombinedId"/> from this <see cref="Type"/>
+        /// Gets the <see cref="SerializationIdAttribute{Type}.CombinedId"/> from this <see cref="Type"/>
         /// or <c>0</c> if no <see cref="SerializationIdAttribute"/> is associated with this <see cref="Type"/>.
         /// </summary>
         /// <param name="type">The <see cref="Type"/> to get the id for.</param>
         /// <returns>
-        /// The read <see cref="SerializationIdAttribute.CombinedId"/>;
+        /// The read <see cref="SerializationIdAttribute{Type}.CombinedId"/>;
         /// or <c>0</c> if no <see cref="SerializationIdAttribute"/> is associated with this <see cref="Type"/>.
         /// </returns>
         public static ulong SerializationId(this Type type)
         {
-            var attr = type.GetCustomAttribute<SerializationIdAttribute>();
-            if (attr is null)
+            if (!SerializationIdTypeProvider.TryGet(type, out var serId))
                 return 0;
-
-            return attr.CombinedId;
+            return serId;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Components;
+﻿using NonSucking.Framework.Extension.Collections;
+using NonSucking.Framework.Extension.Threading;
+
+using OctoAwesome.Components;
 using OctoAwesome.Database;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
@@ -13,12 +16,16 @@ using System.Threading;
 
 namespace OctoAwesome.EntityComponents
 {
-   
+
     /// <summary>
     /// Component for inventories of entities/functional blocks.
     /// </summary>
-    public class InventoryComponent : Component, IEntityComponent
+    [SerializationId()]
+    public partial class InventoryComponent : Component, IEntityComponent, IConstructionSerializable<InventoryComponent>
     {
+        /*
+        TODO Threadsafety?
+        */
         /// <summary>
         /// Gets a list of inventory slots this inventory consists of.
         /// </summary>
@@ -65,12 +72,6 @@ namespace OctoAwesome.EntityComponents
 
         protected bool HasLimitedVolume => maxVolume != int.MaxValue;
 
-        /// <summary>
-        /// Get the current version of the inventory, which increases with every update of any slot
-        /// </summary>
-        public int Version => version;
-
-        private int version;
 
         /// <summary>
         /// Gets or sets if the inventory should be allowed to resize dynamically
@@ -90,21 +91,23 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         protected int maxVolume = int.MaxValue;
 
-        private readonly List<InventorySlot> inventory;
+        private readonly EnumerationModifiableConcurrentList<InventorySlot> inventory;
 
         private readonly IDefinitionManager definitionManager;
-
         private int currentWeight = 0;
         private int currentVolume = 0;
-
+        private ScopedSemaphore serializeSemaphore = new(1, 1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InventoryComponent"/> class.
         /// </summary>
         public InventoryComponent()
         {
-            inventory = new List<InventorySlot>();
-            definitionManager = TypeContainer.Get<IDefinitionManager>();
+            inventory = new EnumerationModifiableConcurrentList<InventorySlot>();
+            var tc = TypeContainer.Get<ITypeContainer>();
+            definitionManager = tc.Get<IDefinitionManager>();
+
+            Sendable = true;
         }
 
         /// <summary>
@@ -129,13 +132,14 @@ namespace OctoAwesome.EntityComponents
         /// <inheritdoc />
         public override void Deserialize(BinaryReader reader)
         {
+            using var l = serializeSemaphore.Wait();
             base.Deserialize(reader);
-
             maxWeight = reader.ReadInt32();
             maxSlots = reader.ReadInt32();
             maxVolume = reader.ReadInt32();
             isFixedSlotSize = reader.ReadBoolean();
             var count = reader.ReadInt32();
+            inventory.Clear();
             for (int i = 0; i < count; i++)
             {
                 var emptySlot = reader.ReadBoolean();
@@ -180,7 +184,6 @@ namespace OctoAwesome.EntityComponents
                         }
                     }
 
-
                     if (instance is IInventoryable inventoryObject)
                     {
                         inventoryItem = inventoryObject;
@@ -195,11 +198,13 @@ namespace OctoAwesome.EntityComponents
                 inventory.Add(slot);
             }
             CalcCurrentInventoryUsage();
+            IncrementVersion(true);
         }
 
         /// <inheritdoc />
         public override void Serialize(BinaryWriter writer)
         {
+            using var l = serializeSemaphore.Wait();
             base.Serialize(writer);
             writer.Write(maxWeight);
             writer.Write(maxSlots);
@@ -231,12 +236,6 @@ namespace OctoAwesome.EntityComponents
             }
         }
 
-        /*
-        TODO Can a slot be in multiple inventories at the same time? Complicated limits, threadsafe and and and
-            Add some of these methods as a wrapper on the IInventorySlot itself
-        ✓ TODO Remove all occurences of item? <see Line 162>
-        TODO Threadsafety?
-        */
 
         /// <summary>
         /// Removes all occurences of the item
@@ -290,7 +289,7 @@ namespace OctoAwesome.EntityComponents
                     break;
                 }
             }
-            Interlocked.Increment(ref version);
+            IncrementVersion();
             return quantity - left;
         }
 
@@ -325,13 +324,13 @@ namespace OctoAwesome.EntityComponents
             switch (invSlot.Amount)
             {
                 case 0 when isFixedSlotSize:
-                    Interlocked.Increment(ref version);
+                    IncrementVersion();
                     return quantity;
                 case 0:
                     inventory.Remove(invSlot);
                     break;
             }
-            Interlocked.Increment(ref version);
+            IncrementVersion();
             return quantity;
         }
 
@@ -418,7 +417,7 @@ namespace OctoAwesome.EntityComponents
             quantity = GetQuantityLimitFor(slot, quantity);
             slot.Amount += quantity;
 
-            Interlocked.Increment(ref version);
+            IncrementVersion();
 
             return quantity;
         }
@@ -514,7 +513,7 @@ namespace OctoAwesome.EntityComponents
             var slot = new InventorySlot(this);
             if (Add(slot))
             {
-                Interlocked.Increment(ref version);
+                IncrementVersion();
                 return slot;
             }
             return null;
@@ -530,7 +529,7 @@ namespace OctoAwesome.EntityComponents
             if (maxSlots <= inventory.Count || isFixedSlotSize)
                 return false;
 
-            Interlocked.Increment(ref version);
+            IncrementVersion();
             inventory.Add(slot);
             return true;
         }
@@ -573,7 +572,7 @@ namespace OctoAwesome.EntityComponents
         {
             if (index >= inventory.Count)
                 return null;
-            return inventory[index];
+            return inventory.ElementAt(index);
         }
 
         /// <summary>
@@ -612,5 +611,24 @@ namespace OctoAwesome.EntityComponents
             return Remove(invSlot, definition.VolumePerUnit);
         }
 
+        /// <inheritdoc />
+        public static InventoryComponent DeserializeAndCreate(BinaryReader reader)
+        {
+            var ic = new InventoryComponent();
+            ic.Deserialize(reader);
+            return ic;
+        }
+
+        /// <inheritdoc />
+        public static void Serialize(InventoryComponent that, BinaryWriter writer)
+        {
+            that.Serialize(writer);
+        }
+
+        /// <inheritdoc />
+        public static void Deserialize(InventoryComponent that, BinaryReader reader)
+        {
+            that.Deserialize(reader);
+        }
     }
 }

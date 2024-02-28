@@ -1,33 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Condition="'$(TargetFramework)' == 'net5.0'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="engenious" Version="0.7.1-alpha" />
-    <PackageReference Include="System.Buffers" Version="4.5.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Condition="'$(TargetFramework)' == 'net5.0'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="engenious" Version="0.7.1-alpha" />
+		<PackageReference Include="System.Buffers" Version="4.5.1" />
+		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
+		<!--<ProjectReference Include="..\..\..\..\NonSucking.Framework.Extension\NonSucking.Framework.Serialization\NonSucking.Framework.Serialization.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="true"/>-->
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
+	</ItemGroup>
 
-  <!-- Fix adapted from https://jaylee.org/archive/2019/03/31/using-span-of-t-in-xamarin-cross-targeted-projects.html
+	<!-- Fix adapted from https://jaylee.org/archive/2019/03/31/using-span-of-t-in-xamarin-cross-targeted-projects.html
     Remove System.Memory/System.Buffers if mono is installed at default location
 -->
-  <Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="$(Path.Contains('/usr/lib/mono')) Or $(FrameworkPathOverride.Contains('/usr/lib/mono'))">
-    <ItemGroup>
-      <_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
-      <_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
-      <ReferencePath Remove="@(_ReferencePathToRemove)" />
-    </ItemGroup>
-    <Message Text="Removing System.Memory for mono compatibility" Importance="high" />
-  </Target>
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="$(Path.Contains('/usr/lib/mono')) Or $(FrameworkPathOverride.Contains('/usr/lib/mono'))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+		<Message Text="Removing System.Memory for mono compatibility" Importance="high" />
+	</Target>
+	
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
 </Project>

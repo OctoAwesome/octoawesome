@@ -2,10 +2,14 @@
 using NLog.Config;
 using NLog.Targets;
 
+using NonSucking.Framework.Extension.IoC;
+
+
 using OctoAwesome.Chunking;
 using OctoAwesome.Information;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 using OctoAwesome.Services;
 using OctoAwesome.Threading;
 
@@ -31,21 +35,26 @@ namespace OctoAwesome
             typeContainer.Register<Logging.Logger, Logging.Logger>();
             typeContainer.Register<Logging.ILogger, Logging.Logger>();
 
-            typeContainer.Register<IPool<Awaiter>, Pool<Awaiter>>(InstanceBehavior.Singleton);
-            typeContainer.Register<Pool<Awaiter>, Pool<Awaiter>>(InstanceBehavior.Singleton);
+            typeContainer.Register<IPool<Awaiter>, Pool<Awaiter>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<Awaiter>, Pool<Awaiter>>(InstanceBehaviour.Singleton);
 
-            typeContainer.Register<IPool<BlockChangedNotification>, Pool<BlockChangedNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<Pool<BlockChangedNotification>, Pool<BlockChangedNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<IPool<BlocksChangedNotification>, Pool<BlocksChangedNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<Pool<BlocksChangedNotification>, Pool<BlocksChangedNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<IPool<EntityNotification>, Pool<EntityNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<Pool<EntityNotification>, Pool<EntityNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehavior.Singleton);
-            typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehavior.Singleton);
-            typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehavior.Singleton);
-            typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehavior.Singleton);
-            typeContainer.Register<BlockInteractionService>(InstanceBehavior.Singleton);
+            typeContainer.Register<IPool<BlockChangedNotification>, Pool<BlockChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<BlockChangedNotification>, Pool<BlockChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<BlocksChangedNotification>, Pool<BlocksChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<BlocksChangedNotification>, Pool<BlocksChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<EntityNotification>, Pool<EntityNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<PropertyChangedNotification>, Pool<PropertyChangedNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<ChatNotification>, Pool<ChatNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<Pool<ChatNotification>, Pool<ChatNotification>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehaviour.Singleton);
+            typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehaviour.Singleton);
+            typeContainer.Register<BlockInteractionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<ComponentChangedNotificationHandler>(InstanceBehaviour.Singleton);
+
+            typeContainer.Register<InteractService>(InstanceBehaviour.Singleton);
         }
 
         /// <summary>
@@ -61,20 +70,20 @@ namespace OctoAwesome
                 case ClientType.DesktopClient:
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
-                        FileName = $"./logs/octoClient-{DateTime.Now:ddMMyy_hhmmss}.log"
+                        FileName = $"./logs/octoClient-{DateTime.Now:dd_MM_yyyy}.log"
                     });
                     break;
                 case ClientType.GameServer:
-                    config.AddRule(LogLevel.Trace, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
-                    config.AddRule(LogLevel.Debug, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
+                    config.AddRule(LogLevel.Debug, LogLevel.Fatal, new ColoredConsoleTarget("octoawesome.logconsole"));
+                    config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
-                        FileName = $"./logs/server-{DateTime.Now:ddMMyy_hhmmss}.log"
+                        FileName = $"./logs/server-{DateTime.Now:dd_MM_yyyy}.log"
                     });
                     break;
                 default:
                     config.AddRule(LogLevel.Trace, LogLevel.Fatal, new FileTarget("octoawesome.logfile")
                     {
-                        FileName = $"./logs/generic-{DateTime.Now:ddMMyy_hhmmss}.log"
+                        FileName = $"./logs/generic-{DateTime.Now:dd_MM_yyyy}.log"
                     });
                     break;
             }

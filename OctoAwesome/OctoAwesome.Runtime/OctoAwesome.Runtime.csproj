@@ -3,18 +3,23 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	  
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
+
+
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Serialization" />
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
+
+	<ItemGroup>
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="engenious" Version="0.7.1-alpha" />
+	  <PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
   </ItemGroup>
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
 </Project>

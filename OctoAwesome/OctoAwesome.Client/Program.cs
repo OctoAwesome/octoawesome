@@ -1,5 +1,7 @@
 ﻿#region Using Statements
 
+using engenious;
+
 using OctoAwesome.Caching;
 using OctoAwesome.Logging;
 
@@ -46,6 +48,9 @@ namespace OctoAwesome.Client
 
                 using (game = new OctoGame())
                     game.Run(60, 60);
+                typeContainer.Remove<OctoGame>();
+                typeContainer.Remove<Game>();
+                typeContainer.Remove<IGame>();
             }
         }
 

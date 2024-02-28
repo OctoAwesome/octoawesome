@@ -5,6 +5,11 @@ using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
 using engenious.Helper;
 using OctoAwesome.Components;
+using OctoAwesome.Serialization;
+using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
+using System.Linq;
+using NonSucking.Framework.Extension.IoC;
 using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics.SimulationComponents
@@ -12,12 +17,26 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with moveable entities.
     /// </summary>
+    [SerializationId()]
     public sealed class MoveComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>,
         MoveableComponent,
         PositionComponent>
     {
+        private readonly IPool<EntityNotification> entityNotificationPool;
+        private readonly IUpdateHub updateHub;
+        private readonly IPool<PropertyChangedNotification> propertyChangedNotificationPool;
+
+        public MoveComponent()
+        {
+            var tc = TypeContainer.Get<ITypeContainer>();
+            entityNotificationPool = tc.Get<IPool<EntityNotification>>();
+            updateHub = tc.Get<IUpdateHub>();
+
+            propertyChangedNotificationPool = tc.Get<IPool<PropertyChangedNotification>>();
+        }
+
         /// <inheritdoc />
         protected override SimulationComponentRecord<Entity, MoveableComponent, PositionComponent> OnAdd(Entity entity)
         {
@@ -53,13 +72,24 @@ namespace OctoAwesome.Basics.SimulationComponents
             {
                 CheckBoxCollision(gameTime, entity, movecomp, poscomp);
             }
+            var tmp = movecomp.PositionMove;
+            if (Math.Abs(tmp.X) < 0.02)
+            {
+                tmp.X = 0;
+            }
+            if (Math.Abs(tmp.Y) < 0.02)
+            {
+                tmp.Y = 0;
+            }
+
+            var newposition = poscomp.Position + tmp;
+            bool send = newposition != poscomp.Position;
 
             var cacheComp = entity.Components.Get<LocalChunkCacheComponent>();
 
             Debug.Assert(cacheComp != null, nameof(cacheComp) + " != null");
             var cache = cacheComp.LocalChunkCache;
 
-            var newposition = poscomp.Position + movecomp.PositionMove;
             newposition.NormalizeChunkIndexXY(cache.Planet.Size);
             if (poscomp.Position.ChunkIndex != newposition.ChunkIndex)
             {
@@ -72,26 +102,16 @@ namespace OctoAwesome.Basics.SimulationComponents
                 poscomp.Position = newposition;
             }
 
-            // Fix fluctuations for direction because of external forces
-            var tmp = movecomp.PositionMove;
-            if (Math.Abs(tmp.X) < 0.01)
-            {
-                tmp.X = 0;
-            }
-            if (Math.Abs(tmp.Y) < 0.01)
-            {
-                tmp.Y = 0;
-            }
-            movecomp.PositionMove = tmp;
-
             //Direction
-            if (movecomp.PositionMove.LengthSquared != 0)
+            if (tmp.LengthSquared != 0)
             {
                 poscomp.Direction = MathHelper.WrapAngle((float)Math.Atan2(movecomp.PositionMove.Y, movecomp.PositionMove.X));
             }
+            if (send)
+                poscomp.IncrementVersion();
         }
 
-        private void CheckBoxCollision(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
+        private static void CheckBoxCollision(GameTime gameTime, Entity entity, MoveableComponent movecomp, PositionComponent poscomp)
         {
             if (!entity.Components.TryGet<BodyComponent>(out var bc)
                 || !entity.Components.TryGet<LocalChunkCacheComponent>(out var localChunkCacheComponent))
@@ -104,22 +124,22 @@ namespace OctoAwesome.Basics.SimulationComponents
             // Find blocks which could cause a collision
             int minx = (int)Math.Floor(Math.Min(
                 position.BlockPosition.X - bc.Radius,
-                position.BlockPosition.X - bc.Radius + movecomp.PositionMove.X));
+                position.BlockPosition.X - bc.Radius + move.X));
             int maxx = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.X + bc.Radius,
-                position.BlockPosition.X + bc.Radius + movecomp.PositionMove.X));
+                position.BlockPosition.X + bc.Radius + move.X));
             int miny = (int)Math.Floor(Math.Min(
                 position.BlockPosition.Y - bc.Radius,
-                position.BlockPosition.Y - bc.Radius + movecomp.PositionMove.Y));
+                position.BlockPosition.Y - bc.Radius + move.Y));
             int maxy = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.Y + bc.Radius,
-                position.BlockPosition.Y + bc.Radius + movecomp.PositionMove.Y));
+                position.BlockPosition.Y + bc.Radius + move.Y));
             int minz = (int)Math.Floor(Math.Min(
                 position.BlockPosition.Z,
-                position.BlockPosition.Z + movecomp.PositionMove.Z));
+                position.BlockPosition.Z + move.Z));
             int maxz = (int)Math.Ceiling(Math.Max(
                 position.BlockPosition.Z + bc.Height,
-                position.BlockPosition.Z + bc.Height + movecomp.PositionMove.Z));
+                position.BlockPosition.Z + bc.Height + move.Z));
 
             // The relevant collision planes of the player
             var playerplanes = CollisionPlane.GetEntityCollisionPlanes(bc.Radius, bc.Height, movecomp.Velocity, poscomp.Position);

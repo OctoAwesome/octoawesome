@@ -1,12 +1,15 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.Rx;
 
+using System;
+
 namespace OctoAwesome.UI.Components;
 
 /// <summary>
 /// Class for mapping a <see cref="Component"/> to an <see cref="IEntityComponent"/>
 /// </summary>
-public class UiMappingComponent : Component, IEntityComponent
+[SerializationId()]
+public class UiMappingComponent : Component, IEntityComponent, IDisposable
 {
     /// <summary>
     /// Gets the relay that can be subscribed for receiving changed events
@@ -19,5 +22,11 @@ public class UiMappingComponent : Component, IEntityComponent
     public UiMappingComponent()
     {
         Changed = new Relay<(ComponentContainer instance, string primaryKey, bool show)>();
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Changed?.Dispose();
     }
 }

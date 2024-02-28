@@ -2,6 +2,7 @@
 using engenious.Graphics;
 
 using OctoAwesome.Components;
+using OctoAwesome.Serialization;
 
 using System;
 using System.IO;
@@ -11,8 +12,10 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for animated models.
     /// </summary>
-    public class AnimationComponent : Component, IEntityComponent
+    [Nooson, SerializationId()]
+    public partial class AnimationComponent : Component, IEntityComponent
     {
+
         /// <summary>
         /// Gets or sets the currently elapsed time for the animation.
         /// </summary>
@@ -36,24 +39,6 @@ namespace OctoAwesome.EntityComponents
             Sendable = true;
         }
 
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(CurrentTime);
-            writer.Write(MaxTime);
-            writer.Write(AnimationSpeed);
-            base.Serialize(writer);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            CurrentTime = reader.ReadSingle();
-            MaxTime = reader.ReadSingle();
-            AnimationSpeed = reader.ReadSingle();
-            base.Deserialize(reader);
-        }
-
         private float NextSmallerValue(float value)
         {
             if (value < 0)
@@ -72,6 +57,8 @@ namespace OctoAwesome.EntityComponents
         {
             if (model.CurrentAnimation is null)
                 return;
+
+            var oldTime = CurrentTime;
 
             CurrentTime = Math.Clamp(CurrentTime + AnimationSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds, 0, NextSmallerValue(MaxTime));
 

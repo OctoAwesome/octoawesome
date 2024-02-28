@@ -113,7 +113,7 @@ namespace OctoAwesome.Client.Screens
                         var gl = c.GroundLevel(x, y);
                         c.Flush();
 
-                        var playerHeight = player.CurrentEntity.GetComponent<BodyComponent>()?.Height ?? 4;
+                        var playerHeight = player.CurrentPlayer.GetComponent<BodyComponent>()?.Height ?? 4;
                         var offset = (int)Math.Round(playerHeight * 2, MidpointRounding.ToPositiveInfinity);
 
                         coordinate.GlobalBlockIndex += new Index3(0, 0, gl + offset);

@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Basics.Biomes;
+using OctoAwesome.Serialization;
+
 using OctoAwesome.Location;
 
 using System;
@@ -10,9 +12,11 @@ namespace OctoAwesome.Basics
     /// <summary>
     /// A complex planet implementation with complex features.
     /// </summary>
-    public class ComplexPlanet : Planet
+    [SerializationId(), Nooson]
+    public partial class ComplexPlanet : Planet, IConstructionSerializable<ComplexPlanet>
     {
         // The gravitational constant was chosen on purpose to be that "big", see Issue #220
+
         private const double GravitationalConstant = 6.67e-7;
 
         private SurfaceBiomeGenerator? biomeGenerator;
@@ -20,6 +24,7 @@ namespace OctoAwesome.Basics
         /// <summary>
         /// Gets the biome generator used for generating biomes on the planet.
         /// </summary>
+        [NoosonIgnore]
         public SurfaceBiomeGenerator BiomeGenerator
         {
             get
@@ -49,6 +54,8 @@ namespace OctoAwesome.Basics
             Initialize();
         }
 
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ComplexPlanet"/> class.
         /// </summary>
@@ -56,13 +63,6 @@ namespace OctoAwesome.Basics
         public ComplexPlanet(IMapGenerator generator)
             : base(generator)
         {
-            //Initalize();
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
             Initialize();
         }
 

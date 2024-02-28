@@ -13,12 +13,19 @@ namespace OctoAwesome.Network
     public class Server //TODO: Should use a base class or interface
     {
         /// <summary>
-        /// Called when a new client has connected to the server.
+        /// Called when a new client has connected to the server. Packages could arrive before this event.
         /// </summary>
         public event EventHandler<ConnectedClient>? OnClientConnected;
+        /// <summary>
+        /// Called when a new client started the connection procedure. 
+        /// </summary>
+        public event EventHandler<ConnectedClient>? OnClientConnecting;
+        /// <summary>
+        /// Called when a client has been disconnected from the server.
+        /// </summary>
+        public event EventHandler<ConnectedClient>? OnClientDisconnected;
 
-        private readonly Socket ipv4Socket;
-        private readonly Socket ipv6Socket;
+        private TcpListener tcpListener = default!;
         private readonly List<ConnectedClient> connectedClients;
         private readonly object lockObj;
 
@@ -27,8 +34,7 @@ namespace OctoAwesome.Network
         /// </summary>
         public Server()
         {
-            ipv4Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ipv6Socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+
             connectedClients = new List<ConnectedClient>();
             lockObj = new object();
 
@@ -42,23 +48,15 @@ namespace OctoAwesome.Network
         {
             connectedClients.Clear();
 
-            if (endpoints.Any(x => x.AddressFamily == AddressFamily.InterNetwork))
-            {
-                foreach (var endpoint in endpoints)
-                    if (endpoint.AddressFamily == AddressFamily.InterNetwork)
-                        ipv4Socket.Bind(endpoint);
+            tcpListener = new TcpListener(endpoints.First());
+            tcpListener.Server.DualMode = true;
+            tcpListener.Server.NoDelay = true;
 
-                ipv4Socket.Listen(1024);
-                ipv4Socket.BeginAccept(OnClientAccepted, ipv4Socket);
-            }
-            if (endpoints.Any(x => x.AddressFamily == AddressFamily.InterNetworkV6))
-            {
-                foreach (var endpoint in endpoints.Where(e => e.AddressFamily == AddressFamily.InterNetworkV6))
-                    ipv6Socket.Bind(endpoint);
+            foreach (var endpoint in endpoints.Skip(1))
+                tcpListener.Server.Bind(endpoint);
+            tcpListener.Start();
+            tcpListener.BeginAcceptTcpClient(OnClientAccepted, tcpListener);
 
-                ipv6Socket.Listen(1024);
-                ipv6Socket.BeginAccept(OnClientAccepted, ipv6Socket);
-            }
         }
         /// <summary>
         /// Starts listening on the specified host and port.
@@ -68,29 +66,60 @@ namespace OctoAwesome.Network
         public void Start(string host, ushort port)
         {
             var address = Dns.GetHostAddresses(host).Where(
-                a => a.AddressFamily == ipv4Socket.AddressFamily || a.AddressFamily == ipv6Socket.AddressFamily);
+                a => a.AddressFamily == AddressFamily.InterNetwork || a.AddressFamily == AddressFamily.InterNetworkV6);
 
             Start(address.Select(a => new IPEndPoint(a, port)).ToArray());
+        }
+
+        public void Stop()
+        {
+            foreach (var item in connectedClients)
+            {
+                item.Stop();
+            }
+            tcpListener.Stop();
+            connectedClients.Clear();
         }
 
         private void OnClientAccepted(IAsyncResult ar)
         {
             Debug.Assert(ar.AsyncState != null, "ar.AsyncState != null");
-            var socket = (Socket)ar.AsyncState;
+            var listener = (TcpListener)ar.AsyncState;
 
-            var tmpSocket = socket.EndAccept(ar);
+            try
+            {
+                var tmpClient = listener.EndAcceptTcpClient(ar);
+                tmpClient.NoDelay = true;
 
-            tmpSocket.NoDelay = true;
+                var client = new ConnectedClient(tmpClient);
+                client.ClientDisconnected += Client_ClientDisconnected;
+                OnClientConnecting?.Invoke(this, client);
+                client.Start();
+                OnClientConnected?.Invoke(this, client);
 
-            var client = new ConnectedClient(tmpSocket);
-            client.Start();
+                lock (lockObj)
+                    connectedClients.Add(client);
+            }
+            catch (Exception)
+            {
+                if (listener.Server.IsBound)
+                    listener.BeginAcceptTcpClient(OnClientAccepted, listener);
+                return;
+            }
 
-            OnClientConnected?.Invoke(this, client);
-
-            lock (lockObj)
-                connectedClients.Add(client);
-
-            socket.BeginAccept(OnClientAccepted, socket);
+            listener.BeginAcceptTcpClient(OnClientAccepted, listener);
         }
+
+        private void Client_ClientDisconnected(object? sender, EventArgs e)
+        {
+            if (sender is ConnectedClient cc)
+            {
+                OnClientDisconnected?.Invoke(this, cc);
+                connectedClients.Remove(cc);
+                cc.Dispose();
+                //Socket.Select()
+            }
+        }
+
     }
 }

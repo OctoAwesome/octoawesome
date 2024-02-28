@@ -53,7 +53,7 @@ namespace OctoAwesome.Tests
             SaveCounter++;
         }
 
-        public IChunkColumn Subscribe(IPlanet planet, Index2 position, bool passiv)
+        public IChunkColumn Subscribe(int planet, Index2 position, bool passiv)
         {
             LoadCounter++;
             return new ChunkColumn(new IChunk[] { new Chunk(new Index3(position, 0), planet), new Chunk(new Index3(position, 1), planet), new Chunk(new Index3(position, 2), planet) }, planet, position);

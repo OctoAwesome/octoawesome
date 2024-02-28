@@ -5,21 +5,21 @@ using OctoAwesome.Components;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using OctoAwesome;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using OctoAwesome.Extension;
 using static OctoAwesome.StateMachine;
+using OctoAwesome.Serialization;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome.Basics.EntityComponents;
 
-internal class ProductionInventoriesComponent : Component, IEntityComponent
+[Nooson]
+[SerializationId()]
+internal partial class ProductionInventoriesComponent : Component, IEntityComponent, IConstructionSerializable<ProductionInventoriesComponent>
 {
     public InventoryComponent InputInventory { get; set; }
     public InventoryComponent OutputInventory { get; set; }
@@ -30,6 +30,7 @@ internal class ProductionInventoriesComponent : Component, IEntityComponent
         InputInventory = new();
         OutputInventory = new();
         ProductionInventory = new();
+        Sendable = true;
     }
 
     public ProductionInventoriesComponent(bool fixedSlot, int slotCountProduction) : this()
@@ -37,26 +38,24 @@ internal class ProductionInventoriesComponent : Component, IEntityComponent
         InputInventory = new();
         OutputInventory = new();
         ProductionInventory = new(fixedSlot, slotCountProduction);
+        Sendable = true;
     }
 
-    public override void Serialize(BinaryWriter writer)
+    protected override void OnParentSetting(IComponentContainer newParent)
     {
-        base.Serialize(writer);
-        InputInventory.Serialize(writer);
-        OutputInventory.Serialize(writer);
-        ProductionInventory.Serialize(writer);
-    }
-
-    public override void Deserialize(BinaryReader reader)
-    {
-        base.Deserialize(reader);
-        InputInventory.Deserialize(reader);
-        OutputInventory.Deserialize(reader);
-        ProductionInventory.Deserialize(reader);
+        if (newParent.Simulation is null)
+            return;
+        InputInventory.Parent = newParent;
+        OutputInventory.Parent = newParent; 
+        ProductionInventory.Parent = newParent;
+        newParent.Simulation.GlobalComponentList.Add(InputInventory);
+        newParent.Simulation.GlobalComponentList.Add(OutputInventory);
+        newParent.Simulation.GlobalComponentList.Add(ProductionInventory);
     }
 }
 
-internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntityComponent, IUpdateable
+[SerializationId()]
+internal partial class BurningComponent : Component, IEntityComponent, IUpdateable
 {
     private StateMachine stateMachine;
     private RecipeService recipeService;
@@ -69,12 +68,13 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
     private int energyLeft;
     private IReadOnlyCollection<Recipe>? recipes;
 
+    [NoosonIgnore]
     private IReadOnlyCollection<Recipe> Recipes
     {
         get => NullabilityHelper.NotNullAssert(recipes, $"{nameof(Recipes)} was not initialized!");
         set => recipes = NullabilityHelper.NotNullAssert(value, $"{nameof(Recipes)} cannot be initialized with null!");
     }
-
+    [NoosonIgnore]
     internal ProductionInventoriesComponent InventoryComponent
     {
         get => NullabilityHelper.NotNullAssert(inventoryComponent, $"{nameof(InventoryComponent)} was not initialized!");
@@ -113,7 +113,7 @@ internal class BurningComponent : InstanceComponent<ComponentContainer>, IEntity
         recipeService = TypeContainer.Get<RecipeService>();
         definitionManager = TypeContainer.Get<IDefinitionManager>();
         recipes = recipeService.GetByType(typename);
-        var ivComponent = Instance.GetComponent<ProductionInventoriesComponent>();
+        var ivComponent = Parent.GetComponent<ProductionInventoriesComponent>();
         Debug.Assert(ivComponent is not null,
             $"Entity for Burning component needs to have a not null {nameof(ProductionInventoriesComponent)}.");
         inventoryComponent = ivComponent;

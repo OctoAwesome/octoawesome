@@ -154,7 +154,7 @@ namespace OctoAwesome.Client.Controls
             if (!Visible || !Enabled || !assets.Ready)
                 return;
 
-            if (Player.CurrentEntity == null || Player.CurrentEntityHead == null)
+            if (Player.CurrentPlayer == null || Player.CurrentEntityHead == null)
                 return;
 
             //Calculate FPS

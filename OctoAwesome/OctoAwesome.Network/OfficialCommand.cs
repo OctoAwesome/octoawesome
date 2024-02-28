@@ -23,25 +23,14 @@
         GetPlanet = 103,
 
         /// <summary>
-        /// For requesting a chunk column.
+        /// For requesting a chunkChannel column.
         /// </summary>
         LoadColumn = 104,
 
         /// <summary>
-        /// For sending a chunk column.
+        /// For sending a chunkChannel column.
         /// </summary>
         SaveColumn = 105,
 
-
-        //400 - 500 Notifications
-        /// <summary>
-        /// For notification of entity changes.
-        /// </summary>
-        EntityNotification = 401,
-
-        /// <summary>
-        /// For notification of chunk changes.
-        /// </summary>
-        ChunkNotification = 402
     }
 }

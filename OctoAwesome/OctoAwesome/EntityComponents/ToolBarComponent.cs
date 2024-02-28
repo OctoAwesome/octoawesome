@@ -8,6 +8,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for the toolbar of a player.
     /// </summary>
+    [SerializationId()]
     public class ToolBarComponent : Component, IEntityComponent
     {
         /// <summary>

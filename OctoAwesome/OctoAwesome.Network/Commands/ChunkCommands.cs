@@ -1,13 +1,13 @@
-﻿using CommandManagementSystem.Attributes;
-
+﻿
 using OctoAwesome.Chunking;
 using OctoAwesome.Location;
 using OctoAwesome.Network;
+using OctoAwesome.Serialization;
 
 using System;
 using System.IO;
 
-namespace OctoAwesome.GameServer.Commands
+namespace OctoAwesome.Network.Commands
 {
     /// <summary>
     /// Contains commands for chunk loading and saving remotely.
@@ -19,8 +19,7 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> given location to load the column at.</param>
         /// <returns>The loaded chunk column data.</returns>
-        [Command((ushort)OfficialCommand.LoadColumn)]
-        public static byte[] LoadColumn(CommandParameter parameter)
+        public static ISerializable LoadColumn(ITypeContainer tc, CommandParameter parameter)
         {
             Guid guid;
             int planetId;
@@ -34,14 +33,7 @@ namespace OctoAwesome.GameServer.Commands
                 index2 = new Index2(reader.ReadInt32(), reader.ReadInt32());
             }
 
-            var column = TypeContainer.Get<SimulationManager>().LoadColumn(planetId, index2);
-
-            using (var memoryStream = new MemoryStream())
-            using (var writer = new BinaryWriter(memoryStream))
-            {
-                column.Serialize(writer);
-                return memoryStream.ToArray();
-            }
+            return tc.Get<SimulationManager>().LoadColumn(planetId, index2);
         }
 
         /// <summary>
@@ -49,20 +41,9 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk column data.</param>
         /// <returns><c>null</c></returns>
-        [Command((ushort)OfficialCommand.SaveColumn)]
-        public static byte[]? SaveColumn(CommandParameter parameter)
+        public static void SaveColumn(ITypeContainer tc, CommandParameter parameter, ChunkColumn chunkColumn)
         {
-            var chunkColumn = new ChunkColumn();
-
-            using (var memoryStream = new MemoryStream(parameter.Data))
-            using (var reader = new BinaryReader(memoryStream))
-            {
-                chunkColumn.Deserialize(reader);
-            }
-
-            TypeContainer.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn);
-
-            return null;
+            tc.Get<SimulationManager>().Simulation.ResourceManager.SaveChunkColumn(chunkColumn, tc.Get<IResourceManager>().GetPlanet(chunkColumn.PlanetId));
         }
     }
 }

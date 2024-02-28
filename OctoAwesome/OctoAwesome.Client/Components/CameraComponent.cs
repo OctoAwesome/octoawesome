@@ -46,7 +46,7 @@ namespace OctoAwesome.Client.Components
             if (!player.Enabled)
                 return;
 
-            Entity entity = player.CurrentEntity;
+            Entity entity = player.CurrentPlayer;
             HeadComponent head = player.CurrentEntityHead;
             PositionComponent position = player.Position;
 

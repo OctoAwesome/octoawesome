@@ -9,7 +9,9 @@ namespace OctoAwesome.Basics.EntityComponents
     /// <summary>
     /// Component for entities that can be moved.
     /// </summary>
-    public sealed class MoveableComponent : Component, IEntityComponent
+    [Nooson]
+    [SerializationId()]
+    public sealed partial class MoveableComponent : Component, IEntityComponent
     {
         /// <summary>
         /// Gets or sets the velocity of the entity.
@@ -30,5 +32,6 @@ namespace OctoAwesome.Basics.EntityComponents
         /// Gets or sets the external powers applied to the entity.
         /// </summary>
         public Vector3 ExternalPowers { get; set; }
+
     }
 }

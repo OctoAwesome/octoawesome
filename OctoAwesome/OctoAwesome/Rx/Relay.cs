@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NonSucking.Framework.Extension.Collections;
+
+using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Rx
@@ -9,7 +11,8 @@ namespace OctoAwesome.Rx
     /// <typeparam name="T">The type of the observable and observed data.</typeparam>
     public class Relay<T> : IObservable<T>, IObserver<T>, IDisposable
     {
-        private readonly List<RelaySubscription> subscriptions;
+        private readonly EnumerationModifiableList<RelaySubscription> subscriptions;
+        private readonly EnumerationModifiableList<RelaySubscription> oneShotSubscriptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Relay{T}"/> class.
@@ -17,41 +20,56 @@ namespace OctoAwesome.Rx
         public Relay()
         {
             subscriptions = new();
+            oneShotSubscriptions = new();
         }
 
         /// <inheritdoc />
         public void OnCompleted()
         {
-            for (int i = 0; i < subscriptions.Count; i++)
+            foreach (RelaySubscription sub in subscriptions)
             {
-                subscriptions[i].Observer.OnCompleted();
+                sub.Observer.OnCompleted();
             }
         }
 
         /// <inheritdoc />
         public void OnError(Exception error)
         {
-            for (int i = 0; i < subscriptions.Count; i++)
+            foreach (RelaySubscription sub in subscriptions)
             {
-                subscriptions[i].Observer.OnError(error);
+                sub.Observer.OnError(error);
             }
         }
 
         /// <inheritdoc />
         public void OnNext(T value)
         {
-            for (int i = 0; i < subscriptions.Count; i++)
+            foreach (RelaySubscription sub in subscriptions)
             {
-                subscriptions[i].Observer.OnNext(value);
+                sub.Observer.OnNext(value);
+            }
+
+            foreach (RelaySubscription sub in oneShotSubscriptions)
+            {
+                sub.Observer.OnNext(value);
+                sub.Dispose();
             }
         }
 
         /// <inheritdoc />
         public IDisposable Subscribe(IObserver<T> observer)
         {
-            var sub = new RelaySubscription(this, observer);
+            var sub = new RelaySubscription(subscriptions, observer);
             subscriptions.Add(sub);
             return sub;
+        }
+        /// <inheritdoc />
+        public void SubscribeOnce(IObserver<T> observer)
+        {
+#pragma warning disable DF0010 // Marks undisposed local variables.
+            var sub = new RelaySubscription(oneShotSubscriptions, observer);
+#pragma warning restore DF0010 // Marks undisposed local variables.
+            oneShotSubscriptions.Add(sub);
         }
 
         /// <inheritdoc />
@@ -75,18 +93,17 @@ namespace OctoAwesome.Rx
         {
             public IObserver<T> Observer { get; }
 
-            private readonly Relay<T> relay;
+            private readonly IList<RelaySubscription> parent;
 
-            public RelaySubscription(Relay<T> relay, IObserver<T> observer)
+            public RelaySubscription(IList<RelaySubscription> parent,IObserver<T> observer)
             {
-                this.relay = relay;
-
                 Observer = observer;
+                this.parent = parent;
             }
 
             public void Dispose()
             {
-                relay.Unsubscribe(this);
+                parent.Remove(this);
             }
         }
     }

@@ -1,7 +1,9 @@
 ﻿using engenious;
 
-using OctoAwesome.Collections;
-using OctoAwesome.Common;
+using NLog;
+
+using NonSucking.Framework.Extension.Collections;
+
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
@@ -9,6 +11,7 @@ using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
+using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 
 using System;
@@ -16,13 +19,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OctoAwesome
 {
     /// <summary>
     /// Interface between application and world model.
     /// </summary>
-    public sealed class Simulation : IDisposable
+    public sealed class Simulation : ComponentContainer<SimulationComponent>, IDisposable
     {
         /// <summary>
         /// Gets the resource manager for managing resources.
@@ -30,14 +34,21 @@ namespace OctoAwesome
         public IResourceManager ResourceManager { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the simulation is server side or client side.
+        /// Gets or sets a value indicating whether the simulation is server side.
         /// </summary>
         public bool IsServerSide { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the simulation is client side.
+        /// </summary>
+        public bool IsClientSide => !IsServerSide;
 
         /// <summary>
         /// Gets a list of simulation components.
         /// </summary>
         public ComponentList<SimulationComponent> Components { get; }
+
+        public ComponentList<IComponent> GlobalComponentList { get; }
 
         /// <summary>
         /// Gets the current state of the simulation.
@@ -45,49 +56,49 @@ namespace OctoAwesome
         public SimulationState State { get; private set; }
 
         /// <summary>
-        ///Gets the <see cref="Guid"/> of the currently loaded universe.
+        /// Gets the <see cref="Guid"/> of the currently loaded universe.
         /// </summary>
         public Guid UniverseId { get; }
 
         /// <summary>
-        /// Gets the game service.
+        /// Gets the <see cref="FooBbqSimulationComponent"/> of the current universe for sending components via Network
         /// </summary>
-        public IGameService Service { get; }
+        public NetworkingSimulationComponent FooBbqSimulationComponent { get; }
 
+        private readonly Logger logger;
         private readonly ExtensionService extensionService;
 
-        private readonly EnumerationmodifiableConcurrentList<Entity> entities = new();
+        private readonly EnumerationModifiableConcurrentList<Entity> entities = new();
+        private readonly CountedScopeSemaphore entitiesSemaphore = new();
 
         private readonly IPool<EntityNotification> entityNotificationPool;
-        private readonly Relay<Notification> networkRelay;
-        private readonly Relay<Notification> uiRelay;
-
+        private readonly ComponentChangedNotificationHandler componentChangedHandler;
         private IDisposable? simulationSubscription;
-        private IDisposable? networkSubscription;
-        private IDisposable? uiSubscription;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Simulation"/> class.
         /// </summary>
         /// <param name="resourceManager">The resource manager for managing resources.</param>
         /// <param name="extensionService">The extension service for extending this simulation.</param>
-        /// <param name="service">The game service.</param>
-        public Simulation(IResourceManager resourceManager, ExtensionService extensionService, IGameService service)
+        public Simulation(IResourceManager resourceManager, ExtensionService extensionService)
         {
             ResourceManager = resourceManager;
-            networkRelay = new Relay<Notification>();
-            uiRelay = new Relay<Notification>();
-
-            entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
-
-
+            var typeContainer = TypeContainer.Get<ITypeContainer>();
+            entityNotificationPool = typeContainer.Get<IPool<EntityNotification>>();
+            componentChangedHandler = typeContainer.Get<ComponentChangedNotificationHandler>();
+            componentChangedHandler.AssociatedSimulation = this;
+            FooBbqSimulationComponent = new NetworkingSimulationComponent(
+                typeContainer.Get<IUpdateHub>(),
+                entityNotificationPool,
+                typeContainer.Get<IPool<PropertyChangedNotification>>());
             this.extensionService = extensionService;
             State = SimulationState.Ready;
             UniverseId = Guid.Empty;
-            Service = service;
+            logger = NLog.LogManager.GetCurrentClassLogger();
+            GlobalComponentList = new();
 
             Components = new ComponentList<SimulationComponent>(
-                ValidateAddComponent, ValidateRemoveComponent, null, null);
+                ValidateAddComponent, ValidateRemoveComponent, null, null, this);
 
             extensionService.ExecuteExtender(this);
         }
@@ -97,12 +108,14 @@ namespace OctoAwesome
         {
             if (State != SimulationState.Ready)
                 throw new NotSupportedException("Simulation needs to be in Ready mode to add Components");
+            GlobalComponentList.Add(component);
         }
 
         private void ValidateRemoveComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)
                 throw new NotSupportedException("Simulation needs to be in Ready mode to remove Components");
+            GlobalComponentList.Remove(component);
         }
 
         /// <summary>
@@ -111,7 +124,7 @@ namespace OctoAwesome
         /// <param name="name">The name of the universe.</param>
         /// <param name="rawSeed">The seed used for creating the universe.</param>
         /// <returns>The <see cref="Guid"/> of the created universe.</returns>
-        public Guid NewGame(string name, string rawSeed)
+        public static Guid NewGame(IResourceManager resourceManager, string  name, string rawSeed)
         {
             int numericSeed;
 
@@ -130,9 +143,7 @@ namespace OctoAwesome
             }
 
 
-            Guid guid = ResourceManager.NewUniverse(name, numericSeed);
-
-            Start();
+            Guid guid = resourceManager.NewUniverse(name, numericSeed);
 
             return guid;
         }
@@ -161,18 +172,6 @@ namespace OctoAwesome
                 .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
 
-            networkSubscription
-                = ResourceManager
-                .UpdateHub
-                .AddSource(networkRelay, DefaultChannels.Network);
-
-            uiSubscription
-                = ResourceManager
-                .UpdateHub
-                .AddSource(uiRelay, DefaultChannels.UI);
-
-
-
             State = SimulationState.Running;
         }
 
@@ -190,12 +189,10 @@ namespace OctoAwesome
                 planet.Value.GlobalChunkCache.BeforeSimulationUpdate(this);
 
             //Update all Entities
-            foreach (var entity in entities)
-            {
-                if (entity is IUpdateable updateableEntity)
-                    updateableEntity.Update(gameTime);
-            }
-
+            if (entities.Count > 0)
+                foreach (Entity entity in entities)
+                    if (entity is IUpdateable updateable)
+                        updateable.Update(gameTime);
 
             // Update all Components
             foreach (var component in Components)
@@ -204,6 +201,8 @@ namespace OctoAwesome
 
             foreach (var planet in ResourceManager.Planets)
                 planet.Value.GlobalChunkCache.AfterSimulationUpdate(this);
+
+            FooBbqSimulationComponent.Update(gameTime);
         }
 
         /// <summary>
@@ -219,17 +218,15 @@ namespace OctoAwesome
 
             //TODO: unschön, Dispose Entity's, Reset Extensions
 
-            foreach (var item in entities)
-                Remove(item);
-
+            foreach (var entity in entities)
+            {
+                Remove(entity);
+            }
 
             State = SimulationState.Finished;
-            // thread.Join();
 
             ResourceManager.UnloadUniverse();
             simulationSubscription?.Dispose();
-            networkSubscription?.Dispose();
-            uiSubscription?.Dispose();
         }
 
         /// <summary>
@@ -250,41 +247,92 @@ namespace OctoAwesome
             if (entity.Simulation is not null && entity.Simulation != this)
                 throw new NotSupportedException("Entity can't be part of more than one simulation");
 
-
-            foreach (var fb in entities)
-            {
-                if (fb == entity
-                    || (fb.Components.Contains<UniquePositionComponent>()
-                        && entity.Components.Contains<UniquePositionComponent>()
-                        && fb.Components.TryGet<PositionComponent>(out var existingPosition)
-                        && (!entity.Components.TryGet<PositionComponent>(out var newPosComponent)
-                            || existingPosition.Position == newPosComponent.Position)))
+            var hasPosComponent = entity.Components.TryGet<PositionComponent>(out var newPosComponent);
+            using (var _ = entitiesSemaphore.EnterCountScope())
+                foreach (var fb in entities)
                 {
+                    if (fb == entity
+                        || (fb.Components.Contains<UniquePositionComponent>()
+                            && entity.Components.Contains<UniquePositionComponent>()
+                            && fb.Components.TryGet<PositionComponent>(out var existingPosition)
+                            && (!hasPosComponent || existingPosition.Position == newPosComponent!.Position)))
+                    {
+                        SendToClientIfRequired(entity, true, EntityNotification.ActionType.Add);
+                        return;
+                    }
+                }
+
+            Entity? existing;
+            using (var _ = entitiesSemaphore.EnterCountScope())
+            {
+                existing = entities.FirstOrDefault(x => x.Id == entity.Id);
+                if (existing != default && !overwriteExisting)
+                {
+                    SendToClientIfRequired(entity, true, EntityNotification.ActionType.Add);
                     return;
                 }
             }
 
-            var existing = entities.FirstOrDefault(x => x.Id == entity.Id);
-            if (existing != default && !overwriteExisting)
-                return;
-
             if (existing != default)
                 Remove(existing);
-
-            extensionService.ExecuteExtender(entity);
-            entity.Initialize(ResourceManager);
-            entity.Simulation = this;
 
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
 
-            entities.Add(entity);
+            entity.ResourceManager = ResourceManager;
+            entity.Simulation = this;
+            extensionService.ExecuteExtender(entity);
+            entity.Initialize();
 
+            if (!hasPosComponent)
+                hasPosComponent = entity.Components.TryGet<PositionComponent>(out newPosComponent);
+
+            //using (var _ = entitiesSemaphore.EnterExclusiveScope())
+            entities.Add(entity);
+            
             foreach (var component in Components)
             {
                 if (component is IHoldComponent<Entity> holdComponent)
                     holdComponent.Add(entity);
             }
+
+            if (IsServerSide)
+            {
+                entity.Components.AddIfTypeNotExists(new ServerManagedComponent { OnServer = true });
+            }
+
+            if (hasPosComponent)
+            {
+                var gcc = newPosComponent.Planet.GlobalChunkCache;
+                gcc.CacheService.AddOrUpdate(entity.Id, newPosComponent);
+                gcc.CacheService.AddOrUpdate(entity.Id, entity);
+            }
+
+            foreach (var comp in entity.Components)
+            {
+                GlobalComponentList.AddIfNotExists(comp);
+            }
+
+            SendToClientIfRequired(entity, false, EntityNotification.ActionType.Add);
+        }
+
+        private void SendToClientIfRequired(Entity entity, bool existsAlready, EntityNotification.ActionType type)
+        {
+            if ((entity is RemoteEntity && IsClientSide)
+                    || (!existsAlready && entity is Player && IsServerSide))
+                return;
+
+            logger.Debug($"Send {entity.GetType().Name} with id {entity.Id} to network");
+            if (entity is not RemoteEntity)
+                entity = new RemoteEntity(entity);
+
+            var remoteNotification = new EntityNotification
+            {
+                Entity = entity,
+                Type = type
+            };
+
+            ResourceManager.UpdateHub.PushNetwork(remoteNotification, DefaultChannels.Simulation);
         }
 
         /// <summary>
@@ -311,13 +359,21 @@ namespace OctoAwesome
 
             ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
 
+
+            foreach (var comp in entity.Components)
+            {
+                GlobalComponentList.Remove(comp);
+            }
+
             foreach (var component in Components)
             {
                 if (component is IHoldComponent<Entity> holdComponent)
                     holdComponent.Remove(entity);
             }
 
+            //using (var _ = entitiesSemaphore.EnterExclusiveScope())
             entities.Remove(entity);
+            SendToClientIfRequired(entity, true, EntityNotification.ActionType.Remove);
             entity.Id = Guid.Empty;
             entity.Simulation = null;
         }
@@ -399,13 +455,14 @@ namespace OctoAwesome
         /// <returns><see langword="true"/> if a container was found, otherwise <see langword="false"/></returns>
         public bool TryGetById<T>(Guid id, [MaybeNullWhen(false)] out T componentContainer) where T : ComponentContainer
         {
-            foreach (var item in entities)
-            {
-                if (!(item is T t) || t.Id != id)
-                    continue;
-                componentContainer = t;
-                return true;
-            }
+            using (var _ = entitiesSemaphore.EnterCountScope())
+                foreach (var item in entities)
+                {
+                    if (item is not T t || t.Id != id)
+                        continue;
+                    componentContainer = t;
+                    return true;
+                }
 
             componentContainer = default;
             return false;
@@ -424,67 +481,52 @@ namespace OctoAwesome
         /// Gets called for receiving new notifications.
         /// </summary>
         /// <param name="value">The new notification.</param>
-        public void OnNext(Notification value)
+        public void OnNext(object value)
         {
-            if (entities.Count < 0 && !IsServerSide)
-                return;
-
             switch (value)
             {
                 case EntityNotification entityNotification:
-                    if (entityNotification.Type == EntityNotification.ActionType.Remove)
-                        RemoveEntity(entityNotification.EntityId);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Add)
-                        Add(entityNotification.Entity, entityNotification.OverwriteExisting);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Update)
-                        EntityUpdate(entityNotification);
-                    else if (entityNotification.Type == EntityNotification.ActionType.Request)
-                        RequestEntity(entityNotification);
-
-                    uiRelay.OnNext(value);
+                    switch (entityNotification.Type)
+                    {
+                        case EntityNotification.ActionType.Remove:
+                            RemoveEntity(entityNotification.EntityId);
+                            break;
+                        case EntityNotification.ActionType.Add:
+                            Add(entityNotification.Entity, entityNotification.OverwriteExisting);
+                            break;
+                        case EntityNotification.ActionType.Request:
+                            RequestEntity(entityNotification.EntityId);
+                            break;
+                        case EntityNotification.ActionType.Update:
+                            EntityUpdate(entityNotification);
+                            break;
+                    }
                     break;
                 default:
                     break;
             }
         }
-
-
-        /// <summary>
-        /// Called when an update notification was received.
-        /// </summary>
-        /// <param name="notification">The update notification.</param>
-        public void OnUpdate(SerializableNotification notification)
-        {
-            if (!IsServerSide)
-                networkRelay.OnNext(notification);
-        }
-
         private void EntityUpdate(EntityNotification notification)
         {
-            var entity = entities.FirstOrDefault(e => e.Id == notification.EntityId);
-            if (entity == null)
-            {
-                var entityNotification = entityNotificationPool.Rent();
-                entityNotification.EntityId = notification.EntityId;
-                entityNotification.Type = EntityNotification.ActionType.Request;
-                networkRelay.OnNext(entityNotification);
-                entityNotification.Release();
-            }
-            else
-            {
-                Debug.Assert(notification.Notification != null, "notification.Notification != null");
-                entity.Push(notification.Notification);
-            }
+            var instance = entities.FirstOrDefault(x => x.Id == notification.EntityId);
+            if (instance is null)
+                return;
+
+            componentChangedHandler.Execute(instance, notification);
         }
 
-        private void RequestEntity(EntityNotification entityNotification)
+        private void RequestEntity(Guid entityId)
         {
             if (!IsServerSide)
                 return;
 
-            var entity = entities.FirstOrDefault(e => e.Id == entityNotification.EntityId);
-            if (entity == null)
-                return;
+            Entity? entity;
+            using (var _ = entitiesSemaphore.EnterCountScope())
+            {
+                entity = entities.FirstOrDefault(e => e.Id == entityId);
+                if (entity == null)
+                    return;
+            }
 
             var remoteEntity = new RemoteEntity(entity);
             remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
@@ -495,15 +537,14 @@ namespace OctoAwesome
             newEntityNotification.Entity = remoteEntity;
             newEntityNotification.Type = EntityNotification.ActionType.Add;
 
-            networkRelay.OnNext(newEntityNotification);
+            ResourceManager.UpdateHub.PushNetwork(newEntityNotification, DefaultChannels.Simulation);
             newEntityNotification.Release();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            uiRelay.Dispose();
-            networkRelay.Dispose();
+            simulationSubscription?.Dispose();
         }
     }
 }

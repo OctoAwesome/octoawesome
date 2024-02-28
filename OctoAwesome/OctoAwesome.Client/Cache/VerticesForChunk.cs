@@ -8,6 +8,7 @@ using System.IO;
 
 namespace OctoAwesome.Client.Cache
 {
+
     internal class VerticesForChunk : IDisposable, ISerializable
     {
         public int Version { get; set; }

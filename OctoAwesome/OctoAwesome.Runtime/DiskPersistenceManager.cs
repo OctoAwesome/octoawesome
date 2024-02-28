@@ -66,14 +66,16 @@ namespace OctoAwesome.Runtime
             if (!string.IsNullOrEmpty(appConfig))
             {
                 root = new DirectoryInfo(appConfig);
-                if (!root.Exists) root.Create();
+                if (!root.Exists)
+                    root.Create();
                 return root.FullName;
             }
             else
             {
                 var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 root = new DirectoryInfo(exePath + Path.DirectorySeparatorChar + "OctoMap");
-                if (!root.Exists) root.Create();
+                if (!root.Exists)
+                    root.Create();
                 return root.FullName;
             }
         }
@@ -135,8 +137,7 @@ namespace OctoAwesome.Runtime
             string path = Path.Combine(GetRoot(), universeGuid.ToString());
             Directory.CreateDirectory(path);
 
-            // TODO: consider player name
-            string file = Path.Combine(path, "player.info");
+            string file = Path.Combine(path, $"player_{player.Name}.info");
             using (Stream stream = File.Open(file, FileMode.Create, FileAccess.Write))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
@@ -162,7 +163,6 @@ namespace OctoAwesome.Runtime
             string root = GetRoot();
             var awaiter = awaiterPool.Rent();
             universes = new SerializableCollection<IUniverse>();
-            awaiter.Result = universes;
             foreach (var folder in Directory.GetDirectories(root))
             {
                 string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
@@ -174,7 +174,7 @@ namespace OctoAwesome.Runtime
                         continue;
                     }
 
-                    universeLoader.WaitOnAndRelease();
+                    universeLoader.WaitOnAndRelease(universe);
                     universes.Add(universe);
                 }
             }
@@ -285,8 +285,7 @@ namespace OctoAwesome.Runtime
         /// <inheritdoc />
         public Awaiter? Load(out Player player, Guid universeGuid, string playerName)
         {
-            //TODO: Replace with player name later on.
-            string file = Path.Combine(GetRoot(), universeGuid.ToString(), "player.info");
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), $"player_{playerName}.info");
             player = new Player();
             if (!File.Exists(file))
                 return null;
@@ -298,13 +297,13 @@ namespace OctoAwesome.Runtime
                     try
                     {
                         var awaiter = awaiterPool.Rent();
-                        awaiter.Result = player;
                         player.Deserialize(reader);
                         awaiter.SetResult(player);
                         return awaiter;
                     }
                     catch (Exception)
                     {
+                        //TODO Should we delete the File if the data is invalid?
                         // File.Delete(file);
                     }
                 }
@@ -357,12 +356,35 @@ namespace OctoAwesome.Runtime
         /// Gets called when a new notification is received.
         /// </summary>
         /// <param name="notification">The received notification.</param>
-        public void OnNext(Notification notification)
+        public void OnNext(object notification)
         {
-            if (notification is BlockChangedNotification blockChanged)
-                SaveChunk(blockChanged);
-            else if (notification is BlocksChangedNotification blocksChanged)
-                SaveChunk(blocksChanged);
+            switch (notification)
+            {
+                case BlockChangedNotification blockChanged:
+                    SaveChunk(blockChanged);
+                    break;
+                case BlocksChangedNotification blocksChanged:
+                    SaveChunk(blocksChanged);
+                    break;
+            }
+        }
+
+        public void SaveGlobally<T>(T tag, ISerializable value, bool fixedSize) where T : ITag, new()
+        {
+            var provider = databaseProvider.GetDatabase<T>( fixedSize);
+            provider.AddOrUpdate(tag, new Value(Serializer.Serialize(value)));
+        }
+
+        public TSerializeable? LoadGlobally<TTag, TSerializeable>(TTag tag, bool fixedSize)
+            where TTag : ITag, new()
+            where TSerializeable : ISerializable, new()
+        {
+            var provider = databaseProvider.GetDatabase<TTag>(fixedSize);
+            if (!provider.ContainsKey(tag))
+                return default;
+
+            var value = provider.GetValue(tag);
+            return Serializer.Deserialize<TSerializeable>(value.Content);
         }
 
         private void SaveChunk(BlockChangedNotification chunkNotification)

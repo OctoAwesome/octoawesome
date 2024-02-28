@@ -3,27 +3,31 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
+using OctoAwesome.Caching;
 using OctoAwesome.Chunking;
 using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Location
 {
     /// <summary>
     /// The default implementation for planets.
     /// </summary>
-    public class Planet : IPlanet
+    [Nooson, SerializationId()]
+    public partial class Planet : IPlanet, IConstructionSerializable<Planet>
     {
         /// <summary>
         /// Backing field for <see cref="ClimateMap"/>.
         /// </summary>
         protected IClimateMap? climateMap;
         /// <inheritdoc />
-        public int Id { get; private set; }
+        public int Id { get; protected set; }
 
         /// <inheritdoc />
-        public Guid Universe { get; private set; }
+        public Guid Universe { get; protected set; }
 
         /// <inheritdoc />
+        [NoosonIgnore]
         public IClimateMap ClimateMap
         {
             get
@@ -34,18 +38,20 @@ namespace OctoAwesome.Location
         }
 
         /// <inheritdoc />
-        public int Seed { get; private set; }
+        public int Seed { get; protected set; }
 
         /// <inheritdoc />
-        public Index3 Size { get; private set; }
+        public Index3 Size { get; protected set; }
 
         /// <inheritdoc />
         public float Gravity { get; protected set; }
 
         /// <inheritdoc />
+        [NoosonCustom(DeserializeMethodName = nameof(DeserializeMapGenerator), SerializeMethodName = nameof(SerializeMapGenerator))]
         public IMapGenerator Generator { get; }
 
         /// <inheritdoc />
+        [NoosonIgnore]
         public IGlobalChunkCache GlobalChunkCache { get; }
 
         private bool disposed;
@@ -81,32 +87,19 @@ namespace OctoAwesome.Location
         public Planet(IMapGenerator generator)
         {
             Generator = generator;
-
-            GlobalChunkCache = new GlobalChunkCache(this, TypeContainer.Get<IResourceManager>(), TypeContainer.Get<IUpdateHub>(), TypeContainer.Get<SerializationIdTypeProvider>());
+            var tc = TypeContainer.Get<ITypeContainer>();
+            GlobalChunkCache = new GlobalChunkCache(this, tc.Get<IResourceManager>(), tc.Get<IUpdateHub>());
         }
 
-        /// <inheritdoc />
-        public virtual void Serialize(BinaryWriter writer)
+        private void SerializeMapGenerator(BinaryWriter bw)
         {
-            writer.Write(Id);
-            writer.Write(Seed);
-            writer.Write(Gravity);
-            writer.Write(Size.X);
-            writer.Write(Size.Y);
-            writer.Write(Size.Z);
-            writer.Write(Universe.ToByteArray());
+            bw.Write(Generator.GetType().AssemblyQualifiedName!);
+        }
+        private static IMapGenerator DeserializeMapGenerator(BinaryReader br)
+        {
+            return GenericCaster<object, IMapGenerator>.Cast(Activator.CreateInstance(Type.GetType(br.ReadString())!)!);
         }
 
-        /// <inheritdoc />
-        public virtual void Deserialize(BinaryReader reader)
-        {
-            Id = reader.ReadInt32();
-            Seed = reader.ReadInt32();
-            Gravity = reader.ReadSingle();
-            Size = new Index3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-            Universe = new Guid(reader.ReadBytes(16));
-            //var name = reader.ReadString();
-        }
 
         /// <inheritdoc />
         public void Dispose()

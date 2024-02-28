@@ -14,6 +14,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with accelerations.
     /// </summary>
+    [SerializationId()]
     public sealed class AccelerationComponent : SimulationComponent<
         Entity,
         AccelerationComponent.AcceleratedEntity,
@@ -60,6 +61,18 @@ namespace OctoAwesome.Basics.SimulationComponents
 
             // Calculate Move Vector for the upcoming frame
             entity.Move.PositionMove = entity.Move.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Fix fluctuations for direction because of external forces
+            var tmp = entity.Move.PositionMove;
+            if (Math.Abs(tmp.X) < 0.02)
+            {
+                tmp.X = 0;
+            }
+            if (Math.Abs(tmp.Y) < 0.02)
+            {
+                tmp.Y = 0;
+            }
+            entity.Move.PositionMove = tmp;
         }
 
         /// <inheritdoc />

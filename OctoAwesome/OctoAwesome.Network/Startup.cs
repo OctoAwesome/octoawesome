@@ -13,7 +13,7 @@ namespace OctoAwesome.Network
         /// <param name="typeContainer">The type container to register on.</param>
         public static void Register(ITypeContainer typeContainer)
         {
-            typeContainer.Register<PackagePool, PackagePool>(InstanceBehavior.Singleton);
+            typeContainer.Register<PackagePool, PackagePool>(InstanceBehaviour.Singleton);
         }
     }
 }

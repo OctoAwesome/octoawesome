@@ -118,13 +118,7 @@ namespace OctoAwesome.Definitions.Items
             writer.Write(Position.HasValue);
             if (Position.HasValue)
             {
-                writer.Write(Position.Value.Planet);
-                writer.Write(Position.Value.GlobalBlockIndex.X);
-                writer.Write(Position.Value.GlobalBlockIndex.Y);
-                writer.Write(Position.Value.GlobalBlockIndex.Z);
-                writer.Write(Position.Value.BlockPosition.X);
-                writer.Write(Position.Value.BlockPosition.Y);
-                writer.Write(Position.Value.BlockPosition.Z);
+                writer.WriteUnmanaged(Position.Value);
             }
         }
 
@@ -152,15 +146,7 @@ namespace OctoAwesome.Definitions.Items
             if (reader.ReadBoolean())
             {
                 // Position
-                int planet = reader.ReadInt32();
-                int blockX = reader.ReadInt32();
-                int blockY = reader.ReadInt32();
-                int blockZ = reader.ReadInt32();
-                float posX = reader.ReadSingle();
-                float posY = reader.ReadSingle();
-                float posZ = reader.ReadSingle();
-
-                Position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
+                Position = reader.ReadUnmanaged<Coordinate>();
             }
         }
 

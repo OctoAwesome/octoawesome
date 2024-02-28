@@ -38,7 +38,10 @@ public static class NullabilityHelper
     public static T NotNullAssert<T>(T? value, string? message = null, [CallerMemberName] string? parameterName = null)
         where T : class
     {
-        Debug.Assert(value != null, message ?? parameterName + " != null");
+        if(value != null)
+        {
+            Debug.Assert(true, message ?? parameterName + " != null");
+        }
         return value;
     }
 }

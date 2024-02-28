@@ -251,6 +251,10 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
             gottem.Add(e);
             return e;
         }
+        public IPoolElement RentElement()
+        {
+            return Rent();
+        }
 
         public void Return(Enumerator obj)
         {
@@ -265,6 +269,7 @@ public class EnumerationmodifiableList<T> : IList<T>, IReadOnlyCollection<T>
             else
                 throw new ArgumentException(nameof(obj));
         }
+
     }
 }
 

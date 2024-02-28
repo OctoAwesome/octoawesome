@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using OctoAwesome.Database;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -12,13 +13,16 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with box collision.
     /// </summary>
-    public sealed class BoxCollisionComponent : CollisionComponent, IEquatable<BoxCollisionComponent?>
+    [Nooson, SerializationId()]
+    public sealed partial class BoxCollisionComponent : CollisionComponent, IEquatable<BoxCollisionComponent?>
     {
         /// <summary>
         /// Gets the collision bounding boxes of the entity.
         /// </summary>
+        [NoosonIgnore]
         public ReadOnlySpan<BoundingBox> BoundingBoxes => new(boundingBoxes);
 
+        [NoosonInclude]
         private BoundingBox[] boundingBoxes;
 
         /// <summary>
@@ -36,44 +40,9 @@ namespace OctoAwesome.EntityComponents
         public BoxCollisionComponent(BoundingBox[] boundingBoxes)
         {
             this.boundingBoxes = boundingBoxes;
+            Sendable = true;
         }
-        /// <inheritdoc/>
-        public override void Serialize(BinaryWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(boundingBoxes.Length);
-            foreach (BoundingBox box in boundingBoxes)
-            {
-                writer.Write(box.Min.X);
-                writer.Write(box.Min.Y);
-                writer.Write(box.Min.Z);
-                writer.Write(box.Max.X);
-                writer.Write(box.Max.Y);
-                writer.Write(box.Max.Z);
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-            var len = reader.ReadInt32();
-            var boxes = new BoundingBox[len];
-            for (int i = 0; i < len; i++)
-            {
-                boxes[i] = new BoundingBox(
-                    reader.ReadSingle(),
-                    reader.ReadSingle(),
-                    reader.ReadSingle(),
-                    reader.ReadSingle(),
-                    reader.ReadSingle(),
-                    reader.ReadSingle()
-                );
-
-            }
-
-            this.boundingBoxes = boxes;
-        }
+       
 
         /// <inheritdoc/>
         public override bool Equals(object? obj)

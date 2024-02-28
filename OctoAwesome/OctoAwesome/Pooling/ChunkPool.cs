@@ -35,10 +35,10 @@ namespace OctoAwesome.Pooling
         /// Retrieves an element from the memory pool.
         /// </summary>
         /// <param name="position">The position to initialize the pooled element with.</param>
-        /// <param name="planet">The planet to initialize the pooled element with.</param>
+        /// <param name="planetId">The planet to initialize the pooled element with.</param>
         /// <returns>The pooled element that can be used thereon.</returns>
         /// <remarks>Use <see cref="Return(Chunk)"/> to return the object back into the memory pool.</remarks>
-        public Chunk Rent(Index3 position, IPlanet planet)
+        public Chunk Rent(Index3 position, int planetId)
         {
             Chunk obj;
 
@@ -47,11 +47,17 @@ namespace OctoAwesome.Pooling
                 if (internalStack.Count > 0)
                     obj = internalStack.Pop();
                 else
-                    obj = new Chunk(position, planet);
+                    obj = new Chunk(position, planetId);
             }
 
-            obj.Init(position, planet);
+            obj.Init(position, planetId);
             return obj;
+        }
+
+        /// <inheritdoc/>
+        public IPoolElement RentElement()
+        {
+            throw new NotSupportedException($"Use Get(Index3, IPlanet) instead.");
         }
 
 

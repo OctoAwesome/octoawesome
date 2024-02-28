@@ -3,6 +3,7 @@ using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.Location;
 using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Collections.Concurrent;
@@ -15,6 +16,7 @@ namespace OctoAwesome
     /// </summary>
     public interface IResourceManager
     {
+        bool LocalPersistance { get; }
         /// <summary>
         /// Gets a manager for managing definitions.
         /// </summary>
@@ -93,6 +95,16 @@ namespace OctoAwesome
         Player CurrentPlayer { get; }
 
         /// <summary>
+        /// Gets the current id manager for managing globally unique <see cref="int"/> ids
+        /// </summary>
+        IIdManager IdManager { get; }
+
+        /// <summary>
+        /// Manager for game world persistance.
+        /// </summary>
+        IPersistenceManager PersistenceManager { get; set; }
+
+        /// <summary>
         /// Saves the given component container.
         /// </summary>
         /// <param name="componentContainer">The component container to save.</param>
@@ -106,7 +118,7 @@ namespace OctoAwesome
         /// Saves the given chunk column.
         /// </summary>
         /// <param name="value">The chunk column to save.</param>
-        void SaveChunkColumn(IChunkColumn value);
+        void SaveChunkColumn(IChunkColumn value, IPlanet planet);
 
         /// <summary>
         /// Load a chunk column for a given planet at a location.

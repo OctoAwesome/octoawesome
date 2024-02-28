@@ -243,6 +243,18 @@ namespace OctoAwesome.Client.UI.Languages {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle Chat.
+        /// </summary>
+        public static string toggle_chat {
+            get {
+                return ResourceManager.GetString("toggle_chat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle Ambient Occlusion.
+        /// </summary>
         public static string toggleAmbientOcclusion {
             get {
                 return ResourceManager.GetString("toggleAmbientOcclusion", resourceCulture);

@@ -6,20 +6,21 @@ using OctoAwesome.EntityComponents;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using OctoAwesome.Serialization;
+using NonSucking.Framework.Extension.Collections;
 
 namespace OctoAwesome.Components
 {
     /// <summary>
     /// Baseclass of all SimulationComponents who extend the <see cref="Simulation"/>.
     /// </summary>
-    public abstract class SimulationComponent : Component
+    public abstract partial class SimulationComponent : Component
     {
         /// <summary>
         /// Update method of this <see cref="Component"/>.
         /// </summary>
         /// <param name="gameTime">The current game time.</param>
         public abstract void Update(GameTime gameTime);
-
     }
 
     /// <summary>
@@ -181,7 +182,7 @@ namespace OctoAwesome.Components
         /// <summary>
         /// Entities simulated by this <see cref="SimulationComponent{T, S, C1, C2}"/>.
         /// </summary>
-        protected readonly List<TCachedContainer> values = new();
+        protected readonly EnumerationModifiableConcurrentList<TCachedContainer> values = new();
 
         /// <inheritdoc />
         public void Add(TContainer value)
@@ -211,7 +212,14 @@ namespace OctoAwesome.Components
         public void Remove(TContainer value)
         {
             OnRemove(value);
-            values.RemoveAll(c => Compare(c, value));
+            IList<TCachedContainer> list = values;
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                var c = list[i];
+                if (Compare(c, value))
+                    values.RemoveAt(i);
+
+            }
         }
 
         /// <summary>
@@ -242,7 +250,6 @@ namespace OctoAwesome.Components
         /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            //TODO: Change (Collection was modified in Multiplayer)
             foreach (var value in values)
                 UpdateValue(gameTime, value);
         }

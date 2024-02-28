@@ -10,7 +10,8 @@ namespace OctoAwesome.Notifications
     /// <summary>
     /// Notifications caused by entities.
     /// </summary>
-    public sealed class EntityNotification : SerializableNotification
+    [SerializationId()]
+    public sealed partial class EntityNotification : SerializableNotification, IConstructionSerializable<EntityNotification>
     {
         /// <summary>
         /// Gets or sets the action type that caused the notification.
@@ -25,13 +26,13 @@ namespace OctoAwesome.Notifications
         /// <summary>
         /// Gets or sets the entity that caused the notification.
         /// </summary>
-        public Entity Entity
+        public Entity? Entity
         {
-            get => NullabilityHelper.NotNullAssert(entity, $"{nameof(Entity)} was not initialized!");
+            get => entity;
             set
             {
-                entity = NullabilityHelper.NotNullAssert(value, $"{nameof(Entity)} cannot be initialized with null!");
-                EntityId = value.Id;
+                entity = value;
+                EntityId = value?.Id ?? Guid.Empty;
             }
         }
 
@@ -80,11 +81,14 @@ namespace OctoAwesome.Notifications
         {
             Type = (ActionType)reader.ReadInt32();
 
-
             if (Type == ActionType.Add)
+            {
+                //Entity = new RemoteEntity();
+                //Entity.Deserialize(reader);
                 Entity = Serializer.Deserialize<RemoteEntity>(reader.ReadBytes(reader.ReadInt32()));
+            }
             else
-                EntityId = new Guid(reader.ReadBytes(16));
+                EntityId = reader.ReadUnmanaged<Guid>();
 
             var isNotification = reader.ReadBoolean();
             if (isNotification)
@@ -105,7 +109,7 @@ namespace OctoAwesome.Notifications
             }
             else
             {
-                writer.Write(EntityId.ToByteArray());
+                writer.WriteUnmanaged(EntityId);
             }
 
             var subNotification = Notification != null;
@@ -118,6 +122,7 @@ namespace OctoAwesome.Notifications
             }
         }
 
+
         /// <inheritdoc />
         protected override void OnRelease()
         {
@@ -128,6 +133,23 @@ namespace OctoAwesome.Notifications
             Notification = default;
 
             base.OnRelease();
+        }
+
+        public static EntityNotification DeserializeAndCreate(BinaryReader reader)
+        {
+            var entity = new EntityNotification();
+            entity.Deserialize(reader);
+            return entity;
+        }
+
+        public static void Serialize(EntityNotification that, BinaryWriter writer)
+        {
+            that.Serialize(writer);
+        }
+
+        public static void Deserialize(EntityNotification that, BinaryReader reader)
+        {
+            that.Deserialize(reader);
         }
 
         /// <summary>

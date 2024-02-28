@@ -10,6 +10,7 @@ namespace OctoAwesome.EntityComponents;
 /// <summary>
 /// Restricts an entity to be the only one at a given position component
 /// </summary>
+[SerializationId()]
 public class UniquePositionComponent : Component, IEntityComponent
 {
 }

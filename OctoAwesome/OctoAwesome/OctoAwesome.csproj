@@ -4,8 +4,10 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<WarningsAsErrors>CS0109</WarningsAsErrors>
+		
 	</PropertyGroup>
-
+	
 
 	<ItemGroup>
 		<Compile Remove="Properties\**" />
@@ -16,12 +18,22 @@
 	<ItemGroup>
 		<PackageReference Include="dotVariant" Version="0.5.3" />
 		<PackageReference Include="engenious" Version="0.7.1-alpha" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
 		<PackageReference Include="NLog" Version="5.0.4" />
+		<PackageReference Include="NonSucking.Framework.Extension" Version="0.1.0.108-alpha" />
 		<PackageReference Include="System.Interactive" Version="6.0.1" />
+
+		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
+		<!--<ProjectReference Include="..\..\..\..\NonSucking.Framework.Extension\NonSucking.Framework.Serialization\NonSucking.Framework.Serialization.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="true"/>-->
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Serialization" />
+		<Using Include="NonSucking.Framework.Extension.IoC" />
 	</ItemGroup>
 
 </Project>

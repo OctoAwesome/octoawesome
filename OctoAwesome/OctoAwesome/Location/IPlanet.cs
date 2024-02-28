@@ -39,16 +39,19 @@ namespace OctoAwesome.Location
         /// <summary>
         /// Gets the climate map for the planet.
         /// </summary>
+        [NoosonIgnore]
         IClimateMap ClimateMap { get; }
 
         /// <summary>
         /// Gets the map generator for the planet.
         /// </summary>
+        [NoosonIgnore]
         IMapGenerator Generator { get; }
 
         /// <summary>
         /// Gets the global chunk cache for the planet.
         /// </summary>
+        [NoosonIgnore]
         IGlobalChunkCache GlobalChunkCache { get; }
     }
 }
