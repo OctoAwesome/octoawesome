@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 
 using System;
 using System.Collections.Generic;

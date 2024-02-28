@@ -4,11 +4,16 @@ using NLog.Targets;
 
 using NonSucking.Framework.Extension.IoC;
 
+
+using OctoAwesome.Chunking;
+using OctoAwesome.Information;
 using OctoAwesome.Graphs;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;
 using OctoAwesome.Services;
+using OctoAwesome.Threading;
+
 using System;
 
 namespace OctoAwesome
@@ -47,7 +52,7 @@ namespace OctoAwesome
             typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehaviour.Singleton);
             typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehaviour.Singleton);
             typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehaviour.Singleton);
-            typeContainer.Register<BlockCollectionService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<BlockInteractionService>(InstanceBehaviour.Singleton);
             typeContainer.Register<ComponentChangedNotificationHandler>(InstanceBehaviour.Singleton);
 
             typeContainer.Register<InteractService>(InstanceBehaviour.Singleton);

@@ -123,6 +123,9 @@
   <data name="debug_allblocks" xml:space="preserve">
     <value>DEBUG: Alle Blocktypen ins Inventar</value>
   </data>
+  <data name="debug_boundingboxes" xml:space="preserve">
+    <value>DEBUG: Zeige/Verstecke Schattenwerfer/Empfänger BoundingBoxes</value>
+  </data>
   <data name="debug_control" xml:space="preserve">
     <value>DEBUG: Debug-Informationen anzeigen/verbergen</value>
   </data>

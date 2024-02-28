@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Components;
+using OctoAwesome.EntityComponents;
+
 
 namespace OctoAwesome.Basics.EntityComponents
 {

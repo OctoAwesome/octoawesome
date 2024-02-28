@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Caching
 {

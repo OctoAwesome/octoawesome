@@ -6,6 +6,7 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+using OctoAwesome.Threading;
 
 using System;
 using System.Buffers;

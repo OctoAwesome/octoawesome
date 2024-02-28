@@ -104,6 +104,34 @@ namespace OctoAwesome.Client.Controls
             crosshairColor.SelectedItem = CrosshairControl.CrosshairColor;
             #endregion
 
+
+            //////////////////////FOV//////////////////////
+            int fov = settings.Get<int>("FOV", 70);
+
+            var fovTitle = new Label()
+            {
+                Text = "FOV: " + fov
+            };
+            settingsStack.Controls.Add(fovTitle);
+
+            var fovSlider = new Slider()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height = 20,
+                Range = 95,
+                Value = fov - 45
+            };
+            fovSlider.ValueChanged += (value) =>
+            {
+                fovTitle.Text = "FOV: " + (value + 45);
+
+                settings.Set("FOV", value + 45);
+                if (ScreenManager.Game is OctoGame og)
+                    og.Camera.RecreateProjection();
+            };
+
+            settingsStack.Controls.Add(fovSlider);
+
             //////////////////////View range//////////////////////
             string viewrange = settings.Get("Viewrange", OctoGame.DefaultViewRange.ToString());
 

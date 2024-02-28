@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Information;
 
 namespace OctoAwesome.Basics.Definitions.Items
 {
@@ -24,7 +25,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         }
 
         /// <inheritdoc />
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public override int Hit(IMaterialDefinition material, IBlockInteraction blockInfo, decimal volumeRemaining, int volumePerHit)
         {
             if (material is ISolidMaterialDefinition solidMaterial)
             {

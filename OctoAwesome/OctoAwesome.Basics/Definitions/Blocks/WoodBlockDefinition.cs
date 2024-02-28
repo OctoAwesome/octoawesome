@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Basics.Languages;
 using OctoAwesome.Definitions;
+using OctoAwesome.Chunking;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {

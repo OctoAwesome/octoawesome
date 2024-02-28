@@ -1,10 +1,6 @@
 ﻿using dotVariant;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OctoAwesome.Information;
 
 namespace OctoAwesome.SumTypes
 {
@@ -15,13 +11,13 @@ namespace OctoAwesome.SumTypes
     }
 
     /// <summary>
-    /// Selection variant of either <see cref="BlockInfo"/>, <see cref="Entity"/>.
+    /// Selection variant of either <see cref="HitInfo"/>, <see cref="ApplyInfo"/>, <see cref="ComponentContainer"/>.
     /// </summary>
     [Variant]
     public partial class Selection
     {
         public SelectionType SelectionType { get; set; }
 
-        static partial void VariantOf(BlockInfo blockinfo, ComponentContainer entity);
+        static partial void VariantOf(HitInfo hitInfo, ComponentContainer entity);
     }
 }

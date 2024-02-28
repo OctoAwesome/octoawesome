@@ -28,6 +28,7 @@
 ### Iron Smelting Recipe Sample
 ``` json
 {
+    "Type": "Blast Furnace", //, Crafting, etc.pp. Freitext
     "Inputs":[
         {
             "ItemName":"IronOre",

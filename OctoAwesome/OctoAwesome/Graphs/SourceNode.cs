@@ -1,4 +1,7 @@
-﻿namespace OctoAwesome.Graphs;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Location;
+
+namespace OctoAwesome.Graphs;
 
 //public abstract class SourceNode<T> : Node<T>
 //{

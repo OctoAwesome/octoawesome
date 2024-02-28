@@ -1,4 +1,8 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
+using OctoAwesome.Notifications;
+
 using System;
 using System.Collections.Generic;
 
@@ -29,6 +33,8 @@ namespace OctoAwesome.Tests
         }
 
         public IPlanet Planet => throw new NotImplementedException();
+
+        public CacheService CacheService { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestGlobalCache" /> class.

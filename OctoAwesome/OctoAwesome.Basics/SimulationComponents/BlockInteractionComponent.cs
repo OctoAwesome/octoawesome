@@ -1,10 +1,12 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using System.Diagnostics;
+using OctoAwesome.Location;
 using OctoAwesome.Services;
 using OctoAwesome.Graphs;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using System.Linq;
 using OpenTK.Graphics.ES11;
 using System;
 using NLog.Layouts;
+using OctoAwesome.Information;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -28,7 +31,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         PositionComponent>
     {
         private readonly Simulation simulation;
-        private readonly BlockCollectionService service;
+        private readonly BlockInteractionService service;
         private readonly InteractService interactService;
 
 
@@ -39,7 +42,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <param name="blockInteractionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public BlockInteractionComponent(Simulation simulation, BlockCollectionService blockInteractionService, InteractService interactService)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService)
         {
             this.simulation = simulation;
             service = blockInteractionService;
@@ -64,13 +67,13 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                    blockInfo =>
+                    hitInfo =>
                     {
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
                         switch (selectionType)
                         {
                             case SumTypes.SelectionType.Hit:
-                                HitWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                                HitWith(hitInfo, inventory, toolbar, cache, positioncomponent);
                                 break;
                             case SumTypes.SelectionType.Interact:
                                 {
@@ -81,10 +84,10 @@ namespace OctoAwesome.Basics.SimulationComponents
                                     else
                                         activeItem = Hand.Instance;
 
-                                    interactService.Interact(activeItem.Definition.DisplayName, gameTime, entity, blockInfo);
-                                    interactService.Interact("", gameTime, entity, blockInfo);
-                                //InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
-                                break;
+                                    interactService.Interact(activeItem.Definition.DisplayName, gameTime, entity, hitInfo);
+                                    interactService.Interact("", gameTime, entity, hitInfo);
+                                    //InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                                    break;
                                 }
                             case null:
                                 break;
@@ -136,33 +139,22 @@ namespace OctoAwesome.Basics.SimulationComponents
                                     positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
                                 );
 
-                            // Do not build in oneself
-                            for (var i = 0; i < boxes.Length; i++)
+                            if (!intersects)
                             {
-                                var box = boxes[i];
-                                var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
-                                if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
-                                    newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
-                                    newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
-                                    intersects = true;
-                            }
-                        }
+                                if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
+                                {
+                                    cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                    cache.SetBlockMeta(idx, (int)controller.InteractSide);
+                                    if (toolbar.ActiveTool.Amount <= 0)
+                                        toolbar.RemoveSlot(toolbar.ActiveTool);
 
-                        if (!intersects)
-                        {
-                            if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
-                            {
-                                cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-                                cache.SetBlockMeta(idx, (int)controller.InteractSide);
-                                if (toolbar.ActiveTool.Amount <= 0)
-                                    toolbar.RemoveSlot(toolbar.ActiveTool);
-
-                                DoNetworkBlockStuff(positioncomponent, cache, definition, idx);
+                                    DoNetworkBlockStuff(positioncomponent, cache, definition, idx);
+                                }
                             }
                         }
                     }
+                    controller.InteractBlock = null;
                 }
-                controller.InteractBlock = null;
             }
         }
 
@@ -251,7 +243,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
 
 
-        private void HitWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
+        private void HitWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
@@ -263,7 +255,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
-                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+                var blockHitInformation = service.Interact(lastBlock, activeItem, cache);
 
                 if (blockHitInformation.Valid && blockHitInformation.List != null)
                 {
@@ -287,7 +279,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             {
                                 if (graph.Nodes.ContainsKey(lastBlock.Position))
                                 {
-                                    graph.RemoveNode(lastBlock);
+                                    graph.RemoveNode(new(lastBlock.Position, lastBlock.Block, lastBlock.Meta));
                                     break;
                                 }
                             }

@@ -8,8 +8,6 @@ using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
-using System.Reflection;
-using System;
 using OctoAwesome.Extension;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
@@ -17,6 +15,10 @@ using OctoAwesome.Rx;
 using OctoAwesome.Basics.Definitions.Items;
 using System.Linq;
 using OctoAwesome.Graphs;
+
+using System;
+using System.Reflection;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics
 {
@@ -291,7 +293,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockCollectionService>(), TypeContainer.Get<InteractService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?

@@ -1,5 +1,6 @@
 ﻿using dotVariant;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.EntityComponents;
 
 using System;

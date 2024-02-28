@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Caching;
+using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
 using OctoAwesome.Graphs;
 

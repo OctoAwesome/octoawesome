@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics
 {

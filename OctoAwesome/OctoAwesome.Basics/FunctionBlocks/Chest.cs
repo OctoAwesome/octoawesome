@@ -1,11 +1,16 @@
 ﻿using engenious;
+
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Extension;
+using OctoAwesome.Location;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
+
 using System;
 using OctoAwesome.Extension;
+using System.IO;
 
 
 
@@ -42,11 +47,13 @@ namespace OctoAwesome.Basics.FunctionBlocks
         /// Initializes a new instance of the <see cref="Chest"/> class.
         /// </summary>
         /// <param name="position">The position the chest is at.</param>
-        public Chest(Coordinate position)
+        /// <param name="direction">The direction the chest is facing to.</param>
+        public Chest(Coordinate position, float direction)
         {
             Components.AddIfTypeNotExists(new PositionComponent()
             {
-                Position = position
+                Position = position,
+                Direction = direction
             });
         }
 

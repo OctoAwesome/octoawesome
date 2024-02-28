@@ -15,6 +15,7 @@ using System;
 using OctoAwesome.Serialization;
 using dotVariant;
 using OctoAwesome.Runtime;
+using OctoAwesome.Chunking;
 
 namespace OctoAwesome.Network
 {

@@ -2,6 +2,7 @@
 
 using NonSucking.Framework.Serialization;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Notifications;

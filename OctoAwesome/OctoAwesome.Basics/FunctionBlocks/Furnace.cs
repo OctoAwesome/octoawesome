@@ -1,6 +1,8 @@
 ﻿using engenious;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
+using OctoAwesome;
 using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Extension;
@@ -54,13 +56,15 @@ public partial class Furnace : Entity, IConstructionSerializable<Furnace>
     /// <summary>
     /// Initializes a new instance of the<see cref="Furnace" /> class
     /// </summary>
-    public Furnace(Coordinate position) : this()
+    /// <param name="position">The position the furnace is at.</param>
+    /// <param name="direction">The direction the chest is facing to.</param>
+    public Furnace(Coordinate position, float direction) : this()
     {
         Components.AddIfTypeNotExists(new PositionComponent()
         {
-            Position = position
+            Position = position,
+            Direction = direction
         });
-
     }
 
 

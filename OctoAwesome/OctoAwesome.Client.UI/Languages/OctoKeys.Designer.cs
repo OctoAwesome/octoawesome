@@ -97,6 +97,15 @@ namespace OctoAwesome.Client.UI.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DEBUG: Show/Hide Shadow Casters/Receivers BoundingBoxes.
+        /// </summary>
+        public static string debug_boundingboxes {
+            get {
+                return ResourceManager.GetString("debug_boundingboxes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DEBUG: Show/Hide Debug Control.
         /// </summary>
         public static string debug_control {

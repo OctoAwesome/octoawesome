@@ -1,5 +1,8 @@
 ﻿using OctoAwesome.Serialization;
 
+using OctoAwesome.Information;
+using OctoAwesome.Location;
+
 using System;
 using System.IO;
 

@@ -5,9 +5,11 @@ using System;
 using OctoAwesome.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using OctoAwesome.Definitions;
 using engenious.Utility;
 using engenious.UserDefined.Effects;
+using OctoAwesome.Definitions;
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
 using OctoAwesome.Client.Controls;
 
 namespace OctoAwesome.Client.Components

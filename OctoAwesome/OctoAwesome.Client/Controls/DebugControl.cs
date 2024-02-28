@@ -1,12 +1,18 @@
-﻿using System;
-using engenious;
+﻿using engenious;
 using engenious.Graphics;
 using engenious.Helper;
 using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.Location;
+using OctoAwesome.Runtime;
+using OctoAwesome.UI.Components;
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using OctoAwesome.EntityComponents;
 
@@ -133,18 +139,13 @@ namespace OctoAwesome.Client.Controls
             {
                 control.HorizontalAlignment = HorizontalAlignment.Left;
                 if (control is Label)
-                {
                     ((Label)control).TextColor = Color.White;
-                }
             }
             foreach (Control control in rightView.Controls)
             {
                 control.HorizontalAlignment = HorizontalAlignment.Right;
                 if (control is Label)
-                {
                     ((Label)control).TextColor = Color.White;
-
-                }
             }
         }
 

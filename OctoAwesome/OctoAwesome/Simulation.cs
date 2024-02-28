@@ -4,10 +4,10 @@ using NLog;
 
 using NonSucking.Framework.Extension.Collections;
 
-using OctoAwesome.Caching;
 using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
@@ -103,6 +103,7 @@ namespace OctoAwesome
             extensionService.ExecuteExtender(this);
         }
 
+
         private void ValidateAddComponent(SimulationComponent component)
         {
             if (State != SimulationState.Ready)
@@ -182,6 +183,7 @@ namespace OctoAwesome
         {
             if (State != SimulationState.Running)
                 return;
+
 
             foreach (var planet in ResourceManager.Planets)
             {
@@ -392,7 +394,6 @@ namespace OctoAwesome
         public IReadOnlyCollection<T> GetEntitiesOfType<T>()
         {
             var ret = new List<T>();
-            using var _ = entitiesSemaphore.EnterCountScope();
             foreach (var item in entities)
             {
                 if (item is T t)
@@ -409,12 +410,11 @@ namespace OctoAwesome
         public IReadOnlyCollection<ComponentContainer> GetByComponentType<T>()
         {
             var ret = new List<ComponentContainer>();
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item.Components.Contains<T>())
-                        ret.Add(item);
-                }
+            foreach (var item in entities)
+            {
+                if (item.Components.Contains<T>())
+                    ret.Add(item);
+            }
 
             return ret;
         }
@@ -429,12 +429,11 @@ namespace OctoAwesome
         public IReadOnlyCollection<ComponentContainer> GetByComponentTypes<T1, T2>()
         {
             var ret = new List<ComponentContainer>();
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item.Components.Contains<T1>() && item.Components.Contains<T2>())
-                        ret.Add(item);
-                }
+            foreach (var item in entities)
+            {
+                if (item.Components.Contains<T1>() && item.Components.Contains<T2>())
+                    ret.Add(item);
+            }
 
             return ret;
         }
@@ -446,12 +445,11 @@ namespace OctoAwesome
         /// <returns><see cref="ComponentContainer"/> that has been found or <see langword="default"/></returns>
         public T? GetById<T>(Guid id) where T : ComponentContainer
         {
-            using (var _ = entitiesSemaphore.EnterCountScope())
-                foreach (var item in entities)
-                {
-                    if (item is T t && t.Id == id)
-                        return t;
-                }
+            foreach (var item in entities)
+            {
+                if (item is T t && t.Id == id)
+                    return t;
+            }
 
             return default;
         }

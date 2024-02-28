@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Components;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Components;
 using OctoAwesome.Extension;
 
 namespace OctoAwesome.EntityComponents
