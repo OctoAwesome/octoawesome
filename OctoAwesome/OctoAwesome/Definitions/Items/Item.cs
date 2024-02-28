@@ -1,5 +1,9 @@
 ﻿using engenious;
+
+using OctoAwesome.Information;
+using OctoAwesome.Location;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -69,7 +73,7 @@ namespace OctoAwesome.Definitions.Items
         }
 
         /// <inheritdoc />
-        public virtual int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public virtual int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
             //TODO Condition calculation
 
@@ -87,6 +91,12 @@ namespace OctoAwesome.Definitions.Items
 
             //(Hardness Effectivity + Fracture Effectivity) / 2
             return ((Material.Hardness - material.Hardness) * 3 + 100) * volumePerHit / 100;
+        }
+
+        /// <inheritdoc />
+        public virtual int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
+        {
+            return 0;
         }
 
         /// <inheritdoc />

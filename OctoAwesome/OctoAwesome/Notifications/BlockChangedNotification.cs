@@ -1,4 +1,7 @@
-﻿using System;
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
+
+using System;
 using System.IO;
 
 namespace OctoAwesome.Notifications

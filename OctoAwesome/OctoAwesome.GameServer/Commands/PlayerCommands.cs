@@ -1,10 +1,13 @@
 ﻿using engenious;
+
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Network;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+
 using System;
 using System.Text;
 

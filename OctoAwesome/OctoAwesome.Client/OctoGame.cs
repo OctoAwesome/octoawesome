@@ -1,21 +1,24 @@
-﻿using OctoAwesome.Client.Components;
-using OctoAwesome.Runtime;
-using System;
-using engenious.UI;
-using EventArgs = System.EventArgs;
+﻿using engenious.UI;
 using engenious;
 using engenious.Input;
-using System.Collections.Generic;
-using System.Diagnostics;
+using engenious.Graphics;
+
 using OctoAwesome.Notifications;
 using OctoAwesome.Common;
+using OctoAwesome.Runtime;
 using OctoAwesome.Definitions;
+using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.UI.Components;
 using OctoAwesome.Extension;
 using OctoAwesome.Crafting;
-using engenious.Graphics;
 using OctoAwesome.Client.Controls;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
+using EventArgs = System.EventArgs;
 
 namespace OctoAwesome.Client
 {
@@ -56,7 +59,7 @@ namespace OctoAwesome.Client
         public ExtensionService ExtensionService { get; private set; }
 
         public EntityGameComponent Entity { get; private set; }
-        public ExtensionLoader ExtensionLoader { get; }        
+        public ExtensionLoader ExtensionLoader { get; }
 
         /// <summary>
         /// Initializes a new instance of the<see cref="OctoGame" /> class
@@ -214,6 +217,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:debug.allfoods", UI.Languages.OctoKeys.debug_allfoods);
             KeyMapper.RegisterBinding("octoawesome:debug.allitems", UI.Languages.OctoKeys.debug_allitems);
             KeyMapper.RegisterBinding("octoawesome:debug.control", UI.Languages.OctoKeys.debug_control);
+            KeyMapper.RegisterBinding("octoawesome:debug.boundingboxes", UI.Languages.OctoKeys.debug_boundingboxes);
             KeyMapper.RegisterBinding("octoawesome:inventory", UI.Languages.OctoKeys.inventory);
             KeyMapper.RegisterBinding("octoawesome:hidecontrols", UI.Languages.OctoKeys.hidecontrols);
             KeyMapper.RegisterBinding("octoawesome:exit", UI.Languages.OctoKeys.exit);
@@ -222,6 +226,8 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:teleport", UI.Languages.OctoKeys.teleport);
             KeyMapper.RegisterBinding("octoawesome:toggleAmbientOcclusion", UI.Languages.OctoKeys.toggleAmbientOcclusion);
             KeyMapper.RegisterBinding("octoawesome:toggleWireFrame", UI.Languages.OctoKeys.toggleWireFrame);
+            KeyMapper.RegisterBinding("octoawesome:toggleCamera", "Toggle Camera");
+            KeyMapper.RegisterBinding("octoawesome:zoom", "Zoom");
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -250,7 +256,10 @@ namespace OctoAwesome.Client
                 { "octoawesome:debug.allblocks", Keys.Keypad1 },
                 { "octoawesome:debug.allitems", Keys.Keypad2 },
                 { "octoawesome:debug.allfoods", Keys.Keypad3 },
-                { "octoawesome:debug.control", Keys.F10 },
+                { "octoawesome:debug.control", Keys.F3 },
+                { "octoawesome:debug.boundingboxes", Keys.F4 },
+                { "octoawesome:toggleCamera", Keys.F5 },
+                { "octoawesome:zoom", Keys.Z },
                 { "octoawesome:inventory", Keys.I },
                 { "octoawesome:hidecontrols", Keys.F9 },
                 { "octoawesome:exit", Keys.Escape },

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-
-using engenious;
+﻿using engenious;
 
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Extension;
 using OctoAwesome.SumTypes;
+
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace OctoAwesome.Client.Components
 {
@@ -146,6 +147,11 @@ namespace OctoAwesome.Client.Components
             else
                 CurrentController.InteractBlock = null;
 
+            if (ApplyInput && SelectedBox.HasValue && Selection!.TryMatch(out HitInfo hi))
+            {
+                CurrentController.Selection = Selection.Create(new ApplyInfo(hi.Position, hi.Block, hi.SelectedBox, hi.SelectedPoint, hi.SelectedSide, hi.SelectedEdge, hi.SelectedCorner, hi.Meta));
+            }
+
             if (ApplyInput && SelectedBox.HasValue)
             {
                 CurrentController.ApplyBlock = SelectedBox.Value;
@@ -226,14 +232,17 @@ namespace OctoAwesome.Client.Components
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
             var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Wood");
             var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Stone");
+            var food = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {
                 if (wood is not null && itemDefinition.Create(wood) is { } woodItem)
                     inventory.Add(woodItem, woodItem.VolumePerUnit);
-                
+ 
                 if (stone is not null && itemDefinition.Create(stone) is { } stoneItem)
                     inventory.Add(stoneItem, stoneItem.VolumePerUnit);
 
+                if (food is not null && itemDefinition.Create(food) is { } foodItem)
+                    inventory.Add(foodItem, foodItem.VolumePerUnit);
             }
 
         }

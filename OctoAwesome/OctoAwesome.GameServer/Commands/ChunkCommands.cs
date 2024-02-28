@@ -1,4 +1,6 @@
 ﻿
+using OctoAwesome.Chunking;
+using OctoAwesome.Location;
 using OctoAwesome.Network;
 using OctoAwesome.Serialization;
 

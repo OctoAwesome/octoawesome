@@ -1,5 +1,8 @@
 ﻿using engenious;
+
 using OctoAwesome.Components;
+using OctoAwesome.EntityComponents;
+
 
 namespace OctoAwesome.Basics.EntityComponents
 {

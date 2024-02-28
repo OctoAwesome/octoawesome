@@ -1,16 +1,18 @@
-﻿using engenious.UI;
-using OctoAwesome.Client.Components;
+﻿using engenious;
 using engenious.Graphics;
 using engenious.Input;
-using System.Collections.Generic;
-using System.Diagnostics;
-using engenious;
-using OctoAwesome.EntityComponents;
+using engenious.UI;
 using engenious.UI.Controls;
+
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Client.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.Extension;
+
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -137,6 +139,7 @@ namespace OctoAwesome.Client.Screens
                             "Slot definition type name not null!"), out var texture)
                             ? texture
                             : null;
+                        e.IconSize = new Point(42, 42);
                         e.Content = slot;
                         e.Sender = toolbar;
                     }

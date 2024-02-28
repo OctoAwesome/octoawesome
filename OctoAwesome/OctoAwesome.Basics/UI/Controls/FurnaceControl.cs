@@ -26,10 +26,10 @@ public sealed class FurnaceControl : Panel
     private readonly AssetComponent assets;
 
     /// <summary>
-    /// Initializes a new instance of the engenious.UI.Controls.Panel class.
+    /// Initializes a new instance of the <see cref="FurnaceControl"/> class.
     /// </summary>
     public FurnaceControl(AssetComponent assets, IReadOnlyCollection<IInventorySlot> inventorySlots,
-        IReadOnlyCollection<IInventorySlot> outputSlots, IReadOnlyCollection<IInventorySlot> ressourceSlots, int columns = COLUMNS)
+        IReadOnlyCollection<IInventorySlot> outputSlots, IReadOnlyCollection<IInventorySlot> resourceSlots, int columns = COLUMNS)
     {
         Background = new SolidColorBrush(Color.Transparent);
 
@@ -41,14 +41,14 @@ public sealed class FurnaceControl : Panel
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 2 });
         grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 5 });
-        
+
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
         grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
 
         grid.AddControl(new Label() { Text = "\u2668",  TextColor = Color.Red, Font= ScreenManager.Content.Load<SpriteFont>("Fonts/Emoji")}, 1, 0);
         inputSlotPanel = new InventoryControl(assets, inventorySlots);
         outputSlotPanel = new InventoryControl(assets, outputSlots);
-        resourceSlotPanel = new InventoryControl(assets, ressourceSlots);
+        resourceSlotPanel = new InventoryControl(assets, resourceSlots);
         grid.AddControl(inputSlotPanel, 0, 0);
         grid.AddControl(outputSlotPanel, 2, 0);
         grid.AddControl(resourceSlotPanel, 0,1);
@@ -56,7 +56,7 @@ public sealed class FurnaceControl : Panel
         Controls.Add(grid);
 
         this.assets = assets;
-        Rebuild(inventorySlots, outputSlots, ressourceSlots, columns);
+        Rebuild(inventorySlots, outputSlots, resourceSlots, columns);
     }
 
     /// <summary>

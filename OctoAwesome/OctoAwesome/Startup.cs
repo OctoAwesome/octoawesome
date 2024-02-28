@@ -1,9 +1,14 @@
 ﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
+
+using OctoAwesome.Chunking;
+using OctoAwesome.Information;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Services;
+using OctoAwesome.Threading;
+
 using System;
 
 namespace OctoAwesome
@@ -40,7 +45,7 @@ namespace OctoAwesome
             typeContainer.Register<IPool<Chunk>, ChunkPool>(InstanceBehavior.Singleton);
             typeContainer.Register<ChunkPool, ChunkPool>(InstanceBehavior.Singleton);
             typeContainer.Register<IPool<BlockVolumeState>, Pool<BlockVolumeState>>(InstanceBehavior.Singleton);
-            typeContainer.Register<BlockCollectionService>(InstanceBehavior.Singleton);
+            typeContainer.Register<BlockInteractionService>(InstanceBehavior.Singleton);
         }
 
         /// <summary>

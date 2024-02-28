@@ -1,13 +1,18 @@
-﻿using engenious.UI;
-using OctoAwesome.Client.Components;
-using System;
-using engenious;
+﻿using engenious;
 using engenious.Input;
+using engenious.UI;
 using engenious.UI.Controls;
+
 using OctoAwesome.Definitions;
+using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Controls;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.Controls;
+using OctoAwesome.Location;
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.Loader;
 
 namespace OctoAwesome.Client.Screens
 {
@@ -334,6 +339,12 @@ namespace OctoAwesome.Client.Screens
                     return;
                 debug.Visible = !debug.Visible;
             });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.boundingboxes", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+                scene.RenderBoundingBoxes = !scene.RenderBoundingBoxes;
+            });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:inventory", type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
@@ -389,6 +400,50 @@ namespace OctoAwesome.Client.Screens
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
+
+            List<IViewCreator> viewCreators = new();
+            foreach (var item in AssemblyLoadContext.Default.Assemblies)
+            {
+                try
+                {
+                    foreach (var type in item.GetTypes())
+                    {
+                        if (!type.IsInterface && !type.IsAbstract && type.IsAssignableTo(typeof(IViewCreator)))
+                        {
+                            if (Activator.CreateInstance(type) is IViewCreator viewCreator)
+                                viewCreators.Add(viewCreator);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                    return;
+
+                ScreenManager.Camera.ViewCreator = viewCreators[(viewCreators.IndexOf(ScreenManager.Camera.ViewCreator) + 1) % viewCreators.Count];
+
+            });
+
+            bool lastToggle = false;
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:zoom", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                    return;
+
+                if (!lastToggle)
+                    ScreenManager.Camera.RecreateProjection(30);
+                else
+                    ScreenManager.Camera.RecreateProjection();
+                lastToggle = !lastToggle;
+
+            });
+
+
         }
 
         #endregion

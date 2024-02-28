@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
-  </PropertyGroup>
 
-
-  <ItemGroup>
-    <Compile Remove="Properties\**" />
-    <EmbeddedResource Remove="Properties\**" />
-    <None Remove="Properties\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Properties\**" />
+		<EmbeddedResource Remove="Properties\**" />
+		<None Remove="Properties\**" />
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="dotVariant" Version="0.5.3" />
@@ -22,8 +21,8 @@
     <PackageReference Include="System.Interactive" Version="6.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
-  </ItemGroup>
-  
+	<ItemGroup>
+		<ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />
+	</ItemGroup>
+
 </Project>

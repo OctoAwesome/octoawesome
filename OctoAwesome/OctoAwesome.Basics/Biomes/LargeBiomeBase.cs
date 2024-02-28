@@ -1,8 +1,9 @@
-﻿
+﻿using OctoAwesome.Basics.Noise;
+using OctoAwesome.Location;
+
 using System;
 using System.Diagnostics;
 using System.Linq;
-using OctoAwesome.Basics.Noise;
 
 namespace OctoAwesome.Basics.Biomes
 {

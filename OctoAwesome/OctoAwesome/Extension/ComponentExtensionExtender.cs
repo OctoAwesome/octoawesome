@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// Extender for component containers
     /// </summary>
     public class ComponentExtensionExtender : BaseExtensionExtender<ComponentContainer>
     {
-        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;        
+        private readonly Dictionary<Type, List<Action<ComponentContainer>>> componentContainerExtender;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="ComponentExtensionExtender" /> class
@@ -57,7 +57,7 @@ namespace OctoAwesome
         /// <param name="instance">Entity</param>
         public override void Execute<T>(T instance)
         {
-            List<Type> stack = new List<Type>();
+            var stack = new List<Type>();
             Type t = instance.GetType();
             stack.Add(t);
             do
