@@ -1,6 +1,9 @@
 ﻿using engenious;
+
+using OctoAwesome.Chunking;
 using OctoAwesome.Information;
 using OctoAwesome.Services;
+
 using System;
 
 namespace OctoAwesome.Definitions
@@ -16,6 +19,14 @@ namespace OctoAwesome.Definitions
         /// <param name="blockVolume">The block volume information for the block to hit.</param>
         /// <param name="itemDefinition">The item to hit the block with.</param>
         BlockHitInformation Hit(BlockVolumeState blockVolume, IItem itemDefinition);
+
+
+        /// <summary>
+        /// Gets block hit information for interacting with a specific block with a specific item.
+        /// </summary>
+        /// <param name="blockVolume">The block volume information for the block to apply to.</param>
+        /// <param name="itemDefinition">The item to apply to the block.</param>
+        BlockHitInformation Apply(BlockVolumeState blockVolume, IItem itemDefinition);
 
         /// <summary>
         /// Gets an array of texture names for all block sides.

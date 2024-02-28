@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
+using OctoAwesome.Information;
 using OctoAwesome.OctoMath;
 
 namespace OctoAwesome.Basics.Definitions.Items
@@ -28,16 +29,16 @@ namespace OctoAwesome.Basics.Definitions.Items
         }
 
         /// <inheritdoc />
-        public override int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit)
+        public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
             //⁅((−𝑥^2)/400)+150⁆
-            var baseEfficiency = base.Hit(material, blockInfo, volumeRemaining, volumePerHit);
+            var baseEfficiency = base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
 
             if (material is ISolidMaterialDefinition solid && baseEfficiency > 0)
             {
                 var fractureEfficiency = polynomial.Evaluate(solid.FractureToughness);
 
-                return (int)(baseEfficiency * (fractureEfficiency) / 100);
+                return (int)(baseEfficiency * fractureEfficiency / 100);
             }
 
             return baseEfficiency;

@@ -10,6 +10,7 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using System.Linq;
 using NonSucking.Framework.Extension.IoC;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {

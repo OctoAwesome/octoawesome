@@ -2,6 +2,8 @@
 using engenious.Graphics;
 using engenious.UI;
 
+using OctoAwesome.Location;
+
 namespace OctoAwesome.Client.Controls
 {
     internal class MinimapControl : Control

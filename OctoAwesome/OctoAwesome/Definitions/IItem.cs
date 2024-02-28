@@ -1,4 +1,7 @@
-﻿namespace OctoAwesome.Definitions
+﻿using OctoAwesome.Information;
+using OctoAwesome.Location;
+
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Interface for items.
@@ -27,13 +30,23 @@
         IMaterialDefinition Material { get; }
 
         /// <summary>
-        /// Gets block hit information for hitting a specific block with a this item.
+        /// Gets block hit information for hitting a specific block with this item.
         /// </summary>
         /// <param name="material">The material the block is made out of.</param>
-        /// <param name="blockInfo">The block information of the block.</param>
+        /// <param name="hitInfo">The information of the block with additional hit info.</param>
         /// <param name="volumeRemaining">The volume remaining in the block.</param>
         /// <param name="volumePerHit">The volume to take per single hit.</param>
         /// <returns>The quantity of the volume that was mined.</returns>
-        int Hit(IMaterialDefinition material, BlockInfo blockInfo, decimal volumeRemaining, int volumePerHit);
+        int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit);
+
+
+        /// <summary>
+        /// Gets block hit information for interaction with a specific block with this item.
+        /// </summary>
+        /// <param name="material">The material the block is made out of.</param>
+        /// <param name="hitInfo">The information of the block with additional hit info.</param>
+        /// <param name="volumeRemaining">The volume remaining in the block.</param>
+        /// <returns>The quantity of the volume that was mined.</returns>
+        int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining);
     }
 }

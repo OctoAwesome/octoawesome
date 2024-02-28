@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Basics.Biomes;
 using OctoAwesome.Serialization;
 
+using OctoAwesome.Location;
+
 using System;
 using System.Diagnostics;
 using System.IO;

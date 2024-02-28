@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Basics.Noise;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Basics.Biomes
 {
@@ -43,7 +44,7 @@ namespace OctoAwesome.Basics.Biomes
         /// <param name="chunkIndex">The chunk position to read the heightmap at.</param>
         /// <param name="heightmap">
         /// The heightmap array to read into.
-        /// Should be size <see cref="Chunk.CHUNKSIZE_X"/> * <see cref="Chunk.CHUNKSIZE_Y"/>.
+        /// Should be size <see cref="Chunking.Chunk.CHUNKSIZE_X"/> * <see cref="Chunking.Chunk.CHUNKSIZE_Y"/>.
         /// </param>
         void FillHeightmap(Index2 chunkIndex, float[] heightmap);
     }

@@ -135,6 +135,9 @@
   <data name="debug_control" xml:space="preserve">
     <value>DEBUG: Show/Hide Debug Control</value>
   </data>
+  <data name="debug_boundingboxes" xml:space="preserve">
+    <value>DEBUG: Show/Hide Shadow Casters/Receivers BoundingBoxes</value>
+  </data>
   <data name="exit" xml:space="preserve">
     <value>Exit</value>
   </data>

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// Base interface for extension registrars

@@ -62,7 +62,6 @@ namespace OctoAwesome.Serialization.Entities
             {
                 MethodInfo genericMethod = addOrUpdateComponentMethod.MakeGenericMethod(component.GetType());
                 genericMethod.Invoke(componentsDbContext, new object[] { component, value });
-
             }
         }
 

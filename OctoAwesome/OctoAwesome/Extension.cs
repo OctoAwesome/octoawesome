@@ -5,12 +5,6 @@ using OctoAwesome.Extension;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OctoAwesome
 {
     //TODO: Perhaps outsource

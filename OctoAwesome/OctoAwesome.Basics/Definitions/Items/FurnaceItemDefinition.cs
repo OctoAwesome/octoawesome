@@ -11,7 +11,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc/>
         public string DisplayName { get; }
         /// <inheritdoc/>
-        public string Icon { get; }                
+        public string Icon { get; }
 
         /// <summary>
         /// Initializes a new instance of the<see cref="FurnaceItemDefinition" /> class

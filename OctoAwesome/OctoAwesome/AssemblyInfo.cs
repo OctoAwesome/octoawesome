@@ -1,5 +1,6 @@
 ﻿using OctoAwesome;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 
 using System;

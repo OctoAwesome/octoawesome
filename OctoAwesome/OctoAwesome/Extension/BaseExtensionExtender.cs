@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// The base class for instance extender

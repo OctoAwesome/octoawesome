@@ -1,4 +1,7 @@
-﻿using OctoAwesome.EntityComponents;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.EntityComponents;
+using OctoAwesome.Location;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,4 +1,5 @@
 ﻿using engenious;
+using engenious.Graphics;
 using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
@@ -116,6 +117,7 @@ namespace OctoAwesome.Basics.UI.Screens
                 Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
                 Padding = Border.All(20),
                 Margin = Border.All(10, 0, 0, 0),
+
             };
 
             var nameLabel = new Label();
@@ -140,6 +142,7 @@ namespace OctoAwesome.Basics.UI.Screens
         }
 
         /// <inheritdoc/>
+
         public override void RemoveUiComponent(UIComponent uiComponent)
         {
             if (uiComponent != FurnaceUiComponent)

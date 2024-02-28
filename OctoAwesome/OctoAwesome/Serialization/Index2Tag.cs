@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Database;
+using OctoAwesome.Location;
+
 using System;
 
 namespace OctoAwesome.Serialization

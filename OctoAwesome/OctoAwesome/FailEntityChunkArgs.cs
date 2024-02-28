@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Extension;
+﻿using OctoAwesome.Location;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome
 {

@@ -4,7 +4,7 @@ using OctoAwesome.Serialization;
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// Registrar class for handling types annotated with the <see cref="SerializationIdAttribute"/>.

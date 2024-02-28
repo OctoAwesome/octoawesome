@@ -1,4 +1,6 @@
-﻿namespace OctoAwesome.Notifications
+﻿using OctoAwesome.Location;
+
+namespace OctoAwesome.Notifications
 {
     /// <summary>
     /// Interface for chunk notifications.

@@ -17,7 +17,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         InventoryComponent>
     {
         private readonly Simulation simulation;
-        private readonly BlockCollectionService service;
+        private readonly BlockInteractionService service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContainerInteractionComponent"/> class.
@@ -26,7 +26,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <param name="interactionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public ComponentContainerInteractionComponent(Simulation simulation, BlockCollectionService interactionService)
+        public ComponentContainerInteractionComponent(Simulation simulation, BlockInteractionService interactionService)
         {
             this.simulation = simulation;
             service = interactionService;
@@ -41,7 +41,8 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                    blockInfo => { },
+                    hitInfo => { },
+                    applyInfo => { },
                     componentContainer => InternalUpdate(controller, entity, componentContainer)
                 );
         }

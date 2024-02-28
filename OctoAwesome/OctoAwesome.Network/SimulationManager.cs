@@ -1,8 +1,11 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
+
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
+using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Runtime;
 
@@ -165,20 +168,20 @@ namespace OctoAwesome.Network
         /// <summary>
         /// Loads a chunkChannel column at a given location for a specified planet.
         /// </summary>
-        /// <param name="planet">The planet to load the chunkChannel column from.</param>
-        /// <param name="index2">The location to load the chunkChannel column at.</param>
-        /// <returns>The loaded chunkChannel column.</returns>
-        /// <seealso cref="LoadColumn(int,OctoAwesome.Index2)"/>
+        /// <param name="planet">The planet to load the chunk column from.</param>
+        /// <param name="index2">The location to load the chunk column at.</param>
+        /// <returns>The loaded chunk column.</returns>
+        /// <seealso cref="LoadColumn(int, OctoAwesome.Location.Index2)"/>
         public IChunkColumn LoadColumn(IPlanet planet, Index2 index2)
             => planet.GlobalChunkCache.Subscribe(index2);
 
         /// <summary>
         /// Loads a chunkChannel column at a given location for a specified planet.
         /// </summary>
-        /// <param name="planetId">The id of the planet to load the chunkChannel column from.</param>
-        /// <param name="index2">The location to load the chunkChannel column at.</param>
-        /// <returns>The loaded chunkChannel column.</returns>
-        /// <seealso cref="LoadColumn(IPlanet,OctoAwesome.Index2)"/>
+        /// <param name="planetId">The id of the planet to load the chunk column from.</param>
+        /// <param name="index2">The location to load the chunk column at.</param>
+        /// <returns>The loaded chunk column.</returns>
+        /// <seealso cref="LoadColumn(IPlanet,OctoAwesome.Location.Index2)"/>
         public IChunkColumn LoadColumn(int planetId, Index2 index2)
             => LoadColumn(GetPlanet(planetId), index2);
 

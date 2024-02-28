@@ -1,4 +1,7 @@
-﻿using OctoAwesome.Notifications;
+﻿using OctoAwesome.Chunking;
+using OctoAwesome.Location;
+using OctoAwesome.Notifications;
+
 using System;
 using System.Collections.Generic;
 

@@ -1,10 +1,12 @@
 ﻿using engenious;
 
+using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
 using OctoAwesome.Basics.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using System.Diagnostics;
+using OctoAwesome.Location;
 using OctoAwesome.Services;
 
 namespace OctoAwesome.Basics.SimulationComponents
@@ -20,7 +22,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         InventoryComponent>
     {
         private readonly Simulation simulation;
-        private readonly BlockCollectionService service;
+        private readonly BlockInteractionService service;
         private readonly InteractService interactService;
 
 
@@ -31,7 +33,7 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <param name="blockInteractionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public BlockInteractionComponent(Simulation simulation, BlockCollectionService blockInteractionService, InteractService interactService)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService)
         {
             this.simulation = simulation;
             service = blockInteractionService;
@@ -52,10 +54,15 @@ namespace OctoAwesome.Basics.SimulationComponents
             controller
                 .Selection?
                 .Visit(
-                    blockInfo =>
+                    hitInfo =>
                     {
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
-                        InteractWith(blockInfo, inventory, toolbar, cache);
+                        InteractWith(hitInfo, inventory, toolbar, cache);
+                    },
+                    applyInfo =>
+                    {
+                        Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
+                        ApplyWith(applyInfo, inventory, toolbar, cache);
                     },
                     componentContainer =>
                     {
@@ -83,38 +90,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                     if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
-                        Index3 idx = controller.ApplyBlock.Value + add;
-                        var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
-
-                        bool intersects = false;
-                        var positioncomponent = entity.Components.Get<PositionComponent>();
-                        var bodycomponent = entity.Components.Get<BodyComponent>();
-
-                        if (positioncomponent != null && bodycomponent != null)
-                        {
-                            float gap = 0.01f;
-                            var playerBox = new BoundingBox(
-                                new Vector3(
-                                    positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X - bodycomponent.Radius + gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y - bodycomponent.Radius + gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + gap),
-                                new Vector3(
-                                    positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X + bodycomponent.Radius - gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y + bodycomponent.Radius - gap,
-                                    positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
-                                );
-
-                            // Do not build in oneself
-                            for (var i = 0; i < boxes.Length; i++)
-                            {
-                                var box = boxes[i];
-                                var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
-                                if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
-                                    newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
-                                    newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
-                                    intersects = true;
-                            }
-                        }
+                        bool intersects = !GetPosition(entity, controller, cache, add, definition, out var idx);
 
                         if (!intersects)
                         {
@@ -132,7 +108,26 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
         }
 
-        private void InteractWith(BlockInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+
+        private void ApplyWith(ApplyInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool?.Item is IItem item)
+                {
+                    activeItem = item;
+                }
+                else
+                {
+                    activeItem = Hand.Instance;
+                }
+
+                _ = service.Apply(lastBlock, activeItem, cache);
+            }
+        }
+
+        private void InteractWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
@@ -144,7 +139,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
-                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
+                var blockHitInformation = service.Interact(lastBlock, activeItem, cache);
 
                 if (blockHitInformation.Valid && blockHitInformation.List != null)
                     foreach (var (quantity, definition) in blockHitInformation.List)
@@ -162,6 +157,43 @@ namespace OctoAwesome.Basics.SimulationComponents
                     }
 
             }
+        }
+        private static bool GetPosition(Entity entity, ControllableComponent controller, ILocalChunkCache cache, Index3 add, IBlockDefinition definition, out Index3 idx)
+        {
+            Debug.Assert(controller.ApplyBlock != null, "controller.ApplyBlock != null");
+            idx = controller.ApplyBlock.Value + add;
+            var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
+
+
+            var positioncomponent = entity.Components.Get<PositionComponent>();
+            var bodycomponent = entity.Components.Get<BodyComponent>();
+
+            if (positioncomponent != null && bodycomponent != null)
+            {
+                float gap = 0.01f;
+                var playerBox = new BoundingBox(
+                    new Vector3(
+                        positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X - bodycomponent.Radius + gap,
+                        positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y - bodycomponent.Radius + gap,
+                        positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + gap),
+                    new Vector3(
+                        positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X + bodycomponent.Radius - gap,
+                        positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y + bodycomponent.Radius - gap,
+                        positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
+                    );
+
+                // Nicht in sich selbst reinbauen
+                for (var i = 0; i < boxes.Length; i++)
+                {
+                    var box = boxes[i];
+                    var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
+                    if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
+                        newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
+                        newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }

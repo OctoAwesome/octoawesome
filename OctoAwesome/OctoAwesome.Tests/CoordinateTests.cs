@@ -1,5 +1,8 @@
 ﻿using engenious;
+
 using NUnit.Framework;
+
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Tests
 {

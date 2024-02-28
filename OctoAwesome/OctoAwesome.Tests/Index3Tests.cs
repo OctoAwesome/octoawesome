@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using OctoAwesome.Location;
 
 namespace OctoAwesome.Model.Tests
 {

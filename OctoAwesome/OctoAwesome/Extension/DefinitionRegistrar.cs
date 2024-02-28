@@ -4,7 +4,7 @@ using OctoAwesome.Extension;
 using System;
 using System.Collections.Generic;
 
-namespace OctoAwesome
+namespace OctoAwesome.Extension
 {
     /// <summary>
     /// The registrat to extend definitions
@@ -15,7 +15,7 @@ namespace OctoAwesome
         public override string ChannelName => ChannelNames.Definitions;
 
         private readonly StandaloneTypeContainer definitionTypeContainer;
-        private readonly Dictionary<Type, List<Type>> definitionsLookup;        
+        private readonly Dictionary<Type, List<Type>> definitionsLookup;
 
         /// <summary>
         /// Initializes a new instance of the<see cref="DefinitionRegistrar" /> class
@@ -55,7 +55,7 @@ namespace OctoAwesome
         /// Not supported
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public override void Unregister(Type definition) 
+        public override void Unregister(Type definition)
         {
             throw new NotSupportedException("Currently not supported by TypeContainer");
         }

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using EventArgs = System.EventArgs;
 
+
 namespace OctoAwesome.Client
 {
     /// <summary>
@@ -51,7 +52,7 @@ namespace OctoAwesome.Client
 
         public ExtensionService ExtensionService { get; }
 
-        public EntityGameComponent Entity { get; }
+        public EntityGameComponent Entity { get; private set; }
         public ExtensionLoader ExtensionLoader { get; }
 
         public GameService GameService { get; }
@@ -215,6 +216,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:debug.allfoods", UI.Languages.OctoKeys.debug_allfoods);
             KeyMapper.RegisterBinding("octoawesome:debug.allitems", UI.Languages.OctoKeys.debug_allitems);
             KeyMapper.RegisterBinding("octoawesome:debug.control", UI.Languages.OctoKeys.debug_control);
+            KeyMapper.RegisterBinding("octoawesome:debug.boundingboxes", UI.Languages.OctoKeys.debug_boundingboxes);
             KeyMapper.RegisterBinding("octoawesome:inventory", UI.Languages.OctoKeys.inventory);
             KeyMapper.RegisterBinding("octoawesome:hidecontrols", UI.Languages.OctoKeys.hidecontrols);
             KeyMapper.RegisterBinding("octoawesome:exit", UI.Languages.OctoKeys.exit);
@@ -224,6 +226,8 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:toggle_chat", UI.Languages.OctoKeys.toggle_chat);
             KeyMapper.RegisterBinding("octoawesome:toggleAmbientOcclusion", UI.Languages.OctoKeys.toggleAmbientOcclusion);
             KeyMapper.RegisterBinding("octoawesome:toggleWireFrame", UI.Languages.OctoKeys.toggleWireFrame);
+            KeyMapper.RegisterBinding("octoawesome:toggleCamera", "Toggle Camera");
+            KeyMapper.RegisterBinding("octoawesome:zoom", "Zoom");
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -252,7 +256,10 @@ namespace OctoAwesome.Client
                 { "octoawesome:debug.allblocks", Keys.Keypad1 },
                 { "octoawesome:debug.allitems", Keys.Keypad2 },
                 { "octoawesome:debug.allfoods", Keys.Keypad3 },
-                { "octoawesome:debug.control", Keys.F10 },
+                { "octoawesome:debug.control", Keys.F3 },
+                { "octoawesome:debug.boundingboxes", Keys.F4 },
+                { "octoawesome:toggleCamera", Keys.F5 },
+                { "octoawesome:zoom", Keys.Z },
                 { "octoawesome:inventory", Keys.I },
                 { "octoawesome:hidecontrols", Keys.F9 },
                 { "octoawesome:exit", Keys.Escape },
