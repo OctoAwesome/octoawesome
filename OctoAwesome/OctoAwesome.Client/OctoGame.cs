@@ -17,6 +17,7 @@ using OctoAwesome.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 using EventArgs = System.EventArgs;
 
@@ -106,7 +107,7 @@ namespace OctoAwesome.Client
             Screen.UpdateOrder = 1;
             Screen.DrawOrder = 1;
 
-            typeContainer.Get<RecipeService>().Load("Recipes");
+            typeContainer.Get<RecipeService>().Load("Recipes", Path.Combine("Definitions", "Recipes"));
 
             //TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 15);
 
@@ -233,6 +234,7 @@ namespace OctoAwesome.Client
             KeyMapper.RegisterBinding("octoawesome:toggleWireFrame", UI.Languages.OctoKeys.toggleWireFrame);
             KeyMapper.RegisterBinding("octoawesome:toggleCamera", "Toggle Camera");
             KeyMapper.RegisterBinding("octoawesome:zoom", "Zoom");
+            KeyMapper.RegisterBinding("octoawesome:craftmenu", UI.Languages.OctoKeys.craftMenu);
 
             Dictionary<string, Keys> standardKeys = new Dictionary<string, Keys>()
             {
@@ -273,7 +275,8 @@ namespace OctoAwesome.Client
                 { "octoawesome:teleport", Keys.T },
                 { "octoawesome:toggle_chat", Keys.Enter },
                 { "octoawesome:toggleAmbientOcclusion", Keys.O },
-                { "octoawesome:toggleWireFrame", Keys.J }
+                { "octoawesome:toggleWireFrame", Keys.J },
+                { "octoawesome:craftmenu", Keys.C }
             };
 
             KeyMapper.LoadFromConfig(standardKeys);

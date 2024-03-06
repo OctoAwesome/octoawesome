@@ -30,6 +30,11 @@
 		<Using Include="NonSucking.Framework.Serialization" />
 		<Using Include="NonSucking.Framework.Extension.IoC" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Definitions\Recipes\*.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 
 
 </Project>

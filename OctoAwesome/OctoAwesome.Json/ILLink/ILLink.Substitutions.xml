@@ -1,0 +1,8 @@
+<linker>
+  <assembly fullname="OctoAwesome.Json">
+    <type fullname="OctoAwesome.Json.JsonSerializer">
+      <method signature="System.Boolean get_IsReflectionEnabledByDefault()" body="stub" value="false" 
+              feature="OctoAwesome.Json.JsonSerializer.IsReflectionEnabledByDefault" featurevalue="false"/>
+    </type>
+  </assembly>
+</linker>

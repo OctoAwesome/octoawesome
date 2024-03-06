@@ -1,0 +1,8 @@
+<linker>
+  <assembly fullname="OctoAwesome.Json">
+    <type fullname="OctoAwesome.Json.JsonSerializerOptions/CachingContext">
+      <!-- Internal API used by tests only. -->
+      <method name="get_Count" />
+    </type>
+  </assembly>
+</linker>

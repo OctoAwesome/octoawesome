@@ -324,7 +324,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         var inputs = InventoryComponent.InputInventory.Inventory
             .Where(x => !string.IsNullOrWhiteSpace(x.Definition?.DisplayName))
             .GroupBy(x => x.Definition!.DisplayName)
-            .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Name not Displayname*/))
+            .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Name not Displayname*/)) //TODO Implement the alias stuff in the ofen
             .ToArray();
         if (inputs.Length == 0)
             return null; //Reset recipe, time etc. pp.

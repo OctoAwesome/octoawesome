@@ -1,0 +1,15 @@
+{
+  "base_woodmaterial": {
+    "Name": "wood"
+  },
+  "base_woodaxe": {
+    "test": true,
+    "Material": {
+      "$ref": "base_woodmaterial"
+    },
+    "fluid": { "viscosity": 997 },
+    "netherBehaviour": {
+      "fluid": { "viscosity": 100 }
+    }
+  }
+}

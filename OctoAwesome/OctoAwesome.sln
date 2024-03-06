@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.PoC", "OctoAwes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.PoC.Tests", "OctoAwesome.PoC.Tests\OctoAwesome.PoC.Tests.csproj", "{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.Json", "OctoAwesome.Json\OctoAwesome.Json.csproj", "{B136B228-7578-4C87-AB02-545BB7E2487C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,14 @@ Global
 		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|x86.ActiveCfg = Release|Any CPU
 		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|x86.Build.0 = Release|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Debug|x86.Build.0 = Debug|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Release|x86.ActiveCfg = Release|Any CPU
+		{B136B228-7578-4C87-AB02-545BB7E2487C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

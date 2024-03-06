@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Crafting;
 
@@ -12,7 +13,11 @@ public class RecipeItem
     /// <summary>
     /// Gets or sets the name of the item.
     /// </summary>
-    public string ItemName { get; set; }
+    public string? ItemName { get; set; }
+    /// <summary>
+    /// Gets or sets the alias name of the item.
+    /// </summary>
+    public string? AliasName { get; set; }
     /// <summary>
     /// Gets or sets the number of items needed.
     /// </summary>
@@ -31,6 +36,10 @@ public class RecipeItem
     /// </summary>
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; }
+    [JsonIgnore]
+    public IMaterialDefinition? MaterialDefinition { get; internal set; }
+    [JsonIgnore]
+    public IDefinition? ItemDefinition { get; internal set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RecipeItem"/> class.
@@ -39,7 +48,7 @@ public class RecipeItem
     /// <param name="count"></param>
     /// <param name="materialName"></param>
     /// <param name="inputOutputMappingId"></param>
-    public RecipeItem(string itemName, int count, string? materialName, string? inputOutputMappingId)
+    public RecipeItem(string? itemName, int count, string? materialName, string? inputOutputMappingId)
     {
         ItemName = itemName;
         Count = count;

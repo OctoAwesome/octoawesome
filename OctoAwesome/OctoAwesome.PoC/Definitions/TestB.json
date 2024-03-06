@@ -1,0 +1,15 @@
+{
+  "base_ab]c": {
+    "Name": "ASD"
+  },
+  "base_woodwood": {
+    "test": true,
+    "Material": {
+      "$ref": "$['TestA.json'].base_woodmaterial"
+    },
+    "fluid": { "viscosity": 92 },
+    "etherBehaviour": {
+      "fluid": { "viscosity": 5 }
+    }
+  }
+}
