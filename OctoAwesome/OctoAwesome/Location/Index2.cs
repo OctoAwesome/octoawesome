@@ -203,6 +203,15 @@ namespace OctoAwesome.Location
             => new Index2(i1.X * scale, i1.Y * scale);
 
         /// <summary>
+        /// Calculates the componentwise factorization of two <see cref="Index2"/>.
+        /// </summary>
+        /// <param name="i1">The <see cref="Index2"/> to scale.</param>
+        /// <param name="i2">The <see cref="Index2"/> to scale by.</param>
+        /// <returns>The componentwise scaled result.</returns>
+        public static Index2 operator *(Index2 i1, Index2 i2)
+            => new Index2(i1.X * i2.X, i1.Y * i2.Y);
+
+        /// <summary>
         /// Calculates the componentwise inverse scale of an <see cref="Index2"/> using a dividend.
         /// </summary>
         /// <param name="i1">The <see cref="Index2"/> to divide.</param>
@@ -210,6 +219,15 @@ namespace OctoAwesome.Location
         /// <returns>The componentwise inverse scaled result.</returns>
         public static Index2 operator /(Index2 i1, int scale)
             => new Index2(i1.X / scale, i1.Y / scale);
+
+        /// <summary>
+        /// Calculates the componentwise division of two <see cref="Index2"/>.
+        /// </summary>
+        /// <param name="i1">The <see cref="Index2"/> to scale.</param>
+        /// <param name="i2">The <see cref="Index2"/> to scale by.</param>
+        /// <returns>The componentwise scaled result.</returns>
+        public static Index2 operator /(Index2 i1, Index2 i2)
+            => new Index2(i1.X / i2.X, i1.Y / i2.Y);
 
         /// <summary>
         /// Returns a value indicating whether all components of the two <see cref="Index3"/> respectively are equal.

@@ -241,6 +241,8 @@ namespace OctoAwesome.Chunking
 
             if (chunk != null)
             {
+                var blockPlanetSize = Planet.Size * Chunk.CHUNKSIZE;
+                index = (index + blockPlanetSize) % blockPlanetSize;
                 var flatIndex = Chunk.GetFlatIndex(index);
                 var block = chunk.Blocks[flatIndex];
                 var meta = chunk.MetaData[flatIndex];

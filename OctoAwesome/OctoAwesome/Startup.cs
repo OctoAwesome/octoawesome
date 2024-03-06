@@ -7,6 +7,7 @@ using NonSucking.Framework.Extension.IoC;
 
 using OctoAwesome.Chunking;
 using OctoAwesome.Information;
+using OctoAwesome.Graphs;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
 using OctoAwesome.Serialization;

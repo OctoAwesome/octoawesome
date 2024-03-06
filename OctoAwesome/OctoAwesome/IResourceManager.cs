@@ -1,6 +1,7 @@
 using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Definitions;
+using OctoAwesome.Graphs;
 using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
@@ -103,6 +104,11 @@ namespace OctoAwesome
         /// Manager for game world persistance.
         /// </summary>
         IPersistenceManager PersistenceManager { get; set; }
+
+        /// <summary>
+        /// Pencils in relation to the planet ids
+        /// </summary>
+        Dictionary<int, Pencil> Pencils { get; }
 
         /// <summary>
         /// Saves the given component container.

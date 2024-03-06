@@ -15,7 +15,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "sand";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "sand" };
+        public override string[] Textures { get; } = ["sand"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }

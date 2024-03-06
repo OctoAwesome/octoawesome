@@ -170,7 +170,11 @@ namespace OctoAwesome.Chunking
         /// <inheritdoc />
         public void SetBlockMeta(int x, int y, int z, int meta)
         {
-            MetaData[GetFlatIndex(x, y, z)] = meta;
+            var index = GetFlatIndex(x, y, z);
+            if (MetaData[index] == meta)
+                return;
+            
+            MetaData[index] = meta;
             Changed?.Invoke(this);
         }
 

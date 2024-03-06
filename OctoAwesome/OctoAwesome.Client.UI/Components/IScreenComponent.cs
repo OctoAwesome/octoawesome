@@ -4,6 +4,7 @@ using engenious;
 using OctoAwesome.Components;
 using OctoAwesome.UI.Screens;
 
+using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.UI.Components
@@ -44,5 +45,7 @@ namespace OctoAwesome.UI.Components
         /// </summary>
         /// <param name="screen">The screen that should be removed from the component</param>
         void Remove(BaseScreen screen);
+        void Add(ComponentContainer componentContainer);
+        void RemoveEntity(Guid entityId);
     }
 }

@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="apply" xml:space="preserve">
-    <value>Apply</value>
-  </data>
   <data name="backward" xml:space="preserve">
     <value>Move Backward</value>
   </data>
@@ -167,6 +164,9 @@
   </data>
   <data name="hidecontrols" xml:space="preserve">
     <value>Hide all Controls</value>
+  </data>
+  <data name="hit" xml:space="preserve">
+    <value>Hit</value>
   </data>
   <data name="interact" xml:space="preserve">
     <value>Interact</value>

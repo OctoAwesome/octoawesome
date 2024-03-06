@@ -216,7 +216,7 @@ namespace OctoAwesome.Network
                     {
                         var brParam = Expression.Parameter(typeof(BinaryReader));
                         MethodInfo deserializationMethodInfo;
-                        deserializationMethodInfo = notificationType.GetMethod(nameof(IConstructionSerializable<bool>.DeserializeAndCreate), BindingFlags.Public | BindingFlags.Static, new[] { typeof(BinaryReader) })!;
+                        deserializationMethodInfo = notificationType.GetMethod(nameof(IConstructionSerializable<bool>.DeserializeAndCreate), BindingFlags.Public | BindingFlags.Static, [typeof(BinaryReader)])!;
                         notificationDeserializationMethodCache[desId]
                             = expression
                             = Expression.Lambda<Func<BinaryReader, object>>(Expression.Call(deserializationMethodInfo, brParam), brParam).Compile();

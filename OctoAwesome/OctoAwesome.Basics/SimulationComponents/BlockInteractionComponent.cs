@@ -8,6 +8,14 @@ using OctoAwesome.EntityComponents;
 using System.Diagnostics;
 using OctoAwesome.Location;
 using OctoAwesome.Services;
+using OctoAwesome.Graphs;
+using System.Collections.Generic;
+using OctoAwesome.Caching;
+using System.Linq;
+using OpenTK.Graphics.ES11;
+using System;
+using NLog.Layouts;
+using OctoAwesome.Information;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -17,9 +25,10 @@ namespace OctoAwesome.Basics.SimulationComponents
     [SerializationId()]
     public class BlockInteractionComponent : SimulationComponent<
         Entity,
-        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
+        SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent, PositionComponent>,
         ControllableComponent,
-        InventoryComponent>
+        InventoryComponent,
+        PositionComponent>
     {
         private readonly Simulation simulation;
         private readonly BlockInteractionService service;
@@ -40,16 +49,20 @@ namespace OctoAwesome.Basics.SimulationComponents
             this.interactService = interactService;
         }
 
+
         /// <inheritdoc />
-        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent> value)
+        protected override void UpdateValue(GameTime gameTime, SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent, PositionComponent> value)
         {
             var entity = value.Value;
             var controller = value.Component1;
             var inventory = value.Component2;
+            var positioncomponent = value.Component3;
 
-            var toolbar = entity.Components.Get<ToolBarComponent>();
-            var cache = entity.Components.Get<LocalChunkCacheComponent>()?.LocalChunkCache;
+            var toolbar = entity.GetComponent<ToolBarComponent>();
+            var cache = entity.GetComponent<LocalChunkCacheComponent>()?.LocalChunkCache;
             Debug.Assert(cache != null, nameof(cache) + " != null");
+
+            var selectionType = controller.Selection?.SelectionType;
 
             controller
                 .Selection?
@@ -57,27 +70,43 @@ namespace OctoAwesome.Basics.SimulationComponents
                     hitInfo =>
                     {
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
-                        InteractWith(hitInfo, inventory, toolbar, cache);
-                    },
-                    applyInfo =>
-                    {
-                        Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
-                        ApplyWith(applyInfo, inventory, toolbar, cache);
+                        switch (selectionType)
+                        {
+                            case SumTypes.SelectionType.Hit:
+                                HitWith(hitInfo, inventory, toolbar, cache, positioncomponent);
+                                break;
+                            case SumTypes.SelectionType.Interact:
+                                {
+
+                                    IItem activeItem;
+                                    if (toolbar.ActiveTool?.Item is IItem item)
+                                        activeItem = item;
+                                    else
+                                        activeItem = Hand.Instance;
+
+                                    interactService.Interact(activeItem.Definition.DisplayName, gameTime, entity, hitInfo);
+                                    interactService.Interact("", gameTime, entity, hitInfo);
+                                    InteractWith(hitInfo, inventory, toolbar, cache, positioncomponent);
+                                    break;
+                                }
+                            case null:
+                                break;
+                        }
                     },
                     componentContainer =>
                     {
-                        if (componentContainer.TryGetComponent<InteractKeyComponent>(out var keyComp))
+                        if (selectionType == SumTypes.SelectionType.Interact && componentContainer.TryGetComponent<InteractKeyComponent>(out var keyComp))
                         {
                             interactService.Interact(keyComp.Key, gameTime, entity, componentContainer);
                         }
                     }
                 );
 
-            if (toolbar != null && controller.ApplyBlock.HasValue)
+            if (toolbar != null && controller.InteractBlock.HasValue)
             {
                 if (toolbar.ActiveTool != null)
                 {
-                    Index3 add = controller.ApplySide switch
+                    Index3 add = controller.InteractSide switch
                     {
                         OrientationFlags.SideWest => new Index3(-1, 0, 0),
                         OrientationFlags.SideEast => new Index3(1, 0, 0),
@@ -90,44 +119,131 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                     if (toolbar.ActiveTool.Item is IBlockDefinition definition)
                     {
-                        bool intersects = !GetPosition(entity, controller, cache, add, definition, out var idx);
+                        Index3 idx = controller.InteractBlock.Value + add;
+                        var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
 
-                        if (!intersects)
+                        bool intersects = false;
+                        var bodycomponent = entity.Components.Get<BodyComponent>();
+
+                        if (positioncomponent != null && bodycomponent != null)
                         {
-                            if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
+                            float gap = 0.01f;
+                            var playerBox = new BoundingBox(
+                                new Vector3(
+                                    positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X - bodycomponent.Radius + gap,
+                                    positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y - bodycomponent.Radius + gap,
+                                    positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + gap),
+                                new Vector3(
+                                    positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X + bodycomponent.Radius - gap,
+                                    positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y + bodycomponent.Radius - gap,
+                                    positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
+                                );
+
+                            if (!intersects)
                             {
-                                cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
-                                cache.SetBlockMeta(idx, (int)controller.ApplySide);
-                                if (toolbar.ActiveTool.Amount <= 0)
-                                    toolbar.RemoveSlot(toolbar.ActiveTool);
+                                if (inventory.RemoveUnit(toolbar.ActiveTool) > 0)
+                                {
+                                    cache.SetBlock(idx, simulation.ResourceManager.DefinitionManager.GetDefinitionIndex(definition));
+                                    cache.SetBlockMeta(idx, (int)controller.InteractSide);
+                                    if (toolbar.ActiveTool.Amount <= 0)
+                                        toolbar.RemoveSlot(toolbar.ActiveTool);
+
+                                    DoNetworkBlockStuff(positioncomponent, cache, definition, idx);
+                                }
                             }
                         }
                     }
+                    controller.InteractBlock = null;
                 }
-                controller.ApplyBlock = null;
             }
         }
 
-
-        private void ApplyWith(ApplyInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        private void DoNetworkBlockStuff(PositionComponent? positioncomponent, ILocalChunkCache? cache, IBlockDefinition definition, Index3 idx)
         {
-            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            if (definition is INetworkBlock nb)
             {
-                IItem activeItem;
-                if (toolbar.ActiveTool?.Item is IItem item)
+                var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
+                var ourInfo = cache.GetBlockInfo(idx);
+
+
+                var node = nb.CreateNode();
+                node.BlockInfo = ourInfo;
+                node.PlanetId = positioncomponent.Position.Planet;
+
+
+                foreach (var transferType in nb.TransferTypes)
                 {
-                    activeItem = item;
-                }
-                else
-                {
-                    activeItem = Hand.Instance;
+                    Graph? graph = null;
+
+                    MaybeAddToGraph(idx.X + 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X - 1, idx.Y, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y + 1, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y - 1, idx.Z, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y, idx.Z + 1, cache, pencil, ourInfo, transferType, node, ref graph);
+                    MaybeAddToGraph(idx.X, idx.Y, idx.Z - 1, cache, pencil, ourInfo, transferType, node, ref graph);
+
+                    if (graph is null)
+                    {
+                        if (!Pencil.GraphTypes.TryGetValue(transferType, out var type))
+                        {
+                            return;
+                        }
+
+                        var newGraph = GenericCaster<object, Graph>.Cast(Activator.CreateInstance(type, pencil.PlanetId))!;
+                        pencil.AddGraph(newGraph);
+                        newGraph.AddBlock(node);
+                    }
                 }
 
-                _ = service.Apply(lastBlock, activeItem, cache);
             }
         }
 
-        private void InteractWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache)
+        private void MaybeAddToGraph(int x, int y, int z, ILocalChunkCache? cache, Pencil? pencil, BlockInfo ourInfo, string transferType, NodeBase node, ref Graph? graph)
+        {
+            var index3 = new Index3(x, y, z);
+            index3.NormalizeXY(pencil.Planet.Size.XY * new Index2(Chunk.CHUNKSIZE_X, Chunk.CHUNKSIZE_Y));
+            var id = cache.GetBlock(index3);
+            if (id == 0)
+                return;
+            var definition = simulation.ResourceManager.DefinitionManager.GetBlockDefinitionByIndex(id);
+            if (definition is not INetworkBlock networkBlock)
+                return;
+
+            var info = cache.GetBlockInfo(index3);
+            foreach (var item in pencil.Graphs)
+            {
+                if (item.TransferType != transferType)
+                    continue;
+
+                if (item.ContainsPosition(info.Position))
+                {
+                    if (graph is null)
+                    {
+                        item.AddBlock(node);
+                        graph = item;
+                        break;
+                    }
+                    else
+                    {
+                        if (item == graph)
+                            continue;
+                        graph.MergeWith(item, ourInfo);
+                        pencil.RemoveGraph(item);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+
+
+
+        private void HitWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
         {
             if (!lastBlock.IsEmpty && lastBlock.Block != 0)
             {
@@ -139,9 +255,10 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
-                var blockHitInformation = service.Interact(lastBlock, activeItem, cache);
+                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
 
                 if (blockHitInformation.Valid && blockHitInformation.List != null)
+                {
                     foreach (var (quantity, definition) in blockHitInformation.List)
                     {
                         if (activeItem is IFluidInventory fluidInventory
@@ -154,46 +271,62 @@ namespace OctoAwesome.Basics.SimulationComponents
                             inventory.Add(invDef, quantity);
                         }
 
+
+                        if (definition is INetworkBlock nb)
+                        {
+                            var pencil = simulation.ResourceManager.Pencils[posComponent.Position.Planet];
+                            foreach (var graph in pencil.Graphs.OfType<Graph<int>>())
+                            {
+                                if (graph.Nodes.ContainsKey(lastBlock.Position))
+                                {
+                                    graph.RemoveNode(new(lastBlock.Position, lastBlock.Block, lastBlock.Meta));
+                                    break;
+                                }
+                            }
+                        }
                     }
+                }
 
-            }
-        }
-        private static bool GetPosition(Entity entity, ControllableComponent controller, ILocalChunkCache cache, Index3 add, IBlockDefinition definition, out Index3 idx)
-        {
-            Debug.Assert(controller.ApplyBlock != null, "controller.ApplyBlock != null");
-            idx = controller.ApplyBlock.Value + add;
-            var boxes = definition.GetCollisionBoxes(cache, idx.X, idx.Y, idx.Z);
-
-
-            var positioncomponent = entity.Components.Get<PositionComponent>();
-            var bodycomponent = entity.Components.Get<BodyComponent>();
-
-            if (positioncomponent != null && bodycomponent != null)
-            {
-                float gap = 0.01f;
-                var playerBox = new BoundingBox(
-                    new Vector3(
-                        positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X - bodycomponent.Radius + gap,
-                        positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y - bodycomponent.Radius + gap,
-                        positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + gap),
-                    new Vector3(
-                        positioncomponent.Position.GlobalBlockIndex.X + positioncomponent.Position.BlockPosition.X + bodycomponent.Radius - gap,
-                        positioncomponent.Position.GlobalBlockIndex.Y + positioncomponent.Position.BlockPosition.Y + bodycomponent.Radius - gap,
-                        positioncomponent.Position.GlobalBlockIndex.Z + positioncomponent.Position.BlockPosition.Z + bodycomponent.Height - gap)
-                    );
-
-                // Nicht in sich selbst reinbauen
-                for (var i = 0; i < boxes.Length; i++)
                 {
-                    var box = boxes[i];
-                    var newBox = new BoundingBox(idx + box.Min, idx + box.Max);
-                    if (newBox.Min.X < playerBox.Max.X && newBox.Max.X > playerBox.Min.X &&
-                        newBox.Min.Y < playerBox.Max.Y && newBox.Max.X > playerBox.Min.Y &&
-                        newBox.Min.Z < playerBox.Max.Z && newBox.Max.X > playerBox.Min.Z)
-                        return false;
+                    if (simulation.ResourceManager.Pencils.TryGetValue(posComponent.Position.Planet, out var pencil))
+                    {
+                        foreach (var graph in pencil.Graphs)
+                        {
+                            if (graph.TryGetNode(lastBlock.Position, out var node))
+                            {
+                                node.Hit();
+                            }
+                        }
+                    }
                 }
             }
-            return true;
+        }
+
+        private void InteractWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool?.Item is IItem item)
+                    activeItem = item;
+                else
+                    activeItem = Hand.Instance;
+
+                Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
+
+                _ = service.Interact(lastBlock, activeItem, cache);
+
+                if (simulation.ResourceManager.Pencils.TryGetValue(posComponent.Position.Planet, out var pencil))
+                {
+                    foreach (var graph in pencil.Graphs)
+                    {
+                        if (graph.TryGetNode(lastBlock.Position, out var node))
+                        {
+                            node.Interact();
+                        }
+                    }
+                }
+            }
         }
     }
 }

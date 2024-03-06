@@ -23,7 +23,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public int Order => 11;
 
-        private int ispop = 3;
+        private int ispop = 10;
         private bool disposedValue;
         /// <summary>
         /// Initializes a new instance of the <see cref="WauziPopulator"/> class.
@@ -42,6 +42,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public void Populate(IResourceManager resourcemanager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11)
         {
+            return;
             if (ispop-- <= 0)
                 return;
 

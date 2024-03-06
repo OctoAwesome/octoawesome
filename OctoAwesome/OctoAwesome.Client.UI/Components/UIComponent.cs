@@ -6,6 +6,7 @@ using OctoAwesome.Rx;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace OctoAwesome.UI.Components
 {
@@ -116,6 +117,14 @@ namespace OctoAwesome.UI.Components
                 return;
             PrimaryUiKey = e.screenKey;
             Show = e.show;
+        }
+
+        public virtual void OnClose(string key)
+        {
+            var interactingComponentContainer = componentContainers.FirstOrDefault();
+            var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
+            if (components is not null)
+                components.Changed.OnNext((interactingComponentContainer!, key, false));
         }
     }
 

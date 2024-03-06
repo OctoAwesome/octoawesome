@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="apply" xml:space="preserve">
-    <value>Anwenden</value>
-  </data>
   <data name="backward" xml:space="preserve">
     <value>Rückwärts bewegen</value>
   </data>
   <data name="debug_allblocks" xml:space="preserve">
     <value>DEBUG: Alle Blocktypen ins Inventar</value>
+  </data>
+  <data name="debug_boundingboxes" xml:space="preserve">
+    <value>DEBUG: Zeige/Verstecke Schattenwerfer/Empfänger BoundingBoxes</value>
   </data>
   <data name="debug_control" xml:space="preserve">
     <value>DEBUG: Debug-Informationen anzeigen/verbergen</value>
@@ -158,6 +158,9 @@
   </data>
   <data name="hidecontrols" xml:space="preserve">
     <value>Alle Steuerelemente ausblenden</value>
+  </data>
+  <data name="hit" xml:space="preserve">
+    <value>Schlagen</value>
   </data>
   <data name="interact" xml:space="preserve">
     <value>Interagieren</value>

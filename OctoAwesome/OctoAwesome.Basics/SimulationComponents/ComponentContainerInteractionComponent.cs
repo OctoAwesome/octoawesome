@@ -42,7 +42,6 @@ namespace OctoAwesome.Basics.SimulationComponents
                 .Selection?
                 .Visit(
                     hitInfo => { },
-                    applyInfo => { },
                     componentContainer => InternalUpdate(controller, entity, componentContainer)
                 );
         }

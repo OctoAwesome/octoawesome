@@ -37,8 +37,8 @@ namespace OctoAwesome.Network.Tests
             TypeContainer.Register(new PackagePool());
             TypeContainer.Register<IUpdateHub>(new UpdateHub());
 
-            byte[] data1 = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-            byte[] data2 = new byte[] { 0, 1, 2, 4, 8, 16, 32, 64, 128 };
+            byte[] data1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+            byte[] data2 = [0, 1, 2, 4, 8, 16, 32, 64, 128];
             int count = 0;
             int packagesReceivedServer = 0;
             int packagesReceivedClient= 0;
@@ -123,7 +123,7 @@ namespace OctoAwesome.Network.Tests
 
                 wait.WaitOne();
 
-                testClient.SendAsync(new byte[] { 42 }, 1);
+                testClient.SendAsync([42], 1);
 
             });
             resetEvent.WaitOne();

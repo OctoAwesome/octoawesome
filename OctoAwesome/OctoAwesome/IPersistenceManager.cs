@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Chunking;
 using OctoAwesome.Components;
+using OctoAwesome.Graphs;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Location;
 using OctoAwesome.Serialization;
@@ -149,6 +150,8 @@ namespace OctoAwesome
         /// <returns>The component.</returns>
         T GetComponent<T>(Guid universeGuid, Guid id) where T : IComponent, new();
 
+
+
         /// <summary>
         /// Loads a component container.
         /// </summary>
@@ -159,5 +162,7 @@ namespace OctoAwesome
         Awaiter? Load<TContainer, TComponent>(out TContainer? componentContainer, Guid universeGuid, Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent;
+        void SavePencil(Pencil pencil);
+        Pencil LoadPencil(int planetId);
     }
 }

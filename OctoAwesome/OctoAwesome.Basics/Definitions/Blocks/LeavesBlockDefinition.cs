@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Graphs;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -15,11 +16,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "leaves";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "leaves" };
+        public override string[] Textures { get; } = ["leaves"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LeavesBlockDefinition"/> class.
         /// </summary>

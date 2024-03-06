@@ -42,16 +42,16 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets or sets the block index to interact with; or <c>null</c> for no interaction.
         /// </summary>
-        public Index3? InteractBlock { get; set; }
+        public Index3? HitBlock { get; set; }
 
         /// <summary>
         /// Gets or sets the block index to apply on; or <c>null</c> for no interaction.
         /// </summary>
-        public Index3? ApplyBlock { get; set; }
+        public Index3? InteractBlock { get; set; }
 
         /// <summary>
         /// Gets or sets application orientation.
         /// </summary>
-        public OrientationFlags ApplySide { get; set; }
+        public OrientationFlags InteractSide { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using OctoAwesome.Notifications;
 using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 using OctoAwesome.Rx;
+using OctoAwesome.Graphs;
 
 namespace OctoAwesome.Runtime
 {
@@ -42,6 +43,9 @@ namespace OctoAwesome.Runtime
 
         /// <inheritdoc />
         public IDefinitionManager DefinitionManager { get; }
+
+        /// <inheritdoc/>
+        public Dictionary<int, Pencil> Pencils { get; private set; }
 
         /// <inheritdoc />
         public ConcurrentDictionary<int, IPlanet> Planets { get; }
@@ -80,6 +84,7 @@ namespace OctoAwesome.Runtime
             populators = extensionService.GetFromRegistrar<IMapPopulator>().OrderBy(p => p.Order).ToList();
 
             Planets = new ConcurrentDictionary<int, IPlanet>();
+            Pencils = new ();
             UpdateHub = updateHub;
             this.settings = settings;
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
@@ -92,6 +97,7 @@ namespace OctoAwesome.Runtime
             if (obj is not IPlanet planet)
                 return;
             Planets[planet.Id] = planet;
+            Pencils[planet.Id] = PersistenceManager.LoadPencil(planet.Id);
         }
 
 
@@ -171,11 +177,13 @@ namespace OctoAwesome.Runtime
                 foreach (var planet in Planets)
                 {
                     PersistenceManager.SavePlanet(CurrentUniverse.Id, planet.Value);
+                    PersistenceManager.SavePencil(Pencils[planet.Key]);
                     planet.Value.Dispose();
                 }
                 // if (PersistenceManager is IDisposable disposable)
                 //     disposable.Dispose();
                 Planets.Clear();
+                Pencils.Clear();
 
                 CurrentUniverse = null;
                 GC.Collect();
@@ -225,6 +233,7 @@ namespace OctoAwesome.Runtime
                     }
 
                     Planets.TryAdd(id, planet);
+                    Pencils.TryAdd(id, PersistenceManager.LoadPencil(id));
                 }
                 return planet;
             }

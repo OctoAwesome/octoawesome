@@ -55,7 +55,7 @@ namespace OctoAwesome.Chunking
         /// Gets or sets the change counter indicating the number of changes the chunk column went through.
         /// </summary>
         /// <remarks>Used for identifying changes between frames.</remarks>
-        public int ChangeCounter { get; set; }
+        //public int ChangeCounter { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
@@ -98,7 +98,7 @@ namespace OctoAwesome.Chunking
 
         private void OnChunkChanged(IChunk arg1)
         {
-            ChangeCounter++;
+            //ChangeCounter++;
         }
 
         /// <summary>
@@ -211,6 +211,12 @@ namespace OctoAwesome.Chunking
             var index = z / Chunk.CHUNKSIZE_Z;
             z %= Chunk.CHUNKSIZE_Z;
             Chunks[index].SetBlockMeta(x, y, z, meta);
+        }
+
+        /// <inheritdoc />
+        public void SetBlockMeta(Index3 index, int meta)
+        {
+            SetBlockMeta(index.X, index.Y, index.Z, meta);
         }
 
         /// <inheritdoc />
