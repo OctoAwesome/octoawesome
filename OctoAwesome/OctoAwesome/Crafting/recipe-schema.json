@@ -1,0 +1,251 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "default": {},
+  "title": "Root Schema",
+  "required": [
+    "Enabled",
+    "Description",
+    "Keywords",
+    "Energy",
+    "Inputs",
+    "Outputs",
+    "Categories"
+  ],
+
+  "properties": {
+    "Enabled": {
+      "type": [ "boolean", "object" ],
+      "default": false,
+      "title": "The Enabled Schema",
+      "examples": [
+        true, "none", 12
+      ]
+    },
+    "Description": {
+      "type": "string",
+      "default": "",
+      "title": "The Description Schema",
+      "examples": [
+        "Smelts Iron Ore into Iron"
+      ]
+    },
+    "Keywords": {
+      "type": "array",
+      "default": [],
+      "title": "The Keywords Schema",
+      "items": {
+        "type": "string",
+        "title": "A Schema",
+        "examples": [
+          "Smelting",
+          "IronOre",
+          "Iron"
+        ]
+      },
+      "examples": [
+        [
+          "Smelting",
+          "IronOre",
+          "Iron"
+        ]
+      ]
+    },
+    "Energy": {
+      "type": "integer",
+      "default": 0,
+      "title": "The Energy Schema",
+      "examples": [
+        70
+      ]
+    },
+    "Inputs": {
+      "type": "array",
+      "default": [],
+      "title": "The Inputs Schema",
+      "items": {
+        "type": "object",
+        "default": {},
+        "title": "A Schema",
+        "required": [
+          "ItemName",
+          "Count"
+        ],
+        "properties": {
+          "ItemName": {
+            "type": "string",
+            "default": "",
+            "title": "The ItemName Schema",
+            "examples": [
+              "IronOre"
+            ]
+          },
+          "Count": {
+            "type": "integer",
+            "default": 0,
+            "title": "The Count Schema",
+            "examples": [
+              5
+            ]
+          }
+        },
+        "examples": [
+          {
+            "ItemName": "IronOre",
+            "Count": 5
+          }
+        ]
+      },
+      "examples": [
+        [
+          {
+            "ItemName": "IronOre",
+            "Count": 5
+          }
+        ]
+      ]
+    },
+    "Outputs": {
+      "type": "array",
+      "default": [],
+      "title": "The Outputs Schema",
+      "items": {
+        "type": "object",
+        "title": "A Schema",
+        "required": [
+          "ItemName",
+          "Count"
+        ],
+        "properties": {
+          "ItemName": {
+            "type": "string",
+            "title": "The ItemName Schema",
+            "examples": [
+              "Iron",
+              "Slag"
+            ]
+          },
+          "Count": {
+            "type": "integer",
+            "title": "The Count Schema",
+            "examples": [
+              2,
+              3
+            ]
+          }
+        },
+        "examples": [
+          {
+            "ItemName": "Iron",
+            "Count": 2
+          },
+          {
+            "ItemName": "Slag",
+            "Count": 3
+          }
+        ]
+      },
+      "examples": [
+        [
+          {
+            "ItemName": "Iron",
+            "Count": 2
+          },
+          {
+            "ItemName": "Slag",
+            "Count": 3
+          }
+        ]
+      ]
+    },
+    "Categories": {
+      "type": "array",
+      "default": [],
+      "title": "The Categories Schema",
+      "items": {
+        "type": "object",
+        "default": {},
+        "title": "A Schema",
+        "required": [
+          "Name",
+          "SubCategory"
+        ],
+        "properties": {
+          "Name": {
+            "type": "string",
+            "default": "",
+            "title": "The Name Schema",
+            "examples": [
+              "Smelting"
+            ]
+          },
+          "SubCategory": {
+            "type": "string",
+            "default": "",
+            "title": "The SubCategory Schema",
+            "examples": [
+              "Metal"
+            ]
+          }
+        },
+        "examples": [
+          {
+            "Name": "Smelting",
+            "SubCategory": "Metal"
+          }
+        ]
+      },
+      "examples": [
+        [
+          {
+            "Name": "Smelting",
+            "SubCategory": "Metal"
+          }
+        ]
+      ]
+    },
+    "ImagePath": {
+      "type": "string",
+      "default": "",
+      "title": "The ImagePath Schema",
+      "examples": [
+        "C:\\Temp\\Recipe.img"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "Enabled": true,
+      "Description": "Smelts Iron Ore into Iron",
+      "Keywords": [
+        "Smelting",
+        "IronOre",
+        "Iron"
+      ],
+      "Energy": 70,
+      "Inputs": [
+        {
+          "ItemName": "IronOre",
+          "Count": 5
+        }
+      ],
+      "Outputs": [
+        {
+          "ItemName": "Iron",
+          "Count": 2
+        },
+        {
+          "ItemName": "Slag",
+          "Count": 3
+        }
+      ],
+      "Categories": [
+        {
+          "Name": "Smelting",
+          "SubCategory": "Metal"
+        }
+      ],
+      "ImagePath": "C:\\Temp\\Recipe.img"
+    }
+  ]
+}

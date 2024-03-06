@@ -120,6 +120,9 @@
   <data name="backward" xml:space="preserve">
     <value>Rückwärts bewegen</value>
   </data>
+  <data name="craftMenu" xml:space="preserve">
+    <value>Crafting Menü</value>
+  </data>
   <data name="debug_allblocks" xml:space="preserve">
     <value>DEBUG: Alle Blocktypen ins Inventar</value>
   </data>

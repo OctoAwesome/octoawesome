@@ -225,4 +225,7 @@
   <data name="toggle_chat" xml:space="preserve">
     <value>Toggle Chat</value>
   </data>
+  <data name="craftMenu" xml:space="preserve">
+    <value>Crafting Menu</value>
+  </data>
 </root>

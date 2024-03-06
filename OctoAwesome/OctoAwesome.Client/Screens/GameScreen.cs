@@ -462,6 +462,13 @@ namespace OctoAwesome.Client.Screens
                 lastToggle = !lastToggle;
 
             });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:craftmenu", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+
+                ScreenManager.NavigateToScreen(new CraftingMenuScreen(assets));
+            });
 
 
         }

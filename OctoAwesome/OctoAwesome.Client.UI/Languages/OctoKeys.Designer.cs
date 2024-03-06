@@ -70,6 +70,15 @@ namespace OctoAwesome.Client.UI.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Crafting Menu.
+        /// </summary>
+        public static string craftMenu {
+            get {
+                return ResourceManager.GetString("craftMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DEBUG: All Blocktypes in Inventory.
         /// </summary>
         public static string debug_allblocks {
