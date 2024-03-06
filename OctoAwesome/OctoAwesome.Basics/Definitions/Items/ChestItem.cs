@@ -37,7 +37,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         }
 
         /// <inheritdoc />
-        public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
+        public override int Interact(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
             BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var facingDirection, out var rot);
 

@@ -86,7 +86,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                                     interactService.Interact(activeItem.Definition.DisplayName, gameTime, entity, hitInfo);
                                     interactService.Interact("", gameTime, entity, hitInfo);
-                                    //InteractWith(blockInfo, inventory, toolbar, cache, positioncomponent);
+                                    InteractWith(hitInfo, inventory, toolbar, cache, positioncomponent);
                                     break;
                                 }
                             case null:
@@ -255,7 +255,7 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                 Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
 
-                var blockHitInformation = service.Interact(lastBlock, activeItem, cache);
+                var blockHitInformation = service.Hit(lastBlock, activeItem, cache);
 
                 if (blockHitInformation.Valid && blockHitInformation.List != null)
                 {
@@ -296,6 +296,33 @@ namespace OctoAwesome.Basics.SimulationComponents
                             {
                                 node.Hit();
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void InteractWith(HitInfo lastBlock, InventoryComponent inventory, ToolBarComponent toolbar, ILocalChunkCache cache, PositionComponent posComponent)
+        {
+            if (!lastBlock.IsEmpty && lastBlock.Block != 0)
+            {
+                IItem activeItem;
+                if (toolbar.ActiveTool?.Item is IItem item)
+                    activeItem = item;
+                else
+                    activeItem = Hand.Instance;
+
+                Debug.Assert(activeItem != null, nameof(activeItem) + " != null");
+
+                _ = service.Interact(lastBlock, activeItem, cache);
+
+                if (simulation.ResourceManager.Pencils.TryGetValue(posComponent.Position.Planet, out var pencil))
+                {
+                    foreach (var graph in pencil.Graphs)
+                    {
+                        if (graph.TryGetNode(lastBlock.Position, out var node))
+                        {
+                            node.Interact();
                         }
                     }
                 }

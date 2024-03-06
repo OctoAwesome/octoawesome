@@ -76,6 +76,7 @@ namespace OctoAwesome.Basics
         private void RegisterInteracts()
         {
             var interactService = typeContainer.Get<InteractService>();
+            var blockInteractionService = typeContainer.Get<BlockInteractionService>();
             interactService.Register(nameof(Chest), (gt, interactor, target) =>
             {
                 if (interactor.TryGetComponent<TransferComponent>(out var transferComponent)
@@ -118,7 +119,7 @@ namespace OctoAwesome.Basics
 
             interactService.Register("", (gt, interactor, target) =>
             {
-                if (target.IsEmpty || target.Block != 0)
+                if (target.IsEmpty || target.Block == 0)
                     return;
                 var sim = interactor.Simulation;
                 if (sim is null)
@@ -131,6 +132,8 @@ namespace OctoAwesome.Basics
 
                 }
             });
+
+
 
             interactService.Register("Storage Interface", (gt, interactor, target) =>
             {

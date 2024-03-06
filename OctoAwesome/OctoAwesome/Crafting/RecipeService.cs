@@ -57,7 +57,7 @@ public class RecipeService
     /// <returns>A collection of recipes in the given category.</returns>
     public IReadOnlyCollection<Recipe> GetByCategory(RecipeCategory category)
     {
-        return recipes.Where(x => x.Category.Any(x=>x == category)).ToArray();
+        return recipes.Where(x => x.Category.Any(x => x == category)).ToArray();
     }
 
     internal Recipe? GetByInput(IReadOnlyCollection<Recipe> recipes, RecipeItem input)
@@ -93,7 +93,7 @@ public class RecipeService
         foreach (var recipe in recipes.OrderBy(x => x.Inputs.Length))
         {
             int counter = 0, inputMatches = 0;
-            
+
             foreach (var inputItem in recipe.Inputs)
             {
                 foreach (var input in inputs)
@@ -117,8 +117,8 @@ public class RecipeService
                 }
             }
 
-            if ((inputMatches >= recipe.Inputs.Length 
-                && inputMatches > currMatches) 
+            if ((inputMatches >= recipe.Inputs.Length
+                && inputMatches > currMatches)
                     || (inputMatches == currMatches && currScore < counter))
             {
                 ret = recipe;
@@ -129,7 +129,7 @@ public class RecipeService
 
         return ret;
     }
-    
+
     /// <summary>
     /// Gets a collection of recipes from a given recipe collection which can be processed using the given input items.
     /// </summary>
@@ -164,7 +164,7 @@ public class RecipeService
 
         return retRecipes;
     }
-    
+
     /// <summary>
     /// Gets a collection of recipes which can be processed using the given input item.
     /// </summary>
@@ -172,10 +172,10 @@ public class RecipeService
     /// <returns>
     /// The recipes that can be processed using the given input item,
     /// </returns>
-    public IReadOnlyCollection<Recipe> GetByInput(RecipeItem input)
+    public IReadOnlyCollection<Recipe> GetByInput(RecipeItem input, IReadOnlyCollection<Recipe>? recipes = null)
     {
         List<Recipe> retRecipes = new();
-        foreach (var recipe in recipes)
+        foreach (var recipe in recipes ?? this.recipes)
         {
             foreach (var tinpuItem in recipe.Inputs)
             {
@@ -191,7 +191,7 @@ public class RecipeService
 
         return retRecipes;
     }
-    
+
     /// <summary>
     /// Gets a collection of recipes which can create the given output item.
     /// </summary>
@@ -199,10 +199,10 @@ public class RecipeService
     /// <returns>
     /// The recipes that can create the given output item,
     /// </returns>
-    public IReadOnlyCollection<Recipe> GetByOutput(RecipeItem output)
+    public IReadOnlyCollection<Recipe> GetByOutput(RecipeItem output, IReadOnlyCollection<Recipe>? recipes = null)
     {
         List<Recipe> retRecipes = new();
-        foreach (var recipe in recipes)
+        foreach (var recipe in recipes ?? this.recipes)
         {
             foreach (var outputItem in recipe.Outputs)
             {

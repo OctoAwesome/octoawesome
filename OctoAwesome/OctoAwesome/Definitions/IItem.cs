@@ -47,6 +47,6 @@ namespace OctoAwesome.Definitions
         /// <param name="hitInfo">The information of the block with additional hit info.</param>
         /// <param name="volumeRemaining">The volume remaining in the block.</param>
         /// <returns>The quantity of the volume that was mined.</returns>
-        int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining);
+        int Interact(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining);
     }
 }

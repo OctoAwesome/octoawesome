@@ -62,7 +62,7 @@ namespace OctoAwesome.Definitions
         public virtual BlockHitInformation Apply(BlockVolumeState blockVolume, IItem item)
         {
             //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
-            var applied = item.Apply(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining);
+            var applied = item.Interact(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining);
             return new BlockHitInformation(applied != 0, applied, new[] { (VolumePerUnit, (IDefinition)this) });
         }
 

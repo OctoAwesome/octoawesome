@@ -38,7 +38,7 @@ namespace OctoAwesome.Services
         /// <param name="item">The item that the block was hit with.</param>
         /// <param name="cache">The chunk cache.</param>
         /// <returns>Tuple of a value indicating whether the interaction was valid, and a list of item and quantity tuples.</returns>
-        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Interact(HitInfo block, IItem item, ILocalChunkCache cache)
+        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Hit(HitInfo block, IItem item, ILocalChunkCache cache)
         {
             if (!blockCollectionInformation.TryGetValue(block, out var volumeState))
             {
@@ -77,7 +77,7 @@ namespace OctoAwesome.Services
         /// <param name="item">The item that the block was interacted with.</param>
         /// <param name="cache">The chunk cache.</param>
         /// <returns>Tuple of a value indicating whether the interaction was valid, and a list of item and quantity tuples.</returns>
-        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Apply(ApplyInfo block, IItem item, ILocalChunkCache cache)
+        public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Interact(HitInfo block, IItem item, ILocalChunkCache cache)
         {
             var definition = definitionManager.GetBlockDefinitionByIndex(block.Block);
 
