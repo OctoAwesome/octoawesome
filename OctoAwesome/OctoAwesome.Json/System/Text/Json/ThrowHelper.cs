@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     internal static partial class ThrowHelper
     {
         // If the exception source is this value, the serializer will re-throw as JsonException.
-        public const string ExceptionSourceValueToRethrowAsJsonException = "System.Text.Json.Rethrowable";
+        public const string ExceptionSourceValueToRethrowAsJsonException = "OctoAwesome.Json.Rethrowable";
 
         [DoesNotReturn]
         public static void ThrowArgumentOutOfRangeException_NewLine(string parameterName)

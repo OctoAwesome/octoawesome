@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Validates and indexes polymorphic type configuration,

@@ -1,7 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Determines the kind of contract metadata a given <see cref="JsonTypeInfo"/> is specifying.

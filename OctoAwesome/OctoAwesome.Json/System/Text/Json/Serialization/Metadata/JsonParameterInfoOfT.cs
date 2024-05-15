@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Represents a strongly-typed parameter to prevent boxing where have less than 4 parameters.

@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Unicode;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     internal static partial class JsonReaderHelper
     {

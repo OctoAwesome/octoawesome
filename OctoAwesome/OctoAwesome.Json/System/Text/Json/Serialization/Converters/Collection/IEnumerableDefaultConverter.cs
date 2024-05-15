@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Default base class implementation of <cref>JsonIEnumerableConverter{TCollection, TElement}</cref>.

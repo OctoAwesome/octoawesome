@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// Base class for all collections. Collections are assumed to implement <see cref="IEnumerable{T}"/>

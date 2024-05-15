@@ -7,11 +7,11 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 using System.Threading;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public sealed partial class JsonSerializerOptions
     {

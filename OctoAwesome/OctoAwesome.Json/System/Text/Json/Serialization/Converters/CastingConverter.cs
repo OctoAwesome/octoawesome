@@ -3,9 +3,9 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Reflection;
+using OctoAwesome.Json.Reflection;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Converter wrapper which casts SourceType into TargetType

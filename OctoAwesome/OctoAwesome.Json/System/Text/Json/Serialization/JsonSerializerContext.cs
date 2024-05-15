@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// Provides metadata about a set of types that is relevant to JSON serialization.

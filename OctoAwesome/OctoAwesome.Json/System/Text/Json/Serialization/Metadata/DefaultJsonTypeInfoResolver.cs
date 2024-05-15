@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
-    /// Defines the default, reflection-based JSON contract resolver used by System.Text.Json.
+    /// Defines the default, reflection-based JSON contract resolver used by OctoAwesome.Json.
     /// </summary>
     /// <remarks>
     /// The contract resolver used by <see cref="JsonSerializerOptions.Default"/>.

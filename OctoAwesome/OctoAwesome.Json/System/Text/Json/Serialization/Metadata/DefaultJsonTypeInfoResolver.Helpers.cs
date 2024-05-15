@@ -6,10 +6,10 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Reflection;
+using OctoAwesome.Json.Reflection;
 using System.Threading;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     public partial class DefaultJsonTypeInfoResolver
     {

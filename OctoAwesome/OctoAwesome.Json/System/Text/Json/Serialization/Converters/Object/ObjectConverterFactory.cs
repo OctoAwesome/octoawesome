@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text.Json.Reflection;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Reflection;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Converter factory for all object-based types (non-enumerable and non-primitive).

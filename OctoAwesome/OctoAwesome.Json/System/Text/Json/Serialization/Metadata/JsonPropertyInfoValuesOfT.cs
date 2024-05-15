@@ -3,7 +3,7 @@
 
 using System.ComponentModel;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Provides serialization metadata about a property or field.

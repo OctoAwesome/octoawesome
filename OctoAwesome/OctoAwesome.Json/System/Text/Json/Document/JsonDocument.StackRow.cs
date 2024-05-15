@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public sealed partial class JsonDocument
     {

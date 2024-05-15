@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Generic;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization;
+namespace OctoAwesome.Json.Serialization;
 
 /// <summary>
 /// Determines how deserialization will handle object creation for fields or properties.

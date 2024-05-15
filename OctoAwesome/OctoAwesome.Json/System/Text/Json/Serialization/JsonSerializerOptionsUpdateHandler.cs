@@ -3,14 +3,14 @@
 
 using System.Collections.Generic;
 using System.Reflection.Metadata;
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json;
+using OctoAwesome.Json.Serialization.Metadata;
 
 [assembly: MetadataUpdateHandler(typeof(JsonSerializerOptionsUpdateHandler))]
 
 #pragma warning disable IDE0060
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>Handler used to clear JsonSerializerOptions reflection cache upon a metadata update.</summary>
     internal static class JsonSerializerOptionsUpdateHandler

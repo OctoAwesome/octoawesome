@@ -5,9 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Text.Json.Serialization;
+using OctoAwesome.Json.Serialization;
 
-namespace System.Text.Json.Reflection
+namespace OctoAwesome.Json.Reflection
 {
     internal static partial class ReflectionExtensions
     {

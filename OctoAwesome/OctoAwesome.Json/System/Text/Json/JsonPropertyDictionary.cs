@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Keeps both a List and Dictionary in sync to enable deterministic enumeration ordering of List

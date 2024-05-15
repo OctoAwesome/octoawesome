@@ -6,19 +6,19 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     // Recognizing types emitted by the F# compiler requires consuming APIs from the FSharp.Core runtime library.
-    // Every F# application ships with a copy of FSharp.Core, however it is not available statically to System.Text.Json.
+    // Every F# application ships with a copy of FSharp.Core, however it is not available statically to OctoAwesome.Json.
     // The following class uses reflection to access the relevant APIs required to detect the various F# types we are looking to support.
 
     /// <summary>
-    /// Proxy class used to access FSharp.Core metadata and reflection APIs that are not statically available to System.Text.Json.
+    /// Proxy class used to access FSharp.Core metadata and reflection APIs that are not statically available to OctoAwesome.Json.
     /// </summary>
     internal sealed class FSharpCoreReflectionProxy
     {
         /// <summary>
-        /// The various categories of F# types that System.Text.Json supports.
+        /// The various categories of F# types that OctoAwesome.Json supports.
         /// </summary>
         public enum FSharpKind
         {

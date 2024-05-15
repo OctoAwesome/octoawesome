@@ -4,7 +4,7 @@
 using System.Buffers;
 using System.Diagnostics;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Defines a thread-local cache for JsonSerializer to store reusable Utf8JsonWriter/IBufferWriter instances.

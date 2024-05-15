@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     [StructLayout(LayoutKind.Auto)]
     internal struct ReadBufferState : IDisposable

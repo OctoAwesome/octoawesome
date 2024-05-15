@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// Supports converting several types by using a factory pattern.

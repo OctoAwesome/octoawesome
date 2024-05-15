@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Provides a mechanism to invoke "fast-path" serialization logic via

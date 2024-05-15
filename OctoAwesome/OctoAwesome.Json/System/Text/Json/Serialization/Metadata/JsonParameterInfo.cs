@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Holds relevant state about a method parameter, like the default value of

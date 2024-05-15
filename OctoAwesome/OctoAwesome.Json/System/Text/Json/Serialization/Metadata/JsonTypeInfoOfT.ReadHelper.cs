@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Converters;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     public partial class JsonTypeInfo<T>
     {

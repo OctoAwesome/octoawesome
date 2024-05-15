@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     internal static partial class ThrowHelper
     {

@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// The default ReferenceResolver implementation to handle duplicate object references.
@@ -67,6 +67,11 @@ namespace System.Text.Json.Serialization
             }
 
             return value;
+        }
+
+        public override T ResolveReference<T>(string referenceId)
+        {
+            return (T)ResolveReference(referenceId);
         }
     }
 }

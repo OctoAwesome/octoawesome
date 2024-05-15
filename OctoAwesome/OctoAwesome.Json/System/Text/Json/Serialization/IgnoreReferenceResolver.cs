@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     internal sealed class IgnoreReferenceResolver : ReferenceResolver
     {
@@ -35,5 +35,7 @@ namespace System.Text.Json.Serialization
         public override string GetReference(object value, out bool alreadyExists) => throw new InvalidOperationException();
 
         public override object ResolveReference(string referenceId) => throw new InvalidOperationException();
+
+        public override T ResolveReference<T>(string referenceId) => throw new InvalidOperationException();
     }
 }

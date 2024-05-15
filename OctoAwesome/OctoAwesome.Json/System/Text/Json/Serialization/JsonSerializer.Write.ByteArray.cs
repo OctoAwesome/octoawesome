@@ -3,10 +3,10 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public static partial class JsonSerializer
     {
@@ -17,7 +17,7 @@ namespace System.Text.Json
         /// <param name="value">The value to convert.</param>
         /// <param name="options">Options to control the conversion behavior.</param>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <typeparamref name="TValue"/> or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode(SerializationUnreferencedCodeMessage)]
@@ -44,7 +44,7 @@ namespace System.Text.Json
         /// <paramref name="inputType"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="inputType"/>  or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode(SerializationUnreferencedCodeMessage)]
@@ -116,7 +116,7 @@ namespace System.Text.Json
         /// <paramref name="inputType"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="inputType"/>  or its serializable members.
         /// </exception>
         /// <exception cref="InvalidOperationException">

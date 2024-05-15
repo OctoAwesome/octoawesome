@@ -3,9 +3,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class ISetOfTConverter<TCollection, TElement>
         : IEnumerableDefaultConverter<TCollection, TElement>

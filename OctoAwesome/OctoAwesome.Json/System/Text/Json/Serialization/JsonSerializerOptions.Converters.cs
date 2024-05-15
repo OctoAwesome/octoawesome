@@ -3,11 +3,11 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Reflection;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Reflection;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Provides options to be used with <see cref="JsonSerializer"/>.
@@ -33,7 +33,7 @@ namespace System.Text.Json
         /// The configured <see cref="JsonConverter"/> for <paramref name="typeToConvert"/> returned an invalid converter.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="typeToConvert"/> or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode("Getting a converter for a type may require reflection which depends on unreferenced code.")]

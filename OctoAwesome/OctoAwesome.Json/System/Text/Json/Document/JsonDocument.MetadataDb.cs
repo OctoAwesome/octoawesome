@@ -10,7 +10,7 @@ using System.Threading;
 // CS9191: The 'ref' modifier for argument 2 corresponding to 'in' parameter is equivalent to 'in'. Consider using 'in' instead.
 #pragma warning disable CS9191
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public sealed partial class JsonDocument
     {

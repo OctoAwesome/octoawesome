@@ -4,7 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     public sealed partial class JsonArray : JsonNode, IList<JsonNode?>
     {

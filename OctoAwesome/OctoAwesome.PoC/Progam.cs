@@ -87,7 +87,7 @@ public static class Program
     private static void TestJson([StringSyntax("JSON")] string json)
     {
 
-        var deserialized = System.Text.Json.JsonSerializer.Deserialize<JsonObject>(json);
+        var deserialized =JsonSerializer.Deserialize<JsonObject>(json);
         JsonSerializerOptions options = new()
         {
             ReferenceHandler = new JsonRefHandler(deserialized),
@@ -206,24 +206,12 @@ public static class Program
 
         public override object ResolveReference(string referenceId)
         {
-            ref var resolved = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvedRefs, referenceId, out var exists);
-            if (exists)
-                return resolved;
 
-            var st = new StackTrace();
-            var caller = st.GetFrame(2);
-            var method = caller.GetMethod();
-            var method2 = MethodBase.GetMethodFromHandle(method.MethodHandle);
-            var cur = MethodBase.GetCurrentMethod();
-            
-            
-
-            var typeForDeserialize = caller.GetMethod().GetGenericArguments()[0];
-
-            var path = JsonPath.Parse(referenceId);
-            var res = path.Evaluate(completeRef);
-            var res2 = res.Matches[0].Value.Deserialize(typeForDeserialize);
-            return resolved = res2;
+            //var path = JsonPath.Parse(referenceId);
+            //var res = path.Evaluate(completeRef);
+            //var res2 = res.Matches[0].Value.Deserialize(typeForDeserialize);
+            //return resolved = res2;
+            return "";
 
         }
 
@@ -245,5 +233,23 @@ public static class Program
             //_people[reference] = value;
 
         }
+
+        //public override T ResolveReference<T>(string referenceId)
+        //{
+        //    ref var resolved = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvedRefs, referenceId, out var exists);
+        //    if (exists)
+        //        return (T)resolved;
+
+        //    var st = new StackTrace();
+        //    var caller = st.GetFrame(2);
+        //    var method = caller.GetMethod();
+        //    var method2 = MethodBase.GetMethodFromHandle(method.MethodHandle);
+        //    var cur = MethodBase.GetCurrentMethod();
+
+
+
+        //    var typeForDeserialize = caller.GetMethod().GetGenericArguments()[0];
+        //    return (T)(object)null;
+        //}
     }
 }

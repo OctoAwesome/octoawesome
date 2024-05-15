@@ -5,7 +5,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public sealed partial class Utf8JsonWriter
     {
@@ -567,7 +567,7 @@ namespace System.Text.Json
         /// </para>
         /// <para>
         /// If <paramref name="value"/> is <see langword="null"/> the JSON null value is written,
-        /// as if <see cref="WriteNull(System.Text.Json.JsonEncodedText)"/> was called.
+        /// as if <see cref="WriteNull(OctoAwesome.Json.JsonEncodedText)"/> was called.
         /// </para>
         /// </remarks>
         public void WriteString(JsonEncodedText propertyName, string? value)

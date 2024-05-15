@@ -1,9 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Text.Json.Serialization;
+using OctoAwesome.Json.Serialization;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Determines how a given class is treated when it is (de)serialized.

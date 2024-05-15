@@ -6,7 +6,7 @@ using System.Buffers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public sealed partial class Utf8JsonWriter
     {

@@ -3,7 +3,7 @@
 
 using System.Text.Encodings.Web;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Provides the ability for the user to define custom behavior when writing JSON

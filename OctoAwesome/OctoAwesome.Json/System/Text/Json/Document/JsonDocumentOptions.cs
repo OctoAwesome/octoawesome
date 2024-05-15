@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Provides the ability for the user to define custom behavior when parsing JSON to create a <see cref="JsonDocument"/>.

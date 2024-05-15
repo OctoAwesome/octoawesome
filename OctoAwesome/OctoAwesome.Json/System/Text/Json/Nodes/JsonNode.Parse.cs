@@ -3,11 +3,11 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Converters;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     public abstract partial class JsonNode
     {

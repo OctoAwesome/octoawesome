@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text.Json.Reflection;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Reflection;
+using OctoAwesome.Json.Serialization.Converters;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     public partial class DefaultJsonTypeInfoResolver
     {

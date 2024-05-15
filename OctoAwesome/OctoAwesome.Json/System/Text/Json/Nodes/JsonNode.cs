@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization.Converters;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     /// <summary>
     ///   The base class that represents a single node within a mutable JSON document.
@@ -178,7 +178,7 @@ namespace System.Text.Json.Nodes
         ///   The underlying value of a <see cref="JsonValue"/> after deserialization is an instance of <see cref="JsonElement"/>,
         ///   otherwise it's the value specified when the <see cref="JsonValue"/> was created.
         /// </remarks>
-        /// <seealso cref="System.Text.Json.Nodes.JsonValue.TryGetValue"></seealso>
+        /// <seealso cref="OctoAwesome.Json.Nodes.JsonValue.TryGetValue"></seealso>
         /// <exception cref="FormatException">
         ///   The current <see cref="JsonNode"/> cannot be represented as a {T}.
         /// </exception>

@@ -3,27 +3,27 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public static partial class JsonSerializer
     {
         internal const string SerializationUnreferencedCodeMessage = "JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo or JsonSerializerContext, or make sure all of the required types are preserved.";
-        internal const string SerializationRequiresDynamicCodeMessage = "JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.";
+        internal const string SerializationRequiresDynamicCodeMessage = "JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use OctoAwesome.Json source generation for native AOT applications.";
 
         /// <summary>
         /// Indicates whether unconfigured <see cref="JsonSerializerOptions"/> instances
         /// should be set to use the reflection-based <see cref="DefaultJsonTypeInfoResolver"/>.
         /// </summary>
         /// <remarks>
-        /// The value of the property is backed by the "System.Text.Json.JsonSerializer.IsReflectionEnabledByDefault"
+        /// The value of the property is backed by the "OctoAwesome.Json.JsonSerializer.IsReflectionEnabledByDefault"
         /// <see cref="AppContext"/> setting and defaults to <see langword="true"/> if unset.
         /// </remarks>
         public static bool IsReflectionEnabledByDefault { get; } =
             AppContext.TryGetSwitch(
-                switchName: "System.Text.Json.JsonSerializer.IsReflectionEnabledByDefault",
+                switchName: "OctoAwesome.Json.JsonSerializer.IsReflectionEnabledByDefault",
                 isEnabled: out bool value)
             ? value : true;
 

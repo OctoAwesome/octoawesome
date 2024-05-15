@@ -3,7 +3,7 @@
 
 using System.Collections.Concurrent;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class ConcurrentStackOfTConverter<TCollection, TElement>
         : IEnumerableDefaultConverter<TCollection, TElement>

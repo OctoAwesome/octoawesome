@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Defines a custom exception object that is thrown when invalid JSON text is encountered, when the defined maximum depth is passed,

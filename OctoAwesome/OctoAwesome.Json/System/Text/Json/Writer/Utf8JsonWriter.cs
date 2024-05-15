@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 #endif
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Provides a high-performance API for forward-only, non-cached writing of UTF-8 encoded JSON text.

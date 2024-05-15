@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Represents a supported derived type defined in the metadata of a polymorphic type.

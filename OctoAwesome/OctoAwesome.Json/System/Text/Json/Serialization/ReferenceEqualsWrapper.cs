@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     internal readonly struct ReferenceEqualsWrapper : IEquatable<ReferenceEqualsWrapper>
     {

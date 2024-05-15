@@ -3,10 +3,10 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization.Metadata;
-using FSharpKind = System.Text.Json.Serialization.Metadata.FSharpCoreReflectionProxy.FSharpKind;
+using OctoAwesome.Json.Serialization.Metadata;
+using FSharpKind = OctoAwesome.Json.Serialization.Metadata.FSharpCoreReflectionProxy.FSharpKind;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     [RequiresDynamicCode(FSharpCoreReflectionProxy.FSharpCoreUnreferencedCodeMessage)]
     internal sealed class FSharpTypeConverterFactory : JsonConverterFactory

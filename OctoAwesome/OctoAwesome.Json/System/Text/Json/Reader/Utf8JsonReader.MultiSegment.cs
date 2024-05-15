@@ -5,7 +5,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public ref partial struct Utf8JsonReader
     {

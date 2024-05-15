@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     /// <summary>
     ///   Represents a mutable JSON object.

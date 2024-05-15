@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-using FoundProperty = System.ValueTuple<System.Text.Json.Serialization.Metadata.JsonPropertyInfo, System.Text.Json.JsonReaderState, long, byte[]?, string?>;
-using FoundPropertyAsync = System.ValueTuple<System.Text.Json.Serialization.Metadata.JsonPropertyInfo, object?, string?>;
+using FoundProperty = System.ValueTuple<OctoAwesome.Json.Serialization.Metadata.JsonPropertyInfo, OctoAwesome.Json.JsonReaderState, long, byte[]?, string?>;
+using FoundPropertyAsync = System.ValueTuple<OctoAwesome.Json.Serialization.Metadata.JsonPropertyInfo, object?, string?>;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Implementation of <cref>JsonObjectConverter{T}</cref> that supports the deserialization

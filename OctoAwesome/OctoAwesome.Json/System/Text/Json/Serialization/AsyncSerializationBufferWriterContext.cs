@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     // Common interface to help de-dupe code for different types that can do async serialization (Stream and PipeWriter)
     internal interface IAsyncSerializationBufferWriterContext : IDisposable

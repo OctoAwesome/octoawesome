@@ -4,10 +4,10 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text.Json.Serialization.Converters;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// Converts an object or value to or from JSON.

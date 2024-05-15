@@ -1,10 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Nodes;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class JsonValueConverter : JsonConverter<JsonValue?>
     {

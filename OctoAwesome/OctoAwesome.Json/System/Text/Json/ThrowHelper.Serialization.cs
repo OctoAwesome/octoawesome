@@ -8,10 +8,10 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     internal static partial class ThrowHelper
     {

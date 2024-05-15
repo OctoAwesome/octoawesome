@@ -1,10 +1,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
-    /// The generation mode for the System.Text.Json source generator.
+    /// The generation mode for the OctoAwesome.Json source generator.
     /// </summary>
     [Flags]
     public enum JsonSourceGenerationMode

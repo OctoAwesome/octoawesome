@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// This class defines how the <see cref="JsonSerializer"/> deals with references on serialization and deserialization.
@@ -33,6 +33,13 @@ namespace System.Text.Json.Serialization
         /// <param name="referenceId">The reference id related to the returned object.</param>
         /// <returns>The reference type object related to specified reference id.</returns>
         public abstract object ResolveReference(string referenceId);
+        /// <summary>
+        /// Returns the CLR reference type object related to the specified reference id.
+        /// This method gets called when $ref metadata property is read.
+        /// </summary>
+        /// <param name="referenceId">The reference id related to the returned object.</param>
+        /// <returns>The reference type object related to specified reference id.</returns>
+        public abstract T ResolveReference<T>(string referenceId);
 
         // We are breaking single responsibility on this class internally.
         // In the future, if this model is required to be exposed, we can add a base class and extend this class and a new class containing below members from that base class.

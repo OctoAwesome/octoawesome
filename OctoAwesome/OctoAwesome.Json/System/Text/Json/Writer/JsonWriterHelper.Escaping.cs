@@ -10,7 +10,7 @@ using System.Text.Encodings.Web;
 using System.Runtime.CompilerServices;
 #endif
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     internal static partial class JsonWriterHelper
     {

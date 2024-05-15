@@ -4,7 +4,7 @@
 using System.Buffers.Text;
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class TimeSpanConverter : JsonPrimitiveConverter<TimeSpan>
     {

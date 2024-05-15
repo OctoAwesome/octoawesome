@@ -3,7 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     public partial class JsonNode
     {

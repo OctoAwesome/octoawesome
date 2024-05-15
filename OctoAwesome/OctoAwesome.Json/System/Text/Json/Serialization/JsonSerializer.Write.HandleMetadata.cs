@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Text.Json.Serialization;
+using OctoAwesome.Json.Serialization;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public static partial class JsonSerializer
     {

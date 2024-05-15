@@ -4,7 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     internal sealed partial class JsonPropertyDictionary<T>
     {

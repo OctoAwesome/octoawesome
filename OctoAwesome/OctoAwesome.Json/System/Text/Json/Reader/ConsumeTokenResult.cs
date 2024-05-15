@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// This enum captures the tri-state return value when trying to read the

@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Provides JSON serialization-related metadata about a type.

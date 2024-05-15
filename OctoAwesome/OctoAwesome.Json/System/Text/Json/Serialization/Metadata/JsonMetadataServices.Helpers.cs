@@ -3,9 +3,9 @@
 
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Converters;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     public static partial class JsonMetadataServices
     {

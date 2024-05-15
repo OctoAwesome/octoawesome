@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Encodings.Web;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class EnumConverter<T> : JsonPrimitiveConverter<T>
         where T : struct, Enum

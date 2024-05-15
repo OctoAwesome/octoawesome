@@ -2,13 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 #if !BUILDING_SOURCE_GENERATOR
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 #endif
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
-    /// Instructs the System.Text.Json source generator to generate source code to help optimize performance
+    /// Instructs the OctoAwesome.Json source generator to generate source code to help optimize performance
     /// when serializing and deserializing instances of the specified type and types in its object graph.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]

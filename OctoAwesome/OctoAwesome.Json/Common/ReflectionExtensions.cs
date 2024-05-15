@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 #endif
 
-namespace System.Text.Json.Reflection
+namespace OctoAwesome.Json.Reflection
 {
     internal static partial class ReflectionExtensions
     {

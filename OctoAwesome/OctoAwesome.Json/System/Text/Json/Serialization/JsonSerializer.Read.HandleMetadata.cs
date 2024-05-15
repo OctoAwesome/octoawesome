@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Nodes;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public static partial class JsonSerializer
     {
@@ -554,12 +554,12 @@ namespace System.Text.Json
             Debug.Assert(state.ReferenceId != null);
 
             string referenceId = state.ReferenceId;
-            object value = state.ReferenceResolver.ResolveReference(referenceId);
+            T value = state.ReferenceResolver.ResolveReference<T>(referenceId);
             state.ReferenceId = null;
 
             try
             {
-                return (T)value;
+                return value;
             }
             catch (InvalidCastException)
             {

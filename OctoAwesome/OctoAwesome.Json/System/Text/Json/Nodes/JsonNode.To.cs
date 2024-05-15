@@ -3,7 +3,7 @@
 
 using System.Threading;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     public abstract partial class JsonNode
     {

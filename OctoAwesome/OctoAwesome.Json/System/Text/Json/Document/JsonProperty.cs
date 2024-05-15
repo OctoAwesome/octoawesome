@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     ///   Represents a single property for a JSON object.

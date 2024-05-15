@@ -9,9 +9,10 @@
     <IncludeInternalObsoleteAttribute>true</IncludeInternalObsoleteAttribute>
     <UseCompilerGeneratedDocXmlFile>false</UseCompilerGeneratedDocXmlFile>
     <IsPackable>true</IsPackable>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <PackageDescription>Provides high-performance and low-allocating types that serialize objects to JavaScript Object Notation (JSON) text and deserialize JSON text to objects, with UTF-8 support built-in. Also provides types to read and write JSON text encoded as UTF-8, and to create an in-memory document object model (DOM), that is read-only, for random access of the JSON elements within a structured view of the data.
 
-The System.Text.Json library is built-in as part of the shared framework in .NET Runtime. The package can be installed when you need to use it in other target frameworks.</PackageDescription>
+The OctoAwesome.Json library is built-in as part of the shared framework in .NET Runtime. The package can be installed when you need to use it in other target frameworks.</PackageDescription>
   </PropertyGroup>
 
   <!-- DesignTimeBuild requires all the TargetFramework Derived Properties to not be present in the first property group. -->
@@ -41,9 +42,9 @@ The System.Text.Json library is built-in as part of the shared framework in .NET
   </ItemGroup>-->
   
   <!--<ItemGroup>
-    <ProjectReference Include="gen\System.Text.Json.SourceGeneration.Roslyn3.11.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" Condition="'$(DotNetBuildSourceOnly)' != 'true'" />
-    <ProjectReference Include="gen\System.Text.Json.SourceGeneration.Roslyn4.0.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
-    <ProjectReference Include="gen\System.Text.Json.SourceGeneration.Roslyn4.4.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
+    <ProjectReference Include="gen\OctoAwesome.Json.SourceGeneration.Roslyn3.11.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" Condition="'$(DotNetBuildSourceOnly)' != 'true'" />
+    <ProjectReference Include="gen\OctoAwesome.Json.SourceGeneration.Roslyn4.0.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
+    <ProjectReference Include="gen\OctoAwesome.Json.SourceGeneration.Roslyn4.4.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
   </ItemGroup>-->
 
 </Project>

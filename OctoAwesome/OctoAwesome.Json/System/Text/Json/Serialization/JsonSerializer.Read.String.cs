@@ -4,10 +4,10 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Provides functionality to serialize objects or value types to JSON and
@@ -36,7 +36,7 @@ namespace System.Text.Json
         ///
         /// There is remaining data in the string beyond a single JSON value.</exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <typeparamref name="TValue"/> or its serializable members.
         /// </exception>
         /// <remarks>Using a <see cref="string"/> is not as efficient as using the
@@ -73,7 +73,7 @@ namespace System.Text.Json
         ///
         /// There is remaining data in the span beyond a single JSON value.</exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <typeparamref name="TValue"/> or its serializable members.
         /// </exception>
         /// <remarks>Using a UTF-16 span is not as efficient as using the
@@ -108,7 +108,7 @@ namespace System.Text.Json
         ///
         /// There is remaining data in the string beyond a single JSON value.</exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         /// <remarks>Using a <see cref="string"/> is not as efficient as using the
@@ -152,7 +152,7 @@ namespace System.Text.Json
         ///
         /// There is remaining data in the span beyond a single JSON value.</exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         /// <remarks>Using a UTF-16 span is not as efficient as using the
@@ -344,7 +344,7 @@ namespace System.Text.Json
         ///
         /// There is remaining data in the string beyond a single JSON value.</exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         /// <exception cref="InvalidOperationException">
@@ -398,7 +398,7 @@ namespace System.Text.Json
         ///
         /// There is remaining data in the string beyond a single JSON value.</exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         /// <exception cref="InvalidOperationException">

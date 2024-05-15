@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public readonly partial struct JsonElement
     {

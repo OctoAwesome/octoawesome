@@ -3,7 +3,7 @@
 
 using System.Runtime.Serialization;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     // This class exists because the serializer needs to catch reader-originated exceptions in order to throw JsonException which has Path information.
     [Serializable]

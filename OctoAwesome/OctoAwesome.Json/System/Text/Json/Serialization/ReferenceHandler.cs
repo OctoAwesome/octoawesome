@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     /// <summary>
     /// This class defines how the <see cref="JsonSerializer"/> deals with references on serialization and deserialization.

@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public partial struct JsonElement
     {

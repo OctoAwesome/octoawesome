@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class IAsyncEnumerableOfTConverter<TAsyncEnumerable, TElement>
         : JsonCollectionConverter<TAsyncEnumerable, TElement>
@@ -43,7 +43,7 @@ namespace System.Text.Json.Serialization.Converters
             return base.OnTryWrite(writer, value, options, ref state);
         }
 
-        [Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2012:Use ValueTasks correctly", Justification = "Converter needs to consume ValueTask's in a non-async context")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2012:Use ValueTasks correctly", Justification = "Converter needs to consume ValueTask's in a non-async context")]
         protected override bool OnWriteResume(Utf8JsonWriter writer, TAsyncEnumerable value, JsonSerializerOptions options, ref WriteStack state)
         {
             IAsyncEnumerator<TElement> enumerator;

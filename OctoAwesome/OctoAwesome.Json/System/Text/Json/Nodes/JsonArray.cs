@@ -4,10 +4,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Converters;
 using System.Threading;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     /// <summary>
     ///   Represents a mutable JSON array.

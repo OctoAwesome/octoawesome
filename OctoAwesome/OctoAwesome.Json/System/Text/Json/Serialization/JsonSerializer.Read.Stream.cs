@@ -6,13 +6,13 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Converters;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public static partial class JsonSerializer
     {
@@ -36,7 +36,7 @@ namespace System.Text.Json
         /// or when there is remaining data in the Stream.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <typeparamref name="TValue"/> or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode(SerializationUnreferencedCodeMessage)]
@@ -72,7 +72,7 @@ namespace System.Text.Json
         /// or when there is remaining data in the Stream.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <typeparamref name="TValue"/> or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode(SerializationUnreferencedCodeMessage)]
@@ -110,7 +110,7 @@ namespace System.Text.Json
         /// or when there is remaining data in the Stream.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode(SerializationUnreferencedCodeMessage)]
@@ -151,7 +151,7 @@ namespace System.Text.Json
         /// or when there is remaining data in the Stream.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         [RequiresUnreferencedCode(SerializationUnreferencedCodeMessage)]
@@ -330,7 +330,7 @@ namespace System.Text.Json
         /// or when there is remaining data in the Stream.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         /// <exception cref="InvalidOperationException">
@@ -377,7 +377,7 @@ namespace System.Text.Json
         /// or when there is remaining data in the Stream.
         /// </exception>
         /// <exception cref="NotSupportedException">
-        /// There is no compatible <see cref="System.Text.Json.Serialization.JsonConverter"/>
+        /// There is no compatible <see cref="OctoAwesome.Json.Serialization.JsonConverter"/>
         /// for <paramref name="returnType"/> or its serializable members.
         /// </exception>
         /// <exception cref="InvalidOperationException">

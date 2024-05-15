@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     internal sealed class JsonTypeInfoResolverWithAddedModifiers : IJsonTypeInfoResolver
     {

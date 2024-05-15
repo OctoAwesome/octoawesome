@@ -4,13 +4,13 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text.Json.Reflection;
+using OctoAwesome.Json.Reflection;
 
-namespace System.Text.Json.Serialization
+namespace OctoAwesome.Json.Serialization
 {
     internal static class IEnumerableConverterFactoryHelpers
     {
-        // System.Text.Json doesn't take a direct reference to System.Collections.Immutable so
+        // OctoAwesome.Json doesn't take a direct reference to System.Collections.Immutable so
         // any netstandard2.0 consumers don't need to reference System.Collections.Immutable.
         // So instead, implement a "weak reference" by using strings to check for Immutable types.
 

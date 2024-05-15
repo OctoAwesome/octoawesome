@@ -3,9 +3,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Converter for <cref>System.Collections.Generic.ICollection{TElement}</cref>.

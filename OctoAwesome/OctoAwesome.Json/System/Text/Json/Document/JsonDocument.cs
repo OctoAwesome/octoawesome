@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     ///   Represents the structure of a JSON value in a lightweight, read-only form.

@@ -4,9 +4,9 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Serialization.Metadata;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     /// <summary>
     /// Implementation of <cref>JsonObjectConverter{T}</cref> that supports the deserialization

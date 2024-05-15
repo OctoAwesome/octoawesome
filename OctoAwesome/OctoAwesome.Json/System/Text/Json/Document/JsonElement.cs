@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     ///   Represents a specific JSON value within a <see cref="JsonDocument"/>.

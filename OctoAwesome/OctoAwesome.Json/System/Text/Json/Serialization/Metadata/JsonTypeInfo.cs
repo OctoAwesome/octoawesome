@@ -9,12 +9,12 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using System.Text.Json.Reflection;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Reflection;
+using OctoAwesome.Json.Serialization.Converters;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Text.Json.Serialization.Metadata
+namespace OctoAwesome.Json.Serialization.Metadata
 {
     /// <summary>
     /// Provides JSON serialization-related metadata about a type.
@@ -22,9 +22,9 @@ namespace System.Text.Json.Serialization.Metadata
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract partial class JsonTypeInfo
     {
-        internal const string MetadataFactoryRequiresUnreferencedCode = "JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use System.Text.Json source generation for native AOT applications.";
+        internal const string MetadataFactoryRequiresUnreferencedCode = "JSON serialization and deserialization might require types that cannot be statically analyzed and might need runtime code generation. Use OctoAwesome.Json source generation for native AOT applications.";
 
-        internal const string JsonObjectTypeName = "System.Text.Json.Nodes.JsonObject";
+        internal const string JsonObjectTypeName = "OctoAwesome.Json.Nodes.JsonObject";
 
         internal delegate T ParameterizedConstructorDelegate<T, TArg0, TArg1, TArg2, TArg3>(TArg0? arg0, TArg1? arg1, TArg2? arg2, TArg3? arg3);
 

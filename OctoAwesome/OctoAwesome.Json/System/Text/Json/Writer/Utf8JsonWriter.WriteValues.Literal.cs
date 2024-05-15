@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     public sealed partial class Utf8JsonWriter
     {

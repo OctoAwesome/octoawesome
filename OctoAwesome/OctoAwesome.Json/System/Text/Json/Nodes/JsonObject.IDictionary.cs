@@ -3,10 +3,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Converters;
 using System.Threading;
 
-namespace System.Text.Json.Nodes
+namespace OctoAwesome.Json.Nodes
 {
     public partial class JsonObject : IDictionary<string, JsonNode?>
     {

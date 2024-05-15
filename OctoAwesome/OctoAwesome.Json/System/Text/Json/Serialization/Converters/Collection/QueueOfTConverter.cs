@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Text.Json.Serialization.Converters
+namespace OctoAwesome.Json.Serialization.Converters
 {
     internal sealed class QueueOfTConverter<TCollection, TElement>
         : IEnumerableDefaultConverter<TCollection, TElement>

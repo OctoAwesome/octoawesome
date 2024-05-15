@@ -7,13 +7,13 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Encodings.Web;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Converters;
-using System.Text.Json.Serialization.Metadata;
+using OctoAwesome.Json.Nodes;
+using OctoAwesome.Json.Serialization;
+using OctoAwesome.Json.Serialization.Converters;
+using OctoAwesome.Json.Serialization.Metadata;
 using System.Threading;
 
-namespace System.Text.Json
+namespace OctoAwesome.Json
 {
     /// <summary>
     /// Provides options to be used with <see cref="JsonSerializer"/>.
