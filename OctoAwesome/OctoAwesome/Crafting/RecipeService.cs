@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Definitions;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,11 +14,17 @@ namespace OctoAwesome.Crafting;
 public class RecipeService
 {
     private readonly List<Recipe> recipes = new();
+    private readonly IDefinitionManager definitionManager;
 
     /// <summary>
     /// Gets a collection of recipes managed by this service.
     /// </summary>
     public IReadOnlyCollection<Recipe> Recipes => recipes;
+
+    public RecipeService(IDefinitionManager definitionManager)
+    {
+        this.definitionManager = definitionManager;
+    }
 
     /// <summary>
     /// Load recipes from the given paths.
@@ -32,6 +40,22 @@ public class RecipeService
             foreach (var item in recipes)
             {
                 var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
+
+                foreach (var inp in recipe.Inputs)
+                {
+                    if (!string.IsNullOrWhiteSpace(inp.MaterialName))
+                        inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
+                    if (!string.IsNullOrWhiteSpace(inp.ItemName))
+                        inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
+                }
+                foreach (var inp in recipe.Outputs)
+                {
+                    if (!string.IsNullOrWhiteSpace(inp.MaterialName))
+                        inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
+                    if (!string.IsNullOrWhiteSpace(inp.ItemName))
+                        inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
+                }
+
                 //TODO Check validity of recipe before adding and write exception otherwise
                 Debug.Assert(recipe != null, nameof(recipe) + " != null");
                 this.recipes.Add(recipe);

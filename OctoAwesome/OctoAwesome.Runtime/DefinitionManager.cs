@@ -3,7 +3,9 @@ using OctoAwesome.Extension;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OctoAwesome.Runtime
 {
@@ -13,6 +15,7 @@ namespace OctoAwesome.Runtime
     public class DefinitionManager : IDefinitionManager
     {
         private readonly ExtensionService extensionService;
+        private readonly Dictionary<string, List<IDefinition>> aliasDict = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
@@ -41,8 +44,24 @@ namespace OctoAwesome.Runtime
             // collect materials
             MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
 
-            //collect foods
+            // collect foods
             FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
+
+            foreach (var item in Directory.GetFiles("Definitions", "*.json"))
+            {
+                var aliasse =  System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string[]>>(File.ReadAllText(item));
+                foreach (var alias in aliasse)
+                {
+                    var def = definitions.First(x=>x.GetType().FullName ==alias.Key);
+                    foreach (var dictName in alias.Value)
+                    {
+                        ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(aliasDict, dictName, out var exists);
+                        if (!exists)
+                            list = new();
+                        list!.Add(def);
+                    }
+                }
+            }
         }
 
         /// <inheritdoc />

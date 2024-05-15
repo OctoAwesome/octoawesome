@@ -4,6 +4,7 @@ using OctoAwesome.Information;
 using OctoAwesome.Location;
 
 using System;
+using System.Text;
 
 namespace OctoAwesome.Basics.Definitions.Trees
 {
@@ -34,6 +35,8 @@ namespace OctoAwesome.Basics.Definitions.Trees
         /// <inheritdoc />
         public override void Init(IDefinitionManager definitionManager)
         {
+
+
             wood = definitionManager.GetDefinitionIndex<BirchWoodBlockDefinition>();
             leave = definitionManager.GetDefinitionIndex<LeavesBlockDefinition>();
             water = definitionManager.GetDefinitionIndex<WaterBlockDefinition>();

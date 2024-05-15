@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../octoawesome/crafting/recipe-schema.json#",
+  "$original":  "WoodenAxe.json#/Description",
+  "Enabled": true,
+  "Name": "Wooden Axe 8",
+  "Description": "Crafts Wooden Axe with wood",
+  "Keywords": [
+    "Crafting"
+  ],
+  "Time": 5,
+
+  "Inputs": [
+    {
+      "ItemName": "Wood",
+      "Count": 2
+    }
+  ],
+  "Outputs": [
+    {
+      "ItemName": "Axe",
+      "Count": 1
+    }
+  ],
+  "Categories": [
+    {
+      "Name": "Crafting",
+      "SubCategory": "Wood"
+    }
+  ]
+
+
+}

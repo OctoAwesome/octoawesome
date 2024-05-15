@@ -31,10 +31,7 @@
 		<Using Include="NonSucking.Framework.Extension.IoC" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="Definitions\Recipes\WoodenAxe.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Definitions\Recipes\WoodenPickAxe.json">
+	  <None Update="Definitions\Recipes\*.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

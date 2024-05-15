@@ -10,13 +10,13 @@
 
   "Inputs": [
     {
-      "ItemName": "Wood",
+      "AliasName": "octoawesome:wood",
       "Count": 2
     }
   ],
   "Outputs": [
     {
-      "ItemName": "PickAxe",
+      "ItemName": "Pickaxe",
       "Count": 1
     }
   ],

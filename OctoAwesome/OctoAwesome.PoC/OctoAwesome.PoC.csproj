@@ -9,16 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JsonPath.Net" Version="1.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <!--<ProjectReference Include="..\OctoAwesome.Client\OctoAwesome.Client.csproj"  />-->
-	  <!--<ProjectReference Include="..\OctoAwesome.Basics\OctoAwesome.Basics.csproj" />
-	  <ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
-	  <ProjectReference Include="..\OctoAwesome.Network\OctoAwesome.Network.csproj" />
-	  <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />-->
+    <ProjectReference Include="..\OctoAwesome.Json\OctoAwesome.Json.csproj" />
+    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties recipes_4ourfirstrecipe_1json__JsonSchema="" recipes_4oursecondrecipe_1json__JsonSchema="https://carafe.fm/schema/draft-02/bundle.schema.json" /></VisualStudio></ProjectExtensions>
+  <ItemGroup>
+    <None Update="Definitions\Subdir\TestA.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Definitions\TestA.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Definitions\TestB.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

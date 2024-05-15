@@ -6,7 +6,10 @@ using engenious.UI.Controls;
 using OctoAwesome.Client.Components;
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Crafting;
+using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
+using OctoAwesome.Runtime;
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +29,8 @@ internal class CraftingMenuScreen : OctoScreen
     private readonly IReadOnlyCollection<Recipe> craftingRecipes;
     private readonly PlayerComponent player;
     private readonly InventoryComponent playerInventory;
+    private readonly IDefinitionManager definitionManager;
+    private readonly Button craftButton;
     private Recipe? selectedRecipe = null;
 
     public CraftingMenuScreen(AssetComponent assets) : base(assets)
@@ -38,19 +43,34 @@ internal class CraftingMenuScreen : OctoScreen
 
         player = ScreenManager.Player;
         playerInventory = player.Inventory;
-
+        definitionManager = TypeContainer.Get<IDefinitionManager>();
 
         var panelBackground = assets.LoadTexture("panel");
         Debug.Assert(panelBackground != null, nameof(panelBackground) + " != null");
 
-        var mainGrid = new Grid()
+        var panel = new Panel()
         {
-
             Background = NineTileBrush.FromSingleTexture(panelBackground, 30, 30),
             Width = 800,
             Height = 500,
         };
 
+        craftButton = new Button()
+        {
+            ZOrder = 15,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Content = new Label { Text = "Craft" },
+            Margin = new Border { Right = 20, Bottom = 20 }
+        };
+        craftButton.LeftMouseClick += CraftButtonPressed;
+        panel.Controls.Add(craftButton);
+
+        var mainGrid = new Grid()
+        {
+            ZOrder = 10
+        };
+        panel.Controls.Add(mainGrid);
         var recipeListColumn = new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 10 };
 
         var recipeOverviewColumn = new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 25 };
@@ -105,7 +125,17 @@ internal class CraftingMenuScreen : OctoScreen
         recipeService = TypeContainer.Get<RecipeService>();
         craftingRecipes = recipeService.GetByType("Crafting");
 
-        Controls.Add(mainGrid);
+        Controls.Add(panel);
+    }
+
+
+    private void CraftButtonPressed(Control sender, MouseEventArgs args)
+    {
+        if (selectedRecipe is null)
+            Environment.Exit(0); //todo erziehen
+
+        
+
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs args)
@@ -118,12 +148,26 @@ internal class CraftingMenuScreen : OctoScreen
     private void FillRecipes()
     {
         recipeList.Controls.Clear();
-        foreach (var item in craftingRecipes)
+        foreach (var currentRecipe in craftingRecipes)
         {
-            var button = new Button { MinWidth = 175, MaxWidth = 175, Content = new Label { Text = item.Name } };
+            var button = new Button { MinWidth = 175, MaxWidth = 175, Content = new Label { Text = currentRecipe.Name } };
             button.LeftMouseClick += (s, e) =>
             {
-                selectedRecipe = item;
+                selectedRecipe = currentRecipe;
+                bool matched = true;
+                foreach (var inputItem in currentRecipe.Inputs)
+                {
+                    if (!matched)
+                        break;
+                    var itemFound = playerInventory.Contains(inputItem.ItemName, inputItem.Count);
+
+                    if (!itemFound)
+                    {
+                        matched = false;
+                        break;
+                    }
+                }
+                craftButton.Enabled = matched;
                 Refresh();
             };
             recipeList.Controls.Add(button);
@@ -152,7 +196,6 @@ internal class CraftingMenuScreen : OctoScreen
 
     protected override void OnKeyDown(KeyEventArgs args)
     {
-
         if (ScreenManager.CanGoBack && (args.Key == Keys.Escape || args.Key == Keys.C))
         {
             args.Handled = true;

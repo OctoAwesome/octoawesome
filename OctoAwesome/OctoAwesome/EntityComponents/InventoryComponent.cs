@@ -552,8 +552,17 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         /// <param name="item">the item to check</param>
         /// <param name="quanity">the quantity that needs to be present</param>
-        /// <returns>When the item was succesfully found int the requried quantity returns <see langword="true"/> otherwise <see langword="false"/></returns>
+        /// <returns>When the item was succesfully found and the requried quantity returns <see langword="true"/> otherwise <see langword="false"/></returns>
         public bool Contains(IInventoryable item, int quanity) => inventory.Where(x => x.Item == item).Sum(x => x.Amount) >= quanity;
+
+        /// <summary>
+        /// Checks if the item is part of this inventory bases on the item definition name in the required quantity
+        /// </summary>
+        /// <param name="itemDefinitionName">the item definition name to check</param>
+        /// <param name="quanity">the quantity that needs to be present</param>
+        /// <returns>When the item definition name was succesfully found and the requried quantity returns <see langword="true"/> otherwise <see langword="false"/></returns>
+        public bool Contains(string itemDefinitionName, int quanity) => inventory.Where(x => x.Item?.GetDefinition().DisplayName == itemDefinitionName).Sum(x => x.Amount) >= quanity;
+
 
         /// <summary>
         /// Checks if the item is part of this inventory in the required quantity, not more or less
