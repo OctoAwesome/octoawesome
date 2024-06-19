@@ -5,16 +5,16 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
-	  <nullable>enable</nullable>
+	 <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="JsonPath.Net" Version="1.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\OctoAwesome.Json\OctoAwesome.Json.csproj" />
     <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
   </ItemGroup>
 
@@ -28,7 +28,9 @@
     <None Update="Definitions\TestB.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="System.Text.Json.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>
