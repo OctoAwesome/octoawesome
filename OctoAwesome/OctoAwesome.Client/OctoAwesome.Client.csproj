@@ -9,7 +9,6 @@
 		<ApplicationIcon>octoawesome.ico</ApplicationIcon>
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 	</PropertyGroup>
 
 	<ItemGroup>

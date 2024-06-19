@@ -1,11 +1,13 @@
 {
   "base_woodmaterial": {
-    "Name": "wood"
+    "Name": "wo\"od",
+    "MeinPluginWert":  "Jaba"
   },
+  "quer": [ "a", "b", "c" ],
   "base_woodaxe": {
     "test": true,
     "Material": {
-      "$ref": "base_woodmaterial"
+      "$ref": "$['Subdir/TestA.json'].base_glassmaterial"
     },
     "fluid": { "viscosity": 997 },
     "netherBehaviour": {
