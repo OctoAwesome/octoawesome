@@ -11,16 +11,16 @@ namespace OctoAwesome.Definitions
     /// <summary>
     /// Base class fo block definitions.
     /// </summary>
-    public abstract class BlockDefinition : IBlockDefinition
+    public class BlockDefinition : IBlockDefinition
     {
         /// <inheritdoc />
         public virtual uint SolidWall => 0x3f;
 
         /// <inheritdoc />
-        public abstract string DisplayName { get; }
+        public virtual string DisplayName { get; }
 
         /// <inheritdoc />
-        public abstract string Icon { get; }
+        public virtual string Icon { get; }
 
         /// <inheritdoc />
         public virtual int StackLimit => 100;
@@ -32,7 +32,7 @@ namespace OctoAwesome.Definitions
         public virtual int VolumePerHit => 25;
 
         /// <inheritdoc />
-        public abstract string[] Textures { get; }
+        public virtual string[] Textures { get; }
 
         /// <inheritdoc />
         public virtual bool HasMetaData => false;
@@ -41,7 +41,8 @@ namespace OctoAwesome.Definitions
         public virtual TimeSpan TimeToVolumeReset { get; } = TimeSpan.FromSeconds(10);
 
         /// <inheritdoc />
-        public abstract IMaterialDefinition Material { get; }
+        
+        public virtual IMaterialDefinition Material { get;  }
         /// <inheritdoc />
         public int Density => Material.Density;
 

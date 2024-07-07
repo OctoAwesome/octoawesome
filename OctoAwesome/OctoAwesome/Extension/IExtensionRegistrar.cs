@@ -11,7 +11,7 @@ namespace OctoAwesome.Extension
         /// <summary>
         /// The name to listen on
         /// </summary>
-        string ChannelName { get; }
+        public string ChannelName => "";
 
     }
 
