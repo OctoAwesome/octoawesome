@@ -9,9 +9,10 @@ namespace OctoAwesome.Extension
     /// <summary>
     /// Registrar for map populator extension loading
     /// </summary>
-    public class MapPopulatorRegistrar : BaseRegistrar<IMapPopulator>
+    public class MapPopulatorRegistrar : IExtensionRegistrar<IMapPopulator>
     {
         private List<IMapPopulator> mapPopulators;
+
 
         /// <summary>
         /// Initializes a new instance of the<see cref="MapPopulatorRegistrar" /> class
@@ -22,13 +23,13 @@ namespace OctoAwesome.Extension
         }
 
         /// <inheritdoc/>
-        public override void Register(IMapPopulator populator)
+        public void Register(IMapPopulator populator)
         {
             mapPopulators.Add(populator);
         }
 
         /// <inheritdoc/>
-        public override void Unregister(IMapPopulator item)
+        public void Unregister(IMapPopulator item)
         {
             mapPopulators.Remove(item);
         }
@@ -37,7 +38,7 @@ namespace OctoAwesome.Extension
         /// Return a List of Populators
         /// </summary>
         /// <returns>List of Populators</returns>
-        public override IReadOnlyCollection<IMapPopulator> Get()
+        public IReadOnlyCollection<IMapPopulator> Get()
         {
             return mapPopulators;
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Nodes;
 
 namespace OctoAwesome.Definitions
 {
@@ -66,5 +67,7 @@ namespace OctoAwesome.Definitions
         /// <typeparam name="T">Type of the block definitions to enumerate.</typeparam>
         /// <returns>The enumeration of the block definitions.</returns>
         IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition;
+        void RegisterDefinitionInstance(string key, JsonObject o, string[] jArr);
+        bool TryGet<T>(string id, out T? definition) where T : IDefinition;
     }
 }

@@ -9,11 +9,10 @@ namespace OctoAwesome.Extension
     /// <summary>
     /// Registrar class for handling types annotated with the <see cref="SerializationIdAttribute"/>.
     /// </summary>
-    public class SerializationRegistrar : BaseRegistrar<BaseSerializationIdAttribute>
+    public class SerializationRegistrar : IExtensionRegistrar<BaseSerializationIdAttribute>
     {
         /// <inheritdoc />
-        public override string ChannelName => ChannelNames.Serialization;
-
+        public string ChannelName => ChannelNames.Serialization;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializationRegistrar"/> class.
@@ -28,7 +27,7 @@ namespace OctoAwesome.Extension
         /// Registers a Type with the required <see cref="SerializationIdAttribute"/>.
         /// </summary>
         /// <param name="type">Type with <see cref="SerializationIdAttribute"/></param>
-        public override void Register(BaseSerializationIdAttribute type)
+        public void Register(BaseSerializationIdAttribute type)
         {
             var serId = type.CombinedId;
 
@@ -56,12 +55,12 @@ namespace OctoAwesome.Extension
         /// Not supported
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public override void Unregister(BaseSerializationIdAttribute value) => throw new NotSupportedException();
+        public void Unregister(BaseSerializationIdAttribute value) => throw new NotSupportedException();
 
         /// <summary>
         /// Not supported, use <see cref="SerializationIdTypeProvider"/> instead
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public override IReadOnlyCollection<BaseSerializationIdAttribute> Get() => throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
+        public IReadOnlyCollection<BaseSerializationIdAttribute> Get() => throw new NotSupportedException($"Please use {nameof(SerializationIdTypeProvider)} instead");
     }
 }

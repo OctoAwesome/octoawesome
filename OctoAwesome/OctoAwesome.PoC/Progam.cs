@@ -11,20 +11,133 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using SixLabors.ImageSharp.Formats.Gif;
 using OctoAwesome.Definitions;
+using NonSucking.Framework.Extension.IoC;
 namespace OctoAwesome.PoC;
+public class PocManager
+{
+    private Dictionary<string, List<IDefinition>> definitions = [];
+    private Dictionary<string, Type> definitionTypes = new();
 
-public class BD : BlockDefinition
+    public dynamic GetDefinition(int index) { return ""; }
+    public dynamic GetDefinitionByTypeName(string typeName) { return ""; }
+
+    public void RegisterDefinitionType(string typeName, Type definition)
+    {
+        if (!definition.IsAssignableTo(typeof(IDefinition)))
+            throw new ArgumentException(nameof(definition));
+
+        definitionTypes[typeName] = definition;
+    }
+
+    public void RegisterDefinitionInstance(string id, JsonNode element, string[] types)
+    {
+        foreach (var type in types)
+        {
+            if (definitionTypes.TryGetValue(type, out var definition))
+            {
+                ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(definitions, id, out var exists);
+                if (!exists)
+                    entry = new();
+
+                entry.Add((IDefinition)JsonSerializer.Deserialize(element, definition));
+            }
+        }
+    }
+
+    public void RegisterOnInteract(string definitionType, Action<IMaterialDefinition, object> onInteract)
+    {
+
+    }
+
+    public T GetDefinition<T>(string id)
+    {
+        if(definitions.TryGetValue(id, out var defs))
+        {
+            foreach (var def in defs)
+            {
+                if (def is T t)
+                    return t;
+            }
+        }
+
+        return default;
+    }
+}
+public class TypesConverter<T> : JsonConverter<T> where T : IDefinition
+{
+    private PocManager definitionManager;
+
+    public TypesConverter()
+    {
+        definitionManager = TypeContainer.Get<PocManager>();
+    }
+
+    public override bool CanConvert(Type typeToConvert)
+    {
+        return typeToConvert.IsAssignableFrom(typeof(T));
+    }
+
+    public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var elem = JsonSerializer.Deserialize<Dictionary<string, JsonNode>>(ref reader);
+
+        var key = elem.Keys.First();
+
+        var def = definitionManager.GetDefinition<T>(key);
+        if (def is not null)
+            return def;
+
+        if (elem[key] is JsonObject o && o.ContainsKey("@types"))
+        {
+
+            var jArr = o["@types"].Deserialize<string[]>();
+            definitionManager.RegisterDefinitionInstance(key, o, jArr);
+        }
+
+        return definitionManager.GetDefinition<T>(key);
+    }
+
+    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class TestMaterialDefinition : IMaterialDefinition
+{
+    public int Hardness { get; set; }
+    public int Density { get; set; }
+    public string DisplayName { get; set; }
+    public string Icon { get; set; }
+}
+
+public class BaseBlockDefinition : BlockDefinition
 {
     public override string DisplayName { get; }
     public override string Icon { get; }
     public override string[] Textures { get; }
-    public override IMaterialDefinition Material { get; }
+    [JsonIgnore]
+    public override IMaterialDefinition Material => material;
+    [JsonConverter(typeof(TypesConverter<TestMaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
+    private IMaterialDefinition material = default!;
 
-    public BD(string displayName, string icon, string[] textures)
+
+    public BaseBlockDefinition(string displayName, string icon, string[] textures)
     {
         DisplayName = displayName;
         Icon = icon;
         Textures = textures;
+    }
+
+}
+
+public class ModABD : BaseBlockDefinition
+{
+    [JsonConverter(typeof(TypesConverter<IMaterialDefinition>))]
+    public int MagicMana { get; set; } //ModB
+
+    public ModABD(string displayName, string icon, string[] textures) : base(displayName, icon, textures)
+    {
     }
 
 }
@@ -41,7 +154,10 @@ public static class Program
         //3. ???
 
         var definitionManager = new PocManager();
-        definitionManager.RegisterTypeDefinition("core.block", typeof(BD));
+        TypeContainer.Register(definitionManager);
+        definitionManager.RegisterDefinitionType("core.block", typeof(BaseBlockDefinition));
+        definitionManager.RegisterDefinitionType("core.testMaterial", typeof(TestMaterialDefinition));
+        //definitionManager.RegisterTypeDefinition("modA.block", typeof(ModABD));
 
         StringBuilder sb = new();
         sb.Append("{");
@@ -93,8 +209,8 @@ public static class Program
             var jPath = JsonPath.Parse(path);
             var res = jPath.Evaluate(jo);
             var match = res.Matches[0];
-
-            allCombined = allCombined.Insert(refIndex, match.Value.ToJsonString());
+            var key = jPath.Segments.Last().Selectors.Last().ToString().Replace("'", "\"");
+            allCombined = allCombined.Insert(refIndex, $"{{{key}:{match.Value.ToJsonString()}}}");
             currentIndex = refIndex;
         }
         jo = JsonNode.Parse(allCombined);
@@ -104,16 +220,17 @@ public static class Program
             .Deserialize<Dictionary<string, Dictionary<string, JsonNode>>>(allCombined)
             .SelectMany(x => x.Value)
             .ToDictionary(x => x.Key, x => x.Value);
-        ;
 
         foreach (var item in ro)
         {
             if (item.Value is JsonObject o && o.ContainsKey("@types"))
             {
                 var jArr = o["@types"].Deserialize<string[]>();
-                definitionManager.RegisterDefinition(item.Key, item.Value, jArr);
+                definitionManager.RegisterDefinitionInstance(item.Key, item.Value, jArr);
             }
         }
+
+        var bw = definitionManager.GetDefinition<BaseBlockDefinition>("base_woodwood");
 
 
         TestJson(allCombined);
@@ -128,42 +245,7 @@ public static class Program
         public string[] Types { get; set; }
     }
 
-    public class PocManager
-    {
-        private Dictionary<string, Dictionary<string, IDefinition>> definitions = new();
-        private Dictionary<string, Type> definitionTypes = new();
 
-        public dynamic GetDefinition(int index) { return ""; }
-        public dynamic GetDefinitionByTypeName(string typeName) { return ""; }
-
-        public void RegisterTypeDefinition(string typeName, Type definition)
-        {
-            if (!definition.IsAssignableTo(typeof(IDefinition)))
-                throw new ArgumentException(nameof(definition));
-
-            definitionTypes[typeName] = definition;
-        }
-
-        public void RegisterDefinition(string id, JsonNode element, string[] types)
-        {
-            foreach (var type in types)
-            {
-                if (definitionTypes.TryGetValue(type, out var definition))
-                {
-                    ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(definitions, id, out var exists);
-                    if (!exists)
-                        entry = new();
-
-                    entry[type] = (IDefinition)JsonSerializer.Deserialize(element, definition);
-                }
-            }
-        }
-
-        public T GetDefinition<T>(string id)
-        {
-            return default;
-        }
-    }
 
     private static void TestJson([StringSyntax("JSON")] string json)
     {
