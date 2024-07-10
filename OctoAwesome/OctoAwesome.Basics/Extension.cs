@@ -1,5 +1,5 @@
 ﻿using engenious;
-
+using Newtonsoft.Json;
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.FunctionBlocks;
@@ -9,16 +9,18 @@ using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Graphs;
+using OctoAwesome.Location;
+using OctoAwesome.Rx;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
-using OctoAwesome.Rx;
-using OctoAwesome.Basics.Definitions.Items;
-using System.Linq;
-using OctoAwesome.Graphs;
-
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using OctoAwesome.Location;
+using System.Text;
+using System.Text.Json;
 
 namespace OctoAwesome.Basics
 {
@@ -52,11 +54,79 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public void RegisterTypes(ExtensionService extensionLoader)
         {
+            string ConvertName(string name)
+            {
+                name
+                    = name
+                    .Replace("Definition", "");
+                StringBuilder sb = new();
+                int currIndex = 0;
+                foreach (var letter in name)
+                {
+                    if (char.IsUpper(letter))
+                    {
+                        sb.Insert(0, '_');
+                        sb.Insert(1, letter);
+                        currIndex = 1;
+                    }
+                    else
+                        sb.Insert(currIndex, letter);
+                    currIndex++;
+                }
+                return "base" + sb.ToString().ToLower();
+            }
+
+            var folder = "F:\\Projekte\\Visual 2019\\OctoAwesome\\OctoAwesome\\temp";
+            var list = new Dictionary<string, IDefinition>();
+
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
-                    extensionLoader.Register(t, ChannelNames.Definitions);
+                {
+                    try
+                    {
+
+                        var constructor = t.GetConstructors().First();
+
+                        if (constructor is null)
+                        {
+
+                            list.Add(ConvertName(t.Name), (IDefinition)Activator.CreateInstance(t));
+                        }
+                        else
+                        {
+                            var parameters
+                                = constructor
+                                    .GetParameters()
+                                    .Select<ParameterInfo, object>(p => Activator.CreateInstance(p.ParameterType))
+                                    .ToArray();
+
+                            list.Add(ConvertName(t.Name), (IDefinition)constructor.Invoke(parameters));
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ;
+                    }
+
+
+                }
+                //extensionLoader.Register(t, ChannelNames.Definitions);
             }
+
+            try
+            {
+                File.WriteAllText(Path.Combine(folder, "definitions.json"), JsonConvert.SerializeObject(list, Formatting.Indented));
+
+            }
+            catch (Exception ex)
+            {
+                ;
+            }
+
+
+            ;
 
         }
 
@@ -69,6 +139,15 @@ namespace OctoAwesome.Basics
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
+
+            extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_food", typeof(FoodMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
+
             Extend(extensionLoader);
             RegisterInteracts();
         }

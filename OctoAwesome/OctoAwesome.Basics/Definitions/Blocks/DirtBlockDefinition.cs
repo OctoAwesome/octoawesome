@@ -15,10 +15,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "dirt";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["dirt"];
+        public override string[] Textures { get; init; } = ["dirt"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DirtBlockDefinition"/> class.

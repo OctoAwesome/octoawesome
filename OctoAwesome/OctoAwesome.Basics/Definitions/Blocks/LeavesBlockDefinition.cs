@@ -16,10 +16,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "leaves";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["leaves"];
+        public override string[] Textures { get; init; } = ["leaves"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         /// <summary>
         /// Initializes a new instance of the <see cref="LeavesBlockDefinition"/> class.
         /// </summary>

@@ -19,10 +19,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "ice";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["ice"];
+        public override string[] Textures { get; init; } = ["ice"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         public string[] TransferTypes { get; } = ["Signal"];
 
         /// <summary>

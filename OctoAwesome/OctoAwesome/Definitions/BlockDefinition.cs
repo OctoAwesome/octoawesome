@@ -5,6 +5,9 @@ using OctoAwesome.Information;
 using OctoAwesome.Services;
 
 using System;
+using System.Linq;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OctoAwesome.Definitions
 {
@@ -17,10 +20,10 @@ namespace OctoAwesome.Definitions
         public virtual uint SolidWall => 0x3f;
 
         /// <inheritdoc />
-        public virtual string DisplayName { get; }
+        public virtual string DisplayName { get; init; }
 
         /// <inheritdoc />
-        public virtual string Icon { get; }
+        public virtual string Icon { get; init; }
 
         /// <inheritdoc />
         public virtual int StackLimit => 100;
@@ -32,17 +35,21 @@ namespace OctoAwesome.Definitions
         public virtual int VolumePerHit => 25;
 
         /// <inheritdoc />
-        public virtual string[] Textures { get; }
+        public virtual string[] Textures { get; init; }
 
         /// <inheritdoc />
-        public virtual bool HasMetaData => false;
+        public virtual bool HasMetaData { get; init; } = false;
 
         /// <inheritdoc />
-        public virtual TimeSpan TimeToVolumeReset { get; } = TimeSpan.FromSeconds(10);
+        public virtual TimeSpan TimeToVolumeReset { get; init; } = TimeSpan.FromSeconds(10);
 
-        /// <inheritdoc />
-        
-        public virtual IMaterialDefinition Material { get;  }
+        /// <inheritdoc />        
+        [JsonConverter(typeof(TypesConverter<MaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
+        public virtual IMaterialDefinition Material { get; init; }
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
+
         /// <inheritdoc />
         public int Density => Material.Density;
 
@@ -86,5 +93,5 @@ namespace OctoAwesome.Definitions
         /// <returns>Current <see cref="BlockDefinition"/></returns>
         public IDefinition GetDefinition() => this;
 
-    }
+    }   
 }

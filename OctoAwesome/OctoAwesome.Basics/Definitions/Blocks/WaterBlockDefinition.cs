@@ -18,10 +18,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "water";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["water"];
+        public override string[] Textures { get; init; } = ["water"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WaterBlockDefinition"/> class.

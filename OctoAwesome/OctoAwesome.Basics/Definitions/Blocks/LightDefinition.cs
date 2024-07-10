@@ -20,10 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => "Licht";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["light_off", "light_on"];
+        public override string[] Textures { get; init; } = ["light_off", "light_on"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         public string[] TransferTypes { get; } = ["Energy"];
 
         /// <summary>

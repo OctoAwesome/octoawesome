@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using OctoAwesome.Extension;
+using System.Linq;
 
 namespace OctoAwesome.Definitions.Items
 {
@@ -44,6 +45,9 @@ namespace OctoAwesome.Definitions.Items
 
         /// <inheritdoc />
         public int Density => Material.Density;
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
 
         private readonly IDefinitionManager definitionManager;
         private IItemDefinition? definition;

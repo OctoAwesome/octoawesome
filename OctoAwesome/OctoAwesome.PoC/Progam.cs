@@ -113,32 +113,18 @@ public class TestMaterialDefinition : IMaterialDefinition
 
 public class BaseBlockDefinition : BlockDefinition
 {
-    public override string DisplayName { get; }
-    public override string Icon { get; }
-    public override string[] Textures { get; }
-    [JsonIgnore]
-    public override IMaterialDefinition Material => material;
     [JsonConverter(typeof(TypesConverter<TestMaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
-    private IMaterialDefinition material = default!;
+    public override IMaterialDefinition Material { get => base.Material; init => base.Material = value; }
 
-
-    public BaseBlockDefinition(string displayName, string icon, string[] textures)
-    {
-        DisplayName = displayName;
-        Icon = icon;
-        Textures = textures;
-    }
+    //[JsonConverter(typeof(TypesConverter<TestMaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
+    //private IMaterialDefinition material = default!;
 
 }
 
-public class ModABD : BaseBlockDefinition
+public class ModMagic : BaseBlockDefinition
 {
     [JsonConverter(typeof(TypesConverter<IMaterialDefinition>))]
     public int MagicMana { get; set; } //ModB
-
-    public ModABD(string displayName, string icon, string[] textures) : base(displayName, icon, textures)
-    {
-    }
 
 }
 public static class Program

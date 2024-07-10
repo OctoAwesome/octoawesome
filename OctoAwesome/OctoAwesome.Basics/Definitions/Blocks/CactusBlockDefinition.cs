@@ -24,10 +24,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => Languages.OctoBasics.Cactus;
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["cactus_inside", "cactus_side", "cactus_top"];
+        public override string[] Textures { get; init; } = ["cactus_inside", "cactus_side", "cactus_top"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         public string[] TransferTypes { get; } = ["Energy", "Signal"];
 
         /// <summary>

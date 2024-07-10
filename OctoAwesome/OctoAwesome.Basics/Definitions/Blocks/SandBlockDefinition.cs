@@ -15,10 +15,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "sand";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["sand"];
+        public override string[] Textures { get; init; } = ["sand"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SandBlockDefinition"/> class.
