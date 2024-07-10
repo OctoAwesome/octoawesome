@@ -29,10 +29,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => "PressurePlate Block";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["wood_top", "wood_side"];
+        public override string[] Textures { get; init; } = ["wood_top", "wood_side"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         public string[] TransferTypes { get; } = ["Signal"];
 
         /// <summary>

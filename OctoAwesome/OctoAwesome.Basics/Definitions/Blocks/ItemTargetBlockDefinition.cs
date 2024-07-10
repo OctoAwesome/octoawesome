@@ -30,10 +30,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => "Item Target Block";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["water"];
+        public override string[] Textures { get; init; } = ["water"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         public string[] TransferTypes { get; } = ["ItemTransfer"];
 
         /// <summary>

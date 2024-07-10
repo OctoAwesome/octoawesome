@@ -39,7 +39,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
             };
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedCottonBlockDefinition"/> class.

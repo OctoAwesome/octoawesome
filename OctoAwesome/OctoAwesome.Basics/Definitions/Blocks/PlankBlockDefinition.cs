@@ -18,10 +18,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override bool HasMetaData => true;
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["planks"];
+        public override string[] Textures { get; init; } = ["planks"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlankBlockDefinition"/> class.

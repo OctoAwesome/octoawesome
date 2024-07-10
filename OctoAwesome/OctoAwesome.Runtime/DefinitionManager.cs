@@ -53,10 +53,8 @@ namespace OctoAwesome.Runtime
         private readonly DefinitionRegistrar registrar;
 
         /*
-         1. Implement Base types for all IDefinition Interfaces
-         2. Get Base types to fill the currently existing arrays
          3. Jsonisierung
-         4. ...
+         4. Übersetzungs keys in Definitions überarbeiten (alte lösung, evtl. weblate, community for the win)
          5. Profit?
          */
 

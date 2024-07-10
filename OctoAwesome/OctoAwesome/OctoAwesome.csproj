@@ -19,6 +19,7 @@
 		<PackageReference Include="dotVariant" Version="0.5.3" />
 		<PackageReference Include="engenious" Version="0.7.1-alpha" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="NLog" Version="5.0.4" />
 		<PackageReference Include="NonSucking.Framework.Extension" Version="0.1.0.108-alpha" />
 		<PackageReference Include="System.Interactive" Version="6.0.1" />

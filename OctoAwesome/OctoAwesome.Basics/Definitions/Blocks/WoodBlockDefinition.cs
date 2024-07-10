@@ -20,10 +20,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override bool HasMetaData => true;
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["wood_top", "wood_side"];
+        public override string[] Textures { get; init; } = ["wood_top", "wood_side"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WoodBlockDefinition"/> class.

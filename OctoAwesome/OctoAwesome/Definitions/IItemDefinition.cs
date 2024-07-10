@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Definitions.Items;
+using System.Linq;
 
 namespace OctoAwesome.Definitions
 {
@@ -20,5 +21,8 @@ namespace OctoAwesome.Definitions
         /// <param name="material">The material the item should be made of.</param>
         /// <returns>The created item.</returns>
         Item? Create(IMaterialDefinition material);
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
     }
 }

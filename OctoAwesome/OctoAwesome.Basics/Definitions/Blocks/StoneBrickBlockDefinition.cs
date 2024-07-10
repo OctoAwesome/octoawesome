@@ -15,10 +15,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "brick_grey";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["brick_grey",];
+        public override string[] Textures { get; init; } = ["brick_grey",];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StoneBrickBlockDefinition"/> class.

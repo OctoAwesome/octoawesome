@@ -1,17 +1,8 @@
-﻿using Microsoft.Win32;
-
-using OctoAwesome.Database;
-using OctoAwesome.Serialization;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OctoAwesome.Extension;
 
@@ -52,39 +43,41 @@ public class ExtensionService
 
     private void AddRegistrar(IExtensionRegistrar registrar)
     {
-        GetExtenderInformation(registrar.GetType(), typeof(IExtensionRegistrar<>).Name)
-            .Registrars
-            .Add(registrar);
-
+        GetExtenderInformation(registrar.GetType(), typeof(IExtensionRegistrar))
+            .ForEach(e => e.Registrars.Add(registrar));
     }
 
     private void AddExtender(IExtensionExtender extender)
     {
-        GetExtenderInformation(extender.GetType(), typeof(IExtensionExtender<>).Name)
-            .Extenders
-            .Add(extender);
+        GetExtenderInformation(extender.GetType(), typeof(IExtensionExtender))
+            .ForEach(e => e.Extenders.Add(extender));
     }
 
-    private ExtenderInformation GetExtenderInformation(Type instanceType, string interfaceName)
+    private IEnumerable<ExtenderInformation> GetExtenderInformation(Type instanceType, Type interfaceType)
     {
-        var registarInterfaceType = instanceType.GetInterface(interfaceName);
+        var registrarInterfaceTypes = instanceType.GetInterfaces().Where(i => i.IsAssignableTo(interfaceType) && i.IsGenericType).ToArray();
 
-        if (registarInterfaceType is null)
-            throw new ArgumentException($"Type dosen't implement {interfaceName}");
+        if (registrarInterfaceTypes.Length < 1)
+            throw new ArgumentException($"Type dosen't implement any interface that is assignable to {interfaceType.Name}");
 
-        var genArgs = registarInterfaceType.GetGenericArguments();
-        if (genArgs[0].IsGenericTypeParameter)
-            throw new NotSupportedException("Currently not supported to have a generic extension loader");
-
-        var genericTypeArgument = genArgs[0];
-
-        if (!extender.TryGetValue(genericTypeArgument, out var extenderInformation))
+        foreach (var registrarInterface in registrarInterfaceTypes)
         {
-            extenderInformation = new ExtenderInformation();
-            extender.Add(genericTypeArgument, extenderInformation);
-        }
+            var genArgs = registrarInterface.GetGenericArguments();
 
-        return extenderInformation;
+            if (genArgs[0].IsGenericTypeParameter)
+                throw new NotSupportedException("Currently not supported to have a generic extension loader");
+
+            var genericTypeArgument = genArgs[0];
+
+            if (!extender.TryGetValue(genericTypeArgument, out var extenderInformation))
+            {
+                extenderInformation = new ExtenderInformation();
+                extender.Add(genericTypeArgument, extenderInformation);
+
+            }
+
+            yield return extenderInformation;
+        }
     }
 
     //TODO Add Methods for string type name and Type without generic

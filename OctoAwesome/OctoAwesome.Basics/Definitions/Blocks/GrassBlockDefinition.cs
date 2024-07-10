@@ -16,12 +16,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "grass_top";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = [ "grass_top",
+        public override string[] Textures { get; init; } = [ "grass_top",
                                                          "dirt",
                                                          "dirt_grass" ];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GrassBlockDefinition"/> class.

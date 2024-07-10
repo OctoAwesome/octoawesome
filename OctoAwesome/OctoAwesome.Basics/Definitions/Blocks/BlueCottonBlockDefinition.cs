@@ -15,10 +15,10 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "cotton_blue";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = ["cotton_blue"];
+        public override string[] Textures { get; init; } = ["cotton_blue"];
 
         /// <inheritdoc />
-        public override IMaterialDefinition Material { get; }
+        public override IMaterialDefinition Material { get; init; }
         /// <summary>
         /// Initializes a new instance of the <see cref="BlueCottonBlockDefinition"/> class.
         /// </summary>
