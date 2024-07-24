@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Definitions.Items;
 
+using System.Linq;
+
 namespace OctoAwesome.Definitions
 {
     public class ItemDefinition : IItemDefinition
@@ -7,6 +9,8 @@ namespace OctoAwesome.Definitions
         public string DisplayName { get; }
         public string Icon { get; }
 
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
         public bool CanMineMaterial(IMaterialDefinition material) => throw new System.NotImplementedException();
         public Item? Create(IMaterialDefinition material) => throw new System.NotImplementedException();
 

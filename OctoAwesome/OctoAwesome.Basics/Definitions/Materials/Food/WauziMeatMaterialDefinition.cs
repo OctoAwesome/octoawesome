@@ -1,11 +1,15 @@
 ﻿using OctoAwesome.Definitions;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Materials.Food
 {
 
     /// <inheritdoc/>
     public class WauziMeatMaterialDefinition : IFoodMaterialDefinition
     {
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
         /// <inheritdoc/>
         public string DisplayName => "Wauzi Meat";
 

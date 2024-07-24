@@ -31,6 +31,10 @@ namespace OctoAwesome.Definitions
         /// Gets an array of food definitions.
         /// </summary>
         IFoodMaterialDefinition[] FoodDefinitions { get; }
+        /// <summary>
+        /// Loads all definitions and fills the arrays
+        /// </summary>
+        void Initialize();
 
         /// <summary>
         /// Gets the block definition by a block index.

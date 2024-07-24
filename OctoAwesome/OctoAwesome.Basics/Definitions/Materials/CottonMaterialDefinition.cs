@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Definitions;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Materials
 {
     /// <summary>
@@ -24,5 +26,8 @@ namespace OctoAwesome.Basics.Definitions.Materials
 
         /// <inheritdoc />
         public string Icon => string.Empty;
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
     }
 }

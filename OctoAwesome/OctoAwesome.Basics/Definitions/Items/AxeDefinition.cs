@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Items
 {
     /// <summary>
@@ -14,6 +16,9 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public string Icon => "axe_iron";
 
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
         /// <inheritdoc />
         public bool CanMineMaterial(IMaterialDefinition material)
             => material is ISolidMaterialDefinition;

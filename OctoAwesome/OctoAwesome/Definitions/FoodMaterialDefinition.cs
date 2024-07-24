@@ -4,5 +4,6 @@
     {
         public ushort Joule { get; }
         public bool Edible { get; }
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Definitions;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Materials
 {
     /// <summary>
@@ -7,6 +9,8 @@ namespace OctoAwesome.Basics.Definitions.Materials
     /// </summary>
     public class GlassMaterialDefinition : ISolidMaterialDefinition
     {
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
         /// <inheritdoc />
         public int Hardness => 55;
 
