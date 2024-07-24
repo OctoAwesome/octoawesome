@@ -76,6 +76,7 @@ namespace OctoAwesome.Client.UI.Components
             ScanForResourcePacks();
 
             // Load list of active Resource Packs
+            //TODO: Convert Resource Pack to Json and use for textures!
             var toLoad = new List<ResourcePack>();
             if (settings.KeyExists(SETTINGSKEY))
             {
@@ -278,10 +279,12 @@ namespace OctoAwesome.Client.UI.Components
                 if (cache != null && cache.TryGetValue(fullkey, out result))
                     return result;
 
+            
             // Try to load files for resource packs
             foreach (var resourcePack in activePacks)
             {
-                var localFolder = Path.Combine(resourcePack.Path, basefolder);
+
+                var localFolder = Path.Combine(resourcePack.Path, "Textures");
 
                 foreach (var fileType in fileTypes)
                 {
@@ -305,6 +308,7 @@ namespace OctoAwesome.Client.UI.Components
                 {
                     return assemblyName switch
                     {
+                        "OctoAwesome" => "OctoAwesome.Basics",
                         "OctoClient" => "OctoAwesome.Client",
                         _ => assemblyName,
                     };

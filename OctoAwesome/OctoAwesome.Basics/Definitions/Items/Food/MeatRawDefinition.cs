@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Items.Food
 {
 
@@ -13,6 +15,9 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
         public string DisplayName { get; }
         /// <inheritdoc/>
         public string Icon { get; }
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
         /// <summary>
         /// Initializes a new instance of the <see cref="MeatRawDefinition" /> class
         /// </summary>

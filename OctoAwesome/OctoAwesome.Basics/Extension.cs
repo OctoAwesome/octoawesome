@@ -1,5 +1,7 @@
 ﻿using engenious;
+
 using Newtonsoft.Json;
+
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.FunctionBlocks;
@@ -14,6 +16,7 @@ using OctoAwesome.Location;
 using OctoAwesome.Rx;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OctoAwesome.Basics
 {
@@ -76,7 +80,7 @@ namespace OctoAwesome.Basics
                 return "base" + sb.ToString().ToLower();
             }
 
-            var folder = "F:\\Projekte\\Visual 2019\\OctoAwesome\\OctoAwesome\\temp";
+            var folder = "../../../../";
             var list = new Dictionary<string, IDefinition>();
 
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
@@ -119,6 +123,55 @@ namespace OctoAwesome.Basics
             {
                 File.WriteAllText(Path.Combine(folder, "definitions.json"), JsonConvert.SerializeObject(list, Formatting.Indented));
 
+                var jsonToEdit = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(File.ReadAllText(Path.Combine(folder, "definitions.json")));
+
+                Dictionary<string, string> materials = new Dictionary<string, string>();
+
+                foreach (var (key, value) in jsonToEdit.AsObject())
+                {
+                    if (key.StartsWith("base_material"))
+                    {
+                        materials[value["DisplayName"].GetValue<string>()] = "" +
+                            $$"""
+                                {
+                                    "@ref": "$['BaseDefinitions.json'].{{key}}"
+                                }
+                            """;
+                        continue;
+                    }
+                    var containedIcon = value["Icon"];
+                    if (key.StartsWith("base_block"))
+                    {
+                        var texts = value["Textures"]?.AsArray();
+                        if (texts is not null)
+                        {
+                            value["Textures"] = JsonNode.Parse(JsonConvert.SerializeObject(texts.Select(x => "Blocks." + x.GetValue<string>()).ToArray()));
+                        }
+                        if (containedIcon is not null)
+                            value["Icon"] = "Blocks." + containedIcon;
+                    }
+
+                    if (containedIcon is not null && (value["@types"]?.AsArray().Contains("core.item") ?? false))
+                    {
+
+                        value["Icon"] = "Items." + containedIcon;
+                    }
+
+                    var mat = value["Material"];
+                    if (mat != null)
+                    {
+                        var refMat = materials[mat["DisplayName"].GetValue<string>()];
+                        value["Material"] = JsonNode.Parse(refMat);
+                        ;
+                    }
+
+                    ;
+                }
+
+                File.WriteAllText(
+                    Path.Combine(folder, "BaseDefinitions.json"),
+                    jsonToEdit.ToJsonString(new JsonSerializerOptions { WriteIndented = true }).Replace("\\u0027", "\'"));
+                ;
             }
             catch (Exception ex)
             {
@@ -128,6 +181,13 @@ namespace OctoAwesome.Basics
 
             ;
 
+            extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.Items", typeof(FoodMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
         }
 
         /// <inheritdoc />
@@ -139,14 +199,6 @@ namespace OctoAwesome.Basics
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
-
-            extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_food", typeof(FoodMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
 
             Extend(extensionLoader);
             RegisterInteracts();

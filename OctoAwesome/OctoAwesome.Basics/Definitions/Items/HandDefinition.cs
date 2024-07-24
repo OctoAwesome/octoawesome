@@ -1,6 +1,8 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Items
 {
     /// <summary>
@@ -13,6 +15,9 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public string Icon => "";
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
 
         private Hand hand => Hand.Instance;
 

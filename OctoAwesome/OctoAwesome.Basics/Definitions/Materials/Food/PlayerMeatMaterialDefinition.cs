@@ -1,5 +1,7 @@
 ﻿using OctoAwesome.Definitions;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Materials
 {
 
@@ -7,6 +9,8 @@ namespace OctoAwesome.Basics.Definitions.Materials
     public class PlayerMeatMaterialDefinition : IFoodMaterialDefinition
     {
 
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
         /// <inheritdoc/>
         public string DisplayName => "Player Meat";
 

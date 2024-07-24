@@ -13,6 +13,7 @@ using System.Text.Json.Nodes;
 using OctoAwesome.Definitions.Items;
 using Microsoft.Win32;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OctoAwesome.Runtime
 {
@@ -50,7 +51,7 @@ namespace OctoAwesome.Runtime
 
         private readonly ExtensionService extensionService;
         private readonly Dictionary<string, List<IDefinition>> aliasDict = new();
-        private readonly DefinitionRegistrar registrar;
+        private DefinitionRegistrar registrar;
 
         /*
          3. Jsonisierung
@@ -66,7 +67,33 @@ namespace OctoAwesome.Runtime
         {
             this.extensionService = extensionService;
 
+
+        }
+
+        /// <inheritdoc />
+        public IDefinition[] Definitions { get; private set; }
+
+        /// <inheritdoc />
+        public IItemDefinition[] ItemDefinitions { get; private set; }
+
+        /// <inheritdoc />
+        public IBlockDefinition[] BlockDefinitions { get; private set; }
+
+        /// <inheritdoc />
+        public IMaterialDefinition[] MaterialDefinitions { get; private set; }
+        /// <inheritdoc />
+        public IFoodMaterialDefinition[] FoodDefinitions { get; private set; }
+        
+        /// <inheritdoc/>
+        public void Initialize()
+        {
             var json = GetDefinitionJson();
+
+            var ro =
+                JsonSerializer
+                .Deserialize<Dictionary<string, Dictionary<string, JsonNode>>>(json)
+                .SelectMany(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
 
             var definitions = new List<IDefinition>();
 
@@ -75,9 +102,21 @@ namespace OctoAwesome.Runtime
                 if (item is DefinitionRegistrar registrar)
                 {
                     this.registrar = registrar;
-                    definitions.AddRange(registrar.GetAll<IDefinition>()); //Replace IDefinition with BaseBlockDefinition, BaseItemDefinition etc. in multiple calls
+                    break;
                 }
             }
+
+            foreach (var item in ro)
+            {
+                if (item.Value is JsonObject o && o.ContainsKey("@types"))
+                {
+                    var jArr = o["@types"].Deserialize<string[]>();
+                    RegisterDefinitionInstance(item.Key, o, jArr);
+                }
+            }
+
+            definitions.AddRange(registrar.GetAll<IDefinition>()); //Replace IDefinition with BaseBlockDefinition, BaseItemDefinition etc. in multiple calls
+
 
             Definitions = definitions.ToArray();
 
@@ -92,23 +131,7 @@ namespace OctoAwesome.Runtime
 
             // collect foods
             FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
-
         }
-
-        /// <inheritdoc />
-        public IDefinition[] Definitions { get; }
-
-        /// <inheritdoc />
-        public IItemDefinition[] ItemDefinitions { get; }
-
-        /// <inheritdoc />
-        public IBlockDefinition[] BlockDefinitions { get; }
-
-        /// <inheritdoc />
-        public IMaterialDefinition[] MaterialDefinitions { get; }
-        /// <inheritdoc />
-        public IFoodMaterialDefinition[] FoodDefinitions { get; }
-
         /// <inheritdoc />
         public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)
         {
@@ -224,6 +247,8 @@ namespace OctoAwesome.Runtime
             var curDir = Directory.GetCurrentDirectory();
             foreach (var path in Directory.GetFiles(curDir, "Definitions/*.json", SearchOption.AllDirectories))
             {
+                if (path.Contains("Recipes"))
+                    continue;
                 sb.Append(
                     $$"""
                 "{{Path.GetRelativePath(curDir, path)[12..].Replace('\\', '/')}}" : {{File.ReadAllText(path)}},

@@ -86,7 +86,7 @@ namespace OctoAwesome.Client
             ExtensionService = typeContainer.Get<ExtensionService>();
 
             DefinitionManager = typeContainer.Get<DefinitionManager>();
-
+            DefinitionManager.Initialize();
             GameService = typeContainer.Get<GameService>();
 
             Settings = typeContainer.Get<Settings>();

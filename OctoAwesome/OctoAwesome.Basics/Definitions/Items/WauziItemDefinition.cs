@@ -2,6 +2,8 @@
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 
+using System.Linq;
+
 namespace OctoAwesome.Basics.Definitions.Items
 {
     /// <summary>
@@ -14,6 +16,9 @@ namespace OctoAwesome.Basics.Definitions.Items
 
         /// <inheritdoc />
         public string Icon { get; }
+
+        [Newtonsoft.Json.JsonProperty("@types")]
+        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WauziItemDefinition"/> class.

@@ -32,6 +32,7 @@ public class RecipeService
     /// <param name="paths">A parameter array of paths to load recipes from in .json files.</param>
     public void Load(params string[] paths)
     {
+        return;
         foreach (string path in paths)
         {
             if (!Directory.Exists(path))

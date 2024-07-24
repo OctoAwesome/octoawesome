@@ -1,0 +1,1021 @@
+{
+  "base_tree": {
+    "DisplayName": "",
+    "Icon": "",
+    "Order": 0,
+    "MaxTemperature": 0.0,
+    "MinTemperature": 0.0,
+    "@types": []
+  },
+  "base_tree_birch": {
+    "Order": 15,
+    "MaxTemperature": 30.0,
+    "MinTemperature": -5.0,
+    "DisplayName": "",
+    "Icon": "",
+    "@types": []
+  },
+  "base_tree_cactus": {
+    "MaxTemperature": 45.0,
+    "MinTemperature": 32.0,
+    "Order": 20,
+    "DisplayName": "",
+    "Icon": "",
+    "@types": []
+  },
+  "base_tree_oak": {
+    "Order": 10,
+    "MaxTemperature": 27.0,
+    "MinTemperature": -5.0,
+    "DisplayName": "",
+    "Icon": "",
+    "@types": []
+  },
+  "base_tree_spruce": {
+    "Order": 15,
+    "MaxTemperature": 25.0,
+    "MinTemperature": -5.0,
+    "DisplayName": "",
+    "Icon": "",
+    "@types": []
+  },
+  "base_material_brick": {
+    "Hardness": 45,
+    "Density": 1800,
+    "Granularity": 1,
+    "FractureToughness": 2,
+    "DisplayName": "Brick",
+    "Icon": "",
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ]
+  },
+  "base_material_cactus": {
+    "Hardness": 250,
+    "Density": 850,
+    "Granularity": 1,
+    "FractureToughness": 300,
+    "DisplayName": "Cactus",
+    "Icon": "",
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ]
+  },
+  "base_material_clay": {
+    "Hardness": 3,
+    "Density": 2000,
+    "Granularity": 25,
+    "FractureToughness": 60,
+    "DisplayName": "Clay",
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Icon": ""
+  },
+  "base_material_cotton": {
+    "Hardness": 4,
+    "Density": 132,
+    "Granularity": 10,
+    "FractureToughness": 600,
+    "DisplayName": "Cotton",
+    "Icon": "",
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ]
+  },
+  "base_material_dirt": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 10,
+    "Density": 1400,
+    "Granularity": 50,
+    "FractureToughness": 50,
+    "DisplayName": "Dirt",
+    "Icon": ""
+  },
+  "base_material_meat_player": {
+    "@types": [
+      "core.material",
+      "core.material_food"
+    ],
+    "DisplayName": "Player Meat",
+    "Icon": "",
+    "Joule": 10960,
+    "Edible": true,
+    "Hardness": 1,
+    "Density": 1040
+  },
+  "base_material_glass": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 55,
+    "Density": 2500,
+    "Granularity": 1,
+    "FractureToughness": 50,
+    "DisplayName": "Glass",
+    "Icon": ""
+  },
+  "base_material_gravel": {
+    "Hardness": 60,
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Density": 1440,
+    "Granularity": 70,
+    "FractureToughness": 0,
+    "DisplayName": "Gravel",
+    "Icon": ""
+  },
+  "base_material_ice": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Granularity": 1,
+    "FractureToughness": 20,
+    "Hardness": 15,
+    "Density": 934,
+    "DisplayName": "Ice",
+    "Icon": ""
+  },
+  "base_material_leave": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 1,
+    "Density": 200,
+    "Granularity": 40,
+    "FractureToughness": 0,
+    "DisplayName": "Leave",
+    "Icon": ""
+  },
+  "base_material_sand": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 70,
+    "Density": 1600,
+    "Granularity": 90,
+    "FractureToughness": 0,
+    "DisplayName": "Sand",
+    "Icon": ""
+  },
+  "base_material_block_simple": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Granularity": 1,
+    "FractureToughness": 20,
+    "Hardness": 15,
+    "Density": 934,
+    "DisplayName": "",
+    "Icon": ""
+  },
+  "base_material_snow": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 1,
+    "Density": 250,
+    "Granularity": 50,
+    "FractureToughness": 5,
+    "DisplayName": "Snow",
+    "Icon": ""
+  },
+  "base_material_stone": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 60,
+    "Density": 2700,
+    "Granularity": 1,
+    "FractureToughness": 4,
+    "DisplayName": "Stone",
+    "Icon": ""
+  },
+  "base_material_water": {
+    "@types": [
+      "core.material",
+      "core.material_fluid"
+    ],
+    "Hardness": 0,
+    "Density": 997,
+    "DisplayName": "Water",
+    "Icon": "",
+    "Viscosity": 1008
+  },
+  "base_material_wood": {
+    "@types": [
+      "core.material",
+      "core.material_solid"
+    ],
+    "Hardness": 35,
+    "Density": 680,
+    "Granularity": 1,
+    "FractureToughness": 200,
+    "DisplayName": "Wood",
+    "Icon": ""
+  },
+  "base_material_meat_wauzi": {
+    "@types": [
+      "core.material",
+      "core.material_food"
+    ],
+    "DisplayName": "Wauzi Meat",
+    "Icon": "",
+    "Joule": 10960,
+    "Edible": true,
+    "Hardness": 1,
+    "Density": 1040
+  },
+  "base_axe": {
+    "DisplayName": "Axe",
+    "Icon": "axe_iron",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_bucket": {
+    "DisplayName": "Bucket",
+    "Icon": "bucket",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_item_chest": {
+    "DisplayName": "Chest",
+    "Icon": "chest",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_item_furnace": {
+    "DisplayName": "Furnace",
+    "Icon": "furnace",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_hammer": {
+    "DisplayName": "Hammer",
+    "Icon": "hammer_iron",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_hoe": {
+    "DisplayName": "Hoe",
+    "Icon": "hoe_iron",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_pickaxe": {
+    "Icon": "pick_iron",
+    "DisplayName": "Pickaxe",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_shovel": {
+    "DisplayName": "Shovel",
+    "Icon": "shovel_iron",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_item_interface_storage": {
+    "DisplayName": "Storage Interface",
+    "Icon": "storageinterface",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_sword": {
+    "DisplayName": "Sword",
+    "Icon": "sword_iron",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_item_wauzi": {
+    "DisplayName": "Wauziegg",
+    "Icon": "wauziegg",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_cooked_meat": {
+    "DisplayName": "MeatCookedDefinition",
+    "Icon": "meat_cooked",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_raw_meat": {
+    "DisplayName": "MeatRawDefinition",
+    "Icon": "meat_raw",
+    "@types": [
+      "core.item"
+    ]
+  },
+  "base_block_battery": {
+    "Icon": "Blocks.light_on",
+    "DisplayName": "Akku",
+    "Textures": [
+      "Blocks.light_off",
+      "Blocks.light_on",
+      "Blocks.light_off",
+      "Blocks.light_on",
+      "Blocks.light_off",
+      "Blocks.light_on",
+      "Blocks.light_off",
+      "Blocks.light_on"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cactus"
+    },
+    "TransferTypes": [
+      "Energy"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 850
+  },
+  "base_block_wood_birch": {
+    "DisplayName": "Birkenholz",
+    "Icon": "Blocks.birch_wood_top",
+    "HasMetaData": true,
+    "Textures": [
+      "Blocks.birch_wood_top",
+      "Blocks.birch_wood_side"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 680
+  },
+  "base_block_cotton_blue": {
+    "DisplayName": "Blauer Stoff",
+    "Icon": "Blocks.cotton_blue",
+    "Textures": [
+      "Blocks.cotton_blue"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 132
+  },
+  "base_block_brick": {
+    "DisplayName": "Ziegelstein",
+    "Icon": "Blocks.brick_red",
+    "Textures": [
+      "Blocks.brick_red"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_brick"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 1800
+  },
+  "base_block_cactus": {
+    "Icon": "Blocks.cactus_inside",
+    "DisplayName": "Kaktus",
+    "Textures": [
+      "Blocks.cactus_inside",
+      "Blocks.cactus_side",
+      "Blocks.cactus_top"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cactus"
+    },
+    "TransferTypes": [
+      "Energy",
+      "Signal"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 850
+  },
+  "base_block_dirt": {
+    "DisplayName": "Erde",
+    "Icon": "Blocks.dirt",
+    "Textures": [
+      "Blocks.dirt"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_dirt"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 1400
+  },
+  "base_block_grass": {
+    "DisplayName": "Gras",
+    "Icon": "Blocks.grass_top",
+    "Textures": [
+      "Blocks.grass_top",
+      "Blocks.dirt",
+      "Blocks.dirt_grass"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_dirt"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 1400
+  },
+  "base_block_gravel": {
+    "DisplayName": "Kies",
+    "Icon": "Blocks.gravel",
+    "Textures": [
+      "Blocks.gravel"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_gravel"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 1440
+  },
+  "base_block_cotton_green": {
+    "DisplayName": "Gr\u00FCner Stoff",
+    "Icon": "Blocks.cotton_green",
+    "Textures": [
+      "Blocks.cotton_green"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 132
+  },
+  "base_block_greystone": {
+    "DisplayName": "Grauer Stein",
+    "Icon": "Blocks.greystone",
+    "Textures": [
+      "Blocks.greystone"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_stone"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 2700
+  },
+  "base_block_ice": {
+    "DisplayName": "Eis",
+    "Icon": "Blocks.ice",
+    "Textures": [
+      "Blocks.ice"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_ice"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_cable_item": {
+    "DisplayName": "Item Cable",
+    "Icon": "sand",
+    "Textures": [
+      "sand"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_ice"
+    },
+    "TransferTypes": [
+      "ItemTransfer"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_source_item": {
+    "Icon": "Blocks.water",
+    "DisplayName": "Item Source Block",
+    "Textures": [
+      "Blocks.water"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
+    },
+    "TransferTypes": [
+      "ItemTransfer"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_target_item": {
+    "Icon": "Blocks.water",
+    "DisplayName": "Item Target Block",
+    "Textures": [
+      "Blocks.water"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
+    },
+    "TransferTypes": [
+      "ItemTransfer"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_leaves": {
+    "DisplayName": "Bl\u00E4tter",
+    "Icon": "Blocks.leaves",
+    "Textures": [
+      "Blocks.leaves"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_leave"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 200
+  },
+  "base_block_light": {
+    "Icon": "Blocks.light_off",
+    "DisplayName": "Licht",
+    "Textures": [
+      "Blocks.light_off",
+      "Blocks.light_on"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cactus"
+    },
+    "TransferTypes": [
+      "Energy"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 850
+  },
+  "base_block_leaves_orange": {
+    "DisplayName": "Orange Bl\u00E4tter",
+    "Icon": "Blocks.leaves_orange",
+    "Textures": [
+      "Blocks.leaves_orange"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_leave"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 200
+  },
+  "base_block_plank": {
+    "DisplayName": "Brett",
+    "Icon": "Blocks.planks",
+    "HasMetaData": true,
+    "Textures": [
+      "Blocks.planks"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 680
+  },
+  "base_block_cable_power": {
+    "DisplayName": "Power Cable",
+    "Icon": "Blocks.ice",
+    "Textures": [
+      "Blocks.ice"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
+    },
+    "TransferTypes": [
+      "Energy"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_plate_pressure": {
+    "Icon": "Blocks.wood_side",
+    "DisplayName": "PressurePlate Block",
+    "Textures": [
+      "Blocks.wood_top",
+      "Blocks.wood_side"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
+    },
+    "TransferTypes": [
+      "Signal"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_cotton_red": {
+    "DisplayName": "Roter Stoff",
+    "Icon": "Blocks.cotton_red",
+    "Textures": [
+      "Blocks.cotton_red_0",
+      "Blocks.cotton_red_1",
+      "Blocks.cotton_red_2",
+      "Blocks.cotton_red_3",
+      "Blocks.cotton_red_4",
+      "Blocks.cotton_red_5",
+      "Blocks.cotton_red_6",
+      "Blocks.cotton_red_7",
+      "Blocks.cotton_red_8",
+      "Blocks.cotton_red_9",
+      "Blocks.cotton_red_10",
+      "Blocks.cotton_red_11",
+      "Blocks.cotton_red_12",
+      "Blocks.cotton_red_13",
+      "Blocks.cotton_red_14",
+      "Blocks.cotton_red_15"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 132
+  },
+  "base_block_plank_red": {
+    "DisplayName": "Rotes Brett",
+    "Icon": "Blocks.planks_red",
+    "HasMetaData": true,
+    "Textures": [
+      "Blocks.planks_red"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 680
+  },
+  "base_block_sand": {
+    "DisplayName": "Sand",
+    "Icon": "Blocks.sand",
+    "Textures": [
+      "Blocks.sand"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_sand"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 1600
+  },
+  "base_cable_signal": {
+    "DisplayName": "Signal Cable",
+    "Icon": "ice",
+    "Textures": [
+      "ice"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_ice"
+    },
+    "TransferTypes": [
+      "Signal"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_signaler": {
+    "Icon": "Blocks.cactus_inside",
+    "DisplayName": "Signaler Block",
+    "Textures": [
+      "Blocks.cactus_inside",
+      "Blocks.cactus_side",
+      "Blocks.cactus_top"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
+    },
+    "TransferTypes": [
+      "Signal"
+    ],
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 934
+  },
+  "base_block_snow": {
+    "DisplayName": "Schnee",
+    "Icon": "Blocks.snow",
+    "Textures": [
+      "Blocks.snow",
+      "Blocks.dirt",
+      "Blocks.dirt_snow"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_snow"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 250
+  },
+  "base_block_stone": {
+    "DisplayName": "Stein",
+    "Icon": "Blocks.stone",
+    "Textures": [
+      "Blocks.stone"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_stone"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 2700
+  },
+  "base_block_brick_stone": {
+    "DisplayName": "Steinmauer",
+    "Icon": "Blocks.brick_grey",
+    "Textures": [
+      "Blocks.brick_grey"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_stone"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 2700
+  },
+  "base_block_cotton_tan": {
+    "DisplayName": "Loher Stoff",
+    "Icon": "Blocks.cotton_tan",
+    "Textures": [
+      "Blocks.cotton_tan"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 132
+  },
+  "base_block_water": {
+    "DisplayName": "Wasser",
+    "SolidWall": 0,
+    "Icon": "Blocks.water",
+    "Textures": [
+      "Blocks.water"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_water"
+    },
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "HasMetaData": false,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 997
+  },
+  "base_block_wood": {
+    "DisplayName": "Holz",
+    "Icon": "Blocks.wood_top",
+    "HasMetaData": true,
+    "Textures": [
+      "Blocks.wood_top",
+      "Blocks.wood_side"
+    ],
+    "Material": {
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
+    },
+    "SolidWall": 63,
+    "StackLimit": 100,
+    "VolumePerUnit": 125,
+    "VolumePerHit": 25,
+    "TimeToVolumeReset": "00:00:10",
+    "@types": [
+      "core.block"
+    ],
+    "Density": 680
+  }
+}
