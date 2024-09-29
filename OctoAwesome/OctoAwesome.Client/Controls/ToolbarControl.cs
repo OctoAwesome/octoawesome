@@ -47,10 +47,12 @@ namespace OctoAwesome.Client.Controls
 
             foreach (IDefinition item in definitionManager.Definitions)
             {
+                if (toolTextures.ContainsKey(item.Icon))
+                    continue;
                 var texture = assets.LoadTexture(item.GetType(), item.Icon);
                 if (texture is null)
                     continue;
-                toolTextures.Add(NullabilityHelper.NotNullAssert(item.GetType().FullName, "Item definition type was null!"), texture);
+                toolTextures.Add(NullabilityHelper.NotNullAssert(item.Icon, "Item definition type was null!"), texture);
             }
 
             var grid = new Grid()
@@ -139,7 +141,7 @@ namespace OctoAwesome.Client.Controls
                 return;
             }
 
-            var definitionName = inventorySlot.Definition.GetType().FullName;
+            var definitionName = inventorySlot.Definition. Icon;
 
             Debug.Assert(definitionName != null, nameof(definitionName) + " != null");
             images[index].Texture = toolTextures.TryGetValue(definitionName, out var texture) ? texture : null;

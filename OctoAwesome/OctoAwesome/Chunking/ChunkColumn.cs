@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome.Chunking
 {
@@ -231,18 +232,22 @@ namespace OctoAwesome.Chunking
         public void Serialize(BinaryWriter writer)
         {
             // Collect definitions
-            var definitions = new List<IBlockDefinition>();
+            var definitions = new Dictionary<ushort, (IBlockDefinition definition, ushort index)>();
+            ushort localI = 0;
             for (var c = 0; c < Chunks.Length; c++)
             {
                 IChunk chunk = Chunks[c];
                 for (var i = 0; i < chunk.Blocks.Length; i++)
                 {
-                    if (chunk.Blocks[i] != 0)
+                    var globalBlockIndex = chunk.Blocks[i];
+                    if (globalBlockIndex != 0 && !definitions.ContainsKey(globalBlockIndex))
                     {
-                        var definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                        var definition = DefinitionManager.GetDefinitionByIndex(chunk.Blocks[i]);
                         Debug.Assert(definition != null, nameof(definition) + " != null");
-                        if (!definitions.Contains(definition))
-                            definitions.Add(definition);
+                        if (definition is IBlockDefinition bd)
+                        {
+                            definitions[globalBlockIndex] = (bd, localI++);
+                        }
                     }
                 }
             }
@@ -267,8 +272,10 @@ namespace OctoAwesome.Chunking
             else
                 writer.Write((byte)definitions.Count);
 
-            foreach (IBlockDefinition definition in definitions)
-                writer.Write(definition.GetType().FullName!);
+            foreach ((var key, _) in definitions.OrderBy(x => x.Value.index))
+            {
+                writer.Write(key);
+            }
 
             // Serialization Phase 3 (Chunk info)
             for (var c = 0; c < Chunks.Length; c++)
@@ -288,16 +295,16 @@ namespace OctoAwesome.Chunking
                     else
                     {
                         // Definition index
-                        var definition = DefinitionManager.GetBlockDefinitionByIndex(chunk.Blocks[i]);
+                        var definition = definitions[chunk.Blocks[i]];
 
-                        Debug.Assert(definition != null, nameof(definition) + " != null");
+                        Debug.Assert(definition.definition != null, nameof(definition) + " != null");
                         if (longIndex)
-                            writer.Write((ushort)(definitions.IndexOf(definition) + 1));
+                            writer.Write((ushort)(definition.index + 1));
                         else
-                            writer.Write((byte)(definitions.IndexOf(definition) + 1));
+                            writer.Write((byte)(definition.index + 1));
 
                         // Metadata
-                        if (definition.HasMetaData)
+                        if (definition.definition.HasMetaData)
                             writer.Write(chunk.MetaData[i]);
                     }
                 }
@@ -331,22 +338,20 @@ namespace OctoAwesome.Chunking
             // Phase 2 (Block definitions)
             int typecount = longIndex ? reader.ReadUInt16() : reader.ReadByte();
             var types = new List<IDefinition>();
-            Span<ushort> map = stackalloc ushort[typecount];
+            Span<ushort> localToGlobalIndexMap = stackalloc ushort[typecount];
 
 
-            IDefinition[] definitions = DefinitionManager.Definitions;
             for (var i = 0; i < typecount; i++)
             {
-                var typeName = reader.ReadString();
-                int foundIndex = Array.FindIndex(definitions, (d) => d.GetType().FullName == typeName);
-                if (foundIndex == -1)
+                var index = reader.ReadUInt16();
+                var definition = DefinitionManager.GetDefinitionByIndex(index);
+                if (definition is null)
                 {
                     Debug.Assert(false, "No matching definition type found!");
                     continue;
                 }
-                var blockDefinition = definitions[foundIndex];
-                map[types.Count] = (ushort)(foundIndex + 1);
-                types.Add(blockDefinition);
+                localToGlobalIndexMap[i] = (ushort)(index);
+                types.Add(definition);
             }
 
             // Phase 3 (Chunk Infos)
@@ -363,13 +368,13 @@ namespace OctoAwesome.Chunking
                     chunk.MetaData[i] = 0;
                     if (typeIndex > 0)
                     {
-                        var definitionIndex = map[typeIndex - 1];
+                        var definitionIndex = localToGlobalIndexMap[typeIndex - 1];
 
                         chunk.Blocks[i] = definitionIndex;
 
-                        var definition = DefinitionManager.GetBlockDefinitionByIndex(definitionIndex);
+                        var definition = types[typeIndex - 1];
 
-                        if (definition is { HasMetaData: true })
+                        if (definition is IBlockDefinition { HasMetaData: true })
                             chunk.MetaData[i] = reader.ReadInt32();
                     }
                 }

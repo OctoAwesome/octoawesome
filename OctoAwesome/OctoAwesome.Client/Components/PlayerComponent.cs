@@ -8,6 +8,7 @@ using OctoAwesome.SumTypes;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using OctoAwesome.Definitions;
 
 namespace OctoAwesome.Client.Components
 {
@@ -234,8 +235,8 @@ namespace OctoAwesome.Client.Components
                 return;
 
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
-            var wood = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Wood");
-            var stone = resourceManager.DefinitionManager.MaterialDefinitions.FirstOrDefault(d => d.DisplayName == "Stone");
+            var wood = resourceManager.DefinitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>("base_material_wood");
+            var stone = resourceManager.DefinitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>("base_material_stone");
             var food = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {

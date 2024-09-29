@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
+using OctoAwesome.Extension;
 using OctoAwesome.Information;
 using OctoAwesome.Location;
 using OctoAwesome.Pooling;
@@ -17,6 +18,7 @@ namespace OctoAwesome.Services
     {
         private readonly IPool<BlockVolumeState> blockCollectionPool;
         private readonly IDefinitionManager definitionManager;
+        private readonly DefinitionActionService actionService;
         private readonly Dictionary<IBlockInteraction, BlockVolumeState> blockCollectionInformation;
 
         /// <summary>
@@ -24,10 +26,11 @@ namespace OctoAwesome.Services
         /// </summary>
         /// <param name="blockCollectionPool">Memory pool for <see cref="BlockVolumeState"/> instances.</param>
         /// <param name="definitionManager">The definition manager.</param>
-        public BlockInteractionService(IPool<BlockVolumeState> blockCollectionPool, IDefinitionManager definitionManager)
+        public BlockInteractionService(IPool<BlockVolumeState> blockCollectionPool, IDefinitionManager definitionManager, DefinitionActionService actionService)
         {
             this.blockCollectionPool = blockCollectionPool;
             this.definitionManager = definitionManager;
+            this.actionService = actionService;
             blockCollectionInformation = new Dictionary<IBlockInteraction, BlockVolumeState>();
         }
 
@@ -40,9 +43,9 @@ namespace OctoAwesome.Services
         /// <returns>Tuple of a value indicating whether the interaction was valid, and a list of item and quantity tuples.</returns>
         public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Hit(HitInfo block, IItem item, ILocalChunkCache cache)
         {
+            var definition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(block.Block);
             if (!blockCollectionInformation.TryGetValue(block, out var volumeState))
             {
-                var definition = definitionManager.GetBlockDefinitionByIndex(block.Block);
                 volumeState = blockCollectionPool.Rent();
                 Debug.Assert(definition != null, nameof(definition) + " != null");
                 volumeState.Initialize(block, definition, DateTimeOffset.Now);
@@ -51,7 +54,12 @@ namespace OctoAwesome.Services
 
             volumeState.TryReset();
 
-            var blockHitInformation = volumeState.BlockDefinition.Hit(volumeState, item);
+            var isRegistered = actionService.IsRegistered("HitBlock", definitionManager.GetUniqueKeyByDefinition(definition));
+
+            var blockHitInformation = 
+                isRegistered 
+                ? actionService.Function("HitBlock", definition, BlockHitInformation.Empty, volumeState, item)
+                : volumeState.BlockDefinition.Hit(volumeState, item);
 
             if (!blockHitInformation.IsHitValid)
                 return (false, null);
@@ -79,7 +87,7 @@ namespace OctoAwesome.Services
         /// <returns>Tuple of a value indicating whether the interaction was valid, and a list of item and quantity tuples.</returns>
         public (bool Valid, IReadOnlyList<(int Quantity, IDefinition Definition)>? List) Interact(HitInfo block, IItem item, ILocalChunkCache cache)
         {
-            var definition = definitionManager.GetBlockDefinitionByIndex(block.Block);
+            var definition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(block.Block);
 
             var volumeState = blockCollectionPool.Rent();
             Debug.Assert(definition != null, nameof(definition) + " != null");
@@ -87,11 +95,15 @@ namespace OctoAwesome.Services
 
             try
             {
-                var blockHitInformation = volumeState.BlockDefinition.Apply(volumeState, item);
+                var isRegistered = actionService.IsRegistered("ApplyBlock", definitionManager.GetUniqueKeyByDefinition(definition));
+
+                var blockHitInformation =
+                    isRegistered
+                    ? actionService.Function("ApplyBlock", definition, BlockHitInformation.Empty, volumeState, item)
+                    : volumeState.BlockDefinition.Apply(volumeState, item);
 
                 if (volumeState.VolumeRemaining < 1)
                     return (true, blockHitInformation.Definitions);
-                
 
                 return (false, null);
             }

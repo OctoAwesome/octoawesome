@@ -87,8 +87,8 @@ namespace OctoAwesome.Client.Screens
 
             ScreenManager.Player.Unload();
 
-                Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
-                ScreenManager.Game.GameService.StartSinglePlayer(guid);
+            Guid guid = ScreenManager.Game.Simulation.NewGame(nameInput.Text, seedInput.Text);
+            ScreenManager.Game.GameService.StartSinglePlayer(guid);
 
             ScreenManager.NavigateToScreen(new LoadingScreen(Assets));
         }

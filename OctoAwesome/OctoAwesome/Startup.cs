@@ -15,6 +15,7 @@ using OctoAwesome.Services;
 using OctoAwesome.Threading;
 
 using System;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome
 {
@@ -56,6 +57,7 @@ namespace OctoAwesome
             typeContainer.Register<ComponentChangedNotificationHandler>(InstanceBehaviour.Singleton);
 
             typeContainer.Register<InteractService>(InstanceBehaviour.Singleton);
+            typeContainer.Register<DefinitionActionService>(InstanceBehaviour.Singleton);
         }
 
         /// <summary>

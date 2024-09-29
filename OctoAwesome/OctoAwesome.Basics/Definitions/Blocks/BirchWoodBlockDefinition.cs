@@ -48,59 +48,36 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 case Wall.Top:
                 case Wall.Bottom:
                     {
-                        switch (orientation)
+                        return orientation switch
                         {
-                            case OrientationFlags.SideWest:
-                            case OrientationFlags.SideEast:
-                            case OrientationFlags.SideSouth:
-                            case OrientationFlags.SideNorth:
-                                return 1;
-                            case OrientationFlags.SideBottom:
-                            case OrientationFlags.SideTop:
-                            default:
-                                return 0;
-                        }
+                            OrientationFlags.SideWest or OrientationFlags.SideEast or OrientationFlags.SideSouth or OrientationFlags.SideNorth => 1,
+                            _ => 0,
+                        };
                     }
 
                 case Wall.Front:
                 case Wall.Back:
 
                     {
-                        switch (orientation)
+                        return orientation switch
                         {
-                            case OrientationFlags.SideSouth:
-                            case OrientationFlags.SideNorth:
-                                return 0;
-                            case OrientationFlags.SideWest:
-                            case OrientationFlags.SideEast:
-                            case OrientationFlags.SideBottom:
-                            case OrientationFlags.SideTop:
-                            default:
-                                return 1;
-                        }
+                            OrientationFlags.SideSouth or OrientationFlags.SideNorth => 0,
+                            _ => 1,
+                        };
                     }
 
                 case Wall.Left:
                 case Wall.Right:
                     {
 
-                        switch (orientation)
+                        return orientation switch
                         {
-                            case OrientationFlags.SideWest:
-                            case OrientationFlags.SideEast:
-                                return 0;
-                            case OrientationFlags.SideSouth:
-                            case OrientationFlags.SideNorth:
-                            case OrientationFlags.SideBottom:
-                            case OrientationFlags.SideTop:
-                            default:
-                                return 1;
-                        }
+                            OrientationFlags.SideWest or OrientationFlags.SideEast => 0,
+                            _ => 1,
+                        };
                     }
             }
 
-            // Should never happen
-            // Assert here
             return -1;
         }
 

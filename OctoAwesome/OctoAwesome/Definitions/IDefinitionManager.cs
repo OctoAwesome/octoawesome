@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
 namespace OctoAwesome.Definitions
@@ -31,25 +32,43 @@ namespace OctoAwesome.Definitions
         /// Gets an array of food definitions.
         /// </summary>
         IFoodMaterialDefinition[] FoodDefinitions { get; }
+
         /// <summary>
         /// Loads all definitions and fills the arrays
         /// </summary>
         void Initialize();
 
         /// <summary>
-        /// Gets the block definition by a block index.
+        /// Gets the definition by an index.
         /// </summary>
-        /// <param name="index">The index of the block definition.</param>
-        /// <returns>The <see cref="BlockDefinition"/>.</returns>
-        IBlockDefinition? GetBlockDefinitionByIndex(ushort index);
+        /// <param name="index">The index of the definition.</param>
+        /// <returns>The <see cref="IDefinition"/>.</returns>
+        IDefinition? GetDefinitionByIndex(ushort index);
 
         /// <summary>
-        /// Gets a block definition using the block definition's type name
+        /// Gets the definition by an index.
         /// </summary>
-        /// <param name="typeName">The type name of the block definition to retrieve.</param>
-        /// <typeparam name="T">The generic type of the block definition.</typeparam>
-        /// <returns>The retrieved block definition if a matching one was found; otherwise <c>null</c>.</returns>
-        T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition;
+        /// <param name="index">The index of the definition.</param>
+        /// <returns>The <see cref="IDefinition"/>.</returns>
+        T? GetDefinitionByIndex<T>(ushort index) where T : IDefinition;
+
+        /// <summary>
+        /// Gets a definition using the definition's unique key
+        /// </summary>
+        /// <returns>The retrieved definition if a matching one was found; otherwise <c>null</c>.</returns>
+        IDefinition? GetDefinitionByUniqueKey(string uniqueKey);
+
+        /// <summary>
+        /// Gets a definition using the definition's key and matches the t
+        /// </summary>
+        /// <returns>The retrieved definition if a matching one was found; otherwise <c>null</c>.</returns>
+        T? GetDefinitionByUniqueKey<T>(string key);
+
+        /// <summary>
+        /// Gets a unique key for the definition
+        /// </summary>
+        /// <returns>The retrieved Unique key if a matching one was found; otherwise <c>null</c>.</returns>
+        string? GetUniqueKeyByDefinition(IDefinition definition);
 
         /// <summary>
         /// Gets the index of a block definition.
@@ -58,20 +77,13 @@ namespace OctoAwesome.Definitions
         /// <returns>Index of the block definition.</returns>
         ushort GetDefinitionIndex(IDefinition definition);
 
-        /// <summary>
-        /// Gets the block definition index by a generic type.
-        /// </summary>
-        /// <typeparam name="T">The block definition type.</typeparam>
-        /// <returns>The index of the block definition.</returns>
-        ushort GetDefinitionIndex<T>() where T : IDefinition;
 
-        /// <summary>
-        /// Gets an enumeration of block definitions matching a given generic type.
-        /// </summary>
-        /// <typeparam name="T">Type of the block definitions to enumerate.</typeparam>
-        /// <returns>The enumeration of the block definitions.</returns>
-        IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition;
         void RegisterDefinitionInstance(string key, JsonObject o, string[] jArr);
         bool TryGet<T>(string id, out T? definition) where T : IDefinition;
+        void LoadSaveGame(IReadOnlyList<string>? sortedDefinitionKeys);
+        ushort GetDefinitionIndex<T>(string key) where T : IDefinition;
+        IReadOnlyCollection<string> GetSaveGameData();
+
+        event EventHandler DefinitionsChanged;
     }
 }

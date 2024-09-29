@@ -1,43 +1,39 @@
 {
-  "base_tree": {
-    "DisplayName": "",
-    "Icon": "",
-    "Order": 0,
-    "MaxTemperature": 0.0,
-    "MinTemperature": 0.0,
-    "@types": []
-  },
   "base_tree_birch": {
     "Order": 15,
     "MaxTemperature": 30.0,
     "MinTemperature": -5.0,
+    "Density": 4,
     "DisplayName": "",
     "Icon": "",
-    "@types": []
+    "@types": [ "core.tree" ]
   },
   "base_tree_cactus": {
     "MaxTemperature": 45.0,
     "MinTemperature": 32.0,
     "Order": 20,
+    "Density": 2,
     "DisplayName": "",
     "Icon": "",
-    "@types": []
+    "@types": [ "core.tree" ]
   },
   "base_tree_oak": {
     "Order": 10,
     "MaxTemperature": 27.0,
     "MinTemperature": -5.0,
+    "Density": 4,
     "DisplayName": "",
     "Icon": "",
-    "@types": []
+    "@types": [ "core.tree" ]
   },
   "base_tree_spruce": {
     "Order": 15,
     "MaxTemperature": 25.0,
     "MinTemperature": -5.0,
+    "Density": 4,
     "DisplayName": "",
     "Icon": "",
-    "@types": []
+    "@types": [ "core.tree" ]
   },
   "base_material_brick": {
     "Hardness": 45,
@@ -244,91 +240,91 @@
   },
   "base_axe": {
     "DisplayName": "Axe",
-    "Icon": "axe_iron",
+    "Icon": "Items.axe_iron",
     "@types": [
       "core.item"
     ]
   },
   "base_bucket": {
     "DisplayName": "Bucket",
-    "Icon": "bucket",
+    "Icon": "Items.bucket",
     "@types": [
       "core.item"
     ]
   },
   "base_item_chest": {
     "DisplayName": "Chest",
-    "Icon": "chest",
+    "Icon": "Items.chest",
     "@types": [
       "core.item"
     ]
   },
   "base_item_furnace": {
     "DisplayName": "Furnace",
-    "Icon": "furnace",
+    "Icon": "Items.furnace",
     "@types": [
       "core.item"
     ]
   },
   "base_hammer": {
     "DisplayName": "Hammer",
-    "Icon": "hammer_iron",
+    "Icon": "Items.hammer_iron",
     "@types": [
       "core.item"
     ]
   },
   "base_hoe": {
     "DisplayName": "Hoe",
-    "Icon": "hoe_iron",
+    "Icon": "Items.hoe_iron",
     "@types": [
       "core.item"
     ]
   },
   "base_pickaxe": {
-    "Icon": "pick_iron",
     "DisplayName": "Pickaxe",
+    "Icon": "Items.pick_iron",
     "@types": [
       "core.item"
     ]
   },
   "base_shovel": {
     "DisplayName": "Shovel",
-    "Icon": "shovel_iron",
+    "Icon": "Items.shovel_iron",
     "@types": [
       "core.item"
     ]
   },
   "base_item_interface_storage": {
     "DisplayName": "Storage Interface",
-    "Icon": "storageinterface",
+    "Icon": "Items.storageinterface",
     "@types": [
       "core.item"
     ]
   },
   "base_sword": {
     "DisplayName": "Sword",
-    "Icon": "sword_iron",
+    "Icon": "Items.sword_iron",
     "@types": [
       "core.item"
     ]
   },
   "base_item_wauzi": {
     "DisplayName": "Wauziegg",
-    "Icon": "wauziegg",
+    "Icon": "Items.wauziegg",
     "@types": [
       "core.item"
     ]
   },
   "base_cooked_meat": {
     "DisplayName": "MeatCookedDefinition",
-    "Icon": "meat_cooked",
+    "Icon": "Items.Food.meat_cooked",
     "@types": [
       "core.item"
     ]
   },
   "base_raw_meat": {
     "DisplayName": "MeatRawDefinition",
-    "Icon": "meat_raw",
+    "Icon": "Items.Food.meat_raw",
     "@types": [
       "core.item"
     ]
@@ -574,9 +570,9 @@
   },
   "base_cable_item": {
     "DisplayName": "Item Cable",
-    "Icon": "sand",
+    "Icon": "Blocks.sand",
     "Textures": [
-      "sand"
+      "Blocks.sand"
     ],
     "Material": {
       "@ref": "$['BaseDefinitions.json'].base_material_ice"
@@ -849,9 +845,9 @@
   },
   "base_cable_signal": {
     "DisplayName": "Signal Cable",
-    "Icon": "ice",
+    "Icon": "Blocks.ice",
     "Textures": [
-      "ice"
+      "Blocks.ice"
     ],
     "Material": {
       "@ref": "$['BaseDefinitions.json'].base_material_ice"

@@ -92,13 +92,6 @@ namespace OctoAwesome.Definitions
         TimeSpan TimeToVolumeReset { get; }
 
         /// <summary>
-        /// Checks whether the provided <see cref="Wall"/> is solid on the block.
-        /// </summary>
-        /// <param name="wall">The <see cref="Wall"/> to check.</param>
-        /// <returns>A value indicating whether the provided <see cref="Wall"/> is solid on the block.</returns>
-        bool IsSolidWall(Wall wall);
-
-        /// <summary>
         /// Gets a value indicating the amount of volume that can be extracted from the block with one hit.
         /// </summary>
         int VolumePerHit { get; }

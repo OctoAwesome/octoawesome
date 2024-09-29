@@ -205,7 +205,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             var id = cache.GetBlock(index3);
             if (id == 0)
                 return;
-            var definition = simulation.ResourceManager.DefinitionManager.GetBlockDefinitionByIndex(id);
+            var definition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(id);
             if (definition is not INetworkBlock networkBlock)
                 return;
 
