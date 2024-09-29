@@ -108,7 +108,7 @@ namespace OctoAwesome.Client
             var persistenceManager = new NetworkPersistenceManager(typeContainer, networkPackageManager);
 
             StartGame(persistenceManager, new NetworkIdManager(networkPackageManager), Guid.Empty, playerName);
-            
+
         }
 
         public void StartSinglePlayer(Guid gameId)
@@ -121,10 +121,12 @@ namespace OctoAwesome.Client
 
         public void StartGame(IPersistenceManager persistenceManager, IIdManager idManager, Guid gameId, string playerName)
         {
-            if (ResourceManager.CurrentUniverse != null)
+            if (ResourceManager.CurrentUniverse != null && ResourceManager.CurrentUniverse.Id != gameId)
+            {
                 ResourceManager.UnloadUniverse();
+                game.Player.Unload();
+            }
 
-            game.Player.Unload();
             ResourceManager.PersistenceManager = persistenceManager;
             ResourceManager.IdManager = idManager;
             game.Simulation.LoadGame(gameId);
@@ -139,7 +141,7 @@ namespace OctoAwesome.Client
             game.Player.Unload();
             game.Simulation.ExitGame();
             networkPackageManager?.Dispose();
-            
+
         }
 
         /// <inheritdoc />

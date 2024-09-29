@@ -7,7 +7,7 @@ namespace OctoAwesome.Basics
     /// <summary>
     /// Base class for defining a specific tree type, used by the <see cref="TreePopulator"/>.
     /// </summary>
-    public  class TreeDefinition : ITreeDefinition
+    public class TreeDefinition : ITreeDefinition
     {
         /// <inheritdoc />
         /// <remarks>This is <c>string.Empty</c> as trees need no names.</remarks>
@@ -27,16 +27,8 @@ namespace OctoAwesome.Basics
         public virtual float MinTemperature { get; init; }
 
         /// <inheritdoc />
-        public virtual int GetDensity(IPlanet planet, Index3 index)
-            => 0;
+        public virtual int Density { get; init; }
 
-        /// <inheritdoc />
-        public virtual void Init(IDefinitionManager definitionManager) { }
 
-        /// <inheritdoc />
-        public virtual void PlantTree(IPlanet planet, Index3 index, LocalBuilder builder, int seed) { }
-
-        [Newtonsoft.Json.JsonProperty("@types")]
-        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
     }
 }

@@ -6,8 +6,8 @@ namespace OctoAwesome.Definitions
 {
     public class ItemDefinition : IItemDefinition
     {
-        public string DisplayName { get; }
-        public string Icon { get; }
+        public string DisplayName { get; init; }
+        public string Icon { get; init; }
 
         [Newtonsoft.Json.JsonProperty("@types")]
         public string[] Type => IDefinition.GetTypeProp(this).ToArray();

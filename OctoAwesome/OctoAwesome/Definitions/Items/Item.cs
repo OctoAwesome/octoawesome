@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using OctoAwesome.Extension;
 using System.Linq;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome.Definitions.Items
 {
@@ -63,7 +64,7 @@ namespace OctoAwesome.Definitions.Items
 
             definitionManager = TypeContainer.Get<IDefinitionManager>();
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
         /// </summary>
@@ -129,8 +130,8 @@ namespace OctoAwesome.Definitions.Items
         /// <inheritdoc />
         public virtual void Deserialize(BinaryReader reader)
         {
-            var definition = definitionManager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
-            var material = definitionManager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+            var definition = GenericCaster<IDefinition, IItemDefinition>.Cast(definitionManager.GetDefinitionByUniqueKey(reader.ReadString()));
+            var material = GenericCaster<IDefinition, IMaterialDefinition>.Cast(definitionManager.GetDefinitionByUniqueKey(reader.ReadString()));
 
             Debug.Assert(definition != null, nameof(this.definition) + " != null");
             Debug.Assert(material != null, nameof(this.material) + " != null");
@@ -168,8 +169,8 @@ namespace OctoAwesome.Definitions.Items
         /// </exception>
         public static Item Deserialize(BinaryReader reader, Type itemType, IDefinitionManager manager)
         {
-            var definition = manager.GetDefinitionByTypeName<IItemDefinition>(reader.ReadString());
-            var material = manager.GetDefinitionByTypeName<IMaterialDefinition>(reader.ReadString());
+            var definition = GenericCaster<IDefinition, IItemDefinition>.Cast(manager.GetDefinitionByUniqueKey(reader.ReadString()));
+            var material = GenericCaster<IDefinition, IMaterialDefinition>.Cast(manager.GetDefinitionByUniqueKey(reader.ReadString()));
 
             if (Activator.CreateInstance(itemType, definition, material) is not Item item)
                 throw new ArgumentException($"Type of {itemType.Name} is not of type Item.");

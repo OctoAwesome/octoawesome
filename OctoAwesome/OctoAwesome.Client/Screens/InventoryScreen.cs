@@ -41,11 +41,13 @@ namespace OctoAwesome.Client.Screens
         {
             foreach (var item in ScreenManager.Game.DefinitionManager.Definitions)
             {
+                if (toolTextures.ContainsKey(item.Icon))
+                    continue;
                 var texture = assets.LoadTexture(item.GetType(), item.Icon);
                 if (texture is null)
                     continue;
                 toolTextures.Add(
-                    NullabilityHelper.NotNullAssert(item.GetType().FullName, "Tool item definition type name is null!"),
+                    NullabilityHelper.NotNullAssert(item.Icon, "Tool item definition type name is null!"),
                     texture);
             }
 
@@ -231,10 +233,10 @@ namespace OctoAwesome.Client.Screens
                 if (tool != null)
                 {
                     Debug.Assert(tool.Definition != null, nameof(tool.Definition) + " != null");
-                    var toolName = tool.Definition.GetType().FullName;
+                    var toolIcon = tool.Definition.Icon;
 
-                    Debug.Assert(toolName != null, nameof(toolName) + " != null");
-                    images[i].Texture = toolTextures.TryGetValue(toolName, out var texture) ? texture : null;
+                    Debug.Assert(toolIcon != null, nameof(toolIcon) + " != null");
+                    images[i].Texture = toolTextures.TryGetValue(toolIcon, out var texture) ? texture : null;
                 }
                 else
                 {

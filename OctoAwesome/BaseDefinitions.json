@@ -334,29 +334,20 @@
     ]
   },
   "base_block_battery": {
-    "Icon": "light_on",
+    "Icon": "Blocks.light_on",
     "DisplayName": "Akku",
     "Textures": [
-      "light_off",
-      "light_on",
-      "light_off",
-      "light_on",
-      "light_off",
-      "light_on",
-      "light_off",
-      "light_on"
+      "Blocks.light_off",
+      "Blocks.light_on",
+      "Blocks.light_off",
+      "Blocks.light_on",
+      "Blocks.light_off",
+      "Blocks.light_on",
+      "Blocks.light_off",
+      "Blocks.light_on"
     ],
     "Material": {
-      "Hardness": 250,
-      "Density": 850,
-      "Granularity": 1,
-      "FractureToughness": 300,
-      "DisplayName": "Cactus",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cactus"
     },
     "TransferTypes": [
       "Energy"
@@ -374,23 +365,14 @@
   },
   "base_block_wood_birch": {
     "DisplayName": "Birkenholz",
-    "Icon": "birch_wood_top",
+    "Icon": "Blocks.birch_wood_top",
     "HasMetaData": true,
     "Textures": [
-      "birch_wood_top",
-      "birch_wood_side"
+      "Blocks.birch_wood_top",
+      "Blocks.birch_wood_side"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 35,
-      "Density": 680,
-      "Granularity": 1,
-      "FractureToughness": 200,
-      "DisplayName": "Wood",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -404,21 +386,12 @@
   },
   "base_block_cotton_blue": {
     "DisplayName": "Blauer Stoff",
-    "Icon": "cotton_blue",
+    "Icon": "Blocks.cotton_blue",
     "Textures": [
-      "cotton_blue"
+      "Blocks.cotton_blue"
     ],
     "Material": {
-      "Hardness": 4,
-      "Density": 132,
-      "Granularity": 10,
-      "FractureToughness": 600,
-      "DisplayName": "Cotton",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -433,21 +406,12 @@
   },
   "base_block_brick": {
     "DisplayName": "Ziegelstein",
-    "Icon": "brick_red",
+    "Icon": "Blocks.brick_red",
     "Textures": [
-      "brick_red"
+      "Blocks.brick_red"
     ],
     "Material": {
-      "Hardness": 45,
-      "Density": 1800,
-      "Granularity": 1,
-      "FractureToughness": 2,
-      "DisplayName": "Brick",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_brick"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -461,24 +425,15 @@
     "Density": 1800
   },
   "base_block_cactus": {
-    "Icon": "cactus_inside",
+    "Icon": "Blocks.cactus_inside",
     "DisplayName": "Kaktus",
     "Textures": [
-      "cactus_inside",
-      "cactus_side",
-      "cactus_top"
+      "Blocks.cactus_inside",
+      "Blocks.cactus_side",
+      "Blocks.cactus_top"
     ],
     "Material": {
-      "Hardness": 250,
-      "Density": 850,
-      "Granularity": 1,
-      "FractureToughness": 300,
-      "DisplayName": "Cactus",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cactus"
     },
     "TransferTypes": [
       "Energy",
@@ -497,21 +452,12 @@
   },
   "base_block_dirt": {
     "DisplayName": "Erde",
-    "Icon": "dirt",
+    "Icon": "Blocks.dirt",
     "Textures": [
-      "dirt"
+      "Blocks.dirt"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 10,
-      "Density": 1400,
-      "Granularity": 50,
-      "FractureToughness": 50,
-      "DisplayName": "Dirt",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_dirt"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -526,23 +472,14 @@
   },
   "base_block_grass": {
     "DisplayName": "Gras",
-    "Icon": "grass_top",
+    "Icon": "Blocks.grass_top",
     "Textures": [
-      "grass_top",
-      "dirt",
-      "dirt_grass"
+      "Blocks.grass_top",
+      "Blocks.dirt",
+      "Blocks.dirt_grass"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 10,
-      "Density": 1400,
-      "Granularity": 50,
-      "FractureToughness": 50,
-      "DisplayName": "Dirt",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_dirt"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -557,21 +494,12 @@
   },
   "base_block_gravel": {
     "DisplayName": "Kies",
-    "Icon": "gravel",
+    "Icon": "Blocks.gravel",
     "Textures": [
-      "gravel"
+      "Blocks.gravel"
     ],
     "Material": {
-      "Hardness": 60,
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Density": 1440,
-      "Granularity": 70,
-      "FractureToughness": 0,
-      "DisplayName": "Gravel",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_gravel"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -585,22 +513,13 @@
     "Density": 1440
   },
   "base_block_cotton_green": {
-    "DisplayName": "Grüner Stoff",
-    "Icon": "cotton_green",
+    "DisplayName": "Gr\u00FCner Stoff",
+    "Icon": "Blocks.cotton_green",
     "Textures": [
-      "cotton_green"
+      "Blocks.cotton_green"
     ],
     "Material": {
-      "Hardness": 4,
-      "Density": 132,
-      "Granularity": 10,
-      "FractureToughness": 600,
-      "DisplayName": "Cotton",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -615,21 +534,12 @@
   },
   "base_block_greystone": {
     "DisplayName": "Grauer Stein",
-    "Icon": "greystone",
+    "Icon": "Blocks.greystone",
     "Textures": [
-      "greystone"
+      "Blocks.greystone"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 60,
-      "Density": 2700,
-      "Granularity": 1,
-      "FractureToughness": 4,
-      "DisplayName": "Stone",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_stone"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -644,21 +554,12 @@
   },
   "base_block_ice": {
     "DisplayName": "Eis",
-    "Icon": "ice",
+    "Icon": "Blocks.ice",
     "Textures": [
-      "ice"
+      "Blocks.ice"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "Ice",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_ice"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -678,16 +579,7 @@
       "sand"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "Ice",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_ice"
     },
     "TransferTypes": [
       "ItemTransfer"
@@ -704,22 +596,13 @@
     "Density": 934
   },
   "base_block_source_item": {
-    "Icon": "water",
+    "Icon": "Blocks.water",
     "DisplayName": "Item Source Block",
     "Textures": [
-      "water"
+      "Blocks.water"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
     },
     "TransferTypes": [
       "ItemTransfer"
@@ -736,22 +619,13 @@
     "Density": 934
   },
   "base_block_target_item": {
-    "Icon": "water",
+    "Icon": "Blocks.water",
     "DisplayName": "Item Target Block",
     "Textures": [
-      "water"
+      "Blocks.water"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
     },
     "TransferTypes": [
       "ItemTransfer"
@@ -768,22 +642,13 @@
     "Density": 934
   },
   "base_block_leaves": {
-    "DisplayName": "Blätter",
-    "Icon": "leaves",
+    "DisplayName": "Bl\u00E4tter",
+    "Icon": "Blocks.leaves",
     "Textures": [
-      "leaves"
+      "Blocks.leaves"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 1,
-      "Density": 200,
-      "Granularity": 40,
-      "FractureToughness": 0,
-      "DisplayName": "Leave",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_leave"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -797,23 +662,14 @@
     "Density": 200
   },
   "base_block_light": {
-    "Icon": "light_off",
+    "Icon": "Blocks.light_off",
     "DisplayName": "Licht",
     "Textures": [
-      "light_off",
-      "light_on"
+      "Blocks.light_off",
+      "Blocks.light_on"
     ],
     "Material": {
-      "Hardness": 250,
-      "Density": 850,
-      "Granularity": 1,
-      "FractureToughness": 300,
-      "DisplayName": "Cactus",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cactus"
     },
     "TransferTypes": [
       "Energy"
@@ -830,22 +686,13 @@
     "Density": 850
   },
   "base_block_leaves_orange": {
-    "DisplayName": "Orange Blätter",
-    "Icon": "leaves_orange",
+    "DisplayName": "Orange Bl\u00E4tter",
+    "Icon": "Blocks.leaves_orange",
     "Textures": [
-      "leaves_orange"
+      "Blocks.leaves_orange"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 1,
-      "Density": 200,
-      "Granularity": 40,
-      "FractureToughness": 0,
-      "DisplayName": "Leave",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_leave"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -860,22 +707,13 @@
   },
   "base_block_plank": {
     "DisplayName": "Brett",
-    "Icon": "planks",
+    "Icon": "Blocks.planks",
     "HasMetaData": true,
     "Textures": [
-      "planks"
+      "Blocks.planks"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 35,
-      "Density": 680,
-      "Granularity": 1,
-      "FractureToughness": 200,
-      "DisplayName": "Wood",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -889,21 +727,12 @@
   },
   "base_block_cable_power": {
     "DisplayName": "Power Cable",
-    "Icon": "ice",
+    "Icon": "Blocks.ice",
     "Textures": [
-      "ice"
+      "Blocks.ice"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
     },
     "TransferTypes": [
       "Energy"
@@ -920,23 +749,14 @@
     "Density": 934
   },
   "base_block_plate_pressure": {
-    "Icon": "wood_side",
+    "Icon": "Blocks.wood_side",
     "DisplayName": "PressurePlate Block",
     "Textures": [
-      "wood_top",
-      "wood_side"
+      "Blocks.wood_top",
+      "Blocks.wood_side"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
     },
     "TransferTypes": [
       "Signal"
@@ -954,36 +774,27 @@
   },
   "base_block_cotton_red": {
     "DisplayName": "Roter Stoff",
-    "Icon": "cotton_red",
+    "Icon": "Blocks.cotton_red",
     "Textures": [
-      "cotton_red_0",
-      "cotton_red_1",
-      "cotton_red_2",
-      "cotton_red_3",
-      "cotton_red_4",
-      "cotton_red_5",
-      "cotton_red_6",
-      "cotton_red_7",
-      "cotton_red_8",
-      "cotton_red_9",
-      "cotton_red_10",
-      "cotton_red_11",
-      "cotton_red_12",
-      "cotton_red_13",
-      "cotton_red_14",
-      "cotton_red_15"
+      "Blocks.cotton_red_0",
+      "Blocks.cotton_red_1",
+      "Blocks.cotton_red_2",
+      "Blocks.cotton_red_3",
+      "Blocks.cotton_red_4",
+      "Blocks.cotton_red_5",
+      "Blocks.cotton_red_6",
+      "Blocks.cotton_red_7",
+      "Blocks.cotton_red_8",
+      "Blocks.cotton_red_9",
+      "Blocks.cotton_red_10",
+      "Blocks.cotton_red_11",
+      "Blocks.cotton_red_12",
+      "Blocks.cotton_red_13",
+      "Blocks.cotton_red_14",
+      "Blocks.cotton_red_15"
     ],
     "Material": {
-      "Hardness": 4,
-      "Density": 132,
-      "Granularity": 10,
-      "FractureToughness": 600,
-      "DisplayName": "Cotton",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -998,22 +809,13 @@
   },
   "base_block_plank_red": {
     "DisplayName": "Rotes Brett",
-    "Icon": "planks_red",
+    "Icon": "Blocks.planks_red",
     "HasMetaData": true,
     "Textures": [
-      "planks_red"
+      "Blocks.planks_red"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 35,
-      "Density": 680,
-      "Granularity": 1,
-      "FractureToughness": 200,
-      "DisplayName": "Wood",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -1027,21 +829,12 @@
   },
   "base_block_sand": {
     "DisplayName": "Sand",
-    "Icon": "sand",
+    "Icon": "Blocks.sand",
     "Textures": [
-      "sand"
+      "Blocks.sand"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 70,
-      "Density": 1600,
-      "Granularity": 90,
-      "FractureToughness": 0,
-      "DisplayName": "Sand",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_sand"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -1061,16 +854,7 @@
       "ice"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "Ice",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_ice"
     },
     "TransferTypes": [
       "Signal"
@@ -1087,24 +871,15 @@
     "Density": 934
   },
   "base_block_signaler": {
-    "Icon": "cactus_inside",
+    "Icon": "Blocks.cactus_inside",
     "DisplayName": "Signaler Block",
     "Textures": [
-      "cactus_inside",
-      "cactus_side",
-      "cactus_top"
+      "Blocks.cactus_inside",
+      "Blocks.cactus_side",
+      "Blocks.cactus_top"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Granularity": 1,
-      "FractureToughness": 20,
-      "Hardness": 15,
-      "Density": 934,
-      "DisplayName": "",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_block_simple"
     },
     "TransferTypes": [
       "Signal"
@@ -1122,23 +897,14 @@
   },
   "base_block_snow": {
     "DisplayName": "Schnee",
-    "Icon": "snow",
+    "Icon": "Blocks.snow",
     "Textures": [
-      "snow",
-      "dirt",
-      "dirt_snow"
+      "Blocks.snow",
+      "Blocks.dirt",
+      "Blocks.dirt_snow"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 1,
-      "Density": 250,
-      "Granularity": 50,
-      "FractureToughness": 5,
-      "DisplayName": "Snow",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_snow"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -1153,21 +919,12 @@
   },
   "base_block_stone": {
     "DisplayName": "Stein",
-    "Icon": "stone",
+    "Icon": "Blocks.stone",
     "Textures": [
-      "stone"
+      "Blocks.stone"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 60,
-      "Density": 2700,
-      "Granularity": 1,
-      "FractureToughness": 4,
-      "DisplayName": "Stone",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_stone"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -1182,21 +939,12 @@
   },
   "base_block_brick_stone": {
     "DisplayName": "Steinmauer",
-    "Icon": "brick_grey",
+    "Icon": "Blocks.brick_grey",
     "Textures": [
-      "brick_grey"
+      "Blocks.brick_grey"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 60,
-      "Density": 2700,
-      "Granularity": 1,
-      "FractureToughness": 4,
-      "DisplayName": "Stone",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_stone"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -1211,21 +959,12 @@
   },
   "base_block_cotton_tan": {
     "DisplayName": "Loher Stoff",
-    "Icon": "cotton_tan",
+    "Icon": "Blocks.cotton_tan",
     "Textures": [
-      "cotton_tan"
+      "Blocks.cotton_tan"
     ],
     "Material": {
-      "Hardness": 4,
-      "Density": 132,
-      "Granularity": 10,
-      "FractureToughness": 600,
-      "DisplayName": "Cotton",
-      "Icon": "",
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ]
+      "@ref": "$['BaseDefinitions.json'].base_material_cotton"
     },
     "SolidWall": 63,
     "StackLimit": 100,
@@ -1241,20 +980,12 @@
   "base_block_water": {
     "DisplayName": "Wasser",
     "SolidWall": 0,
-    "Icon": "water",
+    "Icon": "Blocks.water",
     "Textures": [
-      "water"
+      "Blocks.water"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_fluid"
-      ],
-      "Hardness": 0,
-      "Density": 997,
-      "DisplayName": "Water",
-      "Icon": "",
-      "Viscosity": 1008
+      "@ref": "$['BaseDefinitions.json'].base_material_water"
     },
     "StackLimit": 100,
     "VolumePerUnit": 125,
@@ -1268,23 +999,14 @@
   },
   "base_block_wood": {
     "DisplayName": "Holz",
-    "Icon": "wood_top",
+    "Icon": "Blocks.wood_top",
     "HasMetaData": true,
     "Textures": [
-      "wood_top",
-      "wood_side"
+      "Blocks.wood_top",
+      "Blocks.wood_side"
     ],
     "Material": {
-      "@types": [
-        "core.material",
-        "core.material_solid"
-      ],
-      "Hardness": 35,
-      "Density": 680,
-      "Granularity": 1,
-      "FractureToughness": 200,
-      "DisplayName": "Wood",
-      "Icon": ""
+      "@ref": "$['BaseDefinitions.json'].base_material_wood"
     },
     "SolidWall": 63,
     "StackLimit": 100,

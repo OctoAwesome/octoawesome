@@ -1,4 +1,5 @@
 ﻿using OctoAwesome.Chunking;
+using OctoAwesome.Extension;
 using OctoAwesome.Location;
 
 using System;
@@ -12,14 +13,18 @@ namespace OctoAwesome.Basics
     /// </summary>
     public class TreePopulator : MapPopulator
     {
+        private readonly DefinitionActionService definitionActionService;
         private IEnumerable<ITreeDefinition>? treeDefinitions = null;
+
+        private List<Delegate> delegates = [];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TreePopulator"/> class.
         /// </summary>
-        public TreePopulator()
+        public TreePopulator(OctoAwesome.Extension.DefinitionActionService definitionActionService)
         {
             Order = 10;
+            this.definitionActionService = definitionActionService;
         }
 
         private static IChunkColumn GetColumn(IChunkColumn column00, IChunkColumn column10, IChunkColumn column01, IChunkColumn column11, int x, int y)
@@ -44,9 +49,7 @@ namespace OctoAwesome.Basics
             // Initialize tree definitions
             if (treeDefinitions == null)
             {
-                treeDefinitions = resourceManager.DefinitionManager.GetDefinitions<ITreeDefinition>().OrderBy(d => d.Order).ToArray();
-                foreach (var treeDefinition in treeDefinitions)
-                    treeDefinition.Init(resourceManager.DefinitionManager);
+                treeDefinitions = resourceManager.DefinitionManager.Definitions.OfType<ITreeDefinition>().OrderBy(d => d.Order).ToArray();
             }
 
             int salt = (column00.Index.X & 0xffff) + ((column00.Index.Y & 0xffff) << 16);
@@ -56,8 +59,9 @@ namespace OctoAwesome.Basics
 
             foreach (var treeDefinition in treeDefinitions)
             {
-                int density = treeDefinition.GetDensity(planet, sample);
-                if (density <= 0) continue;
+                int density = treeDefinition.Density;
+                if (density <= 0)
+                    continue;
 
                 for (int i = 0; i < density; i++)
                 {
@@ -71,8 +75,9 @@ namespace OctoAwesome.Basics
                     if (blocktemp > treeDefinition.MaxTemperature || blocktemp < treeDefinition.MinTemperature)
                         continue;
 
+
                     LocalBuilder builder = new LocalBuilder(x, y, z + 1, column00, column10, column01, column11);
-                    treeDefinition.PlantTree(planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
+                    definitionActionService.Action("PlantTree", treeDefinition, planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
                 }
             }
         }

@@ -19,6 +19,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace OctoAwesome.Runtime
 {
@@ -28,6 +29,7 @@ namespace OctoAwesome.Runtime
     public class DiskPersistenceManager : IPersistenceManager, IDisposable
     {
         private const string UniverseFilename = "universe.info";
+        private const string DefinitionIndexFilename = "definition_index.info";
 
         private const string PlanetGeneratorInfo = "generator.info";
 
@@ -94,6 +96,14 @@ namespace OctoAwesome.Runtime
             {
                 universe.Serialize(writer);
             }
+        }
+        /// <inheritdoc />
+        public void SaveDefinitionIndices(Guid universeGuid, IReadOnlyCollection<string> keys)
+        {
+            string path = Path.Combine(GetRoot(), universeGuid.ToString());
+            Directory.CreateDirectory(path);
+            string file = Path.Combine(path, DefinitionIndexFilename);
+            File.WriteAllBytes(file, Encoding.UTF8.GetBytes(string.Join('\n', keys)));
         }
 
         /// <inheritdoc />
@@ -180,7 +190,7 @@ namespace OctoAwesome.Runtime
                 string id = Path.GetFileNameWithoutExtension(folder);//folder.Replace(root + "\\", "");
                 if (Guid.TryParse(id, out Guid guid))
                 {
-                    var universeLoader = Load(out var universe, guid);
+                    var universeLoader = Load(out IUniverse universe, guid);
                     if (universeLoader is null)
                     {
                         continue;
@@ -213,6 +223,25 @@ namespace OctoAwesome.Runtime
                 awaiter.SetResult(universe);
                 return awaiter;
             }
+        }
+
+        /// <inheritdoc />
+        public Awaiter? Load(out IReadOnlyCollection<string> definitionKeys, Guid universeGuid)
+        {
+            string file = Path.Combine(GetRoot(), universeGuid.ToString(), DefinitionIndexFilename);
+            definitionKeys = new List<string>();
+            if (!File.Exists(file))
+                return null;
+
+            var bytes = File.ReadAllBytes(file);
+
+            var awaiter = awaiterPool.Rent();
+
+            awaiter.SetDesializeFunc((bytes) => Encoding.UTF8.GetString(bytes).Split('\n'));
+            awaiter.TrySetResult(bytes);
+            //definitionKeys = awaiter.DeserializeFuncAndRelease<string[]>()!;
+
+            return awaiter;
 
         }
 

@@ -14,7 +14,6 @@ namespace OctoAwesome.Client.UI
         /// <summary>
         /// Gets or sets the path to the resource pack.
         /// </summary>
-        [XmlIgnore]
         public string Path
         {
             get => NullabilityHelper.NotNullAssert(path, $"{nameof(Path)} was not initialized!");

@@ -177,7 +177,7 @@ namespace OctoAwesome.Client.Controls
             Player.Selection?.Visit(
             blockInfo =>
             {
-                targetedBlockName.Text = definitionManager.GetBlockDefinitionByIndex(blockInfo.Block)?.DisplayName ?? "";
+                targetedBlockName.Text = definitionManager.GetDefinitionByIndex(blockInfo.Block)?.DisplayName ?? "";
                 targetedBlockPosition.Text = blockInfo.Position == default ? "" : blockInfo.Position.ToString();
             },
             componentContainer => SetTargetedBlockInfo(componentContainer));
@@ -213,8 +213,8 @@ namespace OctoAwesome.Client.Controls
             loadedTextures.Text = $"Loaded Textures: {assets.LoadedTextures}";
 
             //Get Number of Loaded Items/Blocks
-            loadedInfo.Text = "" + definitionManager.ItemDefinitions.Count() + " " + UI.Languages.OctoClient.Items + " - " +
-                definitionManager.BlockDefinitions.Count() + " " + UI.Languages.OctoClient.Blocks;
+            loadedInfo.Text = "" + definitionManager.ItemDefinitions.Length + " " + UI.Languages.OctoClient.Items + " - " +
+                definitionManager.BlockDefinitions.Length + " " + UI.Languages.OctoClient.Blocks;
 
             //Additional Play Information
 

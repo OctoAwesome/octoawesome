@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using SixLabors.ImageSharp;
+using System.Text.Json;
 
 namespace OctoAwesome.Client.UI.Components
 {
@@ -23,7 +24,7 @@ namespace OctoAwesome.Client.UI.Components
         /// <summary>
         /// File name for resource pack info.
         /// </summary>
-        public const string INFOFILENAME = "packinfo.xml";
+        public const string INFOFILENAME = "manifest.json";
 
         /// <summary>
         /// Settings key name for saving the currently active resource packs.
@@ -102,31 +103,31 @@ namespace OctoAwesome.Client.UI.Components
         public void ScanForResourcePacks()
         {
             loadedPacks.Clear();
-            if (Directory.Exists(RESOURCEPATH))
-                foreach (var directory in Directory.GetDirectories(RESOURCEPATH))
-                {
-                    var info = new DirectoryInfo(directory);
-                    if (File.Exists(Path.Combine(directory, INFOFILENAME)))
-                    {
-                        // Scan info File
-                        var serializer = new XmlSerializer(typeof(ResourcePack));
-                        using Stream stream = File.OpenRead(Path.Combine(directory, INFOFILENAME));
-                        var pack = (ResourcePack?)serializer.Deserialize(stream);
-                        Debug.Assert(pack != null, nameof(pack) + " != null");
-                        pack.Path = info.FullName;
-                        loadedPacks.Add(pack);
-                    }
-                    else
-                    {
-                        var pack = new ResourcePack()
-                        {
-                            Path = info.FullName,
-                            Name = info.Name
-                        };
+            Directory.CreateDirectory(RESOURCEPATH);
 
-                        loadedPacks.Add(pack);
-                    }
+            foreach (var directory in Directory.GetDirectories(RESOURCEPATH))
+            {
+                var info = new DirectoryInfo(directory);
+                var manifest = new FileInfo(Path.Combine(directory, INFOFILENAME));
+                if (manifest.Exists)
+                {
+                    using var file = File.OpenRead(manifest.FullName);
+                    var pack = JsonSerializer.Deserialize<ResourcePack>(file);
+                    Debug.Assert(pack != null, nameof(pack) + " != null");
+                    pack.Path = info.FullName;
+                    loadedPacks.Add(pack);
                 }
+                else
+                {
+                    var pack = new ResourcePack()
+                    {
+                        Path = info.FullName,
+                        Name = info.Name
+                    };
+
+                    loadedPacks.Add(pack);
+                }
+            }
         }
 
         /// <summary>
@@ -279,20 +280,20 @@ namespace OctoAwesome.Client.UI.Components
                 if (cache != null && cache.TryGetValue(fullkey, out result))
                     return result;
 
-            
             // Try to load files for resource packs
             foreach (var resourcePack in activePacks)
             {
-
                 var localFolder = Path.Combine(resourcePack.Path, "Textures");
 
-                foreach (var fileType in fileTypes)
+                foreach (var fileName in Directory.GetFiles(localFolder, $"{key}.*", SearchOption.AllDirectories))
                 {
-                    var filename = Path.Combine(localFolder, $"{key}.{fileType}");
-                    if (File.Exists(filename))
+                    foreach (var fileType in fileTypes)
                     {
-                        using (var stream = File.Open(filename, FileMode.Open))
-                            result = callback(stream);
+                        if (!fileName.EndsWith($".{fileType}", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        using var stream = File.Open(fileName, FileMode.Open);
+                        result = callback(stream);
                         break;
                     }
                 }
@@ -302,9 +303,7 @@ namespace OctoAwesome.Client.UI.Components
             }
 
             // Resource fallback
-            if (result is null)
-            {
-                result = LoadFrom(baseType, key, fileTypes, callback, assemblyName =>
+            result ??= LoadFrom(baseType, key, fileTypes, callback, assemblyName =>
                 {
                     return assemblyName switch
                     {
@@ -313,14 +312,12 @@ namespace OctoAwesome.Client.UI.Components
                         _ => assemblyName,
                     };
                 });
-            }
 
             // Load from OctoAwesome.Client.UI
-            if (result is null)
-                result = LoadFrom(typeof(ResourcePack), key, fileTypes, callback);
+            result ??= LoadFrom(typeof(ResourcePack), key, fileTypes, callback);
 
+            // In worst case scenario: load the fallback checker-board texture
             if (result == null)
-                // In worst case scenario: load the fallback checker-board texture
             {
                 using var stream = Assembly.GetExecutingAssembly()
                     .GetManifestResourceStream("OctoAwesome.Client.Assets.FallbackTexture.png");
@@ -329,10 +326,11 @@ namespace OctoAwesome.Client.UI.Components
             }
 
             lock (textures)
-
-                // Save to cache
+            {
                 if (result != null && cache != null)
                     cache[fullkey] = result;
+            }
+
 
             return result;
         }

@@ -433,7 +433,7 @@ namespace OctoAwesome.Client.Controls
                         var localBlock = localChunkCache.GetBlockInfo(pos);
                         if (localBlock.Block == 0)
                             continue;
-                        var blockDefinition = definitionManager.GetBlockDefinitionByIndex(localBlock.Block);
+                        var blockDefinition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(localBlock.Block);
 
                         Debug.Assert(blockDefinition != null, nameof(blockDefinition) + " != null");
                         float? distance = Block.Intersect(blockDefinition.GetCollisionBoxes(localChunkCache, pos.X, pos.Y, pos.Z), pos - renderOffset, pickRay, out Axis? collisionAxis);

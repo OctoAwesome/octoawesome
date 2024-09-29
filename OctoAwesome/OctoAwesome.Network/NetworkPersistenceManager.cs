@@ -240,5 +240,16 @@ namespace OctoAwesome.Network
             //TODO
             throw new NotImplementedException();
         }
+
+        //TODO Needs to be implement for network to work
+        public Awaiter? Load(out IReadOnlyCollection<string> definitionKeys, Guid universeGuid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveDefinitionIndices(Guid universeGuid, IReadOnlyCollection<string> keys)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

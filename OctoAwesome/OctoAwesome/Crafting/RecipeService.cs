@@ -33,35 +33,35 @@ public class RecipeService
     public void Load(params string[] paths)
     {
         return;
-        foreach (string path in paths)
-        {
-            if (!Directory.Exists(path))
-                continue;
-            var recipes = Directory.GetFiles(path, "*.json");
-            foreach (var item in recipes)
-            {
-                var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
+        //foreach (string path in paths)
+        //{
+        //    if (!Directory.Exists(path))
+        //        continue;
+        //    var recipes = Directory.GetFiles(path, "*.json");
+        //    foreach (var item in recipes)
+        //    {
+        //        var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
 
-                foreach (var inp in recipe.Inputs)
-                {
-                    if (!string.IsNullOrWhiteSpace(inp.MaterialName))
-                        inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
-                    if (!string.IsNullOrWhiteSpace(inp.ItemName))
-                        inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
-                }
-                foreach (var inp in recipe.Outputs)
-                {
-                    if (!string.IsNullOrWhiteSpace(inp.MaterialName))
-                        inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
-                    if (!string.IsNullOrWhiteSpace(inp.ItemName))
-                        inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
-                }
+        //        foreach (var inp in recipe.Inputs)
+        //        {
+        //            if (!string.IsNullOrWhiteSpace(inp.MaterialName))
+        //                inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
+        //            if (!string.IsNullOrWhiteSpace(inp.ItemName))
+        //                inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
+        //        }
+        //        foreach (var inp in recipe.Outputs)
+        //        {
+        //            if (!string.IsNullOrWhiteSpace(inp.MaterialName))
+        //                inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
+        //            if (!string.IsNullOrWhiteSpace(inp.ItemName))
+        //                inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
+        //        }
 
-                //TODO Check validity of recipe before adding and write exception otherwise
-                Debug.Assert(recipe != null, nameof(recipe) + " != null");
-                this.recipes.Add(recipe);
-            }
-        }
+        //        //TODO Check validity of recipe before adding and write exception otherwise
+        //        Debug.Assert(recipe != null, nameof(recipe) + " != null");
+        //        this.recipes.Add(recipe);
+        //    }
+        //}
     }
 
     /// <summary>

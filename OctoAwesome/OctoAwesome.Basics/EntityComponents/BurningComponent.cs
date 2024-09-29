@@ -14,6 +14,7 @@ using OctoAwesome.Extension;
 using static OctoAwesome.StateMachine;
 using OctoAwesome.Serialization;
 using OctoAwesome.Caching;
+using OpenTK.Windowing.Common.Input;
 
 namespace OctoAwesome.Basics.EntityComponents;
 
@@ -183,7 +184,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
                         mat = inputSlot.Item.Material;
                     }
                     else
-                        mat = definitionManager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+                        mat = definitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>(outputItem.MaterialName);
 
                     if (mat is null)
                         return false;
@@ -228,7 +229,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
                             mat = inputSlot.Item.Material;
                         }
                         else
-                            mat = definitionManager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+                            mat = definitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>(outputItem.MaterialName);
 
                         if (mat is null)
                             return false;
@@ -257,7 +258,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
                 var outputDef = definitionManager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
                 if (outputDef is IItemDefinition itemDef)
                 {
-                    var mat = definitionManager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+                    var mat = definitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>(outputItem.MaterialName);
 
                     if (mat is null)
                         return false;

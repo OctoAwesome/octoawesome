@@ -17,6 +17,7 @@ using OctoAwesome.Serialization;
 using OctoAwesome.Threading;
 using OctoAwesome.Rx;
 using OctoAwesome.Graphs;
+using System.Collections.ObjectModel;
 
 namespace OctoAwesome.Runtime
 {
@@ -32,7 +33,7 @@ namespace OctoAwesome.Runtime
         public IUpdateHub UpdateHub { get; }
 
         private readonly ISettings settings;
-        
+
         /// <inheritdoc/>
         public IPersistenceManager PersistenceManager { get; set; }
 
@@ -57,7 +58,7 @@ namespace OctoAwesome.Runtime
 
         private readonly bool disablePersistence;
         private readonly ILogger logger;
-        private readonly List<IMapPopulator> populators;
+        private readonly List<IMapPopulator> populators = new();
         private Player? player;
         private readonly LockSemaphore semaphoreSlim;
         private readonly Extension.ExtensionService extensionService;
@@ -81,10 +82,9 @@ namespace OctoAwesome.Runtime
 
             logger = (TypeContainer.GetOrNull<ILogger>() ?? NullLogger.Default).As(typeof(ResourceManager));
 
-            populators = extensionService.GetFromRegistrar<IMapPopulator>().OrderBy(p => p.Order).ToList();
 
             Planets = new ConcurrentDictionary<int, IPlanet>();
-            Pencils = new ();
+            Pencils = new();
             UpdateHub = updateHub;
             this.settings = settings;
             bool.TryParse(settings.Get<string>("DisablePersistence"), out disablePersistence);
@@ -117,7 +117,7 @@ namespace OctoAwesome.Runtime
                 CurrentUniverse = new Universe(guid, name, seed);
                 PersistenceManager ??= new DiskPersistenceManager(extensionService, settings, UpdateHub);
                 PersistenceManager.SaveUniverse(CurrentUniverse);
-               
+
                 return guid;
             }
         }
@@ -137,7 +137,7 @@ namespace OctoAwesome.Runtime
         public bool TryLoadUniverse(Guid universeId)
         {
             // Remove old universe data
-            if (CurrentUniverse != null)
+            if (CurrentUniverse != null && CurrentUniverse.Id != universeId)
                 UnloadUniverse();
 
             using (loadingSemaphore.EnterCountScope())
@@ -147,7 +147,7 @@ namespace OctoAwesome.Runtime
                 currentToken = tokenSource.Token;
 
                 // Load/Generate new universe data
-                var awaiter = PersistenceManager.Load(out _, universeId);
+                var awaiter = PersistenceManager.Load(out IUniverse _, universeId);
 
                 if (awaiter == null)
                     return false;
@@ -156,6 +156,20 @@ namespace OctoAwesome.Runtime
 
                 if (CurrentUniverse == null)
                     throw new NullReferenceException();
+
+                awaiter = PersistenceManager.Load(out IReadOnlyCollection<string> _, universeId);
+                if (awaiter == null)
+                {
+                    DefinitionManager.LoadSaveGame(null);
+                }
+                else
+                {
+                    var keys = awaiter.DeserializeFuncAndRelease<string[]>();
+                    DefinitionManager.LoadSaveGame(keys);
+                }
+                populators.Clear();
+                populators.AddRange(extensionService.GetFromRegistrar<IMapPopulator>().OrderBy(p => p.Order));
+
 
                 return true;
             }
@@ -173,6 +187,7 @@ namespace OctoAwesome.Runtime
                     return;
 
                 PersistenceManager.SaveUniverse(CurrentUniverse);
+                PersistenceManager.SaveDefinitionIndices(CurrentUniverse.Id, DefinitionManager.GetSaveGameData());
 
                 foreach (var planet in Planets)
                 {

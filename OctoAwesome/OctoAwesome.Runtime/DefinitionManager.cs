@@ -1,5 +1,6 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
+using OctoAwesome.Definitions.Items;
 
 using Json.Path;
 
@@ -7,17 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Nodes;
-using OctoAwesome.Definitions.Items;
-using Microsoft.Win32;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OctoAwesome.Runtime
 {
-
     public class ItemDefinition : IItemDefinition
     {
         public string DisplayName { get; }
@@ -40,8 +37,6 @@ namespace OctoAwesome.Runtime
         }
     }
 
-
-
     /// <summary>
     /// Definition Manager which loads extensions.
     /// </summary>
@@ -50,24 +45,23 @@ namespace OctoAwesome.Runtime
         private const string refStr = "\"@ref\"";
 
         private readonly ExtensionService extensionService;
-        private readonly Dictionary<string, List<IDefinition>> aliasDict = new();
         private DefinitionRegistrar registrar;
 
+        public event EventHandler DefinitionsChanged;
+
         /*
-         3. Jsonisierung
-         4. Übersetzungs keys in Definitions überarbeiten (alte lösung, evtl. weblate, community for the win)
-         5. Profit?
+         * Neu 21.08.2024:
+         * 1. Index speichern beim beenden (Done)
+         * 2. Bäume wieder reinmachen
          */
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
         /// </summary>
-        /// <param name="extensionService">The extension servuce to get definitions from extensions with.</param>
+        /// <param name="extensionService">The extension service to get definitions from extensions with.</param>
         public DefinitionManager(ExtensionService extensionService)
         {
             this.extensionService = extensionService;
-
-
         }
 
         /// <inheritdoc />
@@ -83,7 +77,7 @@ namespace OctoAwesome.Runtime
         public IMaterialDefinition[] MaterialDefinitions { get; private set; }
         /// <inheritdoc />
         public IFoodMaterialDefinition[] FoodDefinitions { get; private set; }
-        
+
         /// <inheritdoc/>
         public void Initialize()
         {
@@ -94,8 +88,6 @@ namespace OctoAwesome.Runtime
                 .Deserialize<Dictionary<string, Dictionary<string, JsonNode>>>(json)
                 .SelectMany(x => x.Value)
                 .ToDictionary(x => x.Key, x => x.Value);
-
-            var definitions = new List<IDefinition>();
 
             foreach (var item in extensionService.GetRegistrars(ChannelNames.Definitions))
             {
@@ -114,31 +106,66 @@ namespace OctoAwesome.Runtime
                     RegisterDefinitionInstance(item.Key, o, jArr);
                 }
             }
-
-            definitions.AddRange(registrar.GetAll<IDefinition>()); //Replace IDefinition with BaseBlockDefinition, BaseItemDefinition etc. in multiple calls
-
-
-            Definitions = definitions.ToArray();
-
-            // collect items
-            ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
-
-            // collect blocks
-            BlockDefinitions = Definitions.OfType<IBlockDefinition>().ToArray();
-
-            // collect materials
-            MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
-
-            // collect foods
-            FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
         }
+
+        public void LoadSaveGame(IReadOnlyList<string>? definitionKeyIndices)
+        {
+            if (definitionKeyIndices is null) //New Game
+            {
+                Definitions = registrar.FlattenedDefinitions.Select(x => x.Value).ToArray();
+            }
+            else
+            {
+                Definitions = new IDefinition[definitionKeyIndices.Count];
+                for (int i = 0; i < definitionKeyIndices.Count; i++)
+                {
+                    var key = definitionKeyIndices[i];
+
+                    if (registrar.FlattenedDefinitions.TryGetValue(key, out var def))
+                    {
+                        Definitions[i] = def;
+                    }
+                    else
+                    {
+                        //TODO Old Type, Warn for maybe broken world when continue loading
+                    }
+                }
+            }
+            ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
+            BlockDefinitions = Definitions.OfType<IBlockDefinition>().ToArray();
+            MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
+            FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
+            DefinitionsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public IReadOnlyCollection<string> GetSaveGameData()
+        {
+            var keys = new string[Definitions.Length];
+            for (int i = 0; i < Definitions.Length; i++)
+            {
+                IDefinition item = Definitions[i];
+                keys[i] = registrar.FlattenedDefinitionIds[item];
+            }
+            return keys;
+        }
+
         /// <inheritdoc />
-        public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)
+        public IDefinition? GetDefinitionByIndex(ushort index)
         {
             if (index == 0)
                 return null;
 
-            return (IBlockDefinition)Definitions[(index & Blocks.TypeMask) - 1];
+            return Definitions[index - 1];
+        }
+        /// <inheritdoc />
+        public T? GetDefinitionByIndex<T>(ushort index) where T : IDefinition
+        {
+            if (index == 0)
+                return default;
+            var def = Definitions[index - 1];
+            if (def is T t)
+                return t;
+            return default;
         }
 
         /// <inheritdoc />
@@ -148,55 +175,40 @@ namespace OctoAwesome.Runtime
         }
 
         /// <inheritdoc />
-        public ushort GetDefinitionIndex<T>() where T : IDefinition
+        public ushort GetDefinitionIndex<T>(string key) where T : IDefinition
         {
-            int i = 0;
-            IDefinition? definition = default;
-            foreach (var d in Definitions)
-            {
-                if (i > 0 && d.GetType() == typeof(T))
-                {
-                    throw new InvalidOperationException("Multiple Object where found that match the condition");
-                }
+            var definition = registrar.Get<T>(key);
+            if (definition is null)
+                throw new ArgumentException(nameof(key));
+            return GetDefinitionIndex(definition);
 
-                if (i == 0 && d.GetType() == typeof(T))
-                {
-                    definition = d;
-                    ++i;
-                }
-            }
-            return definition == null ? (ushort)0 : GetDefinitionIndex(definition);
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
+        public IDefinition? GetDefinitionByUniqueKey(string uniqueKey)
         {
-            // TODO: Caching (Generalized IDefinition-Interface for Dictionary (+1 from Maxi on 07.04.2021))
-            return Definitions.OfType<T>();
+            if (registrar.FlattenedDefinitions.TryGetValue(uniqueKey, out var def))
+            {
+                return def;
+            }
+
+            return default;
         }
-
         /// <inheritdoc />
-        public T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition
+        public string? GetUniqueKeyByDefinition(IDefinition definition)
         {
-            var searchedType = typeof(T);
-            if (typeof(IBlockDefinition).IsAssignableFrom(searchedType))
+            if (registrar.FlattenedDefinitionIds.TryGetValue(definition, out var key))
             {
-                return GetDefinitionFromArrayByTypeName<T>(typeName, BlockDefinitions);
-            }
-
-            if (typeof(IItemDefinition).IsAssignableFrom(searchedType))
-            {
-                return GetDefinitionFromArrayByTypeName<T>(typeName, ItemDefinitions);
-            }
-
-            if (typeof(IMaterialDefinition).IsAssignableFrom(searchedType))
-            {
-                return GetDefinitionFromArrayByTypeName<T>(typeName, MaterialDefinitions);
+                return key;
             }
 
             return default;
         }
 
+        public T? GetDefinitionByUniqueKey<T>(string key)
+        {
+            return registrar.Get<T>(key);
+        }
 
         public IReadOnlyCollection<IDefinition> GetVariations(IDefinition def)
             => registrar.GetVariations(def);
@@ -225,19 +237,6 @@ namespace OctoAwesome.Runtime
         {
             registrar.Register(new DefinitionInstanceRegistration(key, o, jArr));
         }
-
-        private static T? GetDefinitionFromArrayByTypeName<T>(string typeName, IDefinition[] array)
-            where T : IDefinition
-        {
-            foreach (var definition in array)
-            {
-                if (string.Equals(definition.GetType().FullName, typeName))
-                    return (T)definition;
-            }
-
-            return default;
-        }
-
 
         private JsonNode GetDefinitionJson()
         {

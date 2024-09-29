@@ -11,6 +11,8 @@ using OctoAwesome.Definitions;
 using OctoAwesome.Chunking;
 using OctoAwesome.Location;
 using OctoAwesome.Client.Controls;
+using System.Linq;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client.Components
 {
@@ -37,6 +39,7 @@ namespace OctoAwesome.Client.Components
 
         private readonly IBlockDefinition?[] blockDefinitions;
         private readonly Action<IChunk> chunkChanged;
+        private readonly DefinitionActionService definitionActionService;
         private IPlanet? planet;
         public bool Loaded { get; set; } = false;
 
@@ -102,7 +105,7 @@ namespace OctoAwesome.Client.Components
 
             vertices = new PoolingList<VertexPositionNormalTextureLight>();
             // Collect block types
-            var localBlockDefinitions = definitionManager.BlockDefinitions;
+            var localBlockDefinitions = definitionManager.Definitions.OfType<IBlockDefinition>().ToArray();
             textureOffsets = new Dictionary<IBlockDefinition, int>(localBlockDefinitions.Length);
             // Dictionary<Type, BlockDefinition> definitionMapping = new Dictionary<Type, BlockDefinition>();
             int definitionIndex = 0;
@@ -117,6 +120,7 @@ namespace OctoAwesome.Client.Components
             blockDefinitions = new IBlockDefinition[27];
 
             chunkChanged = OnChunkChanged;
+            definitionActionService = TypeContainer.Get<DefinitionActionService>();
 
             //simple.Ambient.Pass1.Apply();
             //simple.Ambient.BlockTextures = textures;
@@ -381,7 +385,7 @@ namespace OctoAwesome.Client.Components
                 return;
 
             var manager = _manager;
-            var blockDefinition = definitionManager.GetBlockDefinitionByIndex(block);
+            var blockDefinition = definitionManager.GetDefinitionByIndex<IBlockDefinition>(block);
 
             if (blockDefinition is null)
                 return;
@@ -425,7 +429,7 @@ namespace OctoAwesome.Client.Components
                     for (int xOffset = -1; xOffset <= 1; xOffset++)
                     {
                         var blockDef =
-                            definitionManager.GetBlockDefinitionByIndex(blocks[GetIndex(zOffset, yOffset, xOffset)]);
+                            definitionManager.GetDefinitionByIndex<IBlockDefinition>(blocks[GetIndex(zOffset, yOffset, xOffset)]);
 
                         blockDefinitions[GetIndex(zOffset, yOffset, xOffset)] = blockDef;
                     }
@@ -441,10 +445,10 @@ namespace OctoAwesome.Client.Components
             var globalZ = z + centerChunk.Index.Z * Chunk.CHUNKSIZE_Z;
 
             // Top
-            if (topBlock == 0 || (!topBlockDefintion!.IsSolidWall(Wall.Bottom) && topBlock != block))
+            if (topBlock == 0 || (!BlockDefinition.IsSolidWall(topBlockDefintion!, Wall.Bottom) && topBlock != block))
             {
-                var top = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Top, _manager, globalX, globalY, globalZ));
-                int rotation = -blockDefinition.GetTextureRotation(Wall.Top, _manager, globalX, globalY, globalZ);
+                var top = (byte)(textureIndex + definitionActionService.Function("GetTextureIndex", blockDefinition, 0, Wall.Top, _manager, globalX, globalY, globalZ));
+                int rotation = -definitionActionService.Function("GetTextureRotation", blockDefinition, 0, Wall.Top, _manager, globalX, globalY, globalZ);
 
                 var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(1, 1, 0), Wall.Front);
                 var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(1, 1, 0), Wall.Front);
@@ -494,15 +498,15 @@ namespace OctoAwesome.Client.Components
 
 
             // Bottom
-            if (bottomBlock == 0 || (!bottomBlockDefintion!.IsSolidWall(Wall.Top) && bottomBlock != block))
+            if (bottomBlock == 0 || (!BlockDefinition.IsSolidWall(bottomBlockDefintion!, Wall.Top) && bottomBlock != block))
             {
-                var bottom = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Bottom, _manager, globalX, globalY, globalZ));
+                var bottom = (byte)(textureIndex + definitionActionService.Function("GetTextureIndex", blockDefinition, 0, Wall.Bottom, _manager, globalX, globalY, globalZ));
                 var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
                 var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(-1, 0, 1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
                 var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(-1, 0, -1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front);
                 var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(-1, 0, 1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front);
 
-                int rotation = -blockDefinition.GetTextureRotation(Wall.Bottom, _manager, globalX, globalY, globalZ);
+                int rotation = -definitionActionService.Function("GetTextureRotation", blockDefinition, 0, Wall.Bottom, _manager, globalX, globalY, globalZ);
 
                 var vertXY = new VertexPositionNormalTextureLight(
           new Vector3(x + 1, y + 1, z + 0), new Vector3(0, 0, -1), uvOffsets[(6 + rotation) % 4], bottom, AmbientToBrightness(valueXY));
@@ -529,11 +533,10 @@ namespace OctoAwesome.Client.Components
                 }
             }
             // South
-            if (southBlock == 0 || (!southBlockDefintion!.IsSolidWall(Wall.Front) && southBlock != block))
+            if (southBlock == 0 || (!BlockDefinition.IsSolidWall(southBlockDefintion!, Wall.Front) && southBlock != block))
             {
-                var front = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Front, _manager, globalX, globalY, globalZ));
-                int rotation = -blockDefinition.GetTextureRotation(Wall.Front, _manager, globalX, globalY, globalZ);
-
+                var front = (byte)(textureIndex + definitionActionService.Function("GetTextureIndex", blockDefinition, 0, Wall.Front, _manager, globalX, globalY, globalZ));
+                int rotation = -definitionActionService.Function("GetTextureRotation", blockDefinition, 0, Wall.Front, _manager, globalX, globalY, globalZ);
                 var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(0, 1, -1), Wall.Right, GetIndex(-1, 1, 0), Wall.Front);
                 var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 1, 0), Wall.Front);
                 var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(0, 1, -1), Wall.Right, GetIndex(1, 1, 0), Wall.Back);
@@ -564,10 +567,10 @@ namespace OctoAwesome.Client.Components
             }
 
             // North
-            if (northBlock == 0 || (!northBlockDefintion!.IsSolidWall(Wall.Back) && northBlock != block))
+            if (northBlock == 0 || (!BlockDefinition.IsSolidWall(northBlockDefintion!, Wall.Back) && northBlock != block))
             {
-                var back = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Back, _manager, globalX, globalY, globalZ));
-                int rotation = -blockDefinition.GetTextureRotation(Wall.Back, _manager, globalX, globalY, globalZ);
+                var back = (byte)(textureIndex + definitionActionService.Function("GetTextureIndex", blockDefinition, 0, Wall.Back, _manager, globalX, globalY, globalZ));
+                int rotation = -definitionActionService.Function("GetTextureRotation", blockDefinition, 0, Wall.Back, _manager, globalX, globalY, globalZ);
                 var value = VertexAO(blockDefinitions, GetIndex(-1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(-1, -1, 0), Wall.Front);
                 var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(0, -1, 1), Wall.Left, GetIndex(-1, -1, 0), Wall.Front);
                 var valueZ = VertexAO(blockDefinitions, GetIndex(1, -1, -1), GetIndex(0, -1, -1), Wall.Right, GetIndex(1, -1, 0), Wall.Back);
@@ -598,10 +601,10 @@ namespace OctoAwesome.Client.Components
                 }
             }
             // West
-            if (westBlock == 0 || (!westBlockDefintion!.IsSolidWall(Wall.Right) && westBlock != block))
+            if (westBlock == 0 || (!BlockDefinition.IsSolidWall(westBlockDefintion!, Wall.Right) && westBlock != block))
             {
-                var left = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Left, _manager, globalX, globalY, globalZ));
-                int rotation = -blockDefinition.GetTextureRotation(Wall.Left, _manager, globalX, globalY, globalZ);
+                var left = (byte)(textureIndex + definitionActionService.Function("GetTextureIndex", blockDefinition, 0, Wall.Left, _manager, globalX, globalY, globalZ));
+                int rotation = -definitionActionService.Function("GetTextureRotation", blockDefinition, 0, Wall.Left, _manager, globalX, globalY, globalZ);
 
                 var valueY = VertexAO(blockDefinitions, GetIndex(-1, 1, -1), GetIndex(0, 1, -1), Wall.Left, GetIndex(-1, 0, -1), Wall.Front);
                 var valueYZ = VertexAO(blockDefinitions, GetIndex(1, 1, -1), GetIndex(1, 0, -1), Wall.Left, GetIndex(0, 1, -1), Wall.Back);
@@ -635,15 +638,15 @@ namespace OctoAwesome.Client.Components
 
 
             // East
-            if (eastBlock == 0 || (!eastBlockDefintion!.IsSolidWall(Wall.Left) && eastBlock != block))
+            if (eastBlock == 0 || (!BlockDefinition.IsSolidWall(eastBlockDefintion!, Wall.Left) && eastBlock != block))
             {
-                var right = (byte)(textureIndex + blockDefinition.GetTextureIndex(Wall.Right, _manager, globalX, globalY, globalZ));
+                var right = (byte)(textureIndex + definitionActionService.Function("GetTextureIndex", blockDefinition, 0, Wall.Right, _manager, globalX, globalY, globalZ));
                 var valueXY = VertexAO(blockDefinitions, GetIndex(-1, 1, 1), GetIndex(0, 1, 1), Wall.Left, GetIndex(-1, 0, 1), Wall.Front);
                 var valueXYZ = VertexAO(blockDefinitions, GetIndex(1, 1, 1), GetIndex(1, 0, 1), Wall.Left, GetIndex(0, 1, 1), Wall.Back);
                 var valueX = VertexAO(blockDefinitions, GetIndex(-1, -1, 1), GetIndex(0, -1, 1), Wall.Right, GetIndex(-1, 0, 1), Wall.Front);
                 var valueXZ = VertexAO(blockDefinitions, GetIndex(1, -1, 1), GetIndex(0, -1, 1), Wall.Right, GetIndex(1, 0, 1), Wall.Back);
 
-                int rotation = -blockDefinition.GetTextureRotation(Wall.Right, _manager, globalX, globalY, globalZ);
+                int rotation = -definitionActionService.Function("GetTextureRotation", blockDefinition, 0, Wall.Right, _manager, globalX, globalY, globalZ);
 
                 var vertXYZ = new VertexPositionNormalTextureLight(
          new Vector3(x + 1, y + 1, z + 1), new Vector3(1, 0, 0), uvOffsets[(5 + rotation) % 4], right, AmbientToBrightness(valueXYZ));
@@ -670,8 +673,8 @@ namespace OctoAwesome.Client.Components
                 }
             }
         }
-        private static int VertexAO(int side1, int side2, int corner)
-            => ((side1 & side2) ^ 1) * (3 - (side1 + side2 + corner));
+        private static int VertexAO(uint side1, uint side2, int corner)
+            => (int)(((side1 & side2) ^ 1) * (3 - (side1 + side2 + corner)));
 
         private uint AmbientToBrightness(uint ambient)
             => (0xFFFFFF / 2) + (0xFFFFFF / 6 * ambient);
@@ -681,8 +684,8 @@ namespace OctoAwesome.Client.Components
             var cornerBlock = blockDefinitions[cornerIndex]?.SolidWall ?? 0;
             var side1Def = blockDefinitions[side1Index];
             var side2Def = blockDefinitions[side2Index];
-            var side1 = IsSolidWall(side1Wall, side1Def?.SolidWall ?? 0);
-            var side2 = IsSolidWall(side2Wall, side2Def?.SolidWall ?? 0);
+            var side1 = BlockDefinition.IsSolidWall(side1Def?.SolidWall ?? 0, side1Wall);
+            var side2 = BlockDefinition.IsSolidWall(side2Def?.SolidWall ?? 0, side2Wall);
 
             return (uint)VertexAO(side1, side2, cornerBlock == 0 ? 0 : 1);
         }
@@ -690,8 +693,6 @@ namespace OctoAwesome.Client.Components
         private static int GetIndex(int zOffset, int yOffset, int xOffset)
             => ((((zOffset + 1) * 3) + yOffset + 1) * 3) + xOffset + 1;
 
-        private static int IsSolidWall(Wall wall, uint solidWall)
-            => ((int)solidWall >> (int)wall) & 1;
 
         /// <summary>
         /// Gets a value indicating the border positions and directions of a coordinate.

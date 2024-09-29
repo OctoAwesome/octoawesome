@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using SixLabors.ImageSharp.Formats.Gif;
 using OctoAwesome.Definitions;
 using NonSucking.Framework.Extension.IoC;
+using OctoAwesome.Location;
 namespace OctoAwesome.PoC;
 public class PocManager
 {
@@ -51,7 +52,7 @@ public class PocManager
 
     public T GetDefinition<T>(string id)
     {
-        if(definitions.TryGetValue(id, out var defs))
+        if (definitions.TryGetValue(id, out var defs))
         {
             foreach (var def in defs)
             {
@@ -130,10 +131,47 @@ public class ModMagic : BaseBlockDefinition
 public static class Program
 {
     const string refStr = "\"@ref\"";
+    static List<Delegate> delegates = [];
 
+    static Dictionary<string, Dictionary<IDefinition, List<Delegate>>> abc = [];
+
+    public static void Action<T, T2, T3, T4>(string actionName, T param1, T2 param2, T3 param3, T4 param4)
+    {
+        foreach (var item in abc[actionName])
+        {
+            if (item is Action<T, T2, T3, T4> act)
+                act.Invoke(param1, param2, param3, param4);
+        }
+    }
+
+    public static TRet? Function<TRet, T, T2, T3, T4>(string actionName, T param1, T2 param2, T3 param3, T4 param4)
+    {
+        TRet? lastResult = default;
+        foreach (var item in abc[actionName])
+        {
+            if (item is Func<TRet?, T, T2, T3, T4, TRet> act)
+                lastResult = act.Invoke(lastResult, param1, param2, param3, param4);
+        }
+        return lastResult;
+    }
 
     public static void Main()
     {
+        int planet = 0;
+        int x = 0, y = 0, z = 0;
+        string builder = "";
+        Random random = new Random();
+        //abc["PlantTree"] = new List<Delegate>() { new Action<int, int>((int a, int b) => { Console.WriteLine(a + b); }) };
+        abc["PlantTree"] = new List<Delegate>() { new Action<int, Index3, string, int>((a, ind, str, b) => { Console.WriteLine(a + b); }) };
+
+
+        Action("PlantTree", planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
+
+        var action = delegates[0];
+        if (action is Action<int, int> a)
+        {
+            a(12, 23);
+        }
         //TODOS
         //1. Merge Jsons from multiple files into this object
         //2. Schauen wie die Komfortfunktionen für Paths und Refs aussehen könnten

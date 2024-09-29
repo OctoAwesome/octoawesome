@@ -1,7 +1,8 @@
 ﻿using engenious;
 
 using Newtonsoft.Json;
-
+using OctoAwesome.Basics.Definitions.Blocks;
+using OctoAwesome.Basics.Definitions.Trees;
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.FunctionBlocks;
@@ -12,6 +13,7 @@ using OctoAwesome.Definitions;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
 using OctoAwesome.Graphs;
+using OctoAwesome.Information;
 using OctoAwesome.Location;
 using OctoAwesome.Rx;
 using OctoAwesome.Services;
@@ -22,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -52,135 +55,143 @@ namespace OctoAwesome.Basics
         {
             typeContainer.Register<IMapGenerator, ComplexPlanetGenerator>();
             typeContainer.Register<IPlanet, ComplexPlanet>();
+            
             this.typeContainer = typeContainer;
         }
 
         /// <inheritdoc />
         public void RegisterTypes(ExtensionService extensionLoader)
         {
-            string ConvertName(string name)
-            {
-                name
-                    = name
-                    .Replace("Definition", "");
-                StringBuilder sb = new();
-                int currIndex = 0;
-                foreach (var letter in name)
-                {
-                    if (char.IsUpper(letter))
-                    {
-                        sb.Insert(0, '_');
-                        sb.Insert(1, letter);
-                        currIndex = 1;
-                    }
-                    else
-                        sb.Insert(currIndex, letter);
-                    currIndex++;
-                }
-                return "base" + sb.ToString().ToLower();
-            }
+            //string ConvertName(string name)
+            //{
+            //    name
+            //        = name
+            //        .Replace("Definition", "");
+            //    StringBuilder sb = new();
+            //    int currIndex = 0;
+            //    foreach (var letter in name)
+            //    {
+            //        if (char.IsUpper(letter))
+            //        {
+            //            sb.Insert(0, '_');
+            //            sb.Insert(1, letter);
+            //            currIndex = 1;
+            //        }
+            //        else
+            //            sb.Insert(currIndex, letter);
+            //        currIndex++;
+            //    }
+            //    return "base" + sb.ToString().ToLower();
+            //}
 
-            var folder = "../../../../";
-            var list = new Dictionary<string, IDefinition>();
+            //var folder = "../../../../";
+            //var list = new Dictionary<string, IDefinition>();
 
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
-            {
-                if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
-                {
-                    try
-                    {
+            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
+            //{
+            //    if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
+            //    {
+            //        try
+            //        {
 
-                        var constructor = t.GetConstructors().First();
+            //            var constructor = t.GetConstructors().First();
 
-                        if (constructor is null)
-                        {
+            //            if (constructor is null)
+            //            {
 
-                            list.Add(ConvertName(t.Name), (IDefinition)Activator.CreateInstance(t));
-                        }
-                        else
-                        {
-                            var parameters
-                                = constructor
-                                    .GetParameters()
-                                    .Select<ParameterInfo, object>(p => Activator.CreateInstance(p.ParameterType))
-                                    .ToArray();
+            //                list.Add(ConvertName(t.Name), (IDefinition)Activator.CreateInstance(t));
+            //            }
+            //            else
+            //            {
+            //                var parameters
+            //                    = constructor
+            //                        .GetParameters()
+            //                        .Select<ParameterInfo, object>(p => Activator.CreateInstance(p.ParameterType))
+            //                        .ToArray();
 
-                            list.Add(ConvertName(t.Name), (IDefinition)constructor.Invoke(parameters));
+            //                list.Add(ConvertName(t.Name), (IDefinition)constructor.Invoke(parameters));
 
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ;
-                    }
-
-
-                }
-                //extensionLoader.Register(t, ChannelNames.Definitions);
-            }
-
-            try
-            {
-                File.WriteAllText(Path.Combine(folder, "definitions.json"), JsonConvert.SerializeObject(list, Formatting.Indented));
-
-                var jsonToEdit = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(File.ReadAllText(Path.Combine(folder, "definitions.json")));
-
-                Dictionary<string, string> materials = new Dictionary<string, string>();
-
-                foreach (var (key, value) in jsonToEdit.AsObject())
-                {
-                    if (key.StartsWith("base_material"))
-                    {
-                        materials[value["DisplayName"].GetValue<string>()] = "" +
-                            $$"""
-                                {
-                                    "@ref": "$['BaseDefinitions.json'].{{key}}"
-                                }
-                            """;
-                        continue;
-                    }
-                    var containedIcon = value["Icon"];
-                    if (key.StartsWith("base_block"))
-                    {
-                        var texts = value["Textures"]?.AsArray();
-                        if (texts is not null)
-                        {
-                            value["Textures"] = JsonNode.Parse(JsonConvert.SerializeObject(texts.Select(x => "Blocks." + x.GetValue<string>()).ToArray()));
-                        }
-                        if (containedIcon is not null)
-                            value["Icon"] = "Blocks." + containedIcon;
-                    }
-
-                    if (containedIcon is not null && (value["@types"]?.AsArray().Contains("core.item") ?? false))
-                    {
-
-                        value["Icon"] = "Items." + containedIcon;
-                    }
-
-                    var mat = value["Material"];
-                    if (mat != null)
-                    {
-                        var refMat = materials[mat["DisplayName"].GetValue<string>()];
-                        value["Material"] = JsonNode.Parse(refMat);
-                        ;
-                    }
-
-                    ;
-                }
-
-                File.WriteAllText(
-                    Path.Combine(folder, "BaseDefinitions.json"),
-                    jsonToEdit.ToJsonString(new JsonSerializerOptions { WriteIndented = true }).Replace("\\u0027", "\'"));
-                ;
-            }
-            catch (Exception ex)
-            {
-                ;
-            }
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            ;
+            //        }
 
 
-            ;
+            //    }
+            //    //extensionLoader.Register(t, ChannelNames.Definitions);
+            //}
 
+            //try
+            //{
+            //    File.WriteAllText(Path.Combine(folder, "definitions.json"), JsonConvert.SerializeObject(list, Formatting.Indented));
+
+            //    var jsonToEdit = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(File.ReadAllText(Path.Combine(folder, "definitions.json")));
+
+            //    Dictionary<string, string> materials = new Dictionary<string, string>();
+
+            //    foreach (var (key, value) in jsonToEdit.AsObject())
+            //    {
+            //        if (key.StartsWith("base_material"))
+            //        {
+            //            materials[value["DisplayName"].GetValue<string>()] = "" +
+            //                $$"""
+            //                    {
+            //                        "@ref": "$['BaseDefinitions.json'].{{key}}"
+            //                    }
+            //                """;
+            //            continue;
+            //        }
+            //        var containedIcon = value["Icon"];
+            //        if (key.StartsWith("base_block"))
+            //        {
+            //            var texts = value["Textures"]?.AsArray();
+            //            if (texts is not null)
+            //            {
+            //                value["Textures"] = JsonNode.Parse(JsonConvert.SerializeObject(texts.Select(x => "Blocks." + x.GetValue<string>()).ToArray()));
+            //            }
+            //            if (containedIcon is not null)
+            //                value["Icon"] = "Blocks." + containedIcon;
+            //        }
+
+            //        if (containedIcon is not null && (value["@types"]?.AsArray().Contains("core.item") ?? false))
+            //        {
+
+            //            value["Icon"] = "Items." + containedIcon;
+            //        }
+
+            //        var mat = value["Material"];
+            //        if (mat != null)
+            //        {
+            //            var refMat = materials[mat["DisplayName"].GetValue<string>()];
+            //            value["Material"] = JsonNode.Parse(refMat);
+            //            ;
+            //        }
+
+            //        ;
+            //    }
+
+            //    File.WriteAllText(
+            //        Path.Combine(folder, "BaseDefinitions.json"),
+            //        jsonToEdit.ToJsonString(new JsonSerializerOptions { WriteIndented = true }).Replace("\\u0027", "\'"));
+            //    ;
+            //}
+            //catch (Exception ex)
+            //{
+            //    ;
+            //}
+            //;
+            RegisterTypeDefinitions(extensionLoader);
+
+            var defActionService = typeContainer.Get<DefinitionActionService>();
+            RegisterPlantTree(defActionService);
+            RegisterTextureIndex(defActionService);
+            RegisterTextureRotations(defActionService);
+        }
+
+        private static void RegisterTypeDefinitions(ExtensionService extensionLoader)
+        {
             extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
@@ -188,6 +199,37 @@ namespace OctoAwesome.Basics
             extensionLoader.Register(new TypeDefinitionRegistration("core.Items", typeof(FoodMaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.tree", typeof(TreeDefinition)));
+        }
+
+        private void RegisterPlantTree(DefinitionActionService defActionService)
+        {
+            var plantTree = typeContainer.GetUnregistered<PlantTree>();
+            defActionService.Register("PlantTree", "base_tree_birch@core.tree", plantTree.Birch);
+            defActionService.Register("PlantTree", "base_tree_spruce@core.tree", plantTree.Spruce);
+            defActionService.Register("PlantTree", "base_tree_oak@core.tree", plantTree.Oak);
+            defActionService.Register("PlantTree", "base_tree_cactus@core.tree", plantTree.Cactus);
+        }
+
+        private void RegisterTextureIndex(DefinitionActionService defActionService)
+        {
+            var blockTextureIndex = typeContainer.GetUnregistered<BlockTextureIndex>();
+            defActionService.Register("GetTextureIndex", "base_block_battery@core.block", blockTextureIndex.BatteryBlock);
+            defActionService.Register("GetTextureIndex", "base_block_birch_wood@core.block", blockTextureIndex.Wood);
+            defActionService.Register("GetTextureIndex", "base_block_cactus@core.block", blockTextureIndex.Cactus);
+            defActionService.Register("GetTextureIndex", "base_block_grass@core.block", blockTextureIndex.Grass);
+            defActionService.Register("GetTextureIndex", "base_block_light@core.block", blockTextureIndex.Light);
+            defActionService.Register("GetTextureIndex", "base_block_red@core.block", blockTextureIndex.Red);
+            defActionService.Register("GetTextureIndex", "base_block_snow@core.block", blockTextureIndex.Snow);
+            defActionService.Register("GetTextureIndex", "base_block_wood@core.block", blockTextureIndex.Wood);
+        }
+
+        private void RegisterTextureRotations(DefinitionActionService defActionService)
+        {
+            var blockTextureRotation = typeContainer.GetUnregistered<BlockTextureRotation>();
+            defActionService.Register("GetTextureRotation", "base_block_birch_wood@core.block", blockTextureRotation.Wood);
+            defActionService.Register("GetTextureRotation", "base_block_cactus@core.block", blockTextureRotation.Cactus);
+            defActionService.Register("GetTextureRotation", "base_block_wood@core.block", blockTextureRotation.Wood);
         }
 
         /// <inheritdoc />
@@ -195,7 +237,7 @@ namespace OctoAwesome.Basics
         {
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
-            extensionLoader.Register<IMapPopulator>(new TreePopulator());
+            extensionLoader.Register<IMapPopulator>(new TreePopulator(typeContainer.Get<DefinitionActionService>()));
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
@@ -263,8 +305,6 @@ namespace OctoAwesome.Basics
 
                 }
             });
-
-
 
             interactService.Register("Storage Interface", (gt, interactor, target) =>
             {

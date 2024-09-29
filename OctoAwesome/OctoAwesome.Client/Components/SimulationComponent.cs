@@ -50,7 +50,7 @@ namespace OctoAwesome.Client.Components
         public void LoadGame(Guid guid)
         {
             ExitSimulation();
-
+            
             simulation = new Simulation(resourceManager, extensionService);
             if (Simulation.TryLoadGame(guid))
                 Enabled = true;
