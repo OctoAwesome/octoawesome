@@ -13,6 +13,51 @@ class Template1
         namespace OctoAwesome.Extension;
         partial class DefinitionActionService
         {
+            ///<inheritdoc>
+            public void Action(string actionName, IDefinition definition)
+                => Action(actionName, manager.GetUniqueKeyByDefinition(definition), definition);
+            ///<inheritdoc>
+            public void Action(string actionName, string definitionKey)
+                => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey));
+
+            ///<inheritdoc>
+            private void Action(string actionName, string definitionKey, IDefinition definition)
+            {
+                if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
+                    return;
+                if(!definitionDelegates.TryGetValue(definitionKey, out var actions))
+                    return;
+
+                foreach (var item in actions)
+                {
+                    if (item is Action<IDefinition> act)
+                        act.Invoke(definition);
+                }
+            }
+
+            ///<inheritdoc>
+            public TRet? Function<TRet>(string actionName, IDefinition definition, TRet? defaultValue)
+                => Function<TRet>(actionName, manager.GetUniqueKeyByDefinition(definition), definition, defaultValue);
+            ///<inheritdoc>
+            public TRet? Function<TRet>(string actionName, string definitionKey, TRet? defaultValue)
+                => Function<TRet>(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), defaultValue);
+            ///<inheritdoc>
+            public TRet? Function<TRet>(string actionName, string definitionKey, IDefinition definition, TRet? defaultValue)
+            {
+                if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
+                    return defaultValue;
+                if(!definitionDelegates.TryGetValue(definitionKey, out var actions))
+                    return defaultValue;
+
+                TRet? lastResult = default;
+                foreach (var item in actions)
+                {
+                    if (item is Func<TRet?, IDefinition, TRet> act)
+                        lastResult = act.Invoke(lastResult, definition);
+                }
+                return lastResult;
+            }
+
         """;
 
         for (int i = 0; i < 14; i++)
@@ -31,7 +76,7 @@ class Template1
                         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), {{paramNames}});
 
                     ///<inheritdoc>
-                    private void Action<{{ts}}>(string actionName, string definitionKey, IDefinition definition,{{tParams}})
+                    private void Action<{{ts}}>(string actionName, string definitionKey, IDefinition definition, {{tParams}})
                     {
                         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
                             return;

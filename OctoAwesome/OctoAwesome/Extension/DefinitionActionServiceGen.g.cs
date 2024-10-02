@@ -3,7 +3,52 @@ using System;
 
 namespace OctoAwesome.Extension;
 partial class DefinitionActionService
-{    ///<inheritdoc>
+{
+    ///<inheritdoc>
+    public void Action(string actionName, IDefinition definition)
+        => Action(actionName, manager.GetUniqueKeyByDefinition(definition), definition);
+    ///<inheritdoc>
+    public void Action(string actionName, string definitionKey)
+        => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey));
+
+    ///<inheritdoc>
+    private void Action(string actionName, string definitionKey, IDefinition definition)
+    {
+        if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
+            return;
+        if(!definitionDelegates.TryGetValue(definitionKey, out var actions))
+            return;
+
+        foreach (var item in actions)
+        {
+            if (item is Action<IDefinition> act)
+                act.Invoke(definition);
+        }
+    }
+
+    ///<inheritdoc>
+    public TRet? Function<TRet>(string actionName, IDefinition definition, TRet? defaultValue)
+        => Function<TRet>(actionName, manager.GetUniqueKeyByDefinition(definition), definition, defaultValue);
+    ///<inheritdoc>
+    public TRet? Function<TRet>(string actionName, string definitionKey, TRet? defaultValue)
+        => Function<TRet>(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), defaultValue);
+    ///<inheritdoc>
+    public TRet? Function<TRet>(string actionName, string definitionKey, IDefinition definition, TRet? defaultValue)
+    {
+        if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
+            return defaultValue;
+        if(!definitionDelegates.TryGetValue(definitionKey, out var actions))
+            return defaultValue;
+
+        TRet? lastResult = default;
+        foreach (var item in actions)
+        {
+            if (item is Func<TRet?, IDefinition, TRet> act)
+                lastResult = act.Invoke(lastResult, definition);
+        }
+        return lastResult;
+    }
+    ///<inheritdoc>
     public void Action<T1>(string actionName, IDefinition definition, T1 param1)
         => Action(actionName, manager.GetUniqueKeyByDefinition(definition), definition, param1);
     ///<inheritdoc>
@@ -11,7 +56,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1);
 
     ///<inheritdoc>
-    private void Action<T1>(string actionName, string definitionKey, IDefinition definition,T1 param1)
+    private void Action<T1>(string actionName, string definitionKey, IDefinition definition, T1 param1)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -55,7 +100,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2);
 
     ///<inheritdoc>
-    private void Action<T1, T2>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2)
+    private void Action<T1, T2>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -99,7 +144,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3)
+    private void Action<T1, T2, T3>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -143,7 +188,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4)
+    private void Action<T1, T2, T3, T4>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -187,7 +232,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5)
+    private void Action<T1, T2, T3, T4, T5>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -231,7 +276,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6)
+    private void Action<T1, T2, T3, T4, T5, T6>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -275,7 +320,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7)
+    private void Action<T1, T2, T3, T4, T5, T6, T7>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -319,7 +364,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -363,7 +408,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8, param9);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -407,7 +452,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8, param9, param10);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -451,7 +496,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -495,7 +540,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11, T12 param12)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11, T12 param12)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -539,7 +584,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11, T12 param12, T13 param13)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11, T12 param12, T13 param13)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;
@@ -583,7 +628,7 @@ partial class DefinitionActionService
         => Action(actionName, definitionKey, manager.GetDefinitionByUniqueKey(definitionKey), param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14);
 
     ///<inheritdoc>
-    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(string actionName, string definitionKey, IDefinition definition,T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11, T12 param12, T13 param13, T14 param14)
+    private void Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(string actionName, string definitionKey, IDefinition definition, T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8, T9 param9, T10 param10, T11 param11, T12 param12, T13 param13, T14 param14)
     {
         if(!methodsPerDefinition.TryGetValue(actionName, out var definitionDelegates))
             return;

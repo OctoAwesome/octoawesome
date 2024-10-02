@@ -355,7 +355,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 850
   },
@@ -442,7 +443,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 850
   },
@@ -587,7 +589,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },
@@ -610,7 +613,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },
@@ -633,7 +637,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },
@@ -677,7 +682,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 850
   },
@@ -740,7 +746,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },
@@ -764,7 +771,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },
@@ -862,7 +870,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },
@@ -887,7 +896,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.networkblock"
     ],
     "Density": 934
   },

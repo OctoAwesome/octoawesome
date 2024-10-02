@@ -55,144 +55,26 @@ namespace OctoAwesome.Basics
         {
             typeContainer.Register<IMapGenerator, ComplexPlanetGenerator>();
             typeContainer.Register<IPlanet, ComplexPlanet>();
-            
+
             this.typeContainer = typeContainer;
         }
 
         /// <inheritdoc />
         public void RegisterTypes(ExtensionService extensionLoader)
         {
-            //string ConvertName(string name)
-            //{
-            //    name
-            //        = name
-            //        .Replace("Definition", "");
-            //    StringBuilder sb = new();
-            //    int currIndex = 0;
-            //    foreach (var letter in name)
-            //    {
-            //        if (char.IsUpper(letter))
-            //        {
-            //            sb.Insert(0, '_');
-            //            sb.Insert(1, letter);
-            //            currIndex = 1;
-            //        }
-            //        else
-            //            sb.Insert(currIndex, letter);
-            //        currIndex++;
-            //    }
-            //    return "base" + sb.ToString().ToLower();
-            //}
-
-            //var folder = "../../../../";
-            //var list = new Dictionary<string, IDefinition>();
-
-            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
-            //{
-            //    if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
-            //    {
-            //        try
-            //        {
-
-            //            var constructor = t.GetConstructors().First();
-
-            //            if (constructor is null)
-            //            {
-
-            //                list.Add(ConvertName(t.Name), (IDefinition)Activator.CreateInstance(t));
-            //            }
-            //            else
-            //            {
-            //                var parameters
-            //                    = constructor
-            //                        .GetParameters()
-            //                        .Select<ParameterInfo, object>(p => Activator.CreateInstance(p.ParameterType))
-            //                        .ToArray();
-
-            //                list.Add(ConvertName(t.Name), (IDefinition)constructor.Invoke(parameters));
-
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            ;
-            //        }
-
-
-            //    }
-            //    //extensionLoader.Register(t, ChannelNames.Definitions);
-            //}
-
-            //try
-            //{
-            //    File.WriteAllText(Path.Combine(folder, "definitions.json"), JsonConvert.SerializeObject(list, Formatting.Indented));
-
-            //    var jsonToEdit = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(File.ReadAllText(Path.Combine(folder, "definitions.json")));
-
-            //    Dictionary<string, string> materials = new Dictionary<string, string>();
-
-            //    foreach (var (key, value) in jsonToEdit.AsObject())
-            //    {
-            //        if (key.StartsWith("base_material"))
-            //        {
-            //            materials[value["DisplayName"].GetValue<string>()] = "" +
-            //                $$"""
-            //                    {
-            //                        "@ref": "$['BaseDefinitions.json'].{{key}}"
-            //                    }
-            //                """;
-            //            continue;
-            //        }
-            //        var containedIcon = value["Icon"];
-            //        if (key.StartsWith("base_block"))
-            //        {
-            //            var texts = value["Textures"]?.AsArray();
-            //            if (texts is not null)
-            //            {
-            //                value["Textures"] = JsonNode.Parse(JsonConvert.SerializeObject(texts.Select(x => "Blocks." + x.GetValue<string>()).ToArray()));
-            //            }
-            //            if (containedIcon is not null)
-            //                value["Icon"] = "Blocks." + containedIcon;
-            //        }
-
-            //        if (containedIcon is not null && (value["@types"]?.AsArray().Contains("core.item") ?? false))
-            //        {
-
-            //            value["Icon"] = "Items." + containedIcon;
-            //        }
-
-            //        var mat = value["Material"];
-            //        if (mat != null)
-            //        {
-            //            var refMat = materials[mat["DisplayName"].GetValue<string>()];
-            //            value["Material"] = JsonNode.Parse(refMat);
-            //            ;
-            //        }
-
-            //        ;
-            //    }
-
-            //    File.WriteAllText(
-            //        Path.Combine(folder, "BaseDefinitions.json"),
-            //        jsonToEdit.ToJsonString(new JsonSerializerOptions { WriteIndented = true }).Replace("\\u0027", "\'"));
-            //    ;
-            //}
-            //catch (Exception ex)
-            //{
-            //    ;
-            //}
-            //;
             RegisterTypeDefinitions(extensionLoader);
 
             var defActionService = typeContainer.Get<DefinitionActionService>();
             RegisterPlantTree(defActionService);
             RegisterTextureIndex(defActionService);
             RegisterTextureRotations(defActionService);
+            RegisterNodeTypes(defActionService);
         }
 
         private static void RegisterTypeDefinitions(ExtensionService extensionLoader)
         {
             extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.networkblock", typeof(NetworkBlockDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
@@ -230,6 +112,21 @@ namespace OctoAwesome.Basics
             defActionService.Register("GetTextureRotation", "base_block_birch_wood@core.block", blockTextureRotation.Wood);
             defActionService.Register("GetTextureRotation", "base_block_cactus@core.block", blockTextureRotation.Cactus);
             defActionService.Register("GetTextureRotation", "base_block_wood@core.block", blockTextureRotation.Wood);
+        }
+        private void RegisterNodeTypes(DefinitionActionService defActionService)
+        {
+            var blockTextureRotation = typeContainer.GetUnregistered<BlockTextureRotation>();
+            defActionService.Register("CreateNode", "base_block_signaler@core.networkblock", (NodeBase? _, IDefinition _) => new SignalerBlockNode());
+            defActionService.Register("CreateNode", "base_block_battery@core.networkblock", (NodeBase? _, IDefinition _) => new BatteryNode());
+            defActionService.Register("CreateNode", "base_block_cactus@core.networkblock", (NodeBase? _, IDefinition _) => new CactusBlockNode());
+            defActionService.Register("CreateNode", "base_cable_item@core.networkblock", (NodeBase? _, IDefinition _) => new ItemCableNode());
+            defActionService.Register("CreateNode", "base_block_source_item@core.networkblock", (NodeBase? _, IDefinition _) => new ItemSourceBlockNode());
+            defActionService.Register("CreateNode", "base_block_target_item@core.networkblock", (NodeBase? _, IDefinition _) => new ItemTargetBlockNode());
+            defActionService.Register("CreateNode", "base_block_light@core.networkblock", (NodeBase? _, IDefinition _) => new LightNode());
+            defActionService.Register("CreateNode", "base_block_cable_power@core.networkblock", (NodeBase? _, IDefinition _) => new PowerCableNode());
+            defActionService.Register("CreateNode", "base_block_plate_pressure@core.networkblock", (NodeBase? _, IDefinition _) => new PressurePlateBlockNode());
+            defActionService.Register("CreateNode", "base_cable_signal@core.networkblock", (NodeBase? _, IDefinition _) => new SignalCableNode());
+
         }
 
         /// <inheritdoc />
@@ -467,7 +364,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>(), TypeContainer.Get<DefinitionActionService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?

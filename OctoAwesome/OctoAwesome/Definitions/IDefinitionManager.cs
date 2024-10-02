@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Nodes;
 
 namespace OctoAwesome.Definitions
@@ -83,6 +84,8 @@ namespace OctoAwesome.Definitions
         void LoadSaveGame(IReadOnlyList<string>? sortedDefinitionKeys);
         ushort GetDefinitionIndex<T>(string key) where T : IDefinition;
         IReadOnlyCollection<string> GetSaveGameData();
+        bool TryGetVariation<T>(IDefinition def, [MaybeNullWhen(false)] out T? variation);
+        IReadOnlyCollection<IDefinition> GetVariations(IDefinition def);
 
         event EventHandler DefinitionsChanged;
     }
