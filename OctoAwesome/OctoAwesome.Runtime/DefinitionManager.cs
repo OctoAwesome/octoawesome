@@ -49,12 +49,6 @@ namespace OctoAwesome.Runtime
 
         public event EventHandler DefinitionsChanged;
 
-        /*
-         * Neu 21.08.2024:
-         * 1. Index speichern beim beenden (Done)
-         * 2. Bäume wieder reinmachen
-         */
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
         /// </summary>
@@ -212,6 +206,7 @@ namespace OctoAwesome.Runtime
 
         public IReadOnlyCollection<IDefinition> GetVariations(IDefinition def)
             => registrar.GetVariations(def);
+
         public bool TryGetVariation<T>(IDefinition def, [MaybeNullWhen(false)] out T? variation)
         {
             var variants = GetVariations(def);

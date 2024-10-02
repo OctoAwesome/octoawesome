@@ -16,6 +16,7 @@ using OpenTK.Graphics.ES11;
 using System;
 using NLog.Layouts;
 using OctoAwesome.Information;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -33,6 +34,8 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly Simulation simulation;
         private readonly BlockInteractionService service;
         private readonly InteractService interactService;
+        private readonly IDefinitionManager definitionManager;
+        private readonly DefinitionActionService definitionActionService;
 
 
         /// <summary>
@@ -42,11 +45,13 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <param name="blockInteractionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService, DefinitionActionService definitionActionService)
         {
             this.simulation = simulation;
             service = blockInteractionService;
             this.interactService = interactService;
+            definitionManager = simulation.ResourceManager.DefinitionManager;
+            this.definitionActionService = definitionActionService;
         }
 
 
@@ -160,13 +165,14 @@ namespace OctoAwesome.Basics.SimulationComponents
 
         private void DoNetworkBlockStuff(PositionComponent? positioncomponent, ILocalChunkCache? cache, IBlockDefinition definition, Index3 idx)
         {
-            if (definition is INetworkBlock nb)
+
+            if (definitionManager.TryGetVariation<INetworkBlock>(definition, out var nb))
             {
                 var pencil = simulation.ResourceManager.Pencils[positioncomponent.Position.Planet];
                 var ourInfo = cache.GetBlockInfo(idx);
 
 
-                var node = nb.CreateNode();
+                var node = definitionActionService.Function<NodeBase>("CreateNode", nb, null);
                 node.BlockInfo = ourInfo;
                 node.PlanetId = positioncomponent.Position.Planet;
 
@@ -205,8 +211,10 @@ namespace OctoAwesome.Basics.SimulationComponents
             var id = cache.GetBlock(index3);
             if (id == 0)
                 return;
-            var definition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(id);
-            if (definition is not INetworkBlock networkBlock)
+            var defaultDefinition = simulation.ResourceManager.DefinitionManager.GetDefinitionByIndex(id);
+
+            if (defaultDefinition is null ||
+                !simulation.ResourceManager.DefinitionManager.TryGetVariation<INetworkBlock>(defaultDefinition, out _))
                 return;
 
             var info = cache.GetBlockInfo(index3);

@@ -43,14 +43,5 @@ namespace OctoAwesome.Definitions
                 yield return "core.item";
         }
 
-        /*
-         *  extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_food", typeof(FoodMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
-         */
     }
 }

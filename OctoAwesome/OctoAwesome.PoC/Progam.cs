@@ -14,10 +14,31 @@ using OctoAwesome.Definitions;
 using NonSucking.Framework.Extension.IoC;
 using OctoAwesome.Location;
 namespace OctoAwesome.PoC;
+
+
+
+class TestSer {
+
+
+    [JsonInclude]
+    private string myField;
+
+    public void SetMyField(string abc)
+    {
+        myField = abc;
+    }
+}
+
+class TestSerA : TestSer
+{
+
+}
 public class PocManager
 {
     private Dictionary<string, List<IDefinition>> definitions = [];
     private Dictionary<string, Type> definitionTypes = new();
+
+
 
     public dynamic GetDefinition(int index) { return ""; }
     public dynamic GetDefinitionByTypeName(string typeName) { return ""; }
@@ -157,12 +178,25 @@ public static class Program
 
     public static void Main()
     {
+        var abc = new TestSer();
+        abc.SetMyField("Test");
+        var serialized = JsonSerializer.Serialize(abc);
+        var deserialized = JsonSerializer.Deserialize<TestSer>(serialized);
+
+        var func = ()=> new TestSerA();
+
+        if(func is Func<TestSer> func2)
+        {
+            var abc123 = func2();
+        }
+
+
         int planet = 0;
         int x = 0, y = 0, z = 0;
         string builder = "";
         Random random = new Random();
         //abc["PlantTree"] = new List<Delegate>() { new Action<int, int>((int a, int b) => { Console.WriteLine(a + b); }) };
-        abc["PlantTree"] = new List<Delegate>() { new Action<int, Index3, string, int>((a, ind, str, b) => { Console.WriteLine(a + b); }) };
+        //abc["PlantTree"] = new List<Delegate>() { new Action<int, Index3, string, int>((a, ind, str, b) => { Console.WriteLine(a + b); }) };
 
 
         Action("PlantTree", planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
@@ -172,10 +206,7 @@ public static class Program
         {
             a(12, 23);
         }
-        //TODOS
-        //1. Merge Jsons from multiple files into this object
-        //2. Schauen wie die Komfortfunktionen für Paths und Refs aussehen könnten
-        //3. ???
+
 
         var definitionManager = new PocManager();
         TypeContainer.Register(definitionManager);
