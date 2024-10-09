@@ -9,6 +9,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Client.Components
 {
@@ -16,6 +17,7 @@ namespace OctoAwesome.Client.Components
     {
 
         private readonly IResourceManager resourceManager;
+        private readonly DefinitionActionService definitionActionService;
 
         #region External Input
 
@@ -77,10 +79,11 @@ namespace OctoAwesome.Client.Components
 
         public OrientationFlags SelectedCorner { get; set; }
 
-        public PlayerComponent(OctoGame game, IResourceManager resourceManager)
+        public PlayerComponent(OctoGame game, IResourceManager resourceManager, DefinitionActionService definitionActionService)
             : base(game)
         {
             this.resourceManager = resourceManager;
+            this.definitionActionService = definitionActionService;
             Enabled = false;
         }
 
@@ -221,7 +224,7 @@ namespace OctoAwesome.Client.Components
                 return;
             foreach (var itemDefinition in itemDefinitions)
             {
-                var fooditem = itemDefinition.Create(foodMaterial);
+                var fooditem = definitionActionService.Function("CreateItem", itemDefinition, (Item?)null,  foodMaterial);
                 if (fooditem is not null)
                     inventory.Add(fooditem, fooditem.VolumePerUnit);
             }
@@ -240,13 +243,16 @@ namespace OctoAwesome.Client.Components
             var food = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {
-                if (wood is not null && itemDefinition.Create(wood) is { } woodItem)
+                if (wood is not null 
+                    && definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, wood) is { } woodItem)
                     inventory.Add(woodItem, woodItem.VolumePerUnit);
 
-                if (stone is not null && itemDefinition.Create(stone) is { } stoneItem)
+                if (stone is not null 
+                    && definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, stone) is { } stoneItem)
                     inventory.Add(stoneItem, stoneItem.VolumePerUnit);
 
-                if (food is not null && itemDefinition.Create(food) is { } foodItem)
+                if (food is not null 
+                    && definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, food) is { } foodItem)
                     inventory.Add(foodItem, foodItem.VolumePerUnit);
             }
 

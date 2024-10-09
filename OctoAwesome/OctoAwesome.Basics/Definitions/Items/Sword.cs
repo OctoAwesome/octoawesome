@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The sword item definition.</param>
         /// <param name="materialDefinition">The material definition the sword is made out of.</param>
-        public Sword(SwordDefinition definition, IMaterialDefinition materialDefinition)
+        public Sword(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 

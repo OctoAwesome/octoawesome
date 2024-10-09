@@ -1,7 +1,6 @@
 ﻿using engenious;
 
 using OctoAwesome.Chunking;
-using OctoAwesome.Graphs;
 using OctoAwesome.Information;
 using OctoAwesome.Services;
 
@@ -12,13 +11,6 @@ using System.Text.Json.Serialization;
 
 namespace OctoAwesome.Definitions
 {
-    /// <summary>
-    /// Base class of block definitions used for graphs.
-    /// </summary>
-    public class NetworkBlockDefinition : BlockDefinition, INetworkBlock
-    {
-        public string[] TransferTypes { get; init; }
-    }
 
     /// <summary>
     /// Base class of block definitions.
@@ -114,5 +106,5 @@ namespace OctoAwesome.Definitions
         /// <returns>Current <see cref="BlockDefinition"/></returns>
         public IDefinition GetDefinition() => this;
 
-    }   
+    }
 }

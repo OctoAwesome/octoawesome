@@ -27,7 +27,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The chest item definition.</param>
         /// <param name="materialDefinition">The material definition the chest is made out of.</param>
-        public ChestItem(ChestItemDefinition definition, IMaterialDefinition materialDefinition)
+        public ChestItem(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
             updateHub = TypeContainer.Get<IUpdateHub>();

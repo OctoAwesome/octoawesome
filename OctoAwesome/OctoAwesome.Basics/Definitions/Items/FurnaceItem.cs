@@ -31,7 +31,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <summary>
         /// Initializes a new instance of the<see cref="FurnaceItem" /> class
         /// </summary>
-        public FurnaceItem(FurnaceItemDefinition definition, IMaterialDefinition materialDefinition)
+        public FurnaceItem(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
             var updateHub = TypeContainer.Get<IUpdateHub>();

@@ -29,7 +29,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The wauzi item egg definition.</param>
         /// <param name="materialDefinition">The material the egg is made of.</param>
-        public WauziItem(WauziItemDefinition definition, IMaterialDefinition materialDefinition)
+        public WauziItem(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
             var updateHub = TypeContainer.Get<IUpdateHub>();

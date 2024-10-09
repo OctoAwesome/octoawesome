@@ -135,7 +135,7 @@ namespace OctoAwesome.Client
             #region GameComponents
 
 
-            Player = new PlayerComponent(this, ResourceManager);
+            Player = typeContainer.GetUnregistered<PlayerComponent>();
             Player.UpdateOrder = 2;
             Components.Add(Player);
 

@@ -2,7 +2,7 @@
 
 using NLog.LayoutRenderers.Wrappers;
 
-using OctoAwesome.Basics.Definitions.Materials;
+
 using OctoAwesome.Caching;
 using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
@@ -18,39 +18,6 @@ using System.Threading;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
-    /// <summary>
-    /// Block definition for signaler blocks.
-    /// </summary>
-    public class ItemTargetBlockDefinition : BlockDefinition, INetworkBlock<ItemTransfer>
-    {
-        /// <inheritdoc />
-        public override string Icon => "water";
-
-        /// <inheritdoc />
-        public override string DisplayName => "Item Target Block";
-
-        /// <inheritdoc />
-        public override string[] Textures { get; init; } = ["water"];
-
-        /// <inheritdoc />
-        public override IMaterialDefinition Material { get; init; }
-        public string[] TransferTypes { get; } = ["ItemTransfer"];
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemTargetBlockDefinition"/> class.
-        /// </summary>
-        /// <param name="material">The material definition for this signal cable block definition.</param>
-        public ItemTargetBlockDefinition(SimpleBlockMaterialDefinition material)
-        {
-            Material = material;
-        }
-
-
-        public NodeBase CreateNode()
-        {
-            return new ItemTargetBlockNode();
-        }
-    }
 
     internal partial class ItemTargetBlockNode : Node<ItemTransfer>, ITargetNode<ItemTransfer>
     {

@@ -1,6 +1,6 @@
 ﻿using NonSucking.Framework.Extension.Collections;
 using NonSucking.Framework.Extension.Threading;
-
+using OctoAwesome.Caching;
 using OctoAwesome.Components;
 using OctoAwesome.Database;
 using OctoAwesome.Definitions;
@@ -152,19 +152,20 @@ namespace OctoAwesome.EntityComponents
                     }
                     continue;
                 }
-                string name = reader.ReadString();
+                bool isDefinition = reader.ReadBoolean();
 
-                var definition = definitionManager.Definitions.FirstOrDefault(d => d.GetType().FullName == name);
 
                 int amount = 1;
                 IInventoryable inventoryItem = default!;
-                if (definition is not null && definition is IInventoryable inventoryable)
+                if (isDefinition)
                 {
+                    var definition = definitionManager.GetDefinitionByIndex(reader.ReadUInt16());
                     amount = reader.ReadInt32();
-                    inventoryItem = inventoryable;
+                    inventoryItem = GenericCaster<IDefinition, IInventoryable>.Cast(definition);
                 }
                 else
                 {
+                    string name = reader.ReadString();
                     var type = Type.GetType(name);
 
                     if (type is null)
@@ -217,18 +218,21 @@ namespace OctoAwesome.EntityComponents
                 if (slot.Item is null)
                     continue;
 
-                if (slot.Item is Item item)
+                if (slot.Item is ISerializable serializable)
                 {
-                    writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
-                    item.Serialize(writer);
-                }
-                else if (slot.Item is ISerializable serializable)
-                {
+                    writer.Write(false);
                     writer.Write(slot.Item.GetType().AssemblyQualifiedName!);
                     serializable.Serialize(writer);
                 }
+                else if(slot.Item is IDefinition definition)
+                {
+                    writer.Write(true);
+                    writer.Write(definitionManager.GetDefinitionIndex(definition));
+                    writer.Write(slot.Amount);
+                }
                 else
                 {
+                    writer.Write(false);
                     writer.Write(slot.Item.GetType().FullName!);
                     writer.Write(slot.Amount);
                 }

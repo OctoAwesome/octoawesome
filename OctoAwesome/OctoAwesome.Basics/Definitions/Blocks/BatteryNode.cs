@@ -1,6 +1,5 @@
 ﻿using engenious.Graphics;
 
-using OctoAwesome.Basics.Definitions.Materials;
 using OctoAwesome.Caching;
 using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
@@ -14,48 +13,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OctoAwesome.Basics.Definitions.Blocks;
-/// <summary>
-/// Block definition for light on blocks.
-/// </summary>
-public class BatteryBlockDefinition : BlockDefinition, INetworkBlock<int>
-{
-    /// <inheritdoc />
-    public override string Icon => "light_on";
-
-    /// <inheritdoc />
-    public override string DisplayName => "Akku";
-
-    /// <inheritdoc />
-    public override string[] Textures { get; init; } = ["light_off", "light_on", "light_off", "light_on", "light_off", "light_on", "light_off", "light_on"];
-
-    /// <inheritdoc />
-    public override IMaterialDefinition Material { get; init; }
-    public string[] TransferTypes { get; } =  ["Energy"];
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.
-    /// </summary>
-    /// <param name="material">The material definition for this cactus block definition.</param>
-    public BatteryBlockDefinition(CactusMaterialDefinition material)
-    {
-        Material = material;
-    }
-
-    /// <inheritdoc/>
-    public override int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z)
-    {
-        var meta = manager.GetBlockMeta(x, y, z);
-        return meta & 7;
-    }
-
-    public NodeBase CreateNode()
-    {
-        return new BatteryNode();
-    }
-}
-
-
-
 
 
 internal partial class BatteryNode : Node<int>, ITargetNode<int>, ISourceNode<int>

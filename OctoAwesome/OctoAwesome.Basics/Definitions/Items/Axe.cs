@@ -32,7 +32,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The axe item definition.</param>
         /// <param name="materialDefinition">The material definition the axe is made out of.</param>
-        public Axe(AxeDefinition definition, IMaterialDefinition materialDefinition)
+        public Axe(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 

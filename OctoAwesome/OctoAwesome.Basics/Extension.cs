@@ -2,6 +2,8 @@
 
 using Newtonsoft.Json;
 using OctoAwesome.Basics.Definitions.Blocks;
+using OctoAwesome.Basics.Definitions.Items;
+using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Basics.Definitions.Trees;
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
@@ -10,6 +12,7 @@ using OctoAwesome.Basics.SimulationComponents;
 using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
 using OctoAwesome.Graphs;
@@ -69,16 +72,19 @@ namespace OctoAwesome.Basics
             RegisterTextureIndex(defActionService);
             RegisterTextureRotations(defActionService);
             RegisterNodeTypes(defActionService);
+            RegisterCanMines(defActionService);
+            RegisterCreateItem(defActionService);
         }
 
         private static void RegisterTypeDefinitions(ExtensionService extensionLoader)
         {
             extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.networkblock", typeof(NetworkBlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.burnable", typeof(BurnableDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.Items", typeof(FoodMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration("core.material_food", typeof(FoodMaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration("core.tree", typeof(TreeDefinition)));
@@ -127,6 +133,51 @@ namespace OctoAwesome.Basics
             defActionService.Register("CreateNode", "base_block_plate_pressure@core.networkblock", (NodeBase? _, IDefinition _) => new PressurePlateBlockNode());
             defActionService.Register("CreateNode", "base_cable_signal@core.networkblock", (NodeBase? _, IDefinition _) => new SignalCableNode());
 
+        }
+
+        private void RegisterCanMines(DefinitionActionService defActionService)
+        {
+            var canMines = typeContainer.GetUnregistered<CanMineMaterial>();
+            defActionService.Register("CanMineMaterial", "base_hand@core.item", canMines.CanMineEverything);
+
+            defActionService.RegisterMultiple("CanMineMaterial", canMines.CanMineMaterialSolid, "base_axe@core.item", "base_pickaxe@core.item", "base_shover@core.item");
+            defActionService.Register("CanMineMaterial", "base_bucket", canMines.CanMineMaterialFluid);
+            defActionService.RegisterMultiple("CanMineMaterial", canMines.CanMineNothing, "base_item_chest@core.item", "base_item_furnace@core.item", "base_hammer@core.item", "base_hoe@core.item", "base_item_storage_interface@core.item", "base_sword@core.item", "base_item_wauzi@core.item", "base_item_meat_cooked@core.item", "base_item_meat_raw@core.item");
+        }
+
+        private void RegisterCreateItem(DefinitionActionService defActionService)
+        {
+
+            //TODO Filter for correct material definitions, so that we don't end up with meat chest and wood meat
+            //TODO 2 Do sth. about the method name strings, const somewhere probably
+            //TODO 3 easy generator to have definition keys + unique keys in a const file somewhere somehow
+            defActionService.Register("CreateItem", "base_axe@core.item", (object _, IDefinition 
+                def, IMaterialDefinition mat) => new Axe(def, mat));
+            defActionService.Register("CreateItem", "base_bucket@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new Bucket(def, mat));
+            defActionService.Register("CreateItem", "base_item_chest@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new ChestItem(def, mat));
+            defActionService.Register("CreateItem", "base_item_furnace@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new FurnaceItem(def, mat));
+            defActionService.Register("CreateItem", "base_hammer@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new Hammer(def, mat));
+            defActionService.Register("CreateItem", "base_hoe@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new Hoe(def, mat));
+            defActionService.Register("CreateItem", "base_pickaxe@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new Pickaxe(def, mat));
+            defActionService.Register("CreateItem", "base_shovel@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new Shovel(def, mat));
+            defActionService.Register("CreateItem", "base_item_storageinterface@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new StorageInterfaceItem(def, mat));
+            defActionService.Register("CreateItem", "base_item_wauzi@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new WauziItem(def, mat));
+            defActionService.Register("CreateItem", "base_meat_cooked@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new MeatCooked(def, mat));
+            defActionService.Register("CreateItem", "base_meat_raw@core.item", (object _, IDefinition
+                def, IMaterialDefinition mat) => new MeatRaw(def, mat));
+
+            defActionService.Register("CreateItem", "base_hand@core.item", (object _, IDefinition
+                _, IMaterialDefinition _) => Hand.Instance);
         }
 
         /// <inheritdoc />
@@ -342,7 +393,7 @@ namespace OctoAwesome.Basics
                     inventoryComponent.InputInventory.Add(new InventorySlot(inventoryComponent.InputInventory));
                 }
 
-                f.Components.Add(new BurningComponent());
+                f.Components.AddIfTypeNotExists(new BurningComponent());
 
                 f.Components.AddIfNotExists(new UiKeyComponent("Furnace"));
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
