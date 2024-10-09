@@ -19,7 +19,7 @@ namespace OctoAwesome.Basics.Definitions.Items.Food
         /// Initializes a new instance of the<see cref="MeatRaw" /> class
         /// </summary>
 
-        public MeatRaw(MeatRawDefinition definition, IFoodMaterialDefinition materialDefinition)
+        public MeatRaw(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 

@@ -31,6 +31,23 @@ public partial class DefinitionActionService
         delegates!.Add(method);
     }
 
+    public void RegisterMultiple(string methodName, Delegate method, params string[] definitionIds)
+    {
+        ref var definitionDelegates = ref CollectionsMarshal.GetValueRefOrAddDefault(methodsPerDefinition, methodName, out var exists);
+        if (!exists)
+        {
+            definitionDelegates = new();
+        }
+
+        foreach (string definitionId in definitionIds)
+        {
+            ref var delegates = ref CollectionsMarshal.GetValueRefOrAddDefault(definitionDelegates!, definitionId, out exists);
+            if (!exists)
+                delegates = new();
+            delegates!.Add(method);
+        }
+    }
+
     public bool IsRegistered(string methodName, string definitionId)
     {
         ref var definitionDelegates = ref CollectionsMarshal.GetValueRefOrNullRef(methodsPerDefinition, methodName);

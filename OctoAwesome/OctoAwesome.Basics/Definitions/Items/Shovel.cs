@@ -16,7 +16,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The shovel item definition.</param>
         /// <param name="materialDefinition">The material definition the shovel is made out of.</param>
-        public Shovel(ShovelDefinition definition, IMaterialDefinition materialDefinition)
+        public Shovel(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 
@@ -25,7 +25,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
-            if (!Definition.CanMineMaterial(material))
+            if (!DefinitionActionService.Function("CanMineMaterial", Definition, false, material))
                 return 0;
 
             if (material is ISolidMaterialDefinition solid)

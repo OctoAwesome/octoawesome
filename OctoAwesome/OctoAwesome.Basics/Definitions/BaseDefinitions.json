@@ -294,7 +294,7 @@
       "core.item"
     ]
   },
-  "base_item_interface_storage": {
+  "base_item_storage_interface": {
     "DisplayName": "Storage Interface",
     "Icon": "Items.storageinterface",
     "@types": [
@@ -315,14 +315,14 @@
       "core.item"
     ]
   },
-  "base_cooked_meat": {
+  "base_meat_cooked": {
     "DisplayName": "MeatCookedDefinition",
     "Icon": "Items.Food.meat_cooked",
     "@types": [
       "core.item"
     ]
   },
-  "base_raw_meat": {
+  "base_meat_raw": {
     "DisplayName": "MeatRawDefinition",
     "Icon": "Items.Food.meat_raw",
     "@types": [

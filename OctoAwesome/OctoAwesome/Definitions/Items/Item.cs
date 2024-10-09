@@ -25,12 +25,17 @@ namespace OctoAwesome.Definitions.Items
         public Coordinate? Position { get; set; }
 
         /// <inheritdoc />
-        public IItemDefinition Definition
+        public IDefinition Definition
         {
             get => NullabilityHelper.NotNullAssert(definition, $"{nameof(Definition)} was not initialized!");
             private set => definition = NullabilityHelper.NotNullAssert(value, $"{nameof(Definition)} cannot be initialized with null!");
         }
 
+        /// <inheritdoc />
+        public DefinitionActionService DefinitionActionService
+        {
+            get => NullabilityHelper.NotNullAssert(actionService, $"{nameof(DefinitionActionService)} was not initialized!");
+        }
         /// <inheritdoc />
         public IMaterialDefinition Material
         {
@@ -51,7 +56,8 @@ namespace OctoAwesome.Definitions.Items
         public string[] Type => IDefinition.GetTypeProp(this).ToArray();
 
         private readonly IDefinitionManager definitionManager;
-        private IItemDefinition? definition;
+        private readonly DefinitionActionService actionService;
+        private IDefinition? definition;
         private IMaterialDefinition? material;
 
         /// <summary>
@@ -63,6 +69,7 @@ namespace OctoAwesome.Definitions.Items
             Condition = 99;
 
             definitionManager = TypeContainer.Get<IDefinitionManager>();
+            actionService = TypeContainer.Get<DefinitionActionService>();
         }
 
         /// <summary>
@@ -70,7 +77,7 @@ namespace OctoAwesome.Definitions.Items
         /// </summary>
         /// <param name="definition">The item definition.</param>
         /// <param name="material">The material definition.</param>
-        public Item(IItemDefinition definition, IMaterialDefinition material)
+        public Item(IDefinition definition, IMaterialDefinition material)
             : this()
         {
             Definition = definition;
@@ -82,7 +89,7 @@ namespace OctoAwesome.Definitions.Items
         {
             //TODO Condition calculation
 
-            if (!Definition.CanMineMaterial(material))
+            if (!actionService.Function("CanMineMaterial", definition, false, material))
                 return 0;
 
             if (material is ISolidMaterialDefinition solid)
@@ -107,8 +114,8 @@ namespace OctoAwesome.Definitions.Items
         /// <inheritdoc />
         public virtual void Serialize(BinaryWriter writer)
         {
-            writer.Write(Definition.GetType().FullName!);
-            writer.Write(Material.GetType().FullName!);
+            writer.Write(definitionManager.GetDefinitionIndex(Definition));
+            writer.Write(definitionManager.GetDefinitionIndex(Material));
 
             InternalSerialize(writer);
         }
@@ -130,8 +137,8 @@ namespace OctoAwesome.Definitions.Items
         /// <inheritdoc />
         public virtual void Deserialize(BinaryReader reader)
         {
-            var definition = GenericCaster<IDefinition, IItemDefinition>.Cast(definitionManager.GetDefinitionByUniqueKey(reader.ReadString()));
-            var material = GenericCaster<IDefinition, IMaterialDefinition>.Cast(definitionManager.GetDefinitionByUniqueKey(reader.ReadString()));
+            var definition = GenericCaster<IDefinition, IItemDefinition>.Cast(definitionManager.GetDefinitionByIndex(reader.ReadUInt16()));
+            var material = GenericCaster<IDefinition, IMaterialDefinition>.Cast(definitionManager.GetDefinitionByIndex(reader.ReadUInt16()));
 
             Debug.Assert(definition != null, nameof(this.definition) + " != null");
             Debug.Assert(material != null, nameof(this.material) + " != null");
@@ -169,8 +176,8 @@ namespace OctoAwesome.Definitions.Items
         /// </exception>
         public static Item Deserialize(BinaryReader reader, Type itemType, IDefinitionManager manager)
         {
-            var definition = GenericCaster<IDefinition, IItemDefinition>.Cast(manager.GetDefinitionByUniqueKey(reader.ReadString()));
-            var material = GenericCaster<IDefinition, IMaterialDefinition>.Cast(manager.GetDefinitionByUniqueKey(reader.ReadString()));
+            var definition = GenericCaster<IDefinition, IItemDefinition>.Cast(manager.GetDefinitionByIndex(reader.ReadUInt16()));
+            var material = GenericCaster<IDefinition, IMaterialDefinition>.Cast(manager.GetDefinitionByIndex(reader.ReadUInt16()));
 
             if (Activator.CreateInstance(itemType, definition, material) is not Item item)
                 throw new ArgumentException($"Type of {itemType.Name} is not of type Item.");

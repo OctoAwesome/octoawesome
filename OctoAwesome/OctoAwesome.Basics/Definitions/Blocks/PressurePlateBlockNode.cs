@@ -1,7 +1,7 @@
 ﻿using engenious;
 using engenious.Content.Serialization;
 
-using OctoAwesome.Basics.Definitions.Materials;
+
 using OctoAwesome.Caching;
 using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
@@ -17,40 +17,6 @@ using System.Threading;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
-    /// <summary>
-    /// Block definition for signaler blocks.
-    /// </summary>
-    public class PressurePlateBlockDefinition : BlockDefinition, INetworkBlock<Signal>
-    {
-        /// <inheritdoc />
-        public override string Icon => "wood_side";
-
-        /// <inheritdoc />
-        public override string DisplayName => "PressurePlate Block";
-
-        /// <inheritdoc />
-        public override string[] Textures { get; init; } = ["wood_top", "wood_side"];
-
-        /// <inheritdoc />
-        public override IMaterialDefinition Material { get; init; }
-        public string[] TransferTypes { get; } = ["Signal"];
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PressurePlateBlockDefinition"/> class.
-        /// </summary>
-        /// <param name="material">The material definition for this signal cable block definition.</param>
-        public PressurePlateBlockDefinition(SimpleBlockMaterialDefinition material)
-        {
-            Material = material;
-        }
-
-
-        public NodeBase CreateNode()
-        {
-            return new PressurePlateBlockNode();
-        }
-    }
-
     internal partial class PressurePlateBlockNode : Node<Signal>, ISourceNode<Signal>
     {
         public bool IsOn { get; set; } = false;

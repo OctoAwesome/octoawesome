@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The hammer item definition.</param>
         /// <param name="materialDefinition">The material definition the hammer is made out of.</param>
-        public Hammer(HammerDefinition definition, IMaterialDefinition materialDefinition)
+        public Hammer(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 
