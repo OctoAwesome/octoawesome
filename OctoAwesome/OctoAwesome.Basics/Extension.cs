@@ -78,105 +78,105 @@ namespace OctoAwesome.Basics
 
         private static void RegisterTypeDefinitions(ExtensionService extensionLoader)
         {
-            extensionLoader.Register(new TypeDefinitionRegistration("core.block", typeof(BlockDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.networkblock", typeof(NetworkBlockDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.burnable", typeof(BurnableDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material", typeof(MaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_fluid", typeof(FluidMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_gas", typeof(GasMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_food", typeof(FoodMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.material_solid", typeof(SolidMaterialDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.item", typeof(ItemDefinition)));
-            extensionLoader.Register(new TypeDefinitionRegistration("core.tree", typeof(TreeDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreBlock, typeof(BlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreNetworkblock, typeof(NetworkBlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreBurnable, typeof(BurnableDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterial, typeof(MaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialFluid, typeof(FluidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialGas, typeof(GasMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialFood, typeof(FoodMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialSolid, typeof(SolidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreItem, typeof(ItemDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreTree, typeof(TreeDefinition)));
         }
 
         private void RegisterPlantTree(DefinitionActionService defActionService)
         {
             var plantTree = typeContainer.GetUnregistered<PlantTree>();
-            defActionService.Register("PlantTree", "base_tree_birch@core.tree", plantTree.Birch);
-            defActionService.Register("PlantTree", "base_tree_spruce@core.tree", plantTree.Spruce);
-            defActionService.Register("PlantTree", "base_tree_oak@core.tree", plantTree.Oak);
-            defActionService.Register("PlantTree", "base_tree_cactus@core.tree", plantTree.Cactus);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeBirchCoreTree, plantTree.Birch);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeSpruceCoreTree, plantTree.Spruce);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeOakCoreTree, plantTree.Oak);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeCactusCoreTree, plantTree.Cactus);
         }
 
         private void RegisterTextureIndex(DefinitionActionService defActionService)
         {
             var blockTextureIndex = typeContainer.GetUnregistered<BlockTextureIndex>();
-            defActionService.Register("GetTextureIndex", "base_block_battery@core.block", blockTextureIndex.BatteryBlock);
-            defActionService.Register("GetTextureIndex", "base_block_birch_wood@core.block", blockTextureIndex.Wood);
-            defActionService.Register("GetTextureIndex", "base_block_cactus@core.block", blockTextureIndex.Cactus);
-            defActionService.Register("GetTextureIndex", "base_block_grass@core.block", blockTextureIndex.Grass);
-            defActionService.Register("GetTextureIndex", "base_block_light@core.block", blockTextureIndex.Light);
-            defActionService.Register("GetTextureIndex", "base_block_red@core.block", blockTextureIndex.Red);
-            defActionService.Register("GetTextureIndex", "base_block_snow@core.block", blockTextureIndex.Snow);
-            defActionService.Register("GetTextureIndex", "base_block_wood@core.block", blockTextureIndex.Wood);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockBatteryCoreBlock, blockTextureIndex.BatteryBlock);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockWoodBirchCoreBlock, blockTextureIndex.Wood);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockCactusCoreBlock, blockTextureIndex.Cactus);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockGrassCoreBlock, blockTextureIndex.Grass);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockLightCoreBlock, blockTextureIndex.Light);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockCottonRedCoreBlock, blockTextureIndex.Red);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockSnowCoreBlock, blockTextureIndex.Snow);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockWoodCoreBlock, blockTextureIndex.Wood);
         }
 
         private void RegisterTextureRotations(DefinitionActionService defActionService)
         {
             var blockTextureRotation = typeContainer.GetUnregistered<BlockTextureRotation>();
-            defActionService.Register("GetTextureRotation", "base_block_birch_wood@core.block", blockTextureRotation.Wood);
-            defActionService.Register("GetTextureRotation", "base_block_cactus@core.block", blockTextureRotation.Cactus);
-            defActionService.Register("GetTextureRotation", "base_block_wood@core.block", blockTextureRotation.Wood);
+            defActionService.Register(ConstStrings.GetTextureRotation, ConstStrings.BaseBlockWoodBirchCoreBlock, blockTextureRotation.Wood);
+            defActionService.Register(ConstStrings.GetTextureRotation, ConstStrings.BaseBlockCactusCoreBlock, blockTextureRotation.Cactus);
+            defActionService.Register(ConstStrings.GetTextureRotation, ConstStrings.BaseBlockWoodCoreBlock, blockTextureRotation.Wood);
         }
         private void RegisterNodeTypes(DefinitionActionService defActionService)
         {
             var blockTextureRotation = typeContainer.GetUnregistered<BlockTextureRotation>();
-            defActionService.Register("CreateNode", "base_block_signaler@core.networkblock", (NodeBase? _, IDefinition _) => new SignalerBlockNode());
-            defActionService.Register("CreateNode", "base_block_battery@core.networkblock", (NodeBase? _, IDefinition _) => new BatteryNode());
-            defActionService.Register("CreateNode", "base_block_cactus@core.networkblock", (NodeBase? _, IDefinition _) => new CactusBlockNode());
-            defActionService.Register("CreateNode", "base_cable_item@core.networkblock", (NodeBase? _, IDefinition _) => new ItemCableNode());
-            defActionService.Register("CreateNode", "base_block_source_item@core.networkblock", (NodeBase? _, IDefinition _) => new ItemSourceBlockNode());
-            defActionService.Register("CreateNode", "base_block_target_item@core.networkblock", (NodeBase? _, IDefinition _) => new ItemTargetBlockNode());
-            defActionService.Register("CreateNode", "base_block_light@core.networkblock", (NodeBase? _, IDefinition _) => new LightNode());
-            defActionService.Register("CreateNode", "base_block_cable_power@core.networkblock", (NodeBase? _, IDefinition _) => new PowerCableNode());
-            defActionService.Register("CreateNode", "base_block_plate_pressure@core.networkblock", (NodeBase? _, IDefinition _) => new PressurePlateBlockNode());
-            defActionService.Register("CreateNode", "base_cable_signal@core.networkblock", (NodeBase? _, IDefinition _) => new SignalCableNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockSignalerCoreNetworkblock, (NodeBase? _, IDefinition _) => new SignalerBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockBatteryCoreNetworkblock, (NodeBase? _, IDefinition _) => new BatteryNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockCactusCoreNetworkblock, (NodeBase? _, IDefinition _) => new CactusBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseCableItemCoreNetworkblock, (NodeBase? _, IDefinition _) => new ItemCableNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockSourceItemCoreNetworkblock, (NodeBase? _, IDefinition _) => new ItemSourceBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockTargetItemCoreNetworkblock, (NodeBase? _, IDefinition _) => new ItemTargetBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockLightCoreNetworkblock, (NodeBase? _, IDefinition _) => new LightNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockCablePowerCoreNetworkblock, (NodeBase? _, IDefinition _) => new PowerCableNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockPlatePressureCoreNetworkblock, (NodeBase? _, IDefinition _) => new PressurePlateBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseCableSignalCoreNetworkblock, (NodeBase? _, IDefinition _) => new SignalCableNode());
 
         }
 
         private void RegisterCanMines(DefinitionActionService defActionService)
         {
             var canMines = typeContainer.GetUnregistered<CanMineMaterial>();
-            defActionService.Register("CanMineMaterial", "base_hand@core.item", canMines.CanMineEverything);
+            defActionService.Register(ConstStrings.CanMineMaterial, ConstStrings.BaseHandCoreItem, canMines.CanMineEverything);
 
-            defActionService.RegisterMultiple("CanMineMaterial", canMines.CanMineMaterialSolid, "base_axe@core.item", "base_pickaxe@core.item", "base_shover@core.item");
-            defActionService.Register("CanMineMaterial", "base_bucket", canMines.CanMineMaterialFluid);
-            defActionService.RegisterMultiple("CanMineMaterial", canMines.CanMineNothing, "base_item_chest@core.item", "base_item_furnace@core.item", "base_hammer@core.item", "base_hoe@core.item", "base_item_storage_interface@core.item", "base_sword@core.item", "base_item_wauzi@core.item", "base_item_meat_cooked@core.item", "base_item_meat_raw@core.item");
+            defActionService.RegisterMultiple(ConstStrings.CanMineMaterial, canMines.CanMineMaterialSolid, ConstStrings.BaseAxeCoreItem, ConstStrings.BasePickaxeCoreItem, ConstStrings.BaseShovelCoreItem);
+            defActionService.Register(ConstStrings.CanMineMaterial, ConstStrings.BaseBucket, canMines.CanMineMaterialFluid);
+            defActionService.RegisterMultiple(ConstStrings.CanMineMaterial, canMines.CanMineNothing, ConstStrings.BaseItemChestCoreItem, ConstStrings.BaseItemFurnaceCoreItem, ConstStrings.BaseHammerCoreItem, ConstStrings.BaseHoeCoreItem, ConstStrings.BaseItemStorageInterfaceCoreItem, ConstStrings.BaseSwordCoreItem, ConstStrings.BaseItemWauziCoreItem, ConstStrings.BaseMeatCookedCoreItem, ConstStrings.BaseMeatRawCoreItem);
         }
 
         private void RegisterCreateItem(DefinitionActionService defActionService)
         {
-
             //TODO Filter for correct material definitions, so that we don't end up with meat chest and wood meat
+
             //TODO 2 Do sth. about the method name strings, const somewhere probably
             //TODO 3 easy generator to have definition keys + unique keys in a const file somewhere somehow
-            defActionService.Register("CreateItem", "base_axe@core.item", (object _, IDefinition 
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseAxeCoreItem, (object _, IDefinition 
                 def, IMaterialDefinition mat) => new Axe(def, mat));
-            defActionService.Register("CreateItem", "base_bucket@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseBucketCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new Bucket(def, mat));
-            defActionService.Register("CreateItem", "base_item_chest@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemChestCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new ChestItem(def, mat));
-            defActionService.Register("CreateItem", "base_item_furnace@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemFurnaceCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new FurnaceItem(def, mat));
-            defActionService.Register("CreateItem", "base_hammer@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseHammerCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new Hammer(def, mat));
-            defActionService.Register("CreateItem", "base_hoe@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseHoeCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new Hoe(def, mat));
-            defActionService.Register("CreateItem", "base_pickaxe@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BasePickaxeCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new Pickaxe(def, mat));
-            defActionService.Register("CreateItem", "base_shovel@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseShovelCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new Shovel(def, mat));
-            defActionService.Register("CreateItem", "base_item_storageinterface@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemStorageInterfaceCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new StorageInterfaceItem(def, mat));
-            defActionService.Register("CreateItem", "base_item_wauzi@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemWauziCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new WauziItem(def, mat));
-            defActionService.Register("CreateItem", "base_meat_cooked@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseMeatCookedCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new MeatCooked(def, mat));
-            defActionService.Register("CreateItem", "base_meat_raw@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseMeatRawCoreItem, (object _, IDefinition
                 def, IMaterialDefinition mat) => new MeatRaw(def, mat));
 
-            defActionService.Register("CreateItem", "base_hand@core.item", (object _, IDefinition
+            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseHandCoreItem, (object _, IDefinition
                 _, IMaterialDefinition _) => Hand.Instance);
         }
 

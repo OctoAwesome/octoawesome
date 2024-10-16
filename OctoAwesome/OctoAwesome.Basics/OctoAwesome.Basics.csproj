@@ -12,7 +12,6 @@
 		<PackageReference Include="engenious.UI" Version="0.7.1-alpha" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
-		<!--<ProjectReference Include="..\..\..\..\NonSucking.Framework.Extension\NonSucking.Framework.Serialization\NonSucking.Framework.Serialization.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="true"/>-->
 	</ItemGroup>
 
 	<ItemGroup>
@@ -21,9 +20,17 @@
 
 	<ItemGroup>
 	  <None Remove="Assets\Definitions\Items\storageinterface.png" />
+	  <None Remove="Definitions\BaseDefinitions.json" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AdditionalFiles Include="Definitions\BaseDefinitions.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </AdditionalFiles>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\OctoAwesome.Generator\OctoAwesome.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
 		<ProjectReference Include="..\OctoAwesome.Client.UI\OctoAwesome.Client.UI.csproj" />
 		<ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
 	</ItemGroup>
@@ -37,9 +44,6 @@
 	  </None>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="Definitions\BaseDefinitions.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	  <None Update="Definitions\DefinitionAliasse.json">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </None>

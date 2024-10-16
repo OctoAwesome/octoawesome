@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.PoC", "OctoAwes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctoAwesome.PoC.Tests", "OctoAwesome.PoC.Tests\OctoAwesome.PoC.Tests.csproj", "{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctoAwesome.Generator", "OctoAwesome.Generator\OctoAwesome.Generator.csproj", "{5CAF246A-2E38-484F-9D37-958F42A362D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,14 @@ Global
 		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|x86.ActiveCfg = Release|Any CPU
 		{5A1C5DCD-2CC6-44D5-A88B-F0944FB76944}.Release|x86.Build.0 = Release|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{5CAF246A-2E38-484F-9D37-958F42A362D7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
