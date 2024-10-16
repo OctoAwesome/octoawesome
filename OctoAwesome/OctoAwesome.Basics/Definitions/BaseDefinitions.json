@@ -17,6 +17,7 @@
     "Icon": "",
     "@types": [ "core.tree" ]
   },
+
   "base_tree_oak": {
     "Order": 10,
     "MaxTemperature": 27.0,
@@ -34,6 +35,18 @@
     "DisplayName": "",
     "Icon": "",
     "@types": [ "core.tree" ]
+  },
+  "base_material_gas": {
+    "Hardness": 0,
+    "Density": 0,
+    "Granularity": 0,
+    "FractureToughness": 0,
+    "DisplayName": "Gas",
+    "Icon": "",
+    "@types": [
+      "core.material",
+      "core.material_gas"
+    ]
   },
   "base_material_brick": {
     "Hardness": 45,
@@ -377,7 +390,8 @@
     "VolumePerHit": 25,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.burnable"
     ],
     "Density": 680
   },
