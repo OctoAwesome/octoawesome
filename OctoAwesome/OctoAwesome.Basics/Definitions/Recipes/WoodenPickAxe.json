@@ -10,13 +10,13 @@
 
   "Inputs": [
     {
-      "AliasName": "octoawesome:wood",
+      "CategoryName": "block.wood",
       "Count": 2
     }
   ],
   "Outputs": [
     {
-      "ItemName": "Pickaxe",
+      "ItemName": "base_pickaxe",
       "Count": 1
     }
   ],

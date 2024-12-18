@@ -80,13 +80,13 @@
               "IronOre"
             ]
           },
-          "AliasName": {
+          "CategoryName": {
             "type": "string",
             "default": "",
             "title": "The Item Alias Name Schema",
             "examples": [
-              "octoawesome:iron_ore",
-              "octoawesome:ore"
+              "ore.iron",
+              "block.wood"
             ]
           },
           "Count": {

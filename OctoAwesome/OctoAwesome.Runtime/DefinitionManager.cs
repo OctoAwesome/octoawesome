@@ -15,28 +15,6 @@ using System.Text.Json;
 
 namespace OctoAwesome.Runtime
 {
-    public class ItemDefinition : IItemDefinition
-    {
-        public string DisplayName { get; }
-        public string Icon { get; }
-
-        public ItemDefinition(string displayName, string icon)
-        {
-            DisplayName = displayName;
-            Icon = icon;
-        }
-
-        public bool CanMineMaterial(IMaterialDefinition material)
-        {
-            return true;
-        }
-
-        public Item? Create(IMaterialDefinition material)
-        {
-            return null;
-        }
-    }
-
     /// <summary>
     /// Definition Manager which loads extensions.
     /// </summary>
@@ -206,6 +184,8 @@ namespace OctoAwesome.Runtime
 
         public IReadOnlyCollection<IDefinition> GetVariations(IDefinition def)
             => registrar.GetVariations(def);
+        public IReadOnlyCollection<string> GetUniqueKeys(IDefinition def)
+            => registrar.GetUniqueKeys(def);
 
         public bool TryGetVariation<T>(IDefinition def, [MaybeNullWhen(false)] out T? variation)
         {

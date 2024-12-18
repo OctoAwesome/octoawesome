@@ -58,27 +58,6 @@ namespace OctoAwesome.Definitions
         /// <returns>The physical block properties.</returns>
         PhysicalProperties GetProperties(IPlanetResourceManager manager, int x, int y, int z);*/
 
-        /// <summary>
-        /// Gets the texture index of a blocks texture.
-        /// </summary>
-        /// <param name="wall">The side of the block to get the texture index for.</param>
-        /// <param name="manager">The local chunk cache to get the block properties from.</param>
-        /// <param name="x">The x component of the local block position.</param>
-        /// <param name="y">The y component of the local block position.</param>
-        /// <param name="z">The z component of the local block position.</param>
-        /// <returns>The texture index of the block side.</returns>
-        int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z);
-
-        /// <summary>
-        /// Get texture rotation in 90° increments for the top surface(positive Z) of a block.
-        /// </summary>
-        /// <param name="wall">The side of the block to get the texture rotation for.</param>
-        /// <param name="manager">The local chunk cache to get the block texture rotation from.</param>
-        /// <param name="x">The x component of the local block position.</param>
-        /// <param name="y">The y component of the local block position.</param>
-        /// <param name="z">The z component of the local block position.</param>
-        /// <returns>Rotation of the texture in 90° increments.</returns>
-        int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z);
 
         /// <summary>
         /// Gets a bitset depicting which sides of the block are solid.

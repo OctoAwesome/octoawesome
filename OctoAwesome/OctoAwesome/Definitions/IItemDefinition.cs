@@ -8,7 +8,5 @@ namespace OctoAwesome.Definitions
     /// </summary>
     public interface IItemDefinition : IDefinition
     {
-        [Newtonsoft.Json.JsonProperty("@types")]
-        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
     }
 }

@@ -86,6 +86,7 @@ namespace OctoAwesome.Definitions
         IReadOnlyCollection<string> GetSaveGameData();
         bool TryGetVariation<T>(IDefinition def, [NotNullWhen(true)] out T? variation);
         IReadOnlyCollection<IDefinition> GetVariations(IDefinition def);
+        IReadOnlyCollection<string> GetUniqueKeys(IDefinition def);
 
         event EventHandler DefinitionsChanged;
     }

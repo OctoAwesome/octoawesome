@@ -35,12 +35,12 @@ namespace OctoAwesome.Basics
         {
             //TODO More Generic, reconsider complete planet generation (Heatmap + Heightmap + Biome + Modding)
 
-            ushort sandIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>("base_block_sand");
-            ushort snowIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>("base_block_snow"); 
-            ushort dirtIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>("base_block_dirt"); 
-            ushort stoneIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>("base_block_stone"); 
-            ushort waterIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>("base_block_water"); 
-            ushort grassIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>("base_block_grass");
+            ushort sandIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockSand);
+            ushort snowIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockSnow); 
+            ushort dirtIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockDirt); 
+            ushort stoneIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockStone); 
+            ushort waterIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockWater); 
+            ushort grassIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockGrass);
 
 
             if (planet is not ComplexPlanet localPlanet)

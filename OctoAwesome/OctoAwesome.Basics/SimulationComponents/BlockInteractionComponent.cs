@@ -172,7 +172,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                 var ourInfo = cache.GetBlockInfo(idx);
 
 
-                var node = definitionActionService.Function<NodeBase>("CreateNode", nb, null);
+                var node = definitionActionService.Function<NodeBase>(ConstStrings.CreateNode, nb, null);
                 node.BlockInfo = ourInfo;
                 node.PlanetId = positioncomponent.Position.Planet;
 

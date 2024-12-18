@@ -91,14 +91,20 @@ public class RecipeService
         {
             foreach (var inputItem in recipe.Inputs)
             {
-                if (inputItem.Count <= input.Count
-                    && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
-                    && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+                if (CompareRecipeItems(input, inputItem))
                     return recipe;
             }
         }
 
         return null;
+    }
+
+    private static bool CompareRecipeItems(RecipeItem input, RecipeItem inputItem)
+    {
+        return inputItem.Count <= input.Count
+                            && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
+                            && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName)
+                            && (string.IsNullOrWhiteSpace(inputItem.CategoryName) || inputItem.CategoryName == input.CategoryName);
     }
 
     /// <summary>
@@ -126,7 +132,8 @@ public class RecipeService
                     var count = inputItem.Count <= input.Count;
                     var itemName = string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName;
                     var materialName = string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName;
-                    if (count && itemName && materialName)
+                    var categoryName = string.IsNullOrWhiteSpace(inputItem.CategoryName) || inputItem.CategoryName == input.CategoryName;
+                    if (count && itemName && materialName && categoryName)
                     {
                         if (count)
                             counter++;
@@ -173,9 +180,7 @@ public class RecipeService
             {
                 foreach (var input in inputs)
                 {
-                    if (inputItem.Count <= input.Count
-                        && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
-                        && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+                    if (CompareRecipeItems(input, inputItem))
                     {
                         counter++;
                         break;
@@ -202,11 +207,9 @@ public class RecipeService
         List<Recipe> retRecipes = new();
         foreach (var recipe in recipes ?? this.recipes)
         {
-            foreach (var tinpuItem in recipe.Inputs)
+            foreach (var inputItem in recipe.Inputs)
             {
-                if (tinpuItem.Count <= input.Count
-                    && (string.IsNullOrWhiteSpace(tinpuItem.ItemName) || tinpuItem.ItemName == input.ItemName)
-                    && (string.IsNullOrWhiteSpace(tinpuItem.MaterialName) || tinpuItem.MaterialName == input.MaterialName))
+                if (CompareRecipeItems(input, inputItem))
                 {
                     retRecipes.Add(recipe);
                     break;
@@ -231,9 +234,7 @@ public class RecipeService
         {
             foreach (var outputItem in recipe.Outputs)
             {
-                if (outputItem.Count <= output.Count
-                    && (string.IsNullOrWhiteSpace(outputItem.ItemName) || outputItem.ItemName == output.ItemName)
-                    && (string.IsNullOrWhiteSpace(outputItem.MaterialName) || outputItem.MaterialName == output.MaterialName))
+                if(CompareRecipeItems(output, outputItem))
                 {
                     retRecipes.Add(recipe);
                     break;

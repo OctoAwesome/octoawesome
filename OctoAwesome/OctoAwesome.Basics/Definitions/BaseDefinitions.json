@@ -384,6 +384,9 @@
     "Material": {
       "@ref": "$['BaseDefinitions.json'].base_material_wood"
     },
+    "Categories": [
+      "block.wood"
+    ],
     "SolidWall": 63,
     "StackLimit": 100,
     "VolumePerUnit": 125,
@@ -737,7 +740,8 @@
     "VolumePerHit": 25,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.burnable"
     ],
     "Density": 680
   },
@@ -841,7 +845,8 @@
     "VolumePerHit": 25,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.burnable"
     ],
     "Density": 680
   },
@@ -1028,13 +1033,17 @@
     "Material": {
       "@ref": "$['BaseDefinitions.json'].base_material_wood"
     },
+    "Categories": [
+      "block.wood"
+    ],
     "SolidWall": 63,
     "StackLimit": 100,
     "VolumePerUnit": 125,
     "VolumePerHit": 25,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.burnable"
     ],
     "Density": 680
   }

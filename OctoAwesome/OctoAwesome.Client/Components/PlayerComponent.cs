@@ -238,8 +238,8 @@ namespace OctoAwesome.Client.Components
                 return;
 
             var itemDefinitions = resourceManager.DefinitionManager.ItemDefinitions;
-            var wood = resourceManager.DefinitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>("base_material_wood");
-            var stone = resourceManager.DefinitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>("base_material_stone");
+            var wood = resourceManager.DefinitionManager.GetDefinitionByUniqueKey<ISolidMaterialDefinition>("base_material_wood");
+            var stone = resourceManager.DefinitionManager.GetDefinitionByUniqueKey<ISolidMaterialDefinition>("base_material_stone");
             var food = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {

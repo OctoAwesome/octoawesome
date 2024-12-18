@@ -26,12 +26,12 @@ internal class PlantTree
 
     private void Init(object? sender, EventArgs e)
     {
-        woodBirch = manager.GetDefinitionIndex<BlockDefinition>("base_block_wood_birch");
-        wood = manager.GetDefinitionIndex<BlockDefinition>("base_block_wood");
-        leave = manager.GetDefinitionIndex<BlockDefinition>("base_block_leaves");
-        leaveOrange = manager.GetDefinitionIndex<BlockDefinition>("base_block_leaves_orange");
-        water = manager.GetDefinitionIndex<BlockDefinition>("base_block_water");
-        cactus = manager.GetDefinitionIndex<BlockDefinition>("base_block_cactus");
+        woodBirch = manager.GetDefinitionIndex<BlockDefinition>( ConstStrings.BaseBlockWoodBirch);
+        wood = manager.GetDefinitionIndex<BlockDefinition>(ConstStrings.BaseBlockWood);
+        leave = manager.GetDefinitionIndex<BlockDefinition>(ConstStrings.BaseBlockLeaves);
+        leaveOrange = manager.GetDefinitionIndex<BlockDefinition>(ConstStrings.BaseBlockLeavesOrange);
+        water = manager.GetDefinitionIndex<BlockDefinition>(ConstStrings.BaseBlockWater);
+        cactus = manager.GetDefinitionIndex<BlockDefinition>(ConstStrings.BaseBlockCactus);
     }
 
     internal void Birch(IDefinition _, IPlanet __, Index3 ___, LocalBuilder builder, int seed) 

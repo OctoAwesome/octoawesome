@@ -10,13 +10,13 @@
 
   "Inputs": [
     {
-      "ItemName": "Wood",
+      "ItemName": "base_block_wood",
       "Count": 2
     }
   ],
   "Outputs": [
     {
-      "ItemName": "Axe",
+      "ItemName": "base_axe",
       "Count": 1
     }
   ],

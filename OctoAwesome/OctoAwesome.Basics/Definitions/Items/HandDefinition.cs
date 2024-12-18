@@ -16,5 +16,6 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public string Icon => "";
 
+        public string[] Categories { get; } = [];
     }
 }

@@ -275,7 +275,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         if (mat is null)
             return false;
 
-        var createdItem = definitionActionService.Function<Item, IMaterialDefinition>("CreateItem", itemDef, null, mat);
+        var createdItem = definitionActionService.Function<Item, IMaterialDefinition>(ConstStrings.CreateItem, itemDef, null, mat);
 
         if (createdItem is null)
             return false;
@@ -304,17 +304,42 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
 
     private Recipe? GetRecipe()
     {
-        var inputs = InventoryComponent.InputInventory.Inventory
-            .Where(x => !string.IsNullOrWhiteSpace(x.Definition?.DisplayName))
-            .GroupBy(x => x.Definition!.DisplayName)
-            .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Name not Displayname*/)) //TODO Implement the alias stuff in the ofen
+        //TODO 
+        /*
+            1. Add List of Types per Definiton to definition manager ✔️
+            2. Group by defintion id and types, so that we support "wood" and "burnable" as an example ✔️
+            3. Rework recipe / recipe service to support this.
+         */
+
+        var workingSet = InventoryComponent.InputInventory.Inventory
+            .Where(x => x.Definition != null && x.Item != null)
+            .Select(x => (slot: x, id: definitionManager.GetUniqueKeyByDefinition(x.Definition!), types: definitionManager.GetUniqueKeys(x.Definition!)))
             .ToArray();
-        if (inputs.Length == 0)
-            return null; //Reset recipe, time etc. pp.
-        var recipe = RecipeService.GetByInputs(Recipes, inputs);
-        if (recipe is null)
-            return null; //Reset recipe, time etc. pp.
-        return recipe;
+
+        var typesGroup = workingSet
+            .SelectMany(x => x.types.Select(y => (x, y)))
+            .GroupBy(x=>x.y)
+            .ToList()
+            
+            ;
+        var idGroup = workingSet.GroupBy(x => x.id);
+
+        //var inputs = InventoryComponent.InputInventory.Inventory
+        //    .Where(x => x.Definition != null && x.Item != null)
+        //    .GroupBy(x => x.Definition!.DisplayName)
+        //    .Select(x =>
+        //    {
+        //        definitionManager.GetVariations(x.);
+        //        return new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Unique id*/);
+        //    })
+        //    .ToArray();
+        //if (inputs.Length == 0)
+        //    return null; //Reset recipe, time etc. pp.
+        //var recipe = RecipeService.GetByInputs(Recipes, inputs);
+        //if (recipe is null)
+        //    return null; //Reset recipe, time etc. pp.
+        //return recipe;
+        return null;
     }
 
     /// <inheritdoc/>
