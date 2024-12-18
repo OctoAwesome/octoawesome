@@ -23,14 +23,7 @@ using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace OctoAwesome.Basics
 {
@@ -101,6 +94,7 @@ namespace OctoAwesome.Basics
 
         private void RegisterTextureIndex(DefinitionActionService defActionService)
         {
+
             var blockTextureIndex = typeContainer.GetUnregistered<BlockTextureIndex>();
             defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockBatteryCoreBlock, blockTextureIndex.BatteryBlock);
             defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockWoodBirchCoreBlock, blockTextureIndex.Wood);
@@ -147,37 +141,96 @@ namespace OctoAwesome.Basics
 
         private void RegisterCreateItem(DefinitionActionService defActionService)
         {
-            //TODO Filter for correct material definitions, so that we don't end up with meat chest and wood meat
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseAxeCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition? new Axe(def, mat) : null
+            );
 
-            //TODO 2 Do sth. about the method name strings, const somewhere probably
-            //TODO 3 easy generator to have definition keys + unique keys in a const file somewhere somehow
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseAxeCoreItem, (object _, IDefinition 
-                def, IMaterialDefinition mat) => new Axe(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseBucketCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new Bucket(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemChestCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new ChestItem(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemFurnaceCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new FurnaceItem(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseHammerCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new Hammer(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseHoeCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new Hoe(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BasePickaxeCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new Pickaxe(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseShovelCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new Shovel(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemStorageInterfaceCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new StorageInterfaceItem(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseItemWauziCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new WauziItem(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseMeatCookedCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new MeatCooked(def, mat));
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseMeatRawCoreItem, (object _, IDefinition
-                def, IMaterialDefinition mat) => new MeatRaw(def, mat));
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseBucketCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Bucket(def, mat) : null
+            );
 
-            defActionService.Register(ConstStrings.CreateItem, ConstStrings.BaseHandCoreItem, (object _, IDefinition
-                _, IMaterialDefinition _) => Hand.Instance);
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemChestCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new ChestItem(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemFurnaceCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new FurnaceItem(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseHammerCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Hammer(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseHoeCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Hoe(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BasePickaxeCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Pickaxe(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseShovelCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Shovel(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemStorageInterfaceCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new StorageInterfaceItem(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemWauziCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => new WauziItem(def, mat)
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseMeatCookedCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is IFoodMaterialDefinition ? new MeatCooked(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseMeatRawCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is IFoodMaterialDefinition ? new MeatRaw(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseHandCoreItem, 
+                (object _, IDefinition _, IMaterialDefinition _) 
+                    => Hand.Instance
+            );
         }
 
         /// <inheritdoc />
@@ -186,6 +239,7 @@ namespace OctoAwesome.Basics
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
             extensionLoader.Register<IMapPopulator>(new TreePopulator(typeContainer.Get<DefinitionActionService>()));
+            
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);

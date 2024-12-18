@@ -52,8 +52,6 @@ namespace OctoAwesome.Definitions.Items
         /// <inheritdoc />
         public int Density => Material.Density;
 
-        [Newtonsoft.Json.JsonProperty("@types")]
-        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
 
         private readonly IDefinitionManager definitionManager;
         private readonly DefinitionActionService actionService;

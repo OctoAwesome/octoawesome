@@ -15,9 +15,9 @@ public class RecipeItem
     /// </summary>
     public string? ItemName { get; set; }
     /// <summary>
-    /// Gets or sets the alias name of the item.
+    /// Gets or sets the category name of the item.
     /// </summary>
-    public string? AliasName { get; set; }
+    public string? CategoryName { get; set; }
     /// <summary>
     /// Gets or sets the number of items needed.
     /// </summary>
@@ -47,12 +47,14 @@ public class RecipeItem
     /// <param name="itemName"></param>
     /// <param name="count"></param>
     /// <param name="materialName"></param>
+    /// <param name="categoryName"></param>
     /// <param name="inputOutputMappingId"></param>
-    public RecipeItem(string? itemName, int count, string? materialName, string? inputOutputMappingId)
+    public RecipeItem(string? itemName, int count, string? materialName, string? categoryName, string? inputOutputMappingId)
     {
         ItemName = itemName;
         Count = count;
         MaterialName = materialName;
+        CategoryName = categoryName;
         InputOutputMappingId = inputOutputMappingId;
     }
 }

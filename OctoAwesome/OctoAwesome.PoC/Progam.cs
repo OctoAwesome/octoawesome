@@ -199,7 +199,7 @@ public static class Program
         //abc["PlantTree"] = new List<Delegate>() { new Action<int, Index3, string, int>((a, ind, str, b) => { Console.WriteLine(a + b); }) };
 
 
-        Action("PlantTree", planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
+        Action( "PlantTree", planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
 
         var action = delegates[0];
         if (action is Action<int, int> a)

@@ -34,7 +34,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public void AddFluid(int quantity, IBlockDefinition fluidBlock)
         {
-            if (!DefinitionActionService.Function("CanMineMaterial", Definition, false, fluidBlock.Material))
+            if (!DefinitionActionService.Function(ConstStrings.CanMineMaterial, Definition, false, fluidBlock.Material))
                 return;
 
             if (Quantity < 125)
@@ -46,22 +46,21 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
-            if (!DefinitionActionService.Function("CanMineMaterial", Definition, false, material))
+            if (!DefinitionActionService.Function(ConstStrings.CanMineMaterial, Definition, false, material))
                 return 0;
 
-            if (material is IFluidMaterialDefinition fluid)
-            {
-                if (!(FluidBlock is null) && fluid != FluidBlock.Material)
-                    return 0;
+            if (material is not IFluidMaterialDefinition fluid)
+                return base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
+            
+            if (FluidBlock is not null && fluid != FluidBlock.Material)
+                return 0;
 
-                if (Quantity + volumePerHit >= MaxQuantity)
-                    return MaxQuantity - Quantity;
+            if (Quantity + volumePerHit >= MaxQuantity)
+                return MaxQuantity - Quantity;
 
-                return volumePerHit;
-            }
+            return volumePerHit;
 
 
-            return base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
         }
 
         /// <inheritdoc />

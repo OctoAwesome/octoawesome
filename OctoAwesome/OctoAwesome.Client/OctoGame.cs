@@ -281,7 +281,7 @@ namespace OctoAwesome.Client
 
             KeyMapper.LoadFromConfig(standardKeys);
 
-            KeyMapper.AddAction("octoawesome:fullscreen", type =>
+            KeyMapper.AddAction("octoawesome:fullscreen", nameof(OctoGame), type =>
             {
                 if (type == KeyMapper.KeyType.Down)
                 {

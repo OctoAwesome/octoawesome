@@ -4,6 +4,9 @@ using OctoAwesome.Extension;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -31,11 +34,13 @@ namespace OctoAwesome.Extension
         /// </summary>
         public IReadOnlyDictionary<IDefinition, string> FlattenedDefinitionIds => definitionIds;
 
+        private Dictionary<string, IReadOnlyCollection<IDefinition>> readonlyDefinitions = [];
         private Dictionary<string, List<IDefinition>> definitions = [];
         private Dictionary<string, IDefinition> flattenedDefinitions = [];
         private Dictionary<IDefinition, string> definitionIds = [];
         private Dictionary<IDefinition, string> definitionVariations = [];
         private Dictionary<string, Type> definitionTypes = [];
+        private Dictionary<IDefinition, ICollection<string>> typesPerDefinition = new ();
 
         public void Register(TypeDefinitionRegistration value)
         {
@@ -60,6 +65,7 @@ namespace OctoAwesome.Extension
                     definitionVariations[def] = value.Id;
                     definitionIds[def] = uniqueId;
                     flattenedDefinitions[uniqueId] = def;
+                    typesPerDefinition[def] = value.Types.ToImmutableArray();
                     entry!.Add(def);
                 }
             }
@@ -111,10 +117,26 @@ namespace OctoAwesome.Extension
 
         public IReadOnlyCollection<IDefinition> GetVariations(IDefinition def)
         {
-            return definitionVariations.TryGetValue(def, out var id)
-                && definitions.TryGetValue(id, out var list)
-                ? list
-                : Array.Empty<IDefinition>();
+            if (definitionVariations.TryGetValue(def, out var id))
+            {
+                ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(readonlyDefinitions, id, out var exists);
+                
+                if (exists)
+                    return list!;
+
+                return list = definitions.TryGetValue(id, out var mutableList)
+                    ? new ReadOnlyCollection<IDefinition>(mutableList)
+                    : [];
+            }
+            return [];
+        }
+        public IReadOnlyCollection<string> GetUniqueKeys(IDefinition def)
+        {
+            if (typesPerDefinition.TryGetValue(def, out var types))
+            {
+                return (IReadOnlyCollection<string>)(types) ?? [];
+            }
+            return [];
         }
 
         public void Register(DefinitionRegistration value)

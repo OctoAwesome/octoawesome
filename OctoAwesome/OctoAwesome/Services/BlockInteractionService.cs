@@ -54,7 +54,7 @@ namespace OctoAwesome.Services
 
             volumeState.TryReset();
 
-            var isRegistered = actionService.IsRegistered("HitBlock", definitionManager.GetUniqueKeyByDefinition(definition));
+            var isRegistered = actionService.IsRegistered( "HitBlock", definitionManager.GetUniqueKeyByDefinition(definition));
 
             var blockHitInformation = 
                 isRegistered 
@@ -95,7 +95,7 @@ namespace OctoAwesome.Services
 
             try
             {
-                var isRegistered = actionService.IsRegistered("ApplyBlock", definitionManager.GetUniqueKeyByDefinition(definition));
+                var isRegistered = actionService.IsRegistered( "ApplyBlock", definitionManager.GetUniqueKeyByDefinition(definition));
 
                 var blockHitInformation =
                     isRegistered
@@ -104,7 +104,7 @@ namespace OctoAwesome.Services
 
                 if (volumeState.VolumeRemaining < 1)
                     return (true, blockHitInformation.Definitions);
-
+                
                 return (false, null);
             }
             finally

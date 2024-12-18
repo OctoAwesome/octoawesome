@@ -28,6 +28,8 @@ namespace OctoAwesome.Basics
 
         /// <inheritdoc />
         public virtual int Density { get; init; }
+        /// <inheritdoc />
+        public string[] Categories { get; init; } = [];
 
 
     }

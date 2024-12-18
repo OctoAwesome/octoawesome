@@ -25,6 +25,8 @@ namespace OctoAwesome.Definitions
 
         /// <inheritdoc />
         public virtual string Icon { get; init; }
+        /// <inheritdoc />
+        public string[] Categories { get; init; } = [];
 
         /// <inheritdoc />
         public virtual int StackLimit => 100;
@@ -48,11 +50,9 @@ namespace OctoAwesome.Definitions
         [JsonConverter(typeof(TypesConverter<MaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
         public virtual IMaterialDefinition Material { get; init; }
 
-        [Newtonsoft.Json.JsonProperty("@types")]
-        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
-
         /// <inheritdoc />
         public int Density => Material.Density;
+
 
         private readonly BoundingBox[] defaultCollisionBoxes = [new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))];
 
@@ -77,11 +77,6 @@ namespace OctoAwesome.Definitions
         public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
             => defaultCollisionBoxes;
 
-        /// <inheritdoc />
-        public virtual int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
-
-        /// <inheritdoc />
-        public virtual int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
 
         /// <summary>
         /// Checks whether the provided <see cref="Wall"/> is solid on the <paramref name="blockDefinition"/>.

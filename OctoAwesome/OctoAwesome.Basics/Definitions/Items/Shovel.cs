@@ -25,7 +25,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
-            if (!DefinitionActionService.Function("CanMineMaterial", Definition, false, material))
+            if (!DefinitionActionService.Function(ConstStrings.CanMineMaterial, Definition, false, material))
                 return 0;
 
             if (material is ISolidMaterialDefinition solid)

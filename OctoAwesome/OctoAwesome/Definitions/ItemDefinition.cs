@@ -6,13 +6,11 @@ namespace OctoAwesome.Definitions
 {
     public class ItemDefinition : IItemDefinition
     {
+        /// <inheritdoc />
         public string DisplayName { get; init; }
+        /// <inheritdoc />
         public string Icon { get; init; }
-
-        [Newtonsoft.Json.JsonProperty("@types")]
-        public string[] Type => IDefinition.GetTypeProp(this).ToArray();
-        public bool CanMineMaterial(IMaterialDefinition material) => throw new System.NotImplementedException();
-        public Item? Create(IMaterialDefinition material) => throw new System.NotImplementedException();
-
+        /// <inheritdoc />
+        public string[] Categories { get; init; } = [];
     }
 }
