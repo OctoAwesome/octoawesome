@@ -35,6 +35,7 @@ namespace OctoAwesome.Network.Commands
         /// <summary>
         /// Manifests player received from <see cref="CommandParameter"/>.
         /// </summary>
+        /// <param name="tc">The current type container.</param>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the player data.</param>
         /// <returns><c>null</c></returns>
         public static ISerializable Whoami(ITypeContainer tc, CommandParameter parameter)

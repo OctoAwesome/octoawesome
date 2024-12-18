@@ -121,6 +121,7 @@ namespace OctoAwesome
         /// <summary>
         /// Create a new game(<see cref="IUniverse"/>).
         /// </summary>
+        /// <param name="resourceManager">The resource manager that should be used for this simulation instance.</param>
         /// <param name="name">The name of the universe.</param>
         /// <param name="rawSeed">The seed used for creating the universe.</param>
         /// <returns>The <see cref="Guid"/> of the created universe.</returns>

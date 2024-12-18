@@ -24,8 +24,8 @@ namespace OctoAwesome.Components
         /// <inheritdoc />
         public bool Sendable { get; set; }
 
-        [NoosonIgnore]
         /// <inheritdoc/>
+        [NoosonIgnore]
         public IComponentContainer Parent
         {
             get => parent; set
@@ -94,27 +94,32 @@ namespace OctoAwesome.Components
 
         }
 
+        ///<inheritdoc/>
         public override bool Equals(object? obj)
         {
             return Equals(obj as Component);
         }
 
+        ///<inheritdoc/>
         public bool Equals(Component? other)
         {
             return other is not null &&
                    Id == other.Id;
         }
 
+        ///<inheritdoc/>
         public override int GetHashCode()
         {
             return HashCode.Combine(Id);
         }
-
+        
+        ///<inheritdoc/>
         public static bool operator ==(Component? left, Component? right)
         {
             return EqualityComparer<Component>.Default.Equals(left, right);
         }
 
+        ///<inheritdoc/>
         public static bool operator !=(Component? left, Component? right)
         {
             return !(left == right);

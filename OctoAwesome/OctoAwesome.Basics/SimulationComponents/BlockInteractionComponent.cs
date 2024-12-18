@@ -45,6 +45,8 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// <param name="blockInteractionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
+        /// <param name="interactService">The interact service.</param>
+        /// <param name="definitionActionService">The definition action service.</param>
         public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService, DefinitionActionService definitionActionService)
         {
             this.simulation = simulation;

@@ -38,20 +38,6 @@ namespace OctoAwesome.Extension
         }
 
         /// <summary>
-        /// Registers a Type without the <see cref="SerializationIdAttribute"/>.
-        /// </summary>
-        /// <param name="type">Type without <see cref="SerializationIdAttribute"/></param>
-        /// <param name="serializationId">The serialization id which normally would be given via <see cref="SerializationIdAttribute"/></param>
-        //public void Register(Type type, ulong serializationId)
-        //{
-
-        //    if (serializationId == 0)
-        //        throw new ArgumentException($"0 is not allowed for a serialization id, because it indicates a missing attribute of {nameof(SerializationIdAttribute)}.");
-
-        //    SerializationIdTypeProvider.Register(serializationId, type);
-        //}
-
-        /// <summary>
         /// Not supported
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>

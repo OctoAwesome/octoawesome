@@ -181,6 +181,7 @@ namespace OctoAwesome.Client.Components
 
         }
 
+        /// <inheritdoc/>
         public void Add(ComponentContainer componentContainer)
         {
             foreach (var component in Components)
@@ -192,17 +193,21 @@ namespace OctoAwesome.Client.Components
             }
         }
 
+        /// <inheritdoc/>
         public void RemoveEntity(Guid entityId)
         {
             //TODO: Remove component container?
         }
 
+        /// <inheritdoc/>
         public bool ContainsComponent<T>()
             => Components.Contains<T>();
 
+        /// <inheritdoc/>
         public T? GetComponent<T>()
             => Components.Get<T>();
 
+        /// <inheritdoc/>
         public T? GetComponent<T>(int id)
             => Components.Get<T>(id);
     }

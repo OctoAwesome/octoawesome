@@ -12,6 +12,7 @@ namespace OctoAwesome.Notifications
         /// </summary>
         /// <param name="notification">The observable to subscribe on.</param>
         /// <param name="channel">The observing channel.</param>
+        /// <param name="sendOverNetwork">If this should be send over the network channel.</param>
         /// <returns>
         /// A reference to an interface that allows observers to stop receiving notifications
         /// before the provider has finished sending them.

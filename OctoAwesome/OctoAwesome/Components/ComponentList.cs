@@ -70,6 +70,7 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
     /// <param name="removeValidator">The validator for removals.</param>
     /// <param name="onInserter">The method to call on insertion.</param>
     /// <param name="onRemover">The method to call on removal.</param>
+    /// <param name="parent">The component container that holds this list</param>
     public ComponentList(Action<T>? insertValidator, Action<T>? removeValidator, Action<T>? onInserter, Action<T>? onRemover, IComponentContainer parent) : this()
     {
         this.insertValidator = insertValidator;

@@ -14,7 +14,7 @@ namespace OctoAwesome
         private readonly static Dictionary<Type, ulong> typesToId = new();
 
         /// <summary>
-        /// Registers a type associated to a given serialization id(<see cref="SerializationIdAttribute.CombinedId"/>).
+        /// Registers a type associated to a given serialization id(<see cref="SerializationIdAttribute{T}.CombinedId"/>).
         /// </summary>
         /// <param name="serId">The serialization id to associated the <see cref="Type"/> to.</param>
         /// <param name="type">The type to register with the serialization id association.</param>
@@ -25,7 +25,7 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Gets the <see cref="Type"/> associated to a serialization id(<see cref="SerializationIdAttribute.CombinedId"/>).
+        /// Gets the <see cref="Type"/> associated to a serialization id(<see cref="SerializationIdAttribute{T}.CombinedId"/>).
         /// </summary>
         /// <param name="serId">The serialization id to get the <see cref="Type"/> for.</param>
         /// <returns>The type associated to the serialization id.</returns>
@@ -54,7 +54,7 @@ namespace OctoAwesome
 
         /// <summary>
         /// Gets the <see cref="Type"/> associated to a mod and type id
-        /// (<see cref="SerializationIdAttribute.ModId"/> and <see cref="SerializationIdAttribute.TypeId"/>).
+        /// (<see cref="SerializationIdAttribute{T}.ModId"/> and <see cref="SerializationIdAttribute{T}.TypeId"/>).
         /// </summary>
         /// <param name="modId">The mod id to get the <see cref="Type"/> for.</param>
         /// <param name="typeId">The type id to get the <see cref="Type"/> for.</param>
@@ -69,7 +69,7 @@ namespace OctoAwesome
 
         /// <summary>
         /// Tries to get the <see cref="Type"/> associated to a serialization id
-        /// (<see cref="SerializationIdAttribute.CombinedId"/>).
+        /// (<see cref="SerializationIdAttribute{T}.CombinedId"/>).
         /// </summary>
         /// <param name="serId">The serialization id to get the <see cref="Type"/> for.</param>
         /// <param name="type">The type associated to the serialization id.</param>
@@ -80,7 +80,7 @@ namespace OctoAwesome
         }
         /// <summary>
         /// Tries to get the serialization id associated to a the type
-        /// (<see cref="SerializationIdAttribute.CombinedId"/>).
+        /// (<see cref="SerializationIdAttribute{T}.CombinedId"/>).
         /// </summary>
         /// <param name="type">The type associated to the serialization id.</param>
         /// <param name="serId">The serialization id to get the <see cref="Type"/> for.</param>
@@ -92,7 +92,7 @@ namespace OctoAwesome
 
         /// <summary>
         /// Tries to get the <see cref="Type"/> associated to a serialization id
-        /// (<see cref="SerializationIdAttribute.CombinedId"/>).
+        /// (<see cref="SerializationIdAttribute{T}.CombinedId"/>).
         /// </summary>
         /// <param name="modId">The mod id to get the <see cref="Type"/> for.</param>
         /// <param name="typeId">The type id to get the <see cref="Type"/> for.</param>

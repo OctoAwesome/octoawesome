@@ -124,6 +124,7 @@ namespace OctoAwesome
         /// Saves the given chunk column.
         /// </summary>
         /// <param name="value">The chunk column to save.</param>
+        /// <param name="planet">The planet of the chunk.</param>
         void SaveChunkColumn(IChunkColumn value, IPlanet planet);
 
         /// <summary>

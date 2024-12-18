@@ -29,13 +29,13 @@ namespace OctoAwesome.Basics.UI.Screens
         public event EventHandler<NavigationEventArgs>? Closed;
 
         protected const string ScreenKey = "Transfer";
-        protected readonly AssetComponent assetComponent;
-        protected readonly Texture2D panelBackground;
-        protected readonly InventoryControl inventoryA;
-        protected readonly InventoryControl inventoryB;
-        protected readonly Label nameLabel;
-        protected readonly Label massLabel;
-        protected readonly Label volumeLabel;
+        private readonly AssetComponent assetComponent;
+        private readonly Texture2D panelBackground;
+        private readonly InventoryControl inventoryA;
+        private readonly InventoryControl inventoryB;
+        private readonly Label nameLabel;
+        private readonly Label massLabel;
+        private readonly Label volumeLabel;
         protected IDisposable? subscription;
         protected TransferUIComponent? transferComponent;
 

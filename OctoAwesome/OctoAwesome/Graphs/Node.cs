@@ -10,9 +10,6 @@ namespace OctoAwesome.Graphs;
 //TODO Remove this and check on the interfaces instead
 public abstract class Node<T> : NodeBase, IEquatable<Node<T>?>
 {
-
-
-
     public static Node<T> DeserializeAndCreate(BinaryReader reader)
     {
         var str = reader.ReadString();
@@ -23,33 +20,38 @@ public abstract class Node<T> : NodeBase, IEquatable<Node<T>?>
         return node;
     }
 
+    ///<inheritdoc/>
     public override string ToString()
     {
         return $"{BlockInfo.Position} {BlockInfo.Block} {BlockInfo.Meta}";
     }
 
+    ///<inheritdoc/>
     public override bool Equals(object? obj)
     {
         return Equals(obj as Node<T>);
     }
 
+    ///<inheritdoc/>
     public bool Equals(Node<T>? other)
     {
         return other is not null &&
                BlockInfo.Equals(other.BlockInfo);
     }
 
+    ///<inheritdoc/>
     public override int GetHashCode()
     {
         return HashCode.Combine(BlockInfo);
     }
 
-
+    ///<inheritdoc/>
     public static bool operator ==(Node<T>? left, Node<T>? right)
     {
         return EqualityComparer<Node<T>>.Default.Equals(left, right);
     }
 
+    ///<inheritdoc/>
     public static bool operator !=(Node<T>? left, Node<T>? right)
     {
         return !(left == right);

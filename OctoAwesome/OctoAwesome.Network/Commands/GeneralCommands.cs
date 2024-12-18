@@ -15,6 +15,7 @@ namespace OctoAwesome.Network.Commands
         /// <summary>
         /// Gets the current universe.
         /// </summary>
+        /// <param name="tc">The current type container.</param>
         /// <param name="parameter">This is currently ignored.</param>
         /// <returns>The universe data.</returns>
         public static ISerializable GetUniverse(ITypeContainer tc, CommandParameter parameter) // TODO: use parameter for multi universe server?
@@ -26,6 +27,7 @@ namespace OctoAwesome.Network.Commands
         /// <summary>
         /// Gets the planet.
         /// </summary>
+        /// <param name="tc">The current type container.</param>
         /// <param name="parameter">This is currently ignored.</param>
         /// <returns>The planet with id 0 - for now.</returns>
         public static ISerializable GetPlanet(ITypeContainer tc, CommandParameter parameter) // TODO: use parameter for actual planet server?

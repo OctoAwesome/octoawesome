@@ -47,7 +47,7 @@ namespace OctoAwesome.Client.Components
         /// Removes a Binding
         /// </summary>
         /// <param name="id">The ID</param>
-        public void UnregisterBinding(string id, string groupId)
+        public void UnregisterBinding(string id)
         {
             if (bindings.ContainsKey(id))
             {

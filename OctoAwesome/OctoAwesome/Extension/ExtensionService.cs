@@ -256,14 +256,16 @@ public class ExtensionService
 
         }
     }
-
+    /// <summary>
+    /// Register all types with the <see cref="BaseSerializationIdAttribute"/> from the assembly
+    /// </summary>
+    /// <param name="assembly">The assembly that contains the types that should be registered</param>
     public void RegisterTypesWithSerializationId(Assembly assembly)
     {
         var types = assembly.GetCustomAttributes<BaseSerializationIdAttribute>();
 
         foreach (var serIdAttribute in types)
         {
-
             var serId = serIdAttribute.CombinedId;
 
             if (serId > 0)

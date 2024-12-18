@@ -135,6 +135,11 @@ namespace OctoAwesome.Notifications
             base.OnRelease();
         }
 
+        /// <summary>
+        /// Deserializes an entity notification from the reader by creating a new instance.
+        /// </summary>
+        /// <param name="reader">The reader that contains the entity notification.</param>
+        /// <returns>The created and deserialized entity notification.</returns>
         public static EntityNotification DeserializeAndCreate(BinaryReader reader)
         {
             var entity = new EntityNotification();
@@ -142,11 +147,21 @@ namespace OctoAwesome.Notifications
             return entity;
         }
 
+        /// <summary>
+        /// Serialize the that instance into the binary writer.
+        /// </summary>
+        /// <param name="that">The entity notification instance.</param>
+        /// <param name="writer">The writer to write to.</param>
         public static void Serialize(EntityNotification that, BinaryWriter writer)
         {
             that.Serialize(writer);
         }
 
+        /// <summary>
+        /// Deserialize the values for a pre existing entity from the reader.
+        /// </summary>
+        /// <param name="that">The pre existing instance.</param>
+        /// <param name="reader">The reader to read from.</param>
         public static void Deserialize(EntityNotification that, BinaryReader reader)
         {
             that.Deserialize(reader);

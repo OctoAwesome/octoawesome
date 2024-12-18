@@ -13,7 +13,7 @@ namespace OctoAwesome.Serialization;
 
 
 /// <summary>
-/// Database context for chunk columns using <see cref="IChunkColumn"/>.
+/// Database context for chunk columns using <see cref="OctoAwesome.Chunking.IChunkColumn"/>.
 /// </summary>
 public sealed class GraphDbContext : DatabaseContext<IdTag<Pencil>, Pencil>
 {

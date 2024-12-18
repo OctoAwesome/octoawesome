@@ -16,11 +16,19 @@ namespace OctoAwesome
     /// </summary>
     public partial class Entity : ComponentContainer<IEntityComponent>
     {
-
+        /// <summary>
+        /// Initialized a new entity instance.
+        /// </summary>
         public Entity() : base()
         {
                 
         }
+
+        /// <summary>
+        /// Initializes a new entity instance with a predefined id and already existing components.
+        /// </summary>
+        /// <param name="id">The existing id of the entity.</param>
+        /// <param name="components">The components that this entity should hold.</param>
         public Entity(Guid id, ComponentList<IComponent> components) : base(id, components)
         {
             

@@ -19,6 +19,9 @@ public partial class UiKeyComponent : Component, IEntityComponent, IEquatable<Ui
     /// </summary>
     public string PrimaryKey { get; private set; }
 
+    /// <summary>
+    /// Initializes a new ui key component.
+    /// </summary>
     public UiKeyComponent() : base()
     {
         Sendable = true;
