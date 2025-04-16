@@ -114,6 +114,16 @@ namespace OctoAwesome
         /// <returns>An awaiter to wait for completion of loading; or <c>null</c> if no entity was loaded.</returns>
         Awaiter? Load(out Entity? entity, Guid universeGuid, Guid entityId);
 
+
+        /// <summary>
+        /// Deletes a component container.
+        /// </summary>
+        /// <param name="universeGuid">The <see cref="Guid"/> of the universe to where the entity was in.</param>
+        /// <param name="entity">The <see cref="Guid"/> of the component container to delete.</param>
+        void DeleteComponentContainer<TContainer, TComponent>(Guid universeGuid, TContainer entity)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
+
         /// <summary>
         /// Gets an enumeration of id-component mapping of specific component type
         /// for an array of entity ids in the given universe.

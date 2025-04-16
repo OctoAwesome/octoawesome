@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Linq;
+using OctoAwesome.Extension;
 
 namespace OctoAwesome.Client.Controls
 {
@@ -325,10 +326,11 @@ namespace OctoAwesome.Client.Controls
             Index3 centerblock = player.Position.Position.GlobalBlockIndex;
             Index3 renderOffset = player.Position.Position.ChunkIndex * Chunk.CHUNKSIZE;
 
-            var selBlock = GetSelectedBlock(centerblock, renderOffset, localChunkCache, Manager.Game.DefinitionManager, camera.PickRay, planet.Size, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out var bestBlockDistance);
+            var selBlock = GetSelectedBlock(centerblock, renderOffset, localChunkCache, Manager.Game.DefinitionManager, camera.PickRay, planet.Size, out Vector3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out var bestBlockDistance);
             var selectedEntity = GetSelectedEntity(centerblock, renderOffset, Manager.Game.Simulation.Simulation, camera.PickRay, planet.Size, out var selectedFunc, out var selectedFuncAxis, out var selectionFuncPoint, out var bestFunctionalBlockDistance);
 
-            if (bestBlockDistance > bestFunctionalBlockDistance)
+            //TODO Change back to block > Functional
+            if (selectedEntity is not null && bestBlockDistance > bestFunctionalBlockDistance)
             {
                 selected = selectedFunc;
                 selectionPoint = selectionFuncPoint;
@@ -413,13 +415,14 @@ namespace OctoAwesome.Client.Controls
             base.OnUpdate(gameTime);
         }
 
-        public static BlockInfo GetSelectedBlock(Index3 centerblock, Index3 renderOffset, ILocalChunkCache localChunkCache, IDefinitionManager definitionManager, Ray pickRay, Index3 planetSize, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
+        public static BlockInfo GetSelectedBlock(Index3 centerblock, Index3 renderOffset, ILocalChunkCache localChunkCache, IDefinitionManager definitionManager, Ray pickRay, Index3 planetSize, out Vector3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
         {
             selected = null;
             selectedAxis = null;
             selectionPoint = null;
             bestDistance = float.MaxValue;
             BlockInfo block = default;
+
             //var pickEndPost = centerblock + (camera.PickRay.Position + (camera.PickRay.Direction * Player.SELECTIONRANGE));
             //var pickStartPos = centerblock + camera.PickRay.Position;
             for (int z = -Player.SELECTIONRANGE; z < Player.SELECTIONRANGE; z++)
@@ -463,7 +466,7 @@ namespace OctoAwesome.Client.Controls
             return block;
         }
 
-        public static ComponentContainer? GetSelectedEntity(Index3 centerblock, Index3 renderOffset, Simulation simulation, Ray pickRay, Index3 planetSize, out Index3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
+        public static ComponentContainer? GetSelectedEntity(Index3 centerblock, Index3 renderOffset, Simulation simulation, Ray pickRay, Index3 planetSize, out Vector3? selected, out Axis? selectedAxis, out Vector3? selectionPoint, out float bestDistance)
         {
             selected = null;
             selectedAxis = null;
@@ -481,26 +484,29 @@ namespace OctoAwesome.Client.Controls
 
             return componentContainer;
 
-            void CalcBestDistance(Index3 centerblock, Index3 renderOffset, ref Index3? selected, ref Axis? selectedAxis, ref Vector3? selectionPoint, ref float bestDistance, ref ComponentContainer? componentContainer, ComponentContainer entity)
+            void CalcBestDistance(Index3 centerblock, Index3 renderOffset, ref Vector3? selected, ref Axis? selectedAxis, ref Vector3? selectionPoint, ref float bestDistance, ref ComponentContainer? componentContainer, ComponentContainer entity)
             {
                 var posComponent = entity.GetComponent<PositionComponent>();
                 var boxCollisionComponent = entity.GetComponent<BoxCollisionComponent>();
                 if (posComponent is null || boxCollisionComponent is null)
                     return;
-                Index3 shortestDistance = centerblock.ShortestDistanceXY(posComponent.Position.GlobalBlockIndex, planetSize);
+                var planetSizeVec = new Vector3(planetSize.X, planetSize.Y, planetSize.Z);
+                var entitySelectionPosition = posComponent.Position.GlobalPosition;
+
+                var shortestDistance = new Vector3(centerblock.X, centerblock.Y, centerblock.Z).ShortestDistanceXY(entitySelectionPosition, planetSizeVec);
 
                 if (Math.Abs(shortestDistance.X) < Player.SELECTIONRANGE
                     && Math.Abs(shortestDistance.Y) < Player.SELECTIONRANGE
                     && Math.Abs(shortestDistance.Z) < Player.SELECTIONRANGE)
                 {
-                    var localBlockSpace = renderOffset.ShortestDistanceXY(posComponent.Position.GlobalBlockIndex, planetSize);
+                    var localBlockSpace = new Vector3(renderOffset.X, renderOffset.Y, renderOffset.Z).ShortestDistanceXY(entitySelectionPosition, planetSizeVec);
 
                     float? distance = Block.Intersect(boxCollisionComponent.BoundingBoxes, localBlockSpace, pickRay, out Axis? collisionAxis);
 
                     if (distance.HasValue && distance.Value < bestDistance)
                     {
-                        posComponent.Position.GlobalBlockIndex.NormalizeXY(planetSize * Chunk.CHUNKSIZE);
-                        selected = posComponent.Position.GlobalBlockIndex;
+                        entitySelectionPosition.NormalizeXY(planetSize * Chunk.CHUNKSIZE);
+                        selected = posComponent.Position.GlobalPosition;
 
                         selectedAxis = collisionAxis;
                         bestDistance = distance.Value;
@@ -785,16 +791,37 @@ namespace OctoAwesome.Client.Controls
                 // Index3 offset = player.ActorHost.Position.ChunkIndex * Chunk.CHUNKSIZE;
                 Index3 offset = camera.CameraChunk * Chunk.CHUNKSIZE;
                 Index3 planetSize = planet.Size * Chunk.CHUNKSIZE;
-                var relativePosition = new Index3(
-                    Index2.ShortestDistanceOnAxis(offset.X, player.SelectedBox.Value.X, planetSize.X),
-                    Index2.ShortestDistanceOnAxis(offset.Y, player.SelectedBox.Value.Y, planetSize.Y),
-                    player.SelectedBox.Value.Z - offset.Z);
+                var box = player.SelectedBox.Value;
 
-                var selectedBoxPosition = new Vector3(
-                    player.SelectedBox.Value.X - chunkOffset.X * Chunk.CHUNKSIZE_X,
-                    player.SelectedBox.Value.Y - chunkOffset.Y * Chunk.CHUNKSIZE_Y,
-                    player.SelectedBox.Value.Z - chunkOffset.Z * Chunk.CHUNKSIZE_Z);
-                // selectionEffect.World = Matrix.CreateTranslation(selectedBoxPosition);
+                ComponentContainer? entity = null;
+                player.Selection?.TryMatch(out entity);
+
+                if (entity is not null)
+                {
+                    var boxColl = entity.GetComponent<BoxCollisionComponent>();
+                    Vector3 min = new Vector3(float.MaxValue), max = new(float.MinValue);
+                    foreach (var bound in boxColl.BoundingBoxes)
+                    {
+                        if (bound.Min.X < min.X)
+                            min = new Vector3(bound.Min.X, min.Y, min.Z);
+                        if (bound.Min.Y < min.Y)
+                            min = new Vector3(min.X, bound.Min.Y, min.Z);
+                        if (bound.Min.Z < min.Z)
+                            min = new Vector3(min.X, min.Y, bound.Min.Z);
+
+                        //if (bound.Max.X > max.X)
+                        //    max = new Vector3(bound.Max.X, max.Y, max.Z);
+                        //if (bound.Max.Y > max.Y)
+                        //    max = new Vector3(max.X, bound.Max.Y, max.Z);
+                        //if (bound.Max.Z > max.Z)
+                        //    max = new Vector3(max.X, max.Y, bound.Max.Z);
+                        box += min;
+                    }
+
+                }
+                var relativePosition = new Vector3(offset.X, offset.Y, offset.Z)
+                    .ShortestDistanceXY(box, planetSize);
+
                 selectionEffect.World = Matrix.CreateTranslation(relativePosition);
                 selectionEffect.View = camera.View;
                 selectionEffect.Projection = camera.Projection;

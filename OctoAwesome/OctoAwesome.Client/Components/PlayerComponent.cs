@@ -69,7 +69,7 @@ namespace OctoAwesome.Client.Components
 
         // public ActorHost ActorHost { get; private set; }
         public Selection? Selection { get; set; }
-        public Index3? SelectedBox { get; set; }
+        public Vector3? SelectedBox { get; set; }
 
         public Vector2? SelectedPoint { get; set; }
 
@@ -149,12 +149,12 @@ namespace OctoAwesome.Client.Components
                 if (HitInput)
                 {
                     CurrentController.Selection.SelectionType = SelectionType.Hit;
-                    CurrentController.HitBlock = SelectedBox.Value;
+                    CurrentController.HitBlock = new Index3((int)SelectedBox.Value.X, (int)SelectedBox.Value.Y, (int)SelectedBox.Value.Z);
                 }
 
                 if (Interact)
                 {
-                    CurrentController.InteractBlock = SelectedBox.Value;
+                    CurrentController.InteractBlock = new Index3((int)SelectedBox.Value.X, (int)SelectedBox.Value.Y, (int)SelectedBox.Value.Z);
                     CurrentController.InteractSide = SelectedSide;
                     CurrentController.Selection.SelectionType = SelectionType.Interact;
                 }
@@ -224,7 +224,7 @@ namespace OctoAwesome.Client.Components
                 return;
             foreach (var itemDefinition in itemDefinitions)
             {
-                var fooditem = definitionActionService.Function("CreateItem", itemDefinition, (Item?)null,  foodMaterial);
+                var fooditem = definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, foodMaterial);
                 if (fooditem is not null)
                     inventory.Add(fooditem, fooditem.VolumePerUnit);
             }
@@ -243,15 +243,15 @@ namespace OctoAwesome.Client.Components
             var food = resourceManager.DefinitionManager.FoodDefinitions.FirstOrDefault();
             foreach (var itemDefinition in itemDefinitions)
             {
-                if (wood is not null 
+                if (wood is not null
                     && definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, wood) is { } woodItem)
                     inventory.Add(woodItem, woodItem.VolumePerUnit);
 
-                if (stone is not null 
+                if (stone is not null
                     && definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, stone) is { } stoneItem)
                     inventory.Add(stoneItem, stoneItem.VolumePerUnit);
 
-                if (food is not null 
+                if (food is not null
                     && definitionActionService.Function("CreateItem", itemDefinition, (Item?)null, food) is { } foodItem)
                     inventory.Add(foodItem, foodItem.VolumePerUnit);
             }

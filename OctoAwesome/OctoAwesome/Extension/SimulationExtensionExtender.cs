@@ -36,8 +36,8 @@ namespace OctoAwesome.Extension
         /// <param name="simulation">Simulation</param>
         public override void Execute<T>(T simulation)
         {
-            foreach (var extender in simulationExtender)
-                extender(simulation);
+            //foreach (var extender in simulationExtender)
+            //    extender(simulation);
         }
     }
 }

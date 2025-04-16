@@ -386,6 +386,16 @@ namespace OctoAwesome.Runtime
             return context.Get<T>(id);
         }
 
+        /// <inheritdoc/>
+        public void DeleteComponentContainer<TContainer, TComponent>(Guid universeGuid, TContainer container)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            var context
+               = new ComponentContainerDbContext<TContainer, TComponent>(databaseProvider, universeGuid);
+            context.Remove(container);
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {

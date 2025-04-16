@@ -98,7 +98,7 @@ namespace OctoAwesome
             GlobalComponentList = new();
 
             Components = new ComponentList<SimulationComponent>(
-                ValidateAddComponent, ValidateRemoveComponent, null, null, this);
+                ValidateAddComponent, ValidateRemoveComponent, OnAddComponent, null, this);
 
             extensionService.ExecuteExtender(this);
         }
@@ -229,7 +229,7 @@ namespace OctoAwesome
 
             foreach (var entity in entities)
             {
-                Remove(entity);
+                Detach(entity);
             }
 
             State = SimulationState.Finished;
@@ -283,7 +283,7 @@ namespace OctoAwesome
             }
 
             if (existing != default)
-                Remove(existing);
+                Detach(existing);
 
             if (entity.Id == Guid.Empty)
                 entity.Id = Guid.NewGuid();
@@ -345,7 +345,49 @@ namespace OctoAwesome
         }
 
         /// <summary>
-        /// Removes an entity from the simulation.
+        /// Detaches an entity from the simulation.
+        /// </summary>
+        /// <param name="entity">The <see cref="Entity"/> to detach.</param>
+        public void Detach(Entity entity)
+        {
+            Debug.Assert(entity is not null, nameof(entity) + " != null");
+
+            if (entity.Id == Guid.Empty)
+                return;
+
+            if (entity.Simulation != this)
+            {
+                if (entity.Simulation == null)
+                    return;
+
+                throw new NotSupportedException("Entity can't be detached from a foreign simulation");
+            }
+
+            if (State is not (SimulationState.Running or SimulationState.Paused))
+                throw new NotSupportedException("Removing Entities only detached in running or paused state");
+
+            ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
+
+            foreach (var comp in entity.Components)
+            {
+                GlobalComponentList.Remove(comp);
+            }
+
+            foreach (var component in Components)
+            {
+                if (component is IHoldComponent<Entity> holdComponent)
+                    holdComponent.Remove(entity);
+            }
+
+            //using (var _ = entitiesSemaphore.EnterExclusiveScope())
+            entities.Remove(entity);
+            SendToClientIfRequired(entity, true, EntityNotification.ActionType.Detach);
+            entity.Id = Guid.Empty;
+            entity.Simulation = null;
+        }
+
+        /// <summary>
+        /// Removes an entity from the simulation and from the game.
         /// </summary>
         /// <param name="entity">The <see cref="Entity"/> to remove.</param>
         public void Remove(Entity entity)
@@ -366,8 +408,7 @@ namespace OctoAwesome
             if (State is not (SimulationState.Running or SimulationState.Paused))
                 throw new NotSupportedException("Removing Entities only allowed in running or paused state");
 
-            ResourceManager.SaveComponentContainer<Entity, IEntityComponent>(entity);
-
+            ResourceManager.DeleteComponentContainer<Entity, IEntityComponent>(entity);
 
             foreach (var comp in entity.Components)
             {
@@ -478,6 +519,15 @@ namespace OctoAwesome
         }
 
         /// <summary>
+        /// Detaches an entity by a given id.
+        /// </summary>
+        /// <param name="entityId">The <see cref="Guid"/> of the entity to detach.</param>
+        public void DetachEntity(Guid entityId)
+        {
+            Detach(entities.First(e => e.Id == entityId));
+        }
+
+        /// <summary>
         /// Remove an entity by a given id.
         /// </summary>
         /// <param name="entityId">The <see cref="Guid"/> of the entity to remove.</param>
@@ -497,6 +547,9 @@ namespace OctoAwesome
                 case EntityNotification entityNotification:
                     switch (entityNotification.Type)
                     {
+                        case EntityNotification.ActionType.Detach:
+                            DetachEntity(entityNotification.EntityId);
+                            break;
                         case EntityNotification.ActionType.Remove:
                             RemoveEntity(entityNotification.EntityId);
                             break;
@@ -539,7 +592,7 @@ namespace OctoAwesome
 
             var remoteEntity = new RemoteEntity(entity);
             remoteEntity.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
-            remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
+            remoteEntity.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseRotation = new(0, 0, -90) });
             remoteEntity.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
 
             var newEntityNotification = entityNotificationPool.Rent();

@@ -43,5 +43,12 @@ namespace OctoAwesome.Serialization
             using (Database.Lock(Operation.Write))
                 Database.AddOrUpdate(tag, new Value(Serializer.Serialize(value)));
         }
+
+        /// <summary>
+        /// Checks whether the database contains a value for an identifying tag.
+        /// </summary>
+        /// <param name="tag">The tag to check for.</param>
+        /// <returns>A value indicating whether the database contains a value for an identifying tag.</returns>
+        protected bool ContainsKey(TTag tag) => Database.ContainsKey(tag);
     }
 }

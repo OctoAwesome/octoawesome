@@ -21,7 +21,7 @@ namespace OctoAwesome
         /// <returns>
         /// The distance of the ray-box-collision from the ray start; or <c>null</c> if no intersection occured.
         /// </returns>
-        public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Index3 boxPosition, Ray ray, out Axis? collisionAxis)
+        public static float? Intersect(ReadOnlySpan<BoundingBox> collisionBoxes, Vector3 boxPosition, Ray ray, out Axis? collisionAxis)
         {
             Vector3 min = new Vector3(1, 1, 1);
             float raylength = Player.SELECTIONRANGE * 2;

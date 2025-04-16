@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using OctoAwesome.Extension;
 using OctoAwesome.Pooling;
+using engenious;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -45,9 +46,19 @@ namespace OctoAwesome.EntityComponents
         }
 
         /// <summary>
-        /// Gets or sets the rotation of the z-axis of the model.
+        /// Gets or sets the rotationof the model.
         /// </summary>
-        public float BaseZRotation { get; set; }
+        public Vector3 BaseRotation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the offset of the model used for rendering.
+        /// </summary>
+        public Vector3 BaseOffset { get; set; }
+
+        /// <summary>
+        /// Gets or sets if the texture should be loaded from the asset component or from the game components. True would load it from the asset component.
+        /// </summary>
+        public bool LoadFromAssetComponent { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderComponent"/> class.
@@ -70,13 +81,14 @@ namespace OctoAwesome.EntityComponents
                    Name == other.Name &&
                    ModelName == other.ModelName &&
                    TextureName == other.TextureName &&
-                   BaseZRotation == other.BaseZRotation;
+                   BaseRotation == other.BaseRotation &&
+                   BaseOffset == other.BaseOffset;
         }
 
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name, ModelName, TextureName, BaseZRotation);
+            return HashCode.Combine(Name, ModelName, TextureName, BaseRotation, BaseOffset);
         }
 
         /// <summary>Compare two render components for equality.</summary>

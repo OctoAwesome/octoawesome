@@ -32,7 +32,7 @@ public interface IBlockInteraction
     /// <summary>
     /// Gets the selected box position of the interacted entity or block.
     /// </summary>
-    Index3? SelectedBox { get; }
+    Vector3? SelectedBox { get; }
 
     /// <summary>
     /// Gets the selected point on the <see cref="SelectedSide"/>.

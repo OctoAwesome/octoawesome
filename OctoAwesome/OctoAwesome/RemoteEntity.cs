@@ -33,17 +33,13 @@ namespace OctoAwesome
         public RemoteEntity(Entity originEntity) : this()
         {
             Simulation = originEntity.Simulation;
-            using var ms = new MemoryStream();
+            using var ms = Serializer.Manager.GetStream();
             using var bw = new BinaryWriter(ms);
-            originEntity.Components.Serialize(bw);
+            originEntity.Components.SerializeSendables(bw);
             ms.Position = 0;
             using var br = new BinaryReader(ms);
-            var components = ComponentList<IEntityComponent>.DeserializeStatic(br);
-            foreach (var component in components)
-            {
-                if (component.Sendable)
-                    Components.Add(component);
-            }
+            Components = ComponentList<IComponent>.DeserializeStatic(br);
+    
             Id = originEntity.Id;
         }
     }

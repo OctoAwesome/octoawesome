@@ -33,5 +33,14 @@ namespace OctoAwesome.Basics.EntityComponents
         /// </summary>
         public Vector3 ExternalPowers { get; set; }
 
+        /// <summary>
+        /// Gets or sets wether the entity is currently on ground.
+        /// </summary>
+        public bool OnGround { get; set; }
+
+        public MoveableComponent() : base()
+        {
+            Sendable = true;
+        }
     }
 }

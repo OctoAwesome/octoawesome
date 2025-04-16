@@ -154,7 +154,7 @@ namespace OctoAwesome.Chunking
         /// </summary>
         /// <param name="issueNotification">A value indicating whether the block changes should be notified.</param>
         /// <param name="blockInfos">The blocks to set.</param>
-        void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos);
+        void SetBlocks(bool issueNotification, params IEnumerable<BlockInfo> blockInfos);
 
         /// <summary>
         /// Flags the chunk column as dirty. Meaning it needs to be updated for e.g. rendering.

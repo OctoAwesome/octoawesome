@@ -181,9 +181,9 @@ namespace OctoAwesome.Notifications
             /// </summary>
             Add,
             /// <summary>
-            /// An entity was removed.
+            /// An entity was detached.
             /// </summary>
-            Remove,
+            Detach,
             /// <summary>
             /// An entity was updated.
             /// </summary>
@@ -191,7 +191,11 @@ namespace OctoAwesome.Notifications
             /// <summary>
             /// An entity was requested.
             /// </summary>
-            Request
+            Request,
+            /// <summary>
+            /// An entity was removed.
+            /// </summary>
+            Remove
         }
     }
 }

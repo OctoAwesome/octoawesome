@@ -73,6 +73,7 @@ namespace OctoAwesome.Basics
         {
             extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreBlock, typeof(BlockDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreNetworkblock, typeof(NetworkBlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreFallblock, typeof(FallBlockDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreBurnable, typeof(BurnableDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterial, typeof(MaterialDefinition)));
             extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialFluid, typeof(FluidMaterialDefinition)));
@@ -142,93 +143,93 @@ namespace OctoAwesome.Basics
         private void RegisterCreateItem(DefinitionActionService defActionService)
         {
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseAxeCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
-                    => mat is ISolidMaterialDefinition? new Axe(def, mat) : null
+                ConstStrings.CreateItem,
+                ConstStrings.BaseAxeCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
+                    => mat is ISolidMaterialDefinition ? new Axe(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseBucketCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseBucketCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new Bucket(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseItemChestCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseItemChestCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new ChestItem(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseItemFurnaceCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseItemFurnaceCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new FurnaceItem(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseHammerCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseHammerCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new Hammer(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseHoeCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseHoeCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new Hoe(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BasePickaxeCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BasePickaxeCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new Pickaxe(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseShovelCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseShovelCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new Shovel(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseItemStorageInterfaceCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseItemStorageInterfaceCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is ISolidMaterialDefinition ? new StorageInterfaceItem(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseItemWauziCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseItemWauziCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => new WauziItem(def, mat)
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseMeatCookedCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseMeatCookedCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is IFoodMaterialDefinition ? new MeatCooked(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseMeatRawCoreItem, 
-                (object _, IDefinition def, IMaterialDefinition mat) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseMeatRawCoreItem,
+                (object _, IDefinition def, IMaterialDefinition mat)
                     => mat is IFoodMaterialDefinition ? new MeatRaw(def, mat) : null
             );
 
             defActionService.Register(
-                ConstStrings.CreateItem, 
-                ConstStrings.BaseHandCoreItem, 
-                (object _, IDefinition _, IMaterialDefinition _) 
+                ConstStrings.CreateItem,
+                ConstStrings.BaseHandCoreItem,
+                (object _, IDefinition _, IMaterialDefinition _)
                     => Hand.Instance
             );
         }
@@ -239,7 +240,7 @@ namespace OctoAwesome.Basics
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
             extensionLoader.Register<IMapPopulator>(new TreePopulator(typeContainer.Get<DefinitionActionService>()));
-            
+
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
@@ -359,7 +360,7 @@ namespace OctoAwesome.Basics
                 var posComponent = new PositionComponent { Position = new Coordinate(0, new Index3(0, 0, 200), new Vector3(0, 0, 0)) };
 
                 player.Components.AddIfTypeNotExists(posComponent);
-                player.Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
+                player.Components.ReplaceAllWith(new BodyComponent() { Mass = 50f, Height = 3.5f, Radius = 0.75f });
                 player.Components.AddIfTypeNotExists(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
                 player.Components.AddIfTypeNotExists(new GravityComponent());
                 player.Components.AddIfTypeNotExists(new MoveableComponent());
@@ -368,7 +369,7 @@ namespace OctoAwesome.Basics
                 player.Components.AddIfTypeNotExists(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
                 player.Components.AddIfTypeNotExists(new TransferComponent());
                 player.Components.AddIfTypeNotExists(new UiMappingComponent() { });
-                player.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
+                player.Components.ReplaceAllWith(new RenderComponent() { Name = "Player", ModelName = "dog", TextureName = "texdog", BaseRotation = new(0, 0, -90) , BaseOffset = Vector3.Zero });
 
             });
 
@@ -404,8 +405,9 @@ namespace OctoAwesome.Basics
                 c.Components.AddIfNotExists(uiKeyComp);
 
                 c.Components.AddIfNotExists(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
-                c.Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1))]));
-                c.Components.AddIfNotExists(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
+                c.Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(-0.5f), new Vector3(0.5f))]));
+                c.Components.AddIfNotExists(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel",BaseOffset = new (0,0,-0.5f), 
+BaseRotation = new(0, 0, -90),  });
                 c.Components.AddIfTypeNotExists(new UniquePositionComponent());
                 c.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Chest) });
             });
@@ -451,7 +453,7 @@ namespace OctoAwesome.Basics
 
                 f.Components.AddIfNotExists(new UiKeyComponent("Furnace"));
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
-                f.Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))]));
+                f.Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(-0.5f), new Vector3(0.5f))]));
                 f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
                 f.Components.AddIfTypeNotExists(new UniquePositionComponent());
                 f.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Furnace) });
@@ -469,7 +471,8 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>(), TypeContainer.Get<DefinitionActionService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>(), TypeContainer.Get<DefinitionActionService>(), TypeContainer.Get<IResourceManager>()));
+                s.Components.AddIfTypeNotExists(new FallBlockDetector(TypeContainer.Get<IDefinitionManager>(), TypeContainer.Get<IResourceManager>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?

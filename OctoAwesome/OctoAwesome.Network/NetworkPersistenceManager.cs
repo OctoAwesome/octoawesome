@@ -251,5 +251,12 @@ namespace OctoAwesome.Network
         {
             throw new NotImplementedException();
         }
+
+        public void DeleteComponentContainer<TContainer, TComponent>(Guid universeGuid, TContainer entity)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+        {
+            //throw new NotImplementedException();
+        }
     }
 }
