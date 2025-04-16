@@ -36,7 +36,7 @@ namespace OctoAwesome.Basics
             simulationSubscription
                 = resManager
                 .UpdateHub
-                .AddSource(simulationRelay, DefaultChannels.Simulation);
+                .AddSource(simulationRelay, DefaultChannels.Simulation);            
         }
 
         /// <inheritdoc />

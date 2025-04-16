@@ -124,6 +124,13 @@ namespace OctoAwesome.Serialization.Entities
             /// <inheritdoc />
             public override void Remove(ComponentContainerDefinition<TComponent> value)
                 => InternalRemove(new GuidTag<ComponentContainerDefinition<TComponent>>(value.Id));
+
+            /// <summary>
+            /// Checks wether the tag is contained in the db context.
+            /// </summary>
+            /// <param name="tag">The unique tag to check</param>
+            /// <returns>true if it is contained, otherwise false</returns>
+            public bool Contains(GuidTag<ComponentContainerDefinition<TComponent>> tag) => ContainsKey(tag);
         }
     }
 }

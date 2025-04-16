@@ -126,7 +126,7 @@ namespace OctoAwesome.Client.Components
             switch (notification)
             {
                 case EntityNotification entityNotification:
-                    if (entityNotification.Type == EntityNotification.ActionType.Remove)
+                    if (entityNotification.Type == EntityNotification.ActionType.Detach)
                         RemoveEntity(entityNotification.EntityId);
                     else if (entityNotification.Type == EntityNotification.ActionType.Add)
                         Add(entityNotification.Entity);

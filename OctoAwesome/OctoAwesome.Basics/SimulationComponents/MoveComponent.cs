@@ -53,6 +53,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             var planet = chunkCache.Planet;
             poscomp.Position.NormalizeChunkIndexXY(planet.Size);
             chunkCache.SetCenter(new Index2(poscomp.Position.ChunkIndex));
+
             return new SimulationComponentRecord<Entity, MoveableComponent, PositionComponent>(entity, movecomp, poscomp);
         }
 
@@ -147,20 +148,48 @@ namespace OctoAwesome.Basics.SimulationComponents
             bool abort = false;
 
             var cache = localChunkCacheComponent.LocalChunkCache;
+            bool blockBelow = false;
+            bool checkComponents = entity.TryGetComponent<RelevantPositionsComponent>(out var relevants);
 
-            for (int z = minz; z <= maxz && !abort; z++)
+
+            for (int z = minz; z <= maxz && (!abort || z == minz); z++)
             {
-                for (int y = miny; y <= maxy && !abort; y++)
+                for (int y = miny; y <= maxy && (!abort || z == minz); y++)
                 {
-                    for (int x = minx; x <= maxx && !abort; x++)
+                    for (int x = minx; x <= maxx && (!abort || z == minz); x++)
                     {
-                        move = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
                         Index3 pos = new Index3(x, y, z);
                         Index3 blockPos = pos + position.GlobalBlockIndex;
                         ushort block = cache.GetBlock(blockPos);
-                        if (block == 0)
+                        PositionComponent? matchedComp = null;
+                        if (checkComponents)
+                        {
+                            foreach (var item in relevants!.Positions)
+                            {
+                                if (item.Position.GlobalBlockIndex != blockPos)
+                                    continue;
+                                matchedComp = item;
+                                break;
+                            }
+                        }
+
+                        bool val = false;
+                        MoveableComponent? otherMove = null;
+
+                        if (block == 0
+                            && (matchedComp is null
+                                || !(val = (matchedComp.Position.GlobalPosition.Z < position.GlobalBlockIndex.Z
+                                    && (otherMove = matchedComp.Parent.GetComponent<MoveableComponent>()) is { }
+                                        && otherMove.PositionMove.Z != 0f
+                                    ))))
+                        {
                             continue;
+                        }
+                        float minZSpeed = float.MinValue;
+                        if (val && otherMove is not null)
+                        {
+                            minZSpeed = otherMove.PositionMove.Z;
+                        }
 
                         var poolingList = new engenious.Utility.PoolingList<CollisionPlane>();
                         foreach (var item in CollisionPlane.GetBlockCollisionPlanes(pos, movecomp.Velocity))
@@ -168,6 +197,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                             poolingList.Add(item);
                         }
 
+                        move = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
                         foreach (var playerPlane in playerplanes)
                         {
                             foreach (var blockPlane in poolingList)
@@ -179,6 +209,10 @@ namespace OctoAwesome.Basics.SimulationComponents
 
                                 if (!CollisionPlane.CheckDistance(distance, move))
                                     continue;
+                                if (z == minz && (minZSpeed == float.MinValue || minZSpeed > -0.01f) )
+                                {
+                                    blockBelow = true;
+                                }
 
                                 var subvelocity = (distance / (float)gameTime.ElapsedGameTime.TotalSeconds);
                                 var diff = movecomp.Velocity - subvelocity;
@@ -209,7 +243,7 @@ namespace OctoAwesome.Basics.SimulationComponents
                                 if (Math.Abs(vz) < 0.01f)
                                     vz = 0;
 
-                                movecomp.Velocity = new Vector3(vx, vy, vz);
+                                movecomp.Velocity = new Vector3(vx, vy, vz < minZSpeed ? minZSpeed : vz);
 
                                 if (vx == 0 && vy == 0 && vz == 0)
                                 {
@@ -223,7 +257,7 @@ namespace OctoAwesome.Basics.SimulationComponents
             }
 
             // TODO: What should happen if gravity == 0 or we are at the apex of a jump?
-            //movecomp.OnGround = Player.Velocity.Z == 0f;
+            movecomp.OnGround = movecomp.Velocity.Z == 0f && blockBelow;
 
             movecomp.PositionMove = movecomp.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }

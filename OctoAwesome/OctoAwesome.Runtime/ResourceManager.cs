@@ -417,6 +417,20 @@ namespace OctoAwesome.Runtime
                     PersistenceManager.Save<TContainer, TComponent>(container, CurrentUniverse.Id);
             }
         }
+        /// <inheritdoc />
+        public void DeleteComponentContainer<TContainer, TComponent>(TContainer container)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent
+
+        {
+            if (CurrentUniverse == null)
+                throw new Exception("No Universe loaded");
+
+            using (loadingSemaphore.EnterCountScope())
+            {
+                PersistenceManager.DeleteComponentContainer<TContainer, TComponent>(CurrentUniverse.Id, container);
+            }
+        }
 
         /// <inheritdoc />
         public TContainer? LoadComponentContainer<TContainer, TComponent>(Guid id)

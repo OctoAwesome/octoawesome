@@ -278,7 +278,7 @@ namespace OctoAwesome
                     if (positionComponent == null)
                         return;
 
-                    localChunkCache.LocalChunkCache = new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
+                    localChunkCache.LocalChunkCache ??= new LocalChunkCache(positionComponent.Planet.GlobalChunkCache, 4, 2);
                 }
 
             }

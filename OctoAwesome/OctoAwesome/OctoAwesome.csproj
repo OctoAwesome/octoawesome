@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<WarningsAsErrors>CS0109</WarningsAsErrors>
+		<LangVersion>Preview</LangVersion>
 		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 	</PropertyGroup>
 	

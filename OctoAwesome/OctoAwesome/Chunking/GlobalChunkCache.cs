@@ -110,21 +110,27 @@ namespace OctoAwesome.Chunking
 
                     if (type.IsAssignableTo(typeof(Entity)))
                     {
-                        var entity
-                            = cacheService
-                            .Get<Guid, Entity>(positionComponent.ParentId)!;
-                        if (entity is null)
-                            continue;
-                        positionComponent.Parent = entity;
-
-                        logger.Debug($"Send {entity.GetType().Name} with id {entity.Id} to simulation");
-                        var notification = new EntityNotification
+                        try
                         {
-                            Entity = entity,
-                            Type = EntityNotification.ActionType.Add
-                        };
+                            var entity = cacheService
+                                              .Get<Guid, Entity>(positionComponent.ParentId)!;
+                            if (entity is null) //This is not triggered, rather a not found is thrown
+                                continue;
+                            positionComponent.Parent = entity;
 
-                        simulationRelay.OnNext(notification);
+                            logger.Debug($"Send {entity.GetType().Name} with id {entity.Id} to simulation");
+                            var notification = new EntityNotification
+                            {
+                                Entity = entity,
+                                Type = EntityNotification.ActionType.Add
+                            };
+
+                            simulationRelay.OnNext(notification);
+                        }
+                        catch (Exception)
+                        {
+                            //TODO Entity should be null when not found instead of exception
+                        }
                     }
                 }
             }

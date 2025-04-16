@@ -52,7 +52,7 @@ namespace OctoAwesome.Database
             writer.Close();
         }
 
-        internal Key<TTag> GetKey(TTag tag)
+        internal Key<TTag> GetKey(TTag tag) //TODO we should add a TryGetKey, to check if values even exists
             => keys[tag];
 
         internal void Update(Key<TTag> key)

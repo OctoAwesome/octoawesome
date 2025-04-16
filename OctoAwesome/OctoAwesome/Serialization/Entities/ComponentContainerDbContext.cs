@@ -46,7 +46,7 @@ namespace OctoAwesome.Serialization.Entities
 
             Debug.Assert(addOrUpdateComponent != null, nameof(addOrUpdateComponentMethod) + " != null");
             addOrUpdateComponentMethod = addOrUpdateComponent;
-            
+
             var removeComponent = typeof(ComponentContainerComponentDbContext<TComponent>).GetMethod(nameof(ComponentContainerComponentDbContext<TComponent>.Remove));
 
             Debug.Assert(removeComponent != null, nameof(removeComponentMethod) + " != null");
@@ -101,7 +101,11 @@ namespace OctoAwesome.Serialization.Entities
         /// <inheritdoc />
         public void Remove(TContainer value)
         {
-            var definition = entityDefinitionContext.Get(new GuidTag<ComponentContainerDefinition<TComponent>>(value.Id));
+            var tag = new GuidTag<ComponentContainerDefinition<TComponent>>(value.Id);
+            if (!entityDefinitionContext.Contains(tag))
+                return;
+
+            var definition = entityDefinitionContext.Get(tag);
             entityDefinitionContext.Remove(definition);
 
             foreach (Type component in definition.Components)

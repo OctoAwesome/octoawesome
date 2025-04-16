@@ -281,7 +281,7 @@ namespace OctoAwesome.Components
         /// <summary>
         /// Entities simulated by this <see cref="SimulationComponent{T, S, C1, C2, C3}"/>.
         /// </summary>
-        protected readonly List<TCachedContainer> values = new();
+        protected readonly EnumerationModifiableList<TCachedContainer> values = new();
 
         /// <inheritdoc />
         public void Add(TContainer value)
@@ -314,7 +314,13 @@ namespace OctoAwesome.Components
         public void Remove(TContainer value)
         {
             OnRemove(value);
-            values.RemoveAll(c => Compare(c, value));
+            IList<TCachedContainer> list = values;
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                var c = list[i];
+                if (Compare(c, value))
+                    values.RemoveAt(i);
+            }
         }
 
         /// <summary>

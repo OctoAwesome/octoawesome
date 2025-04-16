@@ -192,7 +192,7 @@ namespace OctoAwesome.Chunking
         }
 
         /// <inheritdoc />
-        public void SetBlocks(bool issueNotification, params BlockInfo[] blockInfos)
+        public void SetBlocks(bool issueNotification, params IEnumerable<BlockInfo> blockInfos)
         {
             foreach (var item in blockInfos.GroupBy(x => x.Position.Z / Chunk.CHUNKSIZE_Z))
             {

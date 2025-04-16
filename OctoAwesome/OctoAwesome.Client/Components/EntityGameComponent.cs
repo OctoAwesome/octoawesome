@@ -15,6 +15,9 @@ using System.IO;
 using System.Linq;
 using OctoAwesome.Extension;
 using NLog.LayoutRenderers;
+using System.Runtime.InteropServices;
+using engenious.UI;
+using OctoAwesome.Client.UI.Components;
 
 namespace OctoAwesome.Client.Components
 {
@@ -141,7 +144,7 @@ namespace OctoAwesome.Client.Components
                         continue;
 
                     var animationcomp = componentContainer.GetComponent<AnimationComponent>();
-                    SetTransforms(chunkOffset, planetSize, componentContainer, rendercomp, modelinfo, -0.5f);
+                    SetTransforms(chunkOffset, planetSize, componentContainer, rendercomp, modelinfo, rendercomp.BaseOffset);
                     modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
                     if (animationcomp is not null)
                     {
@@ -176,7 +179,7 @@ namespace OctoAwesome.Client.Components
                         continue;
 
                     var animationcomp = componentContainer.GetComponent<AnimationComponent>();
-                    SetShadowTransforms(chunkOffset, planetSize, componentContainer, rendercomp, modelinfo, -0.5f);
+                    SetShadowTransforms(chunkOffset, planetSize, componentContainer, rendercomp, modelinfo, rendercomp.BaseOffset);
                     modelinfo.model.CurrentAnimation = modelinfo.model.Animations.FirstOrDefault();
                     if (animationcomp is not null)
                     {
@@ -189,24 +192,24 @@ namespace OctoAwesome.Client.Components
         }
 
 
-        private void SetTransforms(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) 
+        private void SetTransforms(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, Vector3 offset)
         {
-            var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
+            var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, offset);
 
             Effect.World = world;
             Effect.Texture = modelinfo.texture;
             modelinfo.model.Transform = world;
         }
 
-        private void SetShadowTransforms(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, float zOffset = 0.0f) 
+        private void SetShadowTransforms(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, ModelInfo modelinfo, Vector3 offset)
         {
-            var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, zOffset);
+            var world = GetWorldMatrix(chunkOffset, planetSize, componentContainer, rendercomp, offset);
 
             Effect.World = world;
             modelinfo.model.Transform = world;
         }
 
-        private static Matrix GetWorldMatrix(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, float zOffset = 0.0f) 
+        private static Matrix GetWorldMatrix(Index3 chunkOffset, Index2 planetSize, ComponentContainer componentContainer, RenderComponent rendercomp, Vector3 offset)
         {
             var positioncomp = componentContainer.GetComponent<PositionComponent>();
             var body = componentContainer.GetComponent<BodyComponent>();
@@ -217,12 +220,18 @@ namespace OctoAwesome.Client.Components
             Index3 shift = chunkOffset.ShortestDistanceXY(
            position.ChunkIndex, planetSize);
 
-            var rotation = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseZRotation));
+            var rotationX = MathHelper.WrapAngle( MathHelper.ToRadians(rendercomp.BaseRotation.X));
+            var rotationY = MathHelper.WrapAngle( MathHelper.ToRadians(rendercomp.BaseRotation.Y));
+            var rotationZ = MathHelper.WrapAngle(positioncomp.Direction + MathHelper.ToRadians(rendercomp.BaseRotation.Z));
 
             Matrix world = Matrix.CreateTranslation(
-                shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X,
-                shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y,
-                shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z + zOffset) * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height) * Matrix.CreateRotationZ(rotation);
+                shift.X * Chunk.CHUNKSIZE_X + position.LocalPosition.X + offset.X,
+                shift.Y * Chunk.CHUNKSIZE_Y + position.LocalPosition.Y + offset.Y,
+                shift.Z * Chunk.CHUNKSIZE_Z + position.LocalPosition.Z + offset.Z)
+                * Matrix.CreateScaling(body.Radius * 2, body.Radius * 2, body.Height)
+                * (Matrix.CreateRotationX(rotationX)
+                    * Matrix.CreateRotationY(rotationY)
+                    * Matrix.CreateRotationZ(rotationZ));
             return world;
         }
 
@@ -237,15 +246,22 @@ namespace OctoAwesome.Client.Components
 
             rendercomp = componentContainer.GetComponent<RenderComponent>();
 
+            var bsc = Game.Components.FirstOrDefault(x => x is AssetComponent) as AssetComponent;
+
             Debug.Assert(rendercomp != null, nameof(rendercomp) + " != null");
-            if (!models.TryGetValue(rendercomp.Name, out modelinfo))
+            ref var modelInfo = ref CollectionsMarshal.GetValueRefOrAddDefault(models, rendercomp.Name + rendercomp.TextureName, out var exists);
+            if (!exists)
             {
-                modelinfo = new ModelInfo()
+                modelInfo = modelinfo = new ModelInfo()
                 {
                     render = true,
                     model = Game.Content.Load<Model>(rendercomp.ModelName)!,
-                    texture = Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
+                    texture = rendercomp.LoadFromAssetComponent ? bsc!.LoadTexture(rendercomp.TextureName)! : Game.Content.Load<Texture2D>(rendercomp.TextureName)!,
                 };
+            }
+            else
+            {
+                modelinfo = modelInfo;
             }
 
             if (!modelinfo.render)
@@ -265,7 +281,7 @@ namespace OctoAwesome.Client.Components
                 return;
 
             ComponentContainers.Clear();
-            foreach (var item in simulation.GetByComponentType< PositionComponent>())
+            foreach (var item in simulation.GetByComponentType<PositionComponent>())
             {
                 ComponentContainers.Add(item);
             }

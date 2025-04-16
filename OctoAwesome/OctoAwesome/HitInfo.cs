@@ -16,7 +16,7 @@ namespace OctoAwesome;
 /// <param name="SelectedEdge">The selected edge.</param>
 /// <param name="SelectedCorner">The selected corner.</param>
 /// <param name="Meta">The block meta information.</param>
-public readonly record struct HitInfo(Index3 Position, ushort Block, Index3? SelectedBox, Vector2? SelectedPoint, OrientationFlags SelectedSide, OrientationFlags SelectedEdge, OrientationFlags SelectedCorner, int Meta = 0) : IBlockInteraction
+public readonly record struct HitInfo(Index3 Position, ushort Block, Vector3? SelectedBox, Vector2? SelectedPoint, OrientationFlags SelectedSide, OrientationFlags SelectedEdge, OrientationFlags SelectedCorner, int Meta = 0) : IBlockInteraction
 {
     /// <summary>
     /// Gets an empty <see cref="HitInfo"/> (no block interaction).

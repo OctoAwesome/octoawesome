@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using SixLabors.ImageSharp;
 using System.Text.Json;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome.Client.UI.Components
 {
@@ -248,7 +249,7 @@ namespace OctoAwesome.Client.UI.Components
         {
             return Load(baseType, key, fileTypes, null, (stream) =>
             {
-                var result = new MemoryStream();
+                var result = Serializer.Manager.GetStream();
                 var buffer = new byte[1024];
                 int count;
                 do

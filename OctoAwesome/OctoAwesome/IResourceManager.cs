@@ -172,5 +172,8 @@ namespace OctoAwesome
         TContainer? LoadComponentContainer<TContainer, TComponent>(Guid id)
             where TContainer : ComponentContainer<TComponent>
             where TComponent : IComponent;
+        void DeleteComponentContainer<TContainer, TComponent>(TContainer container)
+            where TContainer : ComponentContainer<TComponent>
+            where TComponent : IComponent;
     }
 }

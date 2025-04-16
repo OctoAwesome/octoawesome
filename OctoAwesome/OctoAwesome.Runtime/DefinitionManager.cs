@@ -90,20 +90,27 @@ namespace OctoAwesome.Runtime
             }
             else
             {
-                Definitions = new IDefinition[definitionKeyIndices.Count];
+                var all = registrar.FlattenedDefinitions.ToDictionary(x=>x.Key, x=>x.Value);
+                var definitions = new List<IDefinition>(definitionKeyIndices.Count);
                 for (int i = 0; i < definitionKeyIndices.Count; i++)
                 {
                     var key = definitionKeyIndices[i];
 
                     if (registrar.FlattenedDefinitions.TryGetValue(key, out var def))
                     {
-                        Definitions[i] = def;
+                        definitions.Add(def);
+                        all.Remove(key);
                     }
                     else
                     {
                         //TODO Old Type, Warn for maybe broken world when continue loading
                     }
                 }
+                foreach (var remaining in all)
+                {
+                    definitions.Add(remaining.Value);
+                }
+                Definitions = definitions.ToArray();
             }
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
             BlockDefinitions = Definitions.OfType<IBlockDefinition>().ToArray();

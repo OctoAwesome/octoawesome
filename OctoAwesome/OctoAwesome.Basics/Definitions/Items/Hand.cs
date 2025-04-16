@@ -28,6 +28,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, IBlockInteraction blockInfo, decimal volumeRemaining, int volumePerHit)
         {
+            return volumePerHit;
             if (material is ISolidMaterialDefinition solidMaterial)
             {
                 if (solidMaterial.Granularity > 1)

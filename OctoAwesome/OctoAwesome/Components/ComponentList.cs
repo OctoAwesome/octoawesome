@@ -465,6 +465,25 @@ public class ComponentList<T> : IEnumerable<T> where T : IComponent, ISerializab
         }
     }
 
+    /// <summary>
+    /// Serializes the component list to a binary writer, but only components that are sendable.
+    /// </summary>
+    /// <param name="writer">The binary writer to serialize the component list to.</param>
+    public void SerializeSendables(BinaryWriter writer)
+    {
+        int count = flatComponents.Count(x=>x.Value.Sendable);
+        writer.Write(count);
+        foreach (var keyValuePair in flatComponents)
+        {
+            var comp = keyValuePair.Value;
+            if (!comp.Sendable)
+                continue;
+            writer.Write(comp.GetType().Name);
+            writer.Write(comp.GetType().SerializationId());
+            comp.Serialize(writer);
+        }
+    }
+
 
     /// <summary>
     /// Deserializes the component list from a binary reader.

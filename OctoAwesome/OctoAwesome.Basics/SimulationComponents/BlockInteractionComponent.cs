@@ -17,6 +17,11 @@ using System;
 using NLog.Layouts;
 using OctoAwesome.Information;
 using OctoAwesome.Extension;
+using OctoAwesome.Basics.FunctionBlocks;
+using OctoAwesome.Basics.EntityComponents;
+using OctoAwesome.UI.Components;
+using OctoAwesome.Notifications;
+using OctoAwesome.Rx;
 
 namespace OctoAwesome.Basics.SimulationComponents
 {
@@ -37,6 +42,9 @@ namespace OctoAwesome.Basics.SimulationComponents
         private readonly IDefinitionManager definitionManager;
         private readonly DefinitionActionService definitionActionService;
 
+        private readonly Relay<Notification> simulationRelay;
+        private readonly IDisposable simulationSubscription;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockInteractionComponent"/> class.
@@ -47,13 +55,20 @@ namespace OctoAwesome.Basics.SimulationComponents
         /// </param>
         /// <param name="interactService">The interact service.</param>
         /// <param name="definitionActionService">The definition action service.</param>
-        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService, DefinitionActionService definitionActionService)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService, DefinitionActionService definitionActionService, IResourceManager resManager)
         {
             this.simulation = simulation;
             service = blockInteractionService;
             this.interactService = interactService;
             definitionManager = simulation.ResourceManager.DefinitionManager;
             this.definitionActionService = definitionActionService;
+
+            simulationRelay = new Relay<Notification>();
+
+            simulationSubscription
+                = resManager
+                .UpdateHub
+                .AddSource(simulationRelay, DefaultChannels.Simulation);
         }
 
 

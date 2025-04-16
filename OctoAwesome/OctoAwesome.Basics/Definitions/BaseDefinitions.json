@@ -523,7 +523,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.fallblock"
     ],
     "Density": 1440
   },
@@ -866,7 +867,8 @@
     "HasMetaData": false,
     "TimeToVolumeReset": "00:00:10",
     "@types": [
-      "core.block"
+      "core.block",
+      "core.fallblock"
     ],
     "Density": 1600
   },
