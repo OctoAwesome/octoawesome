@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using engenious.UI;
 using KeyEventArgs = engenious.UI.KeyEventArgs;
 using Keys = engenious.Input.Keys;
@@ -10,8 +11,10 @@ namespace OctoAwesome.Client.Components
     internal class KeyMapper
     {
         private Dictionary<string, Binding> bindings;
+        public Dictionary<string, List<(string, Action<KeyType>)>> bindingGroups;
 
         public Dictionary<string, Binding> Bindings { get { return bindings; } }
+
 
         private ISettings settings;
 
@@ -24,6 +27,7 @@ namespace OctoAwesome.Client.Components
             this.settings = settings;
 
             bindings = new Dictionary<string, Binding>();
+            bindingGroups = new();
         }
 
         /// <summary>
@@ -35,6 +39,7 @@ namespace OctoAwesome.Client.Components
         {
             if (bindings.ContainsKey(id))
                 return;
+
             bindings.Add(id, new Binding(id, displayName));
         }
 
@@ -42,10 +47,13 @@ namespace OctoAwesome.Client.Components
         /// Removes a Binding
         /// </summary>
         /// <param name="id">The ID</param>
-        public void UnregisterBinding(string id)
+        public void UnregisterBinding(string id, string groupId)
         {
             if (bindings.ContainsKey(id))
+            {
                 bindings.Remove(id);
+                bindingGroups.Remove(id);
+            }
         }
 
         /// <summary>
@@ -71,7 +79,8 @@ namespace OctoAwesome.Client.Components
         {
             if (bindings.TryGetValue(id, out var binding))
             {
-                if (binding.Keys.Contains(key)) binding.Keys.Remove(key);
+                if (binding.Keys.Contains(key))
+                    binding.Keys.Remove(key);
             }
         }
 
@@ -79,12 +88,21 @@ namespace OctoAwesome.Client.Components
         /// Adds an Action to a Binding
         /// </summary>
         /// <param name="id">The ID of the Binding</param>
+        /// <param name="groupId">Unique id to associate the action with for later removal</param>
         /// <param name="action">The Action</param>
-        public void AddAction(string id, Action<KeyType> action)
+        public void AddAction(string id, string groupId, Action<KeyType> action)
         {
             if (bindings.TryGetValue(id, out var binding))
             {
-                if (!binding.Actions.Contains(action)) binding.Actions.Add(action);
+                if (!binding.Actions.Contains(action))
+                {
+                    binding.Actions.Add(action);
+
+                    ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(bindingGroups, groupId, out var exists);
+                    if (!exists)
+                        group = new();
+                    group!.Add((id, action));
+                }
             }
         }
 
@@ -97,7 +115,23 @@ namespace OctoAwesome.Client.Components
         {
             if (bindings.TryGetValue(id, out var binding))
             {
-                if (binding.Actions.Contains(action)) binding.Actions.Remove(action);
+                if (binding.Actions.Contains(action))
+                    binding.Actions.Remove(action);
+            }
+        }
+
+        /// <summary>
+        /// Removes all actions from the bindings inside the group
+        /// </summary>
+        /// <param name="groupId">The unique id of the group</param>
+        public void RemoveActionsOfGroup(string groupId)
+        {
+            if (bindingGroups.TryGetValue(groupId, out var bindings))
+            {
+                foreach (var binding in bindings)
+                {
+                    RemoveAction(binding.Item1, binding.Item2);
+                }
             }
         }
 

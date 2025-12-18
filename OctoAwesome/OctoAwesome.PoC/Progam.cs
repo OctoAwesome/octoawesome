@@ -1,451 +1,456 @@
-﻿//using engenious;
-
-//using OctoAwesome.Basics;
-//using OctoAwesome.Basics.Definitions.Items.Food;
-//using OctoAwesome.Definitions;
-//using OctoAwesome.Definitions.Items;
-//using OctoAwesome.EntityComponents;
-//using OctoAwesome.Runtime;
-
-//using OpenTK.Windowing.Common.Input;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using Json.Path;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using SixLabors.ImageSharp.Formats.Gif;
+using OctoAwesome.Definitions;
+using NonSucking.Framework.Extension.IoC;
+using OctoAwesome.Location;
 namespace OctoAwesome.PoC;
 
-public static class Program
+
+
+class TestSer {
+
+
+    [JsonInclude]
+    private string myField;
+
+    public void SetMyField(string abc)
+    {
+        myField = abc;
+    }
+}
+
+class TestSerA : TestSer
 {
-    /*
-     "Redstone", Energy, ItemTransport or Whatever Concept:
-    Phase 1 ✓:
-    - Als Übertragungsmedium ganzer Block
-     => Todo Neuer Block der irgendwie Aussieht
-    - Source => Cable => Verbraucher ✓
-     => "Generator", Lampe aus, Lampe an  ✓
-    - Mehrproduktion nicht böse ✓ 
-    - Aktuell austausch des Lampenblock bei "An" und "Aus" ✓ (Inzwischen sogar besser)
-    - Graph bauen/ändern bei jeder Änderung ✓
-    Phase 2:
-    - Switch / Lever (50%) 
-    - U = R*I (Very Low Prio), (Aktuell zu komplex in der aktuellen Logik zu implementieren)
-    - Storage (Batterien ✓ / Kondensatoren (✓))
-    Phase 3:
-    - Adapt to Redstone (✓) und ItemTransport
-        - Mehr Kabeltype+ 
-    Phase 4:
-    - Clenaup Block Types and implement real blocks
-     */
 
-    // G => Generator / Source
-    // K => Kabel / Cable
-    // L => Last 
-    //
-    //  K-K-L-K-K   K-K-L-K                                  4 1 2 3
-    //  |   |         |   |                                    G-K-K-G   
-    //  K   K     L   K   K                                    G-L-G
-    //  |   |     |   |   |
-    //  G-K-K     G-K-G-K-K-K-G
-    //  |   |         |   |
-    //  G-K-K-L-K   K-G-K-K-L
-
-    //class Graph
-    //{
-    //    public HashSet<Node> Nodes { get; set; }
-    //    public Dictionary<Node, HashSet<Node>> Edges { get; set; }
-    //    public HashSet<Node> Sources { get; set; }
-    //    public HashSet<Node> Targets { get; set; }
-
-    //    public Graph()
-    //    {
-    //        Nodes = new();
-    //        Sources = new();
-    //        Targets = new();
-    //        Edges = new();
-    //    }
-
-    //    public void AddNode(Node node)
-    //    {
-    //        var newEdgesSet = new HashSet<Node>();
-    //        Edges[node] = newEdgesSet;
-    //        foreach (var item in Nodes)
-    //        {
-
-    //            if ((item.Position.Y == node.Position.Y
-    //                    && item.Position.X - node.Position.X is 1 or -1)
-    //                || (item.Position.X == node.Position.X
-    //                    && item.Position.Y - node.Position.Y is 1 or -1))
-    //            {
-    //                if (Edges.TryGetValue(item, out var existing))
-    //                {
-    //                    existing.Add(node);
-    //                }
-    //                else
-    //                {
-    //                    Edges[item] = new HashSet<Node> { node };
-    //                }
-
-    //                newEdgesSet.Add(item);
-    //            }
-    //        }
-    //        if (newEdgesSet.Count == 0 && Nodes.Count > 0)
-    //        {
-    //            Edges.Remove(node);
-    //            return;
-    //        }
-
-    //        Nodes.Add(node);
-    //        if (node is SourceNode)
-    //            Sources.Add(node);
-    //        else if (node is TargetNode)
-    //            Targets.Add(node);
-
-    //    }
-
-    //    //TODO Remove Node, Split / Slice into two graphs
-
-    //    public void RemoveNode(Node node)
-    //    {
-    //        if (!Nodes.Contains(node))
-    //            return;
-
-    //        Sources.Remove(node);
-    //        Targets.Remove(node);
-    //        Nodes.Remove(node);
-
-    //        var edges = Edges[node];
-
-    //        Edges.Remove(node);
-
-    //        foreach (var item in edges)
-    //        {
-    //            Edges[item].Remove(node);
-    //        }
-
-    //        Update();
-    //        if (edges.Count > 1)
-    //        {
-
-    //            var stillOneGraph = FindPathBetweenNodes(edges.First(), edges.Last());
-    //            if (!stillOneGraph)
-    //            {
-    //                Console.WriteLine("We need to split");
-    //            }
-    //        }
-
-    //    }
-
-    //    public bool FindPathBetweenNodes(Node a, Node b)
-    //    {
-    //        if ((Math.Abs(a.Position.X - b.Position.X) == 1
-    //                && a.Position.Y == b.Position.Y)
-    //            || (Math.Abs(a.Position.Y - b.Position.Y) == 1
-    //                && a.Position.X == b.Position.X))
-    //        {
-    //            return true;
-    //            //Neighbors
-    //        }
+}
+public class PocManager
+{
+    private Dictionary<string, List<IDefinition>> definitions = [];
+    private Dictionary<string, Type> definitionTypes = new();
 
 
-    //        Dictionary<Index2, HashSet<Node>> nodePositions = Nodes.ToDictionary(x => x.Position, x => Edges[x]);
-    //        HashSet<Index2> alreadyVisited = new() { };
 
-    //        List<Index2> branches = new();
+    public dynamic GetDefinition(int index) { return ""; }
+    public dynamic GetDefinitionByTypeName(string typeName) { return ""; }
 
-    //        Index2 currentAPos = a.Position;
-    //        Index2 currentBPos = b.Position;
+    public void RegisterDefinitionType(string typeName, Type definition)
+    {
+        if (!definition.IsAssignableTo(typeof(IDefinition)))
+            throw new ArgumentException(nameof(definition));
 
-    //        var starterNode = nodePositions[currentAPos];
+        definitionTypes[typeName] = definition;
+    }
 
-    //        Index2? GetLastBranchPos()
-    //        {
-    //            if (branches.Count > 0)
-    //            {
-    //                var last = branches.Last();
-    //                branches.Remove(last);
-    //                return last;
-    //            }
-    //            return null;
-    //        }
+    public void RegisterDefinitionInstance(string id, JsonNode element, string[] types)
+    {
+        foreach (var type in types)
+        {
+            if (definitionTypes.TryGetValue(type, out var definition))
+            {
+                ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(definitions, id, out var exists);
+                if (!exists)
+                    entry = new();
 
-    //        Index2? GetNextPosition(Index2 pos, Index2 target, bool starterNode)
-    //        {
-    //            var edges = nodePositions[pos];
-    //            alreadyVisited.Add(pos);
-    //            if (edges.Count > 2 || (starterNode && edges.Count > 1))
-    //            {
-    //                Index2 maxIndex = new(int.MaxValue, int.MaxValue);
-    //                Index2 nextPos = maxIndex;
-    //                int possibleEdges = 0;
-    //                foreach (var item in edges)
-    //                {
-    //                    if (!alreadyVisited.Contains(item.Position))
-    //                    {
-    //                        if (nextPos == maxIndex
-    //                            || nextPos.ShortestDistanceXY(target, maxIndex).Length() > item.Position.ShortestDistanceXY(target, maxIndex).Length())
-    //                        {
-    //                            nextPos = item.Position;
-    //                        }
+                entry.Add((IDefinition)JsonSerializer.Deserialize(element, definition));
+            }
+        }
+    }
 
-    //                        possibleEdges++;
-    //                    }
-    //                }
-
-    //                if (possibleEdges > 1)
-    //                    branches.Add(pos);
-
-    //                if (nextPos == maxIndex)
-    //                    return GetLastBranchPos();
-
-    //                return nextPos;
-    //            }
-    //            else if (edges.Count == 1 && branches.Count > 0)
-    //            {
-    //                return GetLastBranchPos();
-    //            }
-    //            else
-    //            {
-    //                foreach (var node in edges)
-    //                {
-    //                    if (!alreadyVisited.Contains(node.Position))
-    //                    {
-    //                        return node.Position;
-    //                    }
-    //                }
-    //                return GetLastBranchPos();
-    //            }
-    //        }
-    //        Console.ForegroundColor = ConsoleColor.Green;
-    //        bool start = true;
-    //        while (true)
-    //        {
-    //            var nextStep = GetNextPosition(currentAPos, currentBPos, start);
-    //            start = false;
-
-    //            if (nextStep is not null)
-    //            {
-    //                var val = nextStep.Value;
-
-    //                Console.SetCursorPosition(nextStep.Value.Y, nextStep.Value.X);
-    //                Console.Write("X");
-    //                currentAPos = nextStep.Value;
-    //                if ((Math.Abs(currentAPos.X - currentBPos.X) == 1
-    //                        && currentAPos.Y == currentBPos.Y)
-    //                    || (Math.Abs(currentAPos.Y - currentBPos.Y) == 1
-    //                        && currentAPos.X == currentBPos.X))
-    //                {
-    //                    //Neighbors
-    //                    ;
-    //                    Console.SetCursorPosition(0, 10);
-    //                    Console.WriteLine("Connection found");
-    //                    return true;
-    //                }
-    //            }
-    //            else
-    //            {
-    //                Update();
-    //                Console.SetCursorPosition(0, 10);
-    //                Console.WriteLine("No connection found");
-    //                return false;
-    //            }
-    //            Thread.Sleep(250);
-    //        }
-    //    }
-
-    //    public void MergeWith(Graph otherGraph, Node connector)
-    //    {
-    //        otherGraph.AddNode(connector);
-
-    //        foreach (var node in otherGraph.Edges)
-    //        {
-    //            if (node.Key == connector)
-    //            {
-    //                foreach (var item in node.Value)
-    //                {
-    //                    Edges[connector].Add(item);
-    //                }
-    //            }
-    //            else
-    //            {
-    //                Edges[node.Key] = node.Value;
-    //            }
-    //        }
-    //        foreach (var item in otherGraph.Sources)
-    //        {
-    //            Sources.Add(item);
-    //        }
-    //        foreach (var item in otherGraph.Targets)
-    //        {
-    //            Targets.Add(item);
-    //        }
-    //        foreach (var item in otherGraph.Nodes)
-    //        {
-    //            Nodes.Add(item);
-    //        }
-    //    }
-
-    //    public void Update()
-    //    {
-    //        Console.Clear();
-    //        int currentPower = 0;
-    //        foreach (var source in Sources)
-    //        {
-    //            if (!Edges.TryGetValue(source, out var sourceEdges) || sourceEdges.Count == 0)
-    //                continue; // Why is this part of this graph?
-    //            currentPower = source.Update(currentPower);
-    //        }
-
-    //        foreach (var target in Targets)
-    //        {
-    //            if (!Edges.TryGetValue(target, out var targetEdges) || targetEdges.Count == 0)
-    //                continue; // Why is this part of this graph?
-    //            currentPower = target.Update(currentPower);
-    //        }
-    //        Console.ForegroundColor = ConsoleColor.White;
-    //        foreach (var item in Nodes)
-    //        {
-    //            Console.SetCursorPosition(item.Position.Y, item.Position.X);
-    //            if (item is SourceNode)
-    //            {
-    //                Console.Write("G");
-    //            }
-    //            else if (item is TargetNode tn)
-    //            {
-
-    //                Console.Write(tn.IsOn ? "X" : 'O');
-    //            }
-    //            else if (item is TransferNode)
-    //            {
-    //                Console.Write("+");
-    //            }
-
-    //        }
-    //    }
-    //}
-
-    //public abstract class Node
-    //{
-    //    public Index2 Position { get; set; }
-    //    public string Name { get; set; } = "";
-
-    //    public abstract int Update(int state);
-
-    //    public override string ToString()
-    //    {
-    //        return $"{Name} {Position}";
-    //    }
-    //}
-
-    //public class SourceNode : Node
-    //{
-
-    //    public override int Update(int state)
-    //    {
-    //        return 100;
-    //    }
-    //}
-    //public class TransferNode : Node
-    //{
-    //    public override int Update(int state)
-    //    {
-    //        return state;
-    //    }
-    //}
-    //public class TargetNode : Node
-    //{
-    //    public bool IsOn { get; private set; }
-
-    //    public override int Update(int state)
-    //    {
-    //        IsOn = state >= 50;
-    //        //if (IsOn)
-    //        //    Console.WriteLine("Lamp is now on");
-    //        return IsOn ? state - 50 : state;
-    //    }
-    //}
-
-    class Demo
+    public void RegisterOnInteract(string definitionType, Action<IMaterialDefinition, object> onInteract)
     {
 
     }
 
-    class Demo<T> : Demo
+    public T GetDefinition<T>(string id)
     {
+        if (definitions.TryGetValue(id, out var defs))
+        {
+            foreach (var def in defs)
+            {
+                if (def is T t)
+                    return t;
+            }
+        }
 
+        return default;
+    }
+}
+public class TypesConverter<T> : JsonConverter<T> where T : IDefinition
+{
+    private PocManager definitionManager;
+
+    public TypesConverter()
+    {
+        definitionManager = TypeContainer.Get<PocManager>();
+    }
+
+    public override bool CanConvert(Type typeToConvert)
+    {
+        return typeToConvert.IsAssignableFrom(typeof(T));
+    }
+
+    public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var elem = JsonSerializer.Deserialize<Dictionary<string, JsonNode>>(ref reader);
+
+        var key = elem.Keys.First();
+
+        var def = definitionManager.GetDefinition<T>(key);
+        if (def is not null)
+            return def;
+
+        if (elem[key] is JsonObject o && o.ContainsKey("@types"))
+        {
+
+            var jArr = o["@types"].Deserialize<string[]>();
+            definitionManager.RegisterDefinitionInstance(key, o, jArr);
+        }
+
+        return definitionManager.GetDefinition<T>(key);
+    }
+
+    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class TestMaterialDefinition : IMaterialDefinition
+{
+    public int Hardness { get; set; }
+    public int Density { get; set; }
+    public string DisplayName { get; set; }
+    public string Icon { get; set; }
+}
+
+public class BaseBlockDefinition : BlockDefinition
+{
+    [JsonConverter(typeof(TypesConverter<TestMaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
+    public override IMaterialDefinition Material { get => base.Material; init => base.Material = value; }
+
+    //[JsonConverter(typeof(TypesConverter<TestMaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
+    //private IMaterialDefinition material = default!;
+
+}
+
+public class ModMagic : BaseBlockDefinition
+{
+    [JsonConverter(typeof(TypesConverter<IMaterialDefinition>))]
+    public int MagicMana { get; set; } //ModB
+
+}
+public static class Program
+{
+    const string refStr = "\"@ref\"";
+    static List<Delegate> delegates = [];
+
+    static Dictionary<string, Dictionary<IDefinition, List<Delegate>>> abc = [];
+
+    public static void Action<T, T2, T3, T4>(string actionName, T param1, T2 param2, T3 param3, T4 param4)
+    {
+        foreach (var item in abc[actionName])
+        {
+            if (item is Action<T, T2, T3, T4> act)
+                act.Invoke(param1, param2, param3, param4);
+        }
+    }
+
+    public static TRet? Function<TRet, T, T2, T3, T4>(string actionName, T param1, T2 param2, T3 param3, T4 param4)
+    {
+        TRet? lastResult = default;
+        foreach (var item in abc[actionName])
+        {
+            if (item is Func<TRet?, T, T2, T3, T4, TRet> act)
+                lastResult = act.Invoke(lastResult, param1, param2, param3, param4);
+        }
+        return lastResult;
     }
 
     public static void Main()
     {
+        var abc = new TestSer();
+        abc.SetMyField("Test");
+        var serialized = JsonSerializer.Serialize(abc);
+        var deserialized = JsonSerializer.Deserialize<TestSer>(serialized);
 
-        Demo d = new Demo<int>();
-        var name = d.GetType().FullName;
-        var t = Type.GetType(name);
-        var equals = t == d.GetType();
+        var func = ()=> new TestSerA();
+
+        if(func is Func<TestSer> func2)
+        {
+            var abc123 = func2();
+        }
 
 
-        //Console.OutputEncoding = Encoding.UTF8;
+        int planet = 0;
+        int x = 0, y = 0, z = 0;
+        string builder = "";
+        Random random = new Random();
+        //abc["PlantTree"] = new List<Delegate>() { new Action<int, int>((int a, int b) => { Console.WriteLine(a + b); }) };
+        //abc["PlantTree"] = new List<Delegate>() { new Action<int, Index3, string, int>((a, ind, str, b) => { Console.WriteLine(a + b); }) };
 
-        //var graph = new Graph();
-        //var aNode = new SourceNode() { Position = new(0, 0) };
-        //var bNode = new TargetNode() { Position = new(2, 3) };
 
-        //var noConnectionRelevant = new TransferNode() { Position = new(1, 6) };
-        //var node27 = new TransferNode() { Position = new(2, 7) };
-        //var node06 = new TransferNode() { Position = new(0, 6) };
-        //graph.AddNode(aNode);
-        //graph.AddNode(new TransferNode() { Position = new(0, 1) });
-        //graph.AddNode(new TransferNode() { Position = new(0, 2) });
-        //graph.AddNode(new TransferNode() { Position = new(0, 3) });
-        //graph.AddNode(new TargetNode() { Position = new(0, 4) });
-        //graph.AddNode(new TransferNode() { Position = new(0, 5) });
-        //graph.AddNode(node06);
-        //graph.AddNode(new TransferNode() { Position = new(0, 7) });
-        //graph.AddNode(new TransferNode() { Position = new(1, 7) });
-        //graph.AddNode(node27);
-        //graph.AddNode(new TransferNode() { Position = new(2, 6) });
-        //graph.AddNode(new TransferNode() { Position = new(2, 5) });
-        ////graph.AddNode(noConnectionRelevant);
-        //graph.Update();
+        Action( "PlantTree", planet, new Index3(x, y, z), builder, random.Next(int.MaxValue));
 
-        //var graph2 = new Graph();
-        //graph2.AddNode(new SourceNode() { Position = new(2, 0) });
-        //graph2.AddNode(new TransferNode() { Position = new(2, 1) });
-        //graph2.AddNode(new TransferNode() { Position = new(2, 2) });
-        //graph2.AddNode(bNode);
-        //graph2.Update();
+        var action = delegates[0];
+        if (action is Action<int, int> a)
+        {
+            a(12, 23);
+        }
 
-        //Console.Clear();
-        //var connectorCable = new TransferNode() { Position = new(1, 1), Name = "Connector" };
-        //if (graph.Nodes.Count >= graph2.Nodes.Count)
-        //{
-        //    graph.AddNode(connectorCable);
-        //    graph.MergeWith(graph2, connectorCable);
-        //}
-        //else
-        //{
-        //    graph2.AddNode(connectorCable);
-        //    graph2.MergeWith(graph, connectorCable);
-        //    graph = graph2;
-        //}
-        //graph.Update();
-        //Thread.Sleep(1000);
-        ////graph.RemoveNode(connectorCable);
-        ////graph.RemoveNode(noConnectionRelevant);
-        //graph.FindPathBetweenNodes(aNode, bNode);
-        //graph.Update();
 
-        //graph.FindPathBetweenNodes(aNode, bNode);
+        var definitionManager = new PocManager();
+        TypeContainer.Register(definitionManager);
+        definitionManager.RegisterDefinitionType("core.block", typeof(BaseBlockDefinition));
+        definitionManager.RegisterDefinitionType("core.testMaterial", typeof(TestMaterialDefinition));
+        //definitionManager.RegisterTypeDefinition("modA.block", typeof(ModABD));
 
-        /*
-         
-         
-         */
+        StringBuilder sb = new();
+        sb.Append("{");
+        var curDir = Directory.GetCurrentDirectory();
+        foreach (var path in Directory.GetFiles(curDir, "Definitions/*.json", SearchOption.AllDirectories))
+        {
+            sb.Append(
+                $$"""
+                "{{Path.GetRelativePath(curDir, path)[12..].Replace('\\', '/')}}" : {{File.ReadAllText(path)}},
+                """);
+        }
+
+        sb.Remove(sb.Length - 1, 1);
+        sb.Append("}");
+        var allCombined = sb.ToString();
+        var jo = JsonNode.Parse(allCombined);
+        int currentIndex = 0;
+        while (currentIndex < allCombined.Length)
+        {
+            var refIndex = allCombined.IndexOf(refStr, currentIndex);
+            if (refIndex == -1)
+                break;
+            int refFrom = 0;
+            int refTo = 0;
+            byte foundQuotations = 0;
+            for (int i = refIndex + refStr.Length; i < allCombined.Length - 1; i++)
+            {
+                if (allCombined[i] == '"' && allCombined[i - 1] != '\\')
+                {
+                    foundQuotations++;
+                    if (foundQuotations == 1)
+                    {
+                        refFrom = i;
+                    }
+                    else
+                    {
+                        refTo = i + 1;
+                        break;
+                    }
+                }
+            }
+            if (foundQuotations < 2)
+                break;
+            refIndex = allCombined.LastIndexOf('{', refIndex);
+            var removeTo = allCombined.IndexOf('}', refTo) + 1;
+            var path = allCombined[(refFrom + 1)..(refTo - 1)];
+            allCombined = allCombined.Remove(refIndex, removeTo - refIndex);
+
+            var jPath = JsonPath.Parse(path);
+            var res = jPath.Evaluate(jo);
+            var match = res.Matches[0];
+            var key = jPath.Segments.Last().Selectors.Last().ToString().Replace("'", "\"");
+            allCombined = allCombined.Insert(refIndex, $"{{{key}:{match.Value.ToJsonString()}}}");
+            currentIndex = refIndex;
+        }
+        jo = JsonNode.Parse(allCombined);
+
+        var ro =
+            JsonSerializer
+            .Deserialize<Dictionary<string, Dictionary<string, JsonNode>>>(allCombined)
+            .SelectMany(x => x.Value)
+            .ToDictionary(x => x.Key, x => x.Value);
+
+        foreach (var item in ro)
+        {
+            if (item.Value is JsonObject o && o.ContainsKey("@types"))
+            {
+                var jArr = o["@types"].Deserialize<string[]>();
+                definitionManager.RegisterDefinitionInstance(item.Key, item.Value, jArr);
+            }
+        }
+
+        var bw = definitionManager.GetDefinition<BaseBlockDefinition>("base_woodwood");
+
+
+        TestJson(allCombined);
 
         Console.ReadLine();
     }
+
+
+    public class BaseDefinition
+    {
+        [JsonPropertyName("@types")]
+        public string[] Types { get; set; }
+    }
+
+
+
+    private static void TestJson([StringSyntax("JSON")] string json)
+    {
+        //var settings = new JsonSerializerSettings
+        //{
+        //    ReferenceResolverProvider = () => new PathResolver()
+        //};
+        //var deserialized = JsonConvert.DeserializeObject<JObject>(json, settings);
+        //JsonSerializerOptions options = new()
+        //{
+        //    ReferenceHandler = new JsonRefHandler(deserialized),
+        //    WriteIndented = true
+
+        //};
+
+        //options.Converters.Add(new TestABC());
+
+        //var node = deserialized[1];
+        //JsonObject obj = default;
+        //var objDIct = (IDictionary<string, JsonNode?>)obj;
+
+
+        //var path = JsonPath.Parse("$['TestB.json'].base_woodwood");
+        //var res = path.Evaluate(deserialized);
+        //var res2 = res.Matches[0];
+        //var jsoasdn = deserialized["TestB.json"]["base_woodwood"].ToString();
+        //var ro = JsonConvert.DeserializeObject<Rootobject>(jsoasdn, settings);
+        //JsonElement e;
+        //e.TryGetProperty;
+
+        //deserialized[0].Dict.
+
+        //path.Evaluate(deserialized);
+
+        //var js = deserialized.ToString();
+        //var js2 = deserialized.ToJsonString();
+
+        //var asd = JsonSerializer.Deserialize<JsonElement>("true").
+
+        ;
+    }
+
+
+
+
+    //public class TestABC : JsonConverterFactory
+    //{
+    //    public override bool CanConvert(Type typeToConvert)
+    //    {
+
+    //        return false;
+    //    }
+
+    //    public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    //    {
+
+    //        return new ExampleConverter();
+    //    }
+
+
+    //    private class ExampleConverter : JsonConverter<object>
+    //    {
+    //        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    //        {
+    //            return JsonDocument.ParseValue(ref reader);
+    //        }
+
+    //        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+    //        {
+    //            throw new NotImplementedException();
+    //        }
+    //    }
+
+    //}
+
+    //public class JsonRefHandler : ReferenceHandler
+    //{
+    //    private readonly JsonObject completeRef;
+    //    public JsonRefHandler(JsonObject completeRef)
+    //    {
+    //        this.completeRef = completeRef;
+    //    }
+
+    //    public override ReferenceResolver CreateResolver()
+    //    {
+    //        return new JsonPathResolver(completeRef);
+    //    }
+    //}
+
+    //public class JsonPathResolver : ReferenceResolver
+    //{
+    //    private static Dictionary<string, object> resolvedRefs = new();
+    //    private readonly JsonObject completeRef;
+    //    public JsonPathResolver(JsonObject completeRef)
+    //    {
+    //        this.completeRef = completeRef;
+    //    }
+
+
+    //    public override object ResolveReference(string referenceId)
+    //    {
+    //        var st = new StackTrace();
+    //        var caller = st.GetFrame(2);
+    //        var method = caller.GetMethod();
+    //        var cur = MethodBase.GetCurrentMethod();
+    //        Thread.Sleep(100000);
+    //        //var path = JsonPath.Parse(referenceId);
+    //        //var res = path.Evaluate(completeRef);
+    //        //var res2 = res.Matches[0].Value.Deserialize(typeForDeserialize);
+    //        //return resolved = res2;
+    //        return "";
+
+    //    }
+
+    //    public override string GetReference(object? value, out bool alreadyExists)
+    //    {
+    //        //if (!(alreadyExists = _people.ContainsKey(person.Id)))
+    //        //{
+    //        //    _people[person.Id] = person;
+    //        //}
+
+    //        //return person.Id.ToString()!;
+    //        alreadyExists = false;
+    //        return "";
+    //    }
+
+    //    public override void AddReference(string reference, object value)
+    //    {
+    //        //person.Id = id;
+    //        //_people[reference] = value;
+
+    //    }
+
+    //    //public override T ResolveReference<T>(string referenceId)
+    //    //{
+    //    //    Thread.Sleep(100000);
+    //    //    ref var resolved = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvedRefs, referenceId, out var exists);
+    //    //    if (exists)
+    //    //        return (T)resolved;
+
+    //    //    var st = new StackTrace();
+    //    //    var caller = st.GetFrame(2);
+    //    //    var method = caller.GetMethod();
+    //    //    var method2 = MethodBase.GetMethodFromHandle(method.MethodHandle);
+    //    //    var cur = MethodBase.GetCurrentMethod();
+
+
+
+    //    //    var typeForDeserialize = caller.GetMethod().GetGenericArguments()[0];
+    //    //    return (T)(object)null;
+    //    //}
+    //}
 }

@@ -1,6 +1,6 @@
 ﻿using engenious;
 
-using OctoAwesome.Basics.Definitions.Materials;
+
 using OctoAwesome.Components;
 using OctoAwesome.Crafting;
 using OctoAwesome.Definitions;
@@ -14,6 +14,8 @@ using OctoAwesome.Extension;
 using static OctoAwesome.StateMachine;
 using OctoAwesome.Serialization;
 using OctoAwesome.Caching;
+using OpenTK.Windowing.Common.Input;
+using OctoAwesome.Definitions.Items;
 
 namespace OctoAwesome.Basics.EntityComponents;
 
@@ -46,7 +48,7 @@ internal partial class ProductionInventoriesComponent : Component, IEntityCompon
         if (newParent.Simulation is null)
             return;
         InputInventory.Parent = newParent;
-        OutputInventory.Parent = newParent; 
+        OutputInventory.Parent = newParent;
         ProductionInventory.Parent = newParent;
         newParent.Simulation.GlobalComponentList.Add(InputInventory);
         newParent.Simulation.GlobalComponentList.Add(OutputInventory);
@@ -60,7 +62,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
     private StateMachine stateMachine;
     private RecipeService recipeService;
     private IDefinitionManager definitionManager;
-
+    private DefinitionActionService definitionActionService;
     internal ProductionInventoriesComponent? inventoryComponent;
 
     private Recipe? currentRecipe;
@@ -87,6 +89,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         stateMachine = CreateStateMachine();
         recipeService = TypeContainer.Get<RecipeService>();
         definitionManager = TypeContainer.Get<IDefinitionManager>();
+        definitionActionService = TypeContainer.Get<DefinitionActionService>();
     }
 
     private StateMachine CreateStateMachine()
@@ -130,21 +133,7 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         Debug.WriteLine(energyLeft);
         if (energyLeft <= 0)
         {
-            var firstProductionResource = InventoryComponent.ProductionInventory.Inventory.First();
-
-            if (firstProductionResource?.Definition is not BlockDefinition bd
-                || (bd.Material is not WoodMaterialDefinition
-                    && bd.Material is not CottonMaterialDefinition
-                    && bd.Material is not LeaveMaterialDefinition))
-            {
-                currentRecipe = null;
-                return false;
-            }
-            if (firstProductionResource.Definition is BlockDefinition { Material: ISolidMaterialDefinition smd })
-            {
-                energyLeft = smd.Density; //TODO real energy stuff calculations
-                InventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
-            }
+            return CheckAndRefuel();
         }
 
         if (energyLeft <= 0)
@@ -155,6 +144,24 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         return requiredMillisecondsForRecipe <= 0;
     }
 
+    private bool CheckAndRefuel()
+    {
+        if (energyLeft > 0)
+            return true;
+
+        var firstProductionResource = InventoryComponent.ProductionInventory.Inventory.First();
+
+        if (firstProductionResource.Definition is null
+            || !definitionManager.TryGetVariation<BurnableDefinition>(firstProductionResource.Definition, out var burnableDefinition))
+        {
+            currentRecipe = null;
+            return false;
+        }
+
+        energyLeft = burnableDefinition.EnergyPerPiece;
+        InventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
+        return energyLeft > 0;
+    }
 
     private bool GenerateOutput(TimeSpan elapsed, TimeSpan total)
     {
@@ -183,17 +190,11 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
                         mat = inputSlot.Item.Material;
                     }
                     else
-                        mat = definitionManager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+                        mat = definitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>(outputItem.MaterialName);
 
-                    if (mat is null)
-                        return false;
-
-                    var createdItem = itemDef.Create(mat);
-
-                    if (createdItem is null)
-                        return false;
-
-                    InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
+                    var res = AddOutputMaterial(outputItem, itemDef, mat);
+                    if (!res)
+                        return res;
 
                 }
                 else if (outputDef is IBlockDefinition blockDefinition)
@@ -228,16 +229,11 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
                             mat = inputSlot.Item.Material;
                         }
                         else
-                            mat = definitionManager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
+                            mat = definitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>(outputItem.MaterialName);
 
-                        if (mat is null)
-                            return false;
-
-                        var createdItem = itemDef.Create(mat);
-
-                        if (createdItem is null)
-                            return false;
-                        InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
+                        var res = AddOutputMaterial(outputItem, itemDef, mat);
+                        if (!res)
+                            return res;
 
                     }
                     else if (outputDef is IBlockDefinition blockDefinition)
@@ -257,16 +253,10 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
                 var outputDef = definitionManager.Definitions.FirstOrDefault(x => x.DisplayName == outputItem.ItemName);/*TODO Name not Displayname*/
                 if (outputDef is IItemDefinition itemDef)
                 {
-                    var mat = definitionManager.MaterialDefinitions.FirstOrDefault(x => x.DisplayName == outputItem.MaterialName);
-
-                    if (mat is null)
-                        return false;
-
-                    var createdItem = itemDef.Create(mat);
-
-                    if (createdItem is null)
-                        return false;
-                    InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
+                    var mat = definitionManager.GetDefinitionByUniqueKey<IMaterialDefinition>(outputItem.MaterialName);
+                    var res = AddOutputMaterial(outputItem, itemDef, mat);
+                    if (!res)
+                        return res;
                 }
                 else if (outputDef is IBlockDefinition blockDefinition)
                 {
@@ -278,6 +268,19 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         OnInputSlotUpdate();
 
         return true; //We should never be two updates in this state! That would be mist
+    }
+
+    private bool AddOutputMaterial(RecipeItem outputItem, IItemDefinition itemDef, IMaterialDefinition? mat)
+    {
+        if (mat is null)
+            return false;
+
+        var createdItem = definitionActionService.Function<Item, IMaterialDefinition>(ConstStrings.CreateItem, itemDef, null, mat);
+
+        if (createdItem is null)
+            return false;
+        InventoryComponent.OutputInventory.Add(createdItem, outputItem.Count);
+        return true;
     }
 
     private bool OnInputSlotUpdate()
@@ -296,42 +299,47 @@ internal partial class BurningComponent : Component, IEntityComponent, IUpdateab
         if (requiredMillisecondsForRecipe < 0)
             return false;
 
-        if (energyLeft > 0)
-            return true;
-
-        var firstProductionResource = InventoryComponent.ProductionInventory.Inventory.First();
-
-        if (firstProductionResource.Definition is not BlockDefinition bd
-            || (bd.Material is not WoodMaterialDefinition
-                && bd.Material is not CottonMaterialDefinition
-                && bd.Material is not LeaveMaterialDefinition))
-        {
-            currentRecipe = null;
-            return false;
-        }
-        else if (firstProductionResource.Definition is BlockDefinition bd2
-            && bd2.Material is ISolidMaterialDefinition smd)
-        {
-            energyLeft = smd.Density; //TODO real energy stuff calculations
-            InventoryComponent.ProductionInventory.Remove(firstProductionResource, 1);
-        }
-
-        return true;
+        return CheckAndRefuel();
     }
 
     private Recipe? GetRecipe()
     {
-        var inputs = InventoryComponent.InputInventory.Inventory
-            .Where(x => !string.IsNullOrWhiteSpace(x.Definition?.DisplayName))
-            .GroupBy(x => x.Definition!.DisplayName)
-            .Select(x => new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Name not Displayname*/))
+        //TODO 
+        /*
+            1. Add List of Types per Definiton to definition manager ✔️
+            2. Group by defintion id and types, so that we support "wood" and "burnable" as an example ✔️
+            3. Rework recipe / recipe service to support this.
+         */
+
+        var workingSet = InventoryComponent.InputInventory.Inventory
+            .Where(x => x.Definition != null && x.Item != null)
+            .Select(x => (slot: x, id: definitionManager.GetUniqueKeyByDefinition(x.Definition!), types: definitionManager.GetUniqueKeys(x.Definition!)))
             .ToArray();
-        if (inputs.Length == 0)
-            return null; //Reset recipe, time etc. pp.
-        var recipe = RecipeService.GetByInputs(Recipes, inputs);
-        if (recipe is null)
-            return null; //Reset recipe, time etc. pp.
-        return recipe;
+
+        var typesGroup = workingSet
+            .SelectMany(x => x.types.Select(y => (x, y)))
+            .GroupBy(x=>x.y)
+            .ToList()
+            
+            ;
+        var idGroup = workingSet.GroupBy(x => x.id);
+
+        //var inputs = InventoryComponent.InputInventory.Inventory
+        //    .Where(x => x.Definition != null && x.Item != null)
+        //    .GroupBy(x => x.Definition!.DisplayName)
+        //    .Select(x =>
+        //    {
+        //        definitionManager.GetVariations(x.);
+        //        return new RecipeItem(x.Key, x.Sum(c => c.Amount), x.First().Item!.Material.DisplayName, null /*TODO Unique id*/);
+        //    })
+        //    .ToArray();
+        //if (inputs.Length == 0)
+        //    return null; //Reset recipe, time etc. pp.
+        //var recipe = RecipeService.GetByInputs(Recipes, inputs);
+        //if (recipe is null)
+        //    return null; //Reset recipe, time etc. pp.
+        //return recipe;
+        return null;
     }
 
     /// <inheritdoc/>

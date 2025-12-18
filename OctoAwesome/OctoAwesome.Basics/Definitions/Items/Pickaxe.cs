@@ -22,7 +22,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="pickaxeDefinition">The pickaxe item definition.</param>
         /// <param name="materialDefinition">The material definition the pickaxe is made out of.</param>
-        public Pickaxe(PickaxeDefinition pickaxeDefinition, IMaterialDefinition materialDefinition)
+        public Pickaxe(IDefinition pickaxeDefinition, IMaterialDefinition materialDefinition)
             : base(pickaxeDefinition, materialDefinition)
         {
 

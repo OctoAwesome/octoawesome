@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Basics.Definitions.Materials;
+﻿
+using engenious.Graphics;
 using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Information;
@@ -19,7 +20,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// Initializes a new instance of the <see cref="Hand"/> class.
         /// </summary>
         /// <param name="handDefinition">The item definition for this item.</param>
-        private Hand(HandDefinition handDefinition) : base(handDefinition, new PlayerMeatMaterialDefinition())
+        private Hand(HandDefinition handDefinition) : base(handDefinition, new MaterialDefinition())
         {
 
         }

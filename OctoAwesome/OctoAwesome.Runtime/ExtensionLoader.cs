@@ -112,23 +112,14 @@ namespace OctoAwesome.Runtime
             {
                 var types = assembly
                     .GetTypes();
-
+                List<IExtension> extensions = new();
                 foreach (var type in types)
                 {
                     if (typeof(IExtension).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     {
                         try
                         {
-                            IExtension extension = (IExtension)typeContainer.GetUnregistered(type);
-
-                            extension.Register(typeContainer);
-                            extension.RegisterTypes(extensionService);
-
-                            if (disabledExtensions.Contains(type.FullName))
-                                LoadedExtensions.Add(extension);
-                            else
-                                ActiveExtensions.Add(extension);
-
+                            extensions.Add((IExtension)typeContainer.GetUnregistered(type));
                         }
                         catch
                         {
@@ -136,6 +127,19 @@ namespace OctoAwesome.Runtime
                             ;
                         }
                     }
+                }
+
+                foreach (var extension in extensions)
+                    extension.Register(typeContainer);
+
+                foreach (var extension in extensions)
+                {
+                    extension.RegisterTypes(extensionService);
+
+                    if (disabledExtensions.Contains(extension.GetType().FullName))
+                        LoadedExtensions.Add(extension);
+                    else
+                        ActiveExtensions.Add(extension);
                 }
             }
         }

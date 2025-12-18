@@ -5,22 +5,28 @@ using OctoAwesome.Information;
 using OctoAwesome.Services;
 
 using System;
+using System.Linq;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OctoAwesome.Definitions
 {
+
     /// <summary>
-    /// Base class fo block definitions.
+    /// Base class of block definitions.
     /// </summary>
-    public abstract class BlockDefinition : IBlockDefinition
+    public class BlockDefinition : IBlockDefinition
     {
         /// <inheritdoc />
         public virtual uint SolidWall => 0x3f;
 
         /// <inheritdoc />
-        public abstract string DisplayName { get; }
+        public virtual string DisplayName { get; init; }
 
         /// <inheritdoc />
-        public abstract string Icon { get; }
+        public virtual string Icon { get; init; }
+        /// <inheritdoc />
+        public string[] Categories { get; init; } = [];
 
         /// <inheritdoc />
         public virtual int StackLimit => 100;
@@ -32,25 +38,27 @@ namespace OctoAwesome.Definitions
         public virtual int VolumePerHit => 25;
 
         /// <inheritdoc />
-        public abstract string[] Textures { get; }
+        public virtual string[] Textures { get; init; }
 
         /// <inheritdoc />
-        public virtual bool HasMetaData => false;
+        public virtual bool HasMetaData { get; init; } = false;
 
         /// <inheritdoc />
-        public virtual TimeSpan TimeToVolumeReset { get; } = TimeSpan.FromSeconds(10);
+        public virtual TimeSpan TimeToVolumeReset { get; init; } = TimeSpan.FromSeconds(10);
 
-        /// <inheritdoc />
-        public abstract IMaterialDefinition Material { get; }
+        /// <inheritdoc />        
+        [JsonConverter(typeof(TypesConverter<MaterialDefinition>)), JsonInclude, JsonPropertyName("Material")]
+        public virtual IMaterialDefinition Material { get; init; }
+
         /// <inheritdoc />
         public int Density => Material.Density;
+
 
         private readonly BoundingBox[] defaultCollisionBoxes = [new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))];
 
         /// <inheritdoc />
         public virtual BlockHitInformation Hit(BlockVolumeState blockVolume, IItem item)
         {
-            //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
             var valueMined = item.Hit(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining, VolumePerHit);
             return new BlockHitInformation(valueMined != 0, valueMined, new[] { (VolumePerUnit, (IDefinition)this) });
         }
@@ -61,7 +69,6 @@ namespace OctoAwesome.Definitions
         /// <param name="item">Die physikalischen Parameter des interagierenden Elements</param>
         public virtual BlockHitInformation Apply(BlockVolumeState blockVolume, IItem item)
         {
-            //item.Definition.Hit(item, volumeState.BlockDefinition, blockHitInformation);
             var applied = item.Interact(Material, blockVolume.BlockInfo, blockVolume.VolumeRemaining);
             return new BlockHitInformation(applied != 0, applied, new[] { (VolumePerUnit, (IDefinition)this) });
         }
@@ -70,14 +77,23 @@ namespace OctoAwesome.Definitions
         public virtual BoundingBox[] GetCollisionBoxes(ILocalChunkCache manager, int x, int y, int z)
             => defaultCollisionBoxes;
 
-        /// <inheritdoc />
-        public virtual int GetTextureIndex(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
 
-        /// <inheritdoc />
-        public virtual int GetTextureRotation(Wall wall, ILocalChunkCache manager, int x, int y, int z) => 0;
+        /// <summary>
+        /// Checks whether the provided <see cref="Wall"/> is solid on the <paramref name="blockDefinition"/>.
+        /// </summary>
+        /// <param name="blockDefinition">The definition to check against.</param>
+        /// <param name="wall">The <see cref="Wall"/> to check.</param>
+        /// <returns>A value indicating whether the provided <see cref="Wall"/> is solid on the block.</returns>
+        public static bool IsSolidWall(IBlockDefinition blockDefinition, Wall wall) => ((blockDefinition.SolidWall >> (int)wall) & 1) != 0;
 
-        /// <inheritdoc />
-        public bool IsSolidWall(Wall wall) => (SolidWall & (1 << (int)wall)) != 0;
+        /// <summary>
+        /// Checks whether the provided <see cref="Wall"/> is solid on the <paramref name="blockWall"/>.
+        /// </summary>
+        /// <param name="blockWall">The wall to check for.</param>
+        /// <param name="wall">The <see cref="Wall"/> to check.</param>
+        /// <returns>A value indicating whether the provided <see cref="Wall"/> is solid on the block.</returns>
+        public static uint IsSolidWall(uint blockWall, Wall wall) => (blockWall >> (int)wall) & 1;
+
 
         /// <summary>
         /// Get the current definiton for this definition

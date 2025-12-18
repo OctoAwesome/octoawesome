@@ -25,7 +25,8 @@ namespace OctoAwesome.Basics
         {
             IDefinition[] definitions = definitionManager.Definitions.ToArray();
 
-            IBlockDefinition sandDefinition = definitions.OfType<SandBlockDefinition>().First();
+            var sandDefinition = definitionManager.GetDefinitionByUniqueKey<BlockDefinition>("base_block_sand");
+
             ushort sandIndex = (ushort)(Array.IndexOf(definitions.ToArray(), sandDefinition) + 1);
 
             IChunk[] result = new IChunk[planet.Size.Z];

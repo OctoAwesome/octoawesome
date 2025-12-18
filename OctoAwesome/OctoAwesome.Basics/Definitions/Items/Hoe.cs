@@ -13,7 +13,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The hoe item definition.</param>
         /// <param name="materialDefinition">The material definition the hoe is made out of.</param>
-        public Hoe(HoeDefinition definition, IMaterialDefinition materialDefinition)
+        public Hoe(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
 

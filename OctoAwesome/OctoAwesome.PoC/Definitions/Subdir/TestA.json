@@ -1,0 +1,9 @@
+{
+  "base_glassmaterial": {
+    "Name": "glass",
+    "@types": [ "core.solid_material" ]
+  },
+  "test_array": {
+    "@ref": "$['TestA.json'].quer"
+  }
+}

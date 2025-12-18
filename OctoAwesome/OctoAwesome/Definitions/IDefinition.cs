@@ -1,4 +1,7 @@
-﻿namespace OctoAwesome.Definitions
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace OctoAwesome.Definitions
 {
     /// <summary>
     /// Base Interface for all definitions.
@@ -14,5 +17,10 @@
         /// Gets the name of the icon resource.
         /// </summary>
         string Icon { get; }
+
+        /// <summary>
+        /// Gets the Categories associated with this definition to group or filter by
+        /// </summary>
+        string[] Categories { get; }
     }
 }

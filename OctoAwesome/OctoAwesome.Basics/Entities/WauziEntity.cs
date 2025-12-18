@@ -2,13 +2,13 @@
 
 using engenious;
 
-using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Chunking;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Location;
 using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
+using OctoAwesome.Basics.Definitions.Items.Food;
 namespace OctoAwesome.Basics.Entities
 {
     /// <summary>
@@ -173,7 +173,8 @@ namespace OctoAwesome.Basics.Entities
                 {
                     if (player.Components.TryGet<ToolBarComponent>(out var toolbar)
                         && player.Components.TryGet<PositionComponent>(out var newPos)
-                        && toolbar.ActiveTool?.Item is MeatRaw)
+                        && toolbar.ActiveTool?.Item is MeatRaw
+                        )
                     {
                         position = newPos;
                     }

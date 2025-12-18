@@ -60,6 +60,54 @@ namespace OctoAwesome.Threading
         }
 
         /// <summary>
+        /// Deserializes the local bytes based on the set local deserialization function
+        /// </summary>
+        /// <typeparam name="T">The type to deserialize into</typeparam>
+        /// <returns>The deserialized object or null, if waiting for result failed</returns>
+        public T? DeserializeFuncAndRelease<T>()
+        {
+            Debug.Assert(!isPooled, "Is released into pool!");
+            var res = WaitOn();
+            if (!res)
+            {
+                Release();
+                return default;
+            }
+
+            T? ret = default;
+            if (deserializeFunc is not null)
+            {
+                ret = GenericCaster<object, T>.Cast(deserializeFunc(result));
+            }
+
+            Release();
+            return ret;
+        }
+
+        /// <summary>
+        /// Deserializes the local bytes based on the <paramref name="deserializeFunc"/>
+        /// </summary>
+        /// <typeparam name="T">The type to deserialize into</typeparam>
+        /// <param name="deserializeFunc">The method used for deserialization</param>
+        /// <returns>The deserialized object or null, if waiting for result failed</returns>
+        public T? DeserializeFuncAndRelease<T>(Func<byte[], T> deserializeFunc)
+        {
+
+            Debug.Assert(!isPooled, "Is released into pool!");
+            var res = WaitOn();
+            if (!res)
+            {
+                Release();
+                return default;
+            }
+
+            T ret = deserializeFunc(result);
+
+            Release();
+            return ret;
+        }
+
+        /// <summary>
         /// Waits on the result or time outs(10000s) and releases the awaiter.
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
@@ -153,7 +201,6 @@ namespace OctoAwesome.Threading
         /// </summary>
         /// <param name="bytes">The byte array to try to deserialize the result from.</param>
         /// <returns>Whether the result could be set from the byte array.</returns>
-        /// <exception cref="ArgumentNullException">Throws when <see cref="Result"/> is <c>null</c>.</exception>
         public bool TrySetResult(byte[] bytes)
         {
             Debug.WriteLine("Setting result");

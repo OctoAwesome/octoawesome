@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<WarningsAsErrors>CS0109</WarningsAsErrors>
-		
+		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 	</PropertyGroup>
 	
 
@@ -15,10 +15,23 @@
 		<None Remove="Properties\**" />
 	</ItemGroup>
 
+
 	<ItemGroup>
+		<Compile Remove="Extension\DefinitionActionServiceGen.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="CodegenCSOutput" />
+		<AdditionalFiles  Include="Extension\DefinitionActionServiceGen.cs" CodegenCSOutput="File" />
+	</ItemGroup>
+	
+	
+	<ItemGroup>
+		<PackageReference Include="CodegenCS.SourceGenerator" Version="3.5.2" />
 		<PackageReference Include="dotVariant" Version="0.5.3" />
 		<PackageReference Include="engenious" Version="0.7.1-alpha" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="NLog" Version="5.0.4" />
 		<PackageReference Include="NonSucking.Framework.Extension" Version="0.1.0.108-alpha" />
 		<PackageReference Include="System.Interactive" Version="6.0.1" />
@@ -26,6 +39,7 @@
 		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
 		<!--<ProjectReference Include="..\..\..\..\NonSucking.Framework.Extension\NonSucking.Framework.Serialization\NonSucking.Framework.Serialization.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="true"/>-->
 	</ItemGroup>
+
 
 	<ItemGroup>
 		<ProjectReference Include="..\OctoAwesome.Database\OctoAwesome.Database.csproj" />

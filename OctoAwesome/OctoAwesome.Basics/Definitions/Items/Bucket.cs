@@ -1,4 +1,5 @@
-﻿using OctoAwesome.Definitions;
+﻿using engenious.Graphics;
+using OctoAwesome.Definitions;
 using OctoAwesome.Definitions.Items;
 using OctoAwesome.Information;
 using OctoAwesome.Services;
@@ -24,7 +25,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The bucket item definition.</param>
         /// <param name="materialDefinition">The material definition the bucket is made out of.</param>
-        public Bucket(BucketDefinition definition, IMaterialDefinition materialDefinition)
+        public Bucket(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
             MaxQuantity = 1250;
@@ -33,7 +34,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public void AddFluid(int quantity, IBlockDefinition fluidBlock)
         {
-            if (!Definition.CanMineMaterial(fluidBlock.Material))
+            if (!DefinitionActionService.Function(ConstStrings.CanMineMaterial, Definition, false, fluidBlock.Material))
                 return;
 
             if (Quantity < 125)
@@ -45,22 +46,21 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// <inheritdoc />
         public override int Hit(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining, int volumePerHit)
         {
-            if (!Definition.CanMineMaterial(material))
+            if (!DefinitionActionService.Function(ConstStrings.CanMineMaterial, Definition, false, material))
                 return 0;
 
-            if (material is IFluidMaterialDefinition fluid)
-            {
-                if (!(FluidBlock is null) && fluid != FluidBlock.Material)
-                    return 0;
+            if (material is not IFluidMaterialDefinition fluid)
+                return base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
+            
+            if (FluidBlock is not null && fluid != FluidBlock.Material)
+                return 0;
 
-                if (Quantity + volumePerHit >= MaxQuantity)
-                    return MaxQuantity - Quantity;
+            if (Quantity + volumePerHit >= MaxQuantity)
+                return MaxQuantity - Quantity;
 
-                return volumePerHit;
-            }
+            return volumePerHit;
 
 
-            return base.Hit(material, hitInfo, volumeRemaining, volumePerHit);
         }
 
         /// <inheritdoc />

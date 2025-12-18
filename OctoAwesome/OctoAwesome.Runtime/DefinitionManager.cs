@@ -1,9 +1,17 @@
 ﻿using OctoAwesome.Definitions;
 using OctoAwesome.Extension;
+using OctoAwesome.Definitions.Items;
+
+using Json.Path;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json.Nodes;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OctoAwesome.Runtime
 {
@@ -12,60 +20,124 @@ namespace OctoAwesome.Runtime
     /// </summary>
     public class DefinitionManager : IDefinitionManager
     {
+        private const string refStr = "\"@ref\"";
+
         private readonly ExtensionService extensionService;
+        private DefinitionRegistrar registrar;
+
+        public event EventHandler DefinitionsChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionManager"/> class.
         /// </summary>
-        /// <param name="extensionService">The extension servuce to get definitions from extensions with.</param>
+        /// <param name="extensionService">The extension service to get definitions from extensions with.</param>
         public DefinitionManager(ExtensionService extensionService)
         {
             this.extensionService = extensionService;
+        }
 
-            var definitions = new List<IDefinition>();
+        /// <inheritdoc />
+        public IDefinition[] Definitions { get; private set; }
+
+        /// <inheritdoc />
+        public IItemDefinition[] ItemDefinitions { get; private set; }
+
+        /// <inheritdoc />
+        public IBlockDefinition[] BlockDefinitions { get; private set; }
+
+        /// <inheritdoc />
+        public IMaterialDefinition[] MaterialDefinitions { get; private set; }
+        /// <inheritdoc />
+        public IFoodMaterialDefinition[] FoodDefinitions { get; private set; }
+
+        /// <inheritdoc/>
+        public void Initialize()
+        {
+            var json = GetDefinitionJson();
+
+            var ro =
+                JsonSerializer
+                .Deserialize<Dictionary<string, Dictionary<string, JsonNode>>>(json)
+                .SelectMany(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
 
             foreach (var item in extensionService.GetRegistrars(ChannelNames.Definitions))
             {
                 if (item is DefinitionRegistrar registrar)
-                    definitions.AddRange(registrar.Get<IDefinition>());
+                {
+                    this.registrar = registrar;
+                    break;
+                }
             }
 
-            Definitions = definitions.ToArray();
+            foreach (var item in ro)
+            {
+                if (item.Value is JsonObject o && o.ContainsKey("@types"))
+                {
+                    var jArr = o["@types"].Deserialize<string[]>();
+                    RegisterDefinitionInstance(item.Key, o, jArr);
+                }
+            }
+        }
 
-            // collect items
+        public void LoadSaveGame(IReadOnlyList<string>? definitionKeyIndices)
+        {
+            if (definitionKeyIndices is null) //New Game
+            {
+                Definitions = registrar.FlattenedDefinitions.Select(x => x.Value).ToArray();
+            }
+            else
+            {
+                Definitions = new IDefinition[definitionKeyIndices.Count];
+                for (int i = 0; i < definitionKeyIndices.Count; i++)
+                {
+                    var key = definitionKeyIndices[i];
+
+                    if (registrar.FlattenedDefinitions.TryGetValue(key, out var def))
+                    {
+                        Definitions[i] = def;
+                    }
+                    else
+                    {
+                        //TODO Old Type, Warn for maybe broken world when continue loading
+                    }
+                }
+            }
             ItemDefinitions = Definitions.OfType<IItemDefinition>().ToArray();
-
-            // collect blocks
             BlockDefinitions = Definitions.OfType<IBlockDefinition>().ToArray();
-
-            // collect materials
             MaterialDefinitions = Definitions.OfType<IMaterialDefinition>().ToArray();
-
-            //collect foods
             FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
+            DefinitionsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public IReadOnlyCollection<string> GetSaveGameData()
+        {
+            var keys = new string[Definitions.Length];
+            for (int i = 0; i < Definitions.Length; i++)
+            {
+                IDefinition item = Definitions[i];
+                keys[i] = registrar.FlattenedDefinitionIds[item];
+            }
+            return keys;
         }
 
         /// <inheritdoc />
-        public IDefinition[] Definitions { get; }
-
-        /// <inheritdoc />
-        public IItemDefinition[] ItemDefinitions { get; }
-
-        /// <inheritdoc />
-        public IBlockDefinition[] BlockDefinitions { get; }
-
-        /// <inheritdoc />
-        public IMaterialDefinition[] MaterialDefinitions { get; }
-        /// <inheritdoc />
-        public IFoodMaterialDefinition[] FoodDefinitions { get; }
-
-        /// <inheritdoc />
-        public IBlockDefinition? GetBlockDefinitionByIndex(ushort index)
+        public IDefinition? GetDefinitionByIndex(ushort index)
         {
             if (index == 0)
                 return null;
 
-            return (IBlockDefinition)Definitions[(index & Blocks.TypeMask) - 1];
+            return Definitions[index - 1];
+        }
+        /// <inheritdoc />
+        public T? GetDefinitionByIndex<T>(ushort index) where T : IDefinition
+        {
+            if (index == 0)
+                return default;
+            var def = Definitions[index - 1];
+            if (def is T t)
+                return t;
+            return default;
         }
 
         /// <inheritdoc />
@@ -75,65 +147,134 @@ namespace OctoAwesome.Runtime
         }
 
         /// <inheritdoc />
-        public ushort GetDefinitionIndex<T>() where T : IDefinition
+        public ushort GetDefinitionIndex<T>(string key) where T : IDefinition
         {
-            int i = 0;
-            IDefinition? definition = default;
-            foreach (var d in Definitions)
-            {
-                if (i > 0 && d.GetType() == typeof(T))
-                {
-                    throw new InvalidOperationException("Multiple Object where found that match the condition");
-                }
+            var definition = registrar.Get<T>(key);
+            if (definition is null)
+                throw new ArgumentException(nameof(key));
+            return GetDefinitionIndex(definition);
 
-                if (i == 0 && d.GetType() == typeof(T))
-                {
-                    definition = d;
-                    ++i;
-                }
-            }
-            return definition == null ? (ushort)0 : GetDefinitionIndex(definition);
         }
 
         /// <inheritdoc />
-        public IEnumerable<T> GetDefinitions<T>() where T : class, IDefinition
+        public IDefinition? GetDefinitionByUniqueKey(string uniqueKey)
         {
-            // TODO: Caching (Generalized IDefinition-Interface for Dictionary (+1 from Maxi on 07.04.2021))
-            return Definitions.OfType<T>();
+            if (registrar.FlattenedDefinitions.TryGetValue(uniqueKey, out var def))
+            {
+                return def;
+            }
+
+            return default;
         }
-
         /// <inheritdoc />
-        public T? GetDefinitionByTypeName<T>(string typeName) where T : IDefinition
+        public string? GetUniqueKeyByDefinition(IDefinition definition)
         {
-            var searchedType = typeof(T);
-            if (typeof(IBlockDefinition).IsAssignableFrom(searchedType))
+            if (registrar.FlattenedDefinitionIds.TryGetValue(definition, out var key))
             {
-                return GetDefinitionFromArrayByTypeName<T>(typeName, BlockDefinitions);
-            }
-
-            if (typeof(IItemDefinition).IsAssignableFrom(searchedType))
-            {
-                return GetDefinitionFromArrayByTypeName<T>(typeName, ItemDefinitions);
-            }
-
-            if (typeof(IMaterialDefinition).IsAssignableFrom(searchedType))
-            {
-                return GetDefinitionFromArrayByTypeName<T>(typeName, MaterialDefinitions);
+                return key;
             }
 
             return default;
         }
 
-        private static T? GetDefinitionFromArrayByTypeName<T>(string typeName, IDefinition[] array)
-            where T : IDefinition
+        public T? GetDefinitionByUniqueKey<T>(string key)
         {
-            foreach (var definition in array)
+            return registrar.Get<T>(key);
+        }
+
+        public IReadOnlyCollection<IDefinition> GetVariations(IDefinition def)
+            => registrar.GetVariations(def);
+        public IReadOnlyCollection<string> GetUniqueKeys(IDefinition def)
+            => registrar.GetUniqueKeys(def);
+
+        public bool TryGetVariation<T>(IDefinition def, [MaybeNullWhen(false)] out T? variation)
+        {
+            var variants = GetVariations(def);
+            foreach (var variant in variants)
             {
-                if (string.Equals(definition.GetType().FullName, typeName))
-                    return (T)definition;
+                if (variant is not T t)
+                    continue;
+
+                variation = t;
+                return true;
             }
 
-            return default;
+            variation = default;
+            return false;
         }
+
+        public bool TryGet<T>(string id, [MaybeNullWhen(false)] out T? definition) where T : IDefinition
+        {
+            definition = registrar.Get<T>(id);
+            return definition is not null;
+        }
+        public void RegisterDefinitionInstance(string key, JsonObject o, string[] jArr)
+        {
+            registrar.Register(new DefinitionInstanceRegistration(key, o, jArr));
+        }
+
+        private JsonNode GetDefinitionJson()
+        {
+
+            StringBuilder sb = new();
+            sb.Append("{");
+            var curDir = Directory.GetCurrentDirectory();
+            foreach (var path in Directory.GetFiles(curDir, "Definitions/*.json", SearchOption.AllDirectories))
+            {
+                if (path.Contains("Recipes"))
+                    continue;
+                sb.Append(
+                    $$"""
+                "{{Path.GetRelativePath(curDir, path)[12..].Replace('\\', '/')}}" : {{File.ReadAllText(path)}},
+                """);
+            }
+
+            sb.Remove(sb.Length - 1, 1);
+            sb.Append("}");
+            var allCombined = sb.ToString();
+            var jo = JsonNode.Parse(allCombined);
+            int currentIndex = 0;
+            while (currentIndex < allCombined.Length)
+            {
+                var refIndex = allCombined.IndexOf(refStr, currentIndex);
+                if (refIndex == -1)
+                    break;
+                int refFrom = 0;
+                int refTo = 0;
+                byte foundQuotations = 0;
+                for (int i = refIndex + refStr.Length; i < allCombined.Length - 1; i++)
+                {
+                    if (allCombined[i] == '"' && allCombined[i - 1] != '\\')
+                    {
+                        foundQuotations++;
+                        if (foundQuotations == 1)
+                        {
+                            refFrom = i;
+                        }
+                        else
+                        {
+                            refTo = i + 1;
+                            break;
+                        }
+                    }
+                }
+                if (foundQuotations < 2)
+                    break;
+                refIndex = allCombined.LastIndexOf('{', refIndex);
+                var removeTo = allCombined.IndexOf('}', refTo) + 1;
+                var path = allCombined[(refFrom + 1)..(refTo - 1)];
+                allCombined = allCombined.Remove(refIndex, removeTo - refIndex);
+
+                var jPath = JsonPath.Parse(path);
+                var res = jPath.Evaluate(jo);
+                var match = res.Matches[0];
+
+                var key = jPath.Segments.Last().Selectors.Last().ToString().Replace("'", "\"");
+                allCombined = allCombined.Insert(refIndex, $"{{{key}:{match.Value.ToJsonString()}}}");
+                currentIndex = refIndex;
+            }
+            return JsonNode.Parse(allCombined);
+        }
+
     }
 }

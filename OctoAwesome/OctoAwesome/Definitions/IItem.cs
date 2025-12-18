@@ -22,7 +22,7 @@ namespace OctoAwesome.Definitions
         /// <summary>
         /// Gets the associated item definition.
         /// </summary>
-        IItemDefinition Definition { get; }
+        IDefinition Definition { get; }
 
         /// <summary>
         /// Gets the material the item is made out of.

@@ -164,5 +164,7 @@ namespace OctoAwesome
             where TComponent : IComponent;
         void SavePencil(Pencil pencil);
         Pencil LoadPencil(int planetId);
+        Awaiter? Load(out IReadOnlyCollection<string> definitionKeys, Guid universeGuid);
+        void SaveDefinitionIndices(Guid universeGuid, IReadOnlyCollection<string> keys);
     }
 }

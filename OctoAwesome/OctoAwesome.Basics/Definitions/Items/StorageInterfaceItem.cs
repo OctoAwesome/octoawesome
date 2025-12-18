@@ -26,7 +26,7 @@ namespace OctoAwesome.Basics.Definitions.Items
         /// </summary>
         /// <param name="definition">The StorageInterfaceItem definition.</param>
         /// <param name="materialDefinition">The material definition the storage interface is made out of.</param>
-        public StorageInterfaceItem(StorageInterfaceItemDefinition definition, IMaterialDefinition materialDefinition)
+        public StorageInterfaceItem(IDefinition definition, IMaterialDefinition materialDefinition)
             : base(definition, materialDefinition)
         {
             var screenComponent = TypeContainer.Get<IScreenComponent>();

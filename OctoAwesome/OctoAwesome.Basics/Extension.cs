@@ -1,5 +1,10 @@
 ﻿using engenious;
 
+using Newtonsoft.Json;
+using OctoAwesome.Basics.Definitions.Blocks;
+using OctoAwesome.Basics.Definitions.Items;
+using OctoAwesome.Basics.Definitions.Items.Food;
+using OctoAwesome.Basics.Definitions.Trees;
 using OctoAwesome.Basics.Entities;
 using OctoAwesome.Basics.EntityComponents;
 using OctoAwesome.Basics.FunctionBlocks;
@@ -7,18 +12,18 @@ using OctoAwesome.Basics.SimulationComponents;
 using OctoAwesome.Basics.UI.Components;
 using OctoAwesome.Basics.UI.Screens;
 using OctoAwesome.Definitions;
+using OctoAwesome.Definitions.Items;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Graphs;
+using OctoAwesome.Information;
+using OctoAwesome.Location;
+using OctoAwesome.Rx;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
-using OctoAwesome.Rx;
-using OctoAwesome.Basics.Definitions.Items;
-using System.Linq;
-using OctoAwesome.Graphs;
 
 using System;
-using System.Reflection;
-using OctoAwesome.Location;
+using System.Linq;
 
 namespace OctoAwesome.Basics
 {
@@ -46,18 +51,186 @@ namespace OctoAwesome.Basics
         {
             typeContainer.Register<IMapGenerator, ComplexPlanetGenerator>();
             typeContainer.Register<IPlanet, ComplexPlanet>();
+
             this.typeContainer = typeContainer;
         }
 
         /// <inheritdoc />
         public void RegisterTypes(ExtensionService extensionLoader)
         {
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
-            {
-                if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
-                    extensionLoader.Register(t, ChannelNames.Definitions);
-            }
+            RegisterTypeDefinitions(extensionLoader);
 
+            var defActionService = typeContainer.Get<DefinitionActionService>();
+            RegisterPlantTree(defActionService);
+            RegisterTextureIndex(defActionService);
+            RegisterTextureRotations(defActionService);
+            RegisterNodeTypes(defActionService);
+            RegisterCanMines(defActionService);
+            RegisterCreateItem(defActionService);
+        }
+
+        private static void RegisterTypeDefinitions(ExtensionService extensionLoader)
+        {
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreBlock, typeof(BlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreNetworkblock, typeof(NetworkBlockDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreBurnable, typeof(BurnableDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterial, typeof(MaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialFluid, typeof(FluidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialGas, typeof(GasMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialFood, typeof(FoodMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreMaterialSolid, typeof(SolidMaterialDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreItem, typeof(ItemDefinition)));
+            extensionLoader.Register(new TypeDefinitionRegistration(ConstStrings.CoreTree, typeof(TreeDefinition)));
+        }
+
+        private void RegisterPlantTree(DefinitionActionService defActionService)
+        {
+            var plantTree = typeContainer.GetUnregistered<PlantTree>();
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeBirchCoreTree, plantTree.Birch);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeSpruceCoreTree, plantTree.Spruce);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeOakCoreTree, plantTree.Oak);
+            defActionService.Register(ConstStrings.PlantTree, ConstStrings.BaseTreeCactusCoreTree, plantTree.Cactus);
+        }
+
+        private void RegisterTextureIndex(DefinitionActionService defActionService)
+        {
+
+            var blockTextureIndex = typeContainer.GetUnregistered<BlockTextureIndex>();
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockBatteryCoreBlock, blockTextureIndex.BatteryBlock);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockWoodBirchCoreBlock, blockTextureIndex.Wood);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockCactusCoreBlock, blockTextureIndex.Cactus);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockGrassCoreBlock, blockTextureIndex.Grass);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockLightCoreBlock, blockTextureIndex.Light);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockCottonRedCoreBlock, blockTextureIndex.Red);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockSnowCoreBlock, blockTextureIndex.Snow);
+            defActionService.Register(ConstStrings.GetTextureIndex, ConstStrings.BaseBlockWoodCoreBlock, blockTextureIndex.Wood);
+        }
+
+        private void RegisterTextureRotations(DefinitionActionService defActionService)
+        {
+            var blockTextureRotation = typeContainer.GetUnregistered<BlockTextureRotation>();
+            defActionService.Register(ConstStrings.GetTextureRotation, ConstStrings.BaseBlockWoodBirchCoreBlock, blockTextureRotation.Wood);
+            defActionService.Register(ConstStrings.GetTextureRotation, ConstStrings.BaseBlockCactusCoreBlock, blockTextureRotation.Cactus);
+            defActionService.Register(ConstStrings.GetTextureRotation, ConstStrings.BaseBlockWoodCoreBlock, blockTextureRotation.Wood);
+        }
+        private void RegisterNodeTypes(DefinitionActionService defActionService)
+        {
+            var blockTextureRotation = typeContainer.GetUnregistered<BlockTextureRotation>();
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockSignalerCoreNetworkblock, (NodeBase? _, IDefinition _) => new SignalerBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockBatteryCoreNetworkblock, (NodeBase? _, IDefinition _) => new BatteryNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockCactusCoreNetworkblock, (NodeBase? _, IDefinition _) => new CactusBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseCableItemCoreNetworkblock, (NodeBase? _, IDefinition _) => new ItemCableNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockSourceItemCoreNetworkblock, (NodeBase? _, IDefinition _) => new ItemSourceBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockTargetItemCoreNetworkblock, (NodeBase? _, IDefinition _) => new ItemTargetBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockLightCoreNetworkblock, (NodeBase? _, IDefinition _) => new LightNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockCablePowerCoreNetworkblock, (NodeBase? _, IDefinition _) => new PowerCableNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseBlockPlatePressureCoreNetworkblock, (NodeBase? _, IDefinition _) => new PressurePlateBlockNode());
+            defActionService.Register(ConstStrings.CreateNode, ConstStrings.BaseCableSignalCoreNetworkblock, (NodeBase? _, IDefinition _) => new SignalCableNode());
+
+        }
+
+        private void RegisterCanMines(DefinitionActionService defActionService)
+        {
+            var canMines = typeContainer.GetUnregistered<CanMineMaterial>();
+            defActionService.Register(ConstStrings.CanMineMaterial, ConstStrings.BaseHandCoreItem, canMines.CanMineEverything);
+
+            defActionService.RegisterMultiple(ConstStrings.CanMineMaterial, canMines.CanMineMaterialSolid, ConstStrings.BaseAxeCoreItem, ConstStrings.BasePickaxeCoreItem, ConstStrings.BaseShovelCoreItem);
+            defActionService.Register(ConstStrings.CanMineMaterial, ConstStrings.BaseBucket, canMines.CanMineMaterialFluid);
+            defActionService.RegisterMultiple(ConstStrings.CanMineMaterial, canMines.CanMineNothing, ConstStrings.BaseItemChestCoreItem, ConstStrings.BaseItemFurnaceCoreItem, ConstStrings.BaseHammerCoreItem, ConstStrings.BaseHoeCoreItem, ConstStrings.BaseItemStorageInterfaceCoreItem, ConstStrings.BaseSwordCoreItem, ConstStrings.BaseItemWauziCoreItem, ConstStrings.BaseMeatCookedCoreItem, ConstStrings.BaseMeatRawCoreItem);
+        }
+
+        private void RegisterCreateItem(DefinitionActionService defActionService)
+        {
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseAxeCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition? new Axe(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseBucketCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Bucket(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemChestCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new ChestItem(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemFurnaceCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new FurnaceItem(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseHammerCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Hammer(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseHoeCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Hoe(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BasePickaxeCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Pickaxe(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseShovelCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new Shovel(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemStorageInterfaceCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is ISolidMaterialDefinition ? new StorageInterfaceItem(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseItemWauziCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => new WauziItem(def, mat)
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseMeatCookedCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is IFoodMaterialDefinition ? new MeatCooked(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseMeatRawCoreItem, 
+                (object _, IDefinition def, IMaterialDefinition mat) 
+                    => mat is IFoodMaterialDefinition ? new MeatRaw(def, mat) : null
+            );
+
+            defActionService.Register(
+                ConstStrings.CreateItem, 
+                ConstStrings.BaseHandCoreItem, 
+                (object _, IDefinition _, IMaterialDefinition _) 
+                    => Hand.Instance
+            );
         }
 
         /// <inheritdoc />
@@ -65,10 +238,12 @@ namespace OctoAwesome.Basics
         {
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
-            extensionLoader.Register<IMapPopulator>(new TreePopulator());
+            extensionLoader.Register<IMapPopulator>(new TreePopulator(typeContainer.Get<DefinitionActionService>()));
+            
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
             extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
+
             Extend(extensionLoader);
             RegisterInteracts();
         }
@@ -132,8 +307,6 @@ namespace OctoAwesome.Basics
 
                 }
             });
-
-
 
             interactService.Register("Storage Interface", (gt, interactor, target) =>
             {
@@ -274,7 +447,7 @@ namespace OctoAwesome.Basics
                     inventoryComponent.InputInventory.Add(new InventorySlot(inventoryComponent.InputInventory));
                 }
 
-                f.Components.Add(new BurningComponent());
+                f.Components.AddIfTypeNotExists(new BurningComponent());
 
                 f.Components.AddIfNotExists(new UiKeyComponent("Furnace"));
                 f.Components.AddIfNotExists(new BodyComponent() { Height = 2f, Radius = 1f });
@@ -296,7 +469,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>(), TypeContainer.Get<DefinitionActionService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?

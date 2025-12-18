@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../octoawesome/crafting/recipe-schema.json#",
+  "Enabled": true,
+  "Name": "Wooden PickAxe",
+  "Description": "Wooden PickAxe",
+  "Keywords": [
+    "Crafting"
+  ],
+  "Time": 5,
+
+  "Inputs": [
+    {
+      "CategoryName": "block.wood",
+      "Count": 2
+    }
+  ],
+  "Outputs": [
+    {
+      "ItemName": "base_pickaxe",
+      "Count": 1
+    }
+  ],
+  "Categories": [
+    {
+      "Name": "Crafting",
+      "SubCategory": "Wood"
+    }
+  ]
+
+
+}

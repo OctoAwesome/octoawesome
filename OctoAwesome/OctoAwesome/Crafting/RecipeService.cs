@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OctoAwesome.Definitions;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,11 +14,17 @@ namespace OctoAwesome.Crafting;
 public class RecipeService
 {
     private readonly List<Recipe> recipes = new();
+    private readonly IDefinitionManager definitionManager;
 
     /// <summary>
     /// Gets a collection of recipes managed by this service.
     /// </summary>
     public IReadOnlyCollection<Recipe> Recipes => recipes;
+
+    public RecipeService(IDefinitionManager definitionManager)
+    {
+        this.definitionManager = definitionManager;
+    }
 
     /// <summary>
     /// Load recipes from the given paths.
@@ -24,19 +32,36 @@ public class RecipeService
     /// <param name="paths">A parameter array of paths to load recipes from in .json files.</param>
     public void Load(params string[] paths)
     {
-        foreach (string path in paths)
-        {
-            if (!Directory.Exists(path))
-                continue;
-            var recipes = Directory.GetFiles(path, "*.json");
-            foreach (var item in recipes)
-            {
-                var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
-                //TODO Check validity of recipe before adding and write exception otherwise
-                Debug.Assert(recipe != null, nameof(recipe) + " != null");
-                this.recipes.Add(recipe);
-            }
-        }
+        return;
+        //foreach (string path in paths)
+        //{
+        //    if (!Directory.Exists(path))
+        //        continue;
+        //    var recipes = Directory.GetFiles(path, "*.json");
+        //    foreach (var item in recipes)
+        //    {
+        //        var recipe = System.Text.Json.JsonSerializer.Deserialize<Recipe>(File.ReadAllText(item));
+
+        //        foreach (var inp in recipe.Inputs)
+        //        {
+        //            if (!string.IsNullOrWhiteSpace(inp.MaterialName))
+        //                inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
+        //            if (!string.IsNullOrWhiteSpace(inp.ItemName))
+        //                inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
+        //        }
+        //        foreach (var inp in recipe.Outputs)
+        //        {
+        //            if (!string.IsNullOrWhiteSpace(inp.MaterialName))
+        //                inp.MaterialDefinition = definitionManager.MaterialDefinitions.First(x => x.DisplayName == inp.MaterialName);
+        //            if (!string.IsNullOrWhiteSpace(inp.ItemName))
+        //                inp.ItemDefinition = definitionManager.Definitions.First(x => x.DisplayName == inp.ItemName);
+        //        }
+
+        //        //TODO Check validity of recipe before adding and write exception otherwise
+        //        Debug.Assert(recipe != null, nameof(recipe) + " != null");
+        //        this.recipes.Add(recipe);
+        //    }
+        //}
     }
 
     /// <summary>
@@ -66,14 +91,20 @@ public class RecipeService
         {
             foreach (var inputItem in recipe.Inputs)
             {
-                if (inputItem.Count <= input.Count
-                    && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
-                    && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+                if (CompareRecipeItems(input, inputItem))
                     return recipe;
             }
         }
 
         return null;
+    }
+
+    private static bool CompareRecipeItems(RecipeItem input, RecipeItem inputItem)
+    {
+        return inputItem.Count <= input.Count
+                            && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
+                            && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName)
+                            && (string.IsNullOrWhiteSpace(inputItem.CategoryName) || inputItem.CategoryName == input.CategoryName);
     }
 
     /// <summary>
@@ -101,7 +132,8 @@ public class RecipeService
                     var count = inputItem.Count <= input.Count;
                     var itemName = string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName;
                     var materialName = string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName;
-                    if (count && itemName && materialName)
+                    var categoryName = string.IsNullOrWhiteSpace(inputItem.CategoryName) || inputItem.CategoryName == input.CategoryName;
+                    if (count && itemName && materialName && categoryName)
                     {
                         if (count)
                             counter++;
@@ -148,9 +180,7 @@ public class RecipeService
             {
                 foreach (var input in inputs)
                 {
-                    if (inputItem.Count <= input.Count
-                        && (string.IsNullOrWhiteSpace(inputItem.ItemName) || inputItem.ItemName == input.ItemName)
-                        && (string.IsNullOrWhiteSpace(inputItem.MaterialName) || inputItem.MaterialName == input.MaterialName))
+                    if (CompareRecipeItems(input, inputItem))
                     {
                         counter++;
                         break;
@@ -177,11 +207,9 @@ public class RecipeService
         List<Recipe> retRecipes = new();
         foreach (var recipe in recipes ?? this.recipes)
         {
-            foreach (var tinpuItem in recipe.Inputs)
+            foreach (var inputItem in recipe.Inputs)
             {
-                if (tinpuItem.Count <= input.Count
-                    && (string.IsNullOrWhiteSpace(tinpuItem.ItemName) || tinpuItem.ItemName == input.ItemName)
-                    && (string.IsNullOrWhiteSpace(tinpuItem.MaterialName) || tinpuItem.MaterialName == input.MaterialName))
+                if (CompareRecipeItems(input, inputItem))
                 {
                     retRecipes.Add(recipe);
                     break;
@@ -206,9 +234,7 @@ public class RecipeService
         {
             foreach (var outputItem in recipe.Outputs)
             {
-                if (outputItem.Count <= output.Count
-                    && (string.IsNullOrWhiteSpace(outputItem.ItemName) || outputItem.ItemName == output.ItemName)
-                    && (string.IsNullOrWhiteSpace(outputItem.MaterialName) || outputItem.MaterialName == output.MaterialName))
+                if(CompareRecipeItems(output, outputItem))
                 {
                     retRecipes.Add(recipe);
                     break;

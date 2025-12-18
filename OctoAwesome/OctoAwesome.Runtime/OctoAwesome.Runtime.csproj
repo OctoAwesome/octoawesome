@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-	  
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+	</PropertyGroup>
 
 
 	<ItemGroup>
@@ -13,12 +13,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="engenious" Version="0.7.1-alpha" />
-	  <PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
-  </ItemGroup>
+		<ProjectReference Include="..\OctoAwesome\OctoAwesome.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="JsonPath.Net" Version="1.0.0" />
+		<PackageReference Include="engenious" Version="0.7.1-alpha" />
+		<PackageReference Include="NonSucking.Framework.Serialization" Version="0.1.0.108-alpha" />
+	</ItemGroup>
 	<ItemGroup>
 		<Using Include="NonSucking.Framework.Extension.IoC" />
 	</ItemGroup>

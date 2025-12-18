@@ -137,6 +137,7 @@ namespace OctoAwesome.Client.Screens
         {
             scene.Dispose();
             chat.Dispose();
+            ScreenManager.Game.KeyMapper.RemoveActionsOfGroup(nameof(GameScreen));
         }
 
         #region Mouse Input
@@ -224,7 +225,7 @@ namespace OctoAwesome.Client.Screens
 
         private void RegisterKeyActions()
         {
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:forward", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:forward", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -233,7 +234,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedMoveUp = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:left", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:left", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -242,7 +243,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedMoveLeft = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:backward", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:backward", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -251,7 +252,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedMoveDown = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:right", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:right", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -260,7 +261,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedMoveRight = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headup", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headup", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -269,7 +270,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedHeadUp = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headdown", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headdown", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -278,7 +279,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedHeadDown = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headleft", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headleft", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -287,7 +288,7 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedHeadLeft = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headright", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:headright", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen)
                     return;
@@ -296,25 +297,25 @@ namespace OctoAwesome.Client.Screens
                 else if (type == KeyMapper.KeyType.Up)
                     pressedHeadRight = false;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:hit", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:hit", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type == KeyMapper.KeyType.Pressed)
                     return;
                 ScreenManager.Player.HitInput = type == KeyMapper.KeyType.Down;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:interact", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:interact", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type == KeyMapper.KeyType.Pressed)
                     return;
                 ScreenManager.Player.Interact = type == KeyMapper.KeyType.Down;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:flymode", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:flymode", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
                 ScreenManager.Player.FlymodeInput = true;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:jump", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:jump", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
@@ -323,48 +324,48 @@ namespace OctoAwesome.Client.Screens
             for (int i = 0; i < 10; i++)
             {
                 int tmp = i; // NEEDED for capturing current value
-                ScreenManager.Game.KeyMapper.AddAction("octoawesome:slot" + tmp, type =>
+                ScreenManager.Game.KeyMapper.AddAction("octoawesome:slot" + tmp, nameof(GameScreen), type =>
                 {
                     if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                         return;
                     ScreenManager.Player.SlotInput[tmp] = true;
                 });
             }
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.allblocks", nameof(GameScreen), type =>
             {
                 if (type != KeyMapper.KeyType.Down)
                     ScreenManager.Player.AllBlocksDebug();
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.allfoods", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.allfoods", nameof(GameScreen), type =>
             {
                 if (type != KeyMapper.KeyType.Down)
                     ScreenManager.Player.AllFoodsDebug();
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.allitems", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.allitems", nameof(GameScreen), type =>
             {
                 if (type != KeyMapper.KeyType.Down)
                     return;
                 ScreenManager.Player.AllItemsDebug();
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.control", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.control", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
                 debug.Visible = !debug.Visible;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.boundingboxes", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:debug.boundingboxes", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
                 scene.RenderBoundingBoxes = !scene.RenderBoundingBoxes;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:inventory", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:inventory", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
                 ScreenManager.NavigateToScreen(new InventoryScreen(assets));
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:hidecontrols", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:hidecontrols", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
@@ -374,13 +375,13 @@ namespace OctoAwesome.Client.Screens
                 crosshair.Visible = !crosshair.Visible;
                 debug.Visible = !debug.Visible;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:exit", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:exit", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
                 ScreenManager.NavigateToScreen(new PauseScreen(assets));
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:freemouse", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:freemouse", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
@@ -389,7 +390,7 @@ namespace OctoAwesome.Client.Screens
                 else
                     ScreenManager.CaptureMouse();
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:teleport", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:teleport", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
@@ -399,21 +400,21 @@ namespace OctoAwesome.Client.Screens
                     ScreenManager.NavigateBack();
                 }, ScreenManager.Game.Player.Position.Position));
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
 
                 ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
             });
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggle_chat", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggle_chat", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
@@ -440,7 +441,7 @@ namespace OctoAwesome.Client.Screens
                 }
             }
 
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleCamera", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
@@ -450,7 +451,7 @@ namespace OctoAwesome.Client.Screens
             });
 
             bool lastToggle = false;
-            ScreenManager.Game.KeyMapper.AddAction("octoawesome:zoom", type =>
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:zoom", nameof(GameScreen), type =>
             {
                 if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
                     return;
@@ -461,6 +462,13 @@ namespace OctoAwesome.Client.Screens
                     ScreenManager.Camera.RecreateProjection();
                 lastToggle = !lastToggle;
 
+            });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:craftmenu", nameof(GameScreen), type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+
+                ScreenManager.NavigateToScreen(new CraftingMenuScreen(assets));
             });
 
 

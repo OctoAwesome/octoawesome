@@ -8,7 +8,7 @@ namespace OctoAwesome.Extension
     /// <summary>
     /// Registrar for map generator extension loading
     /// </summary>
-    public class MapGeneratorRegistrar : BaseRegistrar<IMapGenerator>
+    public class MapGeneratorRegistrar : IExtensionRegistrar<IMapGenerator>
     {
         private readonly List<IMapGenerator> mapGenerators;
 
@@ -24,7 +24,7 @@ namespace OctoAwesome.Extension
         /// <summary>
         /// Adds a new Map Generator.
         /// </summary>
-        public override void Register(IMapGenerator value)
+        public void Register(IMapGenerator value)
         {
             // TODO: Checks
             mapGenerators.Add(value);
@@ -33,7 +33,7 @@ namespace OctoAwesome.Extension
         /// <summary>
         /// Removes an existing Map Generator.
         /// </summary>
-        public override void Unregister(IMapGenerator value)
+        public void Unregister(IMapGenerator value)
         {
             mapGenerators.Remove(value);
         }
@@ -42,7 +42,7 @@ namespace OctoAwesome.Extension
         /// Return a List of MapGenerators
         /// </summary>
         /// <returns>List of Generators</returns>
-        public override IReadOnlyCollection<IMapGenerator> Get()
+        public IReadOnlyCollection<IMapGenerator> Get()
         {
             return mapGenerators;
         }

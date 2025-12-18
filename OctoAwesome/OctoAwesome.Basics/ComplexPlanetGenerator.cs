@@ -33,21 +33,15 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IChunkColumn GenerateColumn(IDefinitionManager definitionManager, IPlanet planet, Index2 index)
         {
-            IDefinition[] definitions = definitionManager.Definitions;
             //TODO More Generic, reconsider complete planet generation (Heatmap + Heightmap + Biome + Modding)
 
-            ushort GetBlockDefinitionInfo<T>()
-            {
-                var blockIndex = Array.FindIndex(definitions, (x) => x.GetType() == typeof(T));
-                return (ushort)(blockIndex + 1);
-            }
+            ushort sandIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockSand);
+            ushort snowIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockSnow); 
+            ushort dirtIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockDirt); 
+            ushort stoneIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockStone); 
+            ushort waterIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockWater); 
+            ushort grassIndex = definitionManager.GetDefinitionIndex<IBlockDefinition>(ConstStrings.BaseBlockGrass);
 
-            ushort sandIndex = GetBlockDefinitionInfo<SandBlockDefinition>();
-            ushort snowIndex = GetBlockDefinitionInfo<SnowBlockDefinition>();
-            ushort dirtIndex = GetBlockDefinitionInfo<DirtBlockDefinition>();
-            ushort stoneIndex = GetBlockDefinitionInfo<StoneBlockDefinition>();
-            ushort waterIndex = GetBlockDefinitionInfo<WaterBlockDefinition>();
-            ushort grassIndex = GetBlockDefinitionInfo<GrassBlockDefinition>();
 
             if (planet is not ComplexPlanet localPlanet)
                 throw new ArgumentException("planet is not a Type of ComplexPlanet");
