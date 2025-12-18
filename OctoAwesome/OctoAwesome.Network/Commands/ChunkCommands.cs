@@ -17,6 +17,7 @@ namespace OctoAwesome.Network.Commands
         /// <summary>
         /// Loads column data from <see cref="CommandParameter"/> given location.
         /// </summary>
+        /// <param name="tc">The current type container.</param>
         /// <param name="parameter">The <see cref="CommandParameter"/> given location to load the column at.</param>
         /// <returns>The loaded chunk column data.</returns>
         public static ISerializable LoadColumn(ITypeContainer tc, CommandParameter parameter)
@@ -39,7 +40,9 @@ namespace OctoAwesome.Network.Commands
         /// <summary>
         /// Saves chunk column data received from <see cref="CommandParameter"/>.
         /// </summary>
+        /// <param name="tc">The current type container.</param>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the chunk column data.</param>
+        /// <param name="chunkColumn">The column to save.</param>
         /// <returns><c>null</c></returns>
         public static void SaveColumn(ITypeContainer tc, CommandParameter parameter, ChunkColumn chunkColumn)
         {

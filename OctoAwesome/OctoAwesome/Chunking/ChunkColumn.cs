@@ -53,12 +53,6 @@ namespace OctoAwesome.Chunking
         public IDefinitionManager DefinitionManager { get; }
 
         /// <summary>
-        /// Gets or sets the change counter indicating the number of changes the chunk column went through.
-        /// </summary>
-        /// <remarks>Used for identifying changes between frames.</remarks>
-        //public int ChangeCounter { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ChunkColumn"/> class.
         /// </summary>
         /// <param name="chunks">The chunks for the column.</param>

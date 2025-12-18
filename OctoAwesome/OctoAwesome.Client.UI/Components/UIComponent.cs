@@ -119,6 +119,10 @@ namespace OctoAwesome.UI.Components
             Show = e.show;
         }
 
+        /// <summary>
+        /// Should be called when the screen closes
+        /// </summary>
+        /// <param name="key">The key of the screen</param>
         public virtual void OnClose(string key)
         {
             var interactingComponentContainer = componentContainers.FirstOrDefault();

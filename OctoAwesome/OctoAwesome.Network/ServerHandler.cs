@@ -46,7 +46,7 @@ namespace OctoAwesome.Network
         private readonly ILogger logger;
         private readonly Server server;
         private readonly PackageActionHub packageActionHub;
-        public readonly ConcurrentDictionary<OfficialCommand, Invocation> CommandFunctions;
+        private readonly ConcurrentDictionary<OfficialCommand, Invocation> commandFunctions;
         private readonly ITypeContainer typeContainer;
         private readonly NotificationCommands notCommands;
 
@@ -71,7 +71,7 @@ namespace OctoAwesome.Network
             typeContainer.Register(pool);
             typeContainer.Register<IPool<OfficialCommandDTO>>(pool);
 
-            CommandFunctions = new();
+            commandFunctions = new();
 
             Register(OfficialCommand.Whoami, PlayerCommands.Whoami);
             Register(OfficialCommand.GetUniverse, GeneralCommands.GetUniverse);
@@ -82,7 +82,7 @@ namespace OctoAwesome.Network
             packageActionHub.RegisterPoolable((OfficialCommandDTO req, RequestContext cont) =>
             {
                 logger.Debug($"Got Official command with id {req.Command}");
-                var invocation = CommandFunctions[req.Command];
+                var invocation = commandFunctions[req.Command];
                 var commandParameter = new CommandParameter(cont.Package.BaseClient.Id, req.Data);
                 var res = invocation.Visit<ISerializable?>(
                     with => with(commandParameter),
@@ -116,7 +116,7 @@ namespace OctoAwesome.Network
                  var t = Serializer.DeserializeSpecialCtor<T>(parameter.Data);
                  return func(typeContainer, parameter, t);
              });
-            CommandFunctions.TryAdd(command, deserializeAction);
+            commandFunctions.TryAdd(command, deserializeAction);
         }
         private void Register(OfficialCommand command, Func<ITypeContainer, CommandParameter, ISerializable> func)
         {
@@ -124,7 +124,7 @@ namespace OctoAwesome.Network
             {
                 return func(typeContainer, parameter);
             });
-            CommandFunctions.TryAdd(command, deserializeAction);
+            commandFunctions.TryAdd(command, deserializeAction);
         }
         private void Register<T>(OfficialCommand command, Action<ITypeContainer, CommandParameter, T> func)
             where T : IConstructionSerializable<T>
@@ -134,7 +134,7 @@ namespace OctoAwesome.Network
                 var t = Serializer.DeserializeSpecialCtor<T>(parameter.Data);
                 func(typeContainer, parameter, t);
             });
-            CommandFunctions.TryAdd(command, deserializeAction);
+            commandFunctions.TryAdd(command, deserializeAction);
         }
         private void Register(OfficialCommand command, Action<ITypeContainer, CommandParameter> func)
         {
@@ -142,7 +142,7 @@ namespace OctoAwesome.Network
             {
                 func(typeContainer, parameter);
             });
-            CommandFunctions.TryAdd(command, deserializeAction);
+            commandFunctions.TryAdd(command, deserializeAction);
         }
 
         /// <summary>

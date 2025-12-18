@@ -135,13 +135,12 @@ namespace OctoAwesome.Caching
         }
 
         /// <summary>
-        /// Gets a value from the cache service.
+        /// Adds or updates a value inside the cache service.
         /// </summary>
-        /// <typeparam name="TKey">The type of the identifying key to get the value by.</typeparam>
-        /// <typeparam name="TValue">The type of the value to get the value of.</typeparam>
-        /// <param name="key">The identifying key to get the value by.</param>
-
-        /// <returns>The value from the cache service.</returns>
+        /// <typeparam name="TKey">The type of the identifying key to set the value for.</typeparam>
+        /// <typeparam name="TValue">The type of the value to set.</typeparam>
+        /// <param name="key">The identifying key to set the value by.</param>
+        /// <param name="value">The actual value to be set</param>
         public void AddOrUpdate<TKey, TValue>(TKey key, TValue value)
             where TKey : notnull
         {

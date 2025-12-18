@@ -13,6 +13,9 @@ using OctoAwesome.Caching;
 
 namespace OctoAwesome.Network
 {
+    /// <summary>
+    /// The hub where all package actions can be registered.
+    /// </summary>
     public class PackageActionHub
     {
         private readonly ILogger logger;
@@ -23,7 +26,11 @@ namespace OctoAwesome.Network
         private readonly Dictionary<ulong, Action<RequestContext>> registeredStuff = new();
         private readonly Dictionary<ulong, Action<RequestContext>> registeredStuffDic = new();
 
-
+        /// <summary>
+        /// Initializes a new instance of the package action hub.
+        /// </summary>
+        /// <param name="logger">The logger</param>
+        /// <param name="tc">The current used type container</param>
         public PackageActionHub(ILogger logger, ITypeContainer tc)
         {
             this.logger = logger.As(nameof(PackageActionHub));
@@ -33,10 +40,10 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// 
+        /// Registers an action for a non-poolable type that can use ReadOnlyMemory optimizations.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <typeparam name="T">The type that should be deserialized</typeparam>
+        /// <param name="action">The action that gets invoked after deserialization</param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
         public void Register<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>
         {
@@ -57,10 +64,10 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// 
+        /// Registers an action for a poolable type that can use ReadOnlyMemory optimizations.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <typeparam name="T">The type that should be deserialized</typeparam>
+        /// <param name="action">The action that gets invoked after deserialization</param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
         public void RegisterPoolable<T>(Action<ReadOnlyMemory<T>, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, IPoolElement
         {
@@ -89,10 +96,10 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// 
+        /// Registers an action for a non-poolable type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <typeparam name="T">The type that should be deserialized</typeparam>
+        /// <param name="action">The action that gets invoked after deserialization</param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
         public void Register<T>(Action<T, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>
         {
@@ -107,12 +114,11 @@ namespace OctoAwesome.Network
             registeredStuff.Add(id, deserializeAction);
         }
 
-
         /// <summary>
-        /// 
+        /// Registers an action for a poolable type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <typeparam name="T">The type that should be deserialized</typeparam>
+        /// <param name="action">The action that gets invoked after deserialization</param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
         public void RegisterPoolable<T>(Action<T, RequestContext> action, ulong id = 0) where T : IConstructionSerializable<T>, IPoolElement
         {
@@ -130,10 +136,10 @@ namespace OctoAwesome.Network
         }
 
         /// <summary>
-        /// 
+        /// Registers an action for a poolable type without a RequestContext.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <typeparam name="T">The type that should be deserialized</typeparam>
+        /// <param name="action">The action that gets invoked after deserialization</param>
         /// <param name="id">0 when the <see cref="SerializationIdAttribute"/> should be used</param>
         public void RegisterPoolable<T>(Action<T> action, ulong id = 0) where T : IConstructionSerializable<T>, IPoolElement
         {
@@ -150,6 +156,11 @@ namespace OctoAwesome.Network
             registeredStuff.Add(id, deserializeAction);
         }
 
+        /// <summary>
+        /// Dispatches a package to the appropriate registered action or notification handler.
+        /// </summary>
+        /// <param name="package">The package that should be dispatched</param>
+        /// <param name="client">The client to dispatch to</param>
         public void Dispatch(Package package, BaseClient client)
         {
             var packageId = package.UId;
@@ -165,7 +176,7 @@ namespace OctoAwesome.Network
             if (isNotification)
                 channel = br.ReadString();
             var startOfObjectPos = ms.Position;
-            logger.Trace($"Got {(isNotification ? "Notification" : "Package")} with des id (Mod:{desId>>32}, Type:{desId & 0xFFFFFFF}) {(isNotification ? $"for channel {channel}" : "")} package {packageId}");
+            logger.Trace($"Got {(isNotification ? "Notification" : "Package")} with des id (Mod:{desId >> 32}, Type:{desId & 0xFFFFFFF}) {(isNotification ? $"for channel {channel}" : "")} package {packageId}");
             if (channel == "planet")
                 ;
             var rc = new RequestContext(br, package);
@@ -175,7 +186,7 @@ namespace OctoAwesome.Network
             else if ((package.PackageFlags & PackageFlags.Array) == 0 && registeredStuff.TryGetValue(desId, out val))
                 val.Invoke(rc);
 
-            logger.Trace($"All invocations succesful, now dispatching to updatehub or sending response to client for {packageId}");
+            logger.Trace($"All invocations successful, now dispatching to updatehub or sending response to client for {packageId}");
 
             if (isNotification)
             {
@@ -216,7 +227,7 @@ namespace OctoAwesome.Network
                     {
                         var brParam = Expression.Parameter(typeof(BinaryReader));
                         MethodInfo deserializationMethodInfo;
-                        deserializationMethodInfo = notificationType.GetMethod(nameof(IConstructionSerializable<bool>.DeserializeAndCreate), BindingFlags.Public | BindingFlags.Static, [typeof(BinaryReader)])!;
+                        deserializationMethodInfo = notificationType.GetMethod(nameof(IConstructionSerializable<bool>.DeserializeAndCreate), BindingFlags.Public | BindingFlags.Static, new[] { typeof(BinaryReader) })!;
                         notificationDeserializationMethodCache[desId]
                             = expression
                             = Expression.Lambda<Func<BinaryReader, object>>(Expression.Call(deserializationMethodInfo, brParam), brParam).Compile();
@@ -248,8 +259,19 @@ namespace OctoAwesome.Network
             logger.Trace($"Finished Dispatch logic for {packageId}");
         }
     }
+
+    /// <summary>
+    /// Represents the context of a request, including the binary reader and the package.
+    /// </summary>
+    /// <param name="Reader">The binary reader used to read the package data.</param>
+    /// <param name="Package">The package associated with the request.</param>
     public record struct RequestContext(BinaryReader Reader, Package Package)
     {
+        /// <summary>
+        /// Sets the result of the request context with a single instance of a serializable type.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance to set as the result.</typeparam>
+        /// <param name="instance">The instance to set as the result.</param>
         public void SetResult<T>(T instance) where T : ISerializable<T>
         {
             using var ms = Serializer.Manager.GetStream();
@@ -260,6 +282,12 @@ namespace OctoAwesome.Network
             Package.PackageFlags &= ~(PackageFlags.Array | PackageFlags.Request);
             Package.PackageFlags |= PackageFlags.Response;
         }
+
+        /// <summary>
+        /// Sets the result of the request context with a span of serializable instances.
+        /// </summary>
+        /// <typeparam name="T">The type of the instances to set as the result.</typeparam>
+        /// <param name="instance">The span of instances to set as the result.</param>
         public void SetResult<T>(Span<T> instance) where T : ISerializable<T>
         {
             using var ms = Serializer.Manager.GetStream();
@@ -274,13 +302,16 @@ namespace OctoAwesome.Network
             Package.PackageFlags |= (PackageFlags.Array | PackageFlags.Response);
         }
 
+        /// <summary>
+        /// Sets the result of the request context with a byte array.
+        /// </summary>
+        /// <param name="res">The byte array to set as the result.</param>
         public void SetResult(byte[] res)
         {
             Package.Payload = res;
             Package.PackageFlags &= ~PackageFlags.Request;
             Package.PackageFlags |= PackageFlags.Response;
         }
-
     }
 
 

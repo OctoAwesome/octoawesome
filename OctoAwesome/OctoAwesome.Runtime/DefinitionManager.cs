@@ -25,6 +25,7 @@ namespace OctoAwesome.Runtime
         private readonly ExtensionService extensionService;
         private DefinitionRegistrar registrar;
 
+        /// <inheritdoc />
         public event EventHandler DefinitionsChanged;
 
         /// <summary>
@@ -80,6 +81,7 @@ namespace OctoAwesome.Runtime
             }
         }
 
+        /// <inheritdoc />
         public void LoadSaveGame(IReadOnlyList<string>? definitionKeyIndices)
         {
             if (definitionKeyIndices is null) //New Game
@@ -109,7 +111,7 @@ namespace OctoAwesome.Runtime
             FoodDefinitions = Definitions.OfType<IFoodMaterialDefinition>().ToArray();
             DefinitionsChanged?.Invoke(this, EventArgs.Empty);
         }
-
+        /// <inheritdoc/>
         public IReadOnlyCollection<string> GetSaveGameData()
         {
             var keys = new string[Definitions.Length];
@@ -177,16 +179,21 @@ namespace OctoAwesome.Runtime
             return default;
         }
 
+        /// <inheritdoc />
         public T? GetDefinitionByUniqueKey<T>(string key)
         {
             return registrar.Get<T>(key);
         }
 
+        /// <inheritdoc />
         public IReadOnlyCollection<IDefinition> GetVariations(IDefinition def)
             => registrar.GetVariations(def);
+        /// <inheritdoc />
         public IReadOnlyCollection<string> GetUniqueKeys(IDefinition def)
             => registrar.GetUniqueKeys(def);
 
+
+        /// <inheritdoc/>
         public bool TryGetVariation<T>(IDefinition def, [MaybeNullWhen(false)] out T? variation)
         {
             var variants = GetVariations(def);
@@ -203,11 +210,13 @@ namespace OctoAwesome.Runtime
             return false;
         }
 
+        /// <inheritdoc />
         public bool TryGet<T>(string id, [MaybeNullWhen(false)] out T? definition) where T : IDefinition
         {
             definition = registrar.Get<T>(id);
             return definition is not null;
         }
+        /// <inheritdoc />
         public void RegisterDefinitionInstance(string key, JsonObject o, string[] jArr)
         {
             registrar.Register(new DefinitionInstanceRegistration(key, o, jArr));

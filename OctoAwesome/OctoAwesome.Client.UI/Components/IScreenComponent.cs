@@ -45,7 +45,18 @@ namespace OctoAwesome.UI.Components
         /// </summary>
         /// <param name="screen">The screen that should be removed from the component</param>
         void Remove(BaseScreen screen);
+
+        /// <summary>
+        /// Associates the screen with this screen components that are contained in the component container.
+        /// </summary>
+        /// <param name="componentContainer">The component container that contains the ui component.</param>
         void Add(ComponentContainer componentContainer);
+
+        /// <summary>
+        /// Removes the associated entity by it's id from this components.
+        /// </summary>
+        /// <param name="entityId">The unique id of the entity.</param>
         void RemoveEntity(Guid entityId);
+
     }
 }

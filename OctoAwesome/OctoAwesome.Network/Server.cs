@@ -71,6 +71,9 @@ namespace OctoAwesome.Network
             Start(address.Select(a => new IPEndPoint(a, port)).ToArray());
         }
 
+        /// <summary>
+        /// Stops all connected clients and removes the tcp listener
+        /// </summary>
         public void Stop()
         {
             foreach (var item in connectedClients)

@@ -13,27 +13,54 @@ using System.Threading.Tasks;
 namespace OctoAwesome.Graphs;
 
 
+/// <summary>
+/// Represents a partial struct for item transfer operations in a simulation, 
+/// with functionality for handling inventory components and their interactions.
+/// </summary>
 [Variant]
 public partial struct ItemTransfer
 {
+    /// <summary>
+    /// Gets or sets the simulation context associated with the item transfer.
+    /// </summary>
     public Simulation Simulation { get; set; }
 
+    /// <inheritdoc/>
+    /// <param name="Inventory">The main inventory component involved in the transfer.</param>
+    /// <param name="Inventories">An array of additional inventory components.</param>
     static partial void VariantOf(InventoryComponent Inventory, InventoryComponent[] Inventories);
 }
 
+/// <summary>
+/// A specialization of the Graph class for managing item transfer operations between sources and targets.
+/// </summary>
 public class ItemGraph : Graph<ItemTransfer>
 {
+    /// <summary>
+    /// A set of inventory components involved in the item transfer operation.
+    /// </summary>
+    private HashSet<InventoryComponent> inventories = new();
 
-    HashSet<InventoryComponent> inventories = new();
+    /// <summary>
+    /// Initializes a new instance of the ItemGraph class with the default transfer type "ItemTransfer".
+    /// </summary>
     public ItemGraph()
     {
         TransferType = "ItemTransfer";
     }
 
+    /// <summary>
+    /// Initializes a new instance of the ItemGraph class for a specific planet.
+    /// </summary>
+    /// <param name="planetId">The ID of the planet associated with this graph.</param>
     public ItemGraph(int planetId) : base("ItemTransfer", planetId)
     {
     }
 
+    /// <summary>
+    /// Updates the state of the item graph, processing sources to collect inventory components and executing transfers to targets.
+    /// </summary>
+    /// <param name="simulation">The simulation context for this update.</param>
     public override void Update(Simulation simulation)
     {
         var globalChunkCache = Parent.Planet.GlobalChunkCache;

@@ -62,7 +62,6 @@ namespace OctoAwesome.Definitions
         /// <summary>
         /// Gets a bitset depicting which sides of the block are solid.
         /// </summary>
-        /// <remarks>Use <see cref="IsSolidWall"/> to check.</remarks>
         uint SolidWall { get; }
 
         /// <summary>

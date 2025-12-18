@@ -48,6 +48,7 @@ namespace OctoAwesome.Network
         /// </summary>
         /// <param name="client">The network client that is connected to the remote server.</param>
         /// <param name="updateHub">The update hub to receive updates from.</param>
+        /// <param name="typeContainer">The current type container.</param>
         public NetworkPackageManager(Client client, IUpdateHub updateHub, ITypeContainer typeContainer)
         {
             this.client = client;
@@ -185,7 +186,7 @@ namespace OctoAwesome.Network
             return awaiter;
         }
         /// <summary>
-        /// Serializes the serializable with see <see cref="Serializer.SerializeNetwork(ISerializable)"/> method and therefore write the SerializationId itself
+        /// Serializes the serializable with see <see cref="Serializer.SerializeNetwork"/> method and therefore write the SerializationId itself
         /// </summary>
         /// <param name="serializable"></param>
         /// <param name="flags"></param>

@@ -56,13 +56,10 @@ namespace OctoAwesome.Client
 
 
         /// <summary>
-        /// Create the wrapped manager dependant on whether it is a multiplayer game or not.
+        /// Starts the multiplayer game by connecting to existing instance.
         /// </summary>
-        /// <param name="multiplayer">Whether a <paramref name="multiplayer"/> resource manager should be initialized or not.</param>
-        /// <remarks>
-        /// Creates <see cref="DiskPersistenceManager"/> for single player;
-        /// otherwise <see cref="NetworkPersistenceManager"/>.
-        /// </remarks>
+        /// <param name="playerName">The name that should be used for this game.</param>
+        /// <param name="rawIpAddress">The raw ip address, which will be splitted and parsed in, where ip and port are seperated by <b>:</b> .</param>
         public void StartMultiplayer(string playerName, string rawIpAddress)
         {
             settings.Set("player", playerName);

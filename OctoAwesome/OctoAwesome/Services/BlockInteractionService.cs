@@ -26,6 +26,7 @@ namespace OctoAwesome.Services
         /// </summary>
         /// <param name="blockCollectionPool">Memory pool for <see cref="BlockVolumeState"/> instances.</param>
         /// <param name="definitionManager">The definition manager.</param>
+        /// <param name="actionService">The action service.</param>
         public BlockInteractionService(IPool<BlockVolumeState> blockCollectionPool, IDefinitionManager definitionManager, DefinitionActionService actionService)
         {
             this.blockCollectionPool = blockCollectionPool;

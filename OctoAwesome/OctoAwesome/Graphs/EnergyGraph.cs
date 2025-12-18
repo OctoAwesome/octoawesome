@@ -6,6 +6,13 @@ using System.Linq;
 
 namespace OctoAwesome.Graphs;
 
+/// <summary>
+/// Holds info about the energy target node for the energy graph.
+/// </summary>
+/// <param name="Node">The target node.</param>
+/// <param name="Data">The energy data for this node.</param>
+/// <param name="MaxRepeated">How often the target can be used in a single update.</param>
+/// <param name="RepeatedTimes">How often the target was used in a single update.</param>
 public record EnergyTargetInfo(ITargetNode<int> Node, int Data, int MaxRepeated, int RepeatedTimes = 0) : TargetInfo<int>(Node, Data);
 
 /// <summary>
@@ -13,15 +20,23 @@ public record EnergyTargetInfo(ITargetNode<int> Node, int Data, int MaxRepeated,
 /// </summary>
 public class EnergyGraph : Graph<int>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EnergyGraph"/> class.
+    /// </summary>
     public EnergyGraph()
     {
         TransferType = "Energy";
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EnergyGraph"/> class.
+    /// </summary>
+    /// <param name="planetId">The planet ID.</param>
     public EnergyGraph(int planetId) : base("Energy", planetId)
     {
     }
 
+    /// <inheritdoc/>
     public override void Update(Simulation simulation)
     {
         var globalChunkCache = Parent.Planet.GlobalChunkCache;
