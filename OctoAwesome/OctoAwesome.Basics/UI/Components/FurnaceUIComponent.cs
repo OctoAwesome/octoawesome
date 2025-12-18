@@ -128,13 +128,10 @@ public class FurnaceUIComponent : UIComponent<UiComponentRecord<InventoryCompone
         Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
     }
 
-    internal void OnClose(string key)
+    public override void OnClose(string key)
     {
-        var interactingComponentContainer = componentContainers.FirstOrDefault();
-        var components = interactingComponentContainer?.GetComponent<UiMappingComponent>();
-        if (components is not null)
-            components.Changed.OnNext((interactingComponentContainer!, key, false));
-        
+        base.OnClose(key);
+
         VersionA = InputVersion = ProductionResourceVersion = 0;
         inventoryA = inputInventory = outputInventory = productionResourceInventory = null;
         

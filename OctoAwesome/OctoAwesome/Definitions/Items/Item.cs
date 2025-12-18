@@ -94,7 +94,7 @@ namespace OctoAwesome.Definitions.Items
         }
 
         /// <inheritdoc />
-        public virtual int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
+        public virtual int Interact(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
             return 0;
         }

@@ -64,14 +64,14 @@ namespace OctoAwesome.Basics.Definitions.Items
         }
 
         /// <inheritdoc />
-        public override int Apply(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
+        public override int Interact(IMaterialDefinition material, IBlockInteraction hitInfo, decimal volumeRemaining)
         {
             if (Quantity > 125 && FluidBlock is not null)
             {
                 BlockInteractionService.CalculatePositionAndRotation(hitInfo, out var facingDirection, out _);
             }
 
-            return base.Apply(material, hitInfo, volumeRemaining);
+            return base.Interact(material, hitInfo, volumeRemaining);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override bool HasMetaData => true;
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "planks_red" };
+        public override string[] Textures { get; } = ["planks_red"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }

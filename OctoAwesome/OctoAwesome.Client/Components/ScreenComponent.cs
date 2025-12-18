@@ -181,7 +181,7 @@ namespace OctoAwesome.Client.Components
 
         }
 
-        private void Add(ComponentContainer componentContainer)
+        public void Add(ComponentContainer componentContainer)
         {
             foreach (var component in Components)
             {
@@ -192,7 +192,7 @@ namespace OctoAwesome.Client.Components
             }
         }
 
-        private void RemoveEntity(Guid entityId)
+        public void RemoveEntity(Guid entityId)
         {
             //TODO: Remove component container?
         }

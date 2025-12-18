@@ -24,7 +24,7 @@ public class StableCompositeDisposable : IDisposable
     /// <returns><see cref="StableCompositeDisposable"/> as an IDisposable</returns>
     public static IDisposable Create(IDisposable disposable1, IDisposable disposable2)
     {
-        return new StableCompositeDisposable(new[] { disposable1, disposable2 });
+        return new StableCompositeDisposable([disposable1, disposable2]);
     }
 
     /// <inheritdoc/>

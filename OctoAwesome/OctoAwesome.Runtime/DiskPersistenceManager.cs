@@ -1,6 +1,7 @@
 ﻿using OctoAwesome.Chunking;
 using OctoAwesome.Components;
 using OctoAwesome.Database;
+using OctoAwesome.Graphs;
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Location;
 using OctoAwesome.Logging;
@@ -157,6 +158,17 @@ namespace OctoAwesome.Runtime
             context.AddOrUpdate(container);
         }
 
+
+        public void SavePencil(Pencil pencil)
+        {
+            var context = new GraphDbContext(databaseProvider.GetDatabase<IdTag<Pencil>>(currentUniverse.Id, false));
+            context.AddOrUpdate(pencil);
+        }
+        public Pencil LoadPencil(int planetId)
+        {
+            var context = new GraphDbContext(databaseProvider.GetDatabase<IdTag<Pencil>>(currentUniverse.Id, false));
+            return context.Get(planetId);
+        }
         /// <inheritdoc />
         public Awaiter Load(out SerializableCollection<IUniverse> universes)
         {
@@ -371,7 +383,7 @@ namespace OctoAwesome.Runtime
 
         public void SaveGlobally<T>(T tag, ISerializable value, bool fixedSize) where T : ITag, new()
         {
-            var provider = databaseProvider.GetDatabase<T>( fixedSize);
+            var provider = databaseProvider.GetDatabase<T>(fixedSize);
             provider.AddOrUpdate(tag, new Value(Serializer.Serialize(value)));
         }
 

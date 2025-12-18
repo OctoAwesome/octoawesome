@@ -215,7 +215,8 @@ namespace OctoAwesome.Basics.Entities
             Components.AddIfTypeNotExists(new BodyComponent() { Mass = 50f, Height = 2f, Radius = 1.5f });
             Components.AddIfTypeNotExists(new BodyPowerComponent() { Power = 600f, JumpTime = 120 });
             Components.AddIfTypeNotExists(new MoveableComponent());
-            Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
+            Components.AddIfNotExists(new BoxCollisionComponent([new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1))]));
+            Components.AddIfTypeNotExists(new ControllableComponent());
             Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
             Components.AddIfTypeNotExists(new LocalChunkCacheComponent(PositionComponent.Planet.GlobalChunkCache, 2, 1));
         }

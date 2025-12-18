@@ -91,11 +91,11 @@ namespace OctoAwesome.EntityComponents
         /// </summary>
         protected int maxVolume = int.MaxValue;
 
-        private readonly EnumerationModifiableConcurrentList<InventorySlot> inventory;
 
+        protected readonly EnumerationModifiableConcurrentList<InventorySlot> inventory;
+        protected int currentWeight = 0;
+        protected int currentVolume = 0;
         private readonly IDefinitionManager definitionManager;
-        private int currentWeight = 0;
-        private int currentVolume = 0;
         private ScopedSemaphore serializeSemaphore = new(1, 1);
 
         /// <summary>

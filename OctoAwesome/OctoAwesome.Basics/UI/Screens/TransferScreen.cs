@@ -28,24 +28,24 @@ namespace OctoAwesome.Basics.UI.Screens
         /// </summary>
         public event EventHandler<NavigationEventArgs>? Closed;
 
-        private const string ScreenKey = "Transfer";
-        private readonly AssetComponent assetComponent;
-        private readonly Texture2D panelBackground;
-        private readonly InventoryControl inventoryA;
-        private readonly InventoryControl inventoryB;
-        private readonly Label nameLabel;
-        private readonly Label massLabel;
-        private readonly Label volumeLabel;
-        private IDisposable? subscription;
-        private TransferUIComponent? transferComponent;
+        protected const string ScreenKey = "Transfer";
+        protected readonly AssetComponent assetComponent;
+        protected readonly Texture2D panelBackground;
+        protected readonly InventoryControl inventoryA;
+        protected readonly InventoryControl inventoryB;
+        protected readonly Label nameLabel;
+        protected readonly Label massLabel;
+        protected readonly Label volumeLabel;
+        protected IDisposable? subscription;
+        protected TransferUIComponent? transferComponent;
 
-        private TransferUIComponent TransferComponent
+        protected TransferUIComponent TransferComponent
         {
             get => NullabilityHelper.NotNullAssert(transferComponent, $"{nameof(TransferComponent)} was not initialized!");
             set => transferComponent = NullabilityHelper.NotNullAssert(value, $"{nameof(TransferComponent)} cannot be initialized with null!");
         }
 
-        private enum TransferDirection
+        protected enum TransferDirection
         {
             AToB,
             BToA
@@ -127,7 +127,7 @@ namespace OctoAwesome.Basics.UI.Screens
         /// <inheritdoc/>
         public override void AddUiComponent(UIComponent uiComponent)
         {
-            if (uiComponent is not TransferUIComponent transferComponent)
+            if (uiComponent.GetType() != typeof(TransferUIComponent) || uiComponent is not TransferUIComponent transferComponent)
                 return;
 
             subscription?.Dispose();
@@ -172,7 +172,7 @@ namespace OctoAwesome.Basics.UI.Screens
             base.RemoveUiComponent(uiComponent);
         }
 
-        private void InventoryChanged(Unit unit)
+        protected virtual void InventoryChanged(Unit unit)
         {
             if (TransferComponent.PrimaryUiKey != ScreenKey)
                 return;
@@ -192,7 +192,7 @@ namespace OctoAwesome.Basics.UI.Screens
             base.OnUpdate(gameTime);
         }
 
-        private void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
+        protected virtual void OnInventoryDrop(DragEventArgs e, InventoryComponent target)
         {
             if (transferComponent is not null && e.Content is InventorySlot slot)
             {
@@ -216,7 +216,7 @@ namespace OctoAwesome.Basics.UI.Screens
             Debug.Assert(amount == addedAddedAmount, "The added value and removed value of the inventories is unequal, threading?");
         }
 
-        internal void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
+        internal virtual void Rebuild(InventoryComponent inventoryComponentA, InventoryComponent inventoryComponentB)
         {
             inventoryA.Rebuild(inventoryComponentA.Inventory);
             inventoryB.Rebuild(inventoryComponentB.Inventory);

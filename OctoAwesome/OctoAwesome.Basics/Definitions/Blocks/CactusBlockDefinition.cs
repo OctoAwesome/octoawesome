@@ -1,13 +1,21 @@
-﻿using OctoAwesome.Basics.Definitions.Materials;
+﻿using engenious.Content.Serialization;
+
+using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Caching;
 using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
+using OctoAwesome.Graphs;
+
+using System.Data.Common;
+using System.Diagnostics;
+using System.Threading;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
     /// <summary>
     /// Block definition for cactus blocks.
     /// </summary>
-    public class CactusBlockDefinition : BlockDefinition
+    public class CactusBlockDefinition : BlockDefinition, INetworkBlock<int>, INetworkBlock<Signal>
     {
         /// <inheritdoc />
         public override string Icon => "cactus_inside";
@@ -16,10 +24,11 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string DisplayName => Languages.OctoBasics.Cactus;
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "cactus_inside", "cactus_side", "cactus_top" };
+        public override string[] Textures { get; } = ["cactus_inside", "cactus_side", "cactus_top"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
+        public string[] TransferTypes { get; } = ["Energy", "Signal"];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CactusBlockDefinition"/> class.
@@ -34,7 +43,12 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override int GetTextureIndex(Wall wall, ILocalChunkCache manager,
             int x, int y, int z)
         {
-            OrientationFlags orientation = (OrientationFlags)manager.GetBlockMeta(x, y, z);
+            var meta = manager.GetBlockMeta(x, y, z);
+            OrientationFlags orientation = (OrientationFlags)(meta & 0xFF);
+            var rotData = (meta >> 7) & 2;
+
+            if (rotData > 0)
+                return rotData;
 
             switch (wall)
             {
@@ -209,6 +223,60 @@ namespace OctoAwesome.Basics.Definitions.Blocks
                 default:
                     return base.GetTextureRotation(wall, manager, x, y, z); //should never ever happen
             }
+        }
+
+        public NodeBase CreateNode()
+        {
+            return new CactusBlockNode();
+        }
+
+    }
+
+    internal partial class CactusBlockNode : Node<int>, ISourceNode<int>, ITargetNode<Signal>
+    {
+        bool isOn = false;
+        bool signalEnabled = false;
+
+        public int Priority { get; } = 1;
+
+        public override void Interact()
+        {
+            isOn = !isOn;
+        }
+        
+        public SourceInfo<int> GetCapacity(Simulation simulation)
+        {
+            return new SourceInfo<int>(this, isOn ? 100 : 0);
+        }
+
+        public void Use(SourceInfo<int> targetInfo, IChunkColumn? column)
+        {
+            var oldMeta = column.GetBlockMeta(Position.X, Position.Y, Position.Z);
+
+            var rotData = ((oldMeta >> 7) + 1) & 2;
+            if (isOn && rotData == 0)
+                rotData = 1;
+            else if (!isOn)
+                rotData = 0;
+
+            oldMeta = ((isOn ? rotData : 0) << 7) | (oldMeta & 0xFF);
+
+            column.SetBlockMeta(Position, oldMeta);
+        }
+
+
+        public void Execute(TargetInfo<Signal> targetInfo, IChunkColumn? column)
+        {
+            if(signalEnabled != targetInfo.Data.Enabled)
+            {
+                signalEnabled = !signalEnabled;
+                isOn = signalEnabled;
+            }
+        }
+
+        public TargetInfo<Signal> GetRequired()
+        {
+            return new TargetInfo<Signal>(this, new Signal { Channel = "Green" });
         }
     }
 }

@@ -1,5 +1,9 @@
 ﻿using OctoAwesome.Basics.Definitions.Materials;
+using OctoAwesome.Caching;
 using OctoAwesome.Definitions;
+using OctoAwesome.Graphs;
+
+using System.Resources;
 
 namespace OctoAwesome.Basics.Definitions.Blocks
 {
@@ -15,7 +19,7 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         public override string Icon => "ice";
 
         /// <inheritdoc />
-        public override string[] Textures { get; } = { "ice" };
+        public override string[] Textures { get; } = ["ice"];
 
         /// <inheritdoc />
         public override IMaterialDefinition Material { get; }
@@ -30,4 +34,5 @@ namespace OctoAwesome.Basics.Definitions.Blocks
         }
 
     }
+
 }

@@ -110,7 +110,7 @@ public class ExtensionService
                 Debug.Assert(method != null, $"RegisterExtender method not found on {extenderType}!");
                 var genMethod = method.MakeGenericMethod(typeof(T));
 
-                genMethod.Invoke(extender, new object[] { extend });
+                genMethod.Invoke(extender, [extend]);
             }
         }
     }
@@ -154,7 +154,7 @@ public class ExtensionService
                 Debug.Assert(method != null, $"RegisterExtender method not found on {extenderType}!");
                 var genMethod = method.MakeGenericMethod(typeof(T));
 
-                genMethod.Invoke(extender, new object[] { toExtend });
+                genMethod.Invoke(extender, [toExtend]);
             }
         }
     }

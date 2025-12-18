@@ -8,7 +8,7 @@ namespace OctoAwesome.Basics.Definitions.Materials
     public class CactusMaterialDefinition : ISolidMaterialDefinition
     {
         /// <inheritdoc />
-        public int Hardness => 25;
+        public int Hardness => 250;
 
         /// <inheritdoc />
         public int Density => 850;
