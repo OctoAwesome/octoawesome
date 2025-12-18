@@ -376,6 +376,15 @@ namespace OctoAwesome.Client.UI.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open to LAN.
+        /// </summary>
+        public static string OpenToNetwork {
+            get {
+                return ResourceManager.GetString("OpenToNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string Options {

@@ -19,10 +19,8 @@ using OctoAwesome.Components;
 
 namespace OctoAwesome.Client.Components
 {
-    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent, IScreenComponent
+    internal sealed class ScreenComponent : BaseScreenComponent, IAssetRelatedComponent, IScreenComponent, IComponentContainer
     {
-        private readonly ExtensionService extensionService;
-        private readonly IDisposable componentSubscription;
 
         public new OctoGame Game { get; private set; }
 
@@ -31,15 +29,20 @@ namespace OctoAwesome.Client.Components
         public CameraComponent Camera => Game.Camera;
 
         public ComponentList<UIComponent> Components { get; private set; }
+        public Guid Id { get; }
+        public Simulation? Simulation { get; }
+
+        private readonly ExtensionService extensionService;
+        private readonly IDisposable componentSubscription;
         private readonly List<BaseScreen> screens;
 
         public ScreenComponent(OctoGame game, ExtensionService extensionService) : base(game)
         {
             Game = game;
             TitlePrefix = "OctoAwesome";
-
+            Id = Guid.NewGuid();
             screens = new();
-            Components = new ComponentList<UIComponent>(null, null, Add, Remove);
+            Components = new ComponentList<UIComponent>(null, null, Add, Remove, this);
 
             this.extensionService = extensionService;
 
@@ -47,7 +50,7 @@ namespace OctoAwesome.Client.Components
                 = game
                 .ResourceManager
                 .UpdateHub
-                .ListenOn(DefaultChannels.UI)
+                .ListenOn(DefaultChannels.Simulation)
                 .Subscribe(OnNext);
 
         }
@@ -65,7 +68,7 @@ namespace OctoAwesome.Client.Components
             NavigateFromTransition = new AlphaTransition(Frame, Transition.Linear, TimeSpan.FromMilliseconds(200), 0f);
             NavigateToTransition = new AlphaTransition(Frame, Transition.Linear, TimeSpan.FromMilliseconds(200), 1f);
 
-            this.extensionService.ExecuteExtender(this);
+            extensionService.ExecuteExtender(this);
 
             NavigateToScreen(new MainScreen(Game.Assets));
 
@@ -118,7 +121,7 @@ namespace OctoAwesome.Client.Components
         }
 
 
-        private void OnNext(Notification notification)
+        private void OnNext(object notification)
         {
             switch (notification)
             {
@@ -193,5 +196,14 @@ namespace OctoAwesome.Client.Components
         {
             //TODO: Remove component container?
         }
+
+        public bool ContainsComponent<T>()
+            => Components.Contains<T>();
+
+        public T? GetComponent<T>()
+            => Components.Get<T>();
+
+        public T? GetComponent<T>(int id)
+            => Components.Get<T>(id);
     }
 }

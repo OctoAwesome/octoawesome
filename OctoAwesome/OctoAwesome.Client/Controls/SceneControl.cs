@@ -309,7 +309,7 @@ namespace OctoAwesome.Client.Controls
 
         protected override void OnUpdate(GameTime gameTime)
         {
-            if (disposed || player?.CurrentEntity == null)
+            if (disposed || player?.CurrentPlayer == null)
                 return;
 
             sunPosition += (float)gameTime.ElapsedGameTime.TotalMinutes * MathHelper.TwoPi;

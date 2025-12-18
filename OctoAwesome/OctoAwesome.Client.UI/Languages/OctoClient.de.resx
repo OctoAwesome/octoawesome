@@ -291,4 +291,7 @@
   <data name="TargetedBlock" xml:space="preserve">
     <value>Anvisierter Block</value>
   </data>
+  <data name="OpenToNetwork" xml:space="preserve">
+    <value>Im LAN öffnen</value>
+  </data>
 </root>

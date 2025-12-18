@@ -7,6 +7,10 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using OctoAwesome.Extension;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using OctoAwesome.Logging;
+using System.IO;
 
 namespace OctoAwesome.Network
 {
@@ -18,10 +22,11 @@ namespace OctoAwesome.Network
         private static uint NextId => ++nextId;
         private static uint nextId;
 
-        static BaseClient()
-        {
-            nextId = 0;
-        }
+        /// <summary>
+        /// Called when a the client has been disconnected from the server.
+        /// </summary>
+        public event EventHandler<EventArgs>? ClientDisconnected;
+
         /// <summary>
         /// Gets the client id.
         /// </summary>
@@ -35,76 +40,122 @@ namespace OctoAwesome.Network
         /// <summary>
         /// The underlying socket.
         /// </summary>
-        protected Socket Socket
+        protected TcpClient TcpClient
         {
-            get => NullabilityHelper.NotNullAssert(socket);
-            set => socket = NullabilityHelper.NotNullAssert(value);
+            get => NullabilityHelper.NotNullAssert(tcpClient);
+            set => tcpClient = NullabilityHelper.NotNullAssert(value);
         }
 
-        /// <summary>
-        /// Low level pooled <see cref="SocketAsyncEventArgs"/> for receiving socket data.
-        /// </summary>
-        protected readonly SocketAsyncEventArgs ReceiveArgs;
-
-        private byte readSendQueueIndex;
-        private byte nextSendQueueWriteIndex;
-        private bool sending;
         private Package? currentPackage;
         private readonly PackagePool packagePool;
-        private readonly SocketAsyncEventArgs sendArgs;
-
-        private readonly (byte[] data, int len)[] sendQueue;
-        private readonly object sendLock;
+        private readonly ILogger logger;
         private readonly CancellationTokenSource cancellationTokenSource;
 
         private readonly ConcurrentRelay<Package> packages;
-        private Socket? socket;
+        private TcpClient? tcpClient;
+        private NetworkStream stream;
+        private ConcurrentQueue<Memory<byte>> toSend = new();
+        private bool disposed;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseClient"/> class.
-        /// </summary>
-        protected BaseClient()
+        static BaseClient()
         {
-            packages = new ConcurrentRelay<Package>();
-
-            sendQueue = new (byte[] data, int len)[256];
-            sendLock = new object();
-            ReceiveArgs = new SocketAsyncEventArgs();
-            ReceiveArgs.Completed += OnReceived;
-            ReceiveArgs.SetBuffer(ArrayPool<byte>.Shared.Rent(1024 * 1024), 0, 1024 * 1024);
-            packagePool = TypeContainer.Get<PackagePool>();
-
-            sendArgs = new SocketAsyncEventArgs();
-            sendArgs.Completed += OnSent;
-
-            cancellationTokenSource = new CancellationTokenSource();
-
-            Id = NextId;
+            nextId = 0;
         }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseClient"/> class.
         /// </summary>
         /// <param name="socket">The low level base socket.</param>
-        protected BaseClient(Socket socket) : this()
+        protected BaseClient(TcpClient socket)
         {
-            Socket = socket;
-            Socket.NoDelay = true;
+            packages = new ConcurrentRelay<Package>();
+
+            packagePool = TypeContainer.Get<PackagePool>();
+            logger = TypeContainer.Get<ILogger>().As(typeof(BaseClient));
+            cancellationTokenSource = new CancellationTokenSource();
+
+            Id = NextId;
+            TcpClient = socket;
+            TcpClient.NoDelay = true;
+            TcpClient.SendTimeout = 2000;
         }
 
         /// <summary>
         /// Starts receiving data for this client asynchronously.
         /// </summary>
         /// <returns>The created receiving task.</returns>
-        public Task Start()
+        public void Start()
         {
-            return Task.Run(() =>
+            logger.Debug($"Starting connection to {TcpClient.Client.RemoteEndPoint}");
+            stream = TcpClient.GetStream();
+            CancellationToken token = cancellationTokenSource.Token;
+            _ = Task.Run(() =>
             {
-                if (Socket.ReceiveAsync(ReceiveArgs))
-                    return;
+                try
+                {
+                    do
+                    {
+                        if (token.IsCancellationRequested)
+                            return;
 
-                Receive(ReceiveArgs);
-            }, cancellationTokenSource.Token);
+                        if (!toSend.TryDequeue(out var bytes))
+                        {
+                            Thread.Sleep(1);
+                            continue;
+                        }
+                        stream.Write(bytes.Span);
+                        stream.Flush();
+                        logger.Trace($"Did send the data with len {bytes.Length}");
+
+                    } while (true);
+                }
+                catch (IOException ex)
+                {
+                    logger.Error(ex);
+                    Stop();
+                }
+            });
+
+            Task.Run(async () =>
+            {
+                var buffer = new byte[1024 * 1024];
+                try
+                {
+                    do
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        var readBytes = await stream.ReadAsync(buffer, token);
+
+                        logger.Trace($"Recieved bytes amount: {readBytes}");
+                        if (readBytes < 1)
+                        {
+                            //abort!
+                            if (!token.IsCancellationRequested)
+                                Stop();
+                            return;
+                        }
+
+                        int offset = 0;
+                        do
+                        {
+                            offset += DataReceived(buffer, readBytes, offset);
+                            logger.Trace($"Recieved bytes new offest: {offset}");
+                        } while (offset < readBytes);
+
+                    } while (true);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Stop();
+                    logger.Error("Got exception during stream read", ex);
+                    throw;
+                }
+            });
+
         }
 
         /// <summary>
@@ -112,7 +163,10 @@ namespace OctoAwesome.Network
         /// </summary>
         public void Stop()
         {
-            cancellationTokenSource.Cancel();
+            logger.Debug($"Stopping connection {TcpClient.Client.RemoteEndPoint}");
+            if (!disposed)
+                cancellationTokenSource.Cancel();
+            ClientDisconnected?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -121,28 +175,18 @@ namespace OctoAwesome.Network
         /// <param name="data">The byte buffer to send data from.</param>
         /// <param name="len">The slice length of the data to send.</param>
         /// <returns>The created sending task.</returns>
-        public Task SendAsync(byte[] data, int len)
+        public ValueTask SendAsync(byte[] data, int len)
         {
-            lock (sendLock)
-            {
-                if (sending)
-                {
-                    sendQueue[nextSendQueueWriteIndex++] = (data, len);
-                    return Task.CompletedTask;
-                }
-
-                sending = true;
-            }
-
-            return Task.Run(() => SendInternal(data, len));
+            return SendInternal(data, len);
         }
 
         /// <summary>
         /// Send a package asynchronously.
         /// </summary>
         /// <param name="package">The package to send asynchronously.</param>
-        public async Task SendPackageAsync(Package package)
+        public async ValueTask SendPackageAsync(Package package)
         {
+            logger.Debug($"Send package with id: {package.UId} and Flags: {package.PackageFlags} to client: {TcpClient.Client.RemoteEndPoint}");
             byte[] bytes = new byte[package.Payload.Length + Package.HEAD_LENGTH];
             package.SerializePackage(bytes, 0);
             await SendAsync(bytes, bytes.Length);
@@ -153,7 +197,7 @@ namespace OctoAwesome.Network
         /// </summary>
         /// <param name="package">The package to send asynchronously.</param>
         /// <seealso cref="SendPackageAndRelease"/>
-        public async Task SendPackageAndReleaseAsync(Package package)
+        public async ValueTask SendPackageAndReleaseAsync(Package package)
         {
             await SendPackageAsync(package);
             package.Release();
@@ -164,91 +208,20 @@ namespace OctoAwesome.Network
         /// </summary>
         /// <param name="package">The package to send asynchronously.</param>
         /// <seealso cref="SendPackageAndReleaseAsync"/>
-        public void SendPackageAndRelease(Package package)
+        public async Task SendPackageAndRelease(Package package)
         {
-            var task = Task.Run(async () => await SendPackageAsync(package));
-            task.Wait();
+            await SendPackageAsync(package).ConfigureAwait(false);
             package.Release();
         }
 
-        private void SendInternal(byte[] data, int len)
+        private async ValueTask SendInternal(byte[] data, int len)
         {
-            while (true)
-            {
-                sendArgs.SetBuffer(data, 0, len);
+            toSend.Enqueue(data.AsMemory(0, len));
 
-                Console.WriteLine("Send now a package");
-                if (Socket.SendAsync(sendArgs))
-                    return;
-
-                lock (sendLock)
-                {
-                    if (readSendQueueIndex < nextSendQueueWriteIndex)
-                    {
-                        (data, len) = sendQueue[readSendQueueIndex++];
-                    }
-                    else
-                    {
-                        nextSendQueueWriteIndex = 0;
-                        readSendQueueIndex = 0;
-                        sending = false;
-                        return;
-                    }
-                }
-            }
         }
 
-        private void OnSent(object? sender, SocketAsyncEventArgs e)
-        {
-            byte[] data;
-            int len;
 
-            lock (sendLock)
-            {
-                if (readSendQueueIndex < nextSendQueueWriteIndex)
-                {
-                    (data, len) = sendQueue[readSendQueueIndex++];
-                }
-                else
-                {
-                    nextSendQueueWriteIndex = 0;
-                    readSendQueueIndex = 0;
-                    sending = false;
-                    return;
-                }
-            }
-
-            SendInternal(data, len);
-        }
-
-        private void OnReceived(object? sender, SocketAsyncEventArgs e)
-        {
-            Receive(e);
-        }
-
-        /// <summary>
-        /// Receive low level socket data.
-        /// </summary>
-        /// <param name="e">Low level socket receive event arguments.</param>
-        protected void Receive(SocketAsyncEventArgs e)
-        {
-            do
-            {
-                if (e.BytesTransferred < 1 || e.Buffer is null)
-                    return;
-
-                int offset = 0;
-
-                do
-                {
-                    offset += DataReceived(e.Buffer, e.BytesTransferred, offset);
-
-                } while (offset < e.BytesTransferred);
-
-            } while (!Socket.ReceiveAsync(e));
-        }
-
-        private int DataReceived(byte[] buffer, int length, int bufferOffset)
+        private int DataReceived(Span<byte> buffer, int length, int bufferOffset)
         {
             int offset = 0;
 
@@ -259,9 +232,11 @@ namespace OctoAwesome.Network
 
                 if (length - bufferOffset < Package.HEAD_LENGTH)
                 {
-                    var ex = new Exception($"Buffer is to small for package head deserialization [length: {length} | offset: {bufferOffset}]");
+                    var ex = new ArgumentOutOfRangeException(nameof(buffer), $"Buffer is to small for package head deserialization [buffersize: {buffer.Length} | length: {length} | offset: {bufferOffset}]");
+                    ex.Data.Add("buffer.Length", buffer.Length);
                     ex.Data.Add(nameof(length), length);
                     ex.Data.Add(nameof(bufferOffset), bufferOffset);
+                    logger.Error($"Buffer was to small", ex);
                     throw ex;
                 }
                 else
@@ -272,7 +247,9 @@ namespace OctoAwesome.Network
                     }
                     else
                     {
-                        throw new InvalidCastException("Can not deserialize header with these bytes :(");
+                        var ex = new InvalidCastException("Can not deserialize header with these bytes :(");
+                        logger.Error($"Header deserialization failed", ex);
+                        throw ex;
                     }
                 }
             }
@@ -283,21 +260,25 @@ namespace OctoAwesome.Network
             {
                 var package = currentPackage;
 
-                Debug.WriteLine("Package:  " + package.UId);
+                logger.Trace($"Package {package} was complete, dispatching");
                 packages.OnNext(package);
                 currentPackage = null;
+            }
+            else
+            {
+                logger.Trace("Package was not complete, waiting for more bytes");
             }
 
             return offset;
         }
 
-        /// <inheritdoc />
         public virtual void Dispose()
         {
+            disposed = true;
+            cancellationTokenSource.Cancel();
             packages.Dispose();
-            ReceiveArgs.Dispose();
-            sendArgs.Dispose();
             cancellationTokenSource.Dispose();
+            stream?.Dispose();
         }
     }
 }

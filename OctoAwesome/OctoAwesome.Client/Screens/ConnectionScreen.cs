@@ -68,31 +68,14 @@ namespace OctoAwesome.Client.Screens
             createButton.Visible = true;
             createButton.LeftMouseClick += (s, e) =>
             {
-                game.Settings.Set("server", serverNameInput.Text);
-                game.Settings.Set("player", playerNameInput.Text);
+                game.GameService.StartMultiplayer(playerNameInput.Text, serverNameInput.Text);
 
-                ((ContainerResourceManager)game.ResourceManager)
-                    .CreateManager(true);
-
-                PlayMultiplayer(ScreenManager, playerNameInput.Text);
+                ScreenManager.NavigateToScreen(new LoadingScreen(Assets));
             };
 
-            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Auto, });
+            grid.Rows.Add(new RowDefinition { ResizeMode = ResizeMode.Auto, });
             grid.AddControl(createButton, 1, grid.Rows.Count - 1);
 
-        }
-
-        private void PlayMultiplayer(ScreenComponent manager, string playerName)
-        {
-            ScreenManager.Player.Unload();
-
-            ScreenManager.Game.Simulation.LoadGame(Guid.Empty);
-            //settings.Set("LastUniverse", levelList.SelectedItem.Id.ToString());
-
-            Player player = ScreenManager.Game.Simulation.LoginPlayer(playerName);
-            ScreenManager.Game.Player.Load(player);
-
-            ScreenManager.NavigateToScreen(new GameScreen(Assets));
         }
     }
 }

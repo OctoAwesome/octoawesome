@@ -2,6 +2,8 @@
 
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
+using OctoAwesome.Notifications;
+using OctoAwesome.Serialization;
 
 namespace OctoAwesome
 {
@@ -31,6 +33,21 @@ namespace OctoAwesome
         }
 
         /// <inheritdoc />
-        public void Register(ITypeContainer typeContainer) { }
+        public void Register(ITypeContainer typeContainer)
+        {
+            var changedHandler = typeContainer.Get<ComponentChangedNotificationHandler>();
+            var uh = typeContainer.Get<IUpdateHub>();
+            var cc = new ComponentChangeContainer(uh);
+
+            changedHandler.Register("PositionComponent", cc.PositionChanged);
+            changedHandler.Register("AnimationComponent", cc.AnimationChanged);
+            changedHandler.Register("InventoryComponent", cc.InventoryChanged);
+        }
+
+        /// <inheritdoc />
+        public void RegisterTypes(ExtensionService extensionLoader)
+        {
+            extensionLoader.RegisterTypesWithSerializationId(typeof(CoreExtension).Assembly);
+        }
     }
 }

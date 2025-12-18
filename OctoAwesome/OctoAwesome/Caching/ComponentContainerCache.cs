@@ -1,4 +1,6 @@
 ﻿using OctoAwesome.Components;
+using OctoAwesome.Serialization;
+
 using System;
 
 namespace OctoAwesome.Caching

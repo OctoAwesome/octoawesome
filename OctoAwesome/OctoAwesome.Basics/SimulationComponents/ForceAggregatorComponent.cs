@@ -9,6 +9,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with force applied to entities.
     /// </summary>
+    [SerializationId()]
     public sealed class ForceAggregatorComponent : SimulationComponent<
             Entity,
             ForceAggregatorComponent.ForcedEntity,

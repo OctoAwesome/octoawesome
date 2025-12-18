@@ -1,5 +1,7 @@
 ﻿using engenious;
 
+using NonSucking.Framework.Extension.IoC;
+
 using OctoAwesome.Basics;
 using OctoAwesome.Basics.Definitions.Items.Food;
 using OctoAwesome.Definitions;

@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandManagementSystem" Version="3.0.0-alpha3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,4 +19,7 @@
     <ProjectReference Include="..\OctoAwesome.Runtime\OctoAwesome.Runtime.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Using Include="NonSucking.Framework.Extension.IoC" />
+	</ItemGroup>
 </Project>

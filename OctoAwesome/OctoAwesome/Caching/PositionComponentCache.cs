@@ -3,7 +3,10 @@ using OctoAwesome.Location;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace OctoAwesome.Caching
 {
@@ -14,7 +17,7 @@ namespace OctoAwesome.Caching
     {
         private readonly IResourceManager resourceManager;
 
-        private readonly Dictionary<Coordinate, CacheItem> positionComponentByCoor;
+        private readonly Dictionary<Index2, Dictionary<Guid, CacheItem>> positionComponentByCoor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PositionComponentCache"/> class.
@@ -29,18 +32,40 @@ namespace OctoAwesome.Caching
 
         internal override void Start()
         {
+            LoadAllPositionComponentsFromResourceManager();
+            base.Start();
+        }
+
+        private void LoadAllPositionComponentsFromResourceManager()
+        {
             var positionComponents
                 = resourceManager
                 .GetAllComponents<PositionComponent>();
 
             foreach (var (id, component) in positionComponents)
             {
-                var cacheItem = AddOrUpdate(id, component);
-                using var @lock = lockSemaphore.EnterExclusiveScope();
-                positionComponentByCoor.Add(component.Position, cacheItem);
+                _ = AddOrUpdateInternal(id, component);
             }
 
-            base.Start();
+        }
+
+        /// <inheritdoc/>
+        protected override CacheItem AddOrUpdateInternal(Guid key, PositionComponent value)
+        {
+            var ci = base.AddOrUpdateInternal(key, value);
+            using var @lock = lockSemaphore.EnterExclusiveScope();
+            ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(positionComponentByCoor, value.Position.ChunkIndex.XY, out var exists);
+            if (!exists)
+            {
+                list = new() { { key, ci } };
+            }
+            else
+            {
+
+                list[key] = ci;
+            }
+
+            return ci;
         }
 
         internal override bool Remove(Guid key, [MaybeNullWhen(false)] out PositionComponent positionComponent)
@@ -49,8 +74,11 @@ namespace OctoAwesome.Caching
 
             if (base.Remove(key, out positionComponent))
             {
-                return positionComponentByCoor
-                         .Remove(positionComponent.Position);
+                foreach (var (_, dict) in positionComponentByCoor)
+                {
+                    if (dict.Remove(key))
+                        return true; 
+                }
             }
 
             return false;
@@ -67,11 +95,24 @@ namespace OctoAwesome.Caching
         /// <returns>The <see cref="PositionComponent"/> with the exact coordinate.</returns>
         protected PositionComponent GetBy(Coordinate position)
         {
-            using var @lock = lockSemaphore.EnterExclusiveScope();
-
-            var cacheItem = positionComponentByCoor[position];
-            cacheItem.LastAccessTime = DateTime.Now;
-            return cacheItem.Value;
+            using (var @lock = lockSemaphore.EnterExclusiveScope())
+            {
+                foreach (var (index, dict) in positionComponentByCoor)
+                {
+                    if (index == position.ChunkIndex.XY)
+                    {
+                        foreach (var (_, ci) in dict)
+                        {
+                            if (ci.Value.Position == position)
+                            {
+                                ci.LastAccessTime = DateTime.UtcNow;
+                                return ci.Value;
+                            }
+                        }
+                    }
+                }
+            }
+            return default!; //TODO Index exception of some sort
         }
 
         /// <summary>
@@ -79,25 +120,22 @@ namespace OctoAwesome.Caching
         /// </summary>
         /// <param name="chunkIndex">The chunk index to query the <see cref="PositionComponent"/> instances for.</param>
         /// <returns>A list of <see cref="PositionComponent"/> instances which are withing a specific chunk..</returns>
-        protected List<PositionComponent> GetBy(Index3 chunkIndex)
+        protected List<PositionComponent> GetBy(Index2 chunkIndex)
         {
             using var @lock = lockSemaphore.EnterExclusiveScope();
 
             var list = new List<PositionComponent>();
 
-            foreach (var component in positionComponentByCoor)
+            foreach (var (index, dict) in positionComponentByCoor)
             {
-                var key = component.Key;
-                var normalizedChunkIndex = key.ChunkIndex;
-                normalizedChunkIndex.NormalizeXY(component.Value.Value.Planet.Size);
-
-
-                if (key.Planet == chunkIndex.Z
-                    && normalizedChunkIndex.X == chunkIndex.X
-                    && normalizedChunkIndex.Y == chunkIndex.Y)
+                if (index.X == chunkIndex.X
+                    && index.Y == chunkIndex.Y)
                 {
-                    list.Add(component.Value.Value);
-                    component.Value.LastAccessTime = DateTime.Now;
+                    foreach (var (_, ci) in dict)
+                    {
+                        list.Add(ci.Value);
+                        ci.LastAccessTime = DateTime.UtcNow;
+                    }
                 }
             }
 
@@ -111,7 +149,7 @@ namespace OctoAwesome.Caching
             {
                 Guid guid => GenericCaster<PositionComponent, TValue>.Cast(GetBy(guid, loadingMode)),
                 Coordinate coordinate => GenericCaster<PositionComponent, TValue>.Cast(GetBy(coordinate)),
-                Index3 chunkColumnIndex => GenericCaster<List<PositionComponent>, TValue>.Cast(GetBy(chunkColumnIndex)),
+                Index2 chunkColumnIndex => GenericCaster<List<PositionComponent>, TValue>.Cast(GetBy(chunkColumnIndex)),
                 //(IPlanet, Index2) index => GenericCaster<List<PositionComponent, TV>>.Cast(GetBy(index)),
                 _ => throw new NotSupportedException()
             };

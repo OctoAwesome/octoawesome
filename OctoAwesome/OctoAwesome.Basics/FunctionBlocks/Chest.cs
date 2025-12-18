@@ -9,16 +9,21 @@ using OctoAwesome.Serialization;
 using OctoAwesome.UI.Components;
 
 using System;
+using OctoAwesome.Extension;
 using System.IO;
+
+
 
 namespace OctoAwesome.Basics.FunctionBlocks
 {
     /// <summary>
     /// Chest entity implementation.
     /// </summary>
-    [SerializationId(1, 3)]
-    public class Chest : Entity
+    [SerializationId()]
+    [Nooson]
+    public partial class Chest : Entity, ISerializable<Chest>
     {
+        [NoosonIgnore]
         internal AnimationComponent AnimationComponent
         {
             get => NullabilityHelper.NotNullAssert(animationComponent, $"{nameof(AnimationComponent)} was not initialized!");
@@ -37,12 +42,6 @@ namespace OctoAwesome.Basics.FunctionBlocks
 
         }
 
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-            //Doesnt get called
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Chest"/> class.
@@ -59,32 +58,32 @@ namespace OctoAwesome.Basics.FunctionBlocks
         }
 
 
-        private void UiComponentChanged((ComponentContainer, string, bool show) e)
-        {
-            if (e.show)
-                return;
-            AnimationComponent.AnimationSpeed = -60f;
-            changedSub?.Dispose();
+        //private void UiComponentChanged((ComponentContainer, string, bool show) e)
+        //{
+        //    if (e.show)
+        //        return;
+        //    AnimationComponent.AnimationSpeed = -60f;
+        //    changedSub?.Dispose();
 
-        }
+        //}
 
-        /// <inheritdoc />
-        protected override void OnInteract(GameTime gameTime, Entity entity)
-        {
-            if (TryGetComponent<UiKeyComponent>(out  var ownUiKeyComponent) 
-                && entity.TryGetComponent<TransferComponent>(out var transferComponent) 
-                && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent)
-                && this.TryGetComponent<InventoryComponent>(out var inventoryComponent))
-            {
-                transferComponent.Targets.Clear();
-                transferComponent.Targets.Add(inventoryComponent);
-                lastUiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
-                changedSub?.Dispose();
-                changedSub = lastUiMappingComponent.Changed.Subscribe(UiComponentChanged);
+        ///// <inheritdoc />
+        //protected override void OnInteract(GameTime gameTime, Entity entity)
+        //{
+        //    if (TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+        //        && entity.TryGetComponent<TransferComponent>(out var transferComponent)
+        //        && entity.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent)
+        //        && this.TryGetComponent<InventoryComponent>(out var inventoryComponent))
+        //    {
+        //        transferComponent.Targets.Clear();
+        //        transferComponent.Targets.Add(inventoryComponent);
+        //        lastUiMappingComponent.Changed.OnNext((entity, ownUiKeyComponent.PrimaryKey, true));
+        //        changedSub?.Dispose();
+        //        changedSub = lastUiMappingComponent.Changed.Subscribe(UiComponentChanged);
 
-                AnimationComponent.CurrentTime = 0f;
-                AnimationComponent.AnimationSpeed = 60f;
-            }
-        }
+        //        AnimationComponent.CurrentTime = 0f;
+        //        AnimationComponent.AnimationSpeed = 60f;
+        //    }
+        //}
     }
 }

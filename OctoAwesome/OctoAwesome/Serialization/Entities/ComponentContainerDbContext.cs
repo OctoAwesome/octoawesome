@@ -15,7 +15,7 @@ namespace OctoAwesome.Serialization.Entities
     public sealed class ComponentContainerDbContext<TContainer, TComponent>
         : IDatabaseContext<GuidTag<TContainer>, TContainer>
         where TContainer : ComponentContainer<TComponent>
-        where TComponent : IComponent
+        where TComponent : IComponent, ISerializable
     {
         private readonly ComponentContainerDefinition<TComponent>.ComponentContainerDefinitionContext entityDefinitionContext;
         private readonly ComponentContainerComponentDbContext<TComponent> componentsDbContext;

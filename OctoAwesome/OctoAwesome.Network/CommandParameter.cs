@@ -1,4 +1,4 @@
-﻿namespace OctoAwesome.GameServer
+﻿namespace OctoAwesome.Network
 {
     /// <summary>
     /// Struct for command parameters.

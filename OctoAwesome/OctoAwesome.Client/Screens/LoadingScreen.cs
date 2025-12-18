@@ -109,8 +109,7 @@ namespace OctoAwesome.Client.Screens
             {
                 tokenSource.Cancel();
                 tokenSource.Dispose();
-                ScreenManager.Player.Unload();
-                ScreenManager.Game.Simulation.ExitGame();
+                ScreenManager.Game.GameService.ExitGame();
                 gameScreen.Unload();
                 ScreenManager.NavigateBack();
             };

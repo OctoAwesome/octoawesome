@@ -3,18 +3,18 @@ using OctoAwesome.Chunking;
 using OctoAwesome.Definitions;
 using OctoAwesome.Location;
 using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
 
 using System;
 using System.Buffers;
 using System.IO;
-using System.Linq;
 
 namespace OctoAwesome.Basics
 {
     /// <summary>
     /// Map generator used for generating a <see cref="ComplexPlanet"/>.
     /// </summary>
-    public class ComplexPlanetGenerator : IMapGenerator
+    public partial class ComplexPlanetGenerator : IMapGenerator
     {
         private readonly ChunkPool chunkPool;
 
@@ -58,7 +58,7 @@ namespace OctoAwesome.Basics
 
             IChunk[] chunks = new IChunk[planet.Size.Z];
             for (int i = 0; i < planet.Size.Z; i++)
-                chunks[i] = chunkPool.Rent(new Index3(index, i), localPlanet);
+                chunks[i] = chunkPool.Rent(new Index3(index, i), localPlanet.Id);
 
             int obersteSchicht;
             bool surfaceBlock;
@@ -148,7 +148,7 @@ namespace OctoAwesome.Basics
                 }
             }
             ArrayPool<float>.Shared.Return(localHeightmap);
-            ChunkColumn column = new ChunkColumn(chunks, localPlanet, index);
+            ChunkColumn column = new ChunkColumn(chunks, localPlanet.Id, index);
             column.CalculateHeights();
             return column;
         }
@@ -165,7 +165,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
-            IChunkColumn column = new ChunkColumn(planet);
+            IChunkColumn column = new ChunkColumn(planet.Id);
             using (var reader = new BinaryReader(stream))
                 column.Deserialize(reader);
             return column;

@@ -293,4 +293,7 @@
   <data name="TargetedBlock" xml:space="preserve">
     <value>Targeted Block</value>
   </data>
+  <data name="OpenToNetwork" xml:space="preserve">
+    <value>Open to LAN</value>
+  </data>
 </root>

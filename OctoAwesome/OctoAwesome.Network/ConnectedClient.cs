@@ -1,8 +1,13 @@
-﻿using OctoAwesome.Network.Pooling;
+﻿using OctoAwesome.Caching;
+using OctoAwesome.Network.Pooling;
+using OctoAwesome.Network.Request;
 using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
 using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
+
 using System;
+using System.IO;
 using System.Net.Sockets;
 
 namespace OctoAwesome.Network
@@ -20,65 +25,68 @@ namespace OctoAwesome.Network
         public IDisposable? ServerSubscription { get; set; }
 
         private readonly PackagePool packagePool;
+        private readonly Pool<OfficialCommandDTO> requestPool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConnectedClient"/> class.
         /// </summary>
         /// <param name="socket">The low level base socket.</param>
-        public ConnectedClient(Socket socket) : base(socket)
+        public ConnectedClient(TcpClient socket) : base(socket)
         {
             packagePool = TypeContainer.Get<PackagePool>();
             var updateHub = TypeContainer.Get<IUpdateHub>();
-            networkSubscription = updateHub.ListenOn(DefaultChannels.Network).Subscribe(OnNext, OnError);
+            networkSubscription = updateHub.ListenOnNetwork().Subscribe(OnNext, OnError);
+            requestPool = new();
         }
-
 
         private void OnError(Exception error)
         {
-            Socket.Close();
+            TcpClient.Close();
             throw error;
         }
 
-        private void OnNext(Notification value)
+        private void OnNext(PushInfo value)
         {
-            if (value.SenderId == Id)
-                return;
-
-            OfficialCommand command;
-            byte[] payload;
-            switch (value)
+            if (value.Notification is not SerializableNotification notification)
             {
-                case EntityNotification entityNotification:
-                    command = OfficialCommand.EntityNotification;
-                    payload = Serializer.Serialize(entityNotification);
-                    break;
-
-                case BlocksChangedNotification _:
-                case BlockChangedNotification _:
-                    command = OfficialCommand.ChunkNotification;
-                    payload = Serializer.Serialize((SerializableNotification)value);
-                    break;
-                default:
-                    return;
+                SendGeneric(value);
+                return;
             }
 
-            BuildAndSendPackage(payload, command);
+            if (notification.SenderId == Id)
+                return;
+            SendGeneric(value);
         }
 
-        private void BuildAndSendPackage(byte[] data, OfficialCommand officialCommand)
+        private void SendGeneric(PushInfo value)
         {
+            if (value.Notification is not ISerializable ser)
+                return;
+
             var package = packagePool.Rent();
-            package.Payload = data;
-            package.Command = (ushort)officialCommand;
-            SendPackageAndRelease(package);
+
+            using (var memoryStream = Serializer.Manager.GetStream())
+            using (var binaryWriter = new BinaryWriter(memoryStream))
+            {
+                binaryWriter.Write(ser.GetType().SerializationId());
+                binaryWriter.Write(value.Channel);
+                ser.Serialize(binaryWriter);
+
+                package.PackageFlags = PackageFlags.Notification;
+                package.Payload = memoryStream.ToArray();
+
+
+                _ = SendPackageAndRelease(package);
+            }
         }
+
 
         /// <inheritdoc />
         public override void Dispose()
         {
             base.Dispose();
+            networkSubscription?.Dispose();
             ServerSubscription?.Dispose();
-            networkSubscription.Dispose();
         }
     }
 }

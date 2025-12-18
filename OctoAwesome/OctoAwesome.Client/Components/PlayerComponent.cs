@@ -44,10 +44,10 @@ namespace OctoAwesome.Client.Components
         private InventoryComponent? inventory;
         private ToolBarComponent? toolbar;
         private PositionComponent? position;
-        private Entity? currentEntity;
+        private Player? currentPlayer;
 
-        public Entity CurrentEntity
-            => NullabilityHelper.NotNullAssert(currentEntity, $"{nameof(CurrentEntity)} was not initialized!");
+        public Player CurrentPlayer
+            => NullabilityHelper.NotNullAssert(currentPlayer, $"{nameof(CurrentPlayer)} was not initialized!");
 
         public HeadComponent CurrentEntityHead
             => NullabilityHelper.NotNullAssert(currentEntityHead, $"{nameof(CurrentEntityHead)} was not initialized!");
@@ -86,18 +86,18 @@ namespace OctoAwesome.Client.Components
         public void Unload()
         {
             Enabled = false;
-            currentEntity = null;
+            currentPlayer = null;
             currentEntityHead = null;
             Selection = null;
             SelectedBox = null;
             SelectedPoint = null;
         }
 
-        public void Load(Entity entity)
+        public void Load(Player entity)
         {
             // Map other Components
 
-            currentEntity = entity;
+            currentPlayer = entity;
 
             var controlComp = entity.Components.Get<ControllableComponent>();
 
@@ -194,7 +194,7 @@ namespace OctoAwesome.Client.Components
         /// </summary>
         internal void AllBlocksDebug()
         {
-            var inventory = CurrentEntity.Components.Get<InventoryComponent>();
+            var inventory = CurrentPlayer.Components.Get<InventoryComponent>();
             if (inventory == null)
                 return;
 
@@ -206,7 +206,7 @@ namespace OctoAwesome.Client.Components
 
         internal void AllFoodsDebug()
         {
-            var inventory = CurrentEntity.Components.Get<InventoryComponent>();
+            var inventory = CurrentPlayer.Components.Get<InventoryComponent>();
             if (inventory == null)
                 return;
 
@@ -225,7 +225,7 @@ namespace OctoAwesome.Client.Components
 
         internal void AllItemsDebug()
         {
-            var inventory = CurrentEntity.Components.Get<InventoryComponent>();
+            var inventory = CurrentPlayer.Components.Get<InventoryComponent>();
             if (inventory == null)
                 return;
 

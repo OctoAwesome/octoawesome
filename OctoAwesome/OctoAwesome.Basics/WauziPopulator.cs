@@ -42,9 +42,6 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public void Populate(IResourceManager resourcemanager, IPlanet planet, IChunkColumn column00, IChunkColumn column01, IChunkColumn column10, IChunkColumn column11)
         {
-            //HACK: Activate Wauzi
-            //return;
-
             if (ispop-- <= 0)
                 return;
 
@@ -71,6 +68,7 @@ namespace OctoAwesome.Basics
                 if (disposing)
                 {
                     simulationSubscription.Dispose();
+                    simulationRelay.Dispose();
                 }
 
                 disposedValue = true;

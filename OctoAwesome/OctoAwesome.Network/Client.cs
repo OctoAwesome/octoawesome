@@ -10,34 +10,17 @@ namespace OctoAwesome.Network
     /// </summary>
     public class Client : BaseClient
     {
-        /// <summary>
-        /// Connect to an OctoAwesome server on a specific port.
-        /// </summary>
-        /// <param name="host">The host ip or address to connect to.</param>
-        /// <param name="port">The port to connect over.</param>
-        /// <exception cref="ArgumentException">Thrown when the host address could not be resolved.</exception>
-        public void Connect(string host, ushort port)
+        public Client(string host, ushort port) : base(new TcpClient())
         {
             var address = Dns.GetHostAddresses(host).FirstOrDefault();
-            if (address == default)
-            {
-                throw new ArgumentException(nameof(host));
-            }
-            Socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            Socket.BeginConnect(new IPEndPoint(address, port), OnConnected, null);
+
+            TcpClient.BeginConnect(address, port, OnConnected, null);
         }
 
         private void OnConnected(IAsyncResult ar)
         {
-            Socket.EndConnect(ar);
-
-            while (true)
-            {
-                if (Socket.ReceiveAsync(ReceiveArgs))
-                    return;
-
-                Receive(ReceiveArgs);
-            }
+            TcpClient.EndConnect(ar);
+            Start();
         }
     }
 }

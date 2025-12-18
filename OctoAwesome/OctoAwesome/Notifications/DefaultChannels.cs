@@ -21,12 +21,18 @@
         public const string Simulation = "simulation";
 
         /// <summary>
-        /// The ui channel.
-        /// </summary>
-        public const string UI = "ui";
-        /// <summary>
         /// The chunk channel.
         /// </summary> 
         public const string Chunk = "chunk";
+
+        /// <summary>
+        /// The planet channel.
+        /// </summary> 
+        public const string Planet = "planet";
+
+        /// <summary>
+        /// The channel for all chat messages
+        /// </summary>
+        public const string Chat = "chat";
     }
 }

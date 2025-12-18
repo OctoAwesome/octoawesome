@@ -3,13 +3,12 @@ using engenious.Input;
 using engenious.UI;
 using engenious.UI.Controls;
 
-using OctoAwesome.Definitions;
 using OctoAwesome.Client.Components;
-using OctoAwesome.Client.UI.Controls;
-using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.Controls;
-using OctoAwesome.Location;
+using OctoAwesome.Client.UI.Components;
+using OctoAwesome.Client.UI.Controls;
 
+using OctoAwesome.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Loader;
@@ -32,6 +31,7 @@ namespace OctoAwesome.Client.Screens
         private readonly ToolbarControl toolbar;
         private readonly MinimapControl minimap;
         private readonly CrosshairControl crosshair;
+        private readonly ChatControl chat;
         private readonly HealthBarControl healthbar;
         private readonly PlayerComponent playerComponent;
         private readonly IDefinitionManager definitionManager;
@@ -92,6 +92,18 @@ namespace OctoAwesome.Client.Screens
             crosshair.VerticalAlignment = VerticalAlignment.Center;
             Controls.Add(crosshair);
 
+            chat = new ChatControl()
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Height = 400,
+                MaxHeight = 400,
+                Width = 500,
+                Visible = false,
+                Margin = Border.All(20, 0, 0, 80),
+            };
+            Controls.Add(chat);
+
             Title = UI.Languages.OctoClient.Game;
 
             RegisterKeyActions();
@@ -124,6 +136,7 @@ namespace OctoAwesome.Client.Screens
         public void Unload()
         {
             scene.Dispose();
+            chat.Dispose();
         }
 
         #region Mouse Input
@@ -388,17 +401,24 @@ namespace OctoAwesome.Client.Screens
             });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleWireFrame", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
 
                 ChunkRenderer.WireFrame = !ChunkRenderer.WireFrame;
             });
             ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggleAmbientOcclusion", type =>
             {
-                if (!IsActiveScreen || type != KeyMapper.KeyType.Up)
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
                     return;
 
                 ChunkRenderer.OverrideLightLevel = ChunkRenderer.OverrideLightLevel > 0f ? 0f : 1f;
+            });
+            ScreenManager.Game.KeyMapper.AddAction("octoawesome:toggle_chat", type =>
+            {
+                if (!IsActiveScreen || type != KeyMapper.KeyType.Down)
+                    return;
+
+                chat.Activate();
             });
 
             List<IViewCreator> viewCreators = new();

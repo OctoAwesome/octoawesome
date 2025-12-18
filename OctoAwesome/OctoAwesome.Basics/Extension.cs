@@ -11,6 +11,7 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Extension;
 using OctoAwesome.Services;
 using OctoAwesome.UI.Components;
+using OctoAwesome.Rx;
 
 using System;
 using System.Reflection;
@@ -40,29 +41,81 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public void Register(ITypeContainer typeContainer)
         {
+            typeContainer.Register<IMapGenerator, ComplexPlanetGenerator>();
             typeContainer.Register<IPlanet, ComplexPlanet>();
             this.typeContainer = typeContainer;
         }
 
         /// <inheritdoc />
-        public void Register(ExtensionService extensionLoader)
+        public void RegisterTypes(ExtensionService extensionLoader)
         {
-
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (!t.IsAbstract && t.IsPublic && typeof(IDefinition).IsAssignableFrom(t))
                     extensionLoader.Register(t, ChannelNames.Definitions);
             }
 
+        }
+
+        /// <inheritdoc />
+        public void Register(ExtensionService extensionLoader)
+        {
             extensionLoader.Register<IMapGenerator>(new ComplexPlanetGenerator());
 
             extensionLoader.Register<IMapPopulator>(new TreePopulator());
             extensionLoader.Register<IMapPopulator>(new WauziPopulator(TypeContainer.Get<IResourceManager>()));
 
-            extensionLoader.Register(typeof(WauziEntity), ChannelNames.Serialization);
-            extensionLoader.Register(typeof(Chest), ChannelNames.Serialization);
-            extensionLoader.Register(typeof(Furnace), ChannelNames.Serialization);
+            extensionLoader.RegisterTypesWithSerializationId(typeof(Extension).Assembly);
+            Extend(extensionLoader);
+            RegisterInteracts();
+        }
 
+        private void RegisterInteracts()
+        {
+            var interactService = typeContainer.Get<InteractService>();
+            interactService.Register(nameof(Chest), (gt, interactor, target) =>
+            {
+                if (interactor.TryGetComponent<TransferComponent>(out var transferComponent)
+                   && interactor.TryGetComponent<UiMappingComponent>(out var lastUiMappingComponent)
+                   && target.TryGetComponent<InventoryComponent>(out var inventoryComponent)
+                   && target.TryGetComponent<UiKeyComponent>(out var uiKeyComp)
+                   && target.TryGetComponent<AnimationComponent>(out var animationComponent))
+                {
+                    transferComponent.Targets.Clear();
+                    transferComponent.Targets.Add(inventoryComponent);
+                    lastUiMappingComponent.Changed.OnNext((interactor, uiKeyComp.PrimaryKey, true));
+                    lastUiMappingComponent.Changed.SubscribeOnce(UiComponentChanged);
+
+                    void UiComponentChanged((ComponentContainer, string, bool show) e)
+                    {
+                        if (e.show)
+                            return;
+                        animationComponent.AnimationSpeed = -60f;
+                    }
+
+                    animationComponent.CurrentTime = 0f;
+                    animationComponent.AnimationSpeed = 60f;
+                }
+            });
+
+            interactService.Register(nameof(Furnace), (gt, interactor, target) =>
+            {
+                if (target.TryGetComponent<UiKeyComponent>(out var ownUiKeyComponent)
+                    && interactor.TryGetComponent<TransferComponent>(out var transferComponent)
+                    && interactor.TryGetComponent<UiMappingComponent>(out var uiMappingComponent)
+                    && target.TryGetComponent<ProductionInventoriesComponent>(out var productionInventoryCompopnents))
+                {
+                    transferComponent.Targets.Clear();
+                    transferComponent.Targets.Add(productionInventoryCompopnents.InputInventory);
+                    transferComponent.Targets.Add(productionInventoryCompopnents.OutputInventory);
+                    transferComponent.Targets.Add(productionInventoryCompopnents.ProductionInventory);
+                    uiMappingComponent.Changed.OnNext((interactor, ownUiKeyComponent.PrimaryKey, true));
+                }
+            });
+        }
+
+        private void Extend(ExtensionService extensionLoader)
+        {
             extensionLoader.Extend<WauziEntity>(wauziEntity => wauziEntity.RegisterDefault());
 
             extensionLoader.Extend<Player>((player) =>
@@ -79,6 +132,7 @@ namespace OctoAwesome.Basics
                 player.Components.AddIfTypeNotExists(new LocalChunkCacheComponent(posComponent.Planet.GlobalChunkCache, 4, 2));
                 player.Components.AddIfTypeNotExists(new TransferComponent());
                 player.Components.AddIfTypeNotExists(new UiMappingComponent() { });
+                player.Components.AddIfNotExists(new RenderComponent() { Name = "Wauzi", ModelName = "dog", TextureName = "texdog", BaseZRotation = -90 });
 
             });
 
@@ -110,14 +164,14 @@ namespace OctoAwesome.Basics
                     c.Components.AddIfTypeNotExists(inventoryComponent);
                 }
 
-
-                c.Components.AddIfNotExists(new UiKeyComponent("Transfer"));
+                var uiKeyComp = new UiKeyComponent("Transfer");
+                c.Components.AddIfNotExists(uiKeyComp);
 
                 c.Components.AddIfNotExists(new BodyComponent() { Height = 0.4f, Radius = 0.2f });
                 c.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0), new Vector3(1, 1, 1)) }));
                 c.Components.AddIfNotExists(new RenderComponent() { Name = "Chest", ModelName = "chest", TextureName = "texchestmodel", BaseZRotation = -90 });
                 c.Components.AddIfTypeNotExists(new UniquePositionComponent());
-
+                c.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Chest) });
             });
 
             extensionLoader.Extend<Furnace>((furnace) =>
@@ -164,6 +218,9 @@ namespace OctoAwesome.Basics
                 f.Components.AddIfNotExists(new BoxCollisionComponent(new[] { new BoundingBox(new Vector3(0, 0, 0), new Vector3(1, 1, 1)) }));
                 f.Components.AddIfNotExists(new RenderComponent() { Name = "Furnace", ModelName = "furnace", TextureName = "furnacetext" });
                 f.Components.AddIfTypeNotExists(new UniquePositionComponent());
+                f.Components.AddIfTypeNotExists(new InteractKeyComponent { Key = nameof(Furnace) });
+
+
 
             });
 
@@ -176,7 +233,7 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new AccelerationComponent());
                 s.Components.AddIfTypeNotExists(new MoveComponent());
                 //TODO: Fix this
-                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>()));
+                s.Components.AddIfTypeNotExists(new BlockInteractionComponent(s, TypeContainer.Get<BlockInteractionService>(), TypeContainer.Get<InteractService>()));
 
                 //TODO: ugly
                 //TODO: TypeContainer?
@@ -189,7 +246,6 @@ namespace OctoAwesome.Basics
                 s.Components.AddIfTypeNotExists(new FurnaceUIComponent());
                 s.Add(TypeContainer.GetUnregistered<FurnaceScreen>());
             });
-
         }
     }
 }

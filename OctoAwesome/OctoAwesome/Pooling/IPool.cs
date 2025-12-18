@@ -10,6 +10,14 @@
         /// </summary>
         /// <param name="obj">The element to return into the memory pool.</param>
         void Return(IPoolElement obj);
+
+        /// <summary>
+        /// Retrieves an element from the memory pool.
+        /// </summary>
+        /// <returns>The pooled element that can be used thereon.</returns>
+        /// <remarks>Use <see cref="Return"/> to return the object back into the memory pool.</remarks>
+        IPoolElement RentElement();
+
     }
     /// <summary>
     /// Interface for generic memory pools.

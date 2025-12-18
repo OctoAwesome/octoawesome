@@ -34,5 +34,6 @@ namespace OctoAwesome
         /// </summary>
         /// <param name="typeContainer">The type container to register the types in.</param>
         void Register(ITypeContainer typeContainer);
+        void RegisterTypes(ExtensionService extensionLoader);
     }
 }

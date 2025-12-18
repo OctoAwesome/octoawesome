@@ -7,6 +7,7 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for the local chunk cache of an entity.
     /// </summary>
+    [SerializationId()]
     public sealed class LocalChunkCacheComponent : Component, IEntityComponent
     {
         /// <summary>

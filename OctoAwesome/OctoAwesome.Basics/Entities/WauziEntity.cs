@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+
 using engenious;
 
 using OctoAwesome.Basics.Definitions.Items.Food;
@@ -9,14 +9,14 @@ using OctoAwesome.EntityComponents;
 using OctoAwesome.Location;
 using OctoAwesome.Extension;
 using OctoAwesome.Serialization;
-
 namespace OctoAwesome.Basics.Entities
 {
     /// <summary>
     /// An entity used for dogs in the game.
     /// </summary>
-    [SerializationId(1, 2)]
-    public class WauziEntity : Entity
+    [SerializationId()]
+    [Nooson]
+    public partial class WauziEntity : Entity, ISerializable<WauziEntity>
     {
         class MoveLogic
         {
@@ -127,31 +127,32 @@ namespace OctoAwesome.Basics.Entities
         {
         }
 
-        /// <inheritdoc />
-        protected override void OnInteract(GameTime gameTime, Entity entity)
-        {
-            if (!entity.Components.TryGet<ToolBarComponent>(out var toolbar)
-                || !entity.Components.TryGet<InventoryComponent>(out var inventory)
-                || !entity.Components.TryGet<PositionComponent>(out var position)
-                || toolbar.ActiveTool?.Item is not MeatRaw)
-                return;
+        ///<inheritdoc/>
+        //protected override void OnInteract(GameTime gameTime, Entity entity)
+        //{
+        //    if (!entity.Components.TryGet<ToolBarComponent>(out var toolbar)
+        //        || !entity.Components.TryGet<InventoryComponent>(out var inventory)
+        //        || !entity.Components.TryGet<PositionComponent>(out var position)
+        //        || toolbar.ActiveTool?.Item is not MeatRaw
+        //        || !Components.TryGet<ControllableComponent>(out var controller))
+        //        return;
 
-            Controller.JumpInput = true;
-            if (!Components.Contains<RelatedEntityComponent>())
-            {
-                var relEntity = new RelatedEntityComponent();
-                relEntity.RelatedEntityId = entity.Id;
-                Components.Add(relEntity);
-                followEntity = entity;
-            }
+        //    controller.JumpInput = true;
+        //    if (!Components.Contains<RelatedEntityComponent>())
+        //    {
+        //        var relEntity = new RelatedEntityComponent();
+        //        relEntity.RelatedEntityId = entity.Id;
+        //        Components.AddIfTypeNotExists(relEntity);
+        //        followEntity = entity;
+        //    }
 
-            inventory.RemoveUnit(toolbar.ActiveTool);
-            if (toolbar.ActiveTool.Amount < 1)
-            {
-                inventory.Remove(toolbar.ActiveTool);
-                toolbar.RemoveSlot(toolbar.ActiveTool);
-            }
-        }
+        //    inventory.RemoveUnit(toolbar.ActiveTool);
+        //    if (toolbar.ActiveTool.Amount < 1)
+        //    {
+        //        inventory.Remove(toolbar.ActiveTool);
+        //        toolbar.RemoveSlot(toolbar.ActiveTool);
+        //    }
+        //}
 
 
         /// <inheritdoc />

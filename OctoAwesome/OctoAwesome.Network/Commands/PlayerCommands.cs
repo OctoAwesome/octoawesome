@@ -1,6 +1,4 @@
-﻿using CommandManagementSystem.Attributes;
-
-using engenious;
+﻿using engenious;
 
 using OctoAwesome.EntityComponents;
 using OctoAwesome.Location;
@@ -11,29 +9,27 @@ using OctoAwesome.Rx;
 using OctoAwesome.Serialization;
 
 using System;
+using System.IO;
 using System.Text;
 
-namespace OctoAwesome.GameServer.Commands
+namespace OctoAwesome.Network.Commands
 {
     /// <summary>
     /// Contains remote player commands.
     /// </summary>
     public static class PlayerCommands
     {
+        private static readonly IUpdateHub updateHub;
         private static readonly ConcurrentRelay<Notification> simulationChannel;
-        private static readonly ConcurrentRelay<Notification> networkChannel;
         private static readonly IDisposable simulationChannelSub;
-        private static readonly IDisposable networkChannelSub;
 
         static PlayerCommands()
         {
-            var updateHub = TypeContainer.Get<IUpdateHub>();
+            updateHub = TypeContainer.Get<IUpdateHub>();
 
             simulationChannel = new ConcurrentRelay<Notification>();
-            networkChannel = new ConcurrentRelay<Notification>();
 
             simulationChannelSub = updateHub.AddSource(simulationChannel, DefaultChannels.Simulation);
-            networkChannelSub = updateHub.AddSource(networkChannel, DefaultChannels.Network);
         }
 
         /// <summary>
@@ -41,20 +37,25 @@ namespace OctoAwesome.GameServer.Commands
         /// </summary>
         /// <param name="parameter">The <see cref="CommandParameter"/> containing the player data.</param>
         /// <returns><c>null</c></returns>
-        [Command((ushort)OfficialCommand.Whoami)]
-        public static byte[] Whoami(CommandParameter parameter)
+        public static ISerializable Whoami(ITypeContainer tc, CommandParameter parameter)
         {
-            var updateHub = TypeContainer.Get<IUpdateHub>();
             string playername = Encoding.UTF8.GetString(parameter.Data);
             var player = new Player();
-            var entityNotificationPool = TypeContainer.Get<IPool<EntityNotification>>();
+            var entityNotificationPool = tc.Get<IPool<EntityNotification>>();
             var entityNotification = entityNotificationPool.Rent();
             entityNotification.Entity = player;
             entityNotification.Type = EntityNotification.ActionType.Add;
 
-            simulationChannel.OnNext(entityNotification);
-            entityNotification.Release();
 
+            simulationChannel.OnNext(entityNotification);
+            player.Components.Add(new ServerManagedComponent() { OnServer = true, Enabled = true });
+
+            if(player.TryGetComponent<PositionComponent>(out var posComp))
+            {
+                updateHub.PushNetwork(posComp.Planet, DefaultChannels.Planet);
+            }
+
+            entityNotification.Release();
 
             var remotePlayer = new RemoteEntity(player);
             remotePlayer.Components.AddIfTypeNotExists(new PositionComponent() { Position = new Coordinate(0, new Index3(0, 0, 78), new Vector3(0, 0, 0)) });
@@ -66,9 +67,16 @@ namespace OctoAwesome.GameServer.Commands
             entityNotification.Entity = remotePlayer;
             entityNotification.Type = EntityNotification.ActionType.Add;
 
-            networkChannel.OnNext(entityNotification);
+            using var ms = new MemoryStream();
+            using var bw = new BinaryWriter(ms);
+            entityNotification.Serialize(bw);
+            //ms.Position = 0;
+            //using var br = new BinaryReader(ms);
+            //var deserers = EntityNotification.DeserializeAndCreate(br);
+
+            updateHub.PushNetwork(entityNotification, DefaultChannels.Simulation);
             entityNotification.Release();
-            return Serializer.Serialize(player);
+            return player;
         }
     }
 }

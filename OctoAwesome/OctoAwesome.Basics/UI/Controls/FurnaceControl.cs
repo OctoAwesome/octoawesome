@@ -5,11 +5,8 @@ using engenious.UI.Controls;
 
 using OctoAwesome.Client.UI.Components;
 using OctoAwesome.Client.UI.Controls;
-using OctoAwesome.EntityComponents;
-using OctoAwesome.UI.Components;
 
 using System.Collections.Generic;
-using System.Text;
 
 namespace OctoAwesome.Basics.UI.Controls;
 

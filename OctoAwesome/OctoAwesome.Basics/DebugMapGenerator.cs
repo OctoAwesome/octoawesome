@@ -30,11 +30,11 @@ namespace OctoAwesome.Basics
 
             IChunk[] result = new IChunk[planet.Size.Z];
 
-            ChunkColumn column = new ChunkColumn(result, planet, index);
+            ChunkColumn column = new ChunkColumn(result, planet.Id, index);
 
 
             for (int layer = 0; layer < planet.Size.Z; layer++)
-                result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet);
+                result[layer] = new Chunk(new Index3(index.X, index.Y, layer), planet.Id);
 
             int part = (planet.Size.Z * Chunk.CHUNKSIZE_Z) / 4;
 
@@ -74,7 +74,7 @@ namespace OctoAwesome.Basics
         /// <inheritdoc />
         public IChunkColumn GenerateColumn(Stream stream, IPlanet planet, Index2 index)
         {
-            IChunkColumn column = new ChunkColumn(planet);
+            IChunkColumn column = new ChunkColumn(planet.Id);
             using (var reader = new BinaryReader(stream))
                 column.Deserialize(reader);
             return column;

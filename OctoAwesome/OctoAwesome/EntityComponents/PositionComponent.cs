@@ -4,6 +4,9 @@ using OctoAwesome.Components;
 using OctoAwesome.Location;
 using OctoAwesome.Notifications;
 using OctoAwesome.Pooling;
+using OctoAwesome.Serialization;
+using NonSucking.Framework.Serialization;
+
 using System.IO;
 
 namespace OctoAwesome.EntityComponents
@@ -11,11 +14,15 @@ namespace OctoAwesome.EntityComponents
     /// <summary>
     /// Component for entities with an position.
     /// </summary>
-    public sealed class PositionComponent : InstanceComponent<ComponentContainer>, IEntityComponent
+    //[NoosonCustom(SerializeMethodName = nameof(Serialize), DeserializeMethodName = nameof(Deserialize))]
+    [Nooson]
+    [SerializationId()]
+    public sealed partial class PositionComponent : Component, IEntityComponent, ISerializable<PositionComponent>
     {
         /// <summary>
         /// Gets or sets the position of the entity.
         /// </summary>
+        [NoosonIgnore]
         public Coordinate Position
         {
             get => position;
@@ -26,10 +33,11 @@ namespace OctoAwesome.EntityComponents
                 var positionBlockX = ((int)(position.BlockPosition.X * 100)) / 100f;
                 var positionBlockY = ((int)(position.BlockPosition.Y * 100)) / 100f;
 
-                posUpdate = valueBlockX != positionBlockX || valueBlockY != positionBlockY
+                posUpdate = valueBlockX != positionBlockX 
+                    || valueBlockY != positionBlockY
                     || position.BlockPosition.Z != value.BlockPosition.Z;
-
-                SetValue(ref position, value);
+                
+                position =  value;
                 planet = TryGetPlanet(value.Planet);
             }
         }
@@ -37,12 +45,14 @@ namespace OctoAwesome.EntityComponents
         /// <summary>
         /// Gets or sets the direction the entity is facing.
         /// </summary>
+        [NoosonOrder(1)]
         public float Direction { get; set; }
         /// <summary>
         /// Gets the planet the entity is on.
         /// </summary>
+        [NoosonIgnore]
         public IPlanet Planet => planet ??= TryGetPlanet(position.Planet);
-
+        [NoosonInclude, NoosonOrder(0)]
         private Coordinate position;
         private bool posUpdate;
         private IPlanet? planet;
@@ -56,39 +66,8 @@ namespace OctoAwesome.EntityComponents
         {
             Sendable = true;
             resourceManager = TypeContainer.Get<IResourceManager>();
-            propertyChangedNotificationPool = TypeContainer.Get<IPool<PropertyChangedNotification>>();
         }
 
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
-        {
-            base.Serialize(writer);
-            // Position
-            writer.Write(Position.Planet);
-            writer.Write(Position.GlobalBlockIndex.X);
-            writer.Write(Position.GlobalBlockIndex.Y);
-            writer.Write(Position.GlobalBlockIndex.Z);
-            writer.Write(Position.BlockPosition.X);
-            writer.Write(Position.BlockPosition.Y);
-            writer.Write(Position.BlockPosition.Z);
-        }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-
-            // Position
-            int planet = reader.ReadInt32();
-            int blockX = reader.ReadInt32();
-            int blockY = reader.ReadInt32();
-            int blockZ = reader.ReadInt32();
-            float posX = reader.ReadSingle();
-            float posY = reader.ReadSingle();
-            float posZ = reader.ReadSingle();
-
-            position = new Coordinate(planet, new Index3(blockX, blockY, blockZ), new Vector3(posX, posY, posZ));
-        }
 
         private IPlanet TryGetPlanet(int planetId)
         {
@@ -96,50 +75,6 @@ namespace OctoAwesome.EntityComponents
                 return planet;
 
             return resourceManager.GetPlanet(planetId);
-        }
-
-        /// <inheritdoc />
-        protected override void OnPropertyChanged<T>(T value, string propertyName)
-        {
-            base.OnPropertyChanged(value, propertyName);
-
-            if (propertyName == nameof(Position) && posUpdate)
-            {
-                var updateNotification = propertyChangedNotificationPool.Rent();
-
-                updateNotification.Issuer = nameof(PositionComponent);
-                updateNotification.Property = propertyName;
-
-                using (var stream = new MemoryStream())
-                using (var writer = new BinaryWriter(stream))
-                {
-                    Serialize(writer);
-                    updateNotification.Value = stream.ToArray();
-                }
-
-                Push(updateNotification);
-            }
-        }
-
-        /// <inheritdoc />
-        public override void OnNotification(SerializableNotification notification)
-        {
-            base.OnNotification(notification);
-
-            if (notification is PropertyChangedNotification changedNotification)
-            {
-                if (changedNotification.Issuer == nameof(PositionComponent))
-                {
-                    if (changedNotification.Property == nameof(Position))
-                    {
-                        using (var stream = new MemoryStream(changedNotification.Value))
-                        using (var reader = new BinaryReader(stream))
-                        {
-                            Deserialize(reader);
-                        }
-                    }
-                }
-            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace OctoAwesome.Chunking
         /// <summary>
         /// Gets the planet the chunk is part of.
         /// </summary>
-        IPlanet Planet { get; }
+        int PlanetId { get; }
 
         /// <summary>
         /// Gets the index of the chunk.

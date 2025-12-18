@@ -21,11 +21,11 @@ namespace OctoAwesome.Chunking
     {
         //public event EventHandler<IChunkColumn> ChunkColumnChanged;
 
-        private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent autoResetEvent = new AutoResetEvent(false);
 
         private readonly CancellationTokenSource tokenSource;
         private readonly IResourceManager resourceManager;
-        private readonly SerializationIdTypeProvider typeProvider;
+        private readonly IUpdateHub updateHub;
         private readonly LockSemaphore semaphore = new LockSemaphore(1, 1);
         private readonly LockSemaphore updateSemaphore = new LockSemaphore(1, 1);
 
@@ -33,10 +33,8 @@ namespace OctoAwesome.Chunking
         private readonly ILogger logger;
         private readonly ChunkPool chunkPool;
         private readonly IDisposable chunkSubscription;
-        private readonly IDisposable networkSource;
         private readonly IDisposable chunkSource;
         private readonly IDisposable simulationSource;
-        private readonly Relay<Notification> networkRelay;
         private readonly Relay<Notification> chunkRelay;
         private readonly Relay<Notification> simulationRelay;
 
@@ -58,6 +56,9 @@ namespace OctoAwesome.Chunking
         /// <inheritdoc />
         public IPlanet Planet { get; }
 
+        /// <inheritdoc />
+        public CacheService CacheService => cacheService;
+
         private readonly CacheService cacheService;
 
         /// <summary>
@@ -66,16 +67,15 @@ namespace OctoAwesome.Chunking
         /// <param name="planet">The planet the global chunk cache manages chunks for.</param>
         /// <param name="resourceManager">The current <see cref="IResourceManager"/> to load resources.</param>
         /// <param name="updateHub">The update hub to propagate updates.</param>
-        /// <param name="typeProvider">The type provider used to manage serialization types..</param>
-        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub, SerializationIdTypeProvider typeProvider)
+        /// <param name="serIdProvider">The type provider used to manage serialization types..</param>
+        public GlobalChunkCache(IPlanet planet, IResourceManager resourceManager, IUpdateHub updateHub)
         {
             cacheService = new CacheService(planet, resourceManager, updateHub);
             cacheService.Start();
 
             Planet = planet ?? throw new ArgumentNullException(nameof(planet));
             this.resourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
-            this.typeProvider = typeProvider;
-            networkRelay = new Relay<Notification>();
+            this.updateHub = updateHub;
             chunkRelay = new Relay<Notification>();
             simulationRelay = new Relay<Notification>();
 
@@ -86,7 +86,6 @@ namespace OctoAwesome.Chunking
             chunkPool = TypeContainer.Get<ChunkPool>();
 
             chunkSubscription = updateHub.ListenOn(DefaultChannels.Chunk).Subscribe(OnNext);
-            networkSource = updateHub.AddSource(networkRelay, DefaultChannels.Network);
             chunkSource = updateHub.AddSource(chunkRelay, DefaultChannels.Chunk);
             simulationSource = updateHub.AddSource(simulationRelay, DefaultChannels.Simulation);
         }
@@ -95,31 +94,38 @@ namespace OctoAwesome.Chunking
         public IChunkColumn Subscribe(Index2 position)
         {
             var column = cacheService.Get<Index2, ChunkColumn>(position)!;
-            var chunkIndex = new Index3(position, Planet.Id);
 
             var positionComponents
                         = cacheService
-                        .Get<Index3, List<PositionComponent>>(chunkIndex)!;
+                        .Get<Index2, List<PositionComponent>>(position)!;
 
-            foreach (var positionComponent in positionComponents)
+            if (resourceManager.LocalPersistance)
             {
-                if (!typeProvider.TryGet(positionComponent.InstanceTypeId, out var type))
-                    continue;
-
-                if (type.IsAssignableTo(typeof(Entity)))
+                foreach (var positionComponent in positionComponents)
                 {
-                    var entity
-                        = cacheService
-                        .Get<Guid, Entity>(positionComponent.InstanceId)!;
-
-                    positionComponent.SetInstance(entity);
-                    var notification = new EntityNotification
+                    if (!SerializationIdTypeProvider.TryGet(positionComponent.ParentTypeId, out var type))
                     {
-                        Entity = entity,
-                        Type = EntityNotification.ActionType.Add
-                    };
+                        continue;
+                    }
 
-                    simulationRelay.OnNext(notification);
+                    if (type.IsAssignableTo(typeof(Entity)))
+                    {
+                        var entity
+                            = cacheService
+                            .Get<Guid, Entity>(positionComponent.ParentId)!;
+                        if (entity is null)
+                            continue;
+                        positionComponent.Parent = entity;
+
+                        logger.Debug($"Send {entity.GetType().Name} with id {entity.Id} to simulation");
+                        var notification = new EntityNotification
+                        {
+                            Entity = entity,
+                            Type = EntityNotification.ActionType.Add
+                        };
+
+                        simulationRelay.OnNext(notification);
+                    }
                 }
             }
 
@@ -168,10 +174,10 @@ namespace OctoAwesome.Chunking
 
 
         /// <summary>
-        /// Called when chunk notification occured.
+        /// Called when chunk notification occurred.
         /// </summary>
         /// <param name="value">The notification.</param>
-        public void OnNext(Notification value)
+        public void OnNext(object value)
         {
             switch (value)
             {
@@ -189,7 +195,7 @@ namespace OctoAwesome.Chunking
         /// <inheritdoc />
         public void OnUpdate(SerializableNotification notification)
         {
-            networkRelay.OnNext(notification);
+            updateHub.PushNetwork(notification, DefaultChannels.Chunk);
 
             if (notification is IChunkNotification)
                 chunkRelay.OnNext(notification);
@@ -212,12 +218,10 @@ namespace OctoAwesome.Chunking
         {
             semaphore.Dispose();
             updateSemaphore.Dispose();
-            _autoResetEvent.Dispose();
+            autoResetEvent.Dispose();
             chunkSubscription.Dispose();
-            networkSource.Dispose();
             chunkSource.Dispose();
             tokenSource.Dispose();
-            networkRelay.Dispose();
             chunkRelay.Dispose();
 
             cacheService.Dispose();

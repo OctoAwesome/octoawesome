@@ -1,10 +1,14 @@
-﻿using OctoAwesome.Notifications;
+﻿
 using OctoAwesome.Serialization;
 using OctoAwesome.Components;
 using OctoAwesome.Extension;
 
 using System;
 using System.IO;
+using OctoAwesome.Notifications;
+using OctoAwesome.Pooling;
+using OctoAwesome.Rx;
+using System.Diagnostics;
 
 namespace OctoAwesome.EntityComponents
 {
@@ -12,36 +16,33 @@ namespace OctoAwesome.EntityComponents
     /// Base Class for components that need to interact with a component container.
     /// </summary>
     /// <typeparam name="T">The component container that needs to be interacted with.</typeparam>
-    public abstract class InstanceComponent<T> : Component, INotificationSubject<SerializableNotification>
+    [Nooson]
+    public abstract partial class InstanceComponent<T> : Component
         where T : ComponentContainer
     {
         private T? instance;
+        private readonly IUpdateHub updateHub;
 
         /// <summary>
         /// Gets the reference to the <see cref="ComponentContainer{TComponent}"/>.
         /// </summary>
+        [NoosonIgnore]
         public T Instance
         {
             get => NullabilityHelper.NotNullAssert(instance, $"{nameof(Instance)} was not initialized!");
             private set => instance = NullabilityHelper.NotNullAssert(value, $"{nameof(Instance)} cannot be initialized with null!");
         }
 
-        /// <summary>
-        /// Gets the unique identifier for the <see cref="Instance"/>.
-        /// </summary>
-        public Guid InstanceId { get; set; }
 
-        /// <summary>
-        /// Gets the instance type id.
-        /// </summary>
-        /// <seealso cref="SerializationIdTypeProvider"/>
-        public ulong InstanceTypeId { get; private set; }
+        private ServerManagedComponent? managedComponent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InstanceComponent{T}"/> class.
         /// </summary>
         public InstanceComponent()
         {
+            var typeContainer = TypeContainer.Get<ITypeContainer>();
+            updateHub = typeContainer.Get<IUpdateHub>();
         }
 
         /// <summary>
@@ -52,60 +53,41 @@ namespace OctoAwesome.EntityComponents
         /// <exception cref="NotSupportedException">Thrown if the <see cref="Instance"/> was already set.</exception>
         public void SetInstance(T value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+        }
 
-            if (instance?.Id == value.Id)
+
+
+        private void OnSimulationMessage(object obj)
+        {
+            if (obj is not EntityNotification entityNotification)
+                return;
+            if (ParentId == Guid.Empty)
+                return;
+            if (entityNotification.EntityId != ParentId)
                 return;
 
-            var type = value.GetType();
-            if (instance != null)
+            switch (entityNotification.Type)
             {
-                throw new NotSupportedException("Can not change the " + type.Name);
+                case EntityNotification.ActionType.Update:
+                    EntityUpdate(entityNotification);
+                    break;
             }
-
-            InstanceTypeId = type.SerializationId();
-            InstanceId = value.Id;
-            Instance = value;
-            OnSetInstance();
         }
-
-        /// <inheritdoc />
-        public override void Serialize(BinaryWriter writer)
+        private void EntityUpdate(EntityNotification notification)
         {
-            base.Serialize(writer);
-            writer.Write(InstanceId.ToByteArray());
-            writer.Write(InstanceTypeId);
+            if (notification.Notification is PropertyChangedNotification changedNotification)
+            {
+                if (changedNotification.Issuer == GetType().SerializationId())
+                {
+                    managedComponent ??= Instance.GetComponent<ServerManagedComponent>() ?? new();
+                    if (!managedComponent.OnServer && Instance is not Player)
+                        _ = Serializer.Deserialize(this, changedNotification.Value);
+                    if (managedComponent.OnServer)
+                    {
+                        updateHub.PushNetwork(notification, DefaultChannels.Simulation);
+                    }
+                }
+            }
         }
-
-        /// <inheritdoc />
-        public override void Deserialize(BinaryReader reader)
-        {
-            base.Deserialize(reader);
-
-            InstanceId = new Guid(reader.ReadBytes(16));
-            InstanceTypeId = reader.ReadUInt64();
-        }
-
-        /// <summary>
-        /// Gets called when the instance was set to a new value.
-        /// </summary>
-        protected virtual void OnSetInstance()
-        {
-
-        }
-
-        /// <inheritdoc />
-        public virtual void OnNotification(SerializableNotification notification)
-        {
-
-        }
-
-        /// <inheritdoc />
-        public virtual void Push(SerializableNotification notification)
-        {
-            instance?.OnNotification(notification);
-        }
-
     }
 }

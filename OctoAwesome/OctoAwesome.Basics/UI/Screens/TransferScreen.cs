@@ -51,7 +51,6 @@ namespace OctoAwesome.Basics.UI.Screens
             BToA
         }
 
-        //TODO Where and how to initialize this screen?
         /// <summary>
         /// Initializes a new instance of the <see cref="TransferScreen"/> class.
         /// </summary>

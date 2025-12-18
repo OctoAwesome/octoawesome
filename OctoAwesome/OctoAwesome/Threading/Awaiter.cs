@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using OctoAwesome.Extension;
+using OctoAwesome.Caching;
 
 namespace OctoAwesome.Threading
 {
@@ -15,18 +16,18 @@ namespace OctoAwesome.Threading
     public class Awaiter : IPoolElement, IDisposable
     {
         /// <summary>
-        /// Gets or sets the result for the awaiter.
-        /// </summary>
-        public ISerializable? Result { get; set; }
-
-        /// <summary>
         /// Gets a value indicating whether awaiting has timed out.
         /// </summary>
         public bool TimedOut { get; private set; }
+        public bool Network { get; set; }
+
+        private ISerializable? knownResult;
+        private byte[]? result;
         private readonly ManualResetEventSlim manualReset;
         private readonly LockSemaphore semaphore;
         private bool alreadyDeserialized;
         private IPool? pool;
+        private Func<byte[], object>? deserializeFunc;
         private IPool Pool
         {
             get => NullabilityHelper.NotNullAssert(pool, $"{nameof(IPoolElement)} was not initialized!");
@@ -48,26 +49,89 @@ namespace OctoAwesome.Threading
         /// Waits on the result or time outs(10000s).
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
-        public ISerializable? WaitOn()
+        public bool WaitOn()
         {
             Debug.Assert(!isPooled, "Is released into pool!");
+            Debug.WriteLine("Waiting for result");
             if (!alreadyDeserialized)
-                TimedOut = !manualReset.Wait(10000);
+                TimedOut = !manualReset.Wait(-1); //10000
 
-            return Result;
+            return !TimedOut;
         }
 
         /// <summary>
         /// Waits on the result or time outs(10000s) and releases the awaiter.
         /// </summary>
         /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
-        public ISerializable? WaitOnAndRelease()
+        public T? WaitOnAndRelease<T>() where T : IConstructionSerializable<T>, new()
         {
             Debug.Assert(!isPooled, "Is released into pool!");
             var res = WaitOn();
+            if (!res)
+            {
+                Release();
+                return default;
+            }
+
+            T? ret;
+            if (deserializeFunc is not null)
+            {
+                ret = GenericCaster<object, T>.Cast(deserializeFunc(result));
+            }
+            else if (knownResult != default && result is null)
+            {
+                ret = GenericCaster<ISerializable, T>.Cast(knownResult);
+            }
+            else if (knownResult is T instance && result is not null)
+            {
+                ret = Network 
+                    ? Serializer.DeserializeNetwork(instance, result) 
+                    : Serializer.Deserialize(instance, result);
+            }
+            else if (result is not null)
+            {
+                ret = Network 
+                    ? Serializer.DeserializeSpecialCtorNetwork<T>(result) 
+                    : Serializer.DeserializeSpecialCtor<T>(result);
+            }
+            else
+            {
+                ret = default;
+            }
+
+
             Release();
-            return res;
+            return ret;
         }
+
+        /// <summary>
+        /// Waits on the result or time outs(10000s) and releases the awaiter.
+        /// </summary>
+        /// <returns>The result; or <c>null</c> if there is no result yet.</returns>
+        public T? WaitOnAndRelease<T>(T? instance) where T : class, ISerializable
+        {
+            Debug.Assert(!isPooled, "Is released into pool!");
+            var res = WaitOn();
+            if (!res)
+            {
+                Release();
+                return null;
+            }
+
+            T? ret;
+            if (deserializeFunc is not null)
+                ret = GenericCaster<object, T>.Cast(deserializeFunc(result));
+            else if (knownResult is not null && result is null)
+                ret = GenericCaster<ISerializable, T>.Cast(knownResult);
+            else if (result is not null && instance is not null)
+                ret = Serializer.Deserialize(instance, result);
+            else
+                ret = null;
+
+            Release();
+            return ret;
+        }
+
 
         /// <summary>
         /// Sets the awaiter result to the given value.
@@ -78,9 +142,9 @@ namespace OctoAwesome.Threading
             Debug.Assert(!isPooled, "Is released into pool!");
             using (semaphore.Wait())
             {
-                Result = result;
-                manualReset.Set();
+                knownResult = result;
                 alreadyDeserialized = true;
+                manualReset.Set();
             }
         }
 
@@ -92,6 +156,7 @@ namespace OctoAwesome.Threading
         /// <exception cref="ArgumentNullException">Throws when <see cref="Result"/> is <c>null</c>.</exception>
         public bool TrySetResult(byte[] bytes)
         {
+            Debug.WriteLine("Setting result");
             Debug.Assert(!isPooled, "Is released into pool!");
             try
             {
@@ -100,16 +165,10 @@ namespace OctoAwesome.Threading
                     if (TimedOut)
                         return false;
 
-                    if (Result == null)
-                        throw new ArgumentNullException(nameof(Result));
-
-                    using (var stream = new MemoryStream(bytes))
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        Result.Deserialize(reader);
-                    }
+                    result = bytes;
+                    alreadyDeserialized = true;
                     manualReset.Set();
-                    return alreadyDeserialized = true;
+                    return true;
                 }
 
             }
@@ -119,6 +178,11 @@ namespace OctoAwesome.Threading
             }
         }
 
+        public void SetDesializeFunc(Func<byte[], object> func)
+        {
+            deserializeFunc = func;
+        }
+
         /// <inheritdoc />
         public void Init(IPool pool)
         {
@@ -126,7 +190,10 @@ namespace OctoAwesome.Threading
             TimedOut = false;
             isPooled = false;
             alreadyDeserialized = false;
-            Result = null;
+            result = null;
+            knownResult = null;
+            deserializeFunc = null;
+            Network = false;
             manualReset.Reset();
         }
 
@@ -149,6 +216,7 @@ namespace OctoAwesome.Threading
         public void Dispose()
         {
             manualReset.Dispose();
+            semaphore.Dispose();
         }
     }
 }

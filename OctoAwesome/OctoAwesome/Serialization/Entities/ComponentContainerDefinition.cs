@@ -13,7 +13,7 @@ namespace OctoAwesome.Serialization.Entities
     /// Component container definition for <see cref="ComponentContainer{TComponent}"/> instances.
     /// </summary>
     /// <typeparam name="TComponent">The type of the components contained in the container definition.</typeparam>
-    public sealed class ComponentContainerDefinition<TComponent> : ISerializable where TComponent : IComponent
+    public sealed class ComponentContainerDefinition<TComponent> : ISerializable where TComponent : IComponent, ISerializable
     {
         private IEnumerable<Type>? components;
         private Type? type;

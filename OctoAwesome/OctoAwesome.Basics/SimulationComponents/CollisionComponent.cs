@@ -6,6 +6,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with collisions of entities.
     /// </summary>
+    [SerializationId()]
     public sealed class CollisionComponent : SimulationComponent<Entity>
     {
         /// <inheritdoc />

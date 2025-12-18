@@ -1,7 +1,6 @@
 ﻿using OctoAwesome.Components;
 using OctoAwesome.EntityComponents;
 
-using System;
 using System.Collections.Generic;
 
 namespace OctoAwesome.Basics.EntityComponents;
@@ -9,6 +8,7 @@ namespace OctoAwesome.Basics.EntityComponents;
 /// <summary>
 /// Used for transfering items from one entity to another
 /// </summary>
+[SerializationId()]
 public class TransferComponent : Component, IEntityComponent
 {
     /// <summary>

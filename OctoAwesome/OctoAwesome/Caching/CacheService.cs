@@ -77,7 +77,7 @@ namespace OctoAwesome.Caching
 
                 item.Start();
             }
-            
+
             garbageCollectionTask = new Task(async () => await GarbageCollection(token), token, TaskCreationOptions.LongRunning);
             garbageCollectionTask.Start();
 
@@ -132,6 +132,23 @@ namespace OctoAwesome.Caching
             }
 
             return default;
+        }
+
+        /// <summary>
+        /// Gets a value from the cache service.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the identifying key to get the value by.</typeparam>
+        /// <typeparam name="TValue">The type of the value to get the value of.</typeparam>
+        /// <param name="key">The identifying key to get the value by.</param>
+
+        /// <returns>The value from the cache service.</returns>
+        public void AddOrUpdate<TKey, TValue>(TKey key, TValue value)
+            where TKey : notnull
+        {
+            if (caches.TryGetValue(typeof(TValue), out var cache))
+            {
+                cache.AddOrUpdate(key, value);
+            }
         }
 
         private async Task GarbageCollection(CancellationToken cancellationToken)

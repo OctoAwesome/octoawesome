@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <EngeniousFont>
-  <FontName>Cascadia Code</FontName>
+  <FontName>Cascadia Mono</FontName>
   <FontType>BitmapFont</FontType>
   <Size>12</Size>
   <Spacing>0</Spacing>
@@ -44,13 +44,13 @@
       <Start>223</Start>
       <End>223</End>
     </CharacterRegion>
-	  <CharacterRegion>
-		  <Start>127462</Start>
-		  <End>127487</End>
-	  </CharacterRegion>	  
-	  <CharacterRegion>
-		  <Start>128293</Start>
-		  <End>128293</End>
-	  </CharacterRegion>
+    <CharacterRegion>
+      <Start>127462</Start>
+      <End>127487</End>
+    </CharacterRegion>
+    <CharacterRegion>
+      <Start>128293</Start>
+      <End>128293</End>
+    </CharacterRegion>
   </CharacterRegions>
 </EngeniousFont>

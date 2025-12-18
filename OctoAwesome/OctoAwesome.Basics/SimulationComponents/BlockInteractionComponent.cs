@@ -14,6 +14,7 @@ namespace OctoAwesome.Basics.SimulationComponents
     /// <summary>
     /// Component for simulation with block interactions.
     /// </summary>
+    [SerializationId()]
     public class BlockInteractionComponent : SimulationComponent<
         Entity,
         SimulationComponentRecord<Entity, ControllableComponent, InventoryComponent>,
@@ -22,19 +23,21 @@ namespace OctoAwesome.Basics.SimulationComponents
     {
         private readonly Simulation simulation;
         private readonly BlockInteractionService service;
+        private readonly InteractService interactService;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockInteractionComponent"/> class.
         /// </summary>
         /// <param name="simulation">The simulation the block interactions should happen in.</param>
-        /// <param name="interactionService">
+        /// <param name="blockInteractionService">
         /// The interaction service to actually interact with blocks in the simulation.
         /// </param>
-        public BlockInteractionComponent(Simulation simulation, BlockInteractionService interactionService)
+        public BlockInteractionComponent(Simulation simulation, BlockInteractionService blockInteractionService, InteractService interactService)
         {
             this.simulation = simulation;
-            service = interactionService;
+            service = blockInteractionService;
+            this.interactService = interactService;
         }
 
         /// <inheritdoc />
@@ -61,7 +64,13 @@ namespace OctoAwesome.Basics.SimulationComponents
                         Debug.Assert(toolbar != null, nameof(toolbar) + " != null");
                         ApplyWith(applyInfo, inventory, toolbar, cache);
                     },
-                    componentContainer => componentContainer?.Interact(gameTime, entity)
+                    componentContainer =>
+                    {
+                        if (componentContainer.TryGetComponent<InteractKeyComponent>(out var keyComp))
+                        {
+                            interactService.Interact(keyComp.Key, gameTime, entity, componentContainer);
+                        }
+                    }
                 );
 
             if (toolbar != null && controller.ApplyBlock.HasValue)
